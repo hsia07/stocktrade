@@ -1,0 +1,3 @@
+backtest_2330 exists: {"role": "回測工程師", "icon": "📊", "status": "warn", "summary": "2330 勝率 50% | 盈虧比 1.1", "details": ["總交易筆數：10", "勝率：50.0%", "盈虧比：1.09", "平均獲利：+58.00  |  平均虧損：-53.00", "最大回撤：-200.00", "累計損益：+25.00"], "timestamp": "22:45:31"}
+Keys with 'back': ['backtest_2330', 'backtest_2454', 'backtest_2382', 'backtest_3017', 'backtest_2317', 'backtest_2308', 'backtest_2603', 'backtest_2881', 'backtest_2882']
+Current state keys: ['ticks', 'agents', 'positions', 'daily_pnl', 'daily_trades', 'is_halted', 'halt_reason', 'trading_active', 'paper_trade', 'trades_log', 'backtest', 'signal_history', 'anomalies', 'market_board', 'detail_symbols', 'names', 'universe_size', 'scan_all_tw', 'timestamp']

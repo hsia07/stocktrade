@@ -1,0 +1,2279 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>台股 AI 六角色交易平台 v2</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Syne:wght@400;600;700;800&family=Noto+Sans+TC:wght@400;500;700&display=swap');
+
+:root {
+  --bg:      #040d1a;
+  --p1:      #081526;
+  --p2:      #0c1c34;
+  --p3:      #112240;
+  --border:  rgba(255,255,255,.055);
+  --text:    #d8e8f8;
+  --muted:   #6a85a8;
+  --accent:  #3d8fff;
+  --green:   #1bd49e;
+  --red:     #ff4f4f;
+  --yellow:  #f5b400;
+  --r:       14px;
+  --mono:    'DM Mono', monospace;
+  --title:   'Syne', sans-serif;
+  --body:    'Noto Sans TC', sans-serif;
+  --quant:   #a78bfa; --back: #60a5fa; --risk: #f87171;
+  --signal:  #34d399;  --exec: #fbbf24; --market: #f472b6;
+}
+[data-theme="light"] {
+  --bg:      #f5f7fa;
+  --p1:      #ffffff;
+  --p2:      #e8ecf1;
+  --p3:      #dde4eb;
+  --border:  rgba(0,0,0,.08);
+  --text:    #1a2332;
+  --muted:   #6b7c93;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;overflow:hidden;}
+body{font-family:var(--body);background:var(--bg);color:var(--text);display:flex;flex-direction:column;}
+
+/* ── Topbar ── */
+#topbar{
+  height:52px;padding:0 18px;
+  display:flex;align-items:center;gap:14px;
+  background:rgba(4,13,26,.96);border-bottom:1px solid var(--border);
+  backdrop-filter:blur(16px);z-index:200;flex-shrink:0;
+}
+.logo{font-family:var(--title);font-weight:800;font-size:16px;display:flex;align-items:center;gap:9px;white-space:nowrap;}
+.logo-mark{width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,#3d8fff,#1bd49e);display:grid;place-items:center;font-size:13px;font-weight:800;}
+.ws-dot{width:7px;height:7px;border-radius:50%;background:var(--muted);transition:.3s;}
+.ws-dot.on{background:var(--green);box-shadow:0 0 7px var(--green);}
+.ws-dot.err{background:var(--red);}
+.tabs{display:flex;gap:3px;flex:1;overflow-x:auto;scrollbar-width:none;}
+.tabs::-webkit-scrollbar{display:none;}
+.tab{
+  padding:5px 13px;border-radius:7px;font-size:12.5px;font-weight:600;
+  background:transparent;color:var(--muted);border:none;cursor:pointer;
+  white-space:nowrap;transition:.18s;font-family:var(--title);
+}
+.tab.on{background:rgba(61,143,255,.14);color:var(--accent);}
+.tab:hover:not(.on){background:rgba(255,255,255,.04);color:var(--text);}
+.topbar-r{display:flex;align-items:center;gap:8px;margin-left:auto;flex-shrink:0;}
+#clock{font-family:var(--mono);font-size:12px;color:var(--muted);}
+.pbtn{
+  padding:5px 11px;border-radius:7px;font-size:12px;font-weight:600;
+  border:1px solid var(--border);background:var(--p2);color:var(--text);
+  cursor:pointer;transition:.18s;font-family:var(--title);
+}
+.pbtn:hover{background:var(--p3);}
+.pbtn.danger{border-color:rgba(255,79,79,.3);color:#ff9090;}
+.pbtn.green{border-color:rgba(27,212,158,.3);color:#7cffd8;}
+.pbtn.warn{border-color:rgba(245,180,0,.3);color:#ffe270;}
+
+/* ── Layout ── */
+#app{display:grid;grid-template-columns:210px 1fr;flex:1;overflow:hidden;}
+
+/* ── Sidebar ── */
+#sidebar{
+  background:rgba(8,21,38,.92);border-right:1px solid var(--border);
+  display:flex;flex-direction:column;overflow-y:auto;overflow-x:hidden;
+  scrollbar-width:thin;scrollbar-color:var(--border) transparent;
+}
+.sb-sec{padding:12px 10px 6px;}
+.sb-lbl{font-size:9.5px;font-weight:700;letter-spacing:1.8px;color:var(--muted);text-transform:uppercase;padding:0 4px;margin-bottom:7px;}
+.nav-it{
+  display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:9px;
+  font-size:12.5px;font-weight:500;color:var(--muted);cursor:pointer;
+  transition:.15s;border:1px solid transparent;margin-bottom:2px;
+}
+.nav-it:hover{background:rgba(255,255,255,.03);color:var(--text);}
+.nav-it.on{background:rgba(61,143,255,.1);border-color:rgba(61,143,255,.18);color:var(--accent);}
+.nav-ic{font-size:14px;width:18px;text-align:center;}
+.nbadge{margin-left:auto;padding:1px 6px;border-radius:20px;font-size:10px;font-weight:700;}
+.nb-ok{background:rgba(27,212,158,.14);color:var(--green);}
+.nb-w{background:rgba(245,180,0,.14);color:var(--yellow);}
+.nb-a{background:rgba(255,79,79,.14);color:var(--red);}
+.nb-i{background:rgba(106,133,168,.1);color:var(--muted);}
+
+#sb-stats{margin:0 10px 12px;padding:11px;border:1px solid var(--border);border-radius:11px;background:var(--p1);display:grid;gap:7px;}
+.s-row{display:flex;justify-content:space-between;align-items:center;font-size:11.5px;}
+.s-label{color:var(--muted);}
+.s-val{font-family:var(--mono);font-weight:500;}
+.s-pos{color:var(--red);}
+.s-neg{color:var(--green);}
+.s-ok{color:var(--green);}
+
+/* ── Main ── */
+#main{flex:1;overflow-y:auto;padding:18px;scrollbar-width:thin;scrollbar-color:var(--border) transparent;}
+.page{display:none;}
+.page.on{display:block;}
+
+/* ── Card ── */
+.card{background:var(--p1);border:1px solid var(--border);border-radius:var(--r);padding:14px;overflow:hidden;}
+.card+.card{margin-top:13px;}
+.ct{font-family:var(--title);font-size:13.5px;font-weight:700;margin-bottom:11px;display:flex;align-items:center;gap:7px;}
+.ct .dot{width:7px;height:7px;border-radius:50%;}
+
+/* ── KPI ── */
+.kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:11px;margin-bottom:14px;}
+.kpi{background:var(--p1);border:1px solid var(--border);border-radius:11px;padding:13px;}
+.kpi-l{font-size:10.5px;color:var(--muted);margin-bottom:5px;font-family:var(--title);letter-spacing:.3px;}
+.kpi-v{font-family:var(--mono);font-size:20px;font-weight:500;}
+.kpi-s{font-size:10px;color:var(--muted);margin-top:2px;}
+
+/* ── Agent Cards ── */
+.agents{display:grid;grid-template-columns:repeat(3,1fr);gap:11px;margin-bottom:14px;}
+.ag{border-radius:13px;border:1px solid var(--border);padding:13px;position:relative;overflow:hidden;transition:border-color .3s;}
+.ag::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;}
+.ag.quant::before{background:var(--quant);}  .ag.quant{border-color:rgba(167,139,250,.18);}
+.ag.back::before{background:var(--back);}    .ag.back{border-color:rgba(96,165,250,.18);}
+.ag.risk::before{background:var(--risk);}    .ag.risk{border-color:rgba(248,113,113,.18);}
+.ag.signal::before{background:var(--signal);}  .ag.signal{border-color:rgba(52,211,153,.18);}
+.ag.exec::before{background:var(--exec);}    .ag.exec{border-color:rgba(251,191,36,.18);}
+.ag.market::before{background:var(--market);}  .ag.market{border-color:rgba(244,114,182,.18);}
+.ag-hd{display:flex;align-items:center;gap:7px;margin-bottom:7px;}
+.ag-ic{font-size:17px;}
+.ag-nm{font-family:var(--title);font-size:12.5px;font-weight:700;}
+.ag-st{margin-left:auto;padding:2px 7px;border-radius:20px;font-size:9.5px;font-weight:700;}
+.st-ok{background:rgba(27,212,158,.14);color:var(--green);}
+.st-w{background:rgba(245,180,0,.14);color:var(--yellow);}
+.st-a{background:rgba(255,79,79,.14);color:var(--red);animation:blink 1s infinite;}
+.st-i{background:rgba(106,133,168,.1);color:var(--muted);}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:.4;}}
+.ag-sum{font-size:11.5px;font-weight:600;color:var(--text);margin-bottom:5px;line-height:1.4;}
+.ag-det{display:grid;gap:2px;}
+.ag-line{font-family:var(--mono);font-size:10.5px;color:var(--muted);line-height:1.5;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.ag-ts{font-size:9px;color:var(--muted);margin-top:6px;}
+
+/* ── Grid helpers ── */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:13px;}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:13px;}
+.mb{margin-bottom:13px;}
+
+/* ── Table ── */
+.tw{overflow:auto;border-radius:11px;border:1px solid var(--border);}
+table{width:100%;border-collapse:collapse;min-width:700px;background:rgba(4,12,24,.4);}
+th,td{text-align:left;padding:9px 11px;border-bottom:1px solid rgba(255,255,255,.04);font-size:12px;vertical-align:middle;}
+th{color:var(--muted);font-weight:600;background:rgba(255,255,255,.02);position:sticky;top:0;z-index:1;font-family:var(--title);font-size:11px;letter-spacing:.4px;}
+tr:hover td{background:rgba(255,255,255,.02);}
+.up{color:var(--red);}
+.dn{color:var(--green);}
+.nu{color:var(--muted);}
+
+/* ── Trade rows ── */
+.tr-row{display:grid;grid-template-columns:80px 55px 68px 68px 50px 80px 1fr;gap:7px;padding:7px 10px;font-family:var(--mono);font-size:11.5px;border-bottom:1px solid rgba(255,255,255,.03);align-items:center;}
+.tr-hd{font-family:var(--title);font-size:10px;color:var(--muted);font-weight:700;letter-spacing:.5px;}
+
+/* ── Positions ── */
+.pos-row{
+  display:grid;grid-template-columns:90px 65px 90px 90px 90px 90px 1fr;
+  gap:10px;padding:11px;border-radius:11px;border:1px solid var(--border);
+  background:var(--p2);margin-bottom:8px;font-size:12.5px;align-items:center;
+}
+.pos-sym{font-family:var(--title);font-weight:700;font-size:14px;}
+.pos-dir{padding:3px 8px;border-radius:6px;font-size:10.5px;font-weight:700;width:fit-content;}
+.pos-long{background:rgba(255,79,79,.14);color:#ff9090;}
+.pos-short{background:rgba(27,212,158,.14);color:#7cffd8;}
+
+/* ── Log ── */
+#log-box{background:#030b15;border:1px solid var(--border);border-radius:9px;padding:9px;height:150px;overflow-y:auto;font-family:var(--mono);font-size:10.5px;line-height:1.85;scrollbar-width:thin;}
+.ll{color:var(--muted);}
+.ll.info{color:#6aabff;}
+.ll.ok{color:var(--green);}
+.ll.warn{color:var(--yellow);}
+.ll.alert{color:var(--red);}
+
+/* ── Signal items ── */
+.sig-it{padding:9px 11px;border-radius:9px;border-left:2.5px solid transparent;background:rgba(255,255,255,.02);margin-bottom:5px;font-size:11.5px;line-height:1.7;}
+.sig-it.long{border-color:var(--red);}
+.sig-it.short{border-color:var(--green);}
+
+/* ── Chart canvas ── */
+.chart-wrap{border-radius:10px;border:1px solid var(--border);background:rgba(255,255,255,.01);padding:10px;min-height:200px;position:relative;}
+canvas.ch{width:100%;display:block;}
+
+/* ── Symbol pills ── */
+.sym-pills{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:13px;}
+.sp{
+  padding:4px 11px;border-radius:7px;font-size:11.5px;font-weight:600;
+  background:var(--p2);border:1px solid var(--border);cursor:pointer;
+  transition:.15s;font-family:var(--mono);
+}
+.sp.on{background:rgba(61,143,255,.14);border-color:rgba(61,143,255,.28);color:var(--accent);}
+.sp:hover:not(.on){border-color:rgba(255,255,255,.14);}
+
+/* ── Status bar ── */
+#sb{height:26px;background:rgba(4,13,26,.96);border-top:1px solid var(--border);display:flex;align-items:center;padding:0 14px;gap:18px;font-family:var(--mono);font-size:10.5px;color:var(--muted);flex-shrink:0;}
+#sb .warn-note{margin-left:auto;color:rgba(245,180,0,.6);}
+
+/* ── Backtest chart area ── */
+.bt-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-bottom:12px;}
+.bt-k{background:var(--p2);border:1px solid var(--border);border-radius:10px;padding:11px;}
+.bt-k .lbl{font-size:10px;color:var(--muted);margin-bottom:4px;}
+.bt-k .val{font-family:var(--mono);font-size:17px;font-weight:500;}
+
+/* ── Responsive ── */
+@media(max-width:1200px){.agents{grid-template-columns:repeat(2,1fr);}.kpis{grid-template-columns:repeat(3,1fr);}}
+@media(max-width:960px){#app{grid-template-columns:1fr;}#sidebar{display:none;}.g2,.g3{grid-template-columns:1fr;}}
+@media(max-width:640px){.kpis,.agents{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<!-- Topbar -->
+<div id="topbar">
+  <div class="logo">
+    <div class="logo-mark">AI</div>
+    台股 AI 六角色交易平台
+  </div>
+  <div class="ws-dot" id="wsDot"></div>
+
+  <div class="tabs" id="tabs">
+    <button class="tab on" data-p="dashboard">🏠 儀表板</button>
+    <button class="tab" data-p="learning">📚 AI 學習</button>
+    <button class="tab" data-p="agents">🤖 六角色 AI</button>
+    <button class="tab" data-p="market">📡 即時行情</button>
+    <button class="tab" data-p="backtest">📈 回測視覺化</button>
+    <button class="tab" data-p="positions">💼 持倉管理</button>
+    <button class="tab" data-p="signals">⚡ 信號記錄</button>
+    <button class="tab" data-p="trades">📋 交易日誌</button>
+    <button class="tab" data-p="risk">🛡️ 風控</button>
+  </div>
+
+  <div class="topbar-r">
+    <input type="text" id="searchStock" placeholder="搜尋股票代碼/名稱" style="width:140px;padding:4px 8px;border-radius:6px;border:1px solid var(--border);background:var(--p2);color:var(--text);font-size:12px;">
+    <div id="searchResults" style="position:absolute;top:48px;right:200px;background:var(--p2);border:1px solid var(--border);border-radius:8px;max-height:300px;overflow-y:auto;z-index:1000;display:none;min-width:200px;"></div>
+    <span id="clock">--:--:--</span>
+    <button class="pbtn" id="themeBtn" title="切換主題">🌙</button>
+    <button class="pbtn green" id="modeBtn">紙交易</button>
+    <button class="pbtn warn" id="notifyTest">🔔 測試通知</button>
+    <button class="pbtn danger" id="forceCloseBtn">強制平倉</button>
+    <button class="pbtn danger" id="resetBtn">重置</button>
+  </div>
+</div>
+
+<!-- App -->
+<div id="app">
+
+  <!-- Sidebar -->
+  <aside id="sidebar">
+    <div class="sb-sec">
+      <div class="sb-lbl">主頁面</div>
+      <div class="nav-it on" data-p="dashboard"><span class="nav-ic">🏠</span>儀表板</div>
+      <div class="nav-it" data-p="agents"><span class="nav-ic">🤖</span>六角色 AI <span class="nbadge nb-ok" id="nb-ag">6/6</span></div>
+      <div class="nav-it" data-p="market"><span class="nav-ic">📡</span>即時行情</div>
+      <div class="nav-it" data-p="backtest"><span class="nav-ic">📈</span>回測視覺化</div>
+      <div class="nav-it" data-p="positions"><span class="nav-ic">💼</span>持倉 <span class="nbadge nb-i" id="nb-pos">0</span></div>
+      <div class="nav-it" data-p="signals"><span class="nav-ic">⚡</span>信號 <span class="nbadge nb-ok" id="nb-sig">0</span></div>
+      <div class="nav-it" data-p="trades"><span class="nav-ic">📋</span>日誌 <span class="nbadge nb-i" id="nb-tr">0</span></div>
+      <div class="nav-it" data-p="risk"><span class="nav-ic">🛡️</span>風控</div>
+      <div class="nav-it" data-p="robot"><span class="nav-ic">🤖</span>機器人設定</div>
+    </div>
+
+    <div class="sb-sec" style="margin-top:auto">
+      <div class="sb-lbl">今日統計</div>
+    </div>
+    <div id="sb-stats">
+      <div class="s-row"><span class="s-label">今日損益</span><span class="s-val" id="s-pnl">NT$ 0</span></div>
+      <div class="s-row"><span class="s-label">交易次數</span><span class="s-val" id="s-trades">0/6</span></div>
+      <div class="s-row"><span class="s-label">持倉數</span><span class="s-val" id="s-pos">0/2</span></div>
+      <div class="s-row"><span class="s-label">引擎狀態</span><span class="s-val s-ok" id="s-eng">待機</span></div>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <main id="main">
+
+<!-- ─ 儀表板 ─ -->
+    <div class="page on" id="page-dashboard">
+      <div class="g2">
+        <div class="card"><div class="ct"><span class="dot" style="background:var(--yellow)"></span>系統狀態</div>
+          <div id="sys-stat"></div>
+        </div>
+        <div class="card"><div class="ct"><span class="dot" style="background:var(--risk)"></span>風控狀態</div>
+          <div id="risk-stat2"></div>
+        </div>
+      </div>
+      <div class="card mb">
+        <div class="ct"><span class="dot" style="background:var(--accent)"></span>市場報價</div>
+        <div class="tw">
+          <table><thead><tr><th>股票</th><th>現價</th><th>漲跌</th><th>漲跌幅</th></tr></thead>
+            <tbody id="mkt-mini"></tbody></table>
+        </div>
+      </div>
+      <div class="g2 mb">
+        <div class="card"><div class="ct"><span class="dot" style="background:var(--signal)"></span>最新 AI 信號</div>
+          <div id="sig-mini"></div>
+        </div>
+        <div class="card"><div class="ct"><span class="dot" style="background:var(--exec)"></span>今日交易</div>
+          <div id="tr-mini"></div>
+        </div>
+      </div>
+      <div class="card"><div class="ct"><span class="dot" style="background:var(--green)"></span>每日新聞</div>
+        <div id="news-mini" style="max-height:150px;overflow-y:auto"></div>
+      </div>
+    </div>
+
+    <!-- ─ AI 學習系統 ─ -->
+    <div class="page" id="page-learning">
+      <div class="g2 mb">
+        <div class="card">
+          <div class="ct"><span class="dot" style="background:var(--accent)"></span>學習模式</div>
+          <div id="learn-mode" style="padding:15px">
+            <div style="display:flex;justify-content:space-between;margin-bottom:10px">
+              <span>當前模式：</span>
+              <span id="learn-mode-current" style="font-weight:bold;color:var(--green)">模擬學習中</span>
+            </div>
+            <div style="display:flex;gap:10px">
+              <button class="learn-btn" data-mode="disabled" style="padding:8px 15px;background:var(--p3);border:1px solid var(--border);border-radius:6px;cursor:pointer">關閉</button>
+              <button class="learn-btn" data-mode="offline" style="padding:8px 15px;background:var(--p3);border:1px solid var(--border);border-radius:6px;cursor:pointer">離線</button>
+              <button class="learn-btn" data-mode="paper" style="padding:8px 15px;background:var(--green);border:none;border-radius:6px;cursor:pointer;color:white">模擬</button>
+              <button class="learn-btn" data-mode="live" style="padding:8px 15px;background:var(--red);border:none;border-radius:6px;cursor:pointer;color:white">實盤</button>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="ct"><span class="dot" style="background:var(--green)"></span>學習統計</div>
+          <div id="learn-stats" style="padding:15px">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+              <div style="text-align:center;padding:10px;background:var(--p3);border-radius:6px">
+                <div style="color:var(--muted);font-size:11px">決策記錄</div>
+                <div id="learn-decisions" style="font-size:20px;font-weight:bold">0</div>
+              </div>
+              <div style="text-align:center;padding:10px;background:var(--p3);border-radius:6px">
+                <div style="color:var(--muted);font-size:11px">結果記錄</div>
+                <div id="learn-outcomes" style="font-size:20px;font-weight:bold">0</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="card mb">
+        <div class="ct"><span class="dot" style="background:var(--yellow)"></span>AI 權重與學習狀態</div>
+        <div id="learn-agents" style="padding:10px">
+          <div style="text-align:center;color:var(--muted);padding:30px">載入中...</div>
+        </div>
+      </div>
+      
+      <div class="g2">
+        <div class="card">
+          <div class="ct"><span class="dot" style="background:var(--accent)"></span>最近決策</div>
+          <div id="learn-decisions-list" style="max-height:200px;overflow-y:auto;padding:10px;font-size:11px">
+            <div style="text-align:center;color:var(--muted);padding:20px">無記錄</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="ct"><span class="dot" style="background:var(--green)"></span>最近結果</div>
+          <div id="learn-outcomes-list" style="max-height:200px;overflow-y:auto;padding:10px;font-size:11px">
+            <div style="text-align:center;color:var(--muted);padding:20px">無記錄</div>
+          </div>
+        </div>
+      </div>
+    </div>
+      <div class="agents" id="dash-agents"></div>
+      <div class="g2">
+        <div class="card"><div class="ct"><span class="dot" style="background:var(--green)"></span>系統日誌</div><div id="log-box"></div></div>
+        <div class="card"><div class="ct"><span class="dot" style="background:var(--yellow)"></span>最新信號</div><div id="dash-sigs"></div></div>
+      </div>
+    </div>
+
+    <!-- ─ 六角色詳細 ─ -->
+    <div class="page" id="page-agents">
+      <div class="sym-pills" id="ag-pills"></div>
+      <div class="agents" id="agents-full" style="grid-template-columns:repeat(2,1fr)"></div>
+    </div>
+
+    <!-- ─ 即時行情 ─ -->
+    <div class="page" id="page-market">
+      <div class="card">
+        <div class="ct"><span class="dot" style="background:var(--accent)"></span>即時報價</div>
+        <div class="tw">
+          <table>
+            <thead><tr><th>股票</th><th>現價</th><th>漲跌</th><th>漲跌幅</th><th>委買</th><th>委賣</th><th>委買量</th><th>委賣量</th><th>量</th></tr></thead>
+            <tbody id="mkt-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─ 回測視覺化 ─ -->
+    <div class="page" id="page-backtest">
+      <div class="sym-pills" id="bt-pills"></div>
+      <div class="bt-kpis" id="bt-kpis"></div>
+      <div class="g2 mb">
+        <div class="card"><div class="ct"><span class="dot" style="background:var(--accent)"></span>淨值曲線（累積損益）</div>
+          <div class="chart-wrap"><canvas class="ch" id="bt-equity" height="180"></canvas></div>
+        </div>
+        <div class="card"><div class="ct"><span class="dot" style="background:var(--yellow)"></span>分段損益分布</div>
+          <div class="chart-wrap"><canvas class="ch" id="bt-monthly" height="180"></canvas></div>
+        </div>
+      </div>
+      <div class="card"><div class="ct"><span class="dot" style="background:var(--signal)"></span>回測詳情</div><div id="bt-detail"></div></div>
+    </div>
+
+    <!-- ─ 持倉管理 ─ -->
+    <div class="page" id="page-positions">
+      <div class="card mb">
+        <div class="ct"><span class="dot" style="background:var(--red)"></span>當前持倉</div>
+        <div id="pos-list"><div class="nu" style="font-size:13px;padding:20px;text-align:center">目前無持倉</div></div>
+      </div>
+    </div>
+
+    <!-- ─ 信號記錄 ─ -->
+    <div class="page" id="page-signals">
+      <div class="card"><div class="ct"><span class="dot" style="background:var(--signal)"></span>信號歷史</div><div id="sig-list"></div></div>
+    </div>
+
+    <!-- ─ 交易日誌 ─ -->
+    <div class="page" id="page-trades">
+      <div class="card">
+        <div class="ct"><span class="dot" style="background:var(--exec)"></span>交易記錄</div>
+        <div class="tr-row tr-hd"><span>股票</span><span>方向</span><span>進場</span><span>出場</span><span>張</span><span>損益</span><span>原因</span></div>
+        <div id="tr-list"></div>
+      </div>
+    </div>
+
+    <!-- ─ 風控 ─ -->
+    <div class="page" id="page-risk">
+      <div class="g2">
+        <div class="card"><div class="ct"><span class="dot" style="background:var(--risk)"></span>風控參數</div><div id="risk-params"></div></div>
+        <div class="card"><div class="ct"><span class="dot" style="background:var(--yellow)"></span>今日狀態</div><div id="risk-stat"></div></div>
+        <div class="card"><div class="ct"><span class="dot" style="background:var(--signal)"></span>機器人交易設定</div>
+          <div id="bot-settings" style="padding:10px;font-size:12px">
+            <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)">
+              <span>🤖 自動交易</span>
+              <label style="display:flex;align-items:center;gap:8px">
+                <input type="checkbox" id="autoTradeToggle" style="width:18px;height:18px">
+                <span id="bot-status" style="font-weight:bold;color:var(--green)">關閉</span>
+              </label>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)">
+              <span>📊 交易模式</span>
+              <span id="bot-mode">紙交易</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)">
+              <span>💰 可用資金</span>
+              <span style="font-family:var(--mono)">NT$ <input type="number" id="capitalInput" value="500000" style="width:100px;padding:2px 5px;border-radius:4px;border:1px solid var(--border);background:var(--p3);color:var(--text)"></span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)">
+              <span>📈 今日損益</span>
+              <span style="font-family:var(--mono)" id="bot-pnl">NT$ 0</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)">
+              <span>🔢 今日交易</span>
+              <span style="font-family:var(--mono)" id="bot-trades">0 筆</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)">
+              <span>💼 持倉數</span>
+              <span style="font-family:var(--mono)" id="bot-positions">0 個</span>
+            </div>
+            <div style="margin-top:15px;display:flex;gap:10px">
+              <button id="saveSettingsBtn" style="flex:1;padding:10px;background:var(--accent);color:white;border:none;border-radius:6px;cursor:pointer;font-weight:bold">儲存設定</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─ 機器人設定 ─ -->
+    <div class="page" id="page-robot">
+      <div class="g2">
+        <div class="card"><div class="ct"><span class="dot" style="background:var(--green)"></span>🤖 自動交易</div>
+          <div style="padding:15px">
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:12px;background:var(--p3);border-radius:8px;margin-bottom:15px">
+              <div>
+                <div style="font-weight:bold;font-size:14px">機器人狀態</div>
+                <div style="font-size:12px;color:var(--muted)">自動根據 AI 信號下單交易</div>
+              </div>
+              <label style="display:flex;align-items:center;gap:10px">
+                <span style="font-size:12px" id="autoStatusLabel">現在為: 關閉</span>
+                <input type="checkbox" id="robotToggle" style="width:24px;height:24px">
+              </label>
+            </div>
+            
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:12px;background:var(--p3);border-radius:8px;margin-bottom:15px">
+              <div>
+                <div style="font-weight:bold;font-size:14px">📊 交易模式</div>
+                <div style="font-size:12px;color:var(--muted)">紙交易=模擬交易不扣款</div>
+              </div>
+              <button id="modeBtn2" style="padding:8px 16px;background:var(--accent);color:white;border:none;border-radius:6px;cursor:pointer">現在為: 紙交易</button>
+            </div>
+
+            <div style="font-weight:bold;margin:20px 0 10px">💰 資金設定</div>
+            <div style="padding:12px;background:var(--p3);border-radius:8px">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+                <span>可用資金</span>
+                <input type="number" id="capitalInput2" value="500000" style="width:120px;padding:5px;border-radius:4px;border:1px solid var(--border);background:var(--p2);color:var(--text)">
+              </div>
+            </div>
+
+            <div style="font-weight:bold;margin:20px 0 10px">🛡️ 風控參數</div>
+            <div style="padding:12px;background:var(--p3);border-radius:8px">
+              <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)">
+                <span>單日最大虧損</span>
+                <input type="number" id="maxDailyLoss" value="5000" style="width:100px;padding:5px;border-radius:4px;border:1px solid var(--border);background:var(--p2);color:var(--text)"> 元
+              </div>
+              <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)">
+                <span>單筆最大虧損</span>
+                <input type="number" id="maxSingleLoss" value="1500" style="width:100px;padding:5px;border-radius:4px;border:1px solid var(--border);background:var(--p2);color:var(--text)"> 元
+              </div>
+              <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)">
+                <span>單日最多交易</span>
+                <input type="number" id="maxTrades" value="6" style="width:100px;padding:5px;border-radius:4px;border:1px solid var(--border);background:var(--p2);color:var(--text)"> 筆
+              </div>
+              <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)">
+                <span>最大同時持倉</span>
+                <input type="number" id="maxPositions" value="2" style="width:100px;padding:5px;border-radius:4px;border:1px solid var(--border);background:var(--p2);color:var(--text)"> 個
+              </div>
+              <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)">
+                <span>最低信心度</span>
+                <input type="number" id="minConfidence" value="65" style="width:100px;padding:5px;border-radius:4px;border:1px solid var(--border);background:var(--p2);color:var(--text)"> %
+              </div>
+              <div style="display:flex;justify-content:space-between;padding:8px 0">
+                <span>交易時段</span>
+                <div style="display:flex;align-items:center;gap:5px">
+                  <input type="time" id="tradeStart" value="09:10" style="width:100px;padding:5px;border-radius:4px;border:1px solid var(--border);background:var(--p2);color:var(--text)">
+                  <span>~</span>
+                  <input type="time" id="tradeEnd" value="13:00" style="width:100px;padding:5px;border-radius:4px;border:1px solid var(--border);background:var(--p2);color:var(--text)">
+                </div>
+              </div>
+            </div>
+
+            <button id="saveRobotBtn" style="width:100%;padding:15px;margin-top:20px;background:linear-gradient(135deg,var(--green),var(--accent));color:white;border:none;border-radius:8px;cursor:pointer;font-size:16px;font-weight:bold">儲存設定</button>
+            
+            <div style="margin-top:15px;padding:15px;background:var(--p3);border-radius:8px;text-align:center">
+              <div style="color:var(--muted);font-size:12px">系統會自動根據 AI 信號交易並記錄</div>
+              <div style="color:var(--accent);font-size:11px;margin-top:5px">設定僅對本次 session 有效，重啟後需重新設定</div>
+            </div>
+            
+            <div style="margin-top:15px">
+              <button id="testTradeBtn" style="width:100%;padding:12px;background:var(--yellow);color:#000;border:none;border-radius:8px;cursor:pointer;font-weight:bold">🧪 測試交易（模擬一筆）</button>
+            </div>
+            
+            <div style="margin-top:15px">
+              <button id="stopRobotBtn" style="width:100%;padding:12px;background:var(--red);color:white;border:none;border-radius:8px;cursor:pointer;font-weight:bold">⏹ 立即停止自動交易</button>
+            </div>
+
+            <div style="margin-top:25px;border-top:1px solid var(--border);padding-top:15px">
+              <div style="font-weight:bold;margin-bottom:10px">📊 歷史模擬交易</div>
+              
+              <div style="margin-bottom:15px">
+                <label style="display:block;margin-bottom:5px;font-size:12px;color:var(--muted)">選擇日期：</label>
+                <select id="simDate" style="width:100%;padding:10px;border-radius:4px;background:var(--p2);color:var(--text);border:1px solid var(--accent)">
+                  <option value="">請選擇...</option>
+                </select>
+              </div>
+              
+              <button type="button" id="runSimBtn" style="width:100%;padding:15px;background:linear-gradient(135deg,var(--accent),#5a9fff);color:white;border:none;border-radius:8px;cursor:pointer;font-size:16px;font-weight:bold">▶️ 執行模擬</button>
+              
+              <div style="margin-top:15px;text-align:center">
+                <button type="button" onclick="window.openSimModal('2026-04-10')" style="padding:10px;background:var(--p3);color:var(--muted);border:1px solid var(--border);border-radius:4px;cursor:pointer">直接測試 04/10</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="card"><div class="ct"><span class="dot" style="background:var(--yellow)"></span>📈 今日統計</div>
+          <div id="robot-stats" style="padding:15px">
+            <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border)">
+              <span>今日損益</span>
+              <span id="todayPnl" style="font-weight:bold;font-size:18px;color:var(--green)">NT$ 0</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border)">
+              <span>交易次數</span>
+              <span id="todayTrades">0 筆</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border)">
+              <span>持倉數</span>
+              <span id="todayPositions">0 個</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:10px 0">
+              <span>引擎狀態</span>
+              <span id="engineStatus" style="color:var(--green)">運行中</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- 模擬交易視窗 -->
+<div id="simModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.95);z-index:9999;overflow:auto">
+  <div style="max-width:1500px;margin:10px auto;padding:15px;height:calc(100vh - 20px)">
+    
+    <!-- 頂部控制列 -->
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;flex-wrap:wrap;gap:10px">
+      <div>
+        <h2 style="margin:0;color:var(--text);display:inline-block">📊 歷史模擬交易</h2>
+        <span id="simDateLabel" style="margin-left:10px;color:var(--accent);font-weight:bold"></span>
+      </div>
+      
+      <div style="display:flex;gap:10px;align-items:center">
+        <div style="display:flex;align-items:center;gap:8px;background:var(--p2);padding:8px 12px;border-radius:6px">
+          <span style="color:var(--muted);font-size:12px">速度：</span>
+          <input type="range" id="simSpeed" min="50" max="2000" value="500" style="width:80px">
+          <span id="simSpeedVal" style="font-size:12px;color:var(--accent);width:40px">正常</span>
+        </div>
+        
+        <button id="startSimBtn" style="padding:10px 20px;background:var(--green);color:white;border:none;border-radius:6px;cursor:pointer;font-size:14px;font-weight:bold">▶️ 開始</button>
+        <button id="pauseSimBtn" style="padding:10px 20px;background:var(--yellow);color:#000;border:none;border-radius:6px;cursor:pointer;font-size:14px" disabled>⏸</button>
+        <button id="resetSimBtn" style="padding:10px 20px;background:var(--accent);color:white;border:none;border-radius:6px;cursor:pointer;font-size:14px" disabled>🔄</button>
+        <button onclick="closeSimModal()" style="padding:10px 20px;background:var(--red);color:white;border:none;border-radius:6px;cursor:pointer;font-size:14px">✕</button>
+      </div>
+    </div>
+    
+    <!-- 中間區域 -->
+    <div style="display:grid;grid-template-columns:1fr 400px;gap:15px;height:calc(100% - 120px)">
+      
+      <!-- 左側：報價五檔 + 圖表 -->
+      <div style="display:flex;flex-direction:column;gap:15px">
+        
+        <!-- 五檔報價 -->
+        <div style="background:var(--p2);padding:12px;border-radius:10px">
+          <div style="font-weight:bold;margin-bottom:10px;color:var(--accent)">📈 五檔報價 (即時)</div>
+          <div id="simQuoteTable" style="font-size:12px">
+            <div style="display:grid;grid-template-columns:80px repeat(5,1fr);gap:5px;color:var(--muted);margin-bottom:5px">
+              <span>股票</span><span>價格</span><span>漲跌</span><span>MA5</span><span>MA20</span><span>RSI</span>
+            </div>
+            <div id="simQuotes"></div>
+          </div>
+        </div>
+        
+        <!-- 圖表 -->
+        <div style="background:var(--p2);padding:10px;border-radius:10px;flex:1;display:flex;flex-direction:column">
+          <div style="display:flex;justify-content:space-between;margin-bottom:10px">
+            <span id="simSymbol" style="color:var(--text);font-weight:bold">選擇股票</span>
+            <span id="simCurrentInfo" style="color:var(--accent)">--</span>
+          </div>
+          <canvas id="simChart" style="flex:1"></canvas>
+          
+          <!-- 進度條 -->
+          <div style="margin-top:10px">
+            <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--muted)">
+              <span id="simTime">K棒: 0</span>
+              <span id="simProgress">0/60</span>
+            </div>
+            <div style="height:6px;background:var(--p3);border-radius:3px;overflow:hidden">
+              <div id="simProgressBar" style="height:100%;background:var(--accent);width:0%;transition:width 0.1s"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- 右側：交易記錄+統計 -->
+      <div style="display:flex;flex-direction:column;gap:15px">
+        
+        <!-- 統計 -->
+        <div style="background:var(--p2);padding:12px;border-radius:10px">
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">
+            <div style="text-align:center;padding:8px;background:var(--p3);border-radius:6px">
+              <div style="color:var(--muted);font-size:10px">總損益</div>
+              <div id="simTotalPnl" style="font-size:18px;font-weight:bold;color:var(--green)">0</div>
+            </div>
+            <div style="text-align:center;padding:8px;background:var(--p3);border-radius:6px">
+              <div style="color:var(--muted);font-size:10px">交易</div>
+              <div id="simTotalTrades" style="font-size:18px;font-weight:bold">0</div>
+            </div>
+            <div style="text-align:center;padding:8px;background:var(--p3);border-radius:6px">
+              <div style="color:var(--muted);font-size:10px">勝率</div>
+              <div id="simWinRate" style="font-size:18px;font-weight:bold">0%</div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- 持倉狀態 -->
+        <div id="simPositionBox" style="background:var(--p2);padding:12px;border-radius:10px;display:none">
+          <div style="color:var(--muted);font-size:11px;margin-bottom:5px">當前持倉</div>
+          <div id="simPositionInfo" style="font-size:14px;font-weight:bold">無</div>
+        </div>
+        
+        <!-- 交易邏輯說明 -->
+        <div style="background:var(--p2);padding:12px;border-radius:10px">
+          <div style="font-weight:bold;margin-bottom:8px;color:var(--accent)">📋 交易邏輯</div>
+          <div style="font-size:11px;color:var(--muted);line-height:1.6">
+            <div>🟢 <b>買入</b>：MA5 > MA20*1.002 且 RSI&lt;70</div>
+            <div>🔴 <b>賣出</b>：MA5&lt;MA20*0.998 或 RSI&gt;30 或 持有&gt;30根</div>
+            <div>📊 <b>部位</b>：最多2檔，每檔1張</div>
+          </div>
+        </div>
+        
+        <!-- 交易記錄 -->
+        <div style="background:var(--p2);padding:12px;border-radius:10px;flex:1;overflow-y:auto">
+          <div style="font-weight:bold;margin-bottom:10px;color:var(--accent)">📝 交易記錄</div>
+          <div id="simTrades" style="font-size:12px"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Status bar -->
+<div id="sb">
+  <span>🔌 <span id="sb-ws">未連線</span></span>
+  <span>⏱ <span id="sb-ts">--</span></span>
+  <span>🤖 <span id="sb-eng2">等待中</span></span>
+  <span>📊 <span id="sb-mode">--</span></span>
+  <span class="warn-note">⚠️ 本平台為輔助工具，不構成投資建議</span>
+</div>
+
+<script>
+(() => {
+'use strict';
+
+const WS_URL  = 'ws://localhost:8765/ws';
+const DEFAULT_SYMS  = ['2330','2454','2382','3017','2317','2308'];
+const DEFAULT_NAMES = {2330:'台積電',2454:'聯發科',2382:'廣達',3017:'奇鋐',2317:'鴻海',2308:'台達電'};
+
+const S = {
+  ws: null, connected: false,
+  last: null, selSym: DEFAULT_SYMS[0], btSym: DEFAULT_SYMS[0],
+  sigs: [], sigCnt: 0, prevPx: {},
+  _lastSigKey: '', logLines: [],
+  detailSyms: [...DEFAULT_SYMS],
+  names: {...DEFAULT_NAMES},
+};
+
+function nameOf(sym) { return S.names?.[sym] || ''; }
+function getDetailSyms(d) {
+  const arr = d?.detail_symbols?.length ? d.detail_symbols : (S.detailSyms?.length ? S.detailSyms : DEFAULT_SYMS);
+  return arr.filter(Boolean);
+}
+function syncMeta(d) {
+  if (!d) return;
+  if (d.names) Object.assign(S.names, d.names);
+  if (Array.isArray(d.market_board)) {
+    d.market_board.forEach(r => { if (r?.symbol && r?.name) S.names[r.symbol] = r.name; });
+  }
+  const next = getDetailSyms(d);
+  const changed = JSON.stringify(next) !== JSON.stringify(S.detailSyms);
+  S.detailSyms = next;
+  if (!S.detailSyms.includes(S.selSym)) S.selSym = S.detailSyms[0] || DEFAULT_SYMS[0];
+  if (!S.detailSyms.includes(S.btSym)) S.btSym = S.detailSyms[0] || DEFAULT_SYMS[0];
+  if (changed) {
+    const ag = E('ag-pills'); if (ag) ag._built = false;
+    const bt = E('bt-pills'); if (bt) bt._built = false;
+  }
+}
+
+// ── 頁籤 ──
+function goPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('on'));
+  document.querySelectorAll('.tab,.nav-it').forEach(b => b.classList.remove('on'));
+  const el = document.getElementById('page-' + id);
+  if (el) el.classList.add('on');
+  document.querySelectorAll(`[data-p="${id}"]`).forEach(b => b.classList.add('on'));
+  
+  // 載入機器人設定頁面時載入日期
+  if (id === 'robot') {
+    loadSettings();
+    loadSimDates();
+  }
+}
+document.querySelectorAll('[data-p]').forEach(el => el.addEventListener('click', () => goPage(el.dataset.p)));
+
+// ── 時鐘 ──
+setInterval(() => { document.getElementById('clock').textContent = new Date().toLocaleTimeString('zh-TW'); }, 1000);
+
+// ── WebSocket ──
+function wsConnect() {
+  const ws = new WebSocket(WS_URL);
+  S.ws = ws;
+  ws.onopen = () => {
+    S.connected = true;
+    if (S.hbTimer) clearInterval(S.hbTimer);
+    S.hbTimer = setInterval(() => wsSend({cmd:'ping'}), 15000);
+    document.getElementById('wsDot').className = 'ws-dot on';
+    document.getElementById('sb-ws').textContent = '已連線';
+    addLog('WebSocket 連線成功', 'ok');
+  };
+  ws.onmessage = e => {
+    try { S.last = JSON.parse(e.data); render(S.last); document.getElementById('sb-ts').textContent = S.last.timestamp; loadSettings(); }
+    catch { addLog('資料解析錯誤', 'warn'); }
+  };
+  ws.onclose = () => {
+    S.connected = false;
+    if (S.hbTimer) { clearInterval(S.hbTimer); S.hbTimer = null; }
+    document.getElementById('wsDot').className = 'ws-dot err';
+    document.getElementById('sb-ws').textContent = '斷線，5s 重連…';
+    addLog('WebSocket 斷線', 'warn');
+    setTimeout(wsConnect, 5000);
+  };
+  ws.onerror = () => addLog('無法連線後端（請啟動 server_v2.py）', 'alert');
+}
+function wsSend(obj) { if (S.ws?.readyState === 1) S.ws.send(JSON.stringify(obj)); }
+
+// ── 主渲染 ──
+function render(d) {
+  syncMeta(d);
+  renderKPIs(d); renderSideStats(d);
+  renderAgents(d, 'dash-agents', true);
+  renderAgents(d, 'agents-full', false);
+  renderMarket(d); renderPositions(d); renderTrades(d);
+  renderSignalHistory(d); renderRisk(d); renderRobot(d);
+  renderBacktest(d);
+  updateBadges(d);
+  const eng = d.trading_active ? '🟢 盤中運行' : (d.is_halted ? '🔴 停機' : '🟡 盤外待機');
+  document.getElementById('sb-eng2').textContent = eng;
+  document.getElementById('sb-mode').textContent = d.paper_trade === false ? '真實交易' : '紙交易模式';
+}
+
+// ── KPI ──
+function renderKPIs(d) {
+  const pnl = d.daily_pnl || 0;
+  E('k-pnl').textContent = `NT$ ${fmt(pnl)}`;
+  E('k-pnl').className = 'kpi-v ' + (pnl > 0 ? 'up' : pnl < 0 ? 'dn' : '');
+  E('k-trades').textContent = d.daily_trades || 0;
+  E('k-pos').textContent    = Object.keys(d.positions || {}).length;
+  E('k-sig').textContent    = S.sigCnt;
+  const eng = d.trading_active ? '🟢 運行中' : (d.is_halted ? '🔴 停機' : '🟡 待機');
+  E('k-eng').textContent = eng;
+}
+
+function renderSideStats(d) {
+  const pnl = d.daily_pnl || 0;
+  E('s-pnl').textContent = `NT$ ${fmt(pnl)}`;
+  E('s-pnl').className = 's-val ' + (pnl > 0 ? 's-pos' : pnl < 0 ? 's-neg' : '');
+  E('s-trades').textContent = `${d.daily_trades || 0}/6`;
+  E('s-pos').textContent    = `${Object.keys(d.positions || {}).length}/2`;
+  E('s-eng').textContent    = d.is_halted ? '🔴 停機' : d.trading_active ? '🟢 運行' : '🟡 待機';
+  E('s-eng').className = 's-val ' + (d.is_halted ? 's-neg' : 's-ok');
+}
+
+// ── 六角色 ──
+const DEFS = [
+  {key:'quant',  cls:'quant',  lbl:'量化研究員', ic:'🔬', desc:'Alpha 因子發現'},
+  {key:'back',   cls:'back',   lbl:'回測工程師', ic:'📊', desc:'歷史績效驗證'},
+  {key:'risk',   cls:'risk',   lbl:'風控官',     ic:'🛡️', desc:'限額與風險管理'},
+  {key:'signal', cls:'signal', lbl:'信號工程師', ic:'⚡', desc:'技術指標管線'},
+  {key:'exec',   cls:'exec',   lbl:'執行工程師', ic:'⚙️', desc:'委託下單執行'},
+  {key:'market', cls:'market', lbl:'市場分析師', ic:'🔭', desc:'行情異常偵測'},
+];
+
+function getAg(d, key, sym) {
+  const a = d.agents || {};
+  const keyMap = {'back': 'backtest', 'quant': 'quant', 'signal': 'signal', 'market': 'market'};
+  const actualKey = keyMap[key] || key;
+  if (key === 'risk')   return a['risk'];
+  if (key === 'exec')   return a['execution'];
+  if (key === 'market') return a[`market_${sym}`];
+  return a[`${actualKey}_${sym}`] || a[actualKey];
+}
+
+const STL = {ok:'st-ok',warn:'st-w',alert:'st-a',idle:'st-i'};
+const STN = {ok:'正常',warn:'注意',alert:'警示',idle:'待機'};
+
+function renderAgents(d, cid, compact) {
+  const c = E(cid); if (!c) return;
+  const sym = S.selSym;
+  c.innerHTML = DEFS.map(def => {
+    const rep = getAg(d, def.key, sym);
+    if (!rep) return `<div class="ag ${def.cls}"><div class="ag-hd"><span class="ag-ic">${def.ic}</span><span class="ag-nm">${def.lbl}</span><span class="ag-st st-i">待機</span></div><div class="ag-sum" style="color:var(--muted)">等待連線…</div></div>`;
+    const lines = (rep.details || []).slice(0, compact ? 2 : 6);
+    const dHTML = lines.map(l => {
+      const c2 = l.includes('✅')||l.includes('🟢') ? 'style="color:var(--green)"'
+               : l.includes('⚠️')||l.includes('🔴')||l.includes('❌') ? 'style="color:var(--red)"'
+               : l.includes('⚡')||l.includes('📈') ? 'style="color:var(--yellow)"' : '';
+      return `<div class="ag-line" ${c2}>${l}</div>`;
+    }).join('');
+
+    if (def.key === 'signal' && rep.status === 'ok' && rep.summary?.includes('信號'))
+      detectSig(rep, sym);
+
+    return `<div class="ag ${def.cls}">
+      <div class="ag-hd">
+        <span class="ag-ic">${rep.icon||def.ic}</span>
+        <span class="ag-nm">${def.lbl}</span>
+        <span class="ag-st ${STL[rep.status]||'st-i'}">${STN[rep.status]||'待機'}</span>
+      </div>
+      <div class="ag-sum">${rep.summary||''}</div>
+      <div class="ag-det">${dHTML}</div>
+      ${!compact ? `<div class="ag-ts">${rep.timestamp||''}</div>` : ''}
+    </div>`;
+  }).join('');
+}
+
+function detectSig(rep, sym) {
+  const key = rep.summary + rep.timestamp;
+  if (S._lastSigKey === key) return;
+  S._lastSigKey = key;
+  const dir = rep.summary.includes('多頭') ? 'long' : 'short';
+  S.sigs.unshift({sym, dir, summary: rep.summary, time: rep.timestamp, details: rep.details});
+  S.sigCnt++;
+  if (S.sigs.length > 60) S.sigs.pop();
+  addLog(`信號觸發：${rep.summary}`, dir === 'long' ? 'ok' : 'alert');
+}
+
+// ── 即時行情 ──
+function renderMarket(d) {
+  const ticks = d.ticks || {};
+  const board = Array.isArray(d.market_board) && d.market_board.length
+    ? d.market_board
+    : getDetailSyms(d).map(sym => {
+        const t = ticks[sym];
+        if (!t) return null;
+        const hasPrice = t.price != null && Number.isFinite(Number(t.price));
+        const prev = hasPrice ? (S.prevPx[sym] || Number(t.price)) : null;
+        const chg = hasPrice && prev != null ? Number(t.price) - prev : null;
+        const pct = hasPrice && prev ? (chg / prev * 100) : null;
+        return {
+          symbol: sym,
+          name: nameOf(sym),
+          price: hasPrice ? Number(t.price) : null,
+          change: chg,
+          change_pct: pct,
+          bid: t.bid,
+          ask: t.ask,
+          volume: t.volume,
+          bid_vol: t.bid_vol,
+          ask_vol: t.ask_vol,
+          stale: !!t.stale,
+          source: t.source || '',
+        };
+      }).filter(Boolean);
+
+  E('mkt-body').innerHTML = board.map(row => {
+    const sym = row.symbol;
+    const hasPrice = row.price != null && Number.isFinite(Number(row.price));
+    const price = hasPrice ? Number(row.price) : null;
+    const prev = hasPrice ? (S.prevPx[sym] || price) : null;
+    const chg = hasPrice ? (Number.isFinite(row.change) ? Number(row.change) : (price - prev)) : null;
+    const pct = hasPrice ? (Number.isFinite(row.change_pct) ? Number(row.change_pct) : (prev ? (chg / prev * 100) : 0)) : null;
+    const cls = !hasPrice ? 'nu' : chg > 0 ? 'up' : chg < 0 ? 'dn' : 'nu';
+    if (hasPrice && !row.stale) S.prevPx[sym] = price;
+    const sourceLabel = row.source === 'twse' ? 'TWSE'
+      : row.source === 'finmind' ? 'FinMind'
+      : row.source === 'cached_real' ? '暫用前次真實價'
+      : row.source === 'unavailable' ? '資料不可用'
+      : (row.source || '');
+    const nameExtra = sourceLabel ? ` · ${sourceLabel}` : '';
+    return `<tr>
+      <td><strong>${sym}</strong> <span class="nu" style="font-size:10px">${row.name || nameOf(sym)}${nameExtra}</span></td>
+      <td class="${cls}" style="font-weight:600;font-family:var(--mono)">${hasPrice ? price.toFixed(2) : '-'}</td>
+      <td class="${cls}" style="font-family:var(--mono)">${hasPrice && chg != null ? `${chg>=0?'+':''}${chg.toFixed(2)}` : '-'}</td>
+      <td class="${cls}">${hasPrice && pct != null ? `${pct>=0?'+':''}${pct.toFixed(2)}%` : '-'}</td>
+      <td class="dn" style="font-family:var(--mono)">${row.bid!=null ? Number(row.bid).toFixed(2) : '-'}</td>
+      <td class="up" style="font-family:var(--mono)">${row.ask!=null ? Number(row.ask).toFixed(2) : '-'}</td>
+      <td class="dn">${(row.bid_vol||0).toLocaleString()}</td>
+      <td class="up">${(row.ask_vol||0).toLocaleString()}</td>
+      <td class="nu">${(row.volume||0).toLocaleString()}</td>
+    </tr>`;
+  }).join('');
+}
+
+// ── 回測視覺化 ──
+function renderBacktest(d) {
+  const cache = d.backtest || {};
+  const sym   = S.btSym;
+  const bt    = cache[sym];
+
+  // 股票選擇 pills
+  const btp = E('bt-pills');
+  if (btp && !btp._built) {
+    btp.innerHTML = getDetailSyms(d).map(s =>
+      `<div class="sp ${s===S.btSym?'on':''}" data-bt="${s}">${s} ${nameOf(s)}</div>`
+    ).join('');
+    btp.querySelectorAll('[data-bt]').forEach(el => el.addEventListener('click', () => {
+      S.btSym = el.dataset.bt;
+      btp.querySelectorAll('.sp').forEach(e => e.classList.toggle('on', e.dataset.bt === S.btSym));
+      if (S.last) renderBacktest(S.last);
+    }));
+    btp._built = true;
+  }
+
+  if (!bt) {
+    E('bt-kpis').innerHTML = '<div class="nu" style="padding:20px;font-size:13px">等待回測資料…（K 棒累積中）</div>';
+    E('bt-detail').innerHTML = '';
+    return;
+  }
+
+  // KPI
+  const wc = bt.win_rate >= 55 ? 'up' : 'dn';
+  const pc = bt.profit_factor >= 1.5 ? 'up' : 'dn';
+  E('bt-kpis').innerHTML = `
+    <div class="bt-k"><div class="lbl">勝率</div><div class="val ${wc}">${bt.win_rate}%</div></div>
+    <div class="bt-k"><div class="lbl">盈虧比</div><div class="val ${pc}">${bt.profit_factor}</div></div>
+    <div class="bt-k"><div class="lbl">最大回撤</div><div class="val dn">${bt.max_drawdown}</div></div>
+    <div class="bt-k"><div class="lbl">總損益</div><div class="val ${bt.total_pnl>=0?'up':'dn'}">${bt.total_pnl>=0?'+':''}${bt.total_pnl}</div></div>
+  `;
+
+  // 淨值曲線
+  drawEquity(bt.equity_curve || []);
+  drawMonthly(bt.monthly_pnl || []);
+
+  // 詳情
+  E('bt-detail').innerHTML = `
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;font-size:12px;font-family:var(--mono)">
+      <div><span class="nu">總交易筆數：</span>${bt.total_trades}</div>
+      <div><span class="nu">平均獲利：</span><span class="up">+${bt.avg_win}</span></div>
+      <div><span class="nu">平均虧損：</span><span class="dn">${bt.avg_loss}</span></div>
+    </div>`;
+}
+
+function drawEquity(curve) {
+  const canvas = E('bt-equity'); if (!canvas || !curve.length) return;
+  const ctx = canvas.getContext('2d');
+  canvas.width  = canvas.offsetWidth  || 400;
+  canvas.height = canvas.offsetHeight || 180;
+  const W = canvas.width, H = canvas.height, PAD = 28;
+  ctx.clearRect(0,0,W,H);
+  const vals = curve.map(p => p.cum_pnl);
+  const mn = Math.min(0, ...vals), mx = Math.max(0, ...vals);
+  const rng = mx - mn || 1;
+  const px = (i) => PAD + (i / Math.max(vals.length-1,1)) * (W - PAD*2);
+  const py = (v) => H - PAD - ((v - mn) / rng) * (H - PAD*2);
+  // grid line at 0
+  const y0 = py(0);
+  ctx.strokeStyle = 'rgba(255,255,255,.07)'; ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(PAD, y0); ctx.lineTo(W-PAD, y0); ctx.stroke();
+  // gradient fill
+  const grad = ctx.createLinearGradient(0,0,0,H);
+  grad.addColorStop(0, 'rgba(61,143,255,.28)');
+  grad.addColorStop(1, 'rgba(61,143,255,.0)');
+  ctx.beginPath();
+  vals.forEach((v,i) => i===0 ? ctx.moveTo(px(i),py(v)) : ctx.lineTo(px(i),py(v)));
+  ctx.lineTo(px(vals.length-1), H-PAD); ctx.lineTo(px(0), H-PAD); ctx.closePath();
+  ctx.fillStyle = grad; ctx.fill();
+  // line
+  ctx.beginPath(); ctx.strokeStyle = '#3d8fff'; ctx.lineWidth = 2;
+  vals.forEach((v,i) => i===0 ? ctx.moveTo(px(i),py(v)) : ctx.lineTo(px(i),py(v)));
+  ctx.stroke();
+  // labels
+  ctx.fillStyle = 'rgba(255,255,255,.4)'; ctx.font = '10px DM Mono,monospace'; ctx.textAlign='right';
+  ctx.fillText(mx.toFixed(1), W-PAD+2, py(mx)+4);
+  ctx.fillText(mn.toFixed(1), W-PAD+2, py(mn)+4);
+}
+
+function drawMonthly(months) {
+  const canvas = E('bt-monthly'); if (!canvas || !months.length) return;
+  const ctx = canvas.getContext('2d');
+  canvas.width  = canvas.offsetWidth  || 400;
+  canvas.height = canvas.offsetHeight || 180;
+  const W = canvas.width, H = canvas.height, PAD = 30;
+  ctx.clearRect(0,0,W,H);
+  const vals = months.map(m => m.pnl);
+  const mx   = Math.max(...vals.map(Math.abs), 1);
+  const bw   = (W - PAD*2) / vals.length - 6;
+  vals.forEach((v, i) => {
+    const x  = PAD + i * ((W-PAD*2)/vals.length) + 3;
+    const bh = Math.abs(v) / mx * (H - PAD*2 - 10);
+    const y  = v >= 0 ? H - PAD - bh : H - PAD;
+    ctx.fillStyle = v >= 0 ? 'rgba(255,79,79,.7)' : 'rgba(27,212,158,.7)';
+    ctx.beginPath();
+    ctx.roundRect ? ctx.roundRect(x, y, bw, bh, 3) : ctx.rect(x, y, bw, bh);
+    ctx.fill();
+    ctx.fillStyle='rgba(255,255,255,.5)'; ctx.font='10px DM Mono,monospace'; ctx.textAlign='center';
+    ctx.fillText(months[i].month, x + bw/2, H - 6);
+    ctx.fillText((v>=0?'+':'')+v.toFixed(1), x + bw/2, v>=0 ? y-3 : y+bh+12);
+  });
+}
+
+// ── 持倉 ──
+function renderPositions(d) {
+  const pos = d.positions || {}, ticks = d.ticks || {};
+  const keys = Object.keys(pos);
+  E('nb-pos').textContent = keys.length;
+  E('nb-pos').className = `nbadge ${keys.length > 0 ? 'nb-w' : 'nb-i'}`;
+
+  const list = E('pos-list'); if (!list) return;
+  if (!keys.length) { list.innerHTML = '<div class="nu" style="font-size:13px;padding:20px;text-align:center">目前無持倉</div>'; return; }
+  list.innerHTML = keys.map(sym => {
+    const p = pos[sym], t = ticks[sym];
+    const hasPrice = t && t.price != null && Number.isFinite(Number(t.price)) && !t.stale;
+    const price = hasPrice ? Number(t.price) : null;
+    const mult  = p.direction === 'long' ? 1 : -1;
+    const upnl  = hasPrice ? (price - p.entry) * mult * (p.lots||1) * 1000 : null;
+    const cls   = upnl == null ? 'nu' : (upnl >= 0 ? 'up' : 'dn');
+    const sourceLabel = !t ? '資料不可用' : (t.source === 'twse' ? 'TWSE' : t.source === 'finmind' ? 'FinMind' : t.source === 'cached_real' ? '暫用前次真實價' : '資料不可用');
+    return `<div class="pos-row">
+      <div><div class="pos-sym">${sym}</div><div class="nu" style="font-size:10px">${nameOf(sym)} · ${sourceLabel}</div></div>
+      <div><span class="pos-dir ${p.direction==='long'?'pos-long':'pos-short'}">${p.direction==='long'?'多單':'空單'}</span></div>
+      <div><div class="nu" style="font-size:10px">成本</div><div style="font-family:var(--mono)">${p.entry?.toFixed(2)||'-'}</div></div>
+      <div><div class="nu" style="font-size:10px">止損</div><div class="dn" style="font-family:var(--mono)">${p.stop?.toFixed(2)||'-'}</div></div>
+      <div><div class="nu" style="font-size:10px">目標</div><div class="up" style="font-family:var(--mono)">${p.t2?.toFixed(2)||'-'}</div></div>
+      <div><div class="nu" style="font-size:10px">現價</div><div class="${cls}" style="font-family:var(--mono)">${hasPrice ? price.toFixed(2) : '-'}</div></div>
+      <div><div class="nu" style="font-size:10px">未實現損益</div><div class="${cls}" style="font-family:var(--mono);font-weight:700;font-size:15px">${upnl == null ? '-' : `${upnl>=0?'+':''}${Math.round(upnl).toLocaleString()}`}</div></div>
+    </div>`;
+  }).join('');
+}
+
+// ── 交易日誌 ──
+function renderTrades(d) {
+  const trades = d.trades_log || [];
+  E('nb-tr').textContent = trades.length;
+  const list = E('tr-list'); if (!list) return;
+  if (!trades.length) { list.innerHTML = '<div class="nu" style="font-size:13px;padding:14px;text-align:center">尚無記錄</div>'; return; }
+  list.innerHTML = [...trades].reverse().map(t => {
+    const cls = t.pnl >= 0 ? 'up' : 'dn';
+    return `<div class="tr-row">
+      <span>${t.symbol} <span class="nu" style="font-size:9.5px">${nameOf(t.symbol)}</span></span>
+      <span class="${t.direction?.includes('long')?'up':'dn'}">${t.direction?.includes('long')?'多':'空'}</span>
+      <span style="font-family:var(--mono)">${t.entry?.toFixed(2)||'-'}</span>
+      <span style="font-family:var(--mono)">${t.exit?.toFixed(2)||'-'}</span>
+      <span>${t.lots||'-'}</span>
+      <span class="${cls}" style="font-family:var(--mono);font-weight:700">${t.pnl>=0?'+':''}${Math.round(t.pnl||0).toLocaleString()}</span>
+      <span class="nu" style="font-size:10.5px">${t.reason||''}</span>
+    </div>`;
+  }).join('');
+}
+
+// ── 信號 ──
+function renderSignalHistory(d) {
+  E('nb-sig').textContent = S.sigCnt;
+  const dash = E('dash-sigs');
+  if (dash) dash.innerHTML = S.sigs.slice(0,4).map(s => `
+    <div class="sig-it ${s.dir}">
+      <strong>${s.sym}</strong> ${nameOf(s.sym)} <span class="${s.dir==='long'?'up':'dn'}" style="float:right">${s.dir==='long'?'🟢 多頭':'🔴 空頭'}</span>
+      <br><span class="nu" style="font-size:10.5px">${s.summary} · ${s.time||''}</span>
+    </div>`).join('');
+  const list = E('sig-list'); if (!list) return;
+  if (!S.sigs.length) { list.innerHTML = '<div class="nu" style="font-size:13px;padding:16px;text-align:center">尚無觸發信號</div>'; return; }
+  list.innerHTML = S.sigs.map(s => `
+    <div class="sig-it ${s.dir}">
+      <div style="display:flex;justify-content:space-between;margin-bottom:3px;">
+        <strong>${s.sym} ${nameOf(s.sym)}</strong>
+        <span class="${s.dir==='long'?'up':'dn'}">${s.dir==='long'?'🟢 多頭信號':'🔴 空頭信號'}</span>
+      </div>
+      <div class="nu" style="font-family:var(--mono);font-size:10.5px">${s.time||''}</div>
+      <div class="nu" style="font-size:11px;margin-top:3px">${(s.details||[]).join(' | ')}</div>
+    </div>`).join('');
+}
+
+// ── 風控 ──
+function renderRisk(d) {
+  const rr = d.agents?.risk;
+  const params = [
+    ['單日虧損上限','NT$ 5,000'],['單筆最大虧損','NT$ 1,500'],['單日最多交易','6 筆'],
+    ['同時持倉上限','2 個'],['最低信心度','65%'],['交易時段','09:10 ~ 13:00'],
+    ['強制平倉','13:20'],['最大連敗','3 次'],['追價上限','0.5%'],
+  ];
+  E('risk-params').innerHTML = params.map(([k,v]) =>
+    `<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border);font-size:12px">
+      <span class="nu">${k}</span><span style="font-family:var(--mono)">${v}</span>
+    </div>`
+  ).join('');
+  if (rr) E('risk-stat').innerHTML = (rr.details||[]).map(l => {
+    const cls = l.includes('🔴')||l.includes('停機') ? 'll alert' : l.includes('⚠️') ? 'll warn' : 'll ok';
+    return `<div class="${cls}" style="padding:6px 0;border-bottom:1px solid var(--border)">${l}</div>`;
+  }).join('');
+  
+  // 更新機器人交易狀態
+  if (E('bot-status')) {
+    E('bot-status').textContent = d.trading_active ? '運行中' : '待機中';
+    E('bot-status').style.color = d.trading_active ? 'var(--green)' : 'var(--yellow)';
+  }
+  if (E('bot-mode')) {
+    E('bot-mode').textContent = d.paper_trade ? '紙交易' : '真實交易';
+  }
+  if (E('bot-pnl')) {
+    const pnl = d.daily_pnl || 0;
+    E('bot-pnl').textContent = 'NT$ ' + pnl.toLocaleString();
+    E('bot-pnl').style.color = pnl >= 0 ? 'var(--green)' : 'var(--red)';
+  }
+  if (E('bot-trades')) {
+    E('bot-trades').textContent = (d.daily_trades || 0) + ' 筆';
+  }
+  if (E('bot-positions')) {
+    const pos = d.positions || {};
+    E('bot-positions').textContent = Object.keys(pos).length + ' 個';
+  }
+}
+
+// ── Badges ──
+function updateBadges(d) {
+  const ags = Object.values(d.agents || {});
+  const hasA = ags.some(a => a?.status==='alert');
+  const hasW = ags.some(a => a?.status==='warn');
+  E('nb-ag').className = `nbadge ${hasA?'nb-a':hasW?'nb-w':'nb-ok'}`;
+}
+
+// ── Util ──
+const E = id => document.getElementById(id);
+function fmt(n) { return (n>=0?'':'-') + Math.abs(Math.round(n)).toLocaleString(); }
+
+// ── Log ──
+function addLog(msg, type='info') {
+  const t = new Date().toLocaleTimeString('zh-TW');
+  S.logLines.push({msg, type, t});
+  if (S.logLines.length > 80) S.logLines.shift();
+  const el = E('log-box');
+  if (el) {
+    el.innerHTML = S.logLines.slice(-30).map(l => `<div class="ll ${l.type}">[${l.t}] ${l.msg}</div>`).join('');
+    el.scrollTop = el.scrollHeight;
+  }
+}
+
+// ── Symbol pills (agents page) ──
+function buildAgPills() {
+  const c = E('ag-pills'); if (!c || c._built) return;
+  c.innerHTML = S.detailSyms.map(s =>
+    `<div class="sp ${s===S.selSym?'on':''}" data-ag="${s}">${s} ${nameOf(s)}</div>`
+  ).join('');
+  c.querySelectorAll('[data-ag]').forEach(el => el.addEventListener('click', () => {
+    S.selSym = el.dataset.ag;
+    c.querySelectorAll('.sp').forEach(e => e.classList.toggle('on', e.dataset.ag === S.selSym));
+    if (S.last) renderAgents(S.last, 'agents-full', false);
+  }));
+  c._built = true;
+}
+document.querySelectorAll('[data-p="agents"]').forEach(el => el.addEventListener('click', buildAgPills));
+
+// ── Buttons ──
+E('resetBtn').addEventListener('click', () => { if (!confirm('重置今日統計？')) return; wsSend({cmd:'reset'}); S.sigs=[]; S.sigCnt=0; addLog('重置指令已送出','warn'); });
+E('forceCloseBtn').addEventListener('click', () => { if (!confirm('確定強制平倉所有部位？')) return; wsSend({cmd:'force_close'}); addLog('強制平倉指令已送出','alert'); });
+E('notifyTest').addEventListener('click', () => { wsSend({cmd:'notify_test'}); addLog('測試通知已送出（Line/Email）','ok'); });
+E('modeBtn').addEventListener('click', async () => {
+  try {
+    const res = await fetch('/api/toggle_mode', { method: 'POST' });
+    const data = await res.json();
+    E('modeBtn').textContent = data.mode;
+    addLog(`交易模式切換：${data.mode}`, data.mode === '紙交易' ? 'ok' : 'alert');
+  } catch (e) { addLog('切換失敗', 'alert'); }
+});
+
+// ══ 機器人交易設定 ══
+function renderRobot(d) {
+  const auto = d.trading_active || d.auto_trade;
+  if (E('robotToggle')) {
+    E('robotToggle').checked = auto;
+    E('autoStatusLabel').textContent = '現在為: ' + (auto ? '開啟' : '關閉');
+    E('autoStatusLabel').style.color = auto ? 'var(--green)' : 'var(--red)';
+  }
+  if (E('modeBtn2')) {
+    const mode = d.paper_trade ? '紙交易' : '真實交易';
+    E('modeBtn2').textContent = '現在為: ' + mode;
+  }
+  if (E('todayPnl')) {
+    const pnl = d.daily_pnl || 0;
+    E('todayPnl').textContent = 'NT$ ' + pnl.toLocaleString();
+    E('todayPnl').style.color = pnl >= 0 ? 'var(--green)' : 'var(--red)';
+  }
+  if (E('todayTrades')) E('todayTrades').textContent = (d.daily_trades || 0) + ' 筆';
+  if (E('todayPositions')) E('todayPositions').textContent = Object.keys(d.positions || {}).length + ' 個';
+  if (E('engineStatus')) {
+    E('engineStatus').textContent = d.is_halted ? '停機' : (d.trading_active ? '運行中' : '待機');
+    E('engineStatus').style.color = d.is_halted ? 'var(--red)' : (d.trading_active ? 'var(--green)' : 'var(--yellow)');
+  }
+}
+
+E('robotToggle')?.addEventListener('change', async (e) => {
+  try {
+    if (S.ws && S.connected) {
+      S.ws.send(JSON.stringify({cmd: 'toggle_auto'}));
+      E('autoStatusLabel').textContent = '現在為: ' + (e.target.checked ? '開啟' : '關閉');
+      E('autoStatusLabel').style.color = e.target.checked ? 'var(--green)' : 'var(--red)';
+      addLog(`自動交易：${e.target.checked ? '開啟' : '關閉'}`, e.target.checked ? 'ok' : 'warn');
+    } else {
+      const res = await fetch('/api/settings', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({auto_trade: e.target.checked})
+      });
+      const data = await res.json();
+      E('autoStatusLabel').textContent = '現在為: ' + (e.target.checked ? '開啟' : '關閉');
+      E('autoStatusLabel').style.color = e.target.checked ? 'var(--green)' : 'var(--red)';
+      addLog(`自動交易：${e.target.checked ? '開啟' : '關閉'}`, e.target.checked ? 'ok' : 'warn');
+    }
+  } catch (e) { addLog('設定失敗', 'alert'); }
+});
+
+E('modeBtn2')?.addEventListener('click', async () => {
+  try {
+    const res = await fetch('/api/toggle_mode', { method: 'POST' });
+    const data = await res.json();
+    E('modeBtn2').textContent = '現在為: ' + data.mode;
+    addLog(`交易模式切換：${data.mode}`, data.mode === '紙交易' ? 'ok' : 'alert');
+  } catch (e) { addLog('切換失敗', 'alert'); }
+});
+
+E('saveRobotBtn')?.addEventListener('click', async () => {
+  const data = {
+    total_capital: parseInt(E('capitalInput2')?.value || 500000),
+    auto_trade: E('robotToggle')?.checked || false
+  };
+  try {
+    const res = await fetch('/api/settings', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(data)
+    });
+    addLog(`設定已儲存：資金 NT$ ${data.total_capital.toLocaleString()}`, 'ok');
+    alert('設定已儲存！');
+  } catch (e) { addLog('儲存失敗', 'alert'); }
+});
+
+E('testTradeBtn')?.addEventListener('click', async () => {
+  try {
+    const res = await fetch('/api/test_trade', { method: 'POST' });
+    const t = await res.json();
+    addLog(`🧪 測試交易：買入 ${t.symbol} ${t.lots}張 @ ${t.price}`, 'ok');
+    alert(`測試交易成功！\n股票：${t.symbol}\n價格：${t.price}\n邏輯：${t.logic}`);
+  } catch (e) { addLog('測試失敗', 'alert'); }
+});
+
+E('stopRobotBtn')?.addEventListener('click', async () => {
+  if (!confirm('確定要立即停止自動交易嗎？')) return;
+  try {
+    const res = await fetch('/api/stop_robot', { method: 'POST' });
+    const d = await res.json();
+    E('robotToggle').checked = false;
+    E('autoStatusLabel').textContent = '現在為: 關閉';
+    E('autoStatusLabel').style.color = 'var(--red)';
+    addLog('⏹ 自動交易已停止', 'alert');
+  } catch (e) { addLog('停止失敗', 'alert'); }
+});
+
+// 載入可回測日期
+async function loadSimDates() {
+  try {
+    const res = await fetch('/api/backtest_dates');
+    const dates = await res.json();
+    const sel = E('simDate');
+    if (sel && dates && dates.length > 0) {
+      sel.innerHTML = '<option value="">選擇日期...</option>' + 
+        dates.map(d => `<option value="${d}">${d}</option>`).join('');
+    } else if (sel) {
+      sel.innerHTML = '<option value="2026-04-10">2026-04-10</option><option value="2026-04-09">2026-04-09</option><option value="2026-04-08">2026-04-08</option>';
+    }
+  } catch (e) { 
+    console.log('載入日期失敗', e);
+    const sel = E('simDate');
+    if (sel) {
+      sel.innerHTML = '<option value="2026-04-10">2026-04-10</option><option value="2026-04-09">2026-04-09</option><option value="2026-04-08">2026-04-08</option>';
+    }
+  }
+}
+
+document.getElementById('runSimBtn')?.addEventListener('click', function(e) {
+  e.preventDefault();
+  e.stopPropagation();
+  
+  const sel = document.getElementById('simDate');
+  let date = sel?.value;
+  
+  // 如果沒選日期，用今天的日期
+  if (!date || date === '') {
+    const today = new Date().toISOString().split('T')[0];
+    console.log('自動使用日期:', today);
+    date = today;
+  }
+  
+  console.log('執行模擬, 日期:', date);
+  window.openSimModal(date);
+  return false;
+});
+
+// 頁面載入時自動載入日期
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    const sel = document.getElementById('simDate');
+    if (sel && sel.options.length <= 1) {
+      // 手動填入日期選項
+      const dates = [];
+      for (let i = 1; i <= 10; i++) {
+        const d = new Date();
+        d.setDate(d.getDate() - i);
+        dates.push(d.toISOString().split('T')[0]);
+      }
+      sel.innerHTML = '<option value="">選擇日期...</option>' + 
+        dates.map(d => `<option value="${d}">${d}</option>`).join('');
+    }
+  }, 500);
+});
+
+let simChart = null;
+let simData = { 
+  symbol: '', 
+  date: '',
+  bars: [], 
+  allBars: {},  // 多股票資料
+  trades: [], 
+  currentIndex: 0, 
+  isRunning: false,
+  isPaused: false,
+  speed: 500,
+  totalCapital: 500000,  // 總資金
+  usedCapital: 0,      // 已使用資金
+  position: null,
+  positions: {},  // 多持倉
+  review: [],  // 檢討記錄
+  experience: [],  // 經驗庫
+};
+let simInterval = null;
+
+// 可交易的股票列表
+const SIM_SYMBOLS = ['2330', '2454', '2382', '3017', '2317', '2308'];
+
+window.openSimModal = function(date) {
+  document.getElementById('simModal').style.display = 'block';
+  document.getElementById('simDateLabel').textContent = date;
+  simData.date = date;
+  
+  window.loadSimData(date);
+}
+
+window.closeSimModal = function() {
+  if (simInterval) clearInterval(simInterval);
+  simData.isRunning = false;
+  document.getElementById('simModal').style.display = 'none';
+}
+
+// 速度控制
+E('simSpeed')?.addEventListener('input', function() {
+  const val = parseInt(this.value);
+  simData.speed = val;
+  const labels = {50: '極快', 200: '很快', 500: '正常', 1000: '慢', 2000: '極慢'};
+  E('simSpeedVal').textContent = labels[val] || '正常';
+});
+
+E('simSpeed')?.addEventListener('change', function() {
+  // 改變速度
+  if (simInterval && simData.isRunning && !simData.isPaused) {
+    clearInterval(simInterval);
+    simInterval = setInterval(() => simTick(), simData.speed);
+  }
+});
+
+window.loadSimData = async function(date) {
+  try {
+    const res = await fetch(`/api/simdata/${date}`);
+    const data = await res.json();
+    
+    if (data.error || !data.bars || data.bars.length === 0) {
+      alert('找不到該日期的資料，請選擇其他日期');
+      return;
+    }
+    
+    simData.symbol = data.symbol || '2330';
+    simData.bars = data.bars;
+    simData.trades = [];
+    simData.currentIndex = 0;
+    simData.position = null;
+    
+    // 重置按鈕
+    E('startSimBtn').disabled = false;
+    E('pauseSimBtn').disabled = true;
+    E('resetSimBtn').disabled = true;
+    
+    // 繪製空白圖表（等模擬開始後逐步顯示）
+    renderSimChart();
+    
+    // 更新統計
+    updateSimStats();
+    
+    addLog(`📊 已載入 ${simData.symbol} ${data.bars.length} 根K棒，準備開始模擬`, 'ok');
+  } catch (e) {
+    addLog('載入模擬資料失敗: ' + e.message, 'alert');
+    console.error(e);
+  }
+}
+
+function renderSimChart() {
+  const ctx = document.getElementById('simChart').getContext('2d');
+  
+  if (simChart) simChart.destroy();
+  
+  simChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: [],
+      datasets: [
+        {
+          label: '收盤價',
+          data: [],
+          backgroundColor: [],
+          borderColor: [],
+          borderWidth: 1,
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      animation: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: function(ctx) {
+              const i = ctx.dataIndex;
+              const bar = simData.bars[i];
+              if (!bar) return '';
+              return `開:${bar.open} 高:${bar.high} 低:${bar.low} 收:${bar.close} 量:${bar.volume}`;
+            }
+          }
+        }
+      },
+      scales: {
+        x: { 
+          ticks: { color: '#6a85a8', maxTicksLimit: 20 }, 
+          grid: { color: 'rgba(255,255,255,.05)' },
+          title: { display: true, text: 'K棒序號', color: '#6a85a8' }
+        },
+        y: { 
+          ticks: { color: '#6a85a8' }, 
+          grid: { color: 'rgba(255,255,255,.05)' },
+          title: { display: true, text: '價格', color: '#6a85a8' }
+        }
+      }
+    }
+  });
+  
+  simChart.updateBars = function(upToIndex) {
+    if (!simData.bars.length || upToIndex < 0) return;
+    
+    const visible = simData.bars.slice(0, upToIndex + 1);
+    this.data.labels = visible.map((_, i) => i + 1);
+    this.data.datasets[0].data = visible.map(b => b.close);
+    
+    // 計算每根K棒的顏色 (紅漲綠跌)
+    const colors = visible.map(b => b.close >= b.open ? 'rgba(239,68,68,0.8)' : 'rgba(67,217,100,0.8)');
+    this.data.datasets[0].backgroundColor = colors;
+    this.data.datasets[0].borderColor = colors;
+    
+    this.update('none');
+  };
+}
+
+// 模擬核心 tick - 當沖策略
+function simTick() {
+  if (simData.currentIndex >= simData.bars.length) {
+    clearInterval(simInterval);
+    simData.isRunning = false;
+    finishSimulation();
+    return;
+  }
+  
+  const bar = simData.bars[simData.currentIndex];
+  const price = bar.close;
+  const prevBars = simData.bars.slice(0, simData.currentIndex);
+  const nowK = simData.currentIndex + 1;
+  
+  // 計算總走勢 % (相對於第一天)
+  const firstPrice = simData.bars[0].close;
+  const totalChange = (price - firstPrice) / firstPrice * 100;
+  
+  // 檢查所有股票找訊號
+  let tradeLog = '';
+  
+  // 遍歷所有有資料的股票
+  for (const sym of SIM_SYMBOLS) {
+    if (!simData.allBars[sym] || simData.allBars[sym].length < 20) continue;
+    
+    const symBars = simData.allBars[sym];
+    const symPrev = symBars.slice(0, simData.currentIndex + 1);
+    if (symPrev.length < 20) continue;
+    
+    const symPrice = symPrev[symPrev.length - 1].close;
+    const firstSymPrice = symBars[0].close;
+    const changePct = (symPrice - firstSymPrice) / firstSymPrice * 100;
+    const ma5 = symPrev.slice(-5).reduce((s,b)=>s+b.close,0) / 5;
+    const ma20 = symPrev.slice(-20).reduce((s,b)=>s+b.close,0) / 20;
+    const rsi = calcRSI(symPrev);
+    const avgPrice = symPrev.reduce((s,b)=>s+b.close,0) / symPrev.length;
+    
+    const pos = simData.positions[sym];
+    const entryCost = pos ? pos.cost : 0;
+    
+    // ====== 當沖策略 (參考 StrategyExecutor_feather) ======
+    
+    // 買入條件：
+    // 1. 漲幅在 sweet range (1% ~ 4.5%)
+    // 2. 低於平均價
+    // 3. 無持倉 且 可用資金足夠
+    const isSweetRange = changePct > 1 && changePct < 4.5;
+    const isBelowAvg = symPrice < avgPrice;
+    
+    // 計算買入成本 (1張 = 1000股)
+    const cost = symPrice * 1 * 1000;
+    
+    // 買入訊號
+    if (isSweetRange && isBelowAvg && !pos && 
+        Object.keys(simData.positions).length < 2 &&
+        simData.usedCapital + cost <= simData.totalCapital) {
+      simData.usedCapital += cost;
+      simData.positions[sym] = {
+        entryPrice: symPrice,
+        lots: 1,
+        cost: cost,
+        entryIdx: simData.currentIndex,
+        entryBar: bar.time,
+        entryChange: changePct,
+        reason: `漲幅${changePct.toFixed(1)}% 在區間內, 低於均價${avgPrice.toFixed(0)}`,
+      };
+      
+      addSimTrade(sym, '當沖賣出', symPrice, 1, 
+        `📉 先賣 | 漲幅: ${changePct.toFixed(1)}% | 成本: NT$ ${cost.toLocaleString()}`);
+      tradeLog += `📉 ${sym}當沖賣出@${symPrice} `;
+    }
+    
+    // 賣出條件：
+    // 1. 漲幅 > 8.6% (強制停利)
+    // 2. 下跌 > -8% (停損)
+    // 3. 價格低於進場價且低於平均價 (趨勢反轉)
+    // 4. 時間到了 (K棒 > 50, 模擬收盤)
+    else if (pos) {
+      let sellReason = '';
+      let shouldSell = false;
+      
+      // 強制停利
+      if (changePct > 8.6) {
+        sellReason = '💰 漲幅 > 8.6% 強制停利';
+        shouldSell = true;
+      }
+      // 停損
+      else if (changePct < pos.entryChange - 8) {
+        sellReason = '🔴 下跌 > 8% 停損';
+        shouldSell = true;
+      }
+      // 趨勢反轉
+      else if (symPrice < pos.entryPrice && symPrice < avgPrice) {
+        sellReason = '📉 趨勢反轉';
+        shouldSell = true;
+      }
+      // 時間到了 (最後幾根K棒強制平倉)
+      else if (nowK >= 55) {
+        sellReason = '⏰ 時間到了強制平倉';
+        shouldSell = true;
+      }
+      
+      if (shouldSell) {
+        const pnl = (symPrice - pos.entryPrice) * pos.lots * 1000;
+        const revenue = symPrice * pos.lots * 1000;
+        
+        // 釋放資金
+        simData.usedCapital -= pos.cost;
+        
+        addSimTrade(sym, '當沖買回', symPrice, pos.lots, 
+          `📗 買回 | ${sellReason} | 損益: ${pnl>0?'+':''}NT$ ${pnl.toLocaleString()}`, pnl);
+        tradeLog += `📗 ${sym}當沖買回@${symPrice} pnl:${pnl>0?'+':''}${pnl} `;
+        
+        // 記錄到經驗庫
+        simData.experience.push({
+          symbol: sym,
+          entryPrice: pos.entryPrice,
+          exitPrice: symPrice,
+          pnl: pnl,
+          reason: pos.reason + ' -> ' + sellReason,
+          holdBars: simData.currentIndex - pos.entryIdx,
+        });
+        
+        delete simData.positions[sym];
+      }
+    }
+  }
+  
+  if (tradeLog) addLog(tradeLog, 'info');
+  
+  // 更新五檔報���表格
+  updateQuoteTable(price);
+  
+  // 更新圖表
+  if (simChart && simChart.updateBars) {
+    simChart.updateBars(simData.currentIndex);
+  }
+  
+  // 更新進度
+  const progress = (simData.currentIndex + 1) / simData.bars.length * 100;
+  E('simProgressBar').style.width = progress + '%';
+  E('simProgress').textContent = `${simData.currentIndex + 1}/${simData.bars.length}`;
+  E('simCurrentInfo').textContent = `現價: ${price} (${totalChange>=0?'+':''}${totalChange.toFixed(1)}%)`;
+  E('simTime').textContent = `K棒: ${nowK}`;
+  
+  simData.currentIndex++;
+}
+  
+  const bar = simData.bars[simData.currentIndex];
+  const price = bar.close;
+  const prevBars = simData.bars.slice(0, simData.currentIndex);
+  
+  // 檢查所有股票找訊號
+  let tradeLog = '';
+  
+  // 遍歷所有有資料的股票
+  for (const sym of SIM_SYMBOLS) {
+    if (!simData.allBars[sym] || simData.allBars[sym].length < 20) continue;
+    
+    const symBars = simData.allBars[sym];
+    const symPrev = symBars.slice(0, simData.currentIndex + 1);
+    if (symPrev.length < 20) continue;
+    
+    const symPrice = symPrev[symPrev.length - 1].close;
+    const ma5 = symPrev.slice(-5).reduce((s,b)=>s+b.close,0) / 5;
+    const ma20 = symPrev.slice(-20).reduce((s,b)=>s+b.close,0) / 20;
+    const rsi = calcRSI(symPrev);
+    
+    const pos = simData.positions[sym];
+    
+    // 買入訊號：MA5 > MA20 + RSI < 70 + 資金檢查
+    const cost = symPrice * 1 * 1000;  // 1張 = 1000股
+    if (ma5 > ma20 * 1.002 && rsi < 70 && !pos && 
+        Object.keys(simData.positions).length < 2 &&
+        simData.usedCapital + cost <= simData.totalCapital) {
+      const lots = 1;
+      simData.usedCapital += cost;
+      simData.positions[sym] = {
+        entryPrice: symPrice,
+        lots: lots,
+        cost: cost,
+        entryIdx: simData.currentIndex,
+        entryBar: bar.time,
+        reason: `MA5(${ma5.toFixed(0)})>MA20(${ma20.toFixed(0)}) RSI=${rsi.toFixed(0)}`,
+      };
+      
+      addSimTrade(sym, 'Buy', symPrice, lots, `花費: NT$ ${cost.toLocaleString()}, 剩餘: NT$ ${(simData.totalCapital - simData.usedCapital).toLocaleString()}`);
+      tradeLog += `🟢 ${sym}買入@${symPrice} `;
+    }
+    // 賣出訊號：MA5 < MA20 或 RSI > 30
+    else if (pos && (ma5 < ma20 * 0.998 || rsi > 30 || simData.currentIndex - pos.entryIdx > 30)) {
+      const pnl = (symPrice - pos.entryPrice) * pos.lots * 1000;
+      const revenue = symPrice * pos.lots * 1000;
+      
+      // 釋放資金
+      simData.usedCapital -= pos.cost;
+      
+      addSimTrade(sym, 'Sell', symPrice, pos.lots, `收回: NT$ ${revenue.toLocaleString()}, 損益: ${pnl>0?'+':''}${pnl.toLocaleString()}`, pnl);
+      tradeLog += `🔴 ${sym}賣出@${symPrice} pnl:${pnl>0?'+':''}${pnl} `;
+      
+      // 記錄到經驗庫
+      simData.experience.push({
+        symbol: sym,
+        entryPrice: pos.entryPrice,
+        exitPrice: symPrice,
+        pnl: pnl,
+        reason: pos.reason,
+        holdBars: simData.currentIndex - pos.entryIdx,
+      });
+      
+      delete simData.positions[sym];
+    }
+  }
+  
+  if (tradeLog) addLog(tradeLog, 'info');
+  
+  // 更新五檔報價表格
+  updateQuoteTable(price);
+  
+  // 更新圖表
+  if (simChart && simChart.updateBars) {
+    simChart.updateBars(simData.currentIndex);
+  }
+  
+  // 更新進度
+  const progress = (simData.currentIndex + 1) / simData.bars.length * 100;
+  E('simProgressBar').style.width = progress + '%';
+  E('simProgress').textContent = `${simData.currentIndex + 1}/${simData.bars.length}`;
+  E('simCurrentInfo').textContent = `現價: ${price}`;
+  E('simTime').textContent = `K棒: ${simData.currentIndex + 1}`;
+  E('simSymbol').textContent = simData.symbol;
+  
+  simData.currentIndex++;
+}
+
+// 計算 RSI
+function calcRSI(bars, n=14) {
+  if (bars.length < n + 1) return 50;
+  let gain = 0, loss = 0;
+  for (let i = bars.length - n; i < bars.length; i++) {
+    const change = bars[i].close - bars[i-1].close;
+    if (change > 0) gain += change;
+    else loss -= change;
+  }
+  if (loss === 0) return 100;
+  const rs = gain / loss;
+  return 100 - (100 / (1 + rs));
+}
+
+function updateSimStats() {
+  const sells = simData.trades.filter(t => t.type === 'Sell');
+  const wins = sells.filter(t => t.pnl > 0).length;
+  const losses = sells.filter(t => t.pnl <= 0).length;
+  const totalPnl = sells.reduce((sum, t) => sum + (t.pnl || 0), 0);
+  const winRate = sells.length > 0 ? (wins / sells.length * 100).toFixed(1) : 0;
+  
+  E('simTotalPnl').textContent = (totalPnl >= 0 ? '+' : '') + totalPnl.toLocaleString();
+  E('simTotalPnl').style.color = totalPnl >= 0 ? 'var(--green)' : 'var(--red)';
+  E('simTotalTrades').textContent = simData.trades.length;
+  E('simWinRate').textContent = winRate + '%';
+  
+  // 持倉顯示
+  const posBox = E('simPositionBox');
+  const posInfo = E('simPositionInfo');
+  if (posBox && posInfo) {
+    const posCount = Object.keys(simData.positions).length;
+    if (posCount > 0) {
+      posBox.style.display = 'block';
+      posInfo.textContent = Object.keys(simData.positions).map(s => 
+        `${s}@${simData.positions[s].entryPrice}`
+      ).join(', ');
+    } else {
+      posBox.style.display = 'none';
+    }
+  }
+}
+
+function addSimTrade(symbol, type, price, lots, reason, pnl = 0) {
+  const totalCost = price * lots * 1000;
+  const now = new Date();
+  const timeStr = now.getFullYear() + '/' + (now.getMonth()+1).toString().padStart(2,'0') + '/' + 
+                now.getDate().toString().padStart(2,'0') + ' ' + 
+                now.getHours().toString().padStart(2,'0') + ':' + 
+                now.getMinutes().toString().padStart(2,'0') + ':' + 
+                now.getSeconds().toString().padStart(2,'0');
+  
+  const trade = { symbol, type, price, lots, totalCost, reason, pnl, time: timeStr };
+  simData.trades.push(trade);
+  
+  // 寫入交易記錄
+  const container = E('simTrades');
+  if (container) {
+    const div = document.createElement('div');
+    div.style.padding = '8px';
+    div.style.marginBottom = '6px';
+    div.style.background = 'var(--p3)';
+    div.style.borderRadius = '6px';
+    div.style.borderLeft = `4px solid ${type === 'Buy' ? 'var(--green)' : 'var(--red)'}`;
+    div.innerHTML = `
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <span style="font-weight:bold;font-size:14px">${symbol}</span>
+        <span style="font-weight:bold;padding:2px 8px;background:${type==='Buy'?'var(--green)':'var(--red)'};color:white;border-radius:4px;font-size:11px">${type}</span>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-top:6px;font-size:12px">
+        <div>💰 價格：<b>${price}</b></div>
+        <div>📋 張數：<b>${lots}</b></div>
+        <div>💵 總額：<b>NT$ ${totalCost.toLocaleString()}</b></div>
+        ${pnl !== 0 ? `<div style="color:${pnl>0?'var(--green)':'var(--red)'}">📊 損益：<b>${pnl>0?'+':''}${pnl.toLocaleString()}</b></div>` : '<div></div>'}
+      </div>
+      <div style="font-size:10px;color:var(--muted);margin-top:5px">🕐 ${timeStr}</div>
+      <div style="font-size:10px;color:var(--accent)">📝 ${reason}</div>
+    `;
+    container.insertBefore(div, container.firstChild);
+  }
+  
+  updateSimStats();
+}
+
+// 更新五檔報價表格
+function updateQuoteTable(currentPrice) {
+  const container = E('simQuotes');
+  if (!container || !simData.allBars) return;
+  
+  let html = '';
+  for (const sym of SIM_SYMBOLS) {
+    const bars = simData.allBars[sym];
+    if (!bars || bars.length < 25) continue;
+    
+    const idx = simData.currentIndex;
+    if (idx < 20) continue;
+    
+    const symBars = bars.slice(0, idx + 1);
+    const price = symBars[symBars.length - 1].close;
+    const ma5 = symBars.slice(-5).reduce((s,b)=>s+b.close,0) / 5;
+    const ma20 = symBars.slice(-20).reduce((s,b)=>s+b.close,0) / 20;
+    const rsi = calcRSI(symBars);
+    const change = price - symBars[0].close;
+    const changePct = (change / symBars[0].close * 100).toFixed(2);
+    const hasPos = simData.positions[sym];
+    
+    html += `
+      <div style="display:grid;grid-template-columns:80px repeat(5,1fr);gap:5px;padding:6px;${hasPos?'background:rgba(0,255,0,0.1)':''};border-bottom:1px solid var(--border)">
+        <span style="font-weight:bold;color:${hasPos?'var(--green)':'var(--text)'}">${sym}${hasPos?' 📌':''}</span>
+        <span style="color:var(--text)">${price.toFixed(0)}</span>
+        <span style="color:${change>=0?'var(--green)':'var(--red)'}">${change>=0?'+':''}${changePct}%</span>
+        <span style="color:var(--accent)">${ma5.toFixed(0)}</span>
+        <span style="color:var(--accent)">${ma20.toFixed(0)}</span>
+        <span style="color:${rsi>70?'var(--red)':rsi<30?'var(--green)':'var(--muted)'}">${rsi.toFixed(0)}</span>
+      </div>
+    `;
+  }
+  container.innerHTML = html || '<div style="color:var(--muted)">等待資料載入...</div>';
+}
+
+// 開始模擬
+E('startSimBtn')?.addEventListener('click', () => {
+  if (simData.isRunning) return;
+  if (simData.bars.length === 0) {
+    alert('請先選擇日期載入資料');
+    return;
+  }
+  
+  simData.isRunning = true;
+  simData.isPaused = false;
+  simData.positions = {};
+  simData.currentIndex = 20;  // 從有足夠資料開始
+  
+  E('startSimBtn').disabled = true;
+  E('pauseSimBtn').disabled = false;
+  E('resetSimBtn').disabled = false;
+  
+  addLog('▶️ 模擬開始 (多股票)', 'info');
+  
+  // 載入多股票資料
+  loadMultiSymbols();
+  
+  simInterval = setInterval(() => simTick(), simData.speed);
+});
+
+// 載入多股票歷史資料
+async function loadMultiSymbols() {
+  simData.allBars = {};
+  simData.allBars[simData.symbol] = simData.bars;
+  
+  // 嘗試載入其他股票
+  for (const sym of SIM_SYMBOLS) {
+    if (sym === simData.symbol) continue;
+    try {
+      const res = await fetch(`/api/simdata/${simData.date}?symbol=${sym}`);
+      const data = await res.json();
+      if (data.bars && data.bars.length > 0) {
+        simData.allBars[sym] = data.bars;
+      }
+    } catch(e) { console.log('載入', sym, '失敗'); }
+  }
+}
+
+// 暫停/繼續
+E('pauseSimBtn')?.addEventListener('click', () => {
+  if (simData.isPaused) {
+    simData.isPaused = false;
+    E('pauseSimBtn').textContent = '⏸';
+    addLog('▶️ 模擬繼續', 'info');
+  } else {
+    simData.isPaused = true;
+    E('pauseSimBtn').textContent = '▶';
+    addLog('⏸ 模擬已暫停', 'warn');
+  }
+});
+
+// 重置
+E('resetSimBtn')?.addEventListener('click', () => {
+  if (simInterval) clearInterval(simInterval);
+  simData.isRunning = false;
+  simData.isPaused = false;
+  simData.currentIndex = 0;
+  simData.trades = [];
+  simData.positions = {};
+  simData.experience = [];
+  
+  E('simTrades').innerHTML = '';
+  E('startSimBtn').disabled = false;
+  E('pauseSimBtn').disabled = true;
+  E('pauseSimBtn').textContent = '⏸';
+  E('simProgressBar').style.width = '0%';
+  
+  // 重置圖表
+  if (simChart) {
+    simChart.data.labels = [];
+    simChart.data.datasets[0].data = [];
+    simChart.update('none');
+  }
+  
+  updateSimStats();
+  addLog('🔄 模擬已重置', 'info');
+});
+
+// 模擬結束 - 產生報告
+function finishSimulation() {
+  const sells = simData.trades.filter(t => t.type === 'Sell');
+  const wins = sells.filter(t => t.pnl > 0).length;
+  const losses = sells.filter(t => t.pnl <= 0).length;
+  const total = sells.length;
+  const totalPnl = sells.reduce((sum, t) => sum + (t.pnl || 0), 0);
+  const winRate = total > 0 ? (wins / total * 100).toFixed(1) : 0;
+  
+  // 計算最大回撤
+  let peak = 0, maxDd = 0, equity = 0;
+  for (const t of simData.trades) {
+    if (t.type === 'Sell') {
+      equity += t.pnl || 0;
+      if (equity > peak) peak = equity;
+      const dd = equity - peak;
+      if (dd < maxDd) maxDd = dd;
+    }
+  }
+  
+  // 統計各股票表現
+  const symStats = {};
+  for (const t of simData.trades) {
+    if (t.type === 'Sell') {
+      if (!symStats[t.symbol]) symStats[t.symbol] = { trades: 0, pnl: 0, wins: 0 };
+      symStats[t.symbol].trades++;
+      symStats[t.symbol].pnl += t.pnl || 0;
+      if (t.pnl > 0) symStats[t.symbol].wins++;
+    }
+  }
+  
+  // 生成檢討報告
+  let review = '\n📊 【模擬完成】\n═══════════════════════\n\n';
+  review += `📅 日期：${simData.date}\n`;
+  review += `📈 總交易：${total} 筆\n`;
+  review += `🟢 獲利：${wins} 筆 | 🔴 虧損：${losses} 筆\n`;
+  review += `💰 總損益：NT$ ${totalPnl > 0 ? '+' : ''}${totalPnl.toLocaleString()}\n`;
+  review += `📊 勝率：${winRate}%\n`;
+  review += `📉 最大回撤：NT$ ${Math.abs(maxDd).toLocaleString()}\n\n`;
+  
+  review += '【各股票表現】\n';
+  for (const sym in symStats) {
+    const s = symStats[sym];
+    const wr = s.trades > 0 ? (s.wins / s.trades * 100).toFixed(0) : 0;
+    review += `  ${sym}: ${s.trades}筆, 勝率${wr}%, 損益${s.pnl>0?'+':''}${s.pnl}\n`;
+  }
+  
+  review += '\n【交易邏輯】\n';
+  review += '  買入：MA5 > MA20*1.002 + RSI<70\n';
+  review += '  賣出：MA5<MA20*0.998 或 RSI>30 或 持有>30根\n';
+  review += '  部位：最多2檔，每檔1張\n\n';
+  
+  // 自動學習建議
+  review += '【AI 檢討與建議】\n';
+  if (winRate >= 60) {
+    review += '  ✅ 策略表現優異，勝率達標\n';
+  } else if (winRate >= 40) {
+    review += '  ⚠️ 勝率一般，可考慮加入其他濾網\n';
+  } else {
+    review += '  ❌ 勝率過低，建議調整策略參數\n';
+  }
+  if (totalPnl > 0) {
+    review += '  ✅ 整體獲利，策略可行\n';
+  } else {
+    review += '  ❌ 整體虧損，需優化進出场邏輯\n';
+  }
+  if (maxDd < -5000) {
+    review += '  ⚠️ 回撤過大，建議縮小部位或設止損\n';
+  }
+  
+  // 顯示報告
+  addLog('📊 模擬完成' + review, totalPnl >= 0 ? 'ok' : 'alert');
+  
+  // 儲存經驗
+  try {
+    localStorage.setItem('sim_exp_' + simData.date, JSON.stringify({
+      date: simData.date,
+      total,
+      wins,
+      losses,
+      totalPnl,
+      winRate,
+      symStats,
+      experience: simData.experience,
+    }));
+  } catch(e) {}
+  
+  E('startSimBtn').disabled = false;
+  E('pauseSimBtn').disabled = true;
+  
+  alert('模擬完成！\n\n' + review);
+}
+
+// 載入設定
+async function loadSettings() {
+  try {
+    const res = await fetch('/api/settings');
+    const s = await res.json();
+    if (E('robotToggle')) {
+      E('robotToggle').checked = s.auto_trade || false;
+      E('autoStatusLabel').textContent = '現在為: ' + (s.auto_trade ? '開啟' : '關閉');
+      E('autoStatusLabel').style.color = s.auto_trade ? 'var(--green)' : 'var(--red)';
+    }
+    if (E('capitalInput2')) E('capitalInput2').value = s.total_capital;
+    if (E('modeBtn2')) E('modeBtn2').textContent = '現在為: ' + (s.paper_trade ? '紙交易' : '真實交易');
+  } catch (e) { console.log('載入設定失敗', e); }
+  loadSimDates();
+}
+
+// ── 離線展示 ──
+function offlineDemo() {
+  const base = {
+    daily_pnl:0, daily_trades:0, is_halted:false, trading_active:false,
+    ticks: Object.fromEntries(DEFAULT_SYMS.map(s=>[s,{price:100,volume:1000,bid:99.5,ask:100.5,bid_vol:120,ask_vol:90}])),
+    positions:{}, trades_log:[], backtest:{}, signal_history:[], anomalies:[],
+    agents: {
+      risk:      {icon:'🛡️',status:'idle',summary:'等待後端連線',details:['啟動 server.py 後自動連線'],timestamp:'--'},
+      execution: {icon:'⚙️',status:'idle',summary:'等待後端連線',details:['啟動 server.py 後自動連線'],timestamp:'--'},
+    },
+    timestamp:'--:--:--',
+  };
+  DEFAULT_SYMS.forEach(s => {
+    ['quant','back','signal','market'].forEach(k => {
+      base.agents[`${k}_${s}`] = {icon:{quant:'🔬',back:'📊',signal:'⚡',market:'🔭'}[k],status:'idle',summary:`等待連線…`,details:['啟動後端後自動分析'],timestamp:'--'};
+    });
+  });
+render(base);
+}
+
+// ══ Theme ══
+let isDark = true;
+function toggleTheme() {
+  isDark = !isDark;
+  document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+  E('themeBtn').textContent = isDark ? '🌙' : '☀️';
+  localStorage.setItem('theme', isDark ? 'dark' : 'light');
+}
+E('themeBtn').addEventListener('click', toggleTheme);
+
+// ══ 頁面載入時 ══
+window.addEventListener('load', () => {
+  loadSettings();
+  loadSimDates();
+  loadLearning();
+});
+
+// ══ AI 學習系統 ══
+async function loadLearning() {
+  try {
+    // 取得學習狀態
+    const status = await fetch('/api/learning').then(r => r.json());
+    E('learn-mode-current').textContent = {
+      "offline": "離線學習", "paper": "模擬學習中", "live": "實盤交易", "disabled": "已關閉"
+    }[status.mode] || status.mode;
+    E('learn-decisions').textContent = status.decisions;
+    E('learn-outcomes').textContent = status.outcomes;
+    
+    // 取得 AI 權重
+    const agents = await fetch('/api/learning/agents').then(r => r.json());
+    let html = '';
+    for (const [name, data] of Object.entries(agents)) {
+      const w = (data.weight || 1).toFixed(2);
+      const recent = data.recent_scores || [];
+      const wins = recent.filter(s => s > 0).length;
+      const winRate = recent.length > 0 ? (wins / recent.length * 100).toFixed(0) : 0;
+      
+      html += `
+        <div style="padding:10px;margin-bottom:8px;background:var(--p3);border-radius:6px">
+          <div style="display:flex;justify-content:space-between;margin-bottom:5px">
+            <span style="font-weight:bold">${name}</span>
+            <span style="color:${w > 1 ? 'var(--green)' : w < 0.8 ? 'var(--red)' : 'var(--accent)'}">權重 ${w}</span>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px;font-size:11px;color:var(--muted)">
+            <div>牛市中: ${(data.regime_weights?.bull || 1).toFixed(1)}</div>
+            <div>熊市中: ${(data.regime_weights?.bear || 0.5).toFixed(1)}</div>
+            <div>盤整中: ${(data.regime_weights?.neutral || 0.8).toFixed(1)}</div>
+          </div>
+          <div style="margin-top:5px;font-size:11px">
+            最近: [${recent.join(',')}] | 勝率: ${winRate}%
+          </div>
+        </div>
+      `;
+    }
+    E('learn-agents').innerHTML = html || '<div style="text-align:center;color:var(--muted);padding:20px">等待學習資料...</div>';
+    
+    // 取得決策記錄
+    const decisions = await fetch('/api/learning/decisions?limit=10').then(r => r.json());
+    if (decisions.length > 0) {
+      html = decisions.slice().reverse().map(d => `
+        <div style="padding:6px;border-bottom:1px solid var(--border)">
+          <span style="font-weight:bold">${d.symbol}</span> ${d.action} @ ${d.price}
+          <span style="float:right;color:${d.ai_source?.includes('quant') ? 'var(--accent)' : 'var(--muted)'}">${d.ai_source || '?'}</span>
+          <div style="font-size:10px;color:var(--muted)">${d.timestamp}</div>
+        </div>
+      `).join('');
+      E('learn-decisions-list').innerHTML = html;
+    }
+    
+    // 取得結果記錄
+    const outcomes = await fetch('/api/learning/outcomes?limit=10').then(r => r.json());
+    if (outcomes.length > 0) {
+      html = outcomes.slice().reverse().map(o => `
+        <div style="padding:6px;border-bottom:1px solid var(--border)">
+          <span style="font-weight:bold">${o.symbol}</span> ${o.pnl > 0 ? '🟢+' : '🔴'}${o.pnl?.toFixed(0)}
+          <span style="float:right">${o.reason}</span>
+          <div style="font-size:10px;color:var(--muted)">${o.timestamp}</div>
+        </div>
+      `).join('');
+      E('learn-outcomes-list').innerHTML = html;
+    }
+    
+  } catch(e) {
+    console.log('載入學習資料失敗', e);
+  }
+}
+
+// 學習模式切換
+document.querySelectorAll('.learn-btn').forEach(btn => {
+  btn.addEventListener('click', async () => {
+    const mode = btn.dataset.mode;
+    try {
+      await fetch('/api/learning', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({mode})
+      });
+      loadLearning();
+      alert(`學習模式已切換至: ${mode}`);
+    } catch(e) {
+      alert('切換失敗');
+    }
+  });
+});
+
+// ══ 股票搜尋 ══
+const searchInput = document.getElementById('searchStock');
+const searchResults = document.getElementById('searchResults');
+let searchTimeout;
+
+searchInput.addEventListener('input', e => {
+  clearTimeout(searchTimeout);
+  const q = e.target.value.trim();
+  if (q.length < 1) {
+    searchResults.style.display = 'none';
+    return;
+  }
+  searchTimeout = setTimeout(async () => {
+    try {
+      const res = await fetch(`/api/search?q=${encodeURIComponent(q)}`);
+      const data = await res.json();
+      if (data.length > 0) {
+        searchResults.innerHTML = data.map(s => 
+          `<div class="sr-item" data-code="${s.code}" style="padding:8px 12px;cursor:pointer;border-bottom:1px solid var(--border);font-size:12px;">
+            <b>${s.code}</b> ${s.name}
+          </div>`
+        ).join('');
+        searchResults.style.display = 'block';
+        document.querySelectorAll('.sr-item').forEach(item => {
+          item.addEventListener('click', () => {
+            const code = item.dataset.code;
+            alert(`已選擇股票 ${code}，請從風控頁面加入監控`);
+            searchInput.value = '';
+            searchResults.style.display = 'none';
+          });
+        });
+      } else {
+        searchResults.style.display = 'none';
+      }
+    } catch (err) {
+      console.error('搜尋失敗:', err);
+    }
+  }, 300);
+});
+
+searchInput.addEventListener('blur', () => {
+  setTimeout(() => searchResults.style.display = 'none', 200);
+});
+
+// Load saved theme
+const saved = localStorage.getItem('theme');
+if (saved === 'light') toggleTheme();
+
+// ══ Keyboard shortcuts ══
+document.addEventListener('keydown', e => {
+  if (e.ctrlKey) {
+    if (e.key === 'r') { e.preventDefault(); location.reload(); }
+    else if (e.key === 't') { toggleTheme(); }
+  }
+});
+
+// ══ 啟動 ══
+offlineDemo();
+addLog('台股 AI 六角色交易平台 v2.0 啟動', 'ok');
+addLog(`嘗試連線 ${WS_URL}`, 'info');
+addLog('確認後端已執行：python server.py', 'info');
+wsConnect();
+
+})();
+</script>
+</body>
+</html>
