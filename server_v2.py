@@ -299,7 +299,7 @@ class AILearningManager:
                         sa = params.get("slippage_allow", 0.005)
                         params["slippage_allow"] = min(sa * 1.2, 0.015)
                 elif ai_name == "analyst":
-                    if error_type == "positive_pnl":
+                    if success:
                         rt = params.get("regime_threshold", 1.5)
                         params["regime_threshold"] = max(rt - 0.1, 0.5)
                 
@@ -681,9 +681,15 @@ class QuantResearcher:
     def __init__(self):
         self.alpha_scores = {}
 
-    def analyze(self, symbol: str, bars: list) -> AgentReport:
+    def analyze(self, symbol: str, bars: list, params: dict = None) -> AgentReport:
         if len(bars) < 20:
             return AgentReport("量化研究員", "🔬", "idle", "資料累積中", ["等待 20 根 K 棒…"])
+
+        # 取得學習參數
+        fw = params or {"breakout": 30, "squeeze": 25, "slope": 20}
+        w_breakout = fw.get("breakout", 30)
+        w_squeeze = fw.get("squeeze", 25)
+        w_slope = fw.get("slope", 20)
 
         closes  = [b["close"]  for b in bars]
         volumes = [b["volume"] for b in bars]
@@ -712,9 +718,9 @@ class QuantResearcher:
 
         score = 0
         findings = []
-        if breakout:  score += 30; findings.append(f"✅ 20日新高突破 {closes[-1]:.1f} > {h20:.1f}")
-        if squeeze:   score += 25; findings.append(f"⚡ 布林帶壓縮 {bb_w:.1f}%，蓄勢待發")
-        if slope > 0.3: score += 20; findings.append(f"📈 短期均線上斜 +{slope:.2f}%")
+        if breakout:  score += w_breakout; findings.append(f"✅ 20日新高突破 {closes[-1]:.1f} > {h20:.1f}")
+        if squeeze:   score += w_squeeze; findings.append(f"⚡ 布林帶壓縮 {bb_w:.1f}%，蓄勢待發")
+        if slope > 0.3: score += w_slope; findings.append(f"📈 短期均線上斜 +{slope:.2f}%")
         if diverge:   score -= 25; findings.append(f"⚠️ 量價背離：量增 {vol_r:.1f}x 但價跌 {p_chg:.1f}%")
         if not findings: findings.append("目前無明顯 Alpha 訊號")
 
@@ -730,9 +736,15 @@ class Backtester:
     def __init__(self):
         self.results: dict[str, BacktestResult] = {}
 
-    def run(self, symbol: str, bars: list) -> tuple[AgentReport, Optional[BacktestResult]]:
+    def run(self, symbol: str, bars: list, params: dict = None) -> tuple[AgentReport, Optional[BacktestResult]]:
         if len(bars) < 30:
             return AgentReport("回測工程師", "📊", "idle", "資料不足", ["需要 30 根 K 棒"]), None
+
+        # 取得學習參數
+        bp = params or {"stop_loss": 0.012, "take_profit": 0.022, "max_hold": 30}
+        stop_pct = bp.get("stop_loss", 0.012)
+        target_pct = bp.get("take_profit", 0.022)
+        max_hold = bp.get("max_hold", 30)
 
         closes = [b["close"] for b in bars]
         trades, equity, cum = [], [], 0
@@ -748,9 +760,9 @@ class Backtester:
 
             elif in_pos:
                 held = i - in_pos["idx"]
-                hit_stop   = closes[i] < in_pos["entry"] * 0.988   # -1.2% 停損
-                hit_target = closes[i] > in_pos["entry"] * 1.022   # +2.2% 目標
-                if hit_stop or hit_target or held >= 30:
+                hit_stop   = closes[i] < in_pos["entry"] * (1 - stop_pct)
+                hit_target = closes[i] > in_pos["entry"] * (1 + target_pct)
+                if hit_stop or hit_target or held >= max_hold:
                     pnl = closes[i] - in_pos["entry"]
                     cum += pnl
                     trades.append({"pnl": pnl, "reason": "stop" if hit_stop else "target" if hit_target else "timeout"})
@@ -859,13 +871,19 @@ class RiskOfficer:
                 return False, reason
         return True, "OK"
 
-    def calc_lots(self, signal: Signal, price: float) -> int:
+    def calc_lots(self, signal: Signal, price: float, params: dict = None) -> int:
+        # 取得學習參數
+        ps = params or {"conservative_mode": 0, "position_scale": 1.0}
+        scale = ps.get("position_scale", 1.0)
+        cons = ps.get("conservative_mode", 0)
+        
         risk = abs(price - signal.stop_loss)
         if risk <= 0:
             return 0
         by_loss    = int(self.MAX_SINGLE_LOSS / risk)
-        by_capital = int(TOTAL_CAPITAL * 0.25 / (price * 1000))
-        return max(min(by_loss, by_capital, 3), 0)
+        by_capital = int(TOTAL_CAPITAL * 0.25 * scale / (price * 1000))
+        max_lots = 3 if cons < 0.5 else 2
+        return max(min(by_loss, by_capital, max_lots), 0)
 
     def on_entry(self, signal: Signal, lots: int, price: float, ai_scores: dict = None, regime: str = "neutral"):
         self.daily_trades += 1
@@ -981,9 +999,14 @@ class SignalEngineer:
                    abs(b["low"]  - bars[i-1]["close"])) for i, b in enumerate(bars) if i > 0]
         return sum(trs[-n:]) / min(len(trs), n) if trs else 1
 
-    def evaluate(self, symbol: str, bars: list, tick: dict, order_book: dict) -> tuple[Optional[Signal], AgentReport]:
+    def evaluate(self, symbol: str, bars: list, tick: dict, order_book: dict, params: dict = None) -> tuple[Optional[Signal], AgentReport]:
         if len(bars) < 20:
             return None, AgentReport("信號工程師", "⚡", "idle", "資料累積中", ["等待 20 根 K 棒…"])
+
+        # 取得學習參數
+        sp = params or {"threshold": 50, "confidence_base": 60}
+        threshold = sp.get("threshold", 50)
+        conf_base = sp.get("confidence_base", 60)
 
         closes = [b["close"] for b in bars]
         price  = tick.get("price", closes[-1])
@@ -1015,7 +1038,7 @@ class SignalEngineer:
         signal = None
 
         if ls == 5:
-            conf   = min(60 + bonus, 95)
+            conf   = min(conf_base + bonus, 95)
             signal = Signal(symbol, Direction.LONG, price,
                             round(price - atr*1.2, 2), round(price + atr*1.5, 2), round(price + atr*2.8, 2),
                             conf, "多頭全條件", datetime.now().strftime("%H:%M:%S"), "signal")
@@ -1024,7 +1047,7 @@ class SignalEngineer:
             self._signal_history.append(asdict(signal))
 
         elif ss == 5:
-            conf   = min(60 + bonus, 95)
+            conf   = min(conf_base + bonus, 95)
             signal = Signal(symbol, Direction.SHORT, price,
                             round(price + atr*1.2, 2), round(price - atr*1.5, 2), round(price - atr*2.8, 2),
                             conf, "空頭全條件", datetime.now().strftime("%H:%M:%S"), "signal")
@@ -1548,10 +1571,16 @@ class TradingEngine:
 
                     obook = {"bid_vol": tick["bid_vol"], "ask_vol": tick["ask_vol"]}
 
+                    # 取得 AI 學習參數
+                    quant_params = learning_mgr.agent_memory.get("quant", {}).get("params", {})
+                    backtest_params = learning_mgr.agent_memory.get("backtest", {}).get("params", {})
+                    signal_params = learning_mgr.agent_memory.get("signal", {}).get("params", {})
+                    risk_params = learning_mgr.agent_memory.get("risk", {}).get("params", {})
+                    
                     # 六角色分析
-                    self.agent_reports[f"quant_{sym}"]    = asdict(self.quant.analyze(sym, bars))
+                    self.agent_reports[f"quant_{sym}"]    = asdict(self.quant.analyze(sym, bars, quant_params))
                     self.agent_reports[f"market_{sym}"]   = asdict(self.analyst.analyze(sym, bars, tick))
-                    sig, sig_rep = self.signal_eng.evaluate(sym, bars, tick, obook)
+                    sig, sig_rep = self.signal_eng.evaluate(sym, bars, tick, obook, signal_params)
                     self.agent_reports[f"signal_{sym}"]   = asdict(sig_rep)
                 except Exception as e:
                     log.warning(f"⚠️ {sym} 分析異常: {e}")
@@ -1559,7 +1588,7 @@ class TradingEngine:
 
                 # 每 20 個 tick 跑一次回測（避免過度計算）
                 if bt_counter % 20 == 0 and bars:
-                    bt_rep, bt_res = self.backtester.run(sym, bars)
+                    bt_rep, bt_res = self.backtester.run(sym, bars, backtest_params)
                     self.agent_reports[f"backtest_{sym}"] = asdict(bt_rep)
                     if bt_res:
                         self.backtest_cache[sym] = asdict(bt_res)
@@ -1613,7 +1642,7 @@ class TradingEngine:
                     
                     # 仲裁決策：共識 + 風控
                     if consensus_score >= CONSENSUS_THRESHOLD and risk_ok:
-                        lots = self.risk.calc_lots(sig, tick["price"])
+                        lots = self.risk.calc_lots(sig, tick["price"], risk_params)
                         if lots > 0:
                             act = "Buy" if sig.direction == Direction.LONG else "Sell"
                             self.execution.place(sym, act, lots, tick["price"], sig.reason)
@@ -1771,7 +1800,7 @@ class TradingEngine:
                 elif pnl < 0:
                     error_type = "negative_pnl"
                 else:
-                    error_type = "success"
+                    error_type = "take_profit"
                 
                 learning_mgr.log_outcome({
                     "id": decision_id,
