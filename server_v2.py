@@ -229,18 +229,20 @@ class AILearningManager:
             self._update_weights(data)
     
     def _update_weights(self, outcome: dict):
-        """根據交易結果更新 AI 權重 (平滑調整)"""
+        """根據交易結果更新 AI 權重與參數 (平滑調整)"""
         pnl = outcome.get("pnl", 0)
         success = pnl > 0
         regime = outcome.get("regime", "neutral")
+        error_type = outcome.get("error_type", "")
         
-        # 更新每個 AI 的權重
+        # 更新每個 AI 的權重與參數
         ai_scores = outcome.get("ai_scores", {})
         for ai_name, score in ai_scores.items():
             if ai_name in self.agent_memory:
                 mem = self.agent_memory[ai_name]
                 mem.setdefault("recent_scores", [])
                 mem.setdefault("regime_stats", {"bull": {"total": 0, "wins": 0}, "bear": {"total": 0, "wins": 0}, "neutral": {"total": 0, "wins": 0}})
+                mem.setdefault("params", {})
                 
                 # 更新最近分數
                 score_val = 1.0 if success else 0.0
@@ -254,6 +256,7 @@ class AILearningManager:
                         mem["regime_stats"][regime]["wins"] = mem["regime_stats"][regime].get("wins", 0) + 1
                 
                 # 計算最近勝率
+                win_rate = 0.5
                 if len(mem["recent_scores"]) >= 5:
                     win_rate = sum(mem["recent_scores"]) / len(mem["recent_scores"])
                     delta = 0.1 if win_rate > 0.6 else (-0.1 if win_rate < 0.4 else 0)
@@ -265,7 +268,43 @@ class AILearningManager:
                     mem["weight_history"].append({"ts": datetime.now().strftime("%H:%M:%S"), "weight": mem["weight"]})
                     mem["weight_history"] = mem["weight_history"][-50:]
                 
-                log.info(f"📈 {ai_name} 權重更新: {mem['weight']:.2f} (勝率{win_rate*100:.0f}%)")
+                # 根據 outcome 更新 AI 特定參數
+                params = mem.get("params", {})
+                if ai_name == "backtest":
+                    if error_type == "stop_loss":
+                        sl = params.get("stop_loss", 0.012)
+                        params["stop_loss"] = min(sl * 1.2, 0.025)
+                    elif error_type == "time_exit":
+                        mh = params.get("max_hold", 30)
+                        params["max_hold"] = max(mh - 5, 10)
+                    elif success and error_type == "take_profit":
+                        tp = params.get("take_profit", 0.022)
+                        params["take_profit"] = max(tp * 0.9, 0.015)
+                elif ai_name == "risk":
+                    if error_type == "stop_loss" or error_type == "negative_pnl":
+                        cm = params.get("conservative_mode", 0)
+                        params["conservative_mode"] = min(cm + 0.1, 1.0)
+                    elif success:
+                        cm = params.get("conservative_mode", 0)
+                        params["conservative_mode"] = max(cm - 0.05, 0)
+                elif ai_name == "signal":
+                    if error_type in ("stop_loss", "negative_pnl"):
+                        th = params.get("threshold", 50)
+                        params["threshold"] = min(th + 5, 70)
+                    elif success:
+                        th = params.get("threshold", 50)
+                        params["threshold"] = max(th - 2, 40)
+                elif ai_name == "execution":
+                    if error_type == "negative_pnl":
+                        sa = params.get("slippage_allow", 0.005)
+                        params["slippage_allow"] = min(sa * 1.2, 0.015)
+                elif ai_name == "analyst":
+                    if error_type == "positive_pnl":
+                        rt = params.get("regime_threshold", 1.5)
+                        params["regime_threshold"] = max(rt - 0.1, 0.5)
+                
+                mem["params"] = params
+                log.info(f"📈 {ai_name} 權重更新: {mem['weight']:.2f} (勝率{win_rate*100:.0f}%) | params: {params}")
         
         # 儲存更新後的權重
         LearningDataStore.save("agent_memory", self.agent_memory)
@@ -828,7 +867,7 @@ class RiskOfficer:
         by_capital = int(TOTAL_CAPITAL * 0.25 / (price * 1000))
         return max(min(by_loss, by_capital, 3), 0)
 
-    def on_entry(self, signal: Signal, lots: int, price: float):
+    def on_entry(self, signal: Signal, lots: int, price: float, ai_scores: dict = None, regime: str = "neutral"):
         self.daily_trades += 1
         self.open_positions[signal.symbol] = {
             "direction": signal.direction, "entry": price,
@@ -836,6 +875,8 @@ class RiskOfficer:
             "t1": signal.target_1, "t2": signal.target_2,
             "partial": False,
             "entry_time": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "ai_scores": ai_scores or {},
+            "regime": regime,
         }
 
     def on_exit(self, symbol: str, pnl: float):
@@ -1576,7 +1617,7 @@ class TradingEngine:
                         if lots > 0:
                             act = "Buy" if sig.direction == Direction.LONG else "Sell"
                             self.execution.place(sym, act, lots, tick["price"], sig.reason)
-                            self.risk.on_entry(sig, lots, tick["price"])
+                            self.risk.on_entry(sig, lots, tick["price"], ai_scores, regime)
                             log.info(f"✅ 仲裁通過 {sym} {sig.direction} {lots}張 @{tick['price']} 共識{consensus_score:.0f}%")
                             
                             # 記錄完整決策（包含六 AI 各自 judgment/confidence/reason）
@@ -1621,8 +1662,10 @@ class TradingEngine:
                                 "info",
                             )
                     else:
-                        # 記錄不進場原因
+                        # 記錄不進場原因（先取得各 AI 報告）
                         decision_id = f"D{int(time.time()*1000)}"
+                        quant_rep = self.agent_reports.get(f"quant_{sym}", {})
+                        backtest_rep = self.agent_reports.get(f"backtest_{sym}", {})
                         learning_mgr.log_decision({
                             "id": decision_id,
                             "symbol": sym,
@@ -1710,7 +1753,7 @@ class TradingEngine:
                 if entry_time_str:
                     try:
                         entry_dt = datetime.strptime(entry_time_str, "%Y-%m-%d %H:%M:%S")
-                        exit_dt = datetime.strptime(now, "%H:%M:%S")
+                        exit_dt = datetime.now()
                         hold_duration = int((exit_dt - entry_dt).total_seconds() / 60)
                     except:
                         hold_duration = 0
@@ -1742,6 +1785,8 @@ class TradingEngine:
                     "max_favorable": max_favorable,
                     "max_adverse": max_adverse,
                     "error_type": error_type,
+                    "ai_scores": pos.get("ai_scores", {}),
+                    "regime": pos.get("regime", "neutral"),
                 })
                 del self._latest_decision_ids[symbol]
             
