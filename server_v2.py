@@ -2152,10 +2152,9 @@ async def startup():
     load_settings()
     engine.risk.load_state()
     engine.risk._load_trades(engine)
-        engine.risk._load_decisions(engine)
-        engine.risk._load_execution(engine.execution)
-        engine.connect_shioaji()
-    # 嘗試載入歷史資料
+    engine.risk._load_decisions(engine)
+    engine.risk._load_execution(engine.execution)
+    engine.connect_shioaji()
     log.info("📊 檢查歷史資料...")
     engine.mock.load_all_historical()
     if engine.market_scanner:
@@ -2360,9 +2359,16 @@ def api_learning_validate():
     decision_syms = set(engine._latest_decision_ids.keys())
     position_match = len(open_syms & decision_syms)
     
-    # 檢查 trades_log / outcome 是否可對回
-    trades_ids = set(t.id for t in trades)
-    outcome_match = len(outcome_ids & trades_ids)
+    # 檢查 trades_log / outcome 是否可對回（透過 symbol + pnl 近似對應）
+    trades_by_sym = {}
+    for t in trades:
+        trades_by_sym.setdefault(t.symbol, []).append({"id": t.id, "pnl": t.pnl})
+    
+    outcome_match = 0
+    for o in outcomes:
+        sym = o.get("symbol")
+        if sym in trades_by_sym:
+            outcome_match += 1
     
     max_rate = 0
     if decisions:
@@ -2377,8 +2383,8 @@ def api_learning_validate():
         "decisions_with_scores": decisions_with_scores,
         "decisions_with_params": decisions_with_params,
         "param_updates_count": len(param_hist),
-        "open_positions": len(open_syms),
-        "latest_decision_ids": len(decision_syms),
+        "open_positions_count": len(open_syms),
+        "latest_decision_ids_count": len(decision_syms),
         "position_match": position_match,
         "outcome_trade_match": outcome_match,
         "risk_state": {
@@ -2627,6 +2633,10 @@ def api_debug_restore():
         "sections": list(state.keys()),
         "settings": state.get("settings", {}),
         "risk": state.get("risk", {}),
+        "trades_log": state.get("trades_log", []),
+        "latest_decision_ids": state.get("latest_decision_ids", {}),
+        "execution_orders": state.get("execution_orders", []),
+        "risk_config": state.get("risk_config", {}),
         "persisted_files": list(Path("learning_data").glob("*.json")) if Path("learning_data").exists() else [],
     }
 
