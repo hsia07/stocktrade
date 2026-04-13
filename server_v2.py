@@ -186,6 +186,14 @@ class AILearningManager:
             "weight_history": [],
             "confidence_history": [],
         }
+        agent_params = {
+            "quant": {"factor_weights": {"breakout": 30, "squeeze": 25, "slope": 20}},
+            "backtest": {"stop_loss": 0.012, "take_profit": 0.022, "max_hold": 30},
+            "risk": {"conservative_mode": 0, "position_scale": 1.0, "halt_threshold": 3},
+            "signal": {"threshold": 50, "confidence_base": 60},
+            "execution": {"slippage_allow": 0.005, "liquidity_min": 1000, "fill_quality": 1.0},
+            "analyst": {"regime_threshold": 1.5, "spike_sensitivity": 2.0},
+        }
         for name in ["quant", "backtest", "risk", "signal", "execution", "analyst"]:
             if name not in self.agent_memory:
                 self.agent_memory[name] = default_structure.copy()
@@ -193,6 +201,13 @@ class AILearningManager:
                 for k, v in default_structure.items():
                     if k not in self.agent_memory[name]:
                         self.agent_memory[name][k] = v
+            if name in agent_params:
+                if "params" not in self.agent_memory[name]:
+                    self.agent_memory[name]["params"] = agent_params[name]
+                else:
+                    for k, v in agent_params[name].items():
+                        if k not in self.agent_memory[name]["params"]:
+                            self.agent_memory[name]["params"][k] = v
         LearningDataStore.save("agent_memory", self.agent_memory)
     
     def log_decision(self, data: dict):
@@ -820,6 +835,7 @@ class RiskOfficer:
             "lots": lots, "stop": signal.stop_loss,
             "t1": signal.target_1, "t2": signal.target_2,
             "partial": False,
+            "entry_time": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
         }
 
     def on_exit(self, symbol: str, pnl: float):
@@ -1509,14 +1525,41 @@ class TradingEngine:
 
                 # 信號 → 仲裁器 → 風控 → 下單
                 if sig and self._trading_active:
-                    # 收集各 AI 分數
+                    # 收集各 AI 真實分數
+                    quant_score = self.agent_reports.get(f"quant_{sym}", {}).get("score", 50)
+                    backtest_score = self.agent_reports.get(f"backtest_{sym}", {}).get("score", 50)
+                    analyst_score = self.agent_reports.get(f"market_{sym}", {}).get("score", 50)
+                    
+                    # risk 分數：根據風控狀態計算
+                    remain = self.risk.MAX_DAILY_LOSS + self.risk.daily_pnl
+                    if self.risk.is_halted:
+                        risk_score = 0
+                    elif remain < 500:
+                        risk_score = 20
+                    elif remain < 1500:
+                        risk_score = 40
+                    else:
+                        risk_score = 80 - (self.risk.consecutive_loss * 15)
+                    
+                    # execution 分數：根據成交品質計算
+                    recent_orders = self.execution.orders[-10:]
+                    recent_errors = [o for o in recent_orders if o.get("status") == "error"]
+                    if len(recent_orders) == 0:
+                        exec_score = 70
+                    elif len(recent_errors) > 3:
+                        exec_score = 20
+                    elif len(recent_errors) > 0:
+                        exec_score = 50
+                    else:
+                        exec_score = 75
+                    
                     ai_scores = {
-                        "quant": self.agent_reports.get(f"quant_{sym}", {}).get("score", 50),
-                        "backtest": self.agent_reports.get(f"backtest_{sym}", {}).get("score", 50),
-                        "risk": 80,
+                        "quant": quant_score,
+                        "backtest": backtest_score,
+                        "risk": max(0, risk_score),
                         "signal": sig.confidence,
-                        "execution": 70,
-                        "analyst": self.agent_reports.get(f"market_{sym}", {}).get("score", 50),
+                        "execution": max(0, exec_score),
+                        "analyst": analyst_score,
                     }
                     
                     # 仲裁器計算共識
@@ -1536,8 +1579,13 @@ class TradingEngine:
                             self.risk.on_entry(sig, lots, tick["price"])
                             log.info(f"✅ 仲裁通過 {sym} {sig.direction} {lots}張 @{tick['price']} 共識{consensus_score:.0f}%")
                             
-                            # 記錄完整決策
+                            # 記錄完整決策（包含六 AI 各自 judgment/confidence/reason）
                             decision_id = f"D{int(time.time()*1000)}"
+                            quant_rep = self.agent_reports.get(f"quant_{sym}", {})
+                            backtest_rep = self.agent_reports.get(f"backtest_{sym}", {})
+                            signal_rep = self.agent_reports.get(f"signal_{sym}", {})
+                            risk_report = self.risk.get_report()
+                            
                             learning_mgr.log_decision({
                                 "id": decision_id,
                                 "symbol": sym,
@@ -1553,6 +1601,14 @@ class TradingEngine:
                                 "entry_price": tick["price"],
                                 "stop_loss": sig.stop_loss,
                                 "target": sig.target_1,
+                                "ai_judgments": {
+                                    "quant": {"judgment": "buy" if quant_score >= 50 else "sell" if quant_score < 30 else "watch", "confidence": quant_score, "reason": quant_rep.get("summary", "")[:50]},
+                                    "backtest": {"judgment": "buy" if backtest_score >= 55 else "sell" if backtest_score < 40 else "watch", "confidence": backtest_score, "reason": backtest_rep.get("summary", "")[:50]},
+                                    "risk": {"judgment": "ok" if risk_score >= 60 else "halt" if risk_score < 20 else "caution", "confidence": risk_score, "reason": risk_reason[:50] if risk_reason else "OK"},
+                                    "signal": {"judgment": str(sig.direction), "confidence": sig.confidence, "reason": sig.reason[:50]},
+                                    "execution": {"judgment": "ok" if exec_score >= 60 else "risk" if exec_score < 40 else "caution", "confidence": exec_score, "reason": f"{len(recent_errors)} errors" if recent_errors else "healthy"},
+                                    "analyst": {"judgment": regime, "confidence": analyst_score, "reason": f"{regime} regime"},
+                                },
                             })
                             
                             self._latest_decision_ids[sym] = decision_id
@@ -1578,6 +1634,14 @@ class TradingEngine:
                             "consensus_score": consensus_score,
                             "regime": regime,
                             "final_decision": "不進場",
+                            "ai_judgments": {
+                                "quant": {"judgment": "buy" if quant_score >= 50 else "sell" if quant_score < 30 else "watch", "confidence": quant_score, "reason": quant_rep.get("summary", "")[:50]},
+                                "backtest": {"judgment": "buy" if backtest_score >= 55 else "sell" if backtest_score < 40 else "watch", "confidence": backtest_score, "reason": backtest_rep.get("summary", "")[:50]},
+                                "risk": {"judgment": "halt" if risk_score < 20 else "caution", "confidence": risk_score, "reason": risk_reason[:50] if risk_reason else "OK"},
+                                "signal": {"judgment": str(sig.direction), "confidence": sig.confidence, "reason": sig.reason[:50]},
+                                "execution": {"judgment": "risk" if exec_score < 40 else "caution", "confidence": exec_score, "reason": f"{len(recent_errors)} errors" if recent_errors else "healthy"},
+                                "analyst": {"judgment": regime, "confidence": analyst_score, "reason": f"{regime} regime"},
+                            },
                         })
                         log.debug(f"⛔ 仲裁攔截 {sym}：共識{consensus_score:.0f}% 風險:{risk_reason}")
                     if not risk_ok:
@@ -1613,6 +1677,15 @@ class TradingEngine:
         entry = pos["entry"]
         mult = 1 if pos["direction"] == Direction.LONG else -1
         act = "Sell" if pos["direction"] == Direction.LONG else "Buy"
+        
+        # 追蹤浮盈浮虧
+        unrealized = (price - entry) * mult
+        pos.setdefault("max_favorable", 0)
+        pos.setdefault("max_adverse", 0)
+        if unrealized > pos["max_favorable"]:
+            pos["max_favorable"] = unrealized
+        if unrealized < pos["max_adverse"]:
+            pos["max_adverse"] = unrealized
 
         def close(reason: str):
             current_pos = self.risk.open_positions.get(symbol)
@@ -1632,9 +1705,30 @@ class TradingEngine:
             # 記錄完整結果到學習系統
             decision_id = self._latest_decision_ids.get(symbol)
             if decision_id:
-                # 計算持有時間、浮盈浮虧
-                entry_time_str = pos.get("entry_time", now)
-                hold_duration = 0  # 簡化計算
+                entry_time_str = pos.get("entry_time", "")
+                hold_duration = 0
+                if entry_time_str:
+                    try:
+                        entry_dt = datetime.strptime(entry_time_str, "%Y-%m-%d %H:%M:%S")
+                        exit_dt = datetime.strptime(now, "%H:%M:%S")
+                        hold_duration = int((exit_dt - entry_dt).total_seconds() / 60)
+                    except:
+                        hold_duration = 0
+                
+                max_favorable = pos.get("max_favorable", 0)
+                max_adverse = pos.get("max_adverse", 0)
+                
+                # error classification
+                if "停損" in reason:
+                    error_type = "stop_loss"
+                elif "強制" in reason:
+                    error_type = "time_exit"
+                elif "目標" in reason:
+                    error_type = "take_profit"
+                elif pnl < 0:
+                    error_type = "negative_pnl"
+                else:
+                    error_type = "success"
                 
                 learning_mgr.log_outcome({
                     "id": decision_id,
@@ -1645,8 +1739,9 @@ class TradingEngine:
                     "reason": reason,
                     "success": pnl > 0,
                     "hold_duration": hold_duration,
-                    "max_favorable": 0,  # 可後續補
-                    "max_adverse": 0,
+                    "max_favorable": max_favorable,
+                    "max_adverse": max_adverse,
+                    "error_type": error_type,
                 })
                 del self._latest_decision_ids[symbol]
             

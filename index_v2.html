@@ -2236,6 +2236,7 @@ async function loadLearning() {
     if (decisions.length > 0) {
       html = decisions.slice().reverse().map(d => {
         const scores = d.ai_scores || {};
+        const judgments = d.ai_judgments || {};
         const qScore = scores.quant || 0;
         const btScore = scores.backtest || 0;
         const rScore = scores.risk || 0;
@@ -2244,6 +2245,18 @@ async function loadLearning() {
         const aScore = scores.analyst || 0;
         const consensus = d.consensus_score || 0;
         const decision = d.final_decision || '-';
+        
+        // 生成各 AI 理由
+        const j = judgments;
+        const reasons = [
+          j.quant?.reason || '-',
+          j.backtest?.reason || '-',
+          j.risk?.reason || '-',
+          j.signal?.reason || '-',
+          j.execution?.reason || '-',
+          j.analyst?.reason || '-',
+        ];
+        
         return `
         <div style="padding:8px;border-bottom:1px solid var(--border);background:var(--p2)">
           <div style="display:flex;justify-content:space-between;margin-bottom:4px">
@@ -2259,6 +2272,7 @@ async function loadLearning() {
             <div style="background:${eScore>=50?'var(--green)':eScore>0?'var(--yellow)':'var(--red)'};padding:2px;border-radius:3px;color:${eScore>=50?'white':'var(--text)'}">E:${eScore}</div>
             <div style="background:${aScore>=50?'var(--green)':aScore>0?'var(--yellow)':'var(--red)'};padding:2px;border-radius:3px;color:${aScore>=50?'white':'var(--text)'}">A:${aScore}</div>
           </div>
+          <div style="font-size:8px;color:var(--muted);margin:3px 0;text-align:center">${reasons.join(' | ')}</div>
           <div style="display:flex;justify-content:space-between;font-size:10px">
             <span style="color:var(--muted)">${d.regime}</span>
             <span style="font-weight:bold;color:${consensus>=50?'var(--green)':'var(--red)'}">共識:${consensus.toFixed(0)}%</span>
@@ -2279,9 +2293,11 @@ async function loadLearning() {
             <span style="color:${o.pnl > 0 ? 'var(--green)' : 'var(--red)'}">${o.pnl > 0 ? '🟢' : '🔴'}$${o.pnl?.toFixed(0)}</span>
           </div>
           <div style="font-size:10px;color:var(--muted)">${o.reason}</div>
-          <div style="display:flex;justify-content:space-between;font-size:10px;margin-top:4px">
-            <span>${o.entry} → ${o.exit}</span>
-            <span>${o.regime}</span>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;font-size:9px;margin-top:4px">
+            <div>持倉:${o.hold_duration || 0}分鐘</div>
+            <div>最大浮盈:${o.max_favorable?.toFixed(0) || 0}</div>
+            <div>最大浮虧:${o.max_adverse?.toFixed(0) || 0}</div>
+            <div style="color:${o.error_type==='success'?'var(--green)':'var(--yellow)'}">${o.error_type || '-'}</div>
           </div>
           <div style="font-size:9px;color:var(--muted);margin-top:2px">${o.timestamp}</div>
         </div>
