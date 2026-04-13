@@ -2162,6 +2162,9 @@ async function loadLearning() {
           <div style="margin-top:5px;font-size:11px">
             最近: [${recent.join(',')}] | 勝率: ${winRate}%
           </div>
+          <div style="margin-top:3px;font-size:10px;color:var(--accent)">
+            params: ${JSON.stringify(data.params || {}).replace(/"/g,'').replace(/,/g,', ')}
+          </div>
         </div>
       `;
     }

@@ -304,7 +304,7 @@ class AILearningManager:
                         params["regime_threshold"] = max(rt - 0.1, 0.5)
                 
                 mem["params"] = params
-                log.info(f"📈 {ai_name} 權重更新: {mem['weight']:.2f} (勝率{win_rate*100:.0f}%) | params: {json.dumps(params)}")
+                log.info(f"📈 {ai_name} 權重: {mem['weight']:.2f} 勝率:{win_rate*100:.0f}% | params:{json.dumps(params)}")
         
         # 儲存更新後的權重
         LearningDataStore.save("agent_memory", self.agent_memory)
@@ -1617,17 +1617,22 @@ class TradingEngine:
                     else:
                         risk_score = 80 - (self.risk.consecutive_loss * 15)
                     
-                    # execution 分數：根據成交品質計算
+                    # execution 分數：根據成交品質與學習參數計算
+                    exec_params = learning_mgr.agent_memory.get("execution", {}).get("params", {})
+                    slippage_th = exec_params.get("slippage_allow", 0.005)
+                    liquidity_min = exec_params.get("liquidity_min", 1000)
+                    fill_q = exec_params.get("fill_quality", 1.0)
+                    
                     recent_orders = self.execution.orders[-10:]
                     recent_errors = [o for o in recent_orders if o.get("status") == "error"]
                     if len(recent_orders) == 0:
-                        exec_score = 70
+                        exec_score = 70 * fill_q
                     elif len(recent_errors) > 3:
-                        exec_score = 20
+                        exec_score = 20 * fill_q
                     elif len(recent_errors) > 0:
-                        exec_score = 50
+                        exec_score = 50 * fill_q
                     else:
-                        exec_score = 75
+                        exec_score = 75 * fill_q
                     
                     ai_scores = {
                         "quant": quant_score,
