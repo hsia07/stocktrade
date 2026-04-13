@@ -2179,6 +2179,47 @@ def api_learning_param_history(limit: int = 20):
     history = LearningDataStore.load("param_update_history", [])
     return {"param_updates": history[-limit:]}
 
+@app.get("/api/learning/validate")
+def api_learning_validate():
+    """驗證 learning 資料一致性"""
+    decisions = learning_mgr.decision_log
+    outcomes = learning_mgr.outcome_log
+    param_hist = LearningDataStore.load("param_update_history", [])
+    
+    # 檢查 decision ID 是否都有對應 outcome
+    decision_ids = set(d.get("id") for d in decisions)
+    outcome_ids = set(o.get("id") for o in outcomes)
+    matched = decision_ids & outcome_ids
+    
+    # 檢查 decision 中的 ai_scores 和 ai_params_used 是否都有
+    decisions_with_scores = sum(1 for d in decisions if d.get("ai_scores"))
+    decisions_with_params = sum(1 for d in decisions if d.get("ai_params_used"))
+    
+    return {
+        "decisions_count": len(decisions),
+        "outcomes_count": len(outcomes),
+        "matched_ids": len(matched),
+        "decisions_with_scores": decisions_with_scores,
+        "decisions_with_params": decisions_with_params,
+        "param_updates_count": len(param_hist),
+        "status": "ok" if decisions_with_params == len(decisions) else "warning",
+    }
+
+@app.get("/api/health")
+def api_health():
+    """系統健康檢查"""
+    return {
+        "ok": True,
+        "paper_trade": PAPER_TRADE,
+        "trading_active": engine._trading_active,
+        "clients": len(clients),
+        "learning_mode": learning_mgr.mode,
+        "decisions": len(learning_mgr.decision_log),
+        "outcomes": len(learning_mgr.outcome_log),
+        "param_updates": len(LearningDataStore.load("param_update_history", [])),
+        "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+    }
+
 @app.post("/api/settings")
 def api_update_settings(data: dict):
     """更新系統設定"""
@@ -2334,14 +2375,15 @@ def api_universe():
         "display_limit": MARKET_BOARD_LIMIT,
     }
 
-@app.get("/api/health")
-def api_health():
+@app.get("/api/debug/learning")
+def api_debug_learning():
+    """Debug learning 內部狀態"""
+    agent_info = learning_mgr.get_agent_info()
     return {
-        "ok": True,
-        "paper_trade": PAPER_TRADE,
-        "trading_active": engine._trading_active,
-        "clients": len(clients),
-        "time": datetime.now().strftime("%H:%M:%S"),
+        "mode": learning_mgr.mode,
+        "decisions": len(learning_mgr.decision_log),
+        "outcomes": len(learning_mgr.outcome_log),
+        "agents": {k: {"weight": v.get("weight"), "params": v.get("params")} for k, v in agent_info.items()},
     }
 
 from fastapi import UploadFile, File
