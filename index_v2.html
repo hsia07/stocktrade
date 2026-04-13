@@ -2224,6 +2224,30 @@ async function loadLearning() {
       E('learn-outcomes-list').innerHTML = html;
     }
     
+    // 取得 param 變化歷史
+    const paramHist = await fetch('/api/learning/param_history?limit=5').then(r => r.json());
+    if (paramHist.param_updates && paramHist.param_updates.length > 0) {
+      const phHtml = paramHist.param_updates.slice().reverse().map(p => {
+        const ch = p.changes || {};
+        const chStr = Object.keys(ch).map(k => {
+          const bef = JSON.stringify(ch[k].before || {}).substring(0,15);
+          const aft = JSON.stringify(ch[k].after || {}).substring(0,15);
+          return `${k}:${bef}->${aft}`;
+        }).join(', ');
+        return `<div style="font-size:9px;padding:3px;border-bottom:1px solid var(--border)">${p.timestamp} ${p.success?'✅':'❌'} ${p.pnl?.toFixed(0)} | ${chStr}</div>`;
+      }).join('');
+      if (phHtml) {
+        const phDiv = document.getElementById('learn-param-history') || document.createElement('div');
+        phDiv.id = 'learn-param-history';
+        phDiv.style.cssText = 'margin:10px;max-height:120px;overflow-y:auto;background:var(--p3);border-radius:6px;padding:5px';
+        phDiv.innerHTML = `<div style="font-size:10px;font-weight:bold;margin-bottom:5px">參數變化歷史</div>${phHtml}`;
+        const statsDiv = document.getElementById('learn-stats');
+        if (statsDiv && !document.getElementById('learn-param-history')) {
+          statsDiv.appendChild(phDiv);
+        }
+      }
+    }
+    
   } catch(e) {
     console.log('載入學習資料失敗', e);
   }

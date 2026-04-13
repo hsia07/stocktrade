@@ -219,6 +219,8 @@ class AILearningManager:
     
     def log_outcome(self, data: dict):
         """記錄結果"""
+        params_before = {k: self.agent_memory.get(k, {}).get("params", {}).copy() for k in self.agent_memory}
+        
         data["timestamp"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         data["mode"] = self.mode
         self.outcome_log.append(data)
@@ -227,6 +229,23 @@ class AILearningManager:
         # 根據結果更新 AI 權重
         if self.mode != self.MODE_DISABLED:
             self._update_weights(data)
+        
+        # 記錄 param 變化
+        params_after = {k: self.agent_memory.get(k, {}).get("params", {}).copy() for k in self.agent_memory}
+        changes = {}
+        for k in params_before:
+            if params_before.get(k) != params_after.get(k):
+                changes[k] = {"before": params_before.get(k), "after": params_after.get(k)}
+        if changes:
+            self.param_update_history = getattr(self, 'param_update_history', [])
+            self.param_update_history.append({
+                "timestamp": data["timestamp"],
+                "changes": changes,
+                "pnl": data.get("pnl"),
+                "success": data.get("success"),
+            })
+            self.param_update_history = self.param_update_history[-20:]
+            LearningDataStore.save("param_update_history", self.param_update_history)
     
     def _update_weights(self, outcome: dict):
         """根據交易結果更新 AI 權重與參數 (平滑調整)"""
@@ -304,6 +323,7 @@ class AILearningManager:
                         params["regime_threshold"] = max(rt - 0.1, 0.5)
                 
                 mem["params"] = params
+                param_changes = {k: params[k] for k in params}
                 log.info(f"📈 {ai_name} 權重: {mem['weight']:.2f} 勝率:{win_rate*100:.0f}% | params:{json.dumps(params)}")
         
         # 儲存更新後的權重
@@ -1636,11 +1656,12 @@ class TradingEngine:
                     else:
                         base_score = 75
                     
-                    # 根據 slippage_allow 調整：進場價與現價差異大則扣分
+                    # 根據 slippage_allow 調整：用 bid/ask spread 估算滑價
                     price = tick.get("price", 0)
-                    entry_estimate = price
-                    slippage_pct = abs(price - entry_estimate) / price if price > 0 else 0
-                    if slippage_pct > slippage_th:
+                    bid = tick.get("bid") or price
+                    ask = tick.get("ask") or price
+                    spread_pct = (ask - bid) / price if price > 0 else 0
+                    if spread_pct > slippage_th:
                         base_score -= 20
                     
                     # 根據 liquidity_min 調整：成交量不足則扣分
@@ -2151,6 +2172,12 @@ def api_learning_decisions(limit: int = 20):
 def api_learning_outcomes(limit: int = 20):
     """取得結果記錄"""
     return learning_mgr.outcome_log[-limit:]
+
+@app.get("/api/learning/param_history")
+def api_learning_param_history(limit: int = 20):
+    """取得參數變化歷史"""
+    history = LearningDataStore.load("param_update_history", [])
+    return {"param_updates": history[-limit:]}
 
 @app.post("/api/settings")
 def api_update_settings(data: dict):
