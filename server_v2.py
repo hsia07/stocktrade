@@ -99,36 +99,23 @@ class LearningDataStore:
     def _path(name: str) -> Path:
         return LearningDataStore.DATA_DIR / f"{name}.json"
     
-    @staticmethod
-    def save(name: str, data: list):
-        """儲存列表資料"""
+@staticmethod
+    def load() -> dict:
+        """載入系統狀態"""
         try:
-            path = LearningDataStore._path(name)
-            with open(path, "w", encoding="utf-8") as f:
-                json.dump(data, f, ensure_ascii=False, indent=2)
-        except Exception as e:
-            log.warning(f"儲存失敗 {name}: {e}")
-    
-    @staticmethod
-    def load(name: str, default=None) -> list:
-        """載入列表資料"""
-        try:
-            path = LearningDataStore._path(name)
-            if path.exists():
-                with open(path, "r", encoding="utf-8") as f:
+            if StateStore.FILE.exists():
+                with open(StateStore.FILE, "r", encoding="utf-8") as f:
                     return json.load(f)
         except Exception as e:
-            log.warning(f"載入失敗 {name}: {e}")
-        return default if default is not None else []
+            log.warning(f"狀態載入失敗: {e}")
+        return {}
     
     @staticmethod
-    def append(name: str, item: dict, max_items: int = 1000):
-        """新增資料並維持上限"""
-        data = LearningDataStore.load(name)
-        data.append(item)
-        # 只保留最近 max_items 筆
-        data = data[-max_items:]
-        LearningDataStore.save(name, data)
+    def update_section(section: str, data: dict):
+        """更新某個區塊"""
+        current = StateStore.load()
+        current[section] = data
+        StateStore.save(current)
 
 
 # ══════════════════════════════════════════════════════════════════════
@@ -139,11 +126,13 @@ class StateStore:
     
     @staticmethod
     def save(data: dict):
-        """儲存系統狀態"""
+        """儲存系統狀態（merge）"""
         try:
             StateStore.FILE.parent.mkdir(exist_ok=True)
+            existing = StateStore.load()
+            existing.update(data)
             with open(StateStore.FILE, "w", encoding="utf-8") as f:
-                json.dump(data, f, ensure_ascii=False, indent=2)
+                json.dump(existing, f, ensure_ascii=False, indent=2)
         except Exception as e:
             log.warning(f"狀態儲存失敗: {e}")
     
@@ -912,7 +901,7 @@ class RiskOfficer:
             "halt_reason": self.halt_reason,
             "open_positions": self.open_positions,
         }
-        StateStore.save({"risk": data})
+        StateStore.update_section("risk", data)
     
     def load_state(self):
         """Startup 載入風控狀態"""
@@ -2257,7 +2246,7 @@ def api_learning_validate():
         "decisions_count": len(decisions),
         "outcomes_count": len(outcomes),
         "matched_ids": len(matched),
-        "matched_rate": round(len(matched) / max(len(decisions), 2) if decisions else 0,
+        "matched_rate": round(len(matched) / max(len(decisions), 1) if decisions else 0,
         "decisions_with_scores": decisions_with_scores,
         "decisions_with_params": decisions_with_params,
         "param_updates_count": len(param_hist),
@@ -2308,7 +2297,7 @@ def api_update_settings(data: dict):
         "auto_trade": AUTO_TRADE,
         "total_capital": TOTAL_CAPITAL,
     })
-    StateStore.save({"settings": settings})
+    StateStore.update_section("settings", settings)
     
     log.info(f"設定已更新：PAPER_TRADE={PAPER_TRADE}, AUTO_TRADE={AUTO_TRADE}, TOTAL_CAPITAL={TOTAL_CAPITAL}")
     return {"status": "ok", "paper_trade": PAPER_TRADE, "auto_trade": AUTO_TRADE}
@@ -2470,13 +2459,10 @@ def api_debug_restore():
     """Debug: 顯示重啟恢復相關狀態"""
     state = StateStore.load()
     return {
-        "loaded_settings": state.get("settings", {}),
+        "sections": list(state.keys()),
+        "settings": state.get("settings", {}),
+        "risk": state.get("risk", {}),
         "persisted_files": list(Path("learning_data").glob("*.json")) if Path("learning_data").exists() else [],
-        "api_health": {
-            "paper_trade": PAPER_TRADE,
-            "auto_trade": AUTO_TRADE,
-            "total_capital": TOTAL_CAPITAL,
-        },
     }
 
 @app.get("/api/debug/learning")
