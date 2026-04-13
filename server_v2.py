@@ -899,7 +899,33 @@ class RiskOfficer:
         self.open_positions   = {}
         self.is_halted        = False
         self.halt_reason      = ""
+        self._persist_state()
         Notifier.send("風控重置", "每日風控統計已重置，交易系統開始運行", "info")
+
+    def _persist_state(self):
+        """持久化風控狀態"""
+        data = {
+            "daily_pnl": self.daily_pnl,
+            "daily_trades": self.daily_trades,
+            "consecutive_loss": self.consecutive_loss,
+            "is_halted": self.is_halted,
+            "halt_reason": self.halt_reason,
+            "open_positions": self.open_positions,
+        }
+        StateStore.save({"risk": data})
+    
+    def load_state(self):
+        """Startup 載入風控狀態"""
+        state = StateStore.load()
+        risk_data = state.get("risk", {})
+        if risk_data:
+            self.daily_pnl = risk_data.get("daily_pnl", 0.0)
+            self.daily_trades = risk_data.get("daily_trades", 0)
+            self.consecutive_loss = risk_data.get("consecutive_loss", 0)
+            self.is_halted = risk_data.get("is_halted", False)
+            self.halt_reason = risk_data.get("halt_reason", "")
+            self.open_positions = risk_data.get("open_positions", {})
+            log.info(f"風控狀態已載入: pnl={self.daily_pnl}, trades={self.daily_trades}, halted={self.is_halted}")
 
     def can_enter(self, signal: Signal, price: float) -> tuple[bool, str]:
         now = datetime.now().strftime("%H:%M")
@@ -944,6 +970,7 @@ class RiskOfficer:
             "ai_scores": ai_scores or {},
             "regime": regime,
         }
+        self._persist_state()
 
     def on_exit(self, symbol: str, pnl: float):
         self.daily_pnl += pnl
@@ -956,6 +983,7 @@ class RiskOfficer:
                 Notifier.send("風控停機", f"已連續虧損 {self.consecutive_loss} 次，系統自動暫停交易\n今日損益：NT$ {self.daily_pnl:+.0f}", "alert")
         else:
             self.consecutive_loss = 0
+        self._persist_state()
 
     def get_report(self) -> AgentReport:
         remain = self.MAX_DAILY_LOSS + self.daily_pnl
@@ -2024,6 +2052,7 @@ clients: list[WebSocket] = []
 @app.on_event("startup")
 async def startup():
     load_settings()
+    engine.risk.load_state()
     engine.connect_shioaji()
     # 嘗試載入歷史資料
     log.info("📊 檢查歷史資料...")
@@ -2234,6 +2263,12 @@ def api_learning_validate():
         "param_updates_count": len(param_hist),
         "open_positions": len(engine.risk.open_positions),
         "latest_decision_ids": len(engine._latest_decision_ids),
+        "risk_state": {
+            "daily_pnl": engine.risk.daily_pnl,
+            "daily_trades": engine.risk.daily_trades,
+            "consecutive_loss": engine.risk.consecutive_loss,
+            "is_halted": engine.risk.is_halted,
+        },
         "status": "ok" if decisions_with_params == len(decisions) else "warning",
     }
 
