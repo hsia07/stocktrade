@@ -2162,8 +2162,9 @@ async function loadLearning() {
         const consensus = d.consensus_score || 0;
         const decision = d.final_decision || '-';
         
-        // 生成各 AI 理由
+        // 生成各 AI 理由與 params
         const j = judgments;
+        const params = d.ai_params_used || {};
         const reasons = [
           j.quant?.reason || '-',
           j.backtest?.reason || '-',
@@ -2172,6 +2173,7 @@ async function loadLearning() {
           j.execution?.reason || '-',
           j.analyst?.reason || '-',
         ];
+        const paramStr = Object.keys(params).map(k => `${k.charAt(0).toUpperCase()}:${JSON.stringify(params[k]).substring(0,20)}`).join(' ');
         
         return `
         <div style="padding:8px;border-bottom:1px solid var(--border);background:var(--p2)">
@@ -2180,6 +2182,7 @@ async function loadLearning() {
             <span style="color:${decision === '進場' ? 'var(--green)' : 'var(--red)'}">${decision}</span>
           </div>
           <div style="font-size:10px;color:var(--muted)">${d.action || '觀望'} @ ${d.price} | ${d.timestamp}</div>
+          <div style="font-size:8px;color:var(--accent);margin:2px 0">${paramStr}</div>
           <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:2px;margin:5px 0;font-size:9px;text-align:center">
             <div style="background:${qScore>=50?'var(--green)':qScore>0?'var(--yellow)':'var(--red)'};padding:2px;border-radius:3px;color:${qScore>=50?'white':'var(--text)'}">Q:${qScore}</div>
             <div style="background:${btScore>=50?'var(--green)':btScore>0?'var(--yellow)':'var(--red)'};padding:2px;border-radius:3px;color:${btScore>=50?'white':'var(--text)'}">BT:${btScore}</div>

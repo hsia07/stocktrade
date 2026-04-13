@@ -1701,6 +1701,14 @@ class TradingEngine:
                                 "entry_price": tick["price"],
                                 "stop_loss": sig.stop_loss,
                                 "target": sig.target_1,
+                                "ai_params_used": {
+                                    "quant": quant_params,
+                                    "backtest": backtest_params,
+                                    "risk": risk_params,
+                                    "signal": signal_params,
+                                    "execution": exec_params,
+                                    "analyst": analyst_params,
+                                },
                                 "ai_judgments": {
                                     "quant": {"judgment": "buy" if quant_score >= 50 else "sell" if quant_score < 30 else "watch", "confidence": quant_score, "reason": quant_rep.get("summary", "")[:50]},
                                     "backtest": {"judgment": "buy" if backtest_score >= 55 else "sell" if backtest_score < 40 else "watch", "confidence": backtest_score, "reason": backtest_rep.get("summary", "")[:50]},
@@ -1736,6 +1744,14 @@ class TradingEngine:
                             "consensus_score": consensus_score,
                             "regime": regime,
                             "final_decision": "不進場",
+                            "ai_params_used": {
+                                "quant": quant_params,
+                                "backtest": backtest_params,
+                                "risk": risk_params,
+                                "signal": signal_params,
+                                "execution": exec_params,
+                                "analyst": analyst_params,
+                            },
                             "ai_judgments": {
                                 "quant": {"judgment": "buy" if quant_score >= 50 else "sell" if quant_score < 30 else "watch", "confidence": quant_score, "reason": quant_rep.get("summary", "")[:50]},
                                 "backtest": {"judgment": "buy" if backtest_score >= 55 else "sell" if backtest_score < 40 else "watch", "confidence": backtest_score, "reason": backtest_rep.get("summary", "")[:50]},
