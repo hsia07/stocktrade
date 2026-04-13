@@ -588,6 +588,7 @@ class AgentReport:
     summary:   str
     details:   list
     timestamp: str = ""
+    score:     float = 50.0  # AI 評分 0-100
     def __post_init__(self):
         if not self.timestamp:
             self.timestamp = datetime.now().strftime("%H:%M:%S")
@@ -665,7 +666,7 @@ class QuantResearcher:
 
         self.alpha_scores[symbol] = score
         status = "ok" if score >= 40 else "warn" if score >= 10 else "idle"
-        return AgentReport("量化研究員", "🔬", status, f"{symbol} Alpha {score}/75", findings)
+        return AgentReport("量化研究員", "🔬", status, f"{symbol} Alpha {score}/75", findings, score=score)
 
 
 # ══════════════════════════════════════════════════════════════
@@ -749,7 +750,8 @@ class Backtester:
                 f"平均獲利：+{avg_w:.2f}  |  平均虧損：{avg_l:.2f}",
                 f"最大回撤：{max_dd:.2f}",
                 f"累計損益：{sum(pnl_list):+.2f}",
-            ]
+            ],
+            score=min(100, wr)
         ), res
 
 
@@ -959,7 +961,7 @@ class SignalEngineer:
             conf   = min(60 + bonus, 95)
             signal = Signal(symbol, Direction.LONG, price,
                             round(price - atr*1.2, 2), round(price + atr*1.5, 2), round(price + atr*2.8, 2),
-                            conf, "多頭全條件", datetime.now().strftime("%H:%M:%S"))
+                            conf, "多頭全條件", datetime.now().strftime("%H:%M:%S"), "signal")
             lines.append(f"🟢 多頭信號 信心度 {conf:.0f}% | 止損 {signal.stop_loss} | 目標 {signal.target_1}/{signal.target_2}")
             rep = AgentReport("信號工程師", "⚡", "ok", f"🟢 {symbol} 多頭 {conf:.0f}%", lines)
             self._signal_history.append(asdict(signal))
@@ -968,7 +970,7 @@ class SignalEngineer:
             conf   = min(60 + bonus, 95)
             signal = Signal(symbol, Direction.SHORT, price,
                             round(price + atr*1.2, 2), round(price - atr*1.5, 2), round(price - atr*2.8, 2),
-                            conf, "空頭全條件", datetime.now().strftime("%H:%M:%S"))
+                            conf, "空頭全條件", datetime.now().strftime("%H:%M:%S"), "signal")
             lines.append(f"🔴 空頭信號 信心度 {conf:.0f}% | 止損 {signal.stop_loss} | 目標 {signal.target_1}/{signal.target_2}")
             rep = AgentReport("信號工程師", "⚡", "alert", f"🔴 {symbol} 空頭 {conf:.0f}%", lines)
             self._signal_history.append(asdict(signal))
@@ -1106,7 +1108,8 @@ class MarketAnalyst:
             self.current_regime = "neutral"
 
         status = "warn" if any(k in " ".join(found) for k in ["異常", "爆量", "過熱", "沉重"]) else "ok"
-        return AgentReport("市場分析師", "🔭", status, f"{symbol} {self.current_regime} 今日 {day_chg:+.1f}%", found)
+        score = 50 + (day_chg * 5)  # 根據漲跌給分
+        return AgentReport("市場分析師", "🔭", status, f"{symbol} {self.current_regime} 今日 {day_chg:+.1f}%", found, score=score)
 
 
 # ══════════════════════════════════════════════════════════════

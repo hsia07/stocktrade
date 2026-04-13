@@ -357,6 +357,9 @@ canvas.ch{width:100%;display:block;}
         <div id="learn-agents" style="padding:10px">
           <div style="text-align:center;color:var(--muted);padding:30px">載入中...</div>
         </div>
+        <div class="chart-wrap" style="margin:10px;padding:10px;background:var(--p3);border-radius:6px">
+          <canvas id="weight-trend" height="100" style="width:100%;height:100px"></canvas>
+        </div>
         <div id="learn-regime-stats" style="padding:10px;font-size:11px">
           <div style="color:var(--muted);padding:10px"> Regime 統計載入中...</div>
         </div>
@@ -2164,6 +2167,55 @@ async function loadLearning() {
     }
     E('learn-agents').innerHTML = html || '<div style="text-align:center;color:var(--muted);padding:20px">等待學習資料...</div>';
     
+    // 繪製權重趨勢圖
+    const ctx = document.getElementById('weight-trend');
+    if (ctx) {
+      const canvas = ctx;
+      const c = canvas.getContext('2d');
+      const w = canvas.width = canvas.offsetWidth || 300;
+      const h = canvas.height = 100;
+      c.clearRect(0, 0, w, h);
+      
+      const colors = {quant:'#4fc3f7',backtest:'#ff8a65',risk:'#ba68c8',signal:'#4db6ac',execution:'#ffd54f',analyst:'#f06292'};
+      const names = Object.keys(agents);
+      const maxPoints = Math.min(30, w / 8);
+      
+      names.forEach((name, idx) => {
+        const wh = agents[name]?.weight_history || [];
+        if (wh.length < 2) return;
+        c.beginPath();
+        c.strokeStyle = colors[name] || '#888';
+        c.lineWidth = 1.5;
+        
+        const points = wh.slice(-maxPoints);
+        points.forEach((p, i) => {
+          const x = (i / maxPoints) * w;
+          const y = h - (p.weight - 0.3) / 1.7 * h;
+          if (i === 0) c.moveTo(x, y);
+          else c.lineTo(x, y);
+        });
+        c.stroke();
+        
+        // 標籤
+        const lastPt = points[points.length - 1];
+        if (lastPt) {
+          c.fillStyle = colors[name] || '#888';
+          c.font = '8px sans-serif';
+          c.fillText(name.substring(0,1).toUpperCase(), w - 10, h - (lastPt.weight - 0.3) / 1.7 * h);
+        }
+      });
+      
+      // 基線
+      c.strokeStyle = '#444';
+      c.lineWidth = 0.5;
+      c.setLineDash([3, 3]);
+      c.beginPath();
+      c.moveTo(0, h * 0.3);
+      c.lineTo(w, h * 0.3);
+      c.stroke();
+      c.setLineDash([]);
+    }
+    
     // 顯示 Regime 統計
     let regimeHtml = '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;font-size:11px">';
     for (const [name, data] of Object.entries(agents)) {
@@ -2182,13 +2234,38 @@ async function loadLearning() {
     // 取得決策記錄
     const decisions = await fetch('/api/learning/decisions?limit=10').then(r => r.json());
     if (decisions.length > 0) {
-      html = decisions.slice().reverse().map(d => `
-        <div style="padding:6px;border-bottom:1px solid var(--border)">
-          <span style="font-weight:bold">${d.symbol}</span> ${d.action} @ ${d.price}
-          <span style="float:right;color:${d.ai_source?.includes('quant') ? 'var(--accent)' : 'var(--muted)'}">${d.ai_source || '?'}</span>
-          <div style="font-size:10px;color:var(--muted)">${d.timestamp}</div>
+      html = decisions.slice().reverse().map(d => {
+        const scores = d.ai_scores || {};
+        const qScore = scores.quant || 0;
+        const btScore = scores.backtest || 0;
+        const rScore = scores.risk || 0;
+        const sScore = scores.signal || 0;
+        const eScore = scores.execution || 0;
+        const aScore = scores.analyst || 0;
+        const consensus = d.consensus_score || 0;
+        const decision = d.final_decision || '-';
+        return `
+        <div style="padding:8px;border-bottom:1px solid var(--border);background:var(--p2)">
+          <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+            <span style="font-weight:bold">${d.symbol}</span>
+            <span style="color:${decision === '進場' ? 'var(--green)' : 'var(--red)'}">${decision}</span>
+          </div>
+          <div style="font-size:10px;color:var(--muted)">${d.action || '觀望'} @ ${d.price} | ${d.timestamp}</div>
+          <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:2px;margin:5px 0;font-size:9px;text-align:center">
+            <div style="background:${qScore>=50?'var(--green)':qScore>0?'var(--yellow)':'var(--red)'};padding:2px;border-radius:3px;color:${qScore>=50?'white':'var(--text)'}">Q:${qScore}</div>
+            <div style="background:${btScore>=50?'var(--green)':btScore>0?'var(--yellow)':'var(--red)'};padding:2px;border-radius:3px;color:${btScore>=50?'white':'var(--text)'}">BT:${btScore}</div>
+            <div style="background:${rScore>=50?'var(--green)':rScore>0?'var(--yellow)':'var(--red)'};padding:2px;border-radius:3px;color:${rScore>=50?'white':'var(--text)'}">R:${rScore}</div>
+            <div style="background:${sScore>=50?'var(--green)':sScore>0?'var(--yellow)':'var(--red)'};padding:2px;border-radius:3px;color:${sScore>=50?'white':'var(--text)'}">S:${sScore}</div>
+            <div style="background:${eScore>=50?'var(--green)':eScore>0?'var(--yellow)':'var(--red)'};padding:2px;border-radius:3px;color:${eScore>=50?'white':'var(--text)'}">E:${eScore}</div>
+            <div style="background:${aScore>=50?'var(--green)':aScore>0?'var(--yellow)':'var(--red)'};padding:2px;border-radius:3px;color:${aScore>=50?'white':'var(--text)'}">A:${aScore}</div>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:10px">
+            <span style="color:var(--muted)">${d.regime}</span>
+            <span style="font-weight:bold;color:${consensus>=50?'var(--green)':'var(--red)'}">共識:${consensus.toFixed(0)}%</span>
+          </div>
         </div>
-      `).join('');
+      `;
+      }).join('');
       E('learn-decisions-list').innerHTML = html;
     }
     
@@ -2196,10 +2273,17 @@ async function loadLearning() {
     const outcomes = await fetch('/api/learning/outcomes?limit=10').then(r => r.json());
     if (outcomes.length > 0) {
       html = outcomes.slice().reverse().map(o => `
-        <div style="padding:6px;border-bottom:1px solid var(--border)">
-          <span style="font-weight:bold">${o.symbol}</span> ${o.pnl > 0 ? '🟢+' : '🔴'}${o.pnl?.toFixed(0)}
-          <span style="float:right">${o.reason}</span>
-          <div style="font-size:10px;color:var(--muted)">${o.timestamp}</div>
+        <div style="padding:8px;border-bottom:1px solid var(--border);background:var(--p2)">
+          <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+            <span style="font-weight:bold">${o.symbol}</span>
+            <span style="color:${o.pnl > 0 ? 'var(--green)' : 'var(--red)'}">${o.pnl > 0 ? '🟢' : '🔴'}$${o.pnl?.toFixed(0)}</span>
+          </div>
+          <div style="font-size:10px;color:var(--muted)">${o.reason}</div>
+          <div style="display:flex;justify-content:space-between;font-size:10px;margin-top:4px">
+            <span>${o.entry} → ${o.exit}</span>
+            <span>${o.regime}</span>
+          </div>
+          <div style="font-size:9px;color:var(--muted);margin-top:2px">${o.timestamp}</div>
         </div>
       `).join('');
       E('learn-outcomes-list').innerHTML = html;
