@@ -99,26 +99,37 @@ class LearningDataStore:
     def _path(name: str) -> Path:
         return LearningDataStore.DATA_DIR / f"{name}.json"
     
-@staticmethod
-    def load() -> dict:
-        """載入系統狀態"""
+    @staticmethod
+    def save(name: str, data: list):
+        """儲存列表資料"""
         try:
-            if StateStore.FILE.exists():
-                with open(StateStore.FILE, "r", encoding="utf-8") as f:
-                    return json.load(f)
+            path = LearningDataStore._path(name)
+            with open(path, "w", encoding="utf-8") as f:
+                json.dump(data, f, ensure_ascii=False, indent=2)
         except Exception as e:
-            log.warning(f"狀態載入失敗: {e}")
-        return {}
+            log.warning(f"儲存失敗 {name}: {e}")
     
     @staticmethod
-    def update_section(section: str, data: dict):
-        """更新某個區塊"""
-        current = StateStore.load()
-        current[section] = data
-        StateStore.save(current)
+    def load(name: str, default=None) -> list:
+        """載入列表資料"""
+        try:
+            path = LearningDataStore._path(name)
+            if path.exists():
+                with open(path, "r", encoding="utf-8") as f:
+                    return json.load(f)
+        except Exception as e:
+            log.warning(f"載入失敗 {name}: {e}")
+        return default if default is not None else []
+    
+    @staticmethod
+    def append(name: str, item: dict, max_items: int = 1000):
+        """新增資料並維持上限"""
+        data = LearningDataStore.load(name)
+        data.append(item)
+        data = data[-max_items:]
+        LearningDataStore.save(name, data)
 
 
-# ══════════════════════════════════════════════════════════════════════
 class StateStore:
     """系統狀態持久化"""
     
@@ -862,7 +873,7 @@ class Backtester:
 # ⑥ 角色三：風控官
 # ══════════════════════════════════════════════════════════════
 class RiskOfficer:
-    # ── 風控參數（可透過 .env 覆蓋）──
+    # ── 風控參數（可透過 .env 覆蓋，也可持久化）──
     MAX_DAILY_LOSS   = float(os.getenv("MAX_DAILY_LOSS",  "5000"))
     MAX_SINGLE_LOSS  = float(os.getenv("MAX_SINGLE_LOSS", "1500"))
     MAX_TRADES       = int(os.getenv("MAX_TRADES",        "6"))
@@ -873,6 +884,52 @@ class RiskOfficer:
     TRADE_END        = os.getenv("TRADE_END",    "13:00")
     FORCE_CLOSE      = os.getenv("FORCE_CLOSE",  "13:20")
     MAX_CHASE_PCT    = float(os.getenv("MAX_CHASE_PCT",   "0.005"))
+    
+    @classmethod
+    def update_config(cls, config: dict):
+        """更新風控參數"""
+        if "maxDailyLoss" in config:
+            cls.MAX_DAILY_LOSS = float(config["maxDailyLoss"])
+        if "maxSingleLoss" in config:
+            cls.MAX_SINGLE_LOSS = float(config["maxSingleLoss"])
+        if "maxTrades" in config:
+            cls.MAX_TRADES = int(config["maxTrades"])
+        if "maxPositions" in config:
+            cls.MAX_POSITIONS = int(config["maxPositions"])
+        if "minConfidence" in config:
+            cls.MIN_CONFIDENCE = float(config["minConfidence"])
+        if "tradeStart" in config:
+            cls.TRADE_START = config["tradeStart"]
+        if "tradeEnd" in config:
+            cls.TRADE_END = config["tradeEnd"]
+        if "forceClose" in config:
+            cls.FORCE_CLOSE = config["forceClose"]
+        # 持久化
+        StateStore.update_section("risk_config", {
+            "MAX_DAILY_LOSS": cls.MAX_DAILY_LOSS,
+            "MAX_SINGLE_LOSS": cls.MAX_SINGLE_LOSS,
+            "MAX_TRADES": cls.MAX_TRADES,
+            "MAX_POSITIONS": cls.MAX_POSITIONS,
+            "MIN_CONFIDENCE": cls.MIN_CONFIDENCE,
+            "TRADE_START": cls.TRADE_START,
+            "TRADE_END": cls.TRADE_END,
+            "FORCE_CLOSE": cls.FORCE_CLOSE,
+        })
+    
+    @classmethod
+    def load_config(cls):
+        """Startup 載入風控參數"""
+        data = StateStore.load_section("risk_config")
+        if data:
+            cls.MAX_DAILY_LOSS = data.get("MAX_DAILY_LOSS", cls.MAX_DAILY_LOSS)
+            cls.MAX_SINGLE_LOSS = data.get("MAX_SINGLE_LOSS", cls.MAX_SINGLE_LOSS)
+            cls.MAX_TRADES = data.get("MAX_TRADES", cls.MAX_TRADES)
+            cls.MAX_POSITIONS = data.get("MAX_POSITIONS", cls.MAX_POSITIONS)
+            cls.MIN_CONFIDENCE = data.get("MIN_CONFIDENCE", cls.MIN_CONFIDENCE)
+            cls.TRADE_START = data.get("TRADE_START", cls.TRADE_START)
+            cls.TRADE_END = data.get("TRADE_END", cls.TRADE_END)
+            cls.FORCE_CLOSE = data.get("FORCE_CLOSE", cls.FORCE_CLOSE)
+            log.info(f"風控參數已載入: MAX_DAILY_LOSS={cls.MAX_DAILY_LOSS}")
 
     def __init__(self):
         self.daily_pnl        = 0.0
@@ -2281,7 +2338,7 @@ def api_update_settings(data: dict):
     """更新系統設定"""
     global PAPER_TRADE, AUTO_TRADE, TOTAL_CAPITAL
     
-    settings = StateStore.load().get("settings", {})
+    settings = StateStore.load_section("settings")
     
     if "paper_trade" in data:
         PAPER_TRADE = bool(data["paper_trade"])
@@ -2291,7 +2348,7 @@ def api_update_settings(data: dict):
     if "total_capital" in data:
         TOTAL_CAPITAL = float(data["total_capital"])
     
-    # 持久化
+    # 保存 settings
     settings.update({
         "paper_trade": PAPER_TRADE,
         "auto_trade": AUTO_TRADE,
@@ -2299,13 +2356,16 @@ def api_update_settings(data: dict):
     })
     StateStore.update_section("settings", settings)
     
+    # 保存風控參數
+    if any(k in data for k in ["maxDailyLoss", "maxSingleLoss", "maxTrades", "maxPositions", "minConfidence", "tradeStart", "tradeEnd"]):
+        RiskOfficer.update_config(data)
+    
     log.info(f"設定已更新：PAPER_TRADE={PAPER_TRADE}, AUTO_TRADE={AUTO_TRADE}, TOTAL_CAPITAL={TOTAL_CAPITAL}")
     return {"status": "ok", "paper_trade": PAPER_TRADE, "auto_trade": AUTO_TRADE}
 
 def load_settings():
     """Startup 時載入設定"""
-    state = StateStore.load()
-    settings = state.get("settings", {})
+    settings = StateStore.load_section("settings")
     global PAPER_TRADE, AUTO_TRADE, TOTAL_CAPITAL
     if "paper_trade" in settings:
         PAPER_TRADE = settings["paper_trade"]
@@ -2313,6 +2373,7 @@ def load_settings():
         AUTO_TRADE = settings["auto_trade"]
     if "total_capital" in settings:
         TOTAL_CAPITAL = settings["total_capital"]
+    RiskOfficer.load_config()
     log.info(f"設定已載入：PAPER_TRADE={PAPER_TRADE}, AUTO_TRADE={AUTO_TRADE}, TOTAL_CAPITAL={TOTAL_CAPITAL}")
 
 @app.post("/api/test_trade")
