@@ -357,6 +357,9 @@ canvas.ch{width:100%;display:block;}
         <div id="learn-agents" style="padding:10px">
           <div style="text-align:center;color:var(--muted);padding:30px">載入中...</div>
         </div>
+        <div id="learn-regime-stats" style="padding:10px;font-size:11px">
+          <div style="color:var(--muted);padding:10px"> Regime 統計載入中...</div>
+        </div>
       </div>
       
       <div class="g2">
@@ -2160,6 +2163,21 @@ async function loadLearning() {
       `;
     }
     E('learn-agents').innerHTML = html || '<div style="text-align:center;color:var(--muted);padding:20px">等待學習資料...</div>';
+    
+    // 顯示 Regime 統計
+    let regimeHtml = '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;font-size:11px">';
+    for (const [name, data] of Object.entries(agents)) {
+      const rs = data.regime_stats || {};
+      for (const r in rs) {
+        const s = rs[r];
+        const wr = s.total > 0 ? (s.wins / s.total * 100).toFixed(0) : 0;
+        regimeHtml += `<div style="padding:5px;background:var(--p3);border-radius:4px">
+          ${name}/${r}: ${s.total || 0}筆 ${wr}%
+        </div>`;
+      }
+    }
+    regimeHtml += '</div>';
+    E('learn-regime-stats').innerHTML = regimeHtml;
     
     // 取得決策記錄
     const decisions = await fetch('/api/learning/decisions?limit=10').then(r => r.json());
