@@ -304,7 +304,7 @@ class AILearningManager:
                         params["regime_threshold"] = max(rt - 0.1, 0.5)
                 
                 mem["params"] = params
-                log.info(f"📈 {ai_name} 權重更新: {mem['weight']:.2f} (勝率{win_rate*100:.0f}%) | params: {params}")
+                log.info(f"📈 {ai_name} 權重更新: {mem['weight']:.2f} (勝率{win_rate*100:.0f}%) | params: {json.dumps(params)}")
         
         # 儲存更新後的權重
         LearningDataStore.save("agent_memory", self.agent_memory)
@@ -1126,9 +1126,14 @@ class MarketAnalyst:
         self._last_spike_key: dict[str, str] = {}
         self.current_regime: str = "neutral"  # bull / bear / neutral
 
-    def analyze(self, symbol: str, bars: list, tick: dict) -> AgentReport:
+    def analyze(self, symbol: str, bars: list, tick: dict, params: dict = None) -> AgentReport:
         if len(bars) < 5:
             return AgentReport("市場分析師", "🔭", "idle", "等待行情", ["等待 Tick…"])
+
+        # 取得學習參數
+        ap = params or {"regime_threshold": 1.5, "spike_sensitivity": 2.0}
+        regime_th = ap.get("regime_threshold", 1.5)
+        spike_sens = ap.get("spike_sensitivity", 2.0)
 
         closes = [b["close"] for b in bars]
         volumes = [b["volume"] for b in bars]
@@ -1141,7 +1146,7 @@ class MarketAnalyst:
             bar_time = str(bars[-1].get("time", datetime.now().strftime("%H:%M:%S")))
             spike_key = f"{symbol}:{bar_time}:{round(chg, 2)}"
 
-            if abs(chg) > 2:
+            if abs(chg) > spike_sens:
                 found.append(f"⚡ 單棒異常 {chg:+.1f}%")
                 if self._last_spike_key.get(symbol) != spike_key:
                     self._last_spike_key[symbol] = spike_key
@@ -1180,9 +1185,9 @@ class MarketAnalyst:
         found.insert(0, f"現價：{price:.2f}  今日 {day_chg:+.1f}%")
 
         # 判定市場 regime
-        if day_chg > 1.5:
+        if day_chg > regime_th:
             self.current_regime = "bull"
-        elif day_chg < -1.5:
+        elif day_chg < -regime_th:
             self.current_regime = "bear"
         else:
             self.current_regime = "neutral"
@@ -1576,10 +1581,11 @@ class TradingEngine:
                     backtest_params = learning_mgr.agent_memory.get("backtest", {}).get("params", {})
                     signal_params = learning_mgr.agent_memory.get("signal", {}).get("params", {})
                     risk_params = learning_mgr.agent_memory.get("risk", {}).get("params", {})
+                    analyst_params = learning_mgr.agent_memory.get("analyst", {}).get("params", {})
                     
                     # 六角色分析
                     self.agent_reports[f"quant_{sym}"]    = asdict(self.quant.analyze(sym, bars, quant_params))
-                    self.agent_reports[f"market_{sym}"]   = asdict(self.analyst.analyze(sym, bars, tick))
+                    self.agent_reports[f"market_{sym}"]   = asdict(self.analyst.analyze(sym, bars, tick, analyst_params))
                     sig, sig_rep = self.signal_eng.evaluate(sym, bars, tick, obook, signal_params)
                     self.agent_reports[f"signal_{sym}"]   = asdict(sig_rep)
                 except Exception as e:
