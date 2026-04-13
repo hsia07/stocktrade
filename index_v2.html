@@ -1300,7 +1300,14 @@ E('modeBtn2')?.addEventListener('click', async () => {
 E('saveRobotBtn')?.addEventListener('click', async () => {
   const data = {
     total_capital: parseInt(E('capitalInput2')?.value || 500000),
-    auto_trade: E('robotToggle')?.checked || false
+    auto_trade: E('robotToggle')?.checked || false,
+    maxDailyLoss: parseFloat(E('maxDailyLossInput')?.value || 5000),
+    maxSingleLoss: parseFloat(E('maxSingleLossInput')?.value || 1500),
+    maxTrades: parseInt(E('maxTradesInput')?.value || 6),
+    maxPositions: parseInt(E('maxPositionsInput')?.value || 2),
+    minConfidence: parseFloat(E('minConfidenceInput')?.value || 65),
+    tradeStart: E('tradeStartInput')?.value || '09:10',
+    tradeEnd: E('tradeEndInput')?.value || '13:00',
   };
   try {
     const res = await fetch('/api/settings', {
@@ -1998,7 +2005,14 @@ async function loadSettings() {
       E('autoStatusLabel').textContent = '現在為: ' + (s.auto_trade ? '開啟' : '關閉');
       E('autoStatusLabel').style.color = s.auto_trade ? 'var(--green)' : 'var(--red)';
     }
-    if (E('capitalInput2')) E('capitalInput2').value = s.total_capital;
+    if (E('capitalInput2')) E('capitalInput2').value = s.total_capital || 500000;
+    if (E('maxDailyLossInput')) E('maxDailyLossInput').value = s.max_daily_loss || 5000;
+    if (E('maxSingleLossInput')) E('maxSingleLossInput').value = s.max_single_loss || 1500;
+    if (E('maxTradesInput')) E('maxTradesInput').value = s.max_trades || 6;
+    if (E('maxPositionsInput')) E('maxPositionsInput').value = s.max_positions || 2;
+    if (E('minConfidenceInput')) E('minConfidenceInput').value = s.min_confidence || 65;
+    if (E('tradeStartInput')) E('tradeStartInput').value = s.trade_start || '09:10';
+    if (E('tradeEndInput')) E('tradeEndInput').value = s.trade_end || '13:00';
     if (E('modeBtn2')) E('modeBtn2').textContent = '現在為: ' + (s.paper_trade ? '紙交易' : '真實交易');
   } catch (e) { console.log('載入設定失敗', e); }
   loadSimDates();

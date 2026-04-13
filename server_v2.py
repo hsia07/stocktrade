@@ -157,6 +157,19 @@ class StateStore:
         except Exception as e:
             log.warning(f"狀態載入失敗: {e}")
         return {}
+    
+    @staticmethod
+    def load_section(section: str) -> dict:
+        """載入某個區塊"""
+        data = StateStore.load()
+        return data.get(section, {})
+    
+    @staticmethod
+    def update_section(section: str, data: dict):
+        """更新某個區塊"""
+        current = StateStore.load()
+        current[section] = data
+        StateStore.save(current)
 
 
 # ══════════════════════════════════════════════════════════════
