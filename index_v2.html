@@ -1151,10 +1151,8 @@ function renderSignalHistory(d) {
 // ── 風控 ──
 async function renderRisk(d) {
   const rr = d.agents?.risk;
-  let r = d.risk_config || {};
-  if (!r.max_daily_loss) {
-    try { const res = await fetch('/api/settings'); r = await res.json(); } catch {}
-  }
+  let r = {};
+  try { const res = await fetch('/api/settings'); r = await res.json(); } catch {}
   const params = [
     ['單日虧損上限','NT$ ' + (r.max_daily_loss || r.maxDailyLoss || 5000).toLocaleString()],
     ['單筆最大虧損','NT$ ' + (r.max_single_loss || r.maxSingleLoss || 1500).toLocaleString()],

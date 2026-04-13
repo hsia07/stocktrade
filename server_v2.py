@@ -2345,47 +2345,68 @@ def api_learning_validate():
     param_hist = LearningDataStore.load("param_update_history", [])
     trades = engine.trades_log
     
-    # 檢查 decision ID 是否都有對應 outcome
+    # 1. 檢查 outcome 是否只對應進場 decision
+    decisions_by_id = {d["id"]: d for d in decisions}
+    entry_decision_ids = {d["id"] for d in decisions if d.get("final_decision") == "進場"}
+    outcome_to_entry = sum(1 for o in outcomes if o.get("id") in entry_decision_ids)
+    
+    # 2. 檢查同一 decision 是否重複出現多個 outcome
+    outcome_count_by_id = {}
+    for o in outcomes:
+        oid = o.get("id")
+        outcome_count_by_id[oid] = outcome_count_by_id.get(oid, 0) + 1
+    duplicate_outcomes = {k: v for k, v in outcome_count_by_id.items() if v > 1}
+    
+    # 3. 檢查 decision/outcome/trades 是否可逐筆對回
     decision_ids = set(d.get("id") for d in decisions)
     outcome_ids = set(o.get("id") for o in outcomes)
-    matched = decision_ids & outcome_ids
+    matched_ids = decision_ids & outcome_ids
     
-    # 檢查 decision 中的 ai_scores 和 ai_params_used 是否都有
-    decisions_with_scores = sum(1 for d in decisions if d.get("ai_scores"))
-    decisions_with_params = sum(1 for d in decisions if d.get("ai_params_used"))
-    
-    # 檢查 open_positions 與 _latest_decision_ids 是否一致
+    # 4. open_positions 與 _latest_decision_ids 是否一致
     open_syms = set(engine.risk.open_positions.keys())
     decision_syms = set(engine._latest_decision_ids.keys())
-    position_match = len(open_syms & decision_syms)
+    position_match = list(open_syms & decision_syms)
+    position_mismatch = list(open_syms ^ decision_syms)
     
-    # 檢查 trades_log / outcome 是否可對回（透過 symbol + pnl 近似對應）
+    # 5. trades_log / outcome 是否可對回
     trades_by_sym = {}
     for t in trades:
         trades_by_sym.setdefault(t.symbol, []).append({"id": t.id, "pnl": t.pnl})
+    outcome_match = sum(1 for o in outcomes if o.get("symbol") in trades_by_sym)
     
-    outcome_match = 0
-    for o in outcomes:
-        sym = o.get("symbol")
-        if sym in trades_by_sym:
-            outcome_match += 1
+    # 6. param_update_history 是否可對回某筆 outcome
+    param_timestamps = {p.get("timestamp") for p in param_hist}
+    outcome_timestamps = {o.get("timestamp") for o in outcomes}
+    param_outcome_match = len(param_timestamps & outcome_timestamps)
+    
+    decision_ids = set(d.get("id") for d in decisions)
+    outcome_ids = set(o.get("id") for o in outcomes)
+    matched_ids_new = decision_ids & outcome_ids
+    
+    decisions_with_scores = sum(1 for d in decisions if d.get("ai_scores"))
+    decisions_with_params = sum(1 for d in decisions if d.get("ai_params_used"))
     
     max_rate = 0
     if decisions:
-        max_rate = round(len(matched) / max(len(decisions), 1), 2)
+        max_rate = round(len(matched_ids_new) / max(len(decisions), 1), 2)
     
     return {
         "decisions_count": len(decisions),
         "outcomes_count": len(outcomes),
         "trades_count": len(trades),
-        "matched_ids": len(matched),
+        "entry_decisions": len(entry_decision_ids),
+        "outcome_to_entry": outcome_to_entry,
+        "duplicate_outcomes": duplicate_outcomes,
+        "matched_ids": len(matched_ids_new),
         "matched_rate": max_rate,
         "decisions_with_scores": decisions_with_scores,
         "decisions_with_params": decisions_with_params,
         "param_updates_count": len(param_hist),
+        "param_outcome_match": param_outcome_match,
         "open_positions_count": len(open_syms),
         "latest_decision_ids_count": len(decision_syms),
         "position_match": position_match,
+        "position_mismatch": position_mismatch,
         "outcome_trade_match": outcome_match,
         "risk_state": {
             "daily_pnl": engine.risk.daily_pnl,
@@ -2393,39 +2414,7 @@ def api_learning_validate():
             "consecutive_loss": engine.risk.consecutive_loss,
             "is_halted": engine.risk.is_halted,
         },
-        "status": "ok" if decisions_with_params == len(decisions) else "warning",
-    }
-    
-    # 檢查 decision ID 是否都有對應 outcome
-    decision_ids = set(d.get("id") for d in decisions)
-    outcome_ids = set(o.get("id") for o in outcomes)
-    matched = decision_ids & outcome_ids
-    
-    # 檢查 decision 中的 ai_scores 和 ai_params_used 是否都有
-    decisions_with_scores = sum(1 for d in decisions if d.get("ai_scores"))
-    decisions_with_params = sum(1 for d in decisions if d.get("ai_params_used"))
-    
-    max_rate = 0
-    if decisions:
-        max_rate = round(len(matched) / max(len(decisions), 1), 2)
-    
-    return {
-        "decisions_count": len(decisions),
-        "outcomes_count": len(outcomes),
-        "matched_ids": len(matched),
-        "matched_rate": max_rate,
-        "decisions_with_scores": decisions_with_scores,
-        "decisions_with_params": decisions_with_params,
-        "param_updates_count": len(param_hist),
-        "open_positions": len(engine.risk.open_positions),
-        "latest_decision_ids": len(engine._latest_decision_ids),
-        "risk_state": {
-            "daily_pnl": engine.risk.daily_pnl,
-            "daily_trades": engine.risk.daily_trades,
-            "consecutive_loss": engine.risk.consecutive_loss,
-            "is_halted": engine.risk.is_halted,
-        },
-        "status": "ok" if decisions_with_params == len(decisions) else "warning",
+        "status": "ok" if not duplicate_outcomes and not position_mismatch and decisions_with_params == len(decisions) else "warning",
     }
 
 @app.get("/api/health")
