@@ -1617,7 +1617,7 @@ class TradingEngine:
                     else:
                         risk_score = 80 - (self.risk.consecutive_loss * 15)
                     
-                    # execution 分數：根據成交品質與學習參數計算
+                    # execution 分數：根據成交品質、流動性、滑價與學習參數計算
                     exec_params = learning_mgr.agent_memory.get("execution", {}).get("params", {})
                     slippage_th = exec_params.get("slippage_allow", 0.005)
                     liquidity_min = exec_params.get("liquidity_min", 1000)
@@ -1625,14 +1625,30 @@ class TradingEngine:
                     
                     recent_orders = self.execution.orders[-10:]
                     recent_errors = [o for o in recent_orders if o.get("status") == "error"]
+                    
+                    # 基礎分數
                     if len(recent_orders) == 0:
-                        exec_score = 70 * fill_q
+                        base_score = 70
                     elif len(recent_errors) > 3:
-                        exec_score = 20 * fill_q
+                        base_score = 20
                     elif len(recent_errors) > 0:
-                        exec_score = 50 * fill_q
+                        base_score = 50
                     else:
-                        exec_score = 75 * fill_q
+                        base_score = 75
+                    
+                    # 根據 slippage_allow 調整：進場價與現價差異大則扣分
+                    price = tick.get("price", 0)
+                    entry_estimate = price
+                    slippage_pct = abs(price - entry_estimate) / price if price > 0 else 0
+                    if slippage_pct > slippage_th:
+                        base_score -= 20
+                    
+                    # 根據 liquidity_min 調整：成交量不足則扣分
+                    vol = tick.get("volume", 0)
+                    if vol < liquidity_min:
+                        base_score -= 15
+                    
+                    exec_score = max(0, base_score * fill_q)
                     
                     ai_scores = {
                         "quant": quant_score,
@@ -1651,8 +1667,11 @@ class TradingEngine:
                     CONSENSUS_THRESHOLD = 50
                     risk_ok, risk_reason = self.risk.can_enter(sig, tick["price"])
                     
-                    # 仲裁決策：共識 + 風控
-                    if consensus_score >= CONSENSUS_THRESHOLD and risk_ok:
+                    # 仲裁決策：共識 + 風控 + execution 可交易性
+                    exec_ok = exec_score >= 40
+                    exec_reason = f"exec_score={exec_score:.0f}" if not exec_ok else "OK"
+                    
+                    if consensus_score >= CONSENSUS_THRESHOLD and risk_ok and exec_ok:
                         lots = self.risk.calc_lots(sig, tick["price"], risk_params)
                         if lots > 0:
                             act = "Buy" if sig.direction == Direction.LONG else "Sell"
