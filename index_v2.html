@@ -521,40 +521,38 @@ canvas.ch{width:100%;display:block;}
             <div style="padding:12px;background:var(--p3);border-radius:8px">
               <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)">
                 <span>單日最大虧損</span>
-                <input type="number" id="maxDailyLoss" value="5000" style="width:100px;padding:5px;border-radius:4px;border:1px solid var(--border);background:var(--p2);color:var(--text)"> 元
-              </div>
-              <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)">
-                <span>單筆最大虧損</span>
-                <input type="number" id="maxSingleLoss" value="1500" style="width:100px;padding:5px;border-radius:4px;border:1px solid var(--border);background:var(--p2);color:var(--text)"> 元
+<input type="number" id="maxDailyLossInput" value="5000" style="width:100px;padding:5px;border-radius:4px;border:1px solid var(--border);background:var(--p2);color:var(--text)"> 元
+                </div>
+                <div style="margin:8px 0">
+                  <b style="color:var(--text)">單筆最大虧損：</b>
+                  <input type="number" id="maxSingleLossInput" value="1500" style="width:100px;padding:5px;border-radius:4px;border:1px solid var(--border);background:var(--p2);color:var(--text)"> 元
               </div>
               <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)">
                 <span>單日最多交易</span>
-                <input type="number" id="maxTrades" value="6" style="width:100px;padding:5px;border-radius:4px;border:1px solid var(--border);background:var(--p2);color:var(--text)"> 筆
-              </div>
-              <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)">
-                <span>最大同時持倉</span>
-                <input type="number" id="maxPositions" value="2" style="width:100px;padding:5px;border-radius:4px;border:1px solid var(--border);background:var(--p2);color:var(--text)"> 個
+<input type="number" id="maxTradesInput" value="6" style="width:100px;padding:5px;border-radius:4px;border:1px solid var(--border);background:var(--p2);color:var(--text)"> 筆
+                </div>
+                <div style="margin:8px 0">
+                  <b style="color:var(--text)">最大持倉數：</b>
+                  <input type="number" id="maxPositionsInput" value="2" style="width:100px;padding:5px;border-radius:4px;border:1px solid var(--border);background:var(--p2);color:var(--text)"> 個
               </div>
               <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)">
                 <span>最低信心度</span>
-                <input type="number" id="minConfidence" value="65" style="width:100px;padding:5px;border-radius:4px;border:1px solid var(--border);background:var(--p2);color:var(--text)"> %
-              </div>
-              <div style="display:flex;justify-content:space-between;padding:8px 0">
-                <span>交易時段</span>
-                <div style="display:flex;align-items:center;gap:5px">
-                  <input type="time" id="tradeStart" value="09:10" style="width:100px;padding:5px;border-radius:4px;border:1px solid var(--border);background:var(--p2);color:var(--text)">
-                  <span>~</span>
-                  <input type="time" id="tradeEnd" value="13:00" style="width:100px;padding:5px;border-radius:4px;border:1px solid var(--border);background:var(--p2);color:var(--text)">
+<input type="number" id="minConfidenceInput" value="65" style="width:100px;padding:5px;border-radius:4px;border:1px solid var(--border);background:var(--p2);color:var(--text)"> %
+                </div>
+                <div style="margin:8px 0">
+                  <b style="color:var(--text)">交易時段：</b>
+                  <input type="time" id="tradeStartInput" value="09:10" style="width:100px;padding:5px;border-radius:4px;border:1px solid var(--border);background:var(--p2);color:var(--text)">
+                  ~
+                  <input type="time" id="tradeEndInput" value="13:00" style="width:100px;padding:5px;border-radius:4px;border:1px solid var(--border);background:var(--p2);color:var(--text)">
                 </div>
               </div>
             </div>
 
-            <button id="saveRobotBtn" style="width:100%;padding:15px;margin-top:20px;background:linear-gradient(135deg,var(--green),var(--accent));color:white;border:none;border-radius:8px;cursor:pointer;font-size:16px;font-weight:bold">儲存設定</button>
-            
-            <div style="margin-top:15px;padding:15px;background:var(--p3);border-radius:8px;text-align:center">
-              <div style="color:var(--muted);font-size:12px">系統會自動根據 AI 信號交易並記錄</div>
-              <div style="color:var(--accent);font-size:11px;margin-top:5px">設定僅對本次 session 有效，重啟後需重新設定</div>
+<button id="saveRobotBtn" style="width:100%;padding:15px;margin-top:20px;background:linear-gradient(135deg,var(--green),var(--accent));color:white;border:none;border-radius:8px;cursor:pointer;font-size:16px;font-weight:bold">儲存設定</button>
             </div>
+          </div>
+        </div>
+      </div>
             
             <div style="margin-top:15px">
               <button id="testTradeBtn" style="width:100%;padding:12px;background:var(--yellow);color:#000;border:none;border-radius:8px;cursor:pointer;font-weight:bold">🧪 測試交易（模擬一筆）</button>

@@ -2312,11 +2312,15 @@ def api_learning_validate():
     decisions_with_scores = sum(1 for d in decisions if d.get("ai_scores"))
     decisions_with_params = sum(1 for d in decisions if d.get("ai_params_used"))
     
+    max_rate = 0
+    if decisions:
+        max_rate = round(len(matched) / max(len(decisions), 1), 2)
+    
     return {
         "decisions_count": len(decisions),
         "outcomes_count": len(outcomes),
         "matched_ids": len(matched),
-        "matched_rate": round(len(matched) / max(len(decisions), 1) if decisions else 0,
+        "matched_rate": max_rate,
         "decisions_with_scores": decisions_with_scores,
         "decisions_with_params": decisions_with_params,
         "param_updates_count": len(param_hist),
