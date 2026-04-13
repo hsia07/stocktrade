@@ -160,6 +160,9 @@ class AILearningManager:
             "analyst": {"weight": 1.0, "regime_weights": {"bull": 1.2, "bear": 0.8, "neutral": 1.0}, "recent_scores": []},
         })
         
+        # 初始化完整結構
+        self.init_agent_if_needed()
+        
         log.info(f"📚 載入 AI 記憶: {len(self.decision_log)} 筆決策, {len(self.outcome_log)} 筆結果")
     
     def set_mode(self, mode: str):
@@ -171,6 +174,26 @@ class AILearningManager:
     
     def get_mode(self) -> str:
         return self.mode
+    
+    def init_agent_if_needed(self):
+        """初始化完整 agent_memory 結構"""
+        default_structure = {
+            "weight": 1.0,
+            "regime_weights": {"bull": 1.0, "bear": 0.5, "neutral": 0.8},
+            "recent_scores": [],
+            "regime_stats": {"bull": {"total": 0, "wins": 0}, "bear": {"total": 0, "wins": 0}, "neutral": {"total": 0, "wins": 0}},
+            "symbol_stats": {},
+            "weight_history": [],
+            "confidence_history": [],
+        }
+        for name in ["quant", "backtest", "risk", "signal", "execution", "analyst"]:
+            if name not in self.agent_memory:
+                self.agent_memory[name] = default_structure.copy()
+            else:
+                for k, v in default_structure.items():
+                    if k not in self.agent_memory[name]:
+                        self.agent_memory[name][k] = v
+        LearningDataStore.save("agent_memory", self.agent_memory)
     
     def log_decision(self, data: dict):
         """記錄決策"""
@@ -194,26 +217,40 @@ class AILearningManager:
         """根據交易結果更新 AI 權重 (平滑調整)"""
         pnl = outcome.get("pnl", 0)
         success = pnl > 0
-        
-        # 找出哪些 AI 参与了决策
-        ai_sources = outcome.get("ai_sources", [])
+        regime = outcome.get("regime", "neutral")
         
         # 更新每個 AI 的權重
-        for ai_name in ai_sources:
+        ai_scores = outcome.get("ai_scores", {})
+        for ai_name, score in ai_scores.items():
             if ai_name in self.agent_memory:
                 mem = self.agent_memory[ai_name]
-                score = 1.0 if success else 0.0
-                mem["recent_scores"].append(score)
-                mem["recent_scores"] = mem["recent_scores"][-20:]  # 只保留最近20筆
+                mem.setdefault("recent_scores", [])
+                mem.setdefault("regime_stats", {"bull": {"total": 0, "wins": 0}, "bear": {"total": 0, "wins": 0}, "neutral": {"total": 0, "wins": 0}})
+                
+                # 更新最近分數
+                score_val = 1.0 if success else 0.0
+                mem["recent_scores"].append(score_val)
+                mem["recent_scores"] = mem["recent_scores"][-20:]
+                
+                # 更新 regime 統計
+                if regime in mem["regime_stats"]:
+                    mem["regime_stats"][regime]["total"] = mem["regime_stats"][regime].get("total", 0) + 1
+                    if success:
+                        mem["regime_stats"][regime]["wins"] = mem["regime_stats"][regime].get("wins", 0) + 1
                 
                 # 計算最近勝率
                 if len(mem["recent_scores"]) >= 5:
                     win_rate = sum(mem["recent_scores"]) / len(mem["recent_scores"])
-                    # 平滑調整權重 (±10%)
                     delta = 0.1 if win_rate > 0.6 else (-0.1 if win_rate < 0.4 else 0)
-                    mem["weight"] = max(0.3, min(2.0, mem["weight"] + delta))
+                    old_weight = mem.get("weight", 1.0)
+                    mem["weight"] = max(0.3, min(2.0, old_weight + delta))
+                    
+                    # 記錄權重歷史
+                    mem.setdefault("weight_history", [])
+                    mem["weight_history"].append({"ts": datetime.now().strftime("%H:%M:%S"), "weight": mem["weight"]})
+                    mem["weight_history"] = mem["weight_history"][-50:]
                 
-                log.info(f"📈 {ai_name} 權重更新: {mem['weight']:.2f}")
+                log.info(f"📈 {ai_name} 權重更新: {mem['weight']:.2f} (勝率{win_rate*100:.0f}%)")
         
         # 儲存更新後的權重
         LearningDataStore.save("agent_memory", self.agent_memory)
@@ -541,6 +578,7 @@ class Signal:
     confidence:  float
     reason:      str
     timestamp:   str
+    ai_source:   str = ""  # 來源 AI
 
 @dataclass
 class AgentReport:
@@ -1004,6 +1042,7 @@ class MarketAnalyst:
     def __init__(self):
         self.anomalies: list = []
         self._last_spike_key: dict[str, str] = {}
+        self.current_regime: str = "neutral"  # bull / bear / neutral
 
     def analyze(self, symbol: str, bars: list, tick: dict) -> AgentReport:
         if len(bars) < 5:
@@ -1058,8 +1097,16 @@ class MarketAnalyst:
             found.append(f"行情正常，今日 {day_chg:+.1f}%")
         found.insert(0, f"現價：{price:.2f}  今日 {day_chg:+.1f}%")
 
+        # 判定市場 regime
+        if day_chg > 1.5:
+            self.current_regime = "bull"
+        elif day_chg < -1.5:
+            self.current_regime = "bear"
+        else:
+            self.current_regime = "neutral"
+
         status = "warn" if any(k in " ".join(found) for k in ["異常", "爆量", "過熱", "沉重"]) else "ok"
-        return AgentReport("市場分析師", "🔭", status, f"{symbol} 今日 {day_chg:+.1f}%", found)
+        return AgentReport("市場分析師", "🔭", status, f"{symbol} {self.current_regime} 今日 {day_chg:+.1f}%", found)
 
 
 # ══════════════════════════════════════════════════════════════
@@ -1457,48 +1504,81 @@ class TradingEngine:
                     if bt_res:
                         self.backtest_cache[sym] = asdict(bt_res)
 
-                # 信號 → 風控 → 下單
+                # 信號 → 仲裁器 → 風控 → 下單
                 if sig and self._trading_active:
-                    ok, reason = self.risk.can_enter(sig, tick["price"])
-                    if ok:
+                    # 收集各 AI 分數
+                    ai_scores = {
+                        "quant": self.agent_reports.get(f"quant_{sym}", {}).get("score", 50),
+                        "backtest": self.agent_reports.get(f"backtest_{sym}", {}).get("score", 50),
+                        "risk": 80,
+                        "signal": sig.confidence,
+                        "execution": 70,
+                        "analyst": self.agent_reports.get(f"market_{sym}", {}).get("score", 50),
+                    }
+                    
+                    # 仲裁器計算共識
+                    regime = self.analyst.current_regime
+                    consensus_score = learning_mgr.get_consensus_score(ai_scores, regime)
+                    
+                    # 共識門檻
+                    CONSENSUS_THRESHOLD = 50
+                    risk_ok, risk_reason = self.risk.can_enter(sig, tick["price"])
+                    
+                    # 仲裁決策：共識 + 風控
+                    if consensus_score >= CONSENSUS_THRESHOLD and risk_ok:
                         lots = self.risk.calc_lots(sig, tick["price"])
                         if lots > 0:
                             act = "Buy" if sig.direction == Direction.LONG else "Sell"
                             self.execution.place(sym, act, lots, tick["price"], sig.reason)
                             self.risk.on_entry(sig, lots, tick["price"])
-                            log.info(f"✅ 進場 {sym} {sig.direction} {lots}張 @{tick['price']} 信心度{sig.confidence:.0f}%")
+                            log.info(f"✅ 仲裁通過 {sym} {sig.direction} {lots}張 @{tick['price']} 共識{consensus_score:.0f}%")
                             
-                            # 記錄決策到學習系統
+                            # 記錄完整決策
                             decision_id = f"D{int(time.time()*1000)}"
                             learning_mgr.log_decision({
                                 "id": decision_id,
                                 "symbol": sym,
                                 "action": act,
                                 "price": tick["price"],
+                                "volume": tick.get("volume", 0),
                                 "reason": sig.reason,
                                 "ai_source": sig.ai_source,
-                                "ai_scores": {
-                                    "quant": self.agent_reports.get(f"quant_{sym}", {}).get("score", 50),
-                                    "analyst": self.agent_reports.get(f"market_{sym}", {}).get("score", 50),
-                                    "signal": sig.confidence,
-                                    "risk": 80 if ok else 0,
-                                },
-                                "regime": self.analyst.current_regime,
+                                "ai_scores": ai_scores,
+                                "consensus_score": consensus_score,
+                                "regime": regime,
+                                "final_decision": "進場",
+                                "entry_price": tick["price"],
+                                "stop_loss": sig.stop_loss,
+                                "target": sig.target_1,
                             })
                             
-                            # 儲存 decision_id 到 position 以便後續記錄結果
                             self._latest_decision_ids[sym] = decision_id
                             
                             Notifier.send(
                                 f"進場信號 {sym}",
                                 f"方向：{'多頭' if sig.direction==Direction.LONG else '空頭'}\n"
-                                f"進場：{tick['price']} | 止損：{sig.stop_loss}\n"
-                                f"目標：{sig.target_1} / {sig.target_2}\n"
-                                f"信心度：{sig.confidence:.0f}% | 張數：{lots}",
+                                f"共識：{consensus_score:.0f}% | 信心度：{sig.confidence:.0f}%\n"
+                                f"進場：{tick['price']} | 止損：{sig.stop_loss}",
                                 "info",
                             )
                     else:
-                        log.debug(f"⛔ 風控攔截 {sym}：{reason}")
+                        # 記錄不進場原因
+                        decision_id = f"D{int(time.time()*1000)}"
+                        learning_mgr.log_decision({
+                            "id": decision_id,
+                            "symbol": sym,
+                            "action": None,
+                            "price": tick["price"],
+                            "reason": f"共識{consensus_score:.0f}%<{CONSENSUS_THRESHOLD} 或 {risk_reason}",
+                            "ai_source": sig.ai_source,
+                            "ai_scores": ai_scores,
+                            "consensus_score": consensus_score,
+                            "regime": regime,
+                            "final_decision": "不進場",
+                        })
+                        log.debug(f"⛔ 仲裁攔截 {sym}：共識{consensus_score:.0f}% 風險:{risk_reason}")
+                    if not risk_ok:
+                        log.debug(f"⛔ 風控攔截 {sym}：{risk_reason}")
 
                 # 持倉管理
                 self._manage_positions(sym, tick["price"])
@@ -1546,9 +1626,13 @@ class TradingEngine:
                 open_time="", close_time=now,
             ))
             
-            # 記錄結果到學習系統
+            # 記錄完整結果到學習系統
             decision_id = self._latest_decision_ids.get(symbol)
             if decision_id:
+                # 計算持有時間、浮盈浮虧
+                entry_time_str = pos.get("entry_time", now)
+                hold_duration = 0  # 簡化計算
+                
                 learning_mgr.log_outcome({
                     "id": decision_id,
                     "symbol": symbol,
@@ -1557,6 +1641,9 @@ class TradingEngine:
                     "pnl": pnl,
                     "reason": reason,
                     "success": pnl > 0,
+                    "hold_duration": hold_duration,
+                    "max_favorable": 0,  # 可後續補
+                    "max_adverse": 0,
                 })
                 del self._latest_decision_ids[symbol]
             
