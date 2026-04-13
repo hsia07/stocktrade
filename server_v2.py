@@ -131,6 +131,34 @@ class LearningDataStore:
         LearningDataStore.save(name, data)
 
 
+# ══════════════════════════════════════════════════════════════════════
+class StateStore:
+    """系統狀態持久化"""
+    
+    FILE = Path("learning_data/system_state.json")
+    
+    @staticmethod
+    def save(data: dict):
+        """儲存系統狀態"""
+        try:
+            StateStore.FILE.parent.mkdir(exist_ok=True)
+            with open(StateStore.FILE, "w", encoding="utf-8") as f:
+                json.dump(data, f, ensure_ascii=False, indent=2)
+        except Exception as e:
+            log.warning(f"狀態儲存失敗: {e}")
+    
+    @staticmethod
+    def load() -> dict:
+        """載入系統狀態"""
+        try:
+            if StateStore.FILE.exists():
+                with open(StateStore.FILE, "r", encoding="utf-8") as f:
+                    return json.load(f)
+        except Exception as e:
+            log.warning(f"狀態載入失敗: {e}")
+        return {}
+
+
 # ══════════════════════════════════════════════════════════════
 # ①-AI 記憶與學習管理
 # ══════════════════════════════════════════════════════════════
@@ -1995,6 +2023,7 @@ clients: list[WebSocket] = []
 
 @app.on_event("startup")
 async def startup():
+    load_settings()
     engine.connect_shioaji()
     # 嘗試載入歷史資料
     log.info("📊 檢查歷史資料...")
@@ -2199,9 +2228,12 @@ def api_learning_validate():
         "decisions_count": len(decisions),
         "outcomes_count": len(outcomes),
         "matched_ids": len(matched),
+        "matched_rate": round(len(matched) / max(len(decisions), 2) if decisions else 0,
         "decisions_with_scores": decisions_with_scores,
         "decisions_with_params": decisions_with_params,
         "param_updates_count": len(param_hist),
+        "open_positions": len(engine.risk.open_positions),
+        "latest_decision_ids": len(engine._latest_decision_ids),
         "status": "ok" if decisions_with_params == len(decisions) else "warning",
     }
 
@@ -2225,6 +2257,8 @@ def api_update_settings(data: dict):
     """更新系統設定"""
     global PAPER_TRADE, AUTO_TRADE, TOTAL_CAPITAL
     
+    settings = StateStore.load().get("settings", {})
+    
     if "paper_trade" in data:
         PAPER_TRADE = bool(data["paper_trade"])
     if "auto_trade" in data:
@@ -2233,32 +2267,53 @@ def api_update_settings(data: dict):
     if "total_capital" in data:
         TOTAL_CAPITAL = float(data["total_capital"])
     
+    # 持久化
+    settings.update({
+        "paper_trade": PAPER_TRADE,
+        "auto_trade": AUTO_TRADE,
+        "total_capital": TOTAL_CAPITAL,
+    })
+    StateStore.save({"settings": settings})
+    
     log.info(f"設定已更新：PAPER_TRADE={PAPER_TRADE}, AUTO_TRADE={AUTO_TRADE}, TOTAL_CAPITAL={TOTAL_CAPITAL}")
     return {"status": "ok", "paper_trade": PAPER_TRADE, "auto_trade": AUTO_TRADE}
+
+def load_settings():
+    """Startup 時載入設定"""
+    state = StateStore.load()
+    settings = state.get("settings", {})
+    global PAPER_TRADE, AUTO_TRADE, TOTAL_CAPITAL
+    if "paper_trade" in settings:
+        PAPER_TRADE = settings["paper_trade"]
+    if "auto_trade" in settings:
+        AUTO_TRADE = settings["auto_trade"]
+    if "total_capital" in settings:
+        TOTAL_CAPITAL = settings["total_capital"]
+    log.info(f"設定已載入：PAPER_TRADE={PAPER_TRADE}, AUTO_TRADE={AUTO_TRADE}, TOTAL_CAPITAL={TOTAL_CAPITAL}")
 
 @app.post("/api/test_trade")
 def api_test_trade():
     """測試交易（模擬一筆交易）"""
-    from datetime import datetime
     now = datetime.now().strftime("%H:%M:%S")
+    test_id = f"TEST-{int(time.time())}"
     
-    # 模擬一筆交易
-    test_trade = {
-        "id": f"TEST-{int(time.time())}",
-        "symbol": "2330",
-        "action": "Buy",
-        "lots": 1,
-        "price": 2000.0,
-        "reason": "測試交易",
-        "status": "simulated",
-        "time": now,
-        "logic": "這是測試交易邏輯記錄",
-    }
+    test_trade = TradeRecord(
+        id=test_id,
+        symbol="2330",
+        direction="LONG",
+        entry=2000.0,
+        exit=0.0,
+        lots=1,
+        pnl=0.0,
+        reason="測試交易",
+        open_time=now,
+        close_time=now,
+    )
     
     engine.trades_log.append(test_trade)
     log.info(f"[測試交易] 買入 2330 1張 @ 2000")
     
-    return test_trade
+    return asdict(test_trade)
 
 @app.post("/api/stop_robot")
 def api_stop_robot():
@@ -2373,6 +2428,20 @@ def api_universe():
         "universe_size": len(engine.universe_rows),
         "detail_symbols": engine.detail_symbols,
         "display_limit": MARKET_BOARD_LIMIT,
+    }
+
+@app.get("/api/debug/restore")
+def api_debug_restore():
+    """Debug: 顯示重啟恢復相關狀態"""
+    state = StateStore.load()
+    return {
+        "loaded_settings": state.get("settings", {}),
+        "persisted_files": list(Path("learning_data").glob("*.json")) if Path("learning_data").exists() else [],
+        "api_health": {
+            "paper_trade": PAPER_TRADE,
+            "auto_trade": AUTO_TRADE,
+            "total_capital": TOTAL_CAPITAL,
+        },
     }
 
 @app.get("/api/debug/learning")
