@@ -973,6 +973,42 @@ class RiskOfficer:
         }
         StateStore.update_section("risk", data)
     
+    def _persist_trades(self, engine):
+        """持久化交易記錄"""
+        trades = [asdict(t) for t in engine.trades_log[-100:]]
+        StateStore.update_section("trades_log", trades)
+    
+    def _load_trades(self, engine):
+        """載入交易記錄"""
+        trades = StateStore.load_section("trades_log")
+        if trades:
+            engine.trades_log = [TradeRecord(**t) for t in trades]
+            log.info(f"交易記錄已載入: {len(engine.trades_log)} 筆")
+    
+    def _persist_decisions(self, learning_mgr):
+        """持久化決策 ID"""
+        decisions = {sym: decision_id for sym, decision_id in engine._latest_decision_ids.items()}
+        StateStore.update_section("latest_decision_ids", decisions)
+    
+    def _load_decisions(self, engine):
+        """載入決策 ID"""
+        decisions = StateStore.load_section("latest_decision_ids")
+        if decisions:
+            engine._latest_decision_ids = decisions
+            log.info(f"決策 ID 已載入: {len(engine._latest_decision_ids)} 檔")
+    
+    def _persist_execution(self, execution):
+        """持久化委託"""
+        orders = execution.orders[-100:]
+        StateStore.update_section("execution_orders", orders)
+    
+    def _load_execution(self, execution):
+        """載入委託"""
+        orders = StateStore.load_section("execution_orders")
+        if orders:
+            execution.orders = orders
+            log.info(f"委託記錄已載入: {len(execution.orders)} 筆")
+    
     def load_state(self):
         """Startup 載入風控狀態"""
         state = StateStore.load()
@@ -1955,6 +1991,9 @@ class TradingEngine:
                 lots=lots, pnl=round(pnl, 0), reason=reason,
                 open_time="", close_time=now,
             ))
+            self.risk._persist_trades(self)
+            self.risk._persist_decisions(learning_mgr)
+            self.risk._persist_execution(self.execution)
             
             # 記錄完整結果到學習系統
             decision_id = self._latest_decision_ids.get(symbol)
@@ -2112,7 +2151,10 @@ clients: list[WebSocket] = []
 async def startup():
     load_settings()
     engine.risk.load_state()
-    engine.connect_shioaji()
+    engine.risk._load_trades(engine)
+        engine.risk._load_decisions(engine)
+        engine.risk._load_execution(engine.execution)
+        engine.connect_shioaji()
     # 嘗試載入歷史資料
     log.info("📊 檢查歷史資料...")
     engine.mock.load_all_historical()
@@ -2302,6 +2344,51 @@ def api_learning_validate():
     decisions = learning_mgr.decision_log
     outcomes = learning_mgr.outcome_log
     param_hist = LearningDataStore.load("param_update_history", [])
+    trades = engine.trades_log
+    
+    # 檢查 decision ID 是否都有對應 outcome
+    decision_ids = set(d.get("id") for d in decisions)
+    outcome_ids = set(o.get("id") for o in outcomes)
+    matched = decision_ids & outcome_ids
+    
+    # 檢查 decision 中的 ai_scores 和 ai_params_used 是否都有
+    decisions_with_scores = sum(1 for d in decisions if d.get("ai_scores"))
+    decisions_with_params = sum(1 for d in decisions if d.get("ai_params_used"))
+    
+    # 檢查 open_positions 與 _latest_decision_ids 是否一致
+    open_syms = set(engine.risk.open_positions.keys())
+    decision_syms = set(engine._latest_decision_ids.keys())
+    position_match = len(open_syms & decision_syms)
+    
+    # 檢查 trades_log / outcome 是否可對回
+    trades_ids = set(t.id for t in trades)
+    outcome_match = len(outcome_ids & trades_ids)
+    
+    max_rate = 0
+    if decisions:
+        max_rate = round(len(matched) / max(len(decisions), 1), 2)
+    
+    return {
+        "decisions_count": len(decisions),
+        "outcomes_count": len(outcomes),
+        "trades_count": len(trades),
+        "matched_ids": len(matched),
+        "matched_rate": max_rate,
+        "decisions_with_scores": decisions_with_scores,
+        "decisions_with_params": decisions_with_params,
+        "param_updates_count": len(param_hist),
+        "open_positions": len(open_syms),
+        "latest_decision_ids": len(decision_syms),
+        "position_match": position_match,
+        "outcome_trade_match": outcome_match,
+        "risk_state": {
+            "daily_pnl": engine.risk.daily_pnl,
+            "daily_trades": engine.risk.daily_trades,
+            "consecutive_loss": engine.risk.consecutive_loss,
+            "is_halted": engine.risk.is_halted,
+        },
+        "status": "ok" if decisions_with_params == len(decisions) else "warning",
+    }
     
     # 檢查 decision ID 是否都有對應 outcome
     decision_ids = set(d.get("id") for d in decisions)

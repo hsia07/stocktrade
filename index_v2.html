@@ -1149,12 +1149,20 @@ function renderSignalHistory(d) {
 }
 
 // ── 風控 ──
-function renderRisk(d) {
+async function renderRisk(d) {
   const rr = d.agents?.risk;
+  let r = d.risk_config || {};
+  if (!r.max_daily_loss) {
+    try { const res = await fetch('/api/settings'); r = await res.json(); } catch {}
+  }
   const params = [
-    ['單日虧損上限','NT$ 5,000'],['單筆最大虧損','NT$ 1,500'],['單日最多交易','6 筆'],
-    ['同時持倉上限','2 個'],['最低信心度','65%'],['交易時段','09:10 ~ 13:00'],
-    ['強制平倉','13:20'],['最大連敗','3 次'],['追價上限','0.5%'],
+    ['單日虧損上限','NT$ ' + (r.max_daily_loss || r.maxDailyLoss || 5000).toLocaleString()],
+    ['單筆最大虧損','NT$ ' + (r.max_single_loss || r.maxSingleLoss || 1500).toLocaleString()],
+    ['單日最多交易',(r.max_trades || r.maxTrades || 6) + ' 筆'],
+    ['同時持倉上限',(r.max_positions || r.maxPositions || 2) + ' 個'],
+    ['最低信心度',(r.min_confidence || r.minConfidence || 65) + '%'],
+    ['交易時段',(r.trade_start || r.tradeStart || '09:10') + ' ~ ' + (r.trade_end || r.tradeEnd || '13:00')],
+    ['強制平倉',r.force_close || r.forceClose || '13:20'],
   ];
   E('risk-params').innerHTML = params.map(([k,v]) =>
     `<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border);font-size:12px">
