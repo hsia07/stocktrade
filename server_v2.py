@@ -395,15 +395,29 @@ class AILearningManager:
         
         return weighted_score / total_weight
     
-    def can_trade(self) -> bool:
+    # SOURCE OF TRUTH 實現：價格來源驗證
+    # 若 price source 為 cached/unavailable，阻止交易（只能顯示）
+    INVALID_SOURCES = ("unavailable", "cached", "mock")
+    
+    def can_trade(self, tick: dict = None) -> bool:
         """檢查是否可以交易"""
         if self.mode == self.MODE_DISABLED:
+            return False
+        # SOURCE OF TRUTH: 若價格來源無效，阻止交易
+        if tick and tick.get("source") in self.INVALID_SOURCES:
             return False
         if self.mode == self.MODE_LIVE and not PAPER_TRADE:
             return True
         if self.mode == self.MODE_PAPER:
             return True
         return False
+    
+    def validate_tick_source(self, sym: str, ticks: dict) -> tuple:
+        """驗證價格來源是否有效 (return: is_valid, source)"""
+        tick = ticks.get(sym, {})
+        source = tick.get("source", "unknown")
+        is_valid = source not in self.INVALID_SOURCES
+        return is_valid, source
     
     def get_status(self) -> dict:
         """取得學習系統狀態"""
