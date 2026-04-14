@@ -2100,7 +2100,9 @@ class TradingEngine:
     # SOURCE OF TRUTH 本實現：
     # - ticks: self.latest_ticks (價格事實)
     # - positions: self.risk.open_positions (持倉事實)
-    # - trades_log: self.trades_log (交易事實)
+    # - trades_log: self.trades_log (成交事實 - 已完成交易)
+    # - execution_orders: self.execution.orders (委託記錄 - 只是意圖尚未成交)
+    # - news: 未接入 (目前無新聞源)
     def get_state(self) -> dict:
         return {
             "ticks":          self.latest_ticks,        # SOURCE: 實時價格
@@ -2113,7 +2115,8 @@ class TradingEngine:
             "trading_active": self._trading_active,
             "auto_trade":     AUTO_TRADE,
             "paper_trade":    PAPER_TRADE,
-            "trades_log":     [asdict(t) for t in self.trades_log[-30:]],  # SOURCE: 交易記錄
+            "trades_log":     [asdict(t) for t in self.trades_log[-30:]],  # SOURCE: 成交記錄
+            "execution_orders": self.execution.orders[-30:] if hasattr(self.execution, 'orders') else [],  # SOURCE: 委託記錄
             "backtest":       self.backtest_cache,
             "signal_history": self.signal_eng.get_history(),
             "anomalies":      self.analyst.anomalies[-20:],
@@ -2123,6 +2126,20 @@ class TradingEngine:
             "universe_size": len(self.universe_rows),
             "scan_all_tw":   bool(self.market_scanner),
             "timestamp":    datetime.now().strftime("%H:%M:%S"),
+            "sources": {
+                "ticks": "latest_ticks",
+                "positions": "risk.open_positions",
+                "trades_log": "trades_log",  # 成交事實 (已完成交易)
+                "execution_orders": "execution.orders",  # 委託記錄 (只是意圖)
+                "news": None,  # 新聞源未接入
+            },
+            "source_info": {
+                "ticks": {"display": "實時價格", " tradable": True, "fallback": ["cached_real", "unavailable", "cached", "mock"]},
+                "positions": {"display": "持倉", " tradable": True, "fallback": []},
+                "trades_log": {"display": "成交記錄", " tradable": False, "fallback": []},
+                "execution_orders": {"display": "委託記錄", " tradable": False, "fallback": []},
+                "news": {"display": "未接入", " tradable": False, "fallback": []},
+            },
         }
 
 

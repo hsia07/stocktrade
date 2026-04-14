@@ -651,6 +651,7 @@ canvas.ch{width:100%;display:block;}
   <span>⏱ <span id="sb-ts">--</span></span>
   <span>🤖 <span id="sb-eng2">等待中</span></span>
   <span>📊 <span id="sb-mode">--</span></span>
+  <span>📡 <span id="sb-src">--</span></span>
   <span class="warn-note">⚠️ 本平台為輔助工具，不構成投資建議</span>
 </div>
 
@@ -757,6 +758,14 @@ function render(d) {
   const eng = d.trading_active ? '🟢 盤中運行' : (d.is_halted ? '🔴 停機' : '🟡 盤外待機');
   document.getElementById('sb-eng2').textContent = eng;
   document.getElementById('sb-mode').textContent = d.paper_trade === false ? '真實交易' : '紙交易模式';
+  const src = d.sources || {};
+  const srcInfo = d.source_info || {};
+  const tickSrc = src.ticks ? '實時' : (src.news === null ? '未接' : '-');
+  const posSrc = src.positions ? '持倉' : (src.execution_orders ? '委託' : '-');
+  const tradeSrc = src.trades_log ? '成交' : '-';
+  const execSrc = src.execution_orders ? '委託' : '-';
+  const newsSrc = src.news === null ? '未接入' : '-';
+  document.getElementById('sb-src').textContent = `${tickSrc}/${tradeSrc}/${posSrc}/${newsSrc}`;
 }
 
 
@@ -1017,9 +1026,11 @@ function renderPositions(d) {
     const mult  = p.direction === 'long' ? 1 : -1;
     const upnl  = hasPrice ? (price - p.entry) * mult * (p.lots||1) * 1000 : null;
     const cls   = upnl == null ? 'nu' : (upnl >= 0 ? 'up' : 'dn');
-    const sourceLabel = !t ? '資料不可用' : (t.source === 'twse' ? 'TWSE' : t.source === 'finmind' ? 'FinMind' : t.source === 'cached_real' ? '暫用前次真實價' : '資料不可用');
+    const sourceLabel = !t ? '資料不可用' : (t.source === 'twse' ? 'TWSE' : t.source === 'finmind' ? 'FinMind' : t.source === 'cached_real' ? '暫用前次真實價' : t.source === 'cached' ? '快取' : '資料不可用');
+    const tradable = t && t.source && !['unavailable', 'cached', 'cached_real', 'mock'].includes(t.source);
+    const tradeStatus = !t ? '❌' : (tradable ? '✅可交易' : '👁僅顯示');
     return `<div class="pos-row">
-      <div><div class="pos-sym">${sym}</div><div class="nu" style="font-size:10px">${nameOf(sym)} · ${sourceLabel}</div></div>
+      <div><div class="pos-sym">${sym}</div><div class="nu" style="font-size:10px">${nameOf(sym)} · ${sourceLabel} ${tradeStatus}</div></div>
       <div><span class="pos-dir ${p.direction==='long'?'pos-long':'pos-short'}">${p.direction==='long'?'多單':'空單'}</span></div>
       <div><div class="nu" style="font-size:10px">成本</div><div style="font-family:var(--mono)">${p.entry?.toFixed(2)||'-'}</div></div>
       <div><div class="nu" style="font-size:10px">止損</div><div class="dn" style="font-family:var(--mono)">${p.stop?.toFixed(2)||'-'}</div></div>
