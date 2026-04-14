@@ -396,8 +396,8 @@ class AILearningManager:
         return weighted_score / total_weight
     
     # SOURCE OF TRUTH 實現：價格來源驗證
-    # 若 price source 為 cached/unavailable，阻止交易（只能顯示）
-    INVALID_SOURCES = ("unavailable", "cached", "mock")
+    # 若 price source 為 fallback/無效，阻止交易（只能顯示）
+    INVALID_SOURCES = ("unavailable", "cached", "cached_real", "mock")
     
     def can_trade(self, tick: dict = None) -> bool:
         """檢查是否可以交易"""
