@@ -1806,7 +1806,7 @@ E('resetSimBtn')?.addEventListener('click', () => {
 
 // 模擬結束 - 產生報告
 function finishSimulation() {
-  const sells = simData.trades.filter(t => t.type === 'Sell');
+  const sells = simData.trades.filter(t => t.type === '當沖買回');
   const wins = sells.filter(t => t.pnl > 0).length;
   const losses = sells.filter(t => t.pnl <= 0).length;
   const total = sells.length;
@@ -1816,7 +1816,7 @@ function finishSimulation() {
   // 計算最大回撤
   let peak = 0, maxDd = 0, equity = 0;
   for (const t of simData.trades) {
-    if (t.type === 'Sell') {
+    if (t.type === '當沖買回') {
       equity += t.pnl || 0;
       if (equity > peak) peak = equity;
       const dd = equity - peak;
@@ -1827,7 +1827,7 @@ function finishSimulation() {
   // 統計各股票表現
   const symStats = {};
   for (const t of simData.trades) {
-    if (t.type === 'Sell') {
+    if (t.type === '當沖買回') {
       if (!symStats[t.symbol]) symStats[t.symbol] = { trades: 0, pnl: 0, wins: 0 };
       symStats[t.symbol].trades++;
       symStats[t.symbol].pnl += t.pnl || 0;
