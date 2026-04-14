@@ -750,7 +750,7 @@ function wsSend(obj) { if (S.ws?.readyState === 1) S.ws.send(JSON.stringify(obj)
 // SCHEMA VERSION: 1.0.0
 // 核心欄位：ticks, positions, trades_log, execution_orders, backtest, sources, source_info
 // 第4輪要求：前端對8個核心欄位的讀取鍵名一致性清查
-const REQUIRED_CORE = ['ticks', 'positions', 'trades_log', 'execution_orders', 'sources', 'source_info', 'backtest', 'signal_history'];
+const REQUIRED_CORE = ['ticks', 'positions', 'trades_log', 'execution_orders', 'sources', 'source_info', 'backtest', 'signal_history', 'mode'];
 const WARNING_CORE = [];
 const CORE_KEYS = {
   ticks: { read: 'd.ticks', direct: true },
@@ -788,9 +788,11 @@ function render(d) {
   renderSignalHistory(d); renderRisk(d); renderRobot(d);
   renderBacktest(d);
   updateBadges(d);
-  const eng = d.trading_active ? '🟢 盤中運行' : (d.is_halted ? '🔴 停機' : '🟡 盤外待機');
-  document.getElementById('sb-eng2').textContent = eng;
-  document.getElementById('sb-mode').textContent = d.paper_trade === false ? '真實交易' : '紙交易模式';
+  const modeLabels = {observe: '🟡 觀察中', sim: '📊 模擬', paper: '📝 紙交易', live: '🟢 實盤', pause: '⏸️ 暫停', recovery: '🔴 恢復中'};
+  const mode = d.mode || 'pause';
+  const modeLabel = modeLabels[mode] || '⏸️ 未知';
+  document.getElementById('sb-eng2').textContent = modeLabel;
+  document.getElementById('sb-mode').textContent = mode;
   const src = d.sources || {};
   const tickSrc = src.ticks ? '實時' : '-';
   const posSrc = src.positions ? '持倉' : '-';
@@ -1233,8 +1235,10 @@ function renderRobot(d) {
   if (E('todayTrades')) E('todayTrades').textContent = (d.daily_trades || 0) + ' 筆';
   if (E('todayPositions')) E('todayPositions').textContent = Object.keys(d.positions || {}).length + ' 個';
   if (E('engineStatus')) {
-    E('engineStatus').textContent = d.is_halted ? '停機' : (d.trading_active ? '運行中' : '待機');
-    E('engineStatus').style.color = d.is_halted ? 'var(--red)' : (d.trading_active ? 'var(--green)' : 'var(--yellow)');
+    const m = d.mode || 'pause';
+    const mtxt = {observe:'觀察中',sim:'模擬',paper:'紙交易',live:'實盤',pause:'暫停',recovery:'恢復中'}[m] || '未知';
+    E('engineStatus').textContent = mtxt;
+    E('engineStatus').style.color = m === 'live' ? 'var(--green)' : m === 'pause' ? 'var(--red)' : 'var(--yellow)';
   }
 }
 

@@ -2105,7 +2105,26 @@ class TradingEngine:
     # - news: 未接入 (目前無新聞源)
     SCHEMA_VERSION = "1.0.0"
 
+    MODE_OBSERVE = "observe"
+    MODE_SIM = "sim"
+    MODE_PAPER = "paper"
+    MODE_LIVE = "live"
+    MODE_PAUSE = "pause"
+    MODE_RECOVERY = "recovery"
+
+    def get_current_mode(self) -> str:
+        if self.risk.is_halted:
+            return MODE_RECOVERY
+        if not AUTO_TRADE:
+            return MODE_PAUSE
+        if not self._trading_active:
+            return MODE_OBSERVE
+        if PAPER_TRADE:
+            return MODE_PAPER
+        return MODE_LIVE
+
     def get_state(self) -> dict:
+        current_mode = self.get_current_mode()
         return {
             "schema_version": SCHEMA_VERSION,
             "ticks":          self.latest_ticks,
@@ -2118,6 +2137,7 @@ class TradingEngine:
             "trading_active": self._trading_active,
             "auto_trade":     AUTO_TRADE,
             "paper_trade":    PAPER_TRADE,
+            "mode": current_mode,
             "trades_log":     [asdict(t) for t in self.trades_log[-30:]],
             "execution_orders": self.execution.orders[-30:] if hasattr(self.execution, 'orders') else [],
             "backtest":       self.backtest_cache,
@@ -2145,6 +2165,7 @@ class TradingEngine:
             },
             "contract": {
                 "schema_version": {"type": "string", "required": True, "nullable": False},
+                "mode": {"type": "string", "required": True, "allowed": [MODE_OBSERVE, MODE_SIM, MODE_PAPER, MODE_LIVE, MODE_PAUSE, MODE_RECOVERY]},
                 "ticks": {"type": "object", "required": ["price", "source"], "nullable": False, "display_only": False, "tradable": True},
                 "positions": {"type": "object", "required": ["entry", "direction", "lots"], "nullable": True, "display_only": False, "tradable": True},
                 "trades_log": {"type": "array", "required": ["symbol", "pnl"], "nullable": True, "display_only": True, "tradable": False},
