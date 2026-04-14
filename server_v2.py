@@ -2072,12 +2072,16 @@ class TradingEngine:
             pos["lots"] -= half
             pos["partial"] = True
 
-    # ── 狀態快照 ──
+# ── 狀態快照 ──
+    # SOURCE OF TRUTH 本實現：
+    # - ticks: self.latest_ticks (價格事實)
+    # - positions: self.risk.open_positions (持倉事實)
+    # - trades_log: self.trades_log (交易事實)
     def get_state(self) -> dict:
         return {
-            "ticks":          self.latest_ticks,
+            "ticks":          self.latest_ticks,        # SOURCE: 實時價格
             "agents":         self.agent_reports,
-            "positions":      self.risk.open_positions,
+            "positions":      self.risk.open_positions,   # SOURCE: 持倉
             "daily_pnl":      self.risk.daily_pnl,
             "daily_trades":   self.risk.daily_trades,
             "is_halted":      self.risk.is_halted,
@@ -2085,16 +2089,16 @@ class TradingEngine:
             "trading_active": self._trading_active,
             "auto_trade":     AUTO_TRADE,
             "paper_trade":    PAPER_TRADE,
-            "trades_log":     [asdict(t) for t in self.trades_log[-30:]],
+            "trades_log":     [asdict(t) for t in self.trades_log[-30:]],  # SOURCE: 交易記錄
             "backtest":       self.backtest_cache,
             "signal_history": self.signal_eng.get_history(),
             "anomalies":      self.analyst.anomalies[-20:],
             "market_board":   self.market_board,
             "detail_symbols": self.detail_symbols,
             "names":          self.names,
-            "universe_size":  len(self.universe_rows),
-            "scan_all_tw":    bool(self.market_scanner),
-            "timestamp":      datetime.now().strftime("%H:%M:%S"),
+            "universe_size": len(self.universe_rows),
+            "scan_all_tw":   bool(self.market_scanner),
+            "timestamp":    datetime.now().strftime("%H:%M:%S"),
         }
 
 

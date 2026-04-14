@@ -741,6 +741,10 @@ function wsConnect() {
 function wsSend(obj) { if (S.ws?.readyState === 1) S.ws.send(JSON.stringify(obj)); }
 
 // ── 主渲染 ──
+// SOURCE OF TRUTH 本實現：
+// - d.ticks = 後端 engine.latest_ticks (價格事實)
+// - d.positions = 後端 engine.risk.open_positions (持倉事實)
+// - d.trades_log = 後端 engine.trades_log (交易事實)
 function render(d) {
   syncMeta(d);
   renderSideStats(d);
@@ -832,6 +836,7 @@ function detectSig(rep, sym) {
 }
 
 // ── 即時行情 ──
+// SOURCE: d.ticks ( engine.latest_ticks )
 function renderMarket(d) {
   const ticks = d.ticks || {};
   const board = Array.isArray(d.market_board) && d.market_board.length
@@ -996,6 +1001,7 @@ function drawMonthly(months) {
 }
 
 // ── 持倉 ──
+// SOURCE: d.positions ( engine.risk.open_positions )
 function renderPositions(d) {
   const pos = d.positions || {}, ticks = d.ticks || {};
   const keys = Object.keys(pos);
@@ -1025,6 +1031,7 @@ function renderPositions(d) {
 }
 
 // ── 交易日誌 ──
+// SOURCE: d.trades_log ( engine.trades_log )
 function renderTrades(d) {
   const trades = d.trades_log || [];
   E('nb-tr').textContent = trades.length;
