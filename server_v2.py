@@ -2368,46 +2368,51 @@ def api_learning_validate():
     position_match = list(open_syms & decision_syms)
     position_mismatch = list(open_syms ^ decision_syms)
     
-    # 5. trades_log / outcome 是否可對回
-    trades_by_sym = {}
-    for t in trades:
-        trades_by_sym.setdefault(t.symbol, []).append({"id": t.id, "pnl": t.pnl})
-    outcome_match = sum(1 for o in outcomes if o.get("symbol") in trades_by_sym)
+    # 5. trades_log / outcome 是否可對回（按 decision_id 精確對回）
+    trades_by_id = {t.id: t for t in trades}
+    outcome_trade_match = sum(1 for o in outcomes if o.get("id") in trades_by_id)
+    missing_trades_for_outcome = [o.get("id") for o in outcomes if o.get("id") not in trades_by_id]
     
-    # 6. param_update_history 是否可對回某筆 outcome
+    # 6. param_update_history 是否可對回某筆 outcome（按 timestamp 對回）
     param_timestamps = {p.get("timestamp") for p in param_hist}
     outcome_timestamps = {o.get("timestamp") for o in outcomes}
     param_outcome_match = len(param_timestamps & outcome_timestamps)
+    param_outcome_mismatch = list(param_timestamps - outcome_timestamps)
     
-    decision_ids = set(d.get("id") for d in decisions)
-    outcome_ids = set(o.get("id") for o in outcomes)
-    matched_ids_new = decision_ids & outcome_ids
-    
+    # 7. 檢查 decision 中的 ai_scores 和 ai_params_used 是否都有
     decisions_with_scores = sum(1 for d in decisions if d.get("ai_scores"))
     decisions_with_params = sum(1 for d in decisions if d.get("ai_params_used"))
     
+    # 計算 match rate
     max_rate = 0
     if decisions:
-        max_rate = round(len(matched_ids_new) / max(len(decisions), 1), 2)
+        max_rate = round(len(matched_ids) / max(len(decisions), 1), 2)
     
     return {
         "decisions_count": len(decisions),
         "outcomes_count": len(outcomes),
         "trades_count": len(trades),
-        "entry_decisions": len(entry_decision_ids),
+        "entry_decisions": list(entry_decision_ids),
+        "entry_decisions_count": len(entry_decision_ids),
         "outcome_to_entry": outcome_to_entry,
         "duplicate_outcomes": duplicate_outcomes,
-        "matched_ids": len(matched_ids_new),
+        "duplicate_outcomes_detail": duplicate_outcomes,
+        "matched_ids": list(matched_ids),
+        "matched_ids_count": len(matched_ids),
         "matched_rate": max_rate,
         "decisions_with_scores": decisions_with_scores,
         "decisions_with_params": decisions_with_params,
         "param_updates_count": len(param_hist),
         "param_outcome_match": param_outcome_match,
+        "param_outcome_mismatch": param_outcome_mismatch,
+        "open_positions": list(open_syms),
         "open_positions_count": len(open_syms),
+        "latest_decision_ids": list(decision_syms),
         "latest_decision_ids_count": len(decision_syms),
         "position_match": position_match,
         "position_mismatch": position_mismatch,
-        "outcome_trade_match": outcome_match,
+        "outcome_trade_match": outcome_trade_match,
+        "missing_trades_for_outcome": missing_trades_for_outcome[:20],
         "risk_state": {
             "daily_pnl": engine.risk.daily_pnl,
             "daily_trades": engine.risk.daily_trades,
