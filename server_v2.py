@@ -1712,14 +1712,17 @@ class TradingEngine:
     def sync_mode_with_state(self):
         if self._mode == MODE_SIM or self._mode == MODE_RECOVERY:
             return
+        target = None
         if not AUTO_TRADE:
-            self._mode = MODE_PAUSE
+            target = MODE_PAUSE
         elif not self._trading_active:
-            self._mode = MODE_OBSERVE
+            target = MODE_OBSERVE
         elif PAPER_TRADE:
-            self._mode = MODE_PAPER
+            target = MODE_PAPER
         else:
-            self._mode = MODE_LIVE
+            target = MODE_LIVE
+        if target and target != self._mode:
+            self.set_mode(target)
 
     # ── Shioaji 連線 ──
     def connect_shioaji(self):
