@@ -1710,7 +1710,13 @@ class TradingEngine:
         return board
 
     def sync_mode_with_state(self):
-        if self._mode == MODE_SIM or self._mode == MODE_RECOVERY:
+        if self._mode == MODE_SIM:
+            return
+        if self.risk.is_halted and self._mode != MODE_RECOVERY:
+            self.set_mode(MODE_RECOVERY)
+            return
+        if self._mode == MODE_RECOVERY and not self.risk.is_halted:
+            self.set_mode(MODE_PAUSE)
             return
         target = None
         if not AUTO_TRADE:
@@ -2143,6 +2149,9 @@ class TradingEngine:
         (MODE_PAUSE, MODE_PAPER): (True, "PAPER_TRADE=true"),
         (MODE_PAUSE, MODE_LIVE): (True, "PAPER_TRADE=false"),
         (MODE_PAUSE, MODE_RECOVERY): (True, "is_halted=true"),
+        (MODE_OBSERVE, MODE_RECOVERY): (True, "is_halted=true"),
+        (MODE_PAPER, MODE_RECOVERY): (True, "is_halted=true"),
+        (MODE_LIVE, MODE_RECOVERY): (True, "is_halted=true"),
         (MODE_OBSERVE, MODE_PAUSE): (True, "AUTO_TRADE=false"),
         (MODE_OBSERVE, MODE_SIM): (True, "ENTER_SIM"),
         (MODE_OBSERVE, MODE_PAPER): (True, "PAPER_SWITCH"),
@@ -2156,6 +2165,9 @@ class TradingEngine:
         (MODE_LIVE, MODE_PAPER): (True, "PAPER_SWITCH"),
         (MODE_LIVE, MODE_OBSERVE): (False, "must go through PAUSE"),
         (MODE_RECOVERY, MODE_PAUSE): (True, "is_halted=false"),
+        (MODE_RECOVERY, MODE_OBSERVE): (False, "must go through PAUSE"),
+        (MODE_RECOVERY, MODE_PAPER): (False, "must go through PAUSE"),
+        (MODE_RECOVERY, MODE_LIVE): (False, "must go through PAUSE"),
     }
 
     def get_current_mode(self) -> str:
