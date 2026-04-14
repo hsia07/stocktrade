@@ -1859,7 +1859,10 @@ class TradingEngine:
                     
                     if consensus_score >= CONSENSUS_THRESHOLD and risk_ok and exec_ok:
                         lots = self.risk.calc_lots(sig, tick["price"], risk_params)
-                        if lots > 0:
+                        # SOURCE OF TRUTH: 驗證價格來源有效才能交易
+                        if not self.risk.can_trade(tick):
+                            log.warning(f"⚠️ {sym} 價格來源無效，跳過交易 source={tick.get('source')}")
+                        elif lots > 0:
                             act = "Buy" if sig.direction == Direction.LONG else "Sell"
                             self.execution.place(sym, act, lots, tick["price"], sig.reason)
                             self.risk.on_entry(sig, lots, tick["price"], ai_scores, regime)
@@ -1997,6 +2000,11 @@ class TradingEngine:
                 return
             lots = current_pos["lots"]
             pnl = (price - entry) * mult * lots * 1000 * 0.9985
+            # SOURCE OF TRUTH: 驗證價格來源有效才能平倉
+            tick = self.latest_ticks.get(symbol, {})
+            if not self.risk.can_trade(tick):
+                log.warning(f"⚠️ {symbol} 平倉時價格來源無效，跳過 source={tick.get('source')}")
+                return
             self.execution.place(symbol, act, lots, price, reason)
             self.risk.on_exit(symbol, pnl)
             self.trades_log.append(TradeRecord(
@@ -2082,9 +2090,11 @@ class TradingEngine:
 
         if mult * (price - pos["t1"]) > 0 and not pos["partial"]:
             half = max(1, pos["lots"] // 2)
-            self.execution.place(symbol, act, half, price, "部分獲利")
-            pos["lots"] -= half
-            pos["partial"] = True
+            # SOURCE OF TRUTH: 驗證價格來源有效才能部分賣出
+            if self.risk.can_trade(tick):
+                self.execution.place(symbol, act, half, price, "部分獲利")
+                pos["lots"] -= half
+                pos["partial"] = True
 
 # ── 狀態快照 ──
     # SOURCE OF TRUTH 本實現：
