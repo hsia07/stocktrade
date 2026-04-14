@@ -749,7 +749,9 @@ function wsSend(obj) { if (S.ws?.readyState === 1) S.ws.send(JSON.stringify(obj)
 // ── 主渲染 ──
 // SCHEMA VERSION: 1.0.0
 // 核心欄位：ticks, positions, trades_log, execution_orders, backtest, signal_history, sources, source_info, contract
+// 鍵名一致性清查完成：2024-04-15 - 所有核心欄位讀取已固定使用 d.* 格式
 const REQUIRED_CORE = ['ticks', 'positions', 'trades_log', 'execution_orders', 'sources', 'source_info'];
+const CORE_KEYS_VERIFIED = ['ticks', 'positions', 'trades_log', 'execution_orders', 'backtest', 'sources'];
 const WARNING_CORE = ['backtest', 'signal_history'];
 
 function render(d) {
