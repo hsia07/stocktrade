@@ -2363,10 +2363,15 @@ async def ws_endpoint(ws: WebSocket):
                 Notifier.send("測試通知", "Line/Email 通知測試成功 ✅", "info", cooldown_sec=0)
                 log.info("指令：測試通知")
             elif action == "toggle_auto":
-                global AUTO_TRADE
-                AUTO_TRADE = not AUTO_TRADE
-                log.info(f"指令：自動交易切換為 {AUTO_TRADE}")
-                engine.sync_mode_with_state()
+                current = engine.get_current_mode()
+                new_auto = not AUTO_TRADE
+                target_mode = MODE_OBSERVE if new_auto else MODE_PAUSE
+                if engine.can_transition(current, target_mode):
+                    AUTO_TRADE = new_auto
+                    engine.sync_mode_with_state()
+                    log.info(f"指令：自動交易切換為 {AUTO_TRADE}")
+                else:
+                    log.warning(f"指令：自動交易切換被拒絕 {current} -> {target_mode}")
                 await ws.send_json({"type": "settings_updated", "auto_trade": AUTO_TRADE})
     except WebSocketDisconnect:
         log.info(f"🔌 前端斷線，剩 {len(clients)-1} 個 | IP: {ws.client}")
@@ -2396,10 +2401,17 @@ def api_signals():
 @app.post("/api/toggle_mode")
 def api_toggle_mode():
     global PAPER_TRADE
-    PAPER_TRADE = not PAPER_TRADE
-    engine.sync_mode_with_state()
-    mode = "紙交易" if PAPER_TRADE else "真實交易"
-    log.info(f"交易模式切換：{mode}")
+    current = engine.get_current_mode()
+    new_paper = not PAPER_TRADE
+    target_mode = MODE_PAPER if new_paper else MODE_LIVE
+    if engine.can_transition(current, target_mode):
+        PAPER_TRADE = new_paper
+        engine.sync_mode_with_state()
+        mode = "紙交易" if PAPER_TRADE else "真實交易"
+        log.info(f"交易模式切換：{mode}")
+    else:
+        mode = "紙交易" if PAPER_TRADE else "真實交易"
+        log.warning(f"交易模式切換被拒絕：{current} -> {target_mode}")
     return {"mode": mode, "paper_trade": PAPER_TRADE}
 
 @app.get("/api/mode")
