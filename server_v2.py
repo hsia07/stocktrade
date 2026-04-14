@@ -2527,9 +2527,13 @@ def api_toggle_mode():
 def api_mode():
     return {
         "mode": engine.get_current_mode(),
-        "paper_trade": PAPER_TRADE,
-        "auto_trade": AUTO_TRADE,
+        "is_halted": engine.risk.is_halted,
+        "halt_reason": engine.risk.halt_reason,
         "allowed_transitions": engine.get_allowed_transitions(),
+        "contract": {
+            "allowed": [t["to"] for t in engine.get_allowed_transitions()],
+            "current": engine.get_current_mode(),
+        },
     }
 
 @app.post("/api/sim/start")
