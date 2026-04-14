@@ -2112,6 +2112,24 @@ class TradingEngine:
     MODE_PAUSE = "pause"
     MODE_RECOVERY = "recovery"
 
+    MODE_TRANSITIONS = {
+        # from -> to: allowed (True/False) + condition
+        (MODE_PAUSE, MODE_OBSERVE): (True, "AUTO_TRADE=true"),
+        (MODE_PAUSE, MODE_PAPER): (True, "AUTO_TRADE=true + PAPER_TRADE=true"),
+        (MODE_PAUSE, MODE_LIVE): (True, "AUTO_TRADE=true + PAPER_TRADE=false"),
+        (MODE_PAUSE, MODE_RECOVERY): (True, "is_halted=true"),
+        (MODE_OBSERVE, MODE_PAUSE): (True, "AUTO_TRADE=false"),
+        (MODE_OBSERVE, MODE_PAPER): (True, "PAPER_SWITCH"),
+        (MODE_OBSERVE, MODE_LIVE): (False, "must go through PAUSE"),
+        (MODE_PAPER, MODE_PAUSE): (True, "AUTO_TRADE=false"),
+        (MODE_PAPER, MODE_LIVE): (True, "PAPER_SWITCH"),
+        (MODE_PAPER, MODE_OBSERVE): (False, "must go through PAUSE"),
+        (MODE_LIVE, MODE_PAUSE): (True, "AUTO_TRADE=false"),
+        (MODE_LIVE, MODE_PAPER): (True, "PAPER_SWITCH"),
+        (MODE_LIVE, MODE_OBSERVE): (False, "must go through PAUSE"),
+        (MODE_RECOVERY, MODE_PAUSE): (True, "is_halted=false"),
+    }
+
     def get_current_mode(self) -> str:
         if self.risk.is_halted:
             return MODE_RECOVERY
@@ -2122,6 +2140,12 @@ class TradingEngine:
         if PAPER_TRADE:
             return MODE_PAPER
         return MODE_LIVE
+
+    def can_transition(self, from_mode: str, to_mode: str) -> bool:
+        key = (from_mode, to_mode)
+        if key in self.MODE_TRANSITIONS:
+            return self.MODE_TRANSITIONS[key][0]
+        return True
 
     def get_state(self) -> dict:
         current_mode = self.get_current_mode()
@@ -2166,6 +2190,7 @@ class TradingEngine:
             "contract": {
                 "schema_version": {"type": "string", "required": True, "nullable": False},
                 "mode": {"type": "string", "required": True, "allowed": [MODE_OBSERVE, MODE_SIM, MODE_PAPER, MODE_LIVE, MODE_PAUSE, MODE_RECOVERY]},
+                "mode_transitions": self.MODE_TRANSITIONS,
                 "ticks": {"type": "object", "required": ["price", "source"], "nullable": False, "display_only": False, "tradable": True},
                 "positions": {"type": "object", "required": ["entry", "direction", "lots"], "nullable": True, "display_only": False, "tradable": True},
                 "trades_log": {"type": "array", "required": ["symbol", "pnl"], "nullable": True, "display_only": True, "tradable": False},
