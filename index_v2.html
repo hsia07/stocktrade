@@ -421,40 +421,6 @@ canvas.ch{width:100%;display:block;}
       <div class="g2">
         <div class="card"><div class="ct"><span class="dot" style="background:var(--risk)"></span>風控參數</div><div id="risk-params"></div></div>
         <div class="card"><div class="ct"><span class="dot" style="background:var(--yellow)"></span>今日狀態</div><div id="risk-stat"></div></div>
-        <div class="card"><div class="ct"><span class="dot" style="background:var(--signal)"></span>機器人交易設定</div>
-          <div id="bot-settings" style="padding:10px;font-size:12px">
-            <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)">
-              <span>🤖 自動交易</span>
-              <label style="display:flex;align-items:center;gap:8px">
-                <input type="checkbox" id="autoTradeToggle" style="width:18px;height:18px">
-                <span id="bot-status" style="font-weight:bold;color:var(--green)">關閉</span>
-              </label>
-            </div>
-            <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)">
-              <span>📊 交易模式</span>
-              <span id="bot-mode">紙交易</span>
-            </div>
-            <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)">
-              <span>💰 可用資金</span>
-              <span style="font-family:var(--mono)">NT$ <input type="number" id="capitalInput" value="500000" style="width:100px;padding:2px 5px;border-radius:4px;border:1px solid var(--border);background:var(--p3);color:var(--text)"></span>
-            </div>
-            <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)">
-              <span>📈 今日損益</span>
-              <span style="font-family:var(--mono)" id="bot-pnl">NT$ 0</span>
-            </div>
-            <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)">
-              <span>🔢 今日交易</span>
-              <span style="font-family:var(--mono)" id="bot-trades">0 筆</span>
-            </div>
-            <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)">
-              <span>💼 持倉數</span>
-              <span style="font-family:var(--mono)" id="bot-positions">0 個</span>
-            </div>
-            <div style="margin-top:15px;display:flex;gap:10px">
-              <button id="saveSettingsBtn" style="flex:1;padding:10px;background:var(--accent);color:white;border:none;border-radius:6px;cursor:pointer;font-weight:bold">儲存設定</button>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
 
