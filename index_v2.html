@@ -725,7 +725,7 @@ function wsConnect() {
     addLog('WebSocket 連線成功', 'ok');
   };
   ws.onmessage = e => {
-    try { S.last = JSON.parse(e.data); render(S.last); document.getElementById('sb-ts').textContent = S.last.timestamp; loadSettings(); }
+    try { S.last = JSON.parse(e.data); render(S.last); document.getElementById('sb-ts').textContent = S.last.timestamp; }
     catch { addLog('資料解析錯誤', 'warn'); }
   };
   ws.onclose = () => {
@@ -1225,8 +1225,8 @@ E('testTradeBtn')?.addEventListener('click', async () => {
   try {
     const res = await fetch('/api/test_trade', { method: 'POST' });
     const t = await res.json();
-    addLog(`🧪 測試交易：買入 ${t.symbol} ${t.lots}張 @ ${t.price}`, 'ok');
-    alert(`測試交易成功！\n股票：${t.symbol}\n價格：${t.price}\n邏輯：${t.logic}`);
+    addLog(`🧪 測試交易：${t.direction} ${t.symbol} ${t.lots}張 @ ${t.entry}`, 'ok');
+    alert(`測試交易成功！\n股票：${t.symbol}\n方向：${t.direction}\n價格：${t.entry}\n數量：${t.lots}張\n原因：${t.reason || '-'}`);
   } catch (e) { addLog('測試失敗', 'alert'); }
 });
 
@@ -1455,6 +1455,7 @@ function renderSimChart() {
 
 // 模擬核心 tick - 當沖策略
 function simTick() {
+  if (simData.isPaused) return;
   if (simData.currentIndex >= simData.bars.length) {
     clearInterval(simInterval);
     simData.isRunning = false;
@@ -1616,7 +1617,7 @@ function calcRSI(bars, n=14) {
 }
 
 function updateSimStats() {
-  const sells = simData.trades.filter(t => t.type === 'Sell');
+  const sells = simData.trades.filter(t => t.type === '當沖買回');
   const wins = sells.filter(t => t.pnl > 0).length;
   const losses = sells.filter(t => t.pnl <= 0).length;
   const totalPnl = sells.reduce((sum, t) => sum + (t.pnl || 0), 0);
