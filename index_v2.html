@@ -1089,27 +1089,6 @@ async function renderRisk(d) {
     const cls = l.includes('🔴')||l.includes('停機') ? 'll alert' : l.includes('⚠️') ? 'll warn' : 'll ok';
     return `<div class="${cls}" style="padding:6px 0;border-bottom:1px solid var(--border)">${l}</div>`;
   }).join('');
-  
-  // 更新機器人交易狀態
-  if (E('bot-status')) {
-    E('bot-status').textContent = d.trading_active ? '運行中' : '待機中';
-    E('bot-status').style.color = d.trading_active ? 'var(--green)' : 'var(--yellow)';
-  }
-  if (E('bot-mode')) {
-    E('bot-mode').textContent = d.paper_trade ? '紙交易' : '真實交易';
-  }
-  if (E('bot-pnl')) {
-    const pnl = d.daily_pnl || 0;
-    E('bot-pnl').textContent = 'NT$ ' + pnl.toLocaleString();
-    E('bot-pnl').style.color = pnl >= 0 ? 'var(--green)' : 'var(--red)';
-  }
-  if (E('bot-trades')) {
-    E('bot-trades').textContent = (d.daily_trades || 0) + ' 筆';
-  }
-  if (E('bot-positions')) {
-    const pos = d.positions || {};
-    E('bot-positions').textContent = Object.keys(pos).length + ' 個';
-  }
 }
 
 // ── Badges ──
