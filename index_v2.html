@@ -408,11 +408,16 @@ canvas.ch{width:100%;display:block;}
     </div>
 
     <!-- ─ 交易日誌 ─ -->
-    <div class="page" id="page-trades">
+<div class="page" id="page-trades">
       <div class="card">
-        <div class="ct"><span class="dot" style="background:var(--exec)"></span>交易記錄</div>
-        <div class="tr-row tr-hd"><span>股票</span><span>方向</span><span>進場</span><span>出場</span><span>張</span><span>損益</span><span>原因</span></div>
+        <div class="ct"><span class="dot" style="background:var(--exec)"></span>📋 成交記錄 <span class="nu" style="font-size:11px">(trades_log - 成交事實)</span></div>
+        <div class="tr-row tr-hd"><span>股票</span><span>方向</span><span>進場</span><span>出廠</span><span>張</span><span>損益</span><span>原因</span></div>
         <div id="tr-list"></div>
+      </div>
+      <div class="card">
+        <div class="ct"><span class="dot" style="background:var(--yellow)"></span>📝 委託記錄 <span class="nu" style="font-size:11px">(execution_orders - 僅意圖)</span></div>
+        <div class="tr-row tr-hd"><span>時間</span><span>股票</span><span>動作</span><span>價格</span><span>數量</span><span>狀態</span></div>
+        <div id="exec-list"></div>
       </div>
     </div>
 
@@ -751,7 +756,7 @@ function render(d) {
   renderSideStats(d);
   renderAgents(d, 'dash-agents', true);
   renderAgents(d, 'agents-full', false);
-  renderMarket(d); renderPositions(d); renderTrades(d);
+  renderMarket(d); renderPositions(d); renderTrades(d); renderExecutionOrders(d);
   renderSignalHistory(d); renderRisk(d); renderRobot(d);
   renderBacktest(d);
   updateBadges(d);
@@ -1058,6 +1063,25 @@ function renderTrades(d) {
       <span>${t.lots||'-'}</span>
       <span class="${cls}" style="font-family:var(--mono);font-weight:700">${t.pnl>=0?'+':''}${Math.round(t.pnl||0).toLocaleString()}</span>
       <span class="nu" style="font-size:10.5px">${t.reason||''}</span>
+    </div>`;
+  }).join('');
+}
+
+// ── 委託記錄 ──
+// SOURCE: d.execution_orders ( execution.orders - 只是意圖，尚未成交)
+function renderExecutionOrders(d) {
+  const orders = d.execution_orders || [];
+  const list = E('exec-list'); if (!list) return;
+  if (!orders.length) { list.innerHTML = '<div class="nu" style="font-size:13px;padding:14px;text-align:center">尚無委託</div>'; return; }
+  list.innerHTML = [...orders].reverse().map(o => {
+    const statusCls = o.status === 'error' ? 'dn' : (o.status === 'placed' ? 'up' : 'nu');
+    return `<div class="tr-row">
+      <span class="nu" style="font-size:10px">${o.time||'-'}</span>
+      <span>${o.symbol}</span>
+      <span class="${o.action==='Buy'?'up':'dn'}">${o.action==='Buy'?'買':'賣'}</span>
+      <span style="font-family:var(--mono)">${o.price?.toFixed(2)||'-'}</span>
+      <span>${o.lots||'-'}</span>
+      <span class="${statusCls}" style="font-size:10.5px">${o.status==='sent'?'已送':o.status==='placed'?'已成交':o.status==='simulated'?'模擬':o.status==='error'?'錯誤':o.status||'-'}</span>
     </div>`;
   }).join('');
 }
