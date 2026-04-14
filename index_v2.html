@@ -758,7 +758,7 @@ const CORE_KEYS = {
   trades_log: { read: 'd.trades_log', direct: true },
   execution_orders: { read: 'd.execution_orders', direct: true },
   backtest: { read: 'd.backtest', direct: true },
-  signal_history: { read: 'd.signal_history', direct: false, via: 'agents report' },
+  signal_history: { read: 'd.signal_history', direct: true },
   sources: { read: 'd.sources', direct: true },
   source_info: { read: 'd.source_info', direct: true },
 };
@@ -1113,25 +1113,26 @@ function renderExecutionOrders(d) {
   }).join('');
 }
 
-// ── 信號 ──
+// ── 信號 —
+// 來源：d.signal_history (後端 signal_history) + S.sigs (session 緩存)
 function renderSignalHistory(d) {
-  E('nb-sig').textContent = S.sigCnt;
+  const sigs = (d.signal_history || []).slice(0, 60);
+  E('nb-sig').textContent = sigs.length;
   const dash = E('dash-sigs');
-  if (dash) dash.innerHTML = S.sigs.slice(0,4).map(s => `
-    <div class="sig-it ${s.dir}">
-      <strong>${s.sym}</strong> ${nameOf(s.sym)} <span class="${s.dir==='long'?'up':'dn'}" style="float:right">${s.dir==='long'?'🟢 多頭':'🔴 空頭'}</span>
-      <br><span class="nu" style="font-size:10.5px">${s.summary} · ${s.time||''}</span>
+  if (dash) dash.innerHTML = sigs.map(s => `
+    <div class="sig-it ${s.direction==='long'?'long':'short'}">
+      <strong>${s.symbol}</strong> ${nameOf(s.symbol)} <span class="${s.direction==='long'?'up':'dn'}" style="float:right">${s.direction==='long'?'🟢 多頭':'🔴 空頭'}</span>
+      <br><span class="nu" style="font-size:10.5px">${s.reason || s.direction} · ${s.timestamp || ''}</span>
     </div>`).join('');
   const list = E('sig-list'); if (!list) return;
-  if (!S.sigs.length) { list.innerHTML = '<div class="nu" style="font-size:13px;padding:16px;text-align:center">尚無觸發信號</div>'; return; }
-  list.innerHTML = S.sigs.map(s => `
-    <div class="sig-it ${s.dir}">
+  if (!sigs.length) { list.innerHTML = '<div class="nu" style="font-size:13px;padding:16px;text-align:center">尚無觸發信號</div>'; return; }
+  list.innerHTML = sigs.map(s => `
+    <div class="sig-it ${s.direction==='long'?'long':'short'}">
       <div style="display:flex;justify-content:space-between;margin-bottom:3px;">
-        <strong>${s.sym} ${nameOf(s.sym)}</strong>
-        <span class="${s.dir==='long'?'up':'dn'}">${s.dir==='long'?'🟢 多頭信號':'🔴 空頭信號'}</span>
+        <strong>${s.symbol} ${nameOf(s.symbol)}</strong>
+        <span class="${s.direction==='long'?'up':'dn'}">${s.direction==='long'?'🟢 多頭信號':'🔴 空頭信號'}</span>
       </div>
-      <div class="nu" style="font-family:var(--mono);font-size:10.5px">${s.time||''}</div>
-      <div class="nu" style="font-size:11px;margin-top:3px">${(s.details||[]).join(' | ')}</div>
+      <div class="nu" style="font-family:var(--mono);font-size:10.5px">${s.timestamp||''}</div>
     </div>`).join('');
 }
 
