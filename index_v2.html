@@ -753,6 +753,11 @@ function render(d) {
   if (!d.schema_version) {
     console.warn('⚠️ schema_version 缺失，可能為舊版資料');
   }
+  const REQUIRED_FIELDS = ['ticks', 'positions', 'trades_log', 'execution_orders', 'backtest', 'signal_history', 'sources', 'source_info'];
+  const missing = REQUIRED_FIELDS.filter(k => !(k in d));
+  if (missing.length > 0) {
+    console.warn('⚠️ 缺少核心欄位:', missing.join(', '));
+  }
   syncMeta(d);
   renderSideStats(d);
   renderAgents(d, 'dash-agents', true);

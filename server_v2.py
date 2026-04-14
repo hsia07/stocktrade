@@ -2144,12 +2144,15 @@ class TradingEngine:
                 "news": {"display": "未接入", "tradable": False, "fallback": []},
             },
             "contract": {
-                "ticks": {"type": "object", "required": ["price", "source"], "nullable": False},
-                "positions": {"type": "object", "required": ["entry", "direction", "lots"], "nullable": True},
-                "trades_log": {"type": "array", "required": ["symbol", "pnl"], "nullable": True},
-                "execution_orders": {"type": "array", "required": ["symbol", "action", "status"], "nullable": True},
-                "backtest": {"type": "object", "required": ["symbol", "win_rate"], "nullable": True},
-                "signal_history": {"type": "array", "required": ["symbol", "direction"], "nullable": True},
+                "schema_version": {"type": "string", "required": True, "nullable": False},
+                "ticks": {"type": "object", "required": ["price", "source"], "nullable": False, "display_only": False, "tradable": True},
+                "positions": {"type": "object", "required": ["entry", "direction", "lots"], "nullable": True, "display_only": False, "tradable": True},
+                "trades_log": {"type": "array", "required": ["symbol", "pnl"], "nullable": True, "display_only": True, "tradable": False},
+                "execution_orders": {"type": "array", "required": ["symbol", "action", "status"], "nullable": True, "display_only": True, "tradable": False},
+                "backtest": {"type": "object", "required": ["symbol", "win_rate"], "nullable": True, "display_only": True, "tradable": False},
+                "signal_history": {"type": "array", "required": ["symbol", "direction"], "nullable": True, "display_only": True, "tradable": False},
+                "sources": {"type": "object", "required": False, "nullable": False, "display_only": True, "tradable": False},
+                "source_info": {"type": "object", "required": False, "nullable": False, "display_only": True, "tradable": False},
             },
         }
 
