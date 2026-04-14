@@ -1683,8 +1683,9 @@ class TradingEngine:
         self.trades_log:     list[TradeRecord] = []
         self._api                 = None
         self._running             = False
-        self._trading_active      = False   # 只在盤中時間交易
-        self._latest_decision_ids: dict = {}  # 記住每檔股票的決策 ID
+        self._trading_active      = False
+        self._mode              = MODE_PAUSE  # 單一真實模式來源，由狀態機控制
+        self._latest_decision_ids: dict = {}
 
         self.names = dict(SYM_NAMES)
         self.universe_rows = TaiwanMarketUniverse.load() if SCAN_ALL_TW else [{"symbol": s, "name": SYM_NAMES.get(s, s), "market": "tse"} for s in self.detail_symbols]
@@ -1704,6 +1705,18 @@ class TradingEngine:
         for row in board:
             self.names[row["symbol"]] = row.get("name", row["symbol"])
         return board
+
+    def sync_mode_with_state(self):
+        if self._mode == MODE_SIM or self._mode == MODE_RECOVERY:
+            return
+        if not AUTO_TRADE:
+            self._mode = MODE_PAUSE
+        elif not self._trading_active:
+            self._mode = MODE_OBSERVE
+        elif PAPER_TRADE:
+            self._mode = MODE_PAPER
+        else:
+            self._mode = MODE_LIVE
 
     # ── Shioaji 連線 ──
     def connect_shioaji(self):
@@ -2138,26 +2151,21 @@ class TradingEngine:
         (MODE_RECOVERY, MODE_PAUSE): (True, "is_halted=false"),
     }
 
-    _sim_active = False
-
     def get_current_mode(self) -> str:
-        if self._sim_active:
-            return MODE_SIM
-        if self.risk.is_halted:
-            return MODE_RECOVERY
-        if not AUTO_TRADE:
-            return MODE_PAUSE
-        if not self._trading_active:
-            return MODE_OBSERVE
-        if PAPER_TRADE:
-            return MODE_PAPER
-        return MODE_LIVE
+        return self._mode
+
+    def set_mode(self, new_mode: str) -> bool:
+        current = self._mode
+        if self.can_transition(current, new_mode):
+            self._mode = new_mode
+            return True
+        return False
 
     def enter_sim_mode(self):
-        self._sim_active = True
+        return self.set_mode(MODE_SIM)
 
     def exit_sim_mode(self):
-        self._sim_active = False
+        return self.set_mode(MODE_PAUSE)
 
     def can_transition(self, from_mode: str, to_mode: str) -> bool:
         key = (from_mode, to_mode)
