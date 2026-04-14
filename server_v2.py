@@ -2134,11 +2134,11 @@ class TradingEngine:
                 "news": None,  # 新聞源未接入
             },
             "source_info": {
-                "ticks": {"display": "實時價格", " tradable": True, "fallback": ["cached_real", "unavailable", "cached", "mock"]},
-                "positions": {"display": "持倉", " tradable": True, "fallback": []},
-                "trades_log": {"display": "成交記錄", " tradable": False, "fallback": []},
-                "execution_orders": {"display": "委託記錄", " tradable": False, "fallback": []},
-                "news": {"display": "未接入", " tradable": False, "fallback": []},
+                "ticks": {"display": "實時價格", "tradable": True, "fallback": ["cached_real", "unavailable", "cached", "mock"]},
+                "positions": {"display": "持倉", "tradable": True, "fallback": []},
+                "trades_log": {"display": "成交記錄", "tradable": False, "fallback": []},
+                "execution_orders": {"display": "委託記錄", "tradable": False, "fallback": []},
+                "news": {"display": "未接入", "tradable": False, "fallback": []},
             },
         }
 

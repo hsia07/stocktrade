@@ -764,13 +764,12 @@ function render(d) {
   document.getElementById('sb-eng2').textContent = eng;
   document.getElementById('sb-mode').textContent = d.paper_trade === false ? '真實交易' : '紙交易模式';
   const src = d.sources || {};
-  const srcInfo = d.source_info || {};
-  const tickSrc = src.ticks ? '實時' : (src.news === null ? '未接' : '-');
-  const posSrc = src.positions ? '持倉' : (src.execution_orders ? '委託' : '-');
+  const tickSrc = src.ticks ? '實時' : '-';
+  const posSrc = src.positions ? '持倉' : '-';
   const tradeSrc = src.trades_log ? '成交' : '-';
   const execSrc = src.execution_orders ? '委託' : '-';
   const newsSrc = src.news === null ? '未接入' : '-';
-  document.getElementById('sb-src').textContent = `${tickSrc}/${tradeSrc}/${posSrc}/${newsSrc}`;
+  document.getElementById('sb-src').textContent = `${tickSrc}/${posSrc}/${tradeSrc}/${execSrc}/${newsSrc}`;
 }
 
 
@@ -1074,14 +1073,14 @@ function renderExecutionOrders(d) {
   const list = E('exec-list'); if (!list) return;
   if (!orders.length) { list.innerHTML = '<div class="nu" style="font-size:13px;padding:14px;text-align:center">尚無委託</div>'; return; }
   list.innerHTML = [...orders].reverse().map(o => {
-    const statusCls = o.status === 'error' ? 'dn' : (o.status === 'placed' ? 'up' : 'nu');
+    const statusCls = o.status === 'error' ? 'dn' : (o.status === 'sent' || o.status === 'placed' ? 'up' : 'nu');
     return `<div class="tr-row">
       <span class="nu" style="font-size:10px">${o.time||'-'}</span>
       <span>${o.symbol}</span>
       <span class="${o.action==='Buy'?'up':'dn'}">${o.action==='Buy'?'買':'賣'}</span>
       <span style="font-family:var(--mono)">${o.price?.toFixed(2)||'-'}</span>
       <span>${o.lots||'-'}</span>
-      <span class="${statusCls}" style="font-size:10.5px">${o.status==='sent'?'已送':o.status==='placed'?'已成交':o.status==='simulated'?'模擬':o.status==='error'?'錯誤':o.status||'-'}</span>
+      <span class="${statusCls}" style="font-size:10.5px">${o.status==='sent'?'已送單':o.status==='placed'?'已送券商':o.status==='simulated'?'模擬':o.status==='error'?'錯誤':o.status||'-'}</span>
     </div>`;
   }).join('');
 }
