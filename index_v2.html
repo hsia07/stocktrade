@@ -290,36 +290,10 @@ canvas.ch{width:100%;display:block;}
 <!-- ─ 儀表板 ─ -->
     <div class="page on" id="page-dashboard">
       <div class="g2">
-        <div class="card"><div class="ct"><span class="dot" style="background:var(--yellow)"></span>系統狀態</div>
-          <div id="sys-stat"></div>
-        </div>
-        <div class="card"><div class="ct"><span class="dot" style="background:var(--risk)"></span>風控狀態</div>
-          <div id="risk-stat2"></div>
-        </div>
-      </div>
-      <div class="card mb">
-        <div class="ct"><span class="dot" style="background:var(--accent)"></span>市場報價</div>
-        <div class="tw">
-          <table><thead><tr><th>股票</th><th>現價</th><th>漲跌</th><th>漲跌幅</th></tr></thead>
-            <tbody id="mkt-mini"></tbody></table>
-        </div>
-      </div>
-      <div class="g2 mb">
-        <div class="card"><div class="ct"><span class="dot" style="background:var(--signal)"></span>最新 AI 信號</div>
-          <div id="sig-mini"></div>
-        </div>
-        <div class="card"><div class="ct"><span class="dot" style="background:var(--exec)"></span>今日交易</div>
-          <div id="tr-mini"></div>
-        </div>
-      </div>
-      <div class="card"><div class="ct"><span class="dot" style="background:var(--green)"></span>每日新聞</div>
-        <div id="news-mini" style="max-height:150px;overflow-y:auto"></div>
-      </div>
-      <div class="agents" id="dash-agents"></div>
-      <div class="g2">
         <div class="card"><div class="ct"><span class="dot" style="background:var(--green)"></span>系統日誌</div><div id="log-box"></div></div>
         <div class="card"><div class="ct"><span class="dot" style="background:var(--yellow)"></span>最新信號</div><div id="dash-sigs"></div></div>
       </div>
+      <div class="agents" id="dash-agents"></div>
     </div>
 
     <!-- ─ AI 學習系統 ─ -->
@@ -803,7 +777,7 @@ function wsSend(obj) { if (S.ws?.readyState === 1) S.ws.send(JSON.stringify(obj)
 // ── 主渲染 ──
 function render(d) {
   syncMeta(d);
-  renderKPIs(d); renderSideStats(d);
+  renderSideStats(d);
   renderAgents(d, 'dash-agents', true);
   renderAgents(d, 'agents-full', false);
   renderMarket(d); renderPositions(d); renderTrades(d);
@@ -815,17 +789,7 @@ function render(d) {
   document.getElementById('sb-mode').textContent = d.paper_trade === false ? '真實交易' : '紙交易模式';
 }
 
-// ── KPI ──
-function renderKPIs(d) {
-  const pnl = d.daily_pnl || 0;
-  E('k-pnl').textContent = `NT$ ${fmt(pnl)}`;
-  E('k-pnl').className = 'kpi-v ' + (pnl > 0 ? 'up' : pnl < 0 ? 'dn' : '');
-  E('k-trades').textContent = d.daily_trades || 0;
-  E('k-pos').textContent    = Object.keys(d.positions || {}).length;
-  E('k-sig').textContent    = S.sigCnt;
-  const eng = d.trading_active ? '🟢 運行中' : (d.is_halted ? '🔴 停機' : '🟡 待機');
-  E('k-eng').textContent = eng;
-}
+
 
 function renderSideStats(d) {
   const pnl = d.daily_pnl || 0;
