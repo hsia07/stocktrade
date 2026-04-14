@@ -173,19 +173,84 @@ class StateStore:
 
 
 # ══════════════════════════════════════════════════════════════
+# ① 淨損益計算核心 - 唯一真實來源
+# ══════════════════════════════════════════════════════════════
+class PnLCalculator:
+    """
+    淨損益計算核心 - 所有 realized pnl 必須通過這裡
+    統一口徑：模擬交易 / 回測 / 即時交易 / 強制平倉 / 部分平倉
+    """
+    
+    FEE_PER_SHARE = 0.001425 * 0.3  # 淨手續費 0.04275% (打3折)
+    TAX_RATE = 0.003                  # 證交稅 0.3%
+    SLIPPAGE_DEFAULT = 0.001          # 预设滑点 0.1%
+    
+    @staticmethod
+    def calculate(
+        entry_price: float,
+        exit_price: float,
+        qty: int = 1000,
+        direction: str = "LONG",
+        fee_rate: float = None,
+        tax_rate: float = None,
+        slippage: float = None,
+    ) -> dict:
+        """
+        計算淨損益 - 唯一 entrance
+        return: {gross_pnl, fee, tax, slippage_cost, net_pnl}
+        """
+        if fee_rate is None:
+            fee_rate = PnLCalculator.FEE_PER_SHARE
+        if tax_rate is None:
+            tax_rate = PnLCalculator.TAX_RATE
+        if slippage is None:
+            slippage = PnLCalculator.SLIPPAGE_DEFAULT
+        
+        direction_mult = 1 if direction == "LONG" else -1
+        
+        price_diff = (exit_price - entry_price) * direction_mult
+        gross_pnl = price_diff * qty
+        
+        fee = entry_price * qty * fee_rate + exit_price * qty * fee_rate
+        
+        tax = exit_price * qty * tax_rate if direction == "LONG" else 0
+        
+        avg_price = (entry_price + exit_price) / 2
+        slippage_cost = avg_price * qty * slippage
+        
+        net_pnl = gross_pnl - fee - tax - slippage_cost
+        
+        return {
+            "gross_pnl": round(gross_pnl, 2),
+            "fee": round(fee, 2),
+            "tax": round(tax, 2),
+            "slippage_cost": round(slippage_cost, 2),
+            "net_pnl": round(net_pnl, 2),
+        }
+    
+    @staticmethod
+    def calculate_from_position(
+        entry_price: float,
+        exit_price: float,
+        lots: int,
+        direction: str = "LONG",
+    ) -> dict:
+        """從持倉計算淨損益 (1 lot = 1000 股)"""
+        return PnLCalculator.calculate(
+            entry_price=entry_price,
+            exit_price=exit_price,
+            qty=lots * 1000,
+            direction=direction,
+        )
+
+
+# ══════════════════════════════════════════════════════════════
 # ①-AI 記憶與學習管理
 # ══════════════════════════════════════════════════════════════
 class AILearningManager:
     """AI 學習管理器 - 讓六大 AI 可學習成長"""
     
-    # 學習模式
-    MODE_OFFLINE = "offline"      # 離線學習
-    MODE_PAPER = "paper"        # 模擬盤學習
-    MODE_LIVE = "live"         # 實盤
-    MODE_DISABLED = "disabled"   # 關閉
-    
     def __init__(self):
-        self.mode = self.MODE_PAPER  # 預設模擬盤學習
         
         # 載入歷史資料
         self.decision_log = LearningDataStore.load("decision_log", [])
@@ -205,16 +270,6 @@ class AILearningManager:
         self.init_agent_if_needed()
         
         log.info(f"📚 載入 AI 記憶: {len(self.decision_log)} 筆決策, {len(self.outcome_log)} 筆結果")
-    
-    def set_mode(self, mode: str):
-        """設定學習模式"""
-        old = self.mode
-        self.mode = mode
-        log.info(f"📚 學習模式切換: {old} -> {mode}")
-        Notifier.send("學習模式", f"已切換至 {mode}", "info")
-    
-    def get_mode(self) -> str:
-        return self.mode
     
     def init_agent_if_needed(self):
         """初始化完整 agent_memory 結構"""
@@ -251,24 +306,24 @@ class AILearningManager:
                             self.agent_memory[name]["params"][k] = v
         LearningDataStore.save("agent_memory", self.agent_memory)
     
-    def log_decision(self, data: dict):
+    def log_decision(self, data: dict, mode: str):
         """記錄決策"""
         data["timestamp"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        data["mode"] = self.mode
+        data["mode"] = mode
         self.decision_log.append(data)
         LearningDataStore.append("decision_log", data, 500)
     
-    def log_outcome(self, data: dict):
+    def log_outcome(self, data: dict, mode: str):
         """記錄結果"""
         params_before = {k: self.agent_memory.get(k, {}).get("params", {}).copy() for k in self.agent_memory}
         
         data["timestamp"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        data["mode"] = self.mode
+        data["mode"] = mode
         self.outcome_log.append(data)
         LearningDataStore.append("outcome_log", data, 500)
         
         # 根據結果更新 AI 權重
-        if self.mode != self.MODE_DISABLED:
+        if mode != "disabled":
             self._update_weights(data)
         
         # 記錄 param 變化
@@ -399,18 +454,15 @@ class AILearningManager:
     # 若 price source 為 fallback/無效，阻止交易（只能顯示）
     INVALID_SOURCES = ("unavailable", "cached", "cached_real", "mock")
     
-    def can_trade(self, tick: dict = None) -> bool:
-        """檢查是否可以交易"""
-        if self.mode == self.MODE_DISABLED:
-            return False
-        # SOURCE OF TRUTH: 若價格來源無效，阻止交易
-        if tick and tick.get("source") in self.INVALID_SOURCES:
-            return False
-        if self.mode == self.MODE_LIVE and not PAPER_TRADE:
-            return True
-        if self.mode == self.MODE_PAPER:
-            return True
-        return False
+    def get_status(self) -> dict:
+        """取得學習系統狀態"""
+        return {
+            "mode": engine._mode,
+            "decisions": len(self.decision_log),
+            "outcomes": len(self.outcome_log),
+            "agents": {k: {"weight": v["weight"], "recent": v["recent_scores"][-5:]} 
+                      for k, v in self.agent_memory.items()}
+        }
     
     def validate_tick_source(self, sym: str, ticks: dict) -> tuple:
         """驗證價格來源是否有效 (return: is_valid, source)"""
@@ -419,15 +471,9 @@ class AILearningManager:
         is_valid = source not in self.INVALID_SOURCES
         return is_valid, source
     
-    def get_status(self) -> dict:
-        """取得學習系統狀態"""
-        return {
-            "mode": self.mode,
-            "decisions": len(self.decision_log),
-            "outcomes": len(self.outcome_log),
-            "agents": {k: {"weight": v["weight"], "recent": v["recent_scores"][-5:]} 
-                      for k, v in self.agent_memory.items()}
-        }
+    def get_current_mode(self) -> str:
+        """取得當前模式（for compatibility）"""
+        return engine._mode
 
 
 # 建立全域學習管理器
@@ -724,16 +770,25 @@ class AgentReport:
 
 @dataclass
 class TradeRecord:
-    id:         str
-    symbol:     str
-    direction:  str
-    entry:      float
-    exit:       float
-    lots:       int
-    pnl:        float
-    reason:     str
-    open_time:  str
-    close_time: str
+    id:            str
+    symbol:        str
+    direction:     str
+    entry:         float
+    exit:          float
+    lots:          int
+    gross_pnl:     float
+    fee:           float
+    tax:           float
+    slippage_cost: float
+    net_pnl:       float
+    reason:        str
+    open_time:     str
+    close_time:    str
+    
+    @property
+    def pnl(self) -> float:
+        """向後相容"""
+        return self.net_pnl
 
 @dataclass
 class BacktestResult:
@@ -1932,7 +1987,7 @@ class TradingEngine:
                                     "execution": {"judgment": "ok" if exec_score >= 60 else "risk" if exec_score < 40 else "caution", "confidence": exec_score, "reason": f"{len(recent_errors)} errors" if recent_errors else "healthy"},
                                     "analyst": {"judgment": regime, "confidence": analyst_score, "reason": f"{regime} regime"},
                                 },
-                            })
+                            }, self._mode)
                             
                             self._latest_decision_ids[sym] = decision_id
                             
@@ -1975,7 +2030,7 @@ class TradingEngine:
                                 "execution": {"judgment": "risk" if exec_score < 40 else "caution", "confidence": exec_score, "reason": f"{len(recent_errors)} errors" if recent_errors else "healthy"},
                                 "analyst": {"judgment": regime, "confidence": analyst_score, "reason": f"{regime} regime"},
                             },
-                        })
+                        }, self._mode)
                         log.debug(f"⛔ 仲裁攔截 {sym}：共識{consensus_score:.0f}% 風險:{risk_reason}")
                     if not risk_ok:
                         log.debug(f"⛔ 風控攔截 {sym}：{risk_reason}")
@@ -2025,18 +2080,25 @@ class TradingEngine:
             if not current_pos:
                 return
             lots = current_pos["lots"]
-            pnl = (price - entry) * mult * lots * 1000 * 0.9985
+            pnl_result = PnLCalculator.calculate_from_position(
+                entry_price=entry,
+                exit_price=price,
+                lots=lots,
+                direction=str(pos["direction"]),
+            )
+            net_pnl = pnl_result["net_pnl"]
+            gross_pnl = pnl_result["gross_pnl"]
             # SOURCE OF TRUTH: 驗證價格來源有效才能平倉
             tick = self.latest_ticks.get(symbol, {})
             if not self.risk.can_trade(tick):
                 log.warning(f"⚠️ {symbol} 平倉時價格來源無效，跳過 source={tick.get('source')}")
                 return
             self.execution.place(symbol, act, lots, price, reason)
-            self.risk.on_exit(symbol, pnl)
+            self.risk.on_exit(symbol, net_pnl)
             self.trades_log.append(TradeRecord(
                 id=f"T{int(time.time())}", symbol=symbol,
                 direction=str(pos["direction"]), entry=entry, exit=price,
-                lots=lots, pnl=round(pnl, 0), reason=reason,
+                lots=lots, **pnl_result, reason=reason,
                 open_time="", close_time=now,
             ))
             self.risk._persist_trades(self)
@@ -2076,16 +2138,20 @@ class TradingEngine:
                     "symbol": symbol,
                     "entry": entry,
                     "exit": price,
-                    "pnl": pnl,
+                    "gross_pnl": gross_pnl,
+                    "fee": pnl_result["fee"],
+                    "tax": pnl_result["tax"],
+                    "slippage_cost": pnl_result["slippage_cost"],
+                    "net_pnl": net_pnl,
                     "reason": reason,
-                    "success": pnl > 0,
+                    "success": net_pnl > 0,
                     "hold_duration": hold_duration,
                     "max_favorable": max_favorable,
                     "max_adverse": max_adverse,
                     "error_type": error_type,
                     "ai_scores": pos.get("ai_scores", {}),
                     "regime": pos.get("regime", "neutral"),
-                })
+                }, self._mode)
                 del self._latest_decision_ids[symbol]
             
             Notifier.send(
@@ -2487,10 +2553,8 @@ def api_learning():
 
 @app.post("/api/learning")
 def api_learning_update(data: dict):
-    """更新學習系統"""
-    if "mode" in data:
-        learning_mgr.set_mode(data["mode"])
-    return {"status": "ok", "mode": learning_mgr.get_mode()}
+    """更新學習系統（mode 現在透過 engine.set_mode() 控制）"""
+    return {"status": "ok", "mode": engine.get_current_mode()}
 
 @app.get("/api/learning/agents")
 def api_learning_agents():
@@ -2606,7 +2670,7 @@ def api_health():
         "paper_trade": PAPER_TRADE,
         "trading_active": engine._trading_active,
         "clients": len(clients),
-        "learning_mode": learning_mgr.mode,
+        "learning_mode": engine._mode,
         "decisions": len(learning_mgr.decision_log),
         "outcomes": len(learning_mgr.outcome_log),
         "param_updates": len(LearningDataStore.load("param_update_history", [])),
@@ -2735,11 +2799,20 @@ def api_simulate(date: str):
             if len(bars) >= 5:
                 entry_price = bars[0]['open']
                 exit_price = bars[-1]['close']
-                pnl = (exit_price - entry_price) * 1000  # 1張 = 1000股
+                pnl_result = PnLCalculator.calculate(
+                    entry_price=entry_price,
+                    exit_price=exit_price,
+                    qty=1000,
+                    direction="LONG",
+                )
                 results[sym] = {
                     "entry": entry_price,
                     "exit": exit_price,
-                    "pnl": pnl,
+                    "gross_pnl": pnl_result["gross_pnl"],
+                    "fee": pnl_result["fee"],
+                    "tax": pnl_result["tax"],
+                    "slippage_cost": pnl_result["slippage_cost"],
+                    "net_pnl": pnl_result["net_pnl"],
                     "bars": len(bars),
                 }
         except Exception as e:
@@ -2815,7 +2888,7 @@ def api_debug_learning():
     """Debug learning 內部狀態"""
     agent_info = learning_mgr.get_agent_info()
     return {
-        "mode": learning_mgr.mode,
+        "mode": engine._mode,
         "decisions": len(learning_mgr.decision_log),
         "outcomes": len(learning_mgr.outcome_log),
         "agents": {k: {"weight": v.get("weight"), "params": v.get("params")} for k, v in agent_info.items()},
