@@ -548,38 +548,27 @@ canvas.ch{width:100%;display:block;}
             </div>
 
 <button id="saveRobotBtn" style="width:100%;padding:15px;margin-top:20px;background:linear-gradient(135deg,var(--green),var(--accent));color:white;border:none;border-radius:8px;cursor:pointer;font-size:16px;font-weight:bold">儲存設定</button>
-            </div>
-          </div>
-        </div>
-      </div>
-            
             <div style="margin-top:15px">
               <button id="testTradeBtn" style="width:100%;padding:12px;background:var(--yellow);color:#000;border:none;border-radius:8px;cursor:pointer;font-weight:bold">🧪 測試交易（模擬一筆）</button>
             </div>
-            
             <div style="margin-top:15px">
               <button id="stopRobotBtn" style="width:100%;padding:12px;background:var(--red);color:white;border:none;border-radius:8px;cursor:pointer;font-weight:bold">⏹ 立即停止自動交易</button>
             </div>
-
             <div style="margin-top:25px;border-top:1px solid var(--border);padding-top:15px">
               <div style="font-weight:bold;margin-bottom:10px">📊 歷史模擬交易</div>
-              
               <div style="margin-bottom:15px">
                 <label style="display:block;margin-bottom:5px;font-size:12px;color:var(--muted)">選擇日期：</label>
                 <select id="simDate" style="width:100%;padding:10px;border-radius:4px;background:var(--p2);color:var(--text);border:1px solid var(--accent)">
                   <option value="">請選擇...</option>
                 </select>
               </div>
-              
               <button type="button" id="runSimBtn" style="width:100%;padding:15px;background:linear-gradient(135deg,var(--accent),#5a9fff);color:white;border:none;border-radius:8px;cursor:pointer;font-size:16px;font-weight:bold">▶️ 執行模擬</button>
-              
               <div style="margin-top:15px;text-align:center">
                 <button type="button" onclick="window.openSimModal('2026-04-10')" style="padding:10px;background:var(--p3);color:var(--muted);border:1px solid var(--border);border-radius:4px;cursor:pointer">直接測試 04/10</button>
               </div>
             </div>
           </div>
         </div>
-        
         <div class="card"><div class="ct"><span class="dot" style="background:var(--yellow)"></span>📈 今日統計</div>
           <div id="robot-stats" style="padding:15px">
             <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border)">
@@ -2028,8 +2017,8 @@ function offlineDemo() {
     ticks: Object.fromEntries(DEFAULT_SYMS.map(s=>[s,{price:100,volume:1000,bid:99.5,ask:100.5,bid_vol:120,ask_vol:90}])),
     positions:{}, trades_log:[], backtest:{}, signal_history:[], anomalies:[],
     agents: {
-      risk:      {icon:'🛡️',status:'idle',summary:'等待後端連線',details:['啟動 server.py 後自動連線'],timestamp:'--'},
-      execution: {icon:'⚙️',status:'idle',summary:'等待後端連線',details:['啟動 server.py 後自動連線'],timestamp:'--'},
+      risk:      {icon:'🛡️',status:'idle',summary:'等待後端連線',details:['啟動 server_v2.py 後自動連線'],timestamp:'--'},
+      execution: {icon:'⚙️',status:'idle',summary:'等待後端連線',details:['啟動 server_v2.py 後自動連線'],timestamp:'--'},
     },
     timestamp:'--:--:--',
   };
