@@ -2103,11 +2103,14 @@ class TradingEngine:
     # - trades_log: self.trades_log (成交事實 - 已完成交易)
     # - execution_orders: self.execution.orders (委託記錄 - 只是意圖尚未成交)
     # - news: 未接入 (目前無新聞源)
+    SCHEMA_VERSION = "1.0.0"
+
     def get_state(self) -> dict:
         return {
-            "ticks":          self.latest_ticks,        # SOURCE: 實時價格
+            "schema_version": SCHEMA_VERSION,
+            "ticks":          self.latest_ticks,
             "agents":         self.agent_reports,
-            "positions":      self.risk.open_positions,   # SOURCE: 持倉
+            "positions":      self.risk.open_positions,
             "daily_pnl":      self.risk.daily_pnl,
             "daily_trades":   self.risk.daily_trades,
             "is_halted":      self.risk.is_halted,
@@ -2115,8 +2118,8 @@ class TradingEngine:
             "trading_active": self._trading_active,
             "auto_trade":     AUTO_TRADE,
             "paper_trade":    PAPER_TRADE,
-            "trades_log":     [asdict(t) for t in self.trades_log[-30:]],  # SOURCE: 成交記錄
-            "execution_orders": self.execution.orders[-30:] if hasattr(self.execution, 'orders') else [],  # SOURCE: 委託記錄
+            "trades_log":     [asdict(t) for t in self.trades_log[-30:]],
+            "execution_orders": self.execution.orders[-30:] if hasattr(self.execution, 'orders') else [],
             "backtest":       self.backtest_cache,
             "signal_history": self.signal_eng.get_history(),
             "anomalies":      self.analyst.anomalies[-20:],
@@ -2129,9 +2132,9 @@ class TradingEngine:
             "sources": {
                 "ticks": "latest_ticks",
                 "positions": "risk.open_positions",
-                "trades_log": "trades_log",  # 成交事實 (已完成交易)
-                "execution_orders": "execution.orders",  # 委託記錄 (只是意圖)
-                "news": None,  # 新聞源未接入
+                "trades_log": "trades_log",
+                "execution_orders": "execution.orders",
+                "news": None,
             },
             "source_info": {
                 "ticks": {"display": "實時價格", "tradable": True, "fallback": ["cached_real", "unavailable", "cached", "mock"]},
@@ -2139,6 +2142,14 @@ class TradingEngine:
                 "trades_log": {"display": "成交記錄", "tradable": False, "fallback": []},
                 "execution_orders": {"display": "委託記錄", "tradable": False, "fallback": []},
                 "news": {"display": "未接入", "tradable": False, "fallback": []},
+            },
+            "contract": {
+                "ticks": {"type": "object", "required": ["price", "source"], "nullable": False},
+                "positions": {"type": "object", "required": ["entry", "direction", "lots"], "nullable": True},
+                "trades_log": {"type": "array", "required": ["symbol", "pnl"], "nullable": True},
+                "execution_orders": {"type": "array", "required": ["symbol", "action", "status"], "nullable": True},
+                "backtest": {"type": "object", "required": ["symbol", "win_rate"], "nullable": True},
+                "signal_history": {"type": "array", "required": ["symbol", "direction"], "nullable": True},
             },
         }
 
