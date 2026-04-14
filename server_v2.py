@@ -1673,7 +1673,8 @@ class TradingEngine:
         self.detail_symbols = DETAIL_SYMBOLS[:]
         self.quant      = QuantResearcher()
         self.backtester = Backtester()
-        self.risk       = RiskOfficer()
+        self.risk = RiskOfficer()
+        self.risk._engine = self
         self.signal_eng = SignalEngineer()
         self.execution  = ExecutionEngineer()
         self.analyst    = MarketAnalyst()
