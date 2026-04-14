@@ -2114,23 +2114,35 @@ class TradingEngine:
 
     MODE_TRANSITIONS = {
         # from -> to: allowed (True/False) + condition
+        (MODE_SIM, MODE_PAUSE): (True, "EXIT_SIM"),
+        (MODE_SIM, MODE_OBSERVE): (True, "EXIT_SIM"),
+        (MODE_SIM, MODE_PAPER): (True, "EXIT_SIM"),
+        (MODE_SIM, MODE_LIVE): (True, "EXIT_SIM"),
+        (MODE_PAUSE, MODE_SIM): (True, "ENTER_SIM"),
         (MODE_PAUSE, MODE_OBSERVE): (True, "AUTO_TRADE=true"),
-        (MODE_PAUSE, MODE_PAPER): (True, "AUTO_TRADE=true + PAPER_TRADE=true"),
-        (MODE_PAUSE, MODE_LIVE): (True, "AUTO_TRADE=true + PAPER_TRADE=false"),
+        (MODE_PAUSE, MODE_PAPER): (True, "PAPER_TRADE=true"),
+        (MODE_PAUSE, MODE_LIVE): (True, "PAPER_TRADE=false"),
         (MODE_PAUSE, MODE_RECOVERY): (True, "is_halted=true"),
         (MODE_OBSERVE, MODE_PAUSE): (True, "AUTO_TRADE=false"),
+        (MODE_OBSERVE, MODE_SIM): (True, "ENTER_SIM"),
         (MODE_OBSERVE, MODE_PAPER): (True, "PAPER_SWITCH"),
         (MODE_OBSERVE, MODE_LIVE): (False, "must go through PAUSE"),
         (MODE_PAPER, MODE_PAUSE): (True, "AUTO_TRADE=false"),
+        (MODE_PAPER, MODE_SIM): (True, "ENTER_SIM"),
         (MODE_PAPER, MODE_LIVE): (True, "PAPER_SWITCH"),
         (MODE_PAPER, MODE_OBSERVE): (False, "must go through PAUSE"),
         (MODE_LIVE, MODE_PAUSE): (True, "AUTO_TRADE=false"),
+        (MODE_LIVE, MODE_SIM): (True, "ENTER_SIM"),
         (MODE_LIVE, MODE_PAPER): (True, "PAPER_SWITCH"),
         (MODE_LIVE, MODE_OBSERVE): (False, "must go through PAUSE"),
         (MODE_RECOVERY, MODE_PAUSE): (True, "is_halted=false"),
     }
 
+    _sim_active = False
+
     def get_current_mode(self) -> str:
+        if self._sim_active:
+            return MODE_SIM
         if self.risk.is_halted:
             return MODE_RECOVERY
         if not AUTO_TRADE:
@@ -2141,11 +2153,17 @@ class TradingEngine:
             return MODE_PAPER
         return MODE_LIVE
 
+    def enter_sim_mode(self):
+        self._sim_active = True
+
+    def exit_sim_mode(self):
+        self._sim_active = False
+
     def can_transition(self, from_mode: str, to_mode: str) -> bool:
         key = (from_mode, to_mode)
         if key in self.MODE_TRANSITIONS:
             return self.MODE_TRANSITIONS[key][0]
-        return True
+        return False
 
     def get_state(self) -> dict:
         current_mode = self.get_current_mode()
@@ -2373,6 +2391,18 @@ def api_toggle_mode():
 @app.get("/api/mode")
 def api_mode():
     return {"mode": "紙交易" if PAPER_TRADE else "真實交易", "paper_trade": PAPER_TRADE, "auto_trade": AUTO_TRADE}
+
+@app.post("/api/sim/start")
+def api_start_sim():
+    global engine
+    engine.enter_sim_mode()
+    return {"status": "ok", "message": "entered sim mode"}
+
+@app.post("/api/sim/stop")
+def api_stop_sim():
+    global engine
+    engine.exit_sim_mode()
+    return {"status": "ok", "message": "exited sim mode"}
 
 @app.get("/api/search")
 def api_search(q: str = ""):
