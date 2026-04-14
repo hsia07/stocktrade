@@ -1089,6 +1089,8 @@ class RiskOfficer:
             if self.consecutive_loss >= self.MAX_CONSEC_LOSS:
                 self.is_halted   = True
                 self.halt_reason = f"連敗 {self.consecutive_loss} 次"
+                if hasattr(self, '_engine'):
+                    self._engine.sync_mode_with_state()
                 Notifier.send("風控停機", f"已連續虧損 {self.consecutive_loss} 次，系統自動暫停交易\n今日損益：NT$ {self.daily_pnl:+.0f}", "alert")
         else:
             self.consecutive_loss = 0
@@ -1751,7 +1753,8 @@ class TradingEngine:
                 self.latest_ticks = ticks
                 now_s = datetime.now().strftime("%H:%M")
                 # 測試模式：無視時間限制，確保_auto_trade時會交易
-                self._trading_active = AUTO_TRADE  # 移除時間限制，確保自動交易可運作
+                self._trading_active = AUTO_TRADE
+                self.sync_mode_with_state()
             except Exception as e:
                 log.warning(f"⚠️ 取得報價失敗: {e}")
                 await asyncio.sleep(TICK_INTERVAL)
@@ -2362,6 +2365,7 @@ async def ws_endpoint(ws: WebSocket):
                 global AUTO_TRADE
                 AUTO_TRADE = not AUTO_TRADE
                 log.info(f"指令：自動交易切換為 {AUTO_TRADE}")
+                engine.sync_mode_with_state()
                 await ws.send_json({"type": "settings_updated", "auto_trade": AUTO_TRADE})
     except WebSocketDisconnect:
         log.info(f"🔌 前端斷線，剩 {len(clients)-1} 個 | IP: {ws.client}")
@@ -2392,6 +2396,7 @@ def api_signals():
 def api_toggle_mode():
     global PAPER_TRADE
     PAPER_TRADE = not PAPER_TRADE
+    engine.sync_mode_with_state()
     mode = "紙交易" if PAPER_TRADE else "真實交易"
     log.info(f"交易模式切換：{mode}")
     return {"mode": mode, "paper_trade": PAPER_TRADE}
@@ -2403,14 +2408,14 @@ def api_mode():
 @app.post("/api/sim/start")
 def api_start_sim():
     global engine
-    engine.enter_sim_mode()
-    return {"status": "ok", "message": "entered sim mode"}
+    result = engine.enter_sim_mode()
+    return {"status": "ok" if result else "denied", "mode": engine.get_current_mode()}
 
 @app.post("/api/sim/stop")
 def api_stop_sim():
     global engine
-    engine.exit_sim_mode()
-    return {"status": "ok", "message": "exited sim mode"}
+    result = engine.exit_sim_mode()
+    return {"status": "ok" if result else "denied", "mode": engine.get_current_mode()}
 
 @app.get("/api/search")
 def api_search(q: str = ""):
