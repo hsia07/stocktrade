@@ -315,6 +315,11 @@ canvas.ch{width:100%;display:block;}
       <div class="card"><div class="ct"><span class="dot" style="background:var(--green)"></span>每日新聞</div>
         <div id="news-mini" style="max-height:150px;overflow-y:auto"></div>
       </div>
+      <div class="agents" id="dash-agents"></div>
+      <div class="g2">
+        <div class="card"><div class="ct"><span class="dot" style="background:var(--green)"></span>系統日誌</div><div id="log-box"></div></div>
+        <div class="card"><div class="ct"><span class="dot" style="background:var(--yellow)"></span>最新信號</div><div id="dash-sigs"></div></div>
+      </div>
     </div>
 
     <!-- ─ AI 學習系統 ─ -->
@@ -378,12 +383,6 @@ canvas.ch{width:100%;display:block;}
             <div style="text-align:center;color:var(--muted);padding:20px">無記錄</div>
           </div>
         </div>
-      </div>
-    </div>
-      <div class="agents" id="dash-agents"></div>
-      <div class="g2">
-        <div class="card"><div class="ct"><span class="dot" style="background:var(--green)"></span>系統日誌</div><div id="log-box"></div></div>
-        <div class="card"><div class="ct"><span class="dot" style="background:var(--yellow)"></span>最新信號</div><div id="dash-sigs"></div></div>
       </div>
     </div>
 
@@ -2349,7 +2348,7 @@ document.addEventListener('keydown', e => {
 offlineDemo();
 addLog('台股 AI 六角色交易平台 v2.0 啟動', 'ok');
 addLog(`嘗試連線 ${WS_URL}`, 'info');
-addLog('確認後端已執行：python server.py', 'info');
+addLog('確認後端已執行：python server_v2.py', 'info');
 wsConnect();
 
 })();

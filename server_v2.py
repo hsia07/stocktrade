@@ -3,7 +3,7 @@
 ║   台股 AI 六角色自動交易系統 v2.0                              ║
 ║   FastAPI + WebSocket + Shioaji + Line/Email 通知             ║
 ║                                                              ║
-║   啟動：python server.py                                      ║
+║   啟動：python server_v2.py                              ║
 ║   排程：自動在 TRADE_START 開始，TRADE_END 停止              ║
 ╚══════════════════════════════════════════════════════════════╝
 

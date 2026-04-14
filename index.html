@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>TW AI Trading Dashboard</title>
+<style>
+/* ── 字型 ── */
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,400&family=Syne:wght@400;600;700;800&family=Noto+Sans+TC:wght@400;500;700&display=swap');
+
+:root {
+  --bg:       #050c18;
+  --panel:    #0a1628;
+  --panel2:   #0f1e38;
+  --panel3:   #152540;
+  --border:   rgba(255,255,255,.06);
+  --text:     #dde8f8;
+  --muted:    #7a90b4;
+  --accent:   #4d9fff;
+  --accent2:  #1bd4a0;
+  --buy:      #ff5252;
+  --sell:     #2ecc71;
+  --warn:     #ffb020;
+  --danger:   #ff4c4c;
+  --r:        16px;
+  --mono:     'DM Mono', monospace;
+  --sans:     'Syne', 'Noto Sans TC', sans-serif;
+  --body:     'Noto Sans TC', sans-serif;
+  /* 六角色顏色 */
+  --quant:    #a78bfa;
+  --back:     #60a5fa;
+  --risk:     #f87171;
+  --signal:   #34d399;
+  --exec:     #fbbf24;
+  --market:   #f472b6;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden}
+body{
+  font-family:var(--body);
+  background:var(--bg);
+  color:var(--text);
+  display:flex;
+  flex-direction:column;
+}
+
+/* ══ 頂部導航 ══ */
+#topbar{
+  display:flex;
+  align-items:center;
+  gap:16px;
+  padding:0 20px;
+  height:56px;
+  background:rgba(5,12,24,.95);
+  border-bottom:1px solid var(--border);
+  backdrop-filter:blur(12px);
+  position:sticky;top:0;z-index:100;
+  flex-shrink:0;
+}
+.logo{
+  display:flex;align-items:center;gap:10px;
+  font-family:var(--sans);font-weight:800;font-size:17px;letter-spacing:-.3px;
+  white-space:nowrap;
+}
+.logo-mark{
+  width:34px;height:34px;border-radius:10px;
+  background:linear-gradient(135deg,#4d9fff,#1bd4a0);
+  display:grid;place-items:center;font-size:14px;font-weight:800;
+}
+.ws-dot{
+  width:8px;height:8px;border-radius:50%;
+  background:var(--muted);transition:background .3s;
+  flex-shrink:0;
+}
+.ws-dot.connected{background:#1bd4a0;box-shadow:0 0 6px #1bd4a0;}
+.ws-dot.error{background:#ff5252;}
+#topbar-tabs{
+  display:flex;gap:4px;flex:1;overflow-x:auto;
+  scrollbar-width:none;
+}
+#topbar-tabs::-webkit-scrollbar{display:none}
+.tab-btn{
+  padding:6px 14px;border-radius:8px;
+  font-family:var(--sans);font-size:13px;font-weight:600;
+  background:transparent;color:var(--muted);border:none;cursor:pointer;
+  white-space:nowrap;transition:all .2s;
+}
+.tab-btn.active{background:rgba(77,159,255,.15);color:var(--accent);}
+.tab-btn:hover:not(.active){background:rgba(255,255,255,.04);color:var(--text);}
+#topbar-right{display:flex;align-items:center;gap:10px;margin-left:auto;flex-shrink:0;}
+.pill-btn{
+  padding:6px 12px;border-radius:8px;font-size:12px;font-weight:600;
+  border:1px solid var(--border);background:var(--panel2);color:var(--text);cursor:pointer;
+  transition:all .2s;
+}
+.pill-btn:hover{background:var(--panel3);}
+.pill-btn.danger{border-color:rgba(255,82,82,.3);color:#ff9999;}
+#clock{font-family:var(--mono);font-size:13px;color:var(--muted);}
+
+/* ══ 主佈局 ══ */
+#app{
+  display:grid;
+  grid-template-columns:220px 1fr;
+  flex:1;overflow:hidden;
+}
+
+/* ══ 左側欄 ══ */
+#sidebar{
+  background:rgba(10,22,40,.9);
+  border-right:1px solid var(--border);
+  display:flex;flex-direction:column;
+  overflow-y:auto;overflow-x:hidden;
+  scrollbar-width:thin;scrollbar-color:var(--border) transparent;
+}
+.sidebar-section{padding:14px 12px 8px;}
+.sidebar-label{
+  font-size:10px;font-weight:700;letter-spacing:1.5px;
+  color:var(--muted);text-transform:uppercase;
+  padding:0 4px;margin-bottom:8px;
+}
+.nav-item{
+  display:flex;align-items:center;gap:10px;
+  padding:9px 10px;border-radius:10px;
+  font-size:13px;font-weight:500;color:var(--muted);
+  cursor:pointer;transition:all .15s;border:1px solid transparent;
+}
+.nav-item:hover{background:rgba(255,255,255,.03);color:var(--text);}
+.nav-item.active{
+  background:rgba(77,159,255,.1);
+  border-color:rgba(77,159,255,.2);color:var(--accent);
+}
+.nav-icon{font-size:15px;width:20px;text-align:center;}
+.nav-badge{
+  margin-left:auto;padding:1px 6px;border-radius:20px;
+  font-size:10px;font-weight:700;
+}
+.badge-ok{background:rgba(27,212,160,.15);color:#1bd4a0;}
+.badge-warn{background:rgba(255,176,32,.15);color:#ffb020;}
+.badge-alert{background:rgba(255,82,82,.15);color:#ff5252;}
+.badge-idle{background:rgba(122,144,180,.1);color:var(--muted);}
+
+/* ══ 即時統計欄 ══ */
+#sidebar-stats{
+  margin:0 12px 12px;
+  padding:12px;
+  border:1px solid var(--border);
+  border-radius:12px;
+  background:var(--panel);
+  display:grid;gap:8px;
+}
+.stat-row{display:flex;justify-content:space-between;align-items:center;font-size:12px;}
+.stat-label{color:var(--muted);}
+.stat-val{font-family:var(--mono);font-weight:500;}
+.stat-val.pos{color:var(--buy);}
+.stat-val.neg{color:var(--sell);}
+.stat-val.ok{color:var(--accent2);}
+
+/* ══ 主內容區 ══ */
+#main{flex:1;overflow-y:auto;padding:20px;scrollbar-width:thin;scrollbar-color:var(--border) transparent;}
+.page{display:none;}
+.page.active{display:block;}
+
+/* ══ 卡片 ══ */
+.card{
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:var(--r);
+  padding:16px;
+  overflow:hidden;
+}
+.card-title{
+  font-family:var(--sans);font-size:14px;font-weight:700;
+  margin-bottom:12px;display:flex;align-items:center;gap:8px;
+}
+.card-title .dot{width:8px;height:8px;border-radius:50%;}
+
+/* ══ Grid ══ */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;}
+.g6{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;}
+.gap{gap:14px;}
+.mb{margin-bottom:14px;}
+
+/* ══ 六角色面板 ══ */
+.agents-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:12px;margin-bottom:16px;
+}
+.agent-card{
+  border-radius:14px;
+  border:1px solid var(--border);
+  padding:14px;
+  position:relative;
+  overflow:hidden;
+  transition:border-color .3s;
+}
+.agent-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+}
+.agent-card.quant{ border-color:rgba(167,139,250,.2); }
+.agent-card.quant::before{ background:var(--quant); }
+.agent-card.backtest{ border-color:rgba(96,165,250,.2); }
+.agent-card.backtest::before{ background:var(--back); }
+.agent-card.risk{ border-color:rgba(248,113,113,.2); }
+.agent-card.risk::before{ background:var(--risk); }
+.agent-card.signal{ border-color:rgba(52,211,153,.2); }
+.agent-card.signal::before{ background:var(--signal); }
+.agent-card.exec{ border-color:rgba(251,191,36,.2); }
+.agent-card.exec::before{ background:var(--exec); }
+.agent-card.market{ border-color:rgba(244,114,182,.2); }
+.agent-card.market::before{ background:var(--market); }
+
+.agent-header{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+.agent-icon{font-size:18px;}
+.agent-name{font-family:var(--sans);font-size:13px;font-weight:700;}
+.agent-status{
+  margin-left:auto;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700;
+}
+.status-ok{background:rgba(27,212,160,.15);color:#1bd4a0;}
+.status-warn{background:rgba(255,176,32,.15);color:#ffb020;}
+.status-alert{background:rgba(255,82,82,.15);color:#ff5252;animation:pulse-alert 1s infinite;}
+.status-idle{background:rgba(122,144,180,.1);color:var(--muted);}
+@keyframes pulse-alert{0%,100%{opacity:1;}50%{opacity:.5;}}
+
+.agent-summary{
+  font-size:12px;font-weight:600;color:var(--text);
+  margin-bottom:6px;line-height:1.4;
+}
+.agent-details{
+  display:grid;gap:3px;
+}
+.agent-detail-line{
+  font-family:var(--mono);font-size:11px;color:var(--muted);
+  line-height:1.5;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+
+/* ══ 即時 Tick 表格 ══ */
+.tick-table{width:100%;border-collapse:collapse;font-family:var(--mono);font-size:12px;}
+.tick-table th{
+  text-align:left;padding:6px 10px;color:var(--muted);
+  border-bottom:1px solid var(--border);font-weight:600;
+  font-family:var(--sans);font-size:11px;letter-spacing:.5px;
+}
+.tick-table td{padding:8px 10px;border-bottom:1px solid rgba(255,255,255,.03);}
+.tick-table tr:hover td{background:rgba(255,255,255,.02);}
+.up{color:var(--buy);}
+.down{color:var(--sell);}
+.neutral{color:var(--muted);}
+
+/* ══ 交易記錄 ══ */
+.trade-row{
+  display:grid;
+  grid-template-columns:80px 60px 70px 70px 70px 70px 1fr;
+  gap:8px;padding:8px 10px;
+  font-family:var(--mono);font-size:12px;
+  border-bottom:1px solid rgba(255,255,255,.03);
+  align-items:center;
+}
+.trade-header{font-family:var(--sans);font-size:11px;color:var(--muted);font-weight:600;}
+
+/* ══ 儀表板 KPI ══ */
+.kpi-strip{
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:12px;margin-bottom:16px;
+}
+.kpi-box{
+  background:var(--panel);border:1px solid var(--border);
+  border-radius:12px;padding:14px;
+}
+.kpi-label{font-size:11px;color:var(--muted);margin-bottom:6px;font-family:var(--sans);letter-spacing:.3px;}
+.kpi-value{font-family:var(--mono);font-size:22px;font-weight:500;}
+.kpi-sub{font-size:11px;color:var(--muted);margin-top:3px;}
+
+/* ══ 持倉 ══ */
+.pos-card{
+  padding:12px;border-radius:12px;border:1px solid var(--border);
+  background:var(--panel2);margin-bottom:8px;
+  display:grid;grid-template-columns:1fr 1fr 1fr 1fr auto;
+  gap:12px;align-items:center;font-size:13px;
+}
+.pos-sym{font-family:var(--sans);font-weight:700;font-size:15px;}
+.pos-dir{
+  padding:3px 8px;border-radius:6px;font-size:11px;font-weight:700;
+  width:fit-content;
+}
+.pos-dir.long{background:rgba(255,82,82,.15);color:#ff8080;}
+.pos-dir.short{background:rgba(46,204,113,.15);color:#7cf0a8;}
+
+/* ══ 信號記錄 ══ */
+.signal-item{
+  padding:10px 12px;border-radius:10px;border-left:3px solid transparent;
+  background:rgba(255,255,255,.02);margin-bottom:6px;
+  font-size:12px;line-height:1.7;
+}
+.signal-item.long{border-color:var(--buy);}
+.signal-item.short{border-color:var(--sell);}
+
+/* ══ 狀態列 ══ */
+#statusbar{
+  height:28px;background:rgba(5,12,24,.95);border-top:1px solid var(--border);
+  display:flex;align-items:center;padding:0 16px;gap:20px;
+  font-family:var(--mono);font-size:11px;color:var(--muted);
+  flex-shrink:0;
+}
+#statusbar span{display:flex;align-items:center;gap:5px;}
+
+/* ══ 無連線提示 ══ */
+.offline-notice{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  height:100%;gap:12px;color:var(--muted);
+}
+.offline-notice h3{font-family:var(--sans);color:var(--text);}
+
+/* ══ 股票選擇器 ══ */
+.sym-pills{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;}
+.sym-pill{
+  padding:5px 12px;border-radius:8px;font-size:12px;font-weight:600;
+  background:var(--panel2);border:1px solid var(--border);
+  cursor:pointer;transition:all .15s;font-family:var(--mono);
+}
+.sym-pill.active{background:rgba(77,159,255,.15);border-color:rgba(77,159,255,.3);color:var(--accent);}
+.sym-pill:hover:not(.active){border-color:rgba(255,255,255,.15);}
+
+/* ══ 響應式 ══ */
+@media(max-width:1200px){
+  .agents-grid{grid-template-columns:repeat(2,1fr);}
+  .g6{grid-template-columns:repeat(3,1fr);}
+  .kpi-strip{grid-template-columns:repeat(3,1fr);}
+}
+@media(max-width:900px){
+  #app{grid-template-columns:1fr;}
+  #sidebar{display:none;}
+  .agents-grid{grid-template-columns:1fr 1fr;}
+  .g3{grid-template-columns:1fr;}
+  .g2{grid-template-columns:1fr;}
+}
+@media(max-width:600px){
+  .agents-grid,.kpi-strip,.g6{grid-template-columns:1fr;}
+}
+
+/* ══ 系統日誌 ══ */
+#log-console{
+  background:#040b16;border:1px solid var(--border);
+  border-radius:10px;padding:10px;height:160px;overflow-y:auto;
+  font-family:var(--mono);font-size:11px;line-height:1.8;
+  scrollbar-width:thin;
+}
+.log-line{color:var(--muted);}
+.log-line.info{color:#7cb4ff;}
+.log-line.ok{color:#1bd4a0;}
+.log-line.warn{color:#ffb020;}
+.log-line.alert{color:#ff5252;}
+
+/* ══ 動畫 ══ */
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
+.fade-in{animation:fadeIn .3s ease forwards;}
+
+/* ══ 指標 Bar ══ */
+.bar-track{height:4px;background:rgba(255,255,255,.06);border-radius:2px;overflow:hidden;margin-top:4px;}
+.bar-fill{height:100%;border-radius:2px;transition:width .6s ease;}
+</style>
+</head>
+<body>
+
+<div id="topbar">
+  <div class="logo">
+    <div class="logo-mark">AI</div>
+    TW AI Trading Dashboard
+  </div>
+  <div class="ws-dot" id="wsDot" title="WebSocket connected"></div>
+
+  <div id="topbar-tabs">
+    <button class="tab-btn active" data-page="dashboard">SHORT Entry</button>
+    <button class="tab-btn" data-page="agents">SHORT Entry</button>
+    <button class="tab-btn" data-page="market">SHORT SHORT</button>
+    <button class="tab-btn" data-page="positions">SHORT SHORT</button>
+    <button class="tab-btn" data-page="signals">? SHORT</button>
+    <button class="tab-btn" data-page="trades">SHORT SHORT</button>
+    <button class="tab-btn" data-page="risk">Entry SHORT</button>
+  </div>
+
+  <div id="topbar-right">
+    <span id="clock">--:--:--</span>
+    <button class="pill-btn danger" id="resetBtn">SHORT</button>
+    <button class="pill-btn" id="modeBtn">Entry?</button>
+  </div>
+</div>
+
+<div id="app">
+  <aside id="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-label">SHORT</div>
+      <div class="nav-item active" data-page="dashboard"><span class="nav-icon">SHORT</span>Entry</div>
+      <div class="nav-item" data-page="agents"><span class="nav-icon">SHORT</span>Entry <span class="nav-badge badge-ok" id="nb-agents">6/6</span></div>
+      <div class="nav-item" data-page="market"><span class="nav-icon">SHORT</span>SHORT</div>
+      <div class="nav-item" data-page="positions"><span class="nav-icon">SHORT</span>SHORT <span class="nav-badge badge-idle" id="nb-pos">0</span></div>
+      <div class="nav-item" data-page="signals"><span class="nav-icon">?</span>SHORT <span class="nav-badge badge-ok" id="nb-sig">0</span></div>
+      <div class="nav-item" data-page="trades"><span class="nav-icon">SHORT</span>SHORT <span class="nav-badge badge-idle" id="nb-trades">0</span></div>
+      <div class="nav-item" data-page="risk"><span class="nav-icon">Entry</span>SHORT</div>
+    </div>
+
+    <div class="sidebar-section" style="margin-top:auto">
+      <div class="sidebar-label">Entry?</div>
+    </div>
+    <div id="sidebar-stats">
+      <div class="stat-row"><span class="stat-label">Entry?</span><span class="stat-val" id="s-pnl">NT$ 0</span></div>
+      <div class="stat-row"><span class="stat-label">Entry?</span><span class="stat-val" id="s-trades">0 / 6</span></div>
+      <div class="stat-row"><span class="stat-label">Entry</span><span class="stat-val" id="s-pos">0 / 2</span></div>
+      <div class="stat-row"><span class="stat-label">Entry?</span><span class="stat-val ok" id="s-status">SHORT</span></div>
+    </div>
+  </aside>
+
+  <main id="main">
+    <div class="page active" id="page-dashboard">
+      <div class="kpi-strip" id="kpi-strip">
+        <div class="kpi-box"><div class="kpi-label">Entry?</div><div class="kpi-value" id="kpi-pnl">NT$ 0</div><div class="kpi-sub">SHORT</div></div>
+        <div class="kpi-box"><div class="kpi-label">Entry?</div><div class="kpi-value" id="kpi-trades">0</div><div class="kpi-sub">SHORT</div></div>
+        <div class="kpi-box"><div class="kpi-label">Entry</div><div class="kpi-value" id="kpi-pos">0</div><div class="kpi-sub">SHORT</div></div>
+        <div class="kpi-box"><div class="kpi-label">Entry?</div><div class="kpi-value" id="kpi-loss">0</div><div class="kpi-sub">Entry?</div></div>
+        <div class="kpi-box"><div class="kpi-label">Entry?</div><div class="kpi-value" id="kpi-sig">0</div><div class="kpi-sub">Entry?</div></div>
+      </div>
+
+      <div class="agents-grid" id="dash-agents"></div>
+
+      <div class="g2">
+        <div class="card">
+          <div class="card-title"><span class="dot" style="background:var(--accent2)"></span>Entry?</div>
+          <div id="log-console"></div>
+        </div>
+        <div class="card">
+          <div class="card-title"><span class="dot" style="background:var(--warn)"></span>Entry?</div>
+          <div id="dash-signals"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="page" id="page-agents">
+      <div style="margin-bottom:12px;"><div class="sym-pills" id="agent-sym-pills"></div></div>
+      <div class="agents-grid" id="agents-detail" style="grid-template-columns:repeat(2,1fr)"></div>
+    </div>
+
+    <div class="page" id="page-market">
+      <div class="card">
+        <div class="card-title"><span class="dot" style="background:var(--accent)"></span>EntryEntry</div>
+        <table class="tick-table">
+          <thead><tr>
+            <th>SHORT</th><th>SHORT</th><th>SHORT</th><th>Entry</th><th>SHORT</th><th>SHORT</th><th>SHORT</th><th>SHORT</th><th>Entry</th>
+          </tr></thead>
+          <tbody id="market-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="page" id="page-positions">
+      <div class="card mb">
+        <div class="card-title"><span class="dot" style="background:var(--buy)"></span>Entry?</div>
+        <div id="positions-list"><div class="neutral" style="font-size:13px;padding:20px 0;text-align:center">EntryEntry</div></div>
+      </div>
+    </div>
+
+    <div class="page" id="page-signals">
+      <div class="card">
+        <div class="card-title"><span class="dot" style="background:var(--signal)"></span>Entry?</div>
+        <div id="signals-list"></div>
+      </div>
+    </div>
+
+    <div class="page" id="page-trades">
+      <div class="card">
+        <div class="card-title"><span class="dot" style="background:var(--exec)"></span>Entry?</div>
+        <div class="trade-row trade-header">
+          <span>SHORT</span><span>SHORT</span><span>SHORT</span><span>SHORT</span><span>SHORT</span><span>SHORT</span><span>SHORT</span>
+        </div>
+        <div id="trades-list"></div>
+      </div>
+    </div>
+
+    <div class="page" id="page-risk">
+      <div class="g2">
+        <div class="card">
+          <div class="card-title"><span class="dot" style="background:var(--risk)"></span>Entry?</div>
+          <div id="risk-params"></div>
+        </div>
+        <div class="card">
+          <div class="card-title"><span class="dot" style="background:var(--warn)"></span>Entry?</div>
+          <div id="risk-status"></div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<div id="statusbar">
+  <span>SHORT <span id="sb-ws">Entry</span></span>
+  <span>SHORT Entry? <span id="sb-data">--</span></span>
+  <span>SHORT Entry? <span id="sb-engine">Entry?</span></span>
+  <span style="margin-left:auto">EntryEntryEntryEntryEntryEntry</span>
+</div>
+
+<script>
+(() => {
+'use strict';
+
+const WS_URL = 'ws://localhost:8765/ws';
+const SYMBOLS = ['2330','2454','2382','3017','2317','2308'];
+const SYM_NAME = {
+  '2330': 'Entry',
+  '2454': 'Entry',
+  '2382': 'SHORT',
+  '3017': 'SHORT',
+  '2317': 'SHORT',
+  '2308': 'Entry',
+};
+
+const state = {
+  ws: null,
+  connected: false,
+  lastData: null,
+  selectedSym: '2330',
+  signals: [],
+  sigCount: 0,
+  prevPrices: {},
+  _lastSigKey: '',
+};
+
+const $ = id => document.getElementById(id);
+const wsDot = $('wsDot');
+const sbWs = $('sb-ws');
+const sbData = $('sb-data');
+const sbEngine = $('sb-engine');
+
+function switchPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  const el = document.getElementById('page-' + id);
+  if (el) el.classList.add('active');
+  document.querySelectorAll(`[data-page="${id}"]`).forEach(b => b.classList.add('active'));
+}
+
+document.querySelectorAll('[data-page]').forEach(el => {
+  el.addEventListener('click', () => switchPage(el.dataset.page));
+});
+
+function updateClock() {
+  $('clock').textContent = new Date().toLocaleTimeString('zh-TW');
+}
+setInterval(updateClock, 1000);
+updateClock();
+
+function connectWS() {
+  try {
+    const ws = new WebSocket(WS_URL);
+    state.ws = ws;
+
+    ws.onopen = () => {
+      state.connected = true;
+      wsDot.className = 'ws-dot connected';
+      sbWs.textContent = 'Entry';
+      addLog('WebSocket connected', 'ok');
+    };
+
+    ws.onmessage = e => {
+      try {
+        const data = JSON.parse(e.data);
+        state.lastData = data;
+        render(data);
+        sbData.textContent = data.timestamp || '--';
+      } catch (err) {
+        addLog('EntryEntry: ' + err.message, 'warn');
+      }
+    };
+
+    ws.onclose = () => {
+      state.connected = false;
+      wsDot.className = 'ws-dot error';
+      sbWs.textContent = 'Entry5 Entry?';
+      addLog('WebSocket connectedEntry?', 'warn');
+      setTimeout(connectWS, 5000);
+    };
+
+    ws.onerror = () => {
+      addLog('WebSocket connectedEntryEntryEntry?', 'alert');
+    };
+  } catch (e) {
+    addLog('Entry? WebSocket SHORT', 'alert');
+    setTimeout(connectWS, 5000);
+  }
+}
+
+function render(data) {
+  renderKPI(data);
+  renderSidebarStats(data);
+  renderAgents(data, 'dash-agents', true);
+  renderAgents(data, 'agents-detail', false);
+  renderMarket(data);
+  renderPositions(data);
+  renderTrades(data);
+  renderSignals();
+  renderRisk(data);
+  updateNavBadges(data);
+  sbEngine.textContent = data.is_halted ? 'SHORT' : 'Entry';
+}
+
+function renderKPI(data) {
+  const pnl = data.daily_pnl || 0;
+  $('kpi-pnl').textContent = `NT$ ${fmt(pnl)}`;
+  $('kpi-pnl').className = 'kpi-value ' + (pnl > 0 ? 'up' : pnl < 0 ? 'down' : '');
+  $('kpi-trades').textContent = data.daily_trades || 0;
+  $('kpi-pos').textContent = Object.keys(data.positions || {}).length;
+  const riskRep = data.agents?.risk;
+  const cl = riskRep?.details?.find(d => d.includes('Consecutive') || d.includes('SHORT')) || '';
+  const consec = parseInt(cl.match(/\d+/)?.[0] || '0', 10);
+  $('kpi-loss').textContent = consec;
+  $('kpi-sig').textContent = state.sigCount;
+}
+
+function renderSidebarStats(data) {
+  const pnl = data.daily_pnl || 0;
+  $('s-pnl').textContent = `NT$ ${fmt(pnl)}`;
+  $('s-pnl').className = 'stat-val ' + (pnl > 0 ? 'pos' : pnl < 0 ? 'neg' : '');
+  $('s-trades').textContent = `${data.daily_trades || 0} / 6`;
+  $('s-pos').textContent = `${Object.keys(data.positions || {}).length} / 2`;
+  $('s-status').textContent = data.is_halted ? 'SHORT' : 'SHORT';
+  $('s-status').className = 'stat-val ' + (data.is_halted ? 'neg' : 'ok');
+}
+
+const AGENT_DEFS = [
+  { key: 'quant', cls: 'quant', label: 'EntrySHORT', icon: 'SHORT' },
+  { key: 'backtest', cls: 'backtest', label: 'Entry?', icon: 'SHORT' },
+  { key: 'risk', cls: 'risk', label: 'Entry', icon: 'Entry' },
+  { key: 'signal', cls: 'signal', label: 'Entry?', icon: '?' },
+  { key: 'exec', cls: 'exec', label: 'Entry?', icon: 'SHORT' },
+  { key: 'market', cls: 'market', label: 'Entry?', icon: 'SHORT' },
+];
+
+function getAgentData(data, key, sym) {
+  const agents = data.agents || {};
+  if (key === 'risk') return agents.risk;
+  if (key === 'exec') return agents.execution;
+  const symKey = `${key}_${sym}`;
+  return agents[symKey] || agents[key];
+}
+
+function statusClass(status) {
+  return { ok: 'status-ok', warn: 'status-warn', alert: 'status-alert', idle: 'status-idle' }[status] || 'status-idle';
+}
+
+function statusLabel(status) {
+  return { ok: 'SHORT', warn: 'SHORT', alert: 'SHORT', idle: 'SHORT' }[status] || 'SHORT';
+}
+
+function renderAgents(data, containerId, compact) {
+  const container = $(containerId);
+  if (!container) return;
+  const sym = state.selectedSym;
+  let html = '';
+
+  for (const def of AGENT_DEFS) {
+    const rep = getAgentData(data, def.key, sym);
+    if (!rep) {
+      html += `<div class="agent-card ${def.cls}">
+        <div class="agent-header">
+          <span class="agent-icon">${def.icon}</span>
+          <span class="agent-name">${def.label}</span>
+          <span class="agent-status status-idle">SHORT</span>
+        </div>
+        <div class="agent-summary" style="color:var(--muted)">EntryEntry...</div>
+      </div>`;
+      continue;
+    }
+
+    const details = (rep.details || []).slice(0, compact ? 2 : 6);
+    const detailHTML = details.map(d => {
+      const cls = d.includes('?') || d.includes('SHORT') ? 'style="color:#1bd4a0"'
+        : d.includes('?') || d.includes('SHORT') || d.includes('SHORT') ? 'style="color:#ff8080"'
+        : d.includes('SHORT') || d.includes('?') ? 'style="color:#ffb020"' : '';
+      return `<div class="agent-detail-line" ${cls}>${d}</div>`;
+    }).join('');
+
+    html += `<div class="agent-card ${def.cls} fade-in">
+      <div class="agent-header">
+        <span class="agent-icon">${rep.icon || def.icon}</span>
+        <span class="agent-name">${def.label}</span>
+        <span class="agent-status ${statusClass(rep.status)}">${statusLabel(rep.status)}</span>
+      </div>
+      <div class="agent-summary">${rep.summary || ''}</div>
+      <div class="agent-details">${detailHTML}</div>
+      ${!compact ? `<div style="font-size:10px;color:var(--muted);margin-top:8px;">${rep.timestamp || ''}</div>` : ''}
+    </div>`;
+
+    if (def.key === 'signal' && rep.status === 'ok' && rep.summary) detectNewSignal(rep, sym);
+  }
+  container.innerHTML = html;
+}
+
+function detectNewSignal(rep, sym) {
+  const key = rep.summary + rep.timestamp;
+  if (state._lastSigKey === key) return;
+  state._lastSigKey = key;
+  const dir = rep.summary.includes('SHORT') || rep.summary.includes('LONG') ? 'long' : 'short';
+  state.signals.unshift({ sym, dir, summary: rep.summary, time: rep.timestamp, details: rep.details });
+  state.sigCount += 1;
+  if (state.signals.length > 50) state.signals.pop();
+  addLog(`EntrySHORT${rep.summary}`, dir === 'long' ? 'ok' : 'alert');
+}
+
+function renderMarket(data) {
+  const ticks = data.ticks || {};
+  let html = '';
+  for (const sym of SYMBOLS) {
+    const t = ticks[sym];
+    if (!t) continue;
+    const prev = state.prevPrices[sym] || t.price;
+    const chg = t.price - prev;
+    const chgPct = (chg / prev * 100).toFixed(2);
+    const cls = chg > 0 ? 'up' : chg < 0 ? 'down' : 'neutral';
+    const sign = chg > 0 ? '+' : '';
+    html += `<tr>
+      <td><strong>${sym}</strong> <span style="color:var(--muted);font-size:11px;">${SYM_NAME[sym] || ''}</span></td>
+      <td class="${cls}" style="font-weight:600">${t.price.toFixed(2)}</td>
+      <td class="${cls}">${sign}${chg.toFixed(2)}</td>
+      <td class="${cls}">${sign}${chgPct}%</td>
+      <td style="color:var(--sell)">${t.bid?.toFixed(2) || '-'}</td>
+      <td style="color:var(--buy)">${t.ask?.toFixed(2) || '-'}</td>
+      <td style="color:var(--sell)">${(t.bid_vol || 0).toLocaleString()}</td>
+      <td style="color:var(--buy)">${(t.ask_vol || 0).toLocaleString()}</td>
+      <td style="color:var(--muted)">${(t.volume || 0).toLocaleString()}</td>
+    </tr>`;
+    state.prevPrices[sym] = t.price;
+  }
+  const tbody = $('market-tbody');
+  if (tbody) tbody.innerHTML = html;
+}
+
+function renderPositions(data) {
+  const positions = data.positions || {};
+  const ticks = data.ticks || {};
+  const keys = Object.keys(positions);
+  $('nb-pos').textContent = keys.length;
+  $('nb-pos').className = `nav-badge ${keys.length > 0 ? 'badge-warn' : 'badge-idle'}`;
+  $('kpi-pos').textContent = keys.length;
+
+  const list = $('positions-list');
+  if (!list) return;
+  if (!keys.length) {
+    list.innerHTML = '<div class="neutral" style="font-size:13px;padding:20px 0;text-align:center">EntryEntry</div>';
+    return;
+  }
+
+  list.innerHTML = keys.map(sym => {
+    const pos = positions[sym];
+    const tick = ticks[sym];
+    const price = tick?.price || pos.entry;
+    const mult = pos.direction === 'long' ? 1 : -1;
+    const upnl = (price - pos.entry) * mult * (pos.lots || 1) * 1000;
+    const cls = upnl >= 0 ? 'up' : 'down';
+    return `<div class="pos-card">
+      <div>
+        <div class="pos-sym">${sym}</div>
+        <div style="font-size:11px;color:var(--muted)">${SYM_NAME[sym] || ''}</div>
+      </div>
+      <div><div class="pos-dir ${pos.direction}">${pos.direction === 'long' ? 'SHORT' : 'SHORT'}</div></div>
+      <div>
+        <div style="font-size:11px;color:var(--muted)">Entry</div>
+        <div style="font-family:var(--mono)">${pos.entry?.toFixed(2) || '-'}</div>
+      </div>
+      <div>
+        <div style="font-size:11px;color:var(--muted)">SHORT</div>
+        <div class="${cls}" style="font-family:var(--mono)">${price.toFixed(2)}</div>
+      </div>
+      <div>
+        <div style="font-size:11px;color:var(--muted)">EntrySHORT</div>
+        <div class="${cls}" style="font-family:var(--mono);font-weight:700">${upnl >= 0 ? '+' : ''}${Math.round(upnl).toLocaleString()}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderTrades(data) {
+  const trades = data.trades_log || [];
+  $('nb-trades').textContent = trades.length;
+  const list = $('trades-list');
+  if (!list) return;
+  if (!trades.length) {
+    list.innerHTML = '<div class="neutral" style="font-size:13px;padding:16px;text-align:center">EntryEntry</div>';
+    return;
+  }
+  list.innerHTML = [...trades].reverse().map(t => {
+    const cls = t.pnl >= 0 ? 'up' : 'down';
+    const isLong = t.direction?.includes('long');
+    return `<div class="trade-row">
+      <span>${t.symbol} <span style="color:var(--muted);font-size:10px">${SYM_NAME[t.symbol] || ''}</span></span>
+      <span class="${isLong ? 'up' : 'down'}">${isLong ? '?' : '?'}</span>
+      <span style="font-family:var(--mono)">${t.entry?.toFixed(2) || '-'}</span>
+      <span style="font-family:var(--mono)">${t.exit?.toFixed(2) || '-'}</span>
+      <span>${t.lots || '-'}</span>
+      <span class="${cls}" style="font-family:var(--mono);font-weight:700">${t.pnl >= 0 ? '+' : ''}${Math.round(t.pnl || 0).toLocaleString()}</span>
+      <span style="font-size:11px;color:var(--muted)">${t.reason || ''}</span>
+    </div>`;
+  }).join('');
+}
+
+function renderSignals() {
+  $('nb-sig').textContent = state.sigCount;
+  const list = $('signals-list');
+  if (!list) return;
+  if (!state.signals.length) {
+    list.innerHTML = '<div class="neutral" style="font-size:13px;padding:16px;text-align:center">EntryEntry</div>';
+    const dashEmpty = $('dash-signals');
+    if (dashEmpty) dashEmpty.innerHTML = '<div class="neutral" style="font-size:13px;padding:16px;text-align:center">EntrySHORT</div>';
+    return;
+  }
+
+  const dash = $('dash-signals');
+  if (dash) {
+    dash.innerHTML = state.signals.slice(0, 4).map(s => `
+      <div class="signal-item ${s.dir}">
+        <strong>${s.sym}</strong> ${SYM_NAME[s.sym] || ''}
+        <span class="${s.dir === 'long' ? 'up' : 'down'}" style="float:right">${s.dir === 'long' ? 'SHORT SHORT' : 'SHORT SHORT'}</span>
+        <br><span style="color:var(--muted);font-size:11px">${s.summary} ? ${s.time || ''}</span>
+      </div>`).join('');
+  }
+
+  list.innerHTML = state.signals.map(s => `
+    <div class="signal-item ${s.dir}">
+      <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
+        <strong>${s.sym} ${SYM_NAME[s.sym] || ''}</strong>
+        <span class="${s.dir === 'long' ? 'up' : 'down'}">${s.dir === 'long' ? 'SHORT Entry?' : 'SHORT Entry?'}</span>
+      </div>
+      <div style="font-family:var(--mono);font-size:11px;color:var(--muted)">${s.time || ''}</div>
+      <div style="font-size:12px;color:var(--muted);margin-top:4px">${(s.details || []).join(' | ')}</div>
+    </div>`).join('');
+}
+
+function renderRisk(data) {
+  const riskRep = data.agents?.risk;
+  const params = $('risk-params');
+  const status = $('risk-status');
+  const riskParams = [
+    ['EntryEntry', 'NT$ 5,000'],
+    ['EntryEntry', 'NT$ 1,500'],
+    ['EntryEntry', '6 ?'],
+    ['EntrySHORT', '2 ?'],
+    ['EntryEntry', '65%'],
+    ['EntrySHORT', '09:10 ~ 13:00'],
+    ['EntryEntry', '13:20'],
+    ['EntryEntry', '3 ?'],
+    ['EntryEntry', '0.5%'],
+    ['EntryEntrySHORT', '25%'],
+  ];
+  if (params) {
+    params.innerHTML = riskParams.map(([k, v]) => `
+      <div class="stat-row" style="padding:8px 0;border-bottom:1px solid var(--border)">
+        <span class="stat-label">${k}</span>
+        <span class="stat-val">${v}</span>
+      </div>`).join('');
+  }
+  if (status && riskRep) {
+    status.innerHTML = (riskRep.details || []).map(d => {
+      const cls = d.includes('HALTED') || d.includes('SHORT') ? 'alert' : d.includes('SHORT') || d.includes('Remaining') ? 'warn' : 'ok';
+      return `<div class="log-line ${cls}" style="padding:6px 0;border-bottom:1px solid var(--border)">${d}</div>`;
+    }).join('');
+  }
+}
+
+function updateNavBadges(data) {
+  const agents = data.agents || {};
+  const hasAlert = Object.values(agents).some(a => a?.status === 'alert');
+  const hasWarn = Object.values(agents).some(a => a?.status === 'warn');
+  $('nb-agents').textContent = '6/6';
+  $('nb-agents').className = `nav-badge ${hasAlert ? 'badge-alert' : hasWarn ? 'badge-warn' : 'badge-ok'}`;
+}
+
+const LOG_MAX = 80;
+const logLines = [];
+function addLog(msg, type = 'info') {
+  const time = new Date().toLocaleTimeString('zh-TW');
+  logLines.push({ msg, type, time });
+  if (logLines.length > LOG_MAX) logLines.shift();
+  const el = $('log-console');
+  if (el) {
+    el.innerHTML = logLines.slice(-30).map(l => `<div class="log-line ${l.type}">[${l.time}] ${l.msg}</div>`).join('');
+    el.scrollTop = el.scrollHeight;
+  }
+}
+
+function buildSymPills() {
+  const container = $('agent-sym-pills');
+  if (!container) return;
+  container.innerHTML = SYMBOLS.map(sym => `<div class="sym-pill ${sym === state.selectedSym ? 'active' : ''}" data-sym="${sym}">${sym} ${SYM_NAME[sym] || ''}</div>`).join('');
+  container.querySelectorAll('.sym-pill').forEach(el => {
+    el.addEventListener('click', () => {
+      state.selectedSym = el.dataset.sym;
+      buildSymPills();
+      if (state.lastData) renderAgents(state.lastData, 'agents-detail', false);
+    });
+  });
+}
+
+function fmt(n) {
+  return (n >= 0 ? '' : '-') + Math.abs(Math.round(n)).toLocaleString();
+}
+
+$('resetBtn').addEventListener('click', () => {
+  if (!confirm('EntryEntryEntryEntryEntry?')) return;
+  if (state.ws?.readyState === WebSocket.OPEN) state.ws.send(JSON.stringify({ cmd: 'reset' }));
+  state.signals = [];
+  state.sigCount = 0;
+  state._lastSigKey = '';
+  addLog('EntryEntry?', 'warn');
+});
+
+$('modeBtn').textContent = 'PAPER';
+buildSymPills();
+addLog(`EntrySHORT ${WS_URL}`, 'info');
+connectWS();
+
+async function fetchMode() {
+  try {
+    const res = await fetch('/api/mode');
+    const data = await res.json();
+    $('modeBtn').textContent = data.mode;
+  } catch (e) {}
+}
+fetchMode();
+
+$('modeBtn').addEventListener('click', async () => {
+  try {
+    const res = await fetch('/api/toggle_mode', { method: 'POST' });
+    const data = await res.json();
+    $('modeBtn').textContent = data.mode;
+    addLog(`交易模式切換: ${data.mode}`, data.mode === 'PAPER' ? 'ok' : 'alert');
+  } catch (e) {
+    addLog('切換失敗', 'alert');
+  }
+});
+})();
+</script>
+</body>
+</html>
+
