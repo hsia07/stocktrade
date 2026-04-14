@@ -1211,7 +1211,7 @@ E('modeBtn').addEventListener('click', async () => {
     const res = await fetch('/api/toggle_mode', { method: 'POST' });
     const data = await res.json();
     E('modeBtn').textContent = data.mode;
-    addLog(`交易模式切換：${data.mode}`, data.mode === '紙交易' ? 'ok' : 'alert');
+    addLog(`交易模式切換：${data.mode}`, data.status === 'ok' ? 'ok' : 'alert');
   } catch (e) { addLog('切換失敗', 'alert'); }
 });
 
@@ -1224,8 +1224,9 @@ function renderRobot(d) {
     E('autoStatusLabel').style.color = auto ? 'var(--green)' : 'var(--red)';
   }
   if (E('modeBtn2')) {
-    const mode = d.paper_trade ? '紙交易' : '真實交易';
-    E('modeBtn2').textContent = '現在為: ' + mode;
+    const m = d.mode || 'pause';
+    const labels = {observe:'觀察中',sim:'模擬',paper:'紙交易',live:'實盤',pause:'暫停',recovery:'恢復中'};
+    E('modeBtn2').textContent = '現在為: ' + (labels[m] || m);
   }
   if (E('todayPnl')) {
     const pnl = d.daily_pnl || 0;
@@ -1267,8 +1268,9 @@ E('modeBtn2')?.addEventListener('click', async () => {
   try {
     const res = await fetch('/api/toggle_mode', { method: 'POST' });
     const data = await res.json();
-    E('modeBtn2').textContent = '現在為: ' + data.mode;
-    addLog(`交易模式切換：${data.mode}`, data.mode === '紙交易' ? 'ok' : 'alert');
+    const labels = {observe:'觀察中',sim:'模擬',paper:'紙交易',live:'實盤',pause:'暫停',recovery:'恢復中'};
+    E('modeBtn2').textContent = '現在為: ' + (labels[data.mode] || data.mode);
+    addLog(`交易模式切換：${data.mode}`, data.status === 'ok' ? 'ok' : 'alert');
   } catch (e) { addLog('切換失敗', 'alert'); }
 });
 
@@ -1989,7 +1991,10 @@ async function loadSettings() {
     if (E('minConfidenceInput')) E('minConfidenceInput').value = s.min_confidence || 65;
     if (E('tradeStartInput')) E('tradeStartInput').value = s.trade_start || '09:10';
     if (E('tradeEndInput')) E('tradeEndInput').value = s.trade_end || '13:00';
-    if (E('modeBtn2')) E('modeBtn2').textContent = '現在為: ' + (s.paper_trade ? '紙交易' : '真實交易');
+    if (E('modeBtn2')) {
+      const labels = {observe:'觀察中',sim:'模擬',paper:'紙交易',live:'實盤',pause:'暫停',recovery:'恢復中'};
+      E('modeBtn2').textContent = '現在為: ' + (labels[s.mode] || s.mode);
+    }
   } catch (e) { console.log('載入設定失敗', e); }
   loadSimDates();
 }

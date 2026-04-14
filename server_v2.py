@@ -2258,8 +2258,25 @@ class TradingEngine:
             return self.MODE_TRANSITIONS[key][0]
         return False
 
+    def get_allowed_transitions(self) -> list:
+        """取得當前模式下允許的 transitions"""
+        current = self.get_current_mode()
+        allowed = []
+        for (from_m, to_m), (ok, reason) in self.MODE_TRANSITIONS.items():
+            if from_m == current and ok:
+                allowed.append({"to": to_m, "reason": reason})
+        return allowed
+    
     def get_state(self) -> dict:
         current_mode = self.get_current_mode()
+        allowed = self.get_allowed_transitions()
+        contract_mode = {
+            "mode": current_mode,
+            "allowed_transitions": allowed,
+            "is_halted": self.risk.is_halted,
+            "halt_reason": self.risk.halt_reason,
+            "transition_reason_map": {k: v[1] for k, v in self.MODE_TRANSITIONS.items() if k[0] == current_mode},
+        }
         return {
             "schema_version": SCHEMA_VERSION,
             "ticks":          self.latest_ticks,
@@ -2273,6 +2290,8 @@ class TradingEngine:
             "auto_trade":     AUTO_TRADE,
             "paper_trade":    PAPER_TRADE,
             "mode": current_mode,
+            "allowed_transitions": allowed,
+            "contract": contract_mode,
             "trades_log":     [asdict(t) for t in self.trades_log[-30:]],
             "execution_orders": self.execution.orders[-30:] if hasattr(self.execution, 'orders') else [],
             "backtest":       self.backtest_cache,
@@ -2488,28 +2507,50 @@ def api_toggle_mode():
     if engine.can_transition(current, target_mode):
         PAPER_TRADE = new_paper
         engine.sync_mode_with_state()
-        mode = "紙交易" if PAPER_TRADE else "真實交易"
-        log.info(f"交易模式切換：{mode}")
+        log.info(f"交易模式切換：{target_mode}")
+        return {
+            "status": "ok",
+            "mode": engine.get_current_mode(),
+            "reason": f"切換至 {target_mode}",
+            "allowed_transitions": engine.get_allowed_transitions(),
+        }
     else:
-        mode = "紙交易" if PAPER_TRADE else "真實交易"
         log.warning(f"交易模式切換被拒絕：{current} -> {target_mode}")
-    return {"mode": mode, "paper_trade": PAPER_TRADE}
+        return {
+            "status": "denied",
+            "mode": current,
+            "reason": f"{current} 不能直接切換至 {target_mode}",
+            "allowed_transitions": engine.get_allowed_transitions(),
+        }
 
 @app.get("/api/mode")
 def api_mode():
-    return {"mode": "紙交易" if PAPER_TRADE else "真實交易", "paper_trade": PAPER_TRADE, "auto_trade": AUTO_TRADE}
+    return {
+        "mode": engine.get_current_mode(),
+        "paper_trade": PAPER_TRADE,
+        "auto_trade": AUTO_TRADE,
+        "allowed_transitions": engine.get_allowed_transitions(),
+    }
 
 @app.post("/api/sim/start")
 def api_start_sim():
-    global engine
     result = engine.enter_sim_mode()
-    return {"status": "ok" if result else "denied", "mode": engine.get_current_mode()}
+    return {
+        "status": "ok" if result else "denied",
+        "mode": engine.get_current_mode(),
+        "reason": "進入模擬模式成功" if result else "當前模式不允許進入SIM",
+        "allowed_transitions": engine.get_allowed_transitions(),
+    }
 
 @app.post("/api/sim/stop")
 def api_stop_sim():
-    global engine
     result = engine.exit_sim_mode()
-    return {"status": "ok" if result else "denied", "mode": engine.get_current_mode()}
+    return {
+        "status": "ok" if result else "denied",
+        "mode": engine.get_current_mode(),
+        "reason": "離開模擬模式成功" if result else "當前模式不允許離開SIM",
+        "allowed_transitions": engine.get_allowed_transitions(),
+    }
 
 @app.get("/api/search")
 def api_search(q: str = ""):
