@@ -1,0 +1,24 @@
+﻿round_id: "R-006"
+max_attempts_per_round: 5
+max_same_error_retries: 2
+max_no_progress_cycles: 2
+require_escalation_on:
+  - forbidden_path_touch
+  - source_of_truth_change
+  - red_zone_request
+  - repeated_same_error
+  - ci_failure_after_local_pass
+stop_immediately_on:
+  - server_v2.py_modified
+  - index_v2.html_modified
+  - env_or_secret_access
+  - broker_or_live_path_touch
+candidate_commit_allowed_only_if:
+  - local_pre_commit_pass
+  - local_pre_push_pass
+  - scheduler_validation_pass
+work_branch_push_allowed_only_if:
+  - all_required_checks_pass
+  - required_evidence_present
+master_push_allowed: false
+pr_merge_allowed: false
