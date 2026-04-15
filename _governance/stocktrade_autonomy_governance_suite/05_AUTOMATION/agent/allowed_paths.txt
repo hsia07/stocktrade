@@ -1,0 +1,7 @@
+reports/
+manifests/
+policy/
+scripts/
+tests/
+.githooks/
+.github/workflows/

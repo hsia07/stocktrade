@@ -1,0 +1,30 @@
+﻿你現在只負責整理治理包位置，不負責改核心程式。
+
+目標：
+1. 確認目前工作目錄是不是 repo 根目錄。
+2. repo 根目錄必須至少看到：
+   - server_v2.py
+   - run.bat
+   - start.bat
+   - RISK_RULES.md
+   - SOURCE_OF_TRUTH.md
+3. 確認治理包已放在：
+   - _governance/stocktrade_autonomy_governance_suite/
+4. 檢查不要變成 repo 根目錄直接出現：
+   - README.md / 00_START_HERE / 01_CHARTER ...
+5. 最後輸出整理後的目錄樹，只顯示這三區：
+   - 核心程式區
+   - 治理區
+   - 執行區（若尚未建立就註記未建立）
+
+硬規則：
+- 不准修改 server_v2.py
+- 不准修改 index_v2.html
+- 不准修改 .env / secrets / 憑證
+- 不准把治理包直接散落在 repo 根目錄
+- 不准移動既有核心檔案
+
+最後只回報：
+- 是否成功
+- 最終路徑
+- 有無風險

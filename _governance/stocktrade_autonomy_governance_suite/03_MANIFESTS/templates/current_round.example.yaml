@@ -1,0 +1,31 @@
+round_id: "R-005"
+title: "狀態機治理"
+status: "in_progress"
+depends_on:
+  - "R-004"
+allowed_paths:
+  - "policy/"
+  - "tests/"
+  - "scripts/"
+  - "manifests/"
+  - "reports/"
+forbidden_paths:
+  - "server_v2.py"
+  - "index_v2.html"
+required_evidence:
+  - "reports/pass_or_fail_report.md"
+  - "reports/run_record.json"
+  - "reports/review_packet.md"
+required_checks:
+  - "python scripts/validate_round.py --manifest automation/current_round.yaml"
+  - "python scripts/check_forbidden_changes.py"
+  - "python scripts/check_required_evidence.py"
+  - "python scripts/check_commit_message.py"
+direct_fail_conditions:
+  - "改動 forbidden paths"
+  - "缺少 required evidence"
+  - "前一輪未正式通過"
+  - "驗收腳本失敗"
+risk_level: "yellow"
+owner: "you"
+notes: "不得混入下一輪內容"

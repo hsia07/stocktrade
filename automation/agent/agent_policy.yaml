@@ -1,0 +1,27 @@
+﻿agent_name: local_coding_agent
+mode: restricted
+can_modify:
+  - manifests/
+  - reports/
+  - scripts/
+  - .githooks/
+  - .github/workflows/
+  - automation/
+cannot_modify:
+  - server_v2.py
+  - index_v2.html
+  - .env
+  - .env.*
+  - secrets/
+  - broker/
+can_commit_candidate: true
+can_push_work_branch: true
+can_push_main: false
+can_merge_pr: false
+must_generate:
+  - reports/run_record.json
+  - reports/review_packet.md
+must_not_decide:
+  - pass_fail
+  - round_promotion
+  - live_enable

@@ -1,0 +1,33 @@
+﻿round_id: "R-006"
+title: "健康檢查 / 熔斷 / 降級中心"
+status: "in_progress"
+depends_on:
+  - "R-005"
+allowed_paths:
+  - "manifests/"
+  - "reports/"
+  - "scripts/"
+  - ".githooks/"
+  - ".github/"
+  - "automation/"
+forbidden_paths:
+  - "server_v2.py"
+  - "index_v2.html"
+  - ".env"
+  - ".env.*"
+required_evidence:
+  - "reports/run_record.json"
+  - "reports/review_packet.md"
+required_checks:
+  - "py ./scripts/validation/validate_round.py --manifest ./manifests/current_round.yaml"
+  - "py ./scripts/validation/check_forbidden_changes.py"
+  - "py ./scripts/validation/check_required_evidence.py"
+  - "py ./scripts/validation/check_commit_message.py"
+direct_fail_conditions:
+  - "modified forbidden paths"
+  - "missing required evidence"
+  - "manifest/schema inconsistency"
+  - "claim pass before full round recheck"
+risk_level: "yellow"
+owner: "you"
+notes: "目前先只啟用治理骨架，不允許自動修改核心交易檔。"

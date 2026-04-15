@@ -1,0 +1,6 @@
+﻿server_v2.py
+index_v2.html
+.env
+.env.*
+secrets/
+broker/

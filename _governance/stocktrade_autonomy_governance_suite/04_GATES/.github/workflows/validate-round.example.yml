@@ -1,0 +1,27 @@
+name: validate-round
+
+on:
+  push:
+    branches:
+      - '**'
+  pull_request:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install pyyaml jsonschema
+      - name: Validate round
+        run: |
+          python scripts/validate_round.py --manifest automation/current_round.yaml
+          python scripts/check_forbidden_changes.py --manifest automation/current_round.yaml
+          python scripts/check_required_evidence.py --manifest automation/current_round.yaml
+          python scripts/check_commit_message.py --manifest automation/current_round.yaml

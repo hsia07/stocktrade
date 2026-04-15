@@ -1,0 +1,6 @@
+﻿manifests/
+reports/
+scripts/
+.githooks/
+.github/workflows/
+automation/
