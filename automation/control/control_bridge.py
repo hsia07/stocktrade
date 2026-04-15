@@ -17,6 +17,7 @@ STATE_FILE = os.path.join(CONTROL_DIR, "state.runtime.json")
 LAST_ACTION_FILE = os.path.join(CONTROL_DIR, "last_action.runtime.json")
 APPROVED_CANDIDATE_FILE = os.path.join(PROMOTION_DIR, "approved_candidate.runtime.json")
 PROMOTION_PLAN_FILE = os.path.join(PROMOTION_DIR, "promotion_plan.runtime.json")
+PROMOTION_RESULT_FILE = os.path.join(PROMOTION_DIR, "promotion_result.runtime.json")
 
 
 def load_json(path):
@@ -95,40 +96,98 @@ def do_approve_and_promote():
     approve_script = os.path.join(PROMOTION_DIR, 'approve_candidate.ps1')
     promote_script = os.path.join(PROMOTION_DIR, 'promote_candidate.ps1')
 
-    approve_result = run_ps_script(approve_script)
+    # STEP 1: APPROVE
+    approve_ps_result = run_ps_script(approve_script)
 
-    if not approve_result['success']:
+    if not approve_ps_result['success']:
         result = {
             'status': 'failed',
             'stage': 'approve',
-            'reason': approve_result.get('stderr', 'approve_candidate.ps1 failed'),
-            'stdout': approve_result.get('stdout', ''),
+            'reason': approve_ps_result.get('stderr', 'approve_candidate.ps1 failed'),
+            'stdout': approve_ps_result.get('stdout', ''),
             'action': 'approve_failed'
         }
         save_json(LAST_ACTION_FILE, result)
         return result
 
-    promote_result = run_ps_script(promote_script)
+    # STEP 2: PROMOTE
+    promote_ps_result = run_ps_script(promote_script)
 
-    if not promote_result['success']:
+    # Load promotion result file for detailed audit
+    promote_data = load_json(PROMOTION_RESULT_FILE)
+
+    # Determine overall success based on strict criteria
+    promote_status = promote_data.get('status') if promote_data else 'unknown'
+
+    if not promote_ps_result['success'] or promote_status not in ['success', 'already_exists']:
+        # Promote failed - capture detailed error
+        error_reason = promote_data.get('reason') if promote_data else promote_ps_result.get('stderr', 'promote failed')
         result = {
             'status': 'failed',
-            'stage': 'promote',
-            'reason': promote_result.get('stderr', 'promote_candidate.ps1 failed'),
-            'stdout': promote_result.get('stdout', ''),
+            'stage': promote_data.get('stage', 'promote') if promote_data else 'promote',
+            'reason': error_reason,
+            'stdout': promote_ps_result.get('stdout', ''),
+            'promote_exit_code': promote_ps_result['exit_code'],
             'action': 'promote_failed'
         }
         save_json(LAST_ACTION_FILE, result)
         return result
 
+    # STEP 3: VERIFY ALL SUCCESS CONDITIONS
+    # Load all data for complete audit trail
     approved_data = load_json(APPROVED_CANDIDATE_FILE)
     plan_data = load_json(PROMOTION_PLAN_FILE)
 
+    # Validate required audit fields
+    source_commit = promote_data.get('source_commit')
+    pushed_commit = promote_data.get('pushed_commit')
+    push_target = promote_data.get('push_target')
+    remote_verified = promote_data.get('verification', {}).get('commit_match', False)
+
+    # STRICT SUCCESS: All must be present and verified
+    all_success = (
+        source_commit and
+        pushed_commit and
+        push_target == 'origin' and
+        remote_verified and
+        (pushed_commit == source_commit)
+    )
+
+    if not all_success:
+        result = {
+            'status': 'partial',
+            'stage': 'verification',
+            'reason': 'Promotion executed but verification incomplete',
+            'audit': {
+                'source_commit': source_commit,
+                'pushed_commit': pushed_commit,
+                'push_target': push_target,
+                'remote_verified': remote_verified,
+                'commits_match': (pushed_commit == source_commit) if (pushed_commit and source_commit) else False
+            },
+            'action': 'verification_incomplete'
+        }
+        save_json(LAST_ACTION_FILE, result)
+        return result
+
+    # FULL SUCCESS: All conditions met
     result = {
         'status': 'success',
         'stage': 'complete',
+        'idempotency': promote_status == 'already_exists',
+        'audit_trail': {
+            'candidate_id': promote_data.get('candidate_id'),
+            'source_branch': promote_data.get('source_branch'),
+            'source_commit': source_commit,
+            'review_branch': promote_data.get('review_branch'),
+            'pushed_commit': pushed_commit,
+            'push_target': push_target,
+            'pushed_at': promote_data.get('pushed_at'),
+            'remote_verified': remote_verified
+        },
         'approved_candidate': approved_data,
         'promotion_plan': plan_data,
+        'promotion_result': promote_data,
         'action': 'approved_and_promoted'
     }
     save_json(LAST_ACTION_FILE, result)
