@@ -142,7 +142,12 @@ def do_approve_and_promote():
     source_commit = promote_data.get('source_commit')
     pushed_commit = promote_data.get('pushed_commit')
     push_target = promote_data.get('push_target')
-    remote_verified = promote_data.get('verification', {}).get('commit_match', False)
+    
+    # For already_exists status, verification is implicit (remote already at target)
+    if promote_status == 'already_exists':
+        remote_verified = (pushed_commit == source_commit)
+    else:
+        remote_verified = promote_data.get('verification', {}).get('commit_match', False)
 
     # STRICT SUCCESS: All must be present and verified
     all_success = (
