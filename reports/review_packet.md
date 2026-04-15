@@ -1,29 +1,33 @@
-# Review Packet
+﻿# R-006 Review Packet
 
-## 基本資訊
-- Round:
-- Branch:
-- Base commit:
-- Candidate commit:
-- Risk level:
+## Summary
+Governance skeleton bootstrap completed.
 
-## 本次只修
-- 
+## Commit
+- d1074f3
 
-## 改動檔案
-- 
+## Checks
+- pre-commit: pass
+- pre-push: pass
+- validate-round (GitHub Actions): pass
 
-## 驗收結果
-- 結構驗收：
-- 行為驗收：
-- 流程驗收：
-- 回歸驗收：
+## Scope
+- manifests
+- reports
+- scripts/validation
+- .githooks
+- .github/workflows
+- automation
+- _governance
 
-## 失敗 / 風險 / 疑點
-- 
+## Forbidden Paths
+- server_v2.py
+- index_v2.html
+- .env
+- .env.*
 
-## 是否命中高風險
-- 是 / 否
+## Result
+PASS
 
-## 建議結論
-- 留在本輪 / 候選通過 / 正式通過 / 升級人工
+## Notes
+This commit establishes the governance skeleton only. No core trading logic was modified.

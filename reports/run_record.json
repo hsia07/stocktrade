@@ -1,26 +1,12 @@
-{
-  "run_id": "run_20260415_001",
-  "started_at": "2026-04-15T10:00:00+08:00",
-  "finished_at": "2026-04-15T10:12:00+08:00",
-  "round_id": "R-005",
-  "agent_name": "local_coding_agent",
-  "model_name": "ollama_local_model",
-  "git_branch": "autofix/r-005-001",
-  "base_commit": "abcdef123456",
-  "result": "fail",
-  "commands": [
-    "python scripts/validate_round.py --manifest automation/current_round.yaml",
-    "pytest -q"
+﻿{
+  "round_id": "R-006",
+  "commit": "d1074f3",
+  "status": "pass",
+  "stage": "governance_bootstrap",
+  "evidence": [
+    "pre-commit passed",
+    "pre-push passed",
+    "validate-round GitHub Action passed"
   ],
-  "changed_files": [
-    "tests/test_state_machine.py",
-    "reports/fail_report.md"
-  ],
-  "evidence_paths": [
-    "reports/fail_report.md",
-    "reports/run_record.json",
-    "reports/review_packet.md"
-  ],
-  "failure_category": "behavior_validation_failed",
-  "summary": "狀態機 transition 與契約不一致"
+  "notes": "Governance skeleton bootstrapped and aligned to manifests/current_round.yaml"
 }
