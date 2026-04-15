@@ -1,335 +1,312 @@
 # run_candidate_aider.ps1
-# Low-interaction aider automation script for candidate branch development
-# Uses Ollama with qwen2.5-coder:7b model
+# Run Aider on candidate branch with strict safety controls
 
-[CmdletBinding()]
 param(
-    [Parameter(Mandatory=$true, Position=0)]
     [string]$Task,
-    
-    [Parameter(Mandatory=$true, Position=1)]
-    [string[]]$Files,
-    
-    [string]$Model = "ollama_chat/qwen2.5-coder:7b",
-    [string]$CandidateId = "",
-    [switch]$YesAlways,
-    [string]$OutputDir = "automation/control/aider_output"
+    [string]$TaskFile,
+    [string]$CandidateId,
+    [string]$SourceBranch = "work/r006-governance",
+    [string]$AiderPath,
+    [switch]$AllowDirtyStart,
+    [switch]$YesAlways
 )
 
 $ErrorActionPreference = "Stop"
 
-# ═══════════════════════════════════════════════════════════════
-# Helper Functions
-# ═══════════════════════════════════════════════════════════════
-
-function Write-Log {
-    param(
-        [string]$Message,
-        [string]$Level = "INFO"
+function Resolve-AiderPath {
+    param([string]$ExplicitPath)
+    
+    if (-not [string]::IsNullOrWhiteSpace($ExplicitPath)) {
+        if (Test-Path $ExplicitPath) {
+            Write-Host "[INFO] Using explicit AiderPath: $ExplicitPath" -ForegroundColor Green
+            return $ExplicitPath
+        }
+        Write-Host "[WARN] Explicit AiderPath not found: $ExplicitPath" -ForegroundColor Yellow
+    }
+    
+    try {
+        $cmd = Get-Command aider -ErrorAction Stop
+        if ($cmd.Source) {
+            Write-Host "[INFO] Found aider via Get-Command: $($cmd.Source)" -ForegroundColor Green
+            return $cmd.Source
+        }
+    } catch {
+        Write-Host "[INFO] aider not found in PATH via Get-Command" -ForegroundColor Gray
+    }
+    
+    $fallbackPaths = @(
+        "C:\Users\richa\.local\bin\aider.exe",
+        "$env:USERPROFILE\.local\bin\aider.exe"
     )
-    $timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
-    $logEntry = "[$timestamp] [$Level] $Message"
-    Write-Host $logEntry
-    return $logEntry
-}
-
-function Invoke-GitCommand {
-    param([string]$Arguments)
-    $psi = New-Object System.Diagnostics.ProcessStartInfo
-    $psi.FileName = "git"
-    $psi.Arguments = $Arguments
-    $psi.RedirectStandardOutput = $true
-    $psi.RedirectStandardError = $true
-    $psi.UseShellExecute = $false
-    $psi.WorkingDirectory = (Get-Location).Path
     
-    $proc = New-Object System.Diagnostics.Process
-    $proc.StartInfo = $psi
-    $proc.Start() | Out-Null
-    
-    $stdout = $proc.StandardOutput.ReadToEnd()
-    $stderr = $proc.StandardError.ReadToEnd()
-    $proc.WaitForExit()
-    
-    return @{
-        ExitCode = $proc.ExitCode
-        StdOut = $stdout
-        StdErr = $stderr
-        Output = ($stdout + "`n" + $stderr).Trim()
+    foreach ($path in $fallbackPaths) {
+        if (Test-Path $path) {
+            Write-Host "[INFO] Found aider at fallback path: $path" -ForegroundColor Green
+            return $path
+        }
     }
+    
+    return $null
 }
 
-function Test-CommandExists {
-    param([string]$Command)
-    $null = Get-Command $Command -ErrorAction SilentlyContinue
-    return $?
-}
+$AiderExe = Resolve-AiderPath -ExplicitPath $AiderPath
 
-# ═══════════════════════════════════════════════════════════════
-# Pre-flight Checks
-# ═══════════════════════════════════════════════════════════════
-
-Write-Log "=== Aider Candidate Runner Starting ==="
-
-# Check aider is installed
-if (-not (Test-CommandExists "aider")) {
-    Write-Log "aider not found in PATH. Please install aider first." "ERROR"
+if (-not $AiderExe) {
+    Write-Host ""
+    Write-Host "[ERROR] BLOCKED: Cannot resolve aider executable" -ForegroundColor Red
+    Write-Host "[ERROR] Tried:"
+    Write-Host "  1. Explicit -AiderPath parameter"
+    Write-Host "  2. Get-Command aider"
+    Write-Host "  3. Fallback paths (C:\Users\richa\.local\bin\aider.exe)"
+    Write-Host ""
+    Write-Host "[ACTION] Provide -AiderPath with full path to aider.exe"
     exit 1
 }
 
-# Check Ollama is running
+Write-Host ""
+Write-Host "[INFO] Validating aider installation..." -ForegroundColor Cyan
+
 try {
-    $ollamaResponse = Invoke-RestMethod -Uri "http://localhost:11434/api/tags" -TimeoutSec 5
-    Write-Log "Ollama is running" "OK"
-    
-    # Check model exists
-    $modelExists = $ollamaResponse.models | Where-Object { $_.name -eq "qwen2.5-coder:7b" }
-    if (-not $modelExists) {
-        Write-Log "Model qwen2.5-coder:7b not found in Ollama. Pulling..." "WARN"
-        # Don't auto-pull, just warn
+    $versionOutput = & $AiderExe --version 2>&1
+    if ($LASTEXITCODE -ne 0) {
+        throw "aider --version returned exit code $LASTEXITCODE"
     }
+    Write-Host "[OK] aider version: $versionOutput" -ForegroundColor Green
 } catch {
-    Write-Log "Cannot connect to Ollama at localhost:11434. Please ensure Ollama is running." "ERROR"
+    Write-Host "[ERROR] BLOCKED: aider validation failed" -ForegroundColor Red
+    Write-Host "[ERROR] Path: $AiderExe"
+    Write-Host "[ERROR] Exception: $($_.Exception.Message)"
     exit 1
 }
 
-# ═══════════════════════════════════════════════════════════════
-# Branch Guards
-# ═══════════════════════════════════════════════════════════════
+Write-Host ""
+Write-Host "=== AIDER PATH RESOLUTION SUCCESS ===" -ForegroundColor Green
+Write-Host "Path: $AiderExe" -ForegroundColor Gray
+Write-Host "Version: $versionOutput" -ForegroundColor Gray
+Write-Host ""
 
-Write-Log "Checking branch guards..."
+$env:OLLAMA_API_BASE = "http://127.0.0.1:11434"
+Write-Host "[INFO] Set OLLAMA_API_BASE=$env:OLLAMA_API_BASE" -ForegroundColor Gray
 
-# Get current branch
-$branchResult = Invoke-GitCommand "branch --show-current"
-$currentBranch = $branchResult.Output.Trim()
+Write-Host ""
+Write-Host "[INFO] Running pre-flight checks..." -ForegroundColor Cyan
 
-Write-Log "Current branch: $currentBranch"
-
-# Only allow work/* branches
-if (-not ($currentBranch -match "^work/")) {
-    Write-Log "Current branch '$currentBranch' is not a work/* branch. Only work/* branches are allowed." "ERROR"
+$currentBranch = git branch --show-current 2>&1
+if ($currentBranch -notmatch '^work/') {
+    Write-Host "[ERROR] BLOCKED: Not on work/* branch" -ForegroundColor Red
+    Write-Host "[ERROR] Current: $currentBranch"
     exit 1
 }
-Write-Log "Branch guard passed: On work/* branch" "OK"
+Write-Host "[OK] On work branch: $currentBranch" -ForegroundColor Green
 
-# Check working tree is clean
-$statusResult = Invoke-GitCommand "status --porcelain"
-if ($statusResult.Output) {
-    Write-Log "Working tree is not clean. Uncommitted changes:" "ERROR"
-    Write-Log $statusResult.Output "ERROR"
+$status = git status --porcelain 2>&1
+if ($status) {
+    if (-not $AllowDirtyStart) {
+        Write-Host "[ERROR] BLOCKED: Working tree is not clean" -ForegroundColor Red
+        Write-Host "[HINT] Use -AllowDirtyStart to bypass (not recommended)"
+        exit 1
+    }
+    Write-Host "[WARN] Working tree is dirty (AllowDirtyStart enabled)" -ForegroundColor Yellow
+} else {
+    Write-Host "[OK] Working tree is clean" -ForegroundColor Green
+}
+
+if ([string]::IsNullOrWhiteSpace($CandidateId)) {
+    Write-Host "[ERROR] BLOCKED: -CandidateId is required" -ForegroundColor Red
     exit 1
 }
-Write-Log "Working tree is clean" "OK"
+Write-Host "[OK] Candidate ID: $CandidateId" -ForegroundColor Green
 
-# ═══════════════════════════════════════════════════════════════
-# Setup Candidate Branch
-# ═══════════════════════════════════════════════════════════════
-
-if ([string]::IsNullOrEmpty($CandidateId)) {
-    $timestamp = Get-Date -Format "yyyyMMdd-HHmmss"
-    $CandidateId = "CAND-AIDER-$timestamp"
+$taskContent = ""
+if ($TaskFile -and (Test-Path $TaskFile)) {
+    $taskContent = Get-Content $TaskFile -Raw
+    Write-Host "[OK] Task loaded from file: $TaskFile" -ForegroundColor Green
+} elseif ($Task) {
+    $taskContent = $Task
+    Write-Host "[OK] Task provided via parameter" -ForegroundColor Green
+} else {
+    Write-Host "[ERROR] BLOCKED: Either -Task or -TaskFile must be provided" -ForegroundColor Red
+    exit 1
 }
+
+Write-Host ""
+Write-Host "[INFO] Checking forbidden paths..." -ForegroundColor Cyan
+
+$forbiddenPaths = @(
+    "server_v2.py",
+    "automation/control/control_bridge.py",
+    "automation/control/refresh_panel.ps1",
+    "automation/promotion/promote_candidate.ps1",
+    "automation/promotion/approve_candidate.ps1"
+)
+
+$taskLower = $taskContent.ToLower()
+$foundForbidden = @()
+foreach ($fp in $forbiddenPaths) {
+    if ($taskLower -match [regex]::Escape($fp.ToLower())) {
+        $foundForbidden += $fp
+    }
+}
+
+if ($foundForbidden.Count -gt 0) {
+    Write-Host "[ERROR] BLOCKED: Task references forbidden paths" -ForegroundColor Red
+    Write-Host "[ERROR] Forbidden: $($foundForbidden -join ', ')"
+    exit 1
+}
+Write-Host "[OK] No forbidden paths detected in task" -ForegroundColor Green
+
+Write-Host ""
+Write-Host "[INFO] Creating candidate branch..." -ForegroundColor Cyan
 
 $candidateBranch = "candidates/$CandidateId"
-Write-Log "Candidate ID: $CandidateId"
-Write-Log "Candidate branch: $candidateBranch"
 
-# Check if candidate branch already exists locally
-$localBranchResult = Invoke-GitCommand "branch --list $candidateBranch"
-if ($localBranchResult.Output) {
-    Write-Log "Candidate branch $candidateBranch already exists locally. Aborting." "ERROR"
+$localExists = git branch --list $candidateBranch 2>&1
+if ($localExists) {
+    Write-Host "[ERROR] BLOCKED: Local candidate branch already exists: $candidateBranch" -ForegroundColor Red
     exit 1
 }
 
-# Check if candidate branch exists on remote
-$remoteCheckResult = Invoke-GitCommand "ls-remote --heads origin $candidateBranch"
-if ($remoteCheckResult.Output) {
-    Write-Log "Candidate branch $candidateBranch already exists on remote. Aborting." "ERROR"
+$remoteExists = git ls-remote --heads origin $candidateBranch 2>&1
+if ($remoteExists) {
+    Write-Host "[ERROR] BLOCKED: Remote candidate branch already exists: origin/$candidateBranch" -ForegroundColor Red
     exit 1
 }
 
-# Create candidate branch
-Write-Log "Creating candidate branch..."
-$createResult = Invoke-GitCommand "checkout -b $candidateBranch"
-if ($createResult.ExitCode -ne 0) {
-    Write-Log "Failed to create candidate branch: $($createResult.Output)" "ERROR"
+Write-Host "[INFO] Creating branch $candidateBranch from $currentBranch..." -ForegroundColor Gray
+git checkout -b $candidateBranch 2>&1 | Out-Null
+if ($LASTEXITCODE -ne 0) {
+    Write-Host "[ERROR] Failed to create candidate branch" -ForegroundColor Red
     exit 1
 }
-Write-Log "Created and switched to candidate branch: $candidateBranch" "OK"
+Write-Host "[OK] Created and switched to: $candidateBranch" -ForegroundColor Green
 
-# ═══════════════════════════════════════════════════════════════
-# Validate Files
-# ═══════════════════════════════════════════════════════════════
+$outputDir = "automation/control/candidates/$CandidateId"
+New-Item -ItemType Directory -Path $outputDir -Force | Out-Null
 
-Write-Log "Validating target files..."
-$validFiles = @()
-$invalidFiles = @()
+$taskFile = "$outputDir/task.txt"
+$logFile = "$outputDir/aider.log"
+$diffFile = "$outputDir/candidate.diff"
+$reportFile = "$outputDir/report.json"
 
-foreach ($file in $Files) {
-    if (Test-Path $file) {
-        $validFiles += $file
-        Write-Log "  ✓ $file"
-    } else {
-        $invalidFiles += $file
-        Write-Log "  ✗ $file (not found)" "WARN"
-    }
-}
+$taskContent | Set-Content $taskFile -Encoding UTF8
+Write-Host "[OK] Task saved to: $taskFile" -ForegroundColor Gray
 
-if ($validFiles.Count -eq 0) {
-    Write-Log "No valid files specified. Aborting." "ERROR"
-    # Return to original branch
-    Invoke-GitCommand "checkout $currentBranch" | Out-Null
-    Invoke-GitCommand "branch -D $candidateBranch" | Out-Null
-    exit 1
-}
-
-# ═══════════════════════════════════════════════════════════════
-# Setup Output Directory
-# ═══════════════════════════════════════════════════════════════
-
-$outputPath = Join-Path (Get-Location).Path $OutputDir $CandidateId
-if (-not (Test-Path $outputPath)) {
-    New-Item -ItemType Directory -Path $outputPath -Force | Out-Null
-}
-
-$taskFile = Join-Path $outputPath "task.txt"
-$logFile = Join-Path $outputPath "aider.log"
-$diffFile = Join-Path $outputPath "candidate.diff"
-$reportFile = Join-Path $outputPath "report.json"
-
-# Write task file
-$Task | Set-Content -Path $taskFile -Encoding UTF8
-
-# ═══════════════════════════════════════════════════════════════
-# Build Aider Command
-# ═══════════════════════════════════════════════════════════════
+Write-Host ""
+Write-Host "[INFO] Preparing aider command..." -ForegroundColor Cyan
 
 $aiderArgs = @(
-    "--model", $Model,
+    "--model", "ollama_chat/qwen2.5-coder:7b",
     "--no-auto-commits",
     "--no-dirty-commits",
     "--no-show-model-warnings",
     "--no-check-model-accepts-settings",
-    "--message", $Task
+    "--message", $taskContent
 )
 
-# Add files
-foreach ($file in $validFiles) {
-    $aiderArgs += "--file"
-    $aiderArgs += $file
-}
-
-# Optional: Add yes-always (explicit opt-in only)
 if ($YesAlways) {
-    Write-Log "WARNING: --yes-always is enabled. This allows aider to make changes without confirmation." "WARN"
     $aiderArgs += "--yes-always"
-} else {
-    Write-Log "Running in low-interaction mode (no --yes-always). Aider may prompt for confirmation." "INFO"
+    Write-Host "[WARN] --yes-always enabled (explicit opt-in)" -ForegroundColor Yellow
 }
 
-Write-Log "Aider command: aider $aiderArgs"
+Write-Host "[INFO] Model: ollama_chat/qwen2.5-coder:7b" -ForegroundColor Gray
+Write-Host "[INFO] Auto-commit: DISABLED" -ForegroundColor Green
+Write-Host "[INFO] Auto-push: DISABLED" -ForegroundColor Green
+Write-Host "[INFO] Dirty-commit: DISABLED" -ForegroundColor Green
 
-# ═══════════════════════════════════════════════════════════════
-# Run Aider
-# ═══════════════════════════════════════════════════════════════
+Write-Host ""
+Write-Host "[INFO] Executing aider (single-round mode)..." -ForegroundColor Cyan
+Write-Host "[INFO] Start time: $(Get-Date -Format 'yyyy-MM-dd HH:mm:ss')" -ForegroundColor Gray
+Write-Host ""
 
-Write-Log "Starting aider..."
-$aiderStartTime = Get-Date
-
+$startTime = Get-Date
 $exitCode = 0
+
 try {
-    # Run aider and capture output
-    $aiderOutput = & aider @aiderArgs 2>&1
+    & $AiderExe @aiderArgs 2>&1 | Tee-Object -FilePath $logFile
     $exitCode = $LASTEXITCODE
-    
-    # Write log
-    $aiderOutput | Set-Content -Path $logFile -Encoding UTF8
-    
-    Write-Log "Aider completed with exit code: $exitCode"
 } catch {
-    Write-Log "Error running aider: $_" "ERROR"
+    Write-Host "[ERROR] Exception during aider execution: $($_.Exception.Message)" -ForegroundColor Red
     $exitCode = 1
-    $aiderOutput = $_.Exception.Message
-    $aiderOutput | Set-Content -Path $logFile -Encoding UTF8
 }
 
-$aiderEndTime = Get-Date
+$endTime = Get-Date
+$duration = $endTime - $startTime
 
-# ═══════════════════════════════════════════════════════════════
-# Post-processing
-# ═══════════════════════════════════════════════════════════════
+Write-Host ""
+Write-Host "[INFO] End time: $(Get-Date -Format 'yyyy-MM-dd HH:mm:ss')" -ForegroundColor Gray
+Write-Host "[INFO] Duration: $($duration.ToString('hh\:mm\:ss'))" -ForegroundColor Gray
 
-Write-Log "Generating diff..."
-$diffResult = Invoke-GitCommand "diff HEAD"
-$diffResult.Output | Set-Content -Path $diffFile -Encoding UTF8
+Write-Host ""
+Write-Host "[INFO] Checking for out-of-scope changes..." -ForegroundColor Cyan
 
-Write-Log "Diff saved to: $diffFile"
+$changedFiles = git diff --name-only HEAD 2>&1
+$untrackedFiles = git ls-files --others --exclude-standard 2>&1
+$allChanges = @($changedFiles) + @($untrackedFiles) | Where-Object { $_ }
 
-# Check for changes
-$hasChanges = $false
-if ($diffResult.Output -or (Invoke-GitCommand "status --porcelain" | Select-Object -ExpandProperty Output)) {
-    $hasChanges = $true
-}
-
-# ═══════════════════════════════════════════════════════════════
-# Generate Report
-# ═══════════════════════════════════════════════════════════════
-
-$report = @{
-    candidate_id = $CandidateId
-    source_branch = $currentBranch
-    candidate_branch = $candidateBranch
-    task = $Task
-    files = $validFiles
-    model = $Model
-    yes_always = $YesAlways.IsPresent
-    start_time = $aiderStartTime.ToString("yyyy-MM-ddTHH:mm:ss")
-    end_time = $aiderEndTime.ToString("yyyy-MM-ddTHH:mm:ss")
-    duration_seconds = [math]::Round(($aiderEndTime - $aiderStartTime).TotalSeconds, 2)
-    aider_exit_code = $exitCode
-    has_changes = $hasChanges
-    auto_commit = $false
-    auto_push = $false
-    status = if ($exitCode -eq 0) { "completed" } else { "completed_with_errors" }
-    outputs = @{
-        task_file = $taskFile
-        log_file = $logFile
-        diff_file = $diffFile
-        report_file = $reportFile
+$modifiedForbidden = @()
+foreach ($fp in $forbiddenPaths) {
+    $fpPattern = $fp -replace '\\', '/'
+    if ($allChanges | Where-Object { $_ -match [regex]::Escape($fpPattern) }) {
+        $modifiedForbidden += $fp
     }
 }
 
-$report | ConvertTo-Json -Depth 10 | Set-Content -Path $reportFile -Encoding UTF8
+$outOfScopeDetected = $modifiedForbidden.Count -gt 0
 
-Write-Log "Report saved to: $reportFile"
+git diff HEAD > $diffFile 2>&1
+Write-Host "[OK] Diff saved to: $diffFile" -ForegroundColor Gray
 
-# ═══════════════════════════════════════════════════════════════
-# Summary
-# ═══════════════════════════════════════════════════════════════
+$report = @{
+    candidate_id = $CandidateId
+    candidate_branch = $candidateBranch
+    source_branch = $currentBranch
+    aider_path = $AiderExe
+    aider_version = $versionOutput
+    ollama_api_base = $env:OLLAMA_API_BASE
+    model = "ollama_chat/qwen2.5-coder:7b"
+    start_time = $startTime.ToString("yyyy-MM-ddTHH:mm:ss")
+    end_time = $endTime.ToString("yyyy-MM-ddTHH:mm:ss")
+    duration_seconds = [int]$duration.TotalSeconds
+    exit_code = $exitCode
+    status = if ($exitCode -eq 0 -and -not $outOfScopeDetected) { "success" } elseif ($outOfScopeDetected) { "out_of_scope_detected" } else { "failed" }
+    auto_commits = $false
+    auto_push = $false
+    dirty_commits = $false
+    yes_always = $YesAlways.IsPresent
+    task_file = $taskFile
+    log_file = $logFile
+    diff_file = $diffFile
+    changed_files = @($allChanges)
+    out_of_scope_detected = $outOfScopeDetected
+    modified_forbidden_paths = @($modifiedForbidden)
+}
 
-Write-Log "=== Aider Candidate Runner Complete ==="
-Write-Log ""
-Write-Log "Summary:"
-Write-Log "  Candidate ID: $CandidateId"
-Write-Log "  Source Branch: $currentBranch"
-Write-Log "  Candidate Branch: $candidateBranch"
-Write-Log "  Files Modified: $($validFiles.Count)"
-Write-Log "  Has Changes: $hasChanges"
-Write-Log "  Auto-Commit: NO"
-Write-Log "  Auto-Push: NO"
-Write-Log ""
-Write-Log "Outputs:"
-Write-Log "  Task: $taskFile"
-Write-Log "  Log: $logFile"
-Write-Log "  Diff: $diffFile"
-Write-Log "  Report: $reportFile"
-Write-Log ""
-Write-Log "Next Steps:"
-Write-Log "  1. Review changes: git diff"
-Write-Log "  2. Stage changes: git add <files>"
-Write-Log "  3. Commit manually: git commit -m '...'"
-Write-Log "  4. Push to remote: git push -u origin $candidateBranch"
-Write-Log ""
-Write-Log "To return to source branch: git checkout $currentBranch"
+$report | ConvertTo-Json -Depth 10 | Set-Content $reportFile -Encoding UTF8
+Write-Host "[OK] Report saved to: $reportFile" -ForegroundColor Gray
 
-exit 0
+Write-Host ""
+Write-Host "========================================" -ForegroundColor Cyan
+Write-Host "          EXECUTION SUMMARY" -ForegroundColor Cyan
+Write-Host "========================================" -ForegroundColor Cyan
+Write-Host ""
+Write-Host "Candidate:    $CandidateId" -ForegroundColor White
+Write-Host "Branch:       $candidateBranch" -ForegroundColor White
+Write-Host "Status:       $($report.status)" -ForegroundColor $(if($report.status -eq 'success'){'Green'}else{'Yellow'})
+Write-Host "Exit Code:    $exitCode" -ForegroundColor $(if($exitCode -eq 0){'Green'}else{'Red'})
+Write-Host "Auto-commit:  DISABLED" -ForegroundColor Green
+Write-Host "Auto-push:    DISABLED" -ForegroundColor Green
+Write-Host "Dirty-commit: DISABLED" -ForegroundColor Green
+Write-Host ""
+
+if ($outOfScopeDetected) {
+    Write-Host "[WARN] OUT-OF-SCOPE CHANGES DETECTED:" -ForegroundColor Red
+    foreach ($mf in $modifiedForbidden) {
+        Write-Host "  - $mf" -ForegroundColor Red
+    }
+}
+
+Write-Host "Output Directory: $outputDir" -ForegroundColor Gray
+Write-Host ""
+Write-Host "========================================" -ForegroundColor Cyan
+
+exit $exitCode
