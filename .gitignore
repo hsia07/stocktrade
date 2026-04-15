@@ -16,3 +16,4 @@ learning_data/
 *.sqlite
 .DS_Store
 Thumbs.db
+automation/control/panel_runtime.html
