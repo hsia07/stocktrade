@@ -1,106 +1,48 @@
 # 第6轮验收报告 / ROUND6_ACCEPTANCE
 
-## 通过状态: PASS
+## ⚠️ 状态声明
 
-**Commit**: `a1b2c3d` (本轮验收提交)
+**本文件为旧版口径，现已失效 / 待重验**
 
----
-
-## 验收内容
-
-### 1. 前后端模式契约一致性
-
-#### API 一致性
-| API | mode 字段来源 | allowed_transitions | contract |
-|-----|-------------|------------------|----------|
-| /api/state | engine.get_current_mode() | ✅ | ✅ |
-| /api/mode | engine.get_current_mode() | ✅ | ✅ |
-| /api/toggle_mode | engine.get_current_mode() | ✅ | ✅ |
-| /api/sim/start | engine.get_current_mode() | ✅ | ✅ |
-| /api/sim/stop | engine.get_current_mode() | ✅ | ✅ |
-
-#### 前端契约
-| 字段 | 来源 | 一致性 |
-|------|------|--------|
-| d.mode | get_state().mode | ✅ |
-| d.allowed_transitions | get_state().allowed_transitions | ✅ |
-| d.contract | get_state().contract | ✅ |
-
-### 2. 唯一净损益计算核心
-
-#### PnLCalculator 接口
-```python
-PnLCalculator.calculate(
-    entry_price, exit_price, qty, direction
-) -> {gross_pnl, fee, tax, slippage_cost, net_pnl}
-
-PnLCalculator.calculate_from_position(
-    entry, exit, lots, direction
-) -> {gross_pnl, fee, tax, slippage_cost, net_pnl}
-```
-
-#### 统一路径验证
-| 路径 | 使用 PnLCalculator | 验证 |
-|------|-----------------|------|
-| 即时平仓 close() | ✅ | Line 2083 |
-| 回测 /api/simulate | ✅ | Line 2802 |
-| 学习 log_outcome | ✅ | 已传入 mode 参数 |
-
-#### TradeRecord 结构
-```python
-@dataclass
-class TradeRecord:
-    gross_pnl: float      # 毛损益
-    fee: float          # 手续费
-    tax: float         # 证交税
-    slippage_cost: float # 滑点成本
-    net_pnl: float    # 净损益
-    @property
-    def pnl(self) -> float:  # 向后兼容
-        return self.net_pnl
-```
+- **旧版状态标记**: ~~PASS~~ (已失效)
+- **旧版Commit**: `a1b2c3d` (历史记录保留，不再视为现行第6轮通过依据)
+- **现行状态**: 未通过 / 待重验
 
 ---
 
-## 验收结果
+## 旧版验收内容（仅供参考，不再有效）
 
-### API契约测试
-```
-============================================================
-ROUND 6: API MODE CONTRACT
-============================================================
-PASS: /api/state["mode"] uses get_current_mode()
-PASS: /api/mode["mode"] uses get_current_mode()
-PASS: all mode APIs return consistent structure
-PASS: contract contains allowed_transitions
-PASS: contract contains is_halted/halt_reason
-============================================================
-```
+> **注意**: 以下内容属于旧版第6轮主题，与现行法典第6轮主题不同。
 
-### PnL 测试
-```
-============================================================
-ROUND 6: PnL CALCULATOR
-============================================================
-PASS: calculate() returns all cost fields
-PASS: calculate_from_position() returns all cost fields
-PASS: net_pnl = gross_pnl - fee - tax - slippage_cost
-PASS: TradeRecord has pnl property
-PASS: all exit paths use PnLCalculator
-PASS: backtest uses PnLCalculator
-============================================================
-```
+### 旧版第6轮主题
+- 前后端模式契约一致性
+- 唯一净损益计算核心
+
+### 现行第6轮唯一主题（依《交易系統極限嚴格母表法典》）
+- **健康檢查 / 熔斷 / 降級中心**
+
+---
+
+## 法源追溯
+
+### 版本历史
+1. **旧版**（本文件所述）: 模式契约 + PnL统一计算
+2. **现行**（待重验）: 健康檢查 / 熔斷 / 降級中心
+
+### 关键差异
+- 旧版第6轮 PASS **不等于** 现行第6轮通过
+- 现行第6轮需重新验收健康检查、熔断机制、降级中心功能
 
 ---
 
 ## 结论
 
-第6轮: **PASS**
+| 项目 | 状态 |
+|------|------|
+| 旧版第6轮验收 | ~~PASS~~ (已失效) |
+| 现行第6轮验收 | **未通过 / 待重验** |
+| 当前有效法源 | 《交易系統極限嚴格母表法典》 |
 
-验收通过标准全部满足:
-1. ✅ ROUND6_ACCEPTANCE.md 已存在
-2. ✅ tests/test_round6_*.py 可重跑
-3. ✅ /api/mode 与 /api/state 模式契约一致
-4. ✅ PnLCalculator 是唯一 realized pnl 入口
-5. ✅ 前后端模式来源统一
-6. ✅ 验收输出明确 PASS
+---
+
+*本文件保留用于历史追溯，不再作为现行第6轮通过依据。*
