@@ -34,6 +34,22 @@ $acceptanceMode = [string]$state.acceptance_mode
 $escalationRequired = [string]$state.escalation_required
 $lastUpdate = if ($null -eq $state.last_update) { "none" } else { [string]$state.last_update }
 
+# 判斷是否可以核准 Candidate
+$canApprove = "no"
+$rejectReason = ""
+if ($mode -ne "paused_for_acceptance") {
+    $rejectReason = "mode 不是 paused_for_acceptance (目前: $mode)"
+} elseif ($latestCandidate -eq "none" -or [string]::IsNullOrEmpty($latestCandidate)) {
+    $rejectReason = "latest_candidate_id 缺失"
+} elseif ($escalationRequired -eq "True") {
+    $rejectReason = "escalation_required 為 true"
+}
+if ($rejectReason -eq "") {
+    $canApprove = "yes"
+}
+
+$canApproveClass = if ($canApprove -eq "yes") { "can" } else { "cannot" }
+
 $modeLabel = switch ($mode) {
     "running" { "執行中" }
     "paused_for_acceptance" { "等待人工驗收" }
@@ -346,6 +362,35 @@ $html = @"
       </div>
     </div>
 
+    <div class="card">
+      <h2>核准 Candidate</h2>
+      <div class="mini-grid" style="margin-bottom: 14px;">
+        <div class="metric">
+          <div class="label">可核准</div>
+          <div class="value" id="canApproveValue">$canApprove</div>
+        </div>
+        <div class="metric">
+          <div class="label">latest_candidate_id</div>
+          <div class="value">$latestCandidateEscaped</div>
+        </div>
+        <div class="metric">
+          <div class="label">escalation_required</div>
+          <div class="value">$escalationRequiredEscaped</div>
+        </div>
+        <div class="metric">
+          <div class="label">mode</div>
+          <div class="value">$modeEscaped</div>
+        </div>
+      </div>
+      <div id="approveReason" class="helper" style="color: #fca5a5;">
+        $(if ($canApprove -eq "no") { "不能核准原因: $rejectReason" } else { "" })
+      </div>
+      <div class="action-bar" style="margin-top: 14px;">
+        <button id="approveBtn" class="btn ok" type="button" onclick="confirmApproveCandidate()" $(if ($canApprove -eq "no") { 'disabled="disabled"' } )>核准 Candidate</button>
+      </div>
+      <div id="approveStatus" class="inline-status"></div>
+    </div>
+
     <div class="section-grid">
       <div class="card">
         <h2>最新狀態</h2>
@@ -458,6 +503,59 @@ escalation_required: $escalationRequiredEscaped</div>
         status.textContent = '已取消 Stop Now。';
       }
     }
+
+    function confirmApproveCandidate() {
+      const ok = confirm(
+        '你即將核准 Candidate。\n\n' +
+        '這只是核准候選人，不會直接 merge 到 master。\n' +
+        '下一步會建立 review branch 並進入 promotion 流程。\n\n' +
+        '確定要繼續嗎？'
+      );
+      const status = document.getElementById('approveStatus');
+      const btn = document.getElementById('approveBtn');
+
+      if (!ok) {
+        status.textContent = '已取消核准';
+        status.style.color = '#fca5a5';
+        return;
+      }
+
+      btn.className = 'btn processing';
+      btn.textContent = '處理中...';
+      btn.disabled = true;
+      status.textContent = '正在執行核准與 promotion...';
+      status.style.color = '#93c5fd';
+
+      fetch('http://127.0.0.1:8766/approve-and-promote', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'}
+      })
+      .then(res => res.json())
+      .then(data => {
+        console.log('Approve result:', data);
+
+        if (data.status === 'success') {
+          btn.className = 'btn done';
+          btn.textContent = '已核准並建立 review branch';
+          status.textContent = '核准成功！Review branch 已建立。';
+          status.style.color = '#86efac';
+        } else {
+          btn.className = 'btn danger';
+          btn.textContent = '失敗';
+          btn.disabled = false;
+          status.textContent = '失敗: ' + (data.reason || data.stage || 'Unknown error');
+          status.style.color = '#fca5a5';
+        }
+      })
+      .catch(err => {
+        console.error('Bridge error:', err);
+        btn.className = 'btn danger';
+        btn.textContent = '連線錯誤';
+        btn.disabled = false;
+        status.textContent = '無法連接到 control bridge，請確認 bridge 是否在執行';
+        status.style.color = '#fca5a5';
+      });
+    }
   </script>
 </body>
 </html>
@@ -466,3 +564,5 @@ escalation_required: $escalationRequiredEscaped</div>
 Set-Content -Path $outputPath -Value $html -Encoding UTF8
 Write-Host "Runtime panel generated:" -ForegroundColor Green
 Write-Host $outputPath
+
+
