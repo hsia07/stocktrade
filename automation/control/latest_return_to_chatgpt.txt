@@ -1,0 +1,21 @@
+﻿=== RETURN_TO_CHATGPT ===
+round_id: R-006
+branch: work/r006-governance
+status: none
+candidate_id: none
+summary:
+- none
+changed_files:
+- none
+checks:
+- validate_round: not_run
+- forbidden_paths: not_run
+- required_evidence: not_run
+- commit_message: not_run
+forbidden_path_touched: no
+evidence_updated:
+- none
+escalation_required: no
+escalation_reason: none
+next_recommended_action: none
+=== END_RETURN_TO_CHATGPT ===

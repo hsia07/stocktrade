@@ -1,0 +1,11 @@
+﻿{
+  "mode": "running",
+  "round_id": "R-006",
+  "branch": "work/r006-governance",
+  "current_cycle_id": null,
+  "latest_candidate_id": null,
+  "pause_requested": false,
+  "acceptance_mode": false,
+  "escalation_required": false,
+  "last_update": null
+}
