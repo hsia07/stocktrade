@@ -2,11 +2,11 @@
 Set-Location $repoRoot
 
 $controlDir = Join-Path $repoRoot "automation\control"
-$statePath = Join-Path $controlDir "state.json"
-$returnPath = Join-Path $controlDir "latest_return_to_chatgpt.txt"
+$statePath = Join-Path $controlDir "state.runtime.json"
+$returnPath = Join-Path $controlDir "latest_return_to_chatgpt.runtime.txt"
 
 if (!(Test-Path $statePath)) {
-    throw "找不到 state.json"
+    throw "找不到 state.runtime.json"
 }
 
 $state = Get-Content $statePath -Raw | ConvertFrom-Json
@@ -50,8 +50,8 @@ checks:
 - commit_message: not_run
 forbidden_path_touched: no
 evidence_updated:
-- automation/control/state.json
-- automation/control/latest_return_to_chatgpt.txt
+- automation/control/state.runtime.json
+- automation/control/latest_return_to_chatgpt.runtime.txt
 escalation_required: $escalationRequired
 escalation_reason: $escalationReason
 next_recommended_action: $nextAction
@@ -61,3 +61,4 @@ next_recommended_action: $nextAction
 Set-Content -Path $returnPath -Value $returnBlock -Encoding UTF8
 Write-Host "RETURN_TO_CHATGPT synced." -ForegroundColor Green
 Write-Host $returnPath
+

@@ -2,21 +2,21 @@
 Set-Location $repoRoot
 
 $controlDir = Join-Path $repoRoot "automation\control"
-$statePath = Join-Path $controlDir "state.json"
-$returnPath = Join-Path $controlDir "latest_return_to_chatgpt.txt"
+$statePath = Join-Path $controlDir "state.runtime.json"
+$returnPath = Join-Path $controlDir "latest_return_to_chatgpt.runtime.txt"
 $outputPath = Join-Path $controlDir "panel_runtime.html"
 
 if (Test-Path $statePath) {
     $stateRaw = Get-Content $statePath -Raw
     $state = $stateRaw | ConvertFrom-Json
 } else {
-    throw "找不到 state.json"
+    throw "找不到 state.runtime.json"
 }
 
 if (Test-Path $returnPath) {
     $returnText = Get-Content $returnPath -Raw
 } else {
-    $returnText = "latest_return_to_chatgpt.txt not found"
+    $returnText = "latest_return_to_chatgpt.runtime.txt not found"
 }
 
 function Escape-Html([string]$text) {
@@ -120,3 +120,4 @@ escalation_required: $escalationRequired</div>
 Set-Content -Path $outputPath -Value $html -Encoding UTF8
 Write-Host "Runtime panel generated:" -ForegroundColor Green
 Write-Host $outputPath
+

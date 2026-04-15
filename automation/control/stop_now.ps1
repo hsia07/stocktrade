@@ -3,7 +3,7 @@ Set-Location $repoRoot
 
 $controlDir = Join-Path $repoRoot "automation\control"
 $stopFlag = Join-Path $controlDir "STOP_NOW.flag"
-$statePath = Join-Path $controlDir "state.json"
+$statePath = Join-Path $controlDir "state.runtime.json"
 
 New-Item -ItemType File -Force $stopFlag | Out-Null
 
@@ -33,3 +33,4 @@ $state | ConvertTo-Json -Depth 5 | Set-Content $statePath -Encoding UTF8
 Write-Host "Immediate stop requested." -ForegroundColor Red
 Write-Host "Flag: $stopFlag"
 Write-Host "State updated: $statePath"
+

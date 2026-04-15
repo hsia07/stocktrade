@@ -5,7 +5,7 @@ $controlDir = Join-Path $repoRoot "automation\control"
 $pauseFlag = Join-Path $controlDir "PAUSE_AFTER_CURRENT.flag"
 $acceptanceFlag = Join-Path $controlDir "ACCEPTANCE_MODE.flag"
 $stopFlag = Join-Path $controlDir "STOP_NOW.flag"
-$statePath = Join-Path $controlDir "state.json"
+$statePath = Join-Path $controlDir "state.runtime.json"
 
 if (Test-Path $pauseFlag) {
     Remove-Item $pauseFlag -Force
@@ -44,3 +44,4 @@ $state | ConvertTo-Json -Depth 5 | Set-Content $statePath -Encoding UTF8
 
 Write-Host "Loop resumed." -ForegroundColor Green
 Write-Host "State updated: $statePath"
+

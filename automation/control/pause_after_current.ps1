@@ -3,7 +3,7 @@ Set-Location $repoRoot
 
 $controlDir = Join-Path $repoRoot "automation\control"
 $flagPath = Join-Path $controlDir "PAUSE_AFTER_CURRENT.flag"
-$statePath = Join-Path $controlDir "state.json"
+$statePath = Join-Path $controlDir "state.runtime.json"
 
 New-Item -ItemType File -Force $flagPath | Out-Null
 
@@ -30,3 +30,4 @@ $state | ConvertTo-Json -Depth 5 | Set-Content $statePath -Encoding UTF8
 Write-Host "Drain requested. Will pause after current cycle." -ForegroundColor Yellow
 Write-Host "Flag: $flagPath"
 Write-Host "State updated: $statePath"
+

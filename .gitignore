@@ -17,3 +17,11 @@ learning_data/
 .DS_Store
 Thumbs.db
 automation/control/panel_runtime.html
+
+automation/control/*.flag
+
+automation/control/*.runtime.json
+
+automation/control/*.runtime.txt
+
+automation/control/panel_runtime.html

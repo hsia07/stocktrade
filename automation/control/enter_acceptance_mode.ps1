@@ -4,7 +4,7 @@ Set-Location $repoRoot
 $controlDir = Join-Path $repoRoot "automation\control"
 $pauseFlag = Join-Path $controlDir "PAUSE_AFTER_CURRENT.flag"
 $acceptanceFlag = Join-Path $controlDir "ACCEPTANCE_MODE.flag"
-$statePath = Join-Path $controlDir "state.json"
+$statePath = Join-Path $controlDir "state.runtime.json"
 
 New-Item -ItemType File -Force $acceptanceFlag | Out-Null
 
@@ -36,3 +36,4 @@ $state | ConvertTo-Json -Depth 5 | Set-Content $statePath -Encoding UTF8
 
 Write-Host "System is now paused for acceptance." -ForegroundColor Green
 Write-Host "State updated: $statePath"
+
