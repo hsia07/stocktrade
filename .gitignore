@@ -18,6 +18,8 @@ learning_data/
 Thumbs.db
 automation/control/panel_runtime.html
 
+automation/promotion/*.runtime.json
+
 automation/control/*.flag
 
 automation/control/*.runtime.json
