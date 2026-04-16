@@ -95,12 +95,14 @@ $state.merge_gate.current_decision_state = "candidate_prep_in_progress"
 $state.candidate_checklist.formal_status_code = "candidate_prep_in_progress"
 $state.updated_at = (Get-Date).ToString("yyyy-MM-ddTHH:mm:ss")
 
-# Reset candidate checklist for new run
+# Reset all 10 candidate criteria for new run
 $state.candidate_checklist.theme_completed = $false
 $state.candidate_checklist.rerunnable_tests_passed = $false
 $state.candidate_checklist.evidence_package_complete = $false
 $state.candidate_checklist.validate_evidence_ps1_executed = $false
 $state.candidate_checklist.validate_evidence_result = $null
+$state.candidate_checklist.validate_evidence_executed_at = $null
+$state.candidate_checklist.validate_evidence_exit_code = $null
 $state.candidate_checklist.candidate_branch_auditable = $false
 $state.candidate_checklist.candidate_commit_auditable = $false
 $state.candidate_checklist.no_fabricated_evidence = $false

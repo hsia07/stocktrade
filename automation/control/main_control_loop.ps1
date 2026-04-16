@@ -76,7 +76,7 @@ function Initialize-State {
     if (!$state.blocked_rounds) { $state | Add-Member -NotePropertyName "blocked_rounds" -NotePropertyValue @() }
     if (!$state.authorized_scope) { $state | Add-Member -NotePropertyName "authorized_scope" -NotePropertyValue $null }
     
-    # Ensure candidate checklist exists
+    # Ensure candidate checklist exists (10 formal criteria + 2 metadata fields)
     if (!$state.candidate_checklist) {
         $state | Add-Member -NotePropertyName "candidate_checklist" -NotePropertyValue (ConvertFrom-Json '{
             "theme_completed": false,
@@ -84,6 +84,8 @@ function Initialize-State {
             "evidence_package_complete": false,
             "validate_evidence_ps1_executed": false,
             "validate_evidence_result": null,
+            "validate_evidence_executed_at": null,
+            "validate_evidence_exit_code": null,
             "formal_status_code": null,
             "candidate_branch_auditable": false,
             "candidate_commit_auditable": false,
@@ -325,11 +327,11 @@ next_recommended_action: $NextAction
     }
 }
 
-# Check if all 9 candidate criteria are met
+# Check if all 10 candidate criteria are met
 function Test-CandidateCriteria {
     param([hashtable]$State, [string]$RoundId)
     
-    Write-Host "[CRITERIA] Checking 9 candidate criteria for $RoundId..." -ForegroundColor Cyan
+    Write-Host "[CRITERIA] Checking 10 candidate criteria for $RoundId..." -ForegroundColor Cyan
     
     $checklist = $State.candidate_checklist
     $results = @{
@@ -410,7 +412,9 @@ function Test-CandidateCriteria {
     if ($results.all_passed) {
         Write-Host "[CRITERIA] All 10 criteria PASSED for $RoundId" -ForegroundColor Green
     } else {
-        Write-Host "[CRITERIA] FAILED criteria: $($results.failed_criteria -join ', ')" -ForegroundColor Red
+        Write-Host "[CRITERIA] FAILED: Round blocked, stopping at current round" -ForegroundColor Red
+        Write-Host "[CRITERIA] Failed criteria: $($results.failed_criteria -join ', ')" -ForegroundColor Red
+        Write-Host "[CRITERIA] STOP REASON: candidate_criteria_not_met - Will NOT proceed to next round" -ForegroundColor Red
     }
     
     return $results
@@ -490,12 +494,14 @@ function Invoke-Round {
     
     Write-Progress -Activity "Main Control Loop" -Status "Executing $RoundId" -PercentComplete -1
     
-    # CRITICAL: Reset candidate checklist for this round
+    # CRITICAL: Reset all 10 candidate criteria for this round
     $State.candidate_checklist.theme_completed = $false
     $State.candidate_checklist.rerunnable_tests_passed = $false
     $State.candidate_checklist.evidence_package_complete = $false
     $State.candidate_checklist.validate_evidence_ps1_executed = $false
     $State.candidate_checklist.validate_evidence_result = $null
+    $State.candidate_checklist.validate_evidence_executed_at = $null
+    $State.candidate_checklist.validate_evidence_exit_code = $null
     $State.candidate_checklist.formal_status_code = "candidate_prep_in_progress"
     $State.candidate_checklist.candidate_branch_auditable = $false
     $State.candidate_checklist.candidate_commit_auditable = $false
@@ -559,8 +565,54 @@ function Invoke-Round {
         Write-Host "[LOOP] Return artifact captured" -ForegroundColor Green
     }
     
-    # CRITICAL: Check all 9 candidate criteria before proceeding
-    Write-Host "[LOOP] Validating 9 candidate criteria for $RoundId..." -ForegroundColor Cyan
+    # CRITICAL: Execute validate_evidence.ps1 for current round
+    Write-Host "[LOOP] Executing validate_evidence.ps1 for $RoundId..." -ForegroundColor Cyan
+    
+    $validateEvidenceScript = Join-Path $repoRoot "scripts\validation\validate_evidence.ps1"
+    $evidenceValidationPassed = $false
+    $evidenceValidationOutput = ""
+    
+    if (Test-Path $validateEvidenceScript) {
+        try {
+            $validationStartTime = Get-Date
+            # Note: validate_evidence.ps1 uses -CandidateId parameter
+            $evidenceValidationOutput = & powershell -ExecutionPolicy Bypass -NoProfile -File $validateEvidenceScript -CandidateId $RoundId 2>&1
+            $validationExitCode = $LASTEXITCODE
+            $validationEndTime = Get-Date
+            
+            if ($validationExitCode -eq 0) {
+                $evidenceValidationPassed = $true
+                $State.candidate_checklist.validate_evidence_result = "PASS"
+                Write-Host "[LOOP] validate_evidence.ps1 PASSED for $RoundId" -ForegroundColor Green
+            } else {
+                $evidenceValidationPassed = $false
+                $State.candidate_checklist.validate_evidence_result = "FAIL"
+                Write-Host "[LOOP] validate_evidence.ps1 FAILED for $RoundId (Exit Code: $validationExitCode)" -ForegroundColor Red
+                Write-Host "[LOOP] Validation Output: $evidenceValidationOutput" -ForegroundColor Red
+            }
+            
+            $State.candidate_checklist.validate_evidence_ps1_executed = $true
+            $State.candidate_checklist.validate_evidence_executed_at = $validationEndTime.ToString("yyyy-MM-ddTHH:mm:ss")
+            $State.candidate_checklist.validate_evidence_exit_code = $validationExitCode
+            
+        } catch {
+            Write-Host "[LOOP] ERROR executing validate_evidence.ps1: $($_)" -ForegroundColor Red
+            $State.candidate_checklist.validate_evidence_ps1_executed = $true
+            $State.candidate_checklist.validate_evidence_result = "ERROR"
+            $State.candidate_checklist.validate_evidence_error = $_.Exception.Message
+            $evidenceValidationPassed = $false
+        }
+    } else {
+        Write-Host "[LOOP] WARNING: validate_evidence.ps1 not found at $validateEvidenceScript" -ForegroundColor Yellow
+        $State.candidate_checklist.validate_evidence_ps1_executed = $false
+        $State.candidate_checklist.validate_evidence_result = "SCRIPT_NOT_FOUND"
+        $evidenceValidationPassed = $false
+    }
+    
+    Save-State $State
+    
+    # CRITICAL: Check all 10 candidate criteria before proceeding
+    Write-Host "[LOOP] Validating 10 candidate criteria for $RoundId..." -ForegroundColor Cyan
     $criteriaResults = Test-CandidateCriteria -State $State -RoundId $RoundId
     
     if (-not $criteriaResults.all_passed) {

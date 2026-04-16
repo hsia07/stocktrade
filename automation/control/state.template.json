@@ -65,6 +65,8 @@
     "evidence_package_complete": false,
     "validate_evidence_ps1_executed": false,
     "validate_evidence_result": null,
+    "validate_evidence_executed_at": null,
+    "validate_evidence_exit_code": null,
     "formal_status_code": null,
     "candidate_branch_auditable": false,
     "candidate_commit_auditable": false,
