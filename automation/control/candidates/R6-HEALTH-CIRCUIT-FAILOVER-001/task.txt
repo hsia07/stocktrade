@@ -1,0 +1,70 @@
+# Task Description for R6-HEALTH-CIRCUIT-FAILOVER-001
+# Generated from actual R-006 Round 6 execution
+# Timestamp: 2026-04-16T08:07:02+0800
+
+## Candidate ID
+R6-HEALTH-CIRCUIT-FAILOVER-001
+
+## Round
+R-006: 健康檢查 / 熔斷 / 降級中心
+
+## Objective
+依第 6 輪法條，自動完成正式主線所需之缺口修補、驗證與證據整理，建立健康檢查、熔斷機制、降級中心三大模組。
+
+## Subtasks
+
+### R6-T1: Health Check Module
+Create health monitoring module with:
+- HealthCheck class for checking broker, data feed, risk system, memory, disk
+- HealthMonitor class for running checks and aggregating status
+- Output: health/monitor.py
+
+### R6-T2: Circuit Breaker Module  
+Create circuit breaker module with:
+- CircuitBreaker class with CLOSED/OPEN/HALF_OPEN states
+- Configurable thresholds: max_daily_loss, max_consecutive_losses, max_drawdown_pct
+- Automatic state transitions
+- Output: circuit/breaker.py
+
+### R6-T3: Failover Center Module
+Create degradation center module with:
+- DegradationCenter class with fallback strategies
+- Strategies: PAUSE_TRADING, SWITCH_TO_PAPER, REDUCE_POSITION_SIZE
+- Integration points for circuit breaker and health monitor
+- Output: failover/center.py
+
+### R6-T4: Integration Tests
+Create comprehensive tests for:
+- Health check functionality (3 tests)
+- Circuit breaker functionality (4 tests)
+- Degradation center functionality (3 tests)
+- Integration between components (2 tests)
+- Output: tests/test_r6_health_circuit_failover.py
+
+### R6-T5: Acceptance Documentation
+Update ROUND6_ACCEPTANCE.md with candidate status and evidence
+
+### R6-T6: Run Record
+Update reports/run_record.json with test results
+
+## Success Criteria
+- All 12 tests passing
+- Evidence package complete
+- Code follows minimal context rules
+- No forbidden paths modified
+
+## Execution Method
+Direct aider execution with minimal context (--file + --message)
+No auto-commits, no dirty-commits
+
+## Generated Evidence
+- health/monitor.py (new)
+- circuit/breaker.py (new)
+- failover/center.py (new)
+- tests/test_r6_health_circuit_failover.py (new)
+- ROUND6_ACCEPTANCE.md (updated)
+- reports/run_record.json (updated)
+
+## Final Status
+Implementation complete, all tests passing (12/12)
+Awaiting validation and manual review
