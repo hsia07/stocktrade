@@ -206,4 +206,30 @@ OpenCode 在回報 candidate_ready / merge_approved 前，必須自檢：
 
 ---
 
+## Shell / Git 非互動執行判定時
+
+### 執行 merge / push / switch / verify 前必須確認：
+
+1. **非互動參數** - merge 必須使用 `--no-edit --no-ff`，不得打開 editor、pager
+2. **前置檢查** - 先執行 `git rev-parse --verify` 確認分支存在
+3. **狀態檢查** - 先執行 `git status --porcelain=v1` 確認工作目錄狀態
+4. **超時保護** - 設定 15 秒超時上限，超過立即停止
+
+### 執行中強制停止條件：
+
+| 狀況 | 必須動作 | 回報狀態碼 |
+|------|----------|------------|
+| 超過 15 秒無結果 | 立即停止 | technical_unfinished |
+| merge conflict | 立即 `git merge --abort` | technical_unfinished |
+| 任何失敗 | 完整回報 command + stdout + stderr + failure_point | blocked / technical_unfinished |
+
+### 禁止事項：
+
+- ❌ 等待人工輸入或「思考中」無限掛起
+- ❌ 自行交互式修復衝突
+- ❌ 多輪猜測式 shell 嘗試
+- ❌ 省略非互動參數
+
+---
+
 *最後更新：2026-04-16*

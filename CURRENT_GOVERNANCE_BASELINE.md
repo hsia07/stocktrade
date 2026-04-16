@@ -63,6 +63,18 @@
 4. **使用者明示簽字**：OpenCode 到達 Phase 級主核心 merge 決策點時，必須先停止並等待使用者明示簽字同意；未獲同意前不得執行 master merge
 5. **阻塞條件**：Phase 內若仍存在 candidate only、review only、technical_unfinished、blocked 狀態之輪次，原則上不得進行該 Phase 之主核心 merge
 
+### Shell / Git 非互動執行規則
+
+**適用範圍**：所有 merge、push、switch、verify、git shell 任務
+
+1. **非互動模式**：OpenCode 執行 git、shell、merge、push、switch、verify 時，必須採非互動模式，不得打開 editor、pager、或等待人工輸入
+2. **merge 參數**：git merge 必須使用 --no-edit、--no-ff 等非互動參數
+3. **前置檢查**：執行高風險操作前，必須先做最小必要前置檢查（分支存在、工作目錄狀態）
+4. **超時中止**：shell 或 git 步驟若超過 15 秒仍未完成，必須立即停止並回報 technical_unfinished 或 blocked；不得停在「思考中」無限等待
+5. **merge conflict**：若遭遇 conflict，必須立即 git merge --abort，不得自行交互式修復
+6. **失敗回報**：失敗時必須完整回報 executed_command、stdout、stderr、failure_point
+7. **禁止猜測**：不得自行進行多輪猜測式 shell 嘗試
+
 ---
 
 ## 目前正式輪次

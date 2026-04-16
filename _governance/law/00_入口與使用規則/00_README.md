@@ -120,4 +120,33 @@
 
 ---
 
+## Shell / Git 非互動執行規則
+
+### OpenCode 執行 git / shell 任務時
+
+**核心原則**：所有命令列操作必須採非互動模式，不得等待人工輸入。
+
+| 任務類型 | 必須遵循 |
+|----------|----------|
+| **merge** | 使用 `--no-edit --no-ff` 等非互動參數 |
+| **push** | 確認前置檢查完成後執行，超時 15 秒即中止 |
+| **switch** | 先驗證分支存在再切換 |
+| **verify** | 使用 `--porcelain` 等機器可讀格式 |
+
+### 強制停止條件
+
+- **超時**：超過 15 秒無結果 → 立即停止，回報 technical_unfinished
+- **Conflict**：merge conflict → 立即 `git merge --abort`，回報 technical_unfinished
+- **失敗**：完整回報 executed_command、stdout、stderr、failure_point
+
+### 禁止事項
+
+- ❌ 打開 editor、pager
+- ❌ 等待人工輸入
+- ❌ 自行交互式修復衝突
+- ❌ 多輪猜測式 shell 嘗試
+- ❌ 停在「思考中」無限等待
+
+---
+
 *最後更新：2026-04-16*
