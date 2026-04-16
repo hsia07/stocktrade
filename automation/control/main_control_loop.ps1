@@ -766,6 +766,21 @@ function Start-MainControlLoop {
                 if ($roundResult.status -eq "candidate_ready") {
                     $State.ready_for_signoff_rounds += @($currentRound)
                 }
+            } else {
+                # CRITICAL: Round failed criteria - STOP at current round, do NOT proceed
+                Write-Host "[LOOP] CRITICAL: Round $currentRound blocked. STOPPING at current round." -ForegroundColor Red
+                Write-Host "[LOOP] Stop reason: $($roundResult.reason)" -ForegroundColor Red
+                Write-Host "[LOOP] Will NOT proceed to next round. User must fix and resume." -ForegroundColor Red
+                
+                $State.run_state = "stopped"
+                $State.stop_reason = $roundResult.reason
+                $State.last_action = "round_blocked_stop_at_current"
+                Save-State $State
+                
+                $runReport.stop_reason = $roundResult.reason
+                $runReport.rounds_blocked += @($currentRound)
+                
+                break  # EXIT LOOP - do not increment to next round
             }
             
             Save-State $State
