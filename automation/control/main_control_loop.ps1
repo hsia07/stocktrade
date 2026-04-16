@@ -62,19 +62,20 @@ function Initialize-State {
     
     $state = Get-Content $stateFile -Raw | ConvertFrom-Json
     
-    # Ensure all required fields exist with defaults (use -Force to overwrite if exists)
-    if (!($state.schema_version)) { $state | Add-Member -NotePropertyName "schema_version" -NotePropertyValue "2.0" -Force }
-    if (!($state.run_state)) { $state | Add-Member -NotePropertyName "run_state" -NotePropertyValue "stopped" -Force }
-    if (!($state.current_mode)) { $state | Add-Member -NotePropertyName "current_mode" -NotePropertyValue "idle" -Force }
-    if (!($state.current_phase)) { $state | Add-Member -NotePropertyName "current_phase" -NotePropertyValue $Phase -Force }
-    if (!($state.current_round)) { $state | Add-Member -NotePropertyName "current_round" -NotePropertyValue $StartRound -Force }
-    if (!($state.phase_completion_state)) { $state | Add-Member -NotePropertyName "phase_completion_state" -NotePropertyValue "not_started" -Force }
-    if (!($state.rounds_in_current_run -is [array])) { $state | Add-Member -NotePropertyName "rounds_in_current_run" -NotePropertyValue @() -Force }
-    if (!($state.completed_rounds -is [array])) { $state | Add-Member -NotePropertyName "completed_rounds" -NotePropertyValue @() -Force }
-    if (!($state.completed_candidate_rounds -is [array])) { $state | Add-Member -NotePropertyName "completed_candidate_rounds" -NotePropertyValue @() -Force }
-    if (!($state.ready_for_signoff_rounds -is [array])) { $state | Add-Member -NotePropertyName "ready_for_signoff_rounds" -NotePropertyValue @() -Force }
-    if (!($state.blocked_rounds -is [array])) { $state | Add-Member -NotePropertyName "blocked_rounds" -NotePropertyValue @() -Force }
-    if (!($state.authorized_scope)) { $state | Add-Member -NotePropertyName "authorized_scope" -NotePropertyValue $null -Force }
+    # Ensure all required fields exist with defaults
+    # Use Get-Member to check if property exists before adding
+    if (-not ($state | Get-Member -Name "schema_version" -MemberType NoteProperty)) { $state | Add-Member -NotePropertyName "schema_version" -NotePropertyValue "2.0" }
+    if (-not ($state | Get-Member -Name "run_state" -MemberType NoteProperty)) { $state | Add-Member -NotePropertyName "run_state" -NotePropertyValue "stopped" }
+    if (-not ($state | Get-Member -Name "current_mode" -MemberType NoteProperty)) { $state | Add-Member -NotePropertyName "current_mode" -NotePropertyValue "idle" }
+    if (-not ($state | Get-Member -Name "current_phase" -MemberType NoteProperty)) { $state | Add-Member -NotePropertyName "current_phase" -NotePropertyValue $Phase }
+    if (-not ($state | Get-Member -Name "current_round" -MemberType NoteProperty)) { $state | Add-Member -NotePropertyName "current_round" -NotePropertyValue $StartRound }
+    if (-not ($state | Get-Member -Name "phase_completion_state" -MemberType NoteProperty)) { $state | Add-Member -NotePropertyName "phase_completion_state" -NotePropertyValue "not_started" }
+    if (-not ($state | Get-Member -Name "rounds_in_current_run" -MemberType NoteProperty)) { $state | Add-Member -NotePropertyName "rounds_in_current_run" -NotePropertyValue @() }
+    if (-not ($state | Get-Member -Name "completed_rounds" -MemberType NoteProperty)) { $state | Add-Member -NotePropertyName "completed_rounds" -NotePropertyValue @() }
+    if (-not ($state | Get-Member -Name "completed_candidate_rounds" -MemberType NoteProperty)) { $state | Add-Member -NotePropertyName "completed_candidate_rounds" -NotePropertyValue @() }
+    if (-not ($state | Get-Member -Name "ready_for_signoff_rounds" -MemberType NoteProperty)) { $state | Add-Member -NotePropertyName "ready_for_signoff_rounds" -NotePropertyValue @() }
+    if (-not ($state | Get-Member -Name "blocked_rounds" -MemberType NoteProperty)) { $state | Add-Member -NotePropertyName "blocked_rounds" -NotePropertyValue @() }
+    if (-not ($state | Get-Member -Name "authorized_scope" -MemberType NoteProperty)) { $state | Add-Member -NotePropertyName "authorized_scope" -NotePropertyValue $null }
     
     # Ensure candidate checklist exists (10 formal criteria + 2 metadata fields)
     if (!$state.candidate_checklist) {
