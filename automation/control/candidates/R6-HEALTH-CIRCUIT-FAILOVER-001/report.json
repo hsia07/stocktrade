@@ -1,0 +1,66 @@
+{
+  "candidate_id": "R6-HEALTH-CIRCUIT-FAILOVER-001",
+  "source_branch": "work/r006-governance",
+  "candidate_branch": "candidates/R6-HEALTH-CIRCUIT-FAILOVER-001",
+  "commit_hash": "71c788db3572ad95d09491f824578e9fa7ca8aee",
+  "commit_short": "71c788d",
+  "start_time": "2026-04-16T07:59:00",
+  "end_time": "2026-04-16T08:07:02",
+  "duration_seconds": 480,
+  "round_id": "R-006",
+  "round_theme": "健康檢查 / 熔斷 / 降級中心",
+  "auto_commits": false,
+  "auto_push": false,
+  "dirty_commits": false,
+  "yes_always": false,
+  "model": "ollama_chat/qwen2.5-coder:7b",
+  "aider_version": "aider 0.86.2",
+  "ollama_api_base": "http://127.0.0.1:11434",
+  "exit_code": 0,
+  "status": "success",
+  "out_of_scope_detected": false,
+  "changed_files": [
+    "health/monitor.py",
+    "circuit/breaker.py",
+    "failover/center.py",
+    "tests/test_r6_health_circuit_failover.py",
+    "ROUND6_ACCEPTANCE.md",
+    "reports/run_record.json"
+  ],
+  "modified_forbidden_paths": [],
+  "task_file": "automation/control/candidates/R6-HEALTH-CIRCUIT-FAILOVER-001/task.txt",
+  "log_file": "automation/control/candidates/R6-HEALTH-CIRCUIT-FAILOVER-001/aider.log",
+  "diff_file": "automation/control/candidates/R6-HEALTH-CIRCUIT-FAILOVER-001/candidate.diff",
+  "evidence_directory": "automation/control/candidates/R6-HEALTH-CIRCUIT-FAILOVER-001/",
+  "test_results": {
+    "total": 12,
+    "passed": 12,
+    "failed": 0,
+    "test_file": "tests/test_r6_health_circuit_failover.py",
+    "timestamp": "2026-04-16T08:07:02"
+  },
+  "evidence_check": {
+    "task_txt": true,
+    "aider_log": true,
+    "candidate_diff": true,
+    "report_json": true
+  },
+  "validation": {
+    "evidence_script": "scripts/validation/validate_evidence.ps1",
+    "status": "completed",
+    "executed": true,
+    "result": "PASS",
+    "timestamp": "2026-04-16T08:35:00",
+    "checks": {
+      "candidate_directory": true,
+      "task_txt": true,
+      "aider_log": true,
+      "candidate_diff": true,
+      "report_json": true,
+      "overall_status": "PASS"
+    },
+    "can_mark_candidate_ready": true,
+    "formal_status_code": "candidate_ready_eligible"
+  },
+  "notes": "R-006 Round 6 health/circuit/failover implementation. Direct aider execution (not via wrapper). All 12 tests passing. Evidence files created from actual execution records."
+}
