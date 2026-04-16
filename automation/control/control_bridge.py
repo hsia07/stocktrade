@@ -34,7 +34,7 @@ os.makedirs(REPORTS_DIR, exist_ok=True)
 
 def load_json(path):
     if os.path.exists(path):
-        with open(path, 'r', encoding='utf-8') as f:
+        with open(path, 'r', encoding='utf-8-sig') as f:
             return json.load(f)
     return None
 
