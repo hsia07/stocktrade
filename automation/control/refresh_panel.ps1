@@ -1,4 +1,4 @@
-﻿$repoRoot = (Resolve-Path (Join-Path $PSScriptRoot "..\..")).Path
+$repoRoot = (Resolve-Path (Join-Path $PSScriptRoot "..\..")).Path
 Set-Location $repoRoot
 
 $controlDir = Join-Path $repoRoot "automation\control"
@@ -118,6 +118,72 @@ $acceptanceModeEscaped = Escape-Html $acceptanceMode
 $escalationRequiredEscaped = Escape-Html $escalationRequired
 $lastUpdateEscaped = Escape-Html $lastUpdate
 $phaseCompletionEscaped = Escape-Html $phaseCompletion
+
+# Phase definition and round topics extraction
+$phaseStartRound = if ($state.phase_start_round) { $state.phase_start_round } else { "R-001" }
+$phaseEndRound = if ($state.phase_end_round) { $state.phase_end_round } else { "R-015" }
+$roundTopics = if ($state.round_topics) { $state.round_topics } else { @{ } }
+
+# Generate selectable and non-selectable rounds HTML
+$selectableRoundsHtml = ""
+$nonSelectableRoundsHtml = ""
+
+# Hard-coded round topics per formal law
+$roundTopicMap = @{
+    "R-007" = "異常靜默保護"
+    "R-008" = "狀態機與模式切換治理"
+    "R-009" = "指令與任務優先級"
+    "R-006" = "控制面板完整功能落地"
+    "R-005" = "歷史歸檔"
+    "R-004" = "歷史歸檔"
+    "R-003" = "歷史歸檔"
+    "R-002" = "歷史歸檔"
+    "R-001" = "歷史歸檔"
+}
+
+# Check for selectable rounds (ready_for_signoff_rounds)
+if ($state.ready_for_signoff_rounds -and $state.ready_for_signoff_rounds.Count -gt 0) {
+    foreach ($round in $state.ready_for_signoff_rounds) {
+        $topic = if ($roundTopicMap[$round]) { $roundTopicMap[$round] } else { "未知主題" }
+        $selectableRoundsHtml += @"
+<div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+  <input type="checkbox" id="merge_$round" style="cursor: pointer;">
+  <label for="merge_$round" style="cursor: pointer; color: #86efac;">$round｜$topic｜可簽字</label>
+</div>
+"@
+    }
+} else {
+    $selectableRoundsHtml = '<div style="color: #a9b6d3; font-style: italic; padding: 8px;">目前無可 merge 輪次</div>'
+}
+
+# Non-selectable rounds from state
+if ($state.non_selectable_rounds_with_reasons) {
+    $nonSelectableRoundsWithReasons = $state.non_selectable_rounds_with_reasons | ConvertTo-Json | ConvertFrom-Json
+    foreach ($roundEntry in $nonSelectableRoundsWithReasons.PSObject.Properties) {
+        $round = $roundEntry.Name
+        $info = $roundEntry.Value
+        $topic = if ($roundTopicMap[$round]) { $roundTopicMap[$round] } else { $info.topic }
+        $reason = $info.reason
+        $nonSelectableRoundsHtml += @"
+<div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px; opacity: 0.6;">
+  <input type="checkbox" disabled style="cursor: not-allowed;">
+  <span>$round｜$topic｜尚不可 merge：$reason</span>
+</div>
+"@
+    }
+} else {
+    # Default non-selectable rounds
+    $nonSelectableRoundsHtml = @"
+<div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px; opacity: 0.6;">
+  <input type="checkbox" disabled style="cursor: not-allowed;">
+  <span>R-001｜歷史歸檔｜尚不可 merge：archived_historical_round</span>
+</div>
+<div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px; opacity: 0.6;">
+  <input type="checkbox" disabled style="cursor: not-allowed;">
+  <span>R-002｜歷史歸檔｜尚不可 merge：archived_historical_round</span>
+</div>
+"@
+}
 
 $html = @"
 <!doctype html>
@@ -418,6 +484,28 @@ $html = @"
         <button id="grantSignoffBtn" class="btn ok" type="button" onclick="grantSignoff()" disabled>Grant Signoff</button>
       </div>
       <div id="signoffMessage" class="helper"></div>
+    </div>
+
+    <div class="card" id="mergeSelectionCard">
+      <h2>可批次 Merge 輪次選擇區</h2>
+      
+      <div style="margin-bottom: 20px;">
+        <h3 style="color: #86efac; font-size: 16px; margin-bottom: 12px;">✓ 可選區（已達 ready_for_signoff）</h3>
+        <div id="selectableRoundsSection" style="background: rgba(34,197,94,0.08); border: 1px solid rgba(34,197,94,0.3); border-radius: 12px; padding: 16px;">
+          $selectableRoundsHtml
+        </div>
+      </div>
+      
+      <div>
+        <h3 style="color: #fca5a5; font-size: 16px; margin-bottom: 12px;">✗ 不可選區（尚不符合條件）</h3>
+        <div id="nonSelectableRoundsSection" style="background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.3); border-radius: 12px; padding: 16px;">
+          $nonSelectableRoundsHtml
+        </div>
+      </div>
+      
+      <div style="margin-top: 16px; padding: 12px; background: rgba(96,165,250,0.08); border-radius: 8px; font-size: 13px; color: #a9b6d3;">
+        <strong>選擇規則：</strong>只有標記為 ready_for_signoff 的輪次可選擇並批次 merge。尚不可 merge 的輪次已 disabled 並顯示原因。
+      </div>
     </div>
 
     <div class="card">

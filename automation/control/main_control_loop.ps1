@@ -255,37 +255,50 @@ function Test-PhaseComplete {
     
     $currentRoundNum = [int]($State.current_round -replace "R-", "")
     
-    # Get phase boundaries from phase_map or use default
-    $phaseStart = 1
-    $phaseEnd = 15
+    # Get phase boundaries from phase_definition (HARD-CODED per formal law)
+    $phaseStartNum = 1
+    $phaseEndNum = 15
     
-    if ($State.phase_map -and $State.phase_map.($State.current_phase)) {
-        $phaseMap = $State.phase_map.($State.current_phase)
-        $phaseStart = $phaseMap.start
-        $phaseEnd = $phaseMap.end
+    if ($State.phase_definition -and $State.phase_definition.($State.current_phase)) {
+        $phaseDef = $State.phase_definition.($State.current_phase)
+        # Parse R-XXX format to get numeric values
+        $phaseStartNum = [int]($phaseDef.start_round -replace "R-", "")
+        $phaseEndNum = [int]($phaseDef.end_round -replace "R-", "")
+        # Handle special case R-045A -> 45
+        if ($phaseDef.end_round -match "R-(\d+)A") {
+            $phaseEndNum = [int]$matches[1]
+        }
     } else {
-        # Fallback: Parse phase number (Phase 1 -> 1, Phase 2 -> 2, etc.)
-        $phaseNum = [int]($State.current_phase -replace "Phase ", "")
-        $phaseStart = (($phaseNum - 1) * 15) + 1
-        $phaseEnd = $phaseNum * 15
+        # Fallback: Hard-coded phase boundaries per formal law
+        switch ($State.current_phase) {
+            "Phase 1" { $phaseStartNum = 1; $phaseEndNum = 15 }
+            "Phase 2" { $phaseStartNum = 16; $phaseEndNum = 45 }
+            "Phase 3" { $phaseStartNum = 46; $phaseEndNum = 128 }
+            "Phase 4" { $phaseStartNum = 129; $phaseEndNum = 161 }
+            default { $phaseStartNum = 1; $phaseEndNum = 15 }
+        }
     }
     
+    Write-Host "[PHASE-DEBUG] Current: $currentRoundNum | Phase: $($State.current_phase) | Range: $phaseStartNum-$phaseEndNum" -ForegroundColor Gray
+    
     # Check if current round exceeds phase boundary
-    if ($currentRoundNum -gt $phaseEnd) {
-        Write-Host "[PHASE] Round $currentRoundNum exceeds phase boundary ($phaseEnd)" -ForegroundColor Yellow
+    if ($currentRoundNum -gt $phaseEndNum) {
+        Write-Host "[PHASE] Round $currentRoundNum exceeds phase boundary ($phaseEndNum)" -ForegroundColor Yellow
         return $true
     }
     
     # Check if all expected rounds in phase are marked ready_for_signoff
-    $expectedRounds = $phaseEnd - $phaseStart + 1
+    $expectedRounds = $phaseEndNum - $phaseStartNum + 1
     $completedInPhase = 0
     
     foreach ($round in $State.ready_for_signoff_rounds) {
         $roundNum = [int]($round -replace "R-", "")
-        if ($roundNum -ge $phaseStart -and $roundNum -le $phaseEnd) {
+        if ($roundNum -ge $phaseStartNum -and $roundNum -le $phaseEndNum) {
             $completedInPhase++
         }
     }
+    
+    Write-Host "[PHASE-DEBUG] Completed in phase: $completedInPhase / $expectedRounds" -ForegroundColor Gray
     
     if ($completedInPhase -ge $expectedRounds) {
         Write-Host "[PHASE] All $expectedRounds rounds in $($State.current_phase) marked ready_for_signoff" -ForegroundColor Green

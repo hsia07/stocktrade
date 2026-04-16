@@ -8,13 +8,20 @@
   
   "current_phase": "Phase 1",
   "current_round": "R-006",
+  "phase_start_round": "R-001",
+  "phase_end_round": "R-015",
   "current_candidate_id": null,
   
-  "phase_map": {
-    "Phase 1": { "start": 1, "end": 15, "rounds": ["R-001", "R-002", "R-003", "R-004", "R-005", "R-006", "R-007", "R-008", "R-009", "R-010", "R-011", "R-012", "R-013", "R-014", "R-015"] },
-    "Phase 2": { "start": 16, "end": 45, "rounds": [] },
-    "Phase 3": { "start": 46, "end": 128, "rounds": [] },
-    "Phase 4": { "start": 129, "end": 161, "rounds": [] }
+  "phase_definition": {
+    "Phase 1": { "start_round": "R-001", "end_round": "R-015", "description": "穩定性與基礎建設" },
+    "Phase 2": { "start_round": "R-016", "end_round": "R-045A", "description": "交易鏈追責與執行" },
+    "Phase 3": { "start_round": "R-046", "end_round": "R-128", "description": "成熟化與 shadow 準備" },
+    "Phase 4": { "start_round": "R-129", "end_round": "R-161", "description": "多帳戶與營運化" }
+  },
+  "round_topics": {
+    "R-007": "異常靜默保護",
+    "R-008": "狀態機與模式切換治理",
+    "R-009": "指令與任務優先級"
   },
   "phase_completion_state": "not_started",
   
@@ -39,7 +46,26 @@
   "completed_rounds": [],
   "ready_for_signoff_rounds": [],
   "blocked_rounds": [],
-  "non_selectable_rounds_with_reasons": {},
+  "non_selectable_rounds_with_reasons": {
+    "R-001": { "reason": "archived_historical_round", "merge_eligible": false, "topic": "歷史歸檔" },
+    "R-002": { "reason": "archived_historical_round", "merge_eligible": false, "topic": "歷史歸檔" },
+    "R-003": { "reason": "archived_historical_round", "merge_eligible": false, "topic": "歷史歸檔" },
+    "R-004": { "reason": "archived_historical_round", "merge_eligible": false, "topic": "歷史歸檔" },
+    "R-005": { "reason": "archived_historical_round", "merge_eligible": false, "topic": "歷史歸檔" },
+    "R-006": { "reason": "chatgpt_review_pending", "merge_eligible": false, "topic": "控制面板完整功能落地" },
+    "R-007": { "reason": "not_yet_started", "merge_eligible": false, "topic": "異常靜默保護" },
+    "R-008": { "reason": "not_yet_started", "merge_eligible": false, "topic": "狀態機與模式切換治理" },
+    "R-009": { "reason": "not_yet_started", "merge_eligible": false, "topic": "指令與任務優先級" }
+  },
+  "selectable_rounds_for_merge": [],
+  "merge_selection_ui_spec": {
+    "selectable_section_title": "可批次 Merge 輪次（已達 ready_for_signoff）",
+    "non_selectable_section_title": "尚不可 Merge 輪次",
+    "selectable_format": "{round_id}｜{topic}｜可簽字",
+    "non_selectable_format": "{round_id}｜{topic}｜尚不可 merge：{reason}",
+    "disabled_behavior": "checkbox_disabled_and_grayed",
+    "selection_rule": "only_ready_for_signoff_rounds_can_be_selected"
+  },
   
   "mode": "running",
   "round_id": "R-006",
