@@ -110,7 +110,8 @@ $state.candidate_checklist.no_fabricated_evidence = $false
 $state.candidate_checklist.no_unauthorized_modifications = $false
 $state.candidate_checklist.complete_return_to_chatgpt = $false
 
-$state | ConvertTo-Json -Depth 10 | Set-Content $statePath -Encoding UTF8
+$json = $state | ConvertTo-Json -Depth 10
+[System.IO.File]::WriteAllText($statePath, $json, [System.Text.Encoding]::UTF8)
 
 Write-Host "[START] State updated: run_state = running, mode = multi_round_candidate_prep" -ForegroundColor Green
 Write-Host "[START] Authorized scope: $authorizedScope" -ForegroundColor Gray
@@ -181,5 +182,6 @@ try {
 function Save-State {
     param($State)
     $State.updated_at = (Get-Date).ToString("yyyy-MM-ddTHH:mm:ss")
-    $State | ConvertTo-Json -Depth 10 | Set-Content $statePath -Encoding UTF8
+    $json = $State | ConvertTo-Json -Depth 10
+    [System.IO.File]::WriteAllText($statePath, $json, [System.Text.Encoding]::UTF8)
 }

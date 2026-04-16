@@ -163,7 +163,8 @@ function Initialize-State {
 function Save-State {
     param($State)
     $State.updated_at = (Get-Date).ToString("yyyy-MM-ddTHH:mm:ss")
-    $State | ConvertTo-Json -Depth 10 | Set-Content $stateFile -Encoding UTF8
+    $json = $State | ConvertTo-Json -Depth 10
+    [System.IO.File]::WriteAllText($stateFile, $json, [System.Text.Encoding]::UTF8)
 }
 
 # Generate unique run ID
