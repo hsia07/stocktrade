@@ -1,0 +1,66 @@
+{
+  "candidate_id": "R9-COMMAND-PRIORITY-001",
+  "source_branch": "work/r009-command-priority",
+  "candidate_branch": "candidates/R9-COMMAND-PRIORITY-001",
+  "commit_hash": "8a3f6951f170654f09b97d55589dab907b50e85f",
+  "commit_short": "8a3f695",
+  "start_time": "2026-04-16T18:46:00",
+  "end_time": "2026-04-16T18:49:00",
+  "duration_seconds": 180,
+  "round_id": "R-009",
+  "round_theme": "指令與任務優先級 (Commands and Task Priority)",
+  "auto_commits": false,
+  "auto_push": false,
+  "dirty_commits": false,
+  "yes_always": false,
+  "model": "direct_implementation",
+  "aider_version": "n/a",
+  "ollama_api_base": "n/a",
+  "exit_code": 0,
+  "status": "success",
+  "out_of_scope_detected": false,
+  "changed_files": [
+    "scheduler/priority/scheduler.py",
+    "scheduler/priority/monitor.py",
+    "tests/test_r009_command_priority.py"
+  ],
+  "modified_forbidden_paths": [],
+  "task_file": "automation/control/candidates/R9-COMMAND-PRIORITY-001/task.txt",
+  "log_file": "automation/control/candidates/R9-COMMAND-PRIORITY-001/aider.log",
+  "diff_file": "automation/control/candidates/R9-COMMAND-PRIORITY-001/candidate.diff",
+  "evidence_directory": "automation/control/candidates/R9-COMMAND-PRIORITY-001/",
+  "test_results": {
+    "total": 19,
+    "passed": 19,
+    "failed": 0,
+    "test_file": "tests/test_r009_command_priority.py",
+    "timestamp": "2026-04-16T18:49:00"
+  },
+  "evidence_check": {
+    "task_txt": true,
+    "aider_log": true,
+    "candidate_diff": true,
+    "report_json": true
+  },
+  "validation": {
+    "evidence_script": "scripts/validation/validate_evidence.ps1",
+    "status": "completed",
+    "executed": true,
+    "result": "PASS",
+    "timestamp": "2026-04-17T00:25:00",
+    "summary": {
+      "overall_status": "PASS",
+      "can_mark_candidate_ready": true,
+      "candidate_directory": "PASS",
+      "required_files": {
+        "task_txt": "PASS",
+        "aider_log": "PASS",
+        "candidate_diff": "PASS",
+        "report_json": "PASS"
+      },
+      "formal_status_code": "candidate_ready_eligible",
+      "formal_status_reason": "all_required_evidence_present"
+    }
+  },
+  "notes": "R-009 Round 9 command priority implementation. All 19 tests passing. Evidence files created."
+}
