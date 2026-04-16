@@ -1,0 +1,61 @@
+# Task Description for R7-SILENCE-PROTECTION-001
+# Round 7: Abnormal Silence Protection
+# Timestamp: 2026-04-16T09:53:00+0800
+
+## Candidate ID
+R7-SILENCE-PROTECTION-001
+
+## Round
+R-007: 異常靜默保護 (Abnormal Silence Protection)
+
+## Objective
+防止系統看起來活著，但資料停更。建立異常靜默檢測與自動恢復機制。
+
+## Subtasks
+
+### R7-T1: Silence Detector Module
+Create silence detection module with:
+- SilenceDetector class monitoring data freshness
+- Configurable timeout thresholds (market_data, trades, heartbeat)
+- Track last update timestamps
+- is_silent() method returning true if any stream is stale
+- get_silence_report() showing silent streams and duration
+- Output: monitoring/silence/detector.py
+
+### R7-T2: Silence Recovery Module
+Create automatic recovery module with:
+- SilenceRecovery class with escalation strategies
+- Strategies: LOG_ALERT, NOTIFY_ADMIN, SWITCH_TO_OBSERVE, PAUSE_TRADING
+- evaluate_and_recover() applying appropriate strategy
+- Recovery history tracking
+- Output: monitoring/silence/recovery.py
+
+### R7-T3: Integration Tests
+Create comprehensive tests for:
+- SilenceDetector functionality (6 tests)
+- SilenceRecovery functionality (4 tests)
+- Integration between components (1 test)
+- Output: tests/test_r007_silence_protection.py
+
+### R7-T4: Evidence Package
+Create candidate evidence files in automation/control/candidates/R7-SILENCE-PROTECTION-001/
+
+## Success Criteria
+- All 11 tests passing
+- Evidence package complete
+- No forbidden paths modified
+- validate_evidence.ps1 PASS
+
+## Execution Method
+Direct aider execution with minimal context
+No auto-commits, no dirty-commits
+
+## Generated Evidence
+- monitoring/silence/detector.py (new)
+- monitoring/silence/recovery.py (new)
+- tests/test_r007_silence_protection.py (new)
+- automation/control/candidates/R7-SILENCE-PROTECTION-001/* (evidence)
+
+## Final Status
+Implementation complete, all tests passing (11/11)
+Awaiting validation and manual review
