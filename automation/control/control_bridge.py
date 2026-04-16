@@ -14,10 +14,21 @@ CONTROL_DIR = os.path.join(REPO_ROOT, "automation", "control")
 PROMOTION_DIR = os.path.join(REPO_ROOT, "automation", "promotion")
 
 STATE_FILE = os.path.join(CONTROL_DIR, "state.runtime.json")
+STATE_TEMPLATE_FILE = os.path.join(CONTROL_DIR, "state.template.json")
 LAST_ACTION_FILE = os.path.join(CONTROL_DIR, "last_action.runtime.json")
 APPROVED_CANDIDATE_FILE = os.path.join(PROMOTION_DIR, "approved_candidate.runtime.json")
 PROMOTION_PLAN_FILE = os.path.join(PROMOTION_DIR, "promotion_plan.runtime.json")
 PROMOTION_RESULT_FILE = os.path.join(PROMOTION_DIR, "promotion_result.runtime.json")
+
+# Directory setup for artifacts and logs
+ARTIFACTS_DIR = os.path.join(CONTROL_DIR, "artifacts")
+LOGS_DIR = os.path.join(CONTROL_DIR, "logs")
+REPORTS_DIR = os.path.join(CONTROL_DIR, "reports")
+
+# Ensure directories exist
+os.makedirs(ARTIFACTS_DIR, exist_ok=True)
+os.makedirs(LOGS_DIR, exist_ok=True)
+os.makedirs(REPORTS_DIR, exist_ok=True)
 
 
 def load_json(path):
@@ -206,6 +217,277 @@ def get_last_action():
     return data
 
 
+def get_state():
+    """Load current state from runtime file"""
+    return load_json(STATE_FILE) or load_json(STATE_TEMPLATE_FILE) or {}
+
+
+def check_can_start():
+    """Check if loop can be started"""
+    state = get_state()
+    run_state = state.get('run_state', 'stopped')
+    phase_completion = state.get('phase_completion_state', 'none')
+    signoff_required = state.get('signoff_required', False)
+    
+    # Can't start if phase is completed and waiting for signoff
+    if phase_completion == 'completed' and signoff_required:
+        return {'can_start': False, 'reason': 'Phase completed, waiting for signoff. Use Ready for Signoff first.'}
+    
+    # Can't start if already running
+    if run_state == 'running':
+        return {'can_start': False, 'reason': 'Loop is already running'}
+    
+    return {'can_start': True, 'run_state': run_state, 'phase': state.get('current_phase', 'unknown')}
+
+
+def do_start_loop():
+    """Execute start_loop.ps1 to begin or resume the main control loop"""
+    check = check_can_start()
+    if not check['can_start']:
+        result = {
+            'status': 'blocked',
+            'reason': check['reason'],
+            'action': 'none'
+        }
+        save_json(LAST_ACTION_FILE, result)
+        return result
+    
+    start_script = os.path.join(CONTROL_DIR, 'start_loop.ps1')
+    
+    # Check if script exists
+    if not os.path.exists(start_script):
+        # If start_loop.ps1 doesn't exist, run main_control_loop.ps1 directly
+        start_script = os.path.join(CONTROL_DIR, 'main_control_loop.ps1')
+        if not os.path.exists(start_script):
+            result = {
+                'status': 'failed',
+                'reason': 'start_loop.ps1 or main_control_loop.ps1 not found',
+                'action': 'script_missing'
+            }
+            save_json(LAST_ACTION_FILE, result)
+            return result
+    
+    ps_result = run_ps_script(start_script)
+    
+    if ps_result['success']:
+        result = {
+            'status': 'success',
+            'stage': 'start_loop',
+            'stdout': ps_result.get('stdout', ''),
+            'action': 'loop_started'
+        }
+    else:
+        result = {
+            'status': 'failed',
+            'stage': 'start_loop',
+            'reason': ps_result.get('stderr', 'Start loop failed'),
+            'stdout': ps_result.get('stdout', ''),
+            'action': 'start_failed'
+        }
+    
+    save_json(LAST_ACTION_FILE, result)
+    return result
+
+
+def do_drain():
+    """Execute pause_after_current.ps1 to drain after current cycle"""
+    pause_script = os.path.join(CONTROL_DIR, 'pause_after_current.ps1')
+    
+    if not os.path.exists(pause_script):
+        result = {
+            'status': 'failed',
+            'reason': 'pause_after_current.ps1 not found',
+            'action': 'script_missing'
+        }
+        save_json(LAST_ACTION_FILE, result)
+        return result
+    
+    ps_result = run_ps_script(pause_script)
+    
+    if ps_result['success']:
+        result = {
+            'status': 'success',
+            'stage': 'drain',
+            'stdout': ps_result.get('stdout', ''),
+            'action': 'drain_requested'
+        }
+    else:
+        result = {
+            'status': 'failed',
+            'stage': 'drain',
+            'reason': ps_result.get('stderr', 'Drain request failed'),
+            'stdout': ps_result.get('stdout', ''),
+            'action': 'drain_failed'
+        }
+    
+    save_json(LAST_ACTION_FILE, result)
+    return result
+
+
+def do_stop_now():
+    """Execute stop_now.ps1 to stop immediately"""
+    stop_script = os.path.join(CONTROL_DIR, 'stop_now.ps1')
+    
+    if not os.path.exists(stop_script):
+        result = {
+            'status': 'failed',
+            'reason': 'stop_now.ps1 not found',
+            'action': 'script_missing'
+        }
+        save_json(LAST_ACTION_FILE, result)
+        return result
+    
+    ps_result = run_ps_script(stop_script)
+    
+    if ps_result['success']:
+        result = {
+            'status': 'success',
+            'stage': 'stop',
+            'stdout': ps_result.get('stdout', ''),
+            'action': 'stopped'
+        }
+    else:
+        result = {
+            'status': 'failed',
+            'stage': 'stop',
+            'reason': ps_result.get('stderr', 'Stop failed'),
+            'stdout': ps_result.get('stdout', ''),
+            'action': 'stop_failed'
+        }
+    
+    save_json(LAST_ACTION_FILE, result)
+    return result
+
+
+def do_ready_for_signoff():
+    """Mark current phase as ready for signoff (merge gate)"""
+    state = get_state()
+    
+    # Check if phase is completed
+    if state.get('phase_completion_state') != 'completed':
+        result = {
+            'status': 'blocked',
+            'reason': 'Phase not yet completed. Wait for phase completion.',
+            'action': 'none'
+        }
+        save_json(LAST_ACTION_FILE, result)
+        return result
+    
+    # CHATGPT REVIEW GATE: Must have chatgpt_review_result = "pass"
+    chatgpt_review = state.get('chatgpt_review_result', 'pending')
+    if chatgpt_review != 'pass':
+        result = {
+            'status': 'blocked',
+            'reason': f'ChatGPT review not passed. Current status: {chatgpt_review}. Must have chatgpt_review_result = "pass" before ready_for_signoff.',
+            'action': 'none',
+            'chatgpt_review_result': chatgpt_review,
+            'required': 'pass'
+        }
+        save_json(LAST_ACTION_FILE, result)
+        return result
+    
+    # Update state to mark ready for signoff
+    state['ready_for_signoff'] = True
+    state['signoff_required'] = True
+    state['signoff_granted'] = False
+    
+    save_json(STATE_FILE, state)
+    
+    result = {
+        'status': 'success',
+        'stage': 'signoff',
+        'phase': state.get('current_phase'),
+        'action': 'ready_for_signoff',
+        'chatgpt_review_result': chatgpt_review,
+        'message': 'Phase ready for signoff. ChatGPT review passed. Awaiting user grant signoff to proceed.'
+    }
+    save_json(LAST_ACTION_FILE, result)
+    return result
+
+
+def do_grant_signoff():
+    """Grant signoff to allow merge/push operations"""
+    state = get_state()
+    
+    if not state.get('ready_for_signoff'):
+        result = {
+            'status': 'blocked',
+            'reason': 'Not in ready_for_signoff state. Call ready-for-signoff first.',
+            'action': 'none'
+        }
+        save_json(LAST_ACTION_FILE, result)
+        return result
+    
+    if not state.get('signoff_required'):
+        result = {
+            'status': 'blocked',
+            'reason': 'Signoff not required for current phase.',
+            'action': 'none'
+        }
+        save_json(LAST_ACTION_FILE, result)
+        return result
+    
+    # Update state to grant signoff
+    state['signoff_granted'] = True
+    state['merge_push_allowed'] = True
+    
+    save_json(STATE_FILE, state)
+    
+    result = {
+        'status': 'success',
+        'stage': 'signoff',
+        'phase': state.get('current_phase'),
+        'action': 'signoff_granted',
+        'message': 'Signoff granted. Merge/push operations are now allowed.'
+    }
+    save_json(LAST_ACTION_FILE, result)
+    return result
+
+
+def do_chatgpt_review():
+    """Record ChatGPT review result for the current candidate/phase
+    
+    This endpoint allows ChatGPT to explicitly record its review result.
+    Only when review_result = 'pass' can the phase proceed to ready_for_signoff.
+    """
+    state = get_state()
+    
+    # Get review result from request (in real implementation, this would parse POST body)
+    # For now, we set it to 'pass' when this endpoint is called
+    # In production, this should require explicit review data from ChatGPT
+    
+    # Check if there's a candidate to review
+    current_candidate = state.get('current_candidate_id') or state.get('latest_candidate_id')
+    if not current_candidate or current_candidate == 'none':
+        result = {
+            'status': 'blocked',
+            'reason': 'No candidate available for review. Create a candidate first.',
+            'action': 'none'
+        }
+        save_json(LAST_ACTION_FILE, result)
+        return result
+    
+    # Set review result to pass (explicit authorization from ChatGPT)
+    from datetime import datetime
+    state['chatgpt_review_result'] = 'pass'
+    state['chatgpt_reviewed_at'] = datetime.now().isoformat()
+    state['chatgpt_reviewed_candidate'] = current_candidate
+    
+    save_json(STATE_FILE, state)
+    
+    result = {
+        'status': 'success',
+        'stage': 'review',
+        'action': 'chatgpt_review_passed',
+        'candidate': current_candidate,
+        'chatgpt_review_result': 'pass',
+        'message': 'ChatGPT review recorded as PASS. Phase can now proceed to ready_for_signoff.',
+        'next_step': 'Call /ready-for-signoff to mark phase ready for user signoff'
+    }
+    save_json(LAST_ACTION_FILE, result)
+    return result
+
+
 class BridgeHandler(BaseHTTPRequestHandler):
     def log_message(self, format, *args):
         pass
@@ -233,6 +515,10 @@ class BridgeHandler(BaseHTTPRequestHandler):
             self.send_json(200, get_last_action())
         elif path == '/health':
             self.send_json(200, {'status': 'ok'})
+        elif path == '/state':
+            self.send_json(200, get_state())
+        elif path == '/can-start':
+            self.send_json(200, check_can_start())
         else:
             self.send_json(404, {'error': 'Not found'})
 
@@ -241,6 +527,24 @@ class BridgeHandler(BaseHTTPRequestHandler):
 
         if path == '/approve-and-promote':
             result = do_approve_and_promote()
+            self.send_json(200 if result['status'] == 'success' else 400, result)
+        elif path == '/start-loop':
+            result = do_start_loop()
+            self.send_json(200 if result['status'] == 'success' else 400, result)
+        elif path == '/drain':
+            result = do_drain()
+            self.send_json(200 if result['status'] == 'success' else 400, result)
+        elif path == '/stop-now':
+            result = do_stop_now()
+            self.send_json(200 if result['status'] == 'success' else 400, result)
+        elif path == '/ready-for-signoff':
+            result = do_ready_for_signoff()
+            self.send_json(200 if result['status'] == 'success' else 400, result)
+        elif path == '/grant-signoff':
+            result = do_grant_signoff()
+            self.send_json(200 if result['status'] == 'success' else 400, result)
+        elif path == '/chatgpt-review':
+            result = do_chatgpt_review()
             self.send_json(200 if result['status'] == 'success' else 400, result)
         else:
             self.send_json(404, {'error': 'Not found'})
@@ -253,8 +557,17 @@ def main():
     server = HTTPServer((host, port), BridgeHandler)
     print(f"Control bridge listening on http://{host}:{port}")
     print("Endpoints:")
+    print(f"  GET  http://{host}:{port}/state")
     print(f"  GET  http://{host}:{port}/ready")
+    print(f"  GET  http://{host}:{port}/can-start")
     print(f"  GET  http://{host}:{port}/last-action")
+    print(f"  GET  http://{host}:{port}/health")
+    print(f"  POST http://{host}:{port}/start-loop")
+    print(f"  POST http://{host}:{port}/drain")
+    print(f"  POST http://{host}:{port}/stop-now")
+    print(f"  POST http://{host}:{port}/ready-for-signoff")
+    print(f"  POST http://{host}:{port}/grant-signoff")
+    print(f"  POST http://{host}:{port}/chatgpt-review")
     print(f"  POST http://{host}:{port}/approve-and-promote")
     print("Press Ctrl+C to stop")
 

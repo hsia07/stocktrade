@@ -1,0 +1,153 @@
+#!/usr/bin/env pwsh
+# start_loop.ps1
+# Backend script for Start/Resume button - launches the main control loop
+# This provides the real backend chain: button -> bridge -> actual command
+
+param(
+    [switch]$Resume = $false,
+    [string]$Phase = "R-006",
+    [string]$StartRound = "R-006",
+    [switch]$DryRun = $false
+)
+
+$ErrorActionPreference = "Stop"
+
+$repoRoot = (Resolve-Path (Join-Path $PSScriptRoot "..\..")).Path
+Set-Location $repoRoot
+
+$controlDir = Join-Path $repoRoot "automation\control"
+$statePath = Join-Path $controlDir "state.runtime.json"
+$loopScript = Join-Path $controlDir "main_control_loop.ps1"
+$logFile = Join-Path $controlDir "logs\start_loop_$(Get-Date -Format 'yyyyMMdd_HHmmss').log"
+
+# Ensure log directory exists
+$logDir = Split-Path $logFile -Parent
+if (!(Test-Path $logDir)) {
+    New-Item -ItemType Directory -Path $logDir -Force | Out-Null
+}
+
+Write-Host "[START] Initializing control loop..." -ForegroundColor Cyan
+Write-Host "[START] Mode: $(if ($Resume) { 'RESUME' } else { 'START' })" -ForegroundColor Cyan
+Write-Host "[START] Phase: $Phase" -ForegroundColor Cyan
+Write-Host "[START] Start Round: $StartRound" -ForegroundColor Cyan
+
+# Load and validate state
+if (!(Test-Path $statePath)) {
+    throw "State file not found: $statePath"
+}
+
+$state = Get-Content $statePath -Raw | ConvertFrom-Json
+
+# Check for phase completion stop
+if ($state.stop_reason -eq "phase_completed") {
+    Write-Host ""
+    Write-Host "[BLOCKED] Cannot start/resume - phase was completed." -ForegroundColor Red
+    Write-Host "[BLOCKED] Current Phase: $($state.current_phase)" -ForegroundColor Yellow
+    Write-Host "[BLOCKED] Stop Reason: phase_completed" -ForegroundColor Yellow
+    Write-Host ""
+    Write-Host "[ACTION] To proceed to next phase, manual authorization is required:" -ForegroundColor Cyan
+    Write-Host "  1. Review latest run report: automation\control\reports\latest_run_report.json" -ForegroundColor White
+    Write-Host "  2. Provide explicit new phase authorization" -ForegroundColor White
+    Write-Host "  3. Or call with -Phase parameter: start_loop.ps1 -Phase R-007 -StartRound R-007" -ForegroundColor White
+    exit 1
+}
+
+# Check if already running
+if ($state.run_state -eq "running" -and !$Resume) {
+    Write-Host "[WARN] Loop is already running. Use -Resume flag or wait for completion." -ForegroundColor Yellow
+    exit 1
+}
+
+# Clear any stale flags
+$pauseFlag = Join-Path $controlDir "PAUSE_AFTER_CURRENT.flag"
+$stopFlag = Join-Path $controlDir "STOP_NOW.flag"
+$acceptanceFlag = Join-Path $controlDir "ACCEPTANCE_MODE.flag"
+
+foreach ($flag in @($pauseFlag, $stopFlag, $acceptanceFlag)) {
+    if (Test-Path $flag) {
+        Remove-Item $flag -Force
+        Write-Host "[START] Cleared stale flag: $(Split-Path $flag -Leaf)" -ForegroundColor Gray
+    }
+}
+
+# Update state
+$state.run_state = "running"
+$state.last_action = "loop_start"
+$state.last_error = $null
+$state.stop_reason = $null
+$state.current_phase = $Phase
+$state.current_round = $StartRound
+$state.desired_action = "auto_execute_rounds"
+$state.updated_at = (Get-Date).ToString("yyyy-MM-ddTHH:mm:ss")
+
+$state | ConvertTo-Json -Depth 10 | Set-Content $statePath -Encoding UTF8
+
+Write-Host "[START] State updated: run_state = running" -ForegroundColor Green
+
+# Verify main control loop script exists
+if (!(Test-Path $loopScript)) {
+    $state.run_state = "stopped_error"
+    $state.stop_reason = "missing_control_script"
+    $state.last_error = "Main control loop script not found: $loopScript"
+    Save-State -State $state
+    throw "Main control loop script not found: $loopScript"
+}
+
+# Launch the main control loop
+Write-Host ""
+Write-Host "[START] Launching main control loop..." -ForegroundColor Green
+Write-Host "[START] Script: $loopScript" -ForegroundColor Gray
+Write-Host "[START] Log: $logFile" -ForegroundColor Gray
+Write-Host ""
+
+# Build arguments
+$loopArgs = @(
+    "-Phase", $Phase,
+    "-StartRound", $StartRound
+)
+
+if ($Resume) {
+    $loopArgs += "-Resume"
+}
+
+if ($DryRun) {
+    $loopArgs += "-DryRun"
+}
+
+try {
+    # Start the loop and capture output
+    & powershell -ExecutionPolicy Bypass -NoProfile -File $loopScript @loopArgs *>&1 | Tee-Object -FilePath $logFile
+    
+    $exitCode = $LASTEXITCODE
+    
+    if ($exitCode -eq 0) {
+        Write-Host ""
+        Write-Host "[START] Main control loop completed successfully." -ForegroundColor Green
+        Write-Host "[START] Check run report for details." -ForegroundColor Gray
+    } else {
+        Write-Host ""
+        Write-Host "[START] Main control loop exited with code: $exitCode" -ForegroundColor Red
+        Write-Host "[START] Check log for details: $logFile" -ForegroundColor Yellow
+    }
+    
+    exit $exitCode
+    
+} catch {
+    Write-Host ""
+    Write-Host "[START] ERROR starting control loop: $($_)" -ForegroundColor Red
+    
+    # Update state with error
+    $state.run_state = "stopped_error"
+    $state.stop_reason = "start_failed"
+    $state.last_error = $_.Exception.Message
+    $state | ConvertTo-Json -Depth 10 | Set-Content $statePath -Encoding UTF8
+    
+    exit 1
+}
+
+# Helper function
+function Save-State {
+    param($State)
+    $State.updated_at = (Get-Date).ToString("yyyy-MM-ddTHH:mm:ss")
+    $State | ConvertTo-Json -Depth 10 | Set-Content $statePath -Encoding UTF8
+}

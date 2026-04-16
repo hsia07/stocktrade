@@ -1,0 +1,30 @@
+﻿{
+    "source_branch":  "work/r006-governance",
+    "end_time":  "2026-04-16T06:44:01",
+    "duration_seconds":  15,
+    "auto_push":  false,
+    "aider_path":  "C:\\Users\\richa\\.local\\bin\\aider.exe",
+    "model":  "ollama_chat/qwen2.5-coder:7b",
+    "diff_file":  "automation/control/candidates/TOOL-CHAIN-001/candidate.diff",
+    "aider_version":  "aider 0.86.2",
+    "candidate_id":  "TOOL-CHAIN-001",
+    "candidate_branch":  "candidates/TOOL-CHAIN-001",
+    "out_of_scope_detected":  false,
+    "log_file":  "automation/control/candidates/TOOL-CHAIN-001/aider.log",
+    "yes_always":  false,
+    "ollama_api_base":  "http://127.0.0.1:11434",
+    "auto_commits":  false,
+    "changed_files":  [
+                          "README.txt",
+                          "automation/control/run_candidate_aider.ps1",
+                          "automation/control/candidates/TOOL-CHAIN-001/task.txt"
+                      ],
+    "status":  "success",
+    "start_time":  "2026-04-16T06:43:45",
+    "task_file":  "automation/control/candidates/TOOL-CHAIN-001/task.txt",
+    "exit_code":  0,
+    "modified_forbidden_paths":  [
+
+                                 ],
+    "dirty_commits":  false
+}

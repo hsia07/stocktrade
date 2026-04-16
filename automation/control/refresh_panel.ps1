@@ -24,21 +24,38 @@ function Escape-Html([string]$text) {
     return [System.Net.WebUtility]::HtmlEncode($text)
 }
 
-$mode = [string]$state.mode
-$roundId = [string]$state.round_id
-$branch = [string]$state.branch
+# Extract state values - support both old and new schema
+$mode = [string]($state.mode)
+$runState = [string]($state.run_state)
+$roundId = [string]($state.round_id)
+$currentRound = [string]($state.current_round)
+$currentPhase = [string]($state.current_phase)
+$branch = [string]($state.branch)
 $currentCycle = if ($null -eq $state.current_cycle_id) { "none" } else { [string]$state.current_cycle_id }
+$currentCandidate = if ($null -eq $state.current_candidate_id) { "none" } else { [string]$state.current_candidate_id }
 $latestCandidate = if ($null -eq $state.latest_candidate_id) { "none" } else { [string]$state.latest_candidate_id }
 $pauseRequested = [string]$state.pause_requested
 $acceptanceMode = [string]$state.acceptance_mode
 $escalationRequired = [string]$state.escalation_required
 $lastUpdate = if ($null -eq $state.last_update) { "none" } else { [string]$state.last_update }
 
+# New schema fields
+$phaseCompletion = if ($null -eq $state.phase_completion_state) { "unknown" } else { [string]$state.phase_completion_state }
+$readyForSignoff = if ($null -eq $state.ready_for_signoff) { "False" } else { [string]$state.ready_for_signoff }
+$signoffRequired = if ($null -eq $state.signoff_required) { "False" } else { [string]$state.signoff_required }
+$signoffGranted = if ($null -eq $state.signoff_granted) { "False" } else { [string]$state.signoff_granted }
+$mergePushAllowed = if ($null -eq $state.merge_push_allowed) { "False" } else { [string]$state.merge_push_allowed }
+$stopReason = if ($null -eq $state.stop_reason) { "none" } else { [string]$state.stop_reason }
+$lastAction = if ($null -eq $state.last_action) { "none" } else { [string]$state.last_action }
+
+# Determine display mode - prefer run_state if available, fall back to mode
+$displayMode = if ($runState -and $runState -ne "") { $runState } else { $mode }
+
 # 判斷是否可以核准 Candidate
 $canApprove = "no"
 $rejectReason = ""
-if ($mode -ne "paused_for_acceptance") {
-    $rejectReason = "mode 不是 paused_for_acceptance (目前: $mode)"
+if ($mode -ne "paused_for_acceptance" -and $displayMode -ne "paused_for_acceptance") {
+    $rejectReason = "mode 不是 paused_for_acceptance (目前: $displayMode)"
 } elseif ($latestCandidate -eq "none" -or [string]::IsNullOrEmpty($latestCandidate)) {
     $rejectReason = "latest_candidate_id 缺失"
 } elseif ($escalationRequired -eq "True") {
@@ -50,30 +67,42 @@ if ($rejectReason -eq "") {
 
 $canApproveClass = if ($canApprove -eq "yes") { "can" } else { "cannot" }
 
-$modeLabel = switch ($mode) {
+$modeLabel = switch ($displayMode) {
     "running" { "執行中" }
     "paused_for_acceptance" { "等待人工驗收" }
+    "stopped" { "已停止" }
     "stopped_error" { "異常停止" }
-    default { $mode }
+    "phase_completed_stopped" { "Phase 完成" }
+    default { $displayMode }
 }
 
-$modeClass = switch ($mode) {
+$modeClass = switch ($displayMode) {
     "running" { "running" }
     "paused_for_acceptance" { "paused" }
+    "stopped" { "paused" }
     "stopped_error" { "error" }
+    "phase_completed_stopped" { "paused" }
     default { "neutral" }
 }
 
+# Build state display block
 $stateBlock = @"
+schema_version: $($state.schema_version)
 mode: $mode
+run_state: $runState
+current_phase: $currentPhase
+current_round: $currentRound
 round_id: $roundId
 branch: $branch
-current_cycle_id: $currentCycle
-latest_candidate_id: $latestCandidate
-pause_requested: $pauseRequested
-acceptance_mode: $acceptanceMode
-escalation_required: $escalationRequired
+phase_completion_state: $phaseCompletion
+stop_reason: $stopReason
+last_action: $lastAction
+ready_for_signoff: $readyForSignoff
+signoff_required: $signoffRequired
+signoff_granted: $signoffGranted
+merge_push_allowed: $mergePushAllowed
 last_update: $lastUpdate
+updated_at: $($state.updated_at)
 "@
 
 $stateBlockEscaped = Escape-Html $stateBlock
@@ -83,10 +112,12 @@ $roundEscaped = Escape-Html $roundId
 $branchEscaped = Escape-Html $branch
 $currentCycleEscaped = Escape-Html $currentCycle
 $latestCandidateEscaped = Escape-Html $latestCandidate
+$currentCandidateEscaped = Escape-Html $currentCandidate
 $pauseRequestedEscaped = Escape-Html $pauseRequested
 $acceptanceModeEscaped = Escape-Html $acceptanceMode
 $escalationRequiredEscaped = Escape-Html $escalationRequired
 $lastUpdateEscaped = Escape-Html $lastUpdate
+$phaseCompletionEscaped = Escape-Html $phaseCompletion
 
 $html = @"
 <!doctype html>
@@ -329,8 +360,8 @@ $html = @"
             <div class="value">$branchEscaped</div>
           </div>
           <div class="metric">
-            <div class="label">最新 Candidate</div>
-            <div class="value">$latestCandidateEscaped</div>
+            <div class="label">目前 Phase</div>
+            <div class="value">$phaseCompletionEscaped</div>
           </div>
           <div class="metric">
             <div class="label">最後更新</div>
@@ -343,23 +374,50 @@ $html = @"
     <div class="card">
       <h2>常用操作</h2>
       <div class="action-bar">
-        <button id="resumeBtn" class="btn ok" type="button" onclick="resetDrainState()">Start / Resume</button>
-        <button id="drainBtn" class="btn warn" type="button" onclick="simulateDrain()">Drain After Current</button>
+        <button id="resumeBtn" class="btn ok" type="button" onclick="startLoop()">Start / Resume</button>
+        <button id="drainBtn" class="btn warn" type="button" onclick="drainAfterCurrent()">Drain After Current</button>
         <button class="btn primary" type="button" onclick="copyReturnBlock()">一鍵複製回傳給 GPT</button>
       </div>
       <div class="helper">
-        目前這一版先把面板做成更清楚的可視化展示與一鍵複製。下一階段再把常用按鈕正式接到本機控制腳本。
+        Start / Resume 會啟動主控制循環。Drain 會在當前輪次完成後暫停。Stop Now 會立即中止。
       </div>
       <div id="copyStatus" class="copy-status"></div>
-      <div id="drainStatus" class="inline-status"></div>
+      <div id="operationStatus" class="inline-status"></div>
 
       <div class="danger-zone">
         <div class="danger-title">危險操作區</div>
         <div class="danger-text">
           Stop Now 會立即中止流程，可能跳過正常收尾。只有在異常狀況下才使用。
         </div>
-        <button class="btn danger" type="button" onclick="confirmStopNow()">Stop Now</button>
+        <button id="stopBtn" class="btn danger" type="button" onclick="confirmStopNow()">Stop Now</button>
       </div>
+    </div>
+
+    <div class="card" id="signoffCard" style="display: none;">
+      <h2>Merge Gate / Signoff</h2>
+      <div class="mini-grid" style="margin-bottom: 14px;">
+        <div class="metric">
+          <div class="label">Phase 狀態</div>
+          <div class="value" id="phaseStatus">unknown</div>
+        </div>
+        <div class="metric">
+          <div class="label">Signoff 狀態</div>
+          <div class="value" id="signoffStatus">not_required</div>
+        </div>
+        <div class="metric">
+          <div class="label">Merge 權限</div>
+          <div class="value" id="mergeStatus">blocked</div>
+        </div>
+        <div class="metric">
+          <div class="label">Ready 輪次</div>
+          <div class="value" id="readyRounds">none</div>
+        </div>
+      </div>
+      <div class="action-bar">
+        <button id="readySignoffBtn" class="btn primary" type="button" onclick="readyForSignoff()">標記 Ready for Signoff</button>
+        <button id="grantSignoffBtn" class="btn ok" type="button" onclick="grantSignoff()" disabled>Grant Signoff</button>
+      </div>
+      <div id="signoffMessage" class="helper"></div>
     </div>
 
     <div class="card">
@@ -374,12 +432,12 @@ $html = @"
           <div class="value">$latestCandidateEscaped</div>
         </div>
         <div class="metric">
-          <div class="label">escalation_required</div>
-          <div class="value">$escalationRequiredEscaped</div>
+          <div class="label">current_candidate_id</div>
+          <div class="value">$currentCandidateEscaped</div>
         </div>
         <div class="metric">
-          <div class="label">mode</div>
-          <div class="value">$modeEscaped</div>
+          <div class="label">run_state</div>
+          <div class="value">$($runState)</div>
         </div>
       </div>
       <div id="approveReason" class="helper" style="color: #fca5a5;">
@@ -396,20 +454,20 @@ $html = @"
         <h2>最新狀態</h2>
         <div class="mini-grid" style="margin-bottom: 14px;">
           <div class="metric">
-            <div class="label">current_cycle_id</div>
-            <div class="value">$currentCycleEscaped</div>
+            <div class="label">current_phase</div>
+            <div class="value">$currentPhase</div>
           </div>
           <div class="metric">
-            <div class="label">pause_requested</div>
-            <div class="value">$pauseRequestedEscaped</div>
+            <div class="label">current_round</div>
+            <div class="value">$currentRound</div>
           </div>
           <div class="metric">
-            <div class="label">acceptance_mode</div>
-            <div class="value">$acceptanceModeEscaped</div>
+            <div class="label">phase_completion_state</div>
+            <div class="value">$phaseCompletionEscaped</div>
           </div>
           <div class="metric">
-            <div class="label">escalation_required</div>
-            <div class="value">$escalationRequiredEscaped</div>
+            <div class="label">stop_reason</div>
+            <div class="value">$stopReason</div>
           </div>
         </div>
         <div class="mono">$stateBlockEscaped</div>
@@ -417,11 +475,11 @@ $html = @"
 
       <div class="card">
         <h2>最新 Candidate / 建議動作</h2>
-        <div class="mono">latest_candidate_id: $latestCandidateEscaped
-current_cycle_id: $currentCycleEscaped
-pause_requested: $pauseRequestedEscaped
-acceptance_mode: $acceptanceModeEscaped
-escalation_required: $escalationRequiredEscaped</div>
+        <div class="mono">current_candidate_id: $currentCandidateEscaped
+latest_candidate_id: $latestCandidateEscaped
+phase_completion_state: $phaseCompletionEscaped
+stop_reason: $stopReason
+last_action: $lastAction</div>
         <div class="helper">
           建議你回來後先確認目前 mode，再決定要不要排空後暫停、進入驗收，或恢復執行。
         </div>
@@ -438,7 +496,8 @@ escalation_required: $escalationRequiredEscaped</div>
   </div>
 
   <script>
-    let drainTimer = null;
+    const API_BASE = 'http://127.0.0.1:8766';
+    let statusTimer = null;
 
     async function copyReturnBlock() {
       const text = document.getElementById('returnBox').innerText;
@@ -458,57 +517,236 @@ escalation_required: $escalationRequiredEscaped</div>
       }
     }
 
-    function simulateDrain() {
-      const btn = document.getElementById('drainBtn');
-      const status = document.getElementById('drainStatus');
+    function setOperationStatus(message, type = 'info') {
+      const status = document.getElementById('operationStatus');
+      status.textContent = message;
+      status.style.color = type === 'error' ? '#fca5a5' : type === 'success' ? '#86efac' : '#93c5fd';
+      
+      if (statusTimer) {
+        clearTimeout(statusTimer);
+      }
+      statusTimer = setTimeout(() => {
+        status.textContent = '';
+      }, 5000);
+    }
 
+    async function startLoop() {
+      const btn = document.getElementById('resumeBtn');
       btn.className = 'btn processing';
-      btn.textContent = 'Progressing...';
+      btn.textContent = '啟動中...';
       btn.disabled = true;
-      status.textContent = '正在完成目前工作，完成後會切到已完成狀態。';
 
-      if (drainTimer) {
-        clearTimeout(drainTimer);
-      }
+      try {
+        const response = await fetch(`${API_BASE}/start-loop`, {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'}
+        });
+        const data = await response.json();
 
-      drainTimer = setTimeout(() => {
-        btn.className = 'btn done';
-        btn.textContent = '已完成';
+        if (data.status === 'success') {
+          btn.className = 'btn done';
+          btn.textContent = '執行中';
+          setOperationStatus('主控制循環已啟動', 'success');
+          updateStateDisplay();
+        } else if (data.status === 'blocked') {
+          btn.className = 'btn warn';
+          btn.textContent = 'Start / Resume';
+          btn.disabled = false;
+          setOperationStatus('無法啟動: ' + data.reason, 'error');
+        } else {
+          btn.className = 'btn danger';
+          btn.textContent = '啟動失敗';
+          btn.disabled = false;
+          setOperationStatus('啟動失敗: ' + (data.reason || 'Unknown error'), 'error');
+        }
+      } catch (err) {
+        btn.className = 'btn danger';
+        btn.textContent = '連線錯誤';
         btn.disabled = false;
-        status.textContent = 'Drain After Current 已完成。現在可以進行驗收。';
-      }, 2200);
+        setOperationStatus('無法連接到控制橋接器，請確認 bridge 是否在執行', 'error');
+      }
     }
 
-    function resetDrainState() {
+    async function drainAfterCurrent() {
       const btn = document.getElementById('drainBtn');
-      const status = document.getElementById('drainStatus');
+      btn.className = 'btn processing';
+      btn.textContent = '處理中...';
+      btn.disabled = true;
 
-      if (drainTimer) {
-        clearTimeout(drainTimer);
-        drainTimer = null;
+      try {
+        const response = await fetch(`${API_BASE}/drain`, {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'}
+        });
+        const data = await response.json();
+
+        if (data.status === 'success') {
+          btn.className = 'btn done';
+          btn.textContent = 'Drain 已請求';
+          setOperationStatus('Drain After Current 已請求，當前輪次完成後會暫停', 'success');
+        } else {
+          btn.className = 'btn warn';
+          btn.textContent = 'Drain After Current';
+          btn.disabled = false;
+          setOperationStatus('Drain 請求失敗: ' + (data.reason || 'Unknown error'), 'error');
+        }
+      } catch (err) {
+        btn.className = 'btn warn';
+        btn.textContent = 'Drain After Current';
+        btn.disabled = false;
+        setOperationStatus('無法連接到控制橋接器，請確認 bridge 是否在執行', 'error');
       }
-
-      btn.className = 'btn warn';
-      btn.textContent = 'Drain After Current';
-      btn.disabled = false;
-      status.textContent = '已恢復執行。Drain 按鈕已重置。';
     }
 
-    function confirmStopNow() {
+    async function confirmStopNow() {
       const ok = confirm('這是危險操作。Stop Now 可能跳過正常收尾。你確定要執行嗎？');
-      const status = document.getElementById('copyStatus');
-      if (ok) {
-        status.textContent = '已確認 Stop Now。下一階段再把這顆按鈕正式接到本機控制腳本。';
-      } else {
-        status.textContent = '已取消 Stop Now。';
+      if (!ok) {
+        setOperationStatus('已取消 Stop Now');
+        return;
+      }
+
+      const btn = document.getElementById('stopBtn');
+      btn.className = 'btn processing';
+      btn.textContent = '停止中...';
+      btn.disabled = true;
+
+      try {
+        const response = await fetch(`${API_BASE}/stop-now`, {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'}
+        });
+        const data = await response.json();
+
+        if (data.status === 'success') {
+          btn.className = 'btn done';
+          btn.textContent = '已停止';
+          setOperationStatus('Stop Now 已執行，流程已中止', 'success');
+          document.getElementById('resumeBtn').textContent = 'Start / Resume';
+          document.getElementById('resumeBtn').className = 'btn ok';
+          document.getElementById('resumeBtn').disabled = false;
+        } else {
+          btn.className = 'btn danger';
+          btn.textContent = 'Stop Now';
+          btn.disabled = false;
+          setOperationStatus('Stop 失敗: ' + (data.reason || 'Unknown error'), 'error');
+        }
+      } catch (err) {
+        btn.className = 'btn danger';
+        btn.textContent = 'Stop Now';
+        btn.disabled = false;
+        setOperationStatus('無法連接到控制橋接器，請確認 bridge 是否在執行', 'error');
       }
     }
 
-    function confirmApproveCandidate() {
+    async function readyForSignoff() {
+      const btn = document.getElementById('readySignoffBtn');
+      btn.className = 'btn processing';
+      btn.textContent = '處理中...';
+      btn.disabled = true;
+
+      try {
+        const response = await fetch(`${API_BASE}/ready-for-signoff`, {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'}
+        });
+        const data = await response.json();
+
+        if (data.status === 'success') {
+          btn.className = 'btn done';
+          btn.textContent = '已標記 Ready';
+          document.getElementById('grantSignoffBtn').disabled = false;
+          setOperationStatus('Phase 已標記為 Ready for Signoff', 'success');
+          updateStateDisplay();
+        } else {
+          btn.className = 'btn primary';
+          btn.textContent = '標記 Ready for Signoff';
+          btn.disabled = false;
+          setOperationStatus('無法標記: ' + (data.reason || 'Unknown error'), 'error');
+        }
+      } catch (err) {
+        btn.className = 'btn primary';
+        btn.textContent = '標記 Ready for Signoff';
+        btn.disabled = false;
+        setOperationStatus('無法連接到控制橋接器，請確認 bridge 是否在執行', 'error');
+      }
+    }
+
+    async function grantSignoff() {
+      const ok = confirm('您即將授權 Signoff，允許後續的 merge/push 操作。\\n\\n請確認您已經：\\n1. 審查所有變更\\n2. 確認測試通過\\n3. 同意繼續進行\\n\\n確定要授權嗎？');
+      if (!ok) {
+        setOperationStatus('已取消 Signoff 授權');
+        return;
+      }
+
+      const btn = document.getElementById('grantSignoffBtn');
+      btn.className = 'btn processing';
+      btn.textContent = '授權中...';
+      btn.disabled = true;
+
+      try {
+        const response = await fetch(`${API_BASE}/grant-signoff`, {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'}
+        });
+        const data = await response.json();
+
+        if (data.status === 'success') {
+          btn.className = 'btn done';
+          btn.textContent = 'Signoff 已授權';
+          setOperationStatus('Signoff 已授權，現在可以進行 merge/push 操作', 'success');
+          updateStateDisplay();
+        } else {
+          btn.className = 'btn ok';
+          btn.textContent = 'Grant Signoff';
+          btn.disabled = false;
+          setOperationStatus('授權失敗: ' + (data.reason || 'Unknown error'), 'error');
+        }
+      } catch (err) {
+        btn.className = 'btn ok';
+        btn.textContent = 'Grant Signoff';
+        btn.disabled = false;
+        setOperationStatus('無法連接到控制橋接器，請確認 bridge 是否在執行', 'error');
+      }
+    }
+
+    async function updateStateDisplay() {
+      try {
+        const response = await fetch(`${API_BASE}/state`);
+        const state = await response.json();
+        
+        // Update signoff card visibility
+        const signoffCard = document.getElementById('signoffCard');
+        if (state.phase_completion_state === 'completed' || state.ready_for_signoff) {
+          signoffCard.style.display = 'block';
+          document.getElementById('phaseStatus').textContent = state.phase_completion_state || 'unknown';
+          document.getElementById('signoffStatus').textContent = state.signoff_granted ? 'granted' : (state.signoff_required ? 'required' : 'not_required');
+          document.getElementById('mergeStatus').textContent = state.merge_push_allowed ? 'allowed' : 'blocked';
+          const rounds = state.completed_rounds || [];
+          document.getElementById('readyRounds').textContent = rounds.length > 0 ? rounds.join(', ') : 'none';
+          
+          // Update grant button state
+          document.getElementById('grantSignoffBtn').disabled = !state.ready_for_signoff || state.signoff_granted;
+        } else {
+          signoffCard.style.display = 'none';
+        }
+        
+        // Update resume button state
+        if (state.run_state === 'running') {
+          const resumeBtn = document.getElementById('resumeBtn');
+          resumeBtn.className = 'btn done';
+          resumeBtn.textContent = '執行中';
+          resumeBtn.disabled = true;
+        }
+      } catch (err) {
+        console.log('Could not fetch state:', err);
+      }
+    }
+
+    async function confirmApproveCandidate() {
       const ok = confirm(
-        '你即將核准 Candidate。\n\n' +
-        '這只是核准候選人，不會直接 merge 到 master。\n' +
-        '下一步會建立 review branch 並進入 promotion 流程。\n\n' +
+        '你即將核准 Candidate。\\n\\n' +
+        '這只是核准候選人，不會直接 merge 到 master。\\n' +
+        '下一步會建立 review branch 並進入 promotion 流程。\\n\\n' +
         '確定要繼續嗎？'
       );
       const status = document.getElementById('approveStatus');
@@ -526,12 +764,13 @@ escalation_required: $escalationRequiredEscaped</div>
       status.textContent = '正在執行核准與 promotion...';
       status.style.color = '#93c5fd';
 
-      fetch('http://127.0.0.1:8766/approve-and-promote', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'}
-      })
-      .then(res => res.json())
-      .then(data => {
+      try {
+        const response = await fetch(`${API_BASE}/approve-and-promote`, {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'}
+        });
+        const data = await response.json();
+
         console.log('Approve result:', data);
 
         if (data.status === 'success') {
@@ -546,16 +785,20 @@ escalation_required: $escalationRequiredEscaped</div>
           status.textContent = '失敗: ' + (data.reason || data.stage || 'Unknown error');
           status.style.color = '#fca5a5';
         }
-      })
-      .catch(err => {
+      } catch (err) {
         console.error('Bridge error:', err);
         btn.className = 'btn danger';
         btn.textContent = '連線錯誤';
         btn.disabled = false;
         status.textContent = '無法連接到 control bridge，請確認 bridge 是否在執行';
         status.style.color = '#fca5a5';
-      });
+      }
     }
+
+    // Update state display on load
+    updateStateDisplay();
+    // Refresh state every 5 seconds
+    setInterval(updateStateDisplay, 5000);
   </script>
 </body>
 </html>
@@ -564,5 +807,3 @@ escalation_required: $escalationRequiredEscaped</div>
 Set-Content -Path $outputPath -Value $html -Encoding UTF8
 Write-Host "Runtime panel generated:" -ForegroundColor Green
 Write-Host $outputPath
-
-

@@ -1,11 +1,51 @@
-﻿{
+{
+  "schema_version": "2.0",
+  "updated_at": null,
+  
+  "run_state": "stopped",
+  "last_action": "system_init",
+  "stop_reason": null,
+  
+  "current_phase": "Phase 1",
+  "current_round": "R-006",
+  "current_candidate_id": null,
+  
+  "phase_map": {
+    "Phase 1": { "start": 1, "end": 15, "rounds": ["R-001", "R-002", "R-003", "R-004", "R-005", "R-006", "R-007", "R-008", "R-009", "R-010", "R-011", "R-012", "R-013", "R-014", "R-015"] },
+    "Phase 2": { "start": 16, "end": 45, "rounds": [] },
+    "Phase 3": { "start": 46, "end": 128, "rounds": [] },
+    "Phase 4": { "start": 129, "end": 161, "rounds": [] }
+  },
+  "phase_completion_state": "not_started",
+  
+  "chatgpt_review_result": "pending",
+  
+  "desired_action": null,
+  
+  "last_commit": null,
+  "last_error": null,
+  "last_reply_id": null,
+  
+  "ready_for_signoff": false,
+  "signoff_required": false,
+  "signoff_granted": false,
+  "merge_push_allowed": false,
+  
+  "latest_candidate_id": null,
+  "latest_return_artifact": null,
+  "latest_prompt_artifact": null,
+  
+  "rounds_in_current_run": [],
+  "completed_rounds": [],
+  "ready_for_signoff_rounds": [],
+  "blocked_rounds": [],
+  "non_selectable_rounds_with_reasons": {},
+  
   "mode": "running",
   "round_id": "R-006",
   "branch": "work/r006-governance",
   "current_cycle_id": null,
-  "latest_candidate_id": null,
   "pause_requested": false,
   "acceptance_mode": false,
-  "escalation_required": false,
-  "last_update": null
+  "escalation_required": false
 }
