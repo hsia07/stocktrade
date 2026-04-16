@@ -47,7 +47,20 @@
     "status": "completed",
     "executed": true,
     "result": "PASS",
-    "timestamp": "2026-04-16T21:35:00"
+    "timestamp": "2026-04-17T00:25:00",
+    "summary": {
+      "overall_status": "PASS",
+      "can_mark_candidate_ready": true,
+      "candidate_directory": "PASS",
+      "required_files": {
+        "task_txt": "PASS",
+        "aider_log": "PASS",
+        "candidate_diff": "PASS",
+        "report_json": "PASS"
+      },
+      "formal_status_code": "candidate_ready_eligible",
+      "formal_status_reason": "all_required_evidence_present"
+    }
   },
   "notes": "R-009 Round 9 command priority implementation. All 19 tests passing. Evidence files created."
 }
