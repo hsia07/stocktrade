@@ -184,4 +184,26 @@ OpenCode 在回報 candidate_ready / merge_approved 前，必須自檢：
 
 ---
 
+## Phase 級主核心 Merge 判定時
+
+### 判定是否可進行 Phase 級主核心 merge 前，必須依序讀取：
+
+1. **CURRENT_GOVERNANCE_BASELINE.md** - 確認當前 Phase 收口狀態與主核心 merge 規則
+2. **04 補強版第 12 節** - Phase 級主核心 Merge 治理法典（第 49–58 條）
+3. **work branch 實際狀態** - 確認該 Phase 預定納入輪次是否皆已收口到 work branch
+4. **各輪狀態清查** - 確認是否仍存在 candidate only / review only / technical_unfinished / blocked 之輪次
+
+### 必須確認 checklist：
+
+- [ ] 該 Phase 預定納入輪次是否皆已收口到 work branch
+- [ ] 是否仍存在未完成狀態之輪次（candidate only / review only / technical_unfinished / blocked）
+- [ ] 是否已完成 Phase 級總審核
+- [ ] 是否已取得使用者明示簽字同意
+
+### OpenCode 強制停止點：
+
+到達 Phase 級主核心 merge 決策點時，**OpenCode 必須立即停止**，不得提供主核心 merge 指令，等待使用者明示簽字。
+
+---
+
 *最後更新：2026-04-16*

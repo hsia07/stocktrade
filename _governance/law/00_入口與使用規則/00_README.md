@@ -96,4 +96,28 @@
 
 ---
 
+## Phase 級治理與主核心 Merge
+
+### Work Branch 與 Master 之區別
+
+- **work branch**（如 `work/r006-governance`）：Phase 內收口工作主線，供多輪逐步匯集與 Phase 內整合測試
+- **master / 主核心分支**：正式發布與生產就緒之獨立保護層
+
+### 單輪收口 vs Phase 級收口
+
+| 階段 | 說明 | 授權層級 |
+|------|------|----------|
+| 單輪 merge 到 work branch | 該輪在 Phase 工作主線內完成收口 | 單輪級簽字 |
+| Phase 級總審核 | Phase 內所有輪次協同驗證 | Phase 級審核 |
+| Phase 級主核心 merge | 整個 Phase 進入 master | **需另外明示簽字** |
+
+### OpenCode 執行規則
+
+1. 單輪已 merge 到 work branch **不等於** 可直接進入 master
+2. 到達 Phase 級主核心 merge 決策點時，OpenCode **必須停止**並等待使用者明示簽字
+3. 未獲使用者明示同意前，不得提供主核心 merge 指令
+4. 若 Phase 內仍存在未完成輪次（candidate only / review only / technical_unfinished / blocked），原則上不得進行主核心 merge
+
+---
+
 *最後更新：2026-04-16*

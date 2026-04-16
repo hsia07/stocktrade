@@ -50,6 +50,19 @@
 - 判單輪是否 candidate/merge 時，**必須回讀 03 該輪完整條文**
 - 若有衝突，以**較嚴格、較可驗收、較可追責、較不可繞過**者優先
 
+### Work Branch 與 Master 之區別
+
+- **work branch**（如 `work/r006-governance`）：Phase 內收口工作主線，供多輪逐步匯集與 Phase 內整合測試之用；單輪 merge 到 work branch 不等於可直接進入 master
+- **master / 主核心分支**：正式發布與生產就緒之獨立保護層，受更高層級管制
+
+### Phase 級主核心 Merge 規則
+
+1. **Phase 內單輪收口**：各輪得依序完成 candidate → review → merge 到 work branch → push 到 origin/work branch
+2. **不得自動進主核心**：單輪已 merge 到 work branch，不得推定為可直接進入 master
+3. **Phase 級總審核義務**：Phase 內所有預定納入輪次皆完成單輪收口後，必須先執行 Phase 級總審核；未完成前不得 merge 進 master
+4. **使用者明示簽字**：OpenCode 到達 Phase 級主核心 merge 決策點時，必須先停止並等待使用者明示簽字同意；未獲同意前不得執行 master merge
+5. **阻塞條件**：Phase 內若仍存在 candidate only、review only、technical_unfinished、blocked 狀態之輪次，原則上不得進行該 Phase 之主核心 merge
+
 ---
 
 ## 目前正式輪次
