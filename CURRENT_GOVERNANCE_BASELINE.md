@@ -40,33 +40,42 @@
 
 ---
 
-## 候選證據守門機制
+## 候選證據守門機制 (HARD GATE)
+
+### ⚠️ 硬規則
+
+1. **未執行 validate_evidence.ps1，不得標記 candidate_ready**
+2. **validate_evidence.ps1 驗證失敗時，只能回報 technical_unfinished / blocked**
+3. **只有 validate_evidence.ps1 通過後，才可回報 candidate_ready**
 
 ### 證據驗證工具
 - **腳本**: `scripts/validation/validate_evidence.ps1`
 - **用途**: 檢查任務是否產出完整證據包
+- **性質**: HARD GATE - candidate_ready 的必要條件
 
-### Candidate Ready 前提條件
+### Candidate Ready 硬前提
 
-1. **證據包完整**（缺一不可）：
+#### 必要條件（缺一不可）
+1. ✅ **已執行 validate_evidence.ps1**
+2. ✅ **validate_evidence.ps1 回傳 PASS**
+3. ✅ **證據包完整**：
    - `task.txt` - 任務描述文件
    - `aider.log` - Aider 執行日誌
    - `candidate.diff` - 代碼變更 diff
    - `report.json` - 執行報告
-   - `git status --short` - Git 狀態
-   - `git diff --name-only` - 變更檔案清單
+4. ✅ **Git 狀態可查**：
+   - `git status --short`
+   - `git diff --name-only`
+5. ✅ **測試證據**（若本輪有指定）
 
-2. **安全開關狀態**：
-   - 標準模式：允許未提交更改（WARN）
-   - 嚴格模式（-StrictMode）：不允許未提交更改（FAIL）
-
-3. **測試證據**（若本輪有指定）：
-   - 測試檔案必須存在
-   - 測試必須通過
+#### 禁止事項
+- ❌ 未執行驗證就標記 candidate_ready
+- ❌ 驗證失敗仍標記 completed
+- ❌ 驗證失敗不回報正式狀態碼
 
 ### 使用方式
 ```powershell
-# 標準驗證
+# 標準驗證（必須執行）
 .\scripts\validation\validate_evidence.ps1 -CandidateId "TASK-001"
 
 # 嚴格模式
@@ -76,9 +85,25 @@
 .\scripts\validation\validate_evidence.ps1 -CandidateId "TASK-001" -RequiredTests @("tests/test_feature.py")
 ```
 
-### 驗證結果判定
-- **PASS**: 所有必需證據存在，可標記 candidate_ready
-- **FAIL**: 缺少必需證據，**不得**標記 candidate_ready
+### 驗證結果判定與強制狀態碼
+
+| 驗證結果 | 可標記狀態 | 強制回報狀態碼 |
+|----------|------------|----------------|
+| **PASS** | candidate_ready | candidate_ready_eligible |
+| **FAIL - 缺證據** | ❌ 不可 | **technical_unfinished** |
+| **FAIL - 安全問題** | ❌ 不可 | **blocked** |
+| **未執行** | ❌ 不可 | **technical_unfinished** |
+
+### 流程觸發點
+
+```
+任務完成
+    ↓
+執行 validate_evidence.ps1（強制）
+    ↓
+├─ PASS → 可回報 candidate_ready
+└─ FAIL → 回報 technical_unfinished / blocked
+```
 
 ---
 

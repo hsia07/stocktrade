@@ -1,4 +1,4 @@
-﻿# TASK_ACTIVE — R-006
+# TASK_ACTIVE — R-006
 
 ## Round
 - round_id: R-006
@@ -33,6 +33,10 @@
 - py ./scripts/validation/check_forbidden_changes.py --manifest ./manifests/current_round.yaml
 - py ./scripts/validation/check_required_evidence.py --manifest ./manifests/current_round.yaml
 - py ./scripts/validation/check_commit_message.py --manifest ./manifests/current_round.yaml
+- **HARD GATE**: .\scripts\validation\validate_evidence.ps1 -CandidateId "{candidate_id}"
+  - ⚠️ 未執行本驗證，不得標記 candidate_ready
+  - ⚠️ 驗證失敗時，只能回報 technical_unfinished / blocked
+  - ⚠️ 只有驗證通過後，才可回報 candidate_ready
 
 ## Commit Rule
 - commit message 必須以 `R-006` 開頭

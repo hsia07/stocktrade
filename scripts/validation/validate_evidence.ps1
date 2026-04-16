@@ -1,6 +1,17 @@
 # validate_evidence.ps1
-# 候選證據守門機制 - 證據驗證腳本
-# 用於檢查任務是否產出完整證據包，否則不得標記 candidate_ready
+# 候選證據守門機制 - 證據驗證硬門檻
+# 
+# ⚠️ 硬規則：未執行本驗證腳本，不得標記 candidate_ready
+# ⚠️ 硬規則：本驗證失敗時，只能回報 technical_unfinished / blocked
+# ⚠️ 硬規則：只有本驗證通過後，才可回報 candidate_ready
+#
+# 使用方法：
+#   .\scripts\validation\validate_evidence.ps1 -CandidateId "TASK-001"
+#
+# 回傳值：
+#   - overall_status: "PASS" 或 "FAIL"
+#   - can_mark_candidate_ready: true 或 false
+#   - 若 FAIL，必須回報 technical_unfinished 或 blocked
 
 param(
     [Parameter(Mandatory=$true)]
@@ -224,12 +235,43 @@ $canBeCandidateReady = $allRequiredPresent -and $noCriticalFailures -and (-not $
 $results.can_mark_candidate_ready = $canBeCandidateReady
 $results.overall_status = if ($canBeCandidateReady) { "PASS" } else { "FAIL" }
 
+# 判定正式狀態碼
+if (-not $canBeCandidateReady) {
+    if (-not (Test-Path $candidatePath)) {
+        $results.formal_status_code = "technical_unfinished"
+        $results.formal_status_reason = "candidate_directory_missing"
+    } elseif ($results.missing_evidence.Count -gt 0) {
+        $results.formal_status_code = "technical_unfinished"
+        $results.formal_status_reason = "required_evidence_missing"
+    } elseif ($hasSafetyIssues) {
+        $results.formal_status_code = "blocked"
+        $results.formal_status_reason = "safety_check_failed"
+    } else {
+        $results.formal_status_code = "technical_unfinished"
+        $results.formal_status_reason = "validation_failed"
+    }
+} else {
+    $results.formal_status_code = "candidate_ready_eligible"
+    $results.formal_status_reason = "all_required_evidence_present"
+}
+
 # 輸出結果摘要
 Write-Host "`n═══════════════════════════════════════════════════════════════" -ForegroundColor Cyan
 Write-Host "  驗證結果摘要" -ForegroundColor Cyan
 Write-Host "═══════════════════════════════════════════════════════════════" -ForegroundColor Cyan
 Write-Host "Overall Status: $($results.overall_status)" -ForegroundColor $(if ($results.overall_status -eq "PASS") { $Green } else { $Red })
 Write-Host "Can Mark Candidate Ready: $($results.can_mark_candidate_ready)" -ForegroundColor $(if ($results.can_mark_candidate_ready) { $Green } else { $Red })
+
+# 顯示正式狀態碼
+if ($results.formal_status_code) {
+    Write-Host "Formal Status Code: $($results.formal_status_code)" -ForegroundColor $(if ($results.overall_status -eq "PASS") { $Green } else { $Red })
+    Write-Host "Reason: $($results.formal_status_reason)" -ForegroundColor Gray
+    
+    if (-not $canBeCandidateReady) {
+        Write-Host "`n⚠️  驗證失敗！不得回報 completed 或 candidate_ready" -ForegroundColor $Red
+        Write-Host "⚠️  必須回報: $($results.formal_status_code)" -ForegroundColor $Red
+    }
+}
 
 if ($results.missing_evidence.Count -gt 0) {
     Write-Host "`nMissing Evidence:" -ForegroundColor $Red

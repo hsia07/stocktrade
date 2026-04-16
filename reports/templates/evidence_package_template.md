@@ -1,6 +1,7 @@
 # Evidence Package Template
 # 證據包固定回報模板
-# 每次任務完成後必須依此格式回報
+# ⚠️ 硬規則：未執行 validate_evidence.ps1 並通過，不得標記 candidate_ready
+# ⚠️ 硬規則：validate_evidence.ps1 失敗時，只能回報 technical_unfinished / blocked
 
 ---
 
@@ -45,19 +46,29 @@
 
 ---
 
-## Validation Result
+## Validation Result (HARD GATE ⚠️)
 
-使用驗證腳本確認：
+**⚠️ 硬規則：本區塊為 candidate_ready 的硬門檻，未通過不得標記完成**
 
+### 執行驗證
 ```powershell
 .\scripts\validation\validate_evidence.ps1 -CandidateId "{id}"
 ```
 
 ### 驗證結果
+- **executed**: {yes/no - 若為 no，立即判定不合格}
 - **status**: {PASS/FAIL}
 - **can_mark_candidate_ready**: {true/false}
+- **formal_status_code**: 
+  - 若 PASS: `candidate_ready_eligible`
+  - 若 FAIL: `technical_unfinished` 或 `blocked`
 - **missing_evidence**: 
   - {若有缺失，列於此處}
+
+### 判定結果
+- [ ] **驗證未執行** → 不得回報 candidate_ready
+- [ ] **驗證 FAIL** → 回報 technical_unfinished / blocked
+- [ ] **驗證 PASS** → 可回報 candidate_ready
 
 ---
 
