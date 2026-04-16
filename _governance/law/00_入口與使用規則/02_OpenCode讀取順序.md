@@ -140,17 +140,47 @@ OpenCode 在回報 candidate_ready / merge_approved 前，必須自檢：
 
 ---
 
+## OpenCode 可讀版優先讀取指引
+
+### 可讀版目的
+
+為解決 .docx 二進制檔案無法直接讀取之技術限制，現行正式法典已建立 **Markdown 可讀版鏡像**：
+
+**位置**：`_governance/law/readable/`
+
+### 可讀版檔案清單
+
+| 檔名 | 路徑 | 用途 |
+|------|------|------|
+| 01_系統白話總覽 | `_governance/law/readable/01_系統白話總覽與功能說明.md` | 快速理解 |
+| 02_母表法典 | `_governance/law/readable/02_交易系統極限嚴格母表法典.md` | 全域硬規則 |
+| 03_逐輪施行細則 | `_governance/law/readable/03_161輪逐輪施行細則法典_整合法條增補版.md` | 單輪條文 |
+| 03_R7-R9_節錄 | `_governance/law/readable/03_R7-R9_正式審核可讀節錄.md` | **R7-R9 審核專用** |
+| 04_補強版 | `_governance/law/readable/04_交易系統法典補強版_20260416_修正版.md` | 治理補充 |
+
+### R7-R9 正式審核讀取順序
+
+審核 R-007 / R-008 / R-009 時，**優先讀取**：
+
+1. `_governance/law/readable/03_R7-R9_正式審核可讀節錄.md`
+2. 對照 `_governance/law/readable/03_161輪逐輪施行細則法典_整合法條增補版.md` 完整條文
+3. 依節錄逐條審核該輪要求
+
+⚠️ **重要**：可讀版僅為鏡像，若與正式法源衝突，以正式法源為準。
+
+---
+
 ## 檔案路徑速查
 
-| 檔名 | 路徑 |
-|------|------|
-| CURRENT_GOVERNANCE_BASELINE.md | repo 根目錄 |
-| 00_README.md | `_governance/law/00_入口與使用規則/00_README.md` |
-| 01_法典優先順序.md | `_governance/law/00_入口與使用規則/01_法典優先順序.md` |
-| 02_母表法典 | `_governance/law/02_交易系統極限嚴格母表法典.docx` |
-| 03_逐輪施行細則 | `_governance/law/03_161輪逐輪施行細則法典_整合法條增補版.docx` |
-| 04_補強版 | `_governance/law/04_交易系統法典補強版_20260416_修正版.md` |
-| 01_白話總覽 | `_governance/law/01_系統白話總覽與功能說明.docx` |
+| 檔名 | 正式法源路徑 | 可讀版路徑 |
+|------|--------------|------------|
+| CURRENT_GOVERNANCE_BASELINE.md | repo 根目錄 | - |
+| 00_README.md | `_governance/law/00_入口與使用規則/00_README.md` | - |
+| 01_法典優先順序.md | `_governance/law/00_入口與使用規則/01_法典優先順序.md` | - |
+| 02_母表法典 | `_governance/law/02_*.docx` | `_governance/law/readable/02_*.md` |
+| 03_逐輪施行細則 | `_governance/law/03_*.docx` | `_governance/law/readable/03_*.md` |
+| 04_補強版 | `_governance/law/04_*.md` | `_governance/law/readable/04_*.md` |
+| 01_白話總覽 | `_governance/law/01_*.docx` | `_governance/law/readable/01_*.md` |
 
 ---
 
