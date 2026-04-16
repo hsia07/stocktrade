@@ -1,12 +1,34 @@
-﻿{
+{
   "round_id": "R-006",
-  "commit": "d1074f3",
-  "status": "pass",
-  "stage": "governance_bootstrap",
+  "commit": "candidate",
+  "status": "candidate_ready",
+  "stage": "health_circuit_failover_implementation",
   "evidence": [
-    "pre-commit passed",
-    "pre-push passed",
-    "validate-round GitHub Action passed"
+    "health/monitor.py - HealthCheck and HealthMonitor implemented",
+    "circuit/breaker.py - CircuitBreaker with CLOSED/OPEN/HALF_OPEN states",
+    "failover/center.py - DegradationCenter with fallback strategies",
+    "tests/test_r6_health_circuit_failover.py - 12/12 tests passed",
+    "ROUND6_ACCEPTANCE.md - Updated with candidate status"
   ],
-  "notes": "Governance skeleton bootstrapped and aligned to manifests/current_round.yaml"
+  "test_results": {
+    "total": 12,
+    "passed": 12,
+    "failed": 0,
+    "details": [
+      "TestHealthCheck::test_health_check_structure - PASSED",
+      "TestHealthCheck::test_health_monitor_can_run_checks - PASSED",
+      "TestHealthCheck::test_health_monitor_aggregate_status - PASSED",
+      "TestCircuitBreaker::test_circuit_breaker_initial_state - PASSED",
+      "TestCircuitBreaker::test_circuit_breaker_opens_on_consecutive_losses - PASSED",
+      "TestCircuitBreaker::test_circuit_breaker_opens_on_daily_loss - PASSED",
+      "TestCircuitBreaker::test_circuit_breaker_get_status - PASSED",
+      "TestDegradationCenter::test_degradation_center_initial_state - PASSED",
+      "TestDegradationCenter::test_degradation_center_applies_pause_strategy - PASSED",
+      "TestDegradationCenter::test_degradation_center_can_restore - PASSED",
+      "TestIntegration::test_health_triggers_circuit_breaker - PASSED",
+      "TestIntegration::test_circuit_blocks_trigger_degradation - PASSED"
+    ]
+  },
+  "notes": "Round 6 health/circuit/failover modules implemented. All tests passing. Status: CANDIDATE_READY - awaiting manual review and confirmation.",
+  "candidate_id": "R6-HEALTH-CIRCUIT-FAILOVER-001"
 }
