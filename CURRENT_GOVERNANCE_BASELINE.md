@@ -40,9 +40,87 @@
 
 ---
 
+## 候選證據守門機制
+
+### 證據驗證工具
+- **腳本**: `scripts/validation/validate_evidence.ps1`
+- **用途**: 檢查任務是否產出完整證據包
+
+### Candidate Ready 前提條件
+
+1. **證據包完整**（缺一不可）：
+   - `task.txt` - 任務描述文件
+   - `aider.log` - Aider 執行日誌
+   - `candidate.diff` - 代碼變更 diff
+   - `report.json` - 執行報告
+   - `git status --short` - Git 狀態
+   - `git diff --name-only` - 變更檔案清單
+
+2. **安全開關狀態**：
+   - 標準模式：允許未提交更改（WARN）
+   - 嚴格模式（-StrictMode）：不允許未提交更改（FAIL）
+
+3. **測試證據**（若本輪有指定）：
+   - 測試檔案必須存在
+   - 測試必須通過
+
+### 使用方式
+```powershell
+# 標準驗證
+.\scripts\validation\validate_evidence.ps1 -CandidateId "TASK-001"
+
+# 嚴格模式
+.\scripts\validation\validate_evidence.ps1 -CandidateId "TASK-001" -StrictMode
+
+# 指定測試證據
+.\scripts\validation\validate_evidence.ps1 -CandidateId "TASK-001" -RequiredTests @("tests/test_feature.py")
+```
+
+### 驗證結果判定
+- **PASS**: 所有必需證據存在，可標記 candidate_ready
+- **FAIL**: 缺少必需證據，**不得**標記 candidate_ready
+
+---
+
+## 固定證據包回報模板
+
+每次任務必須回報：
+
+```
+### Evidence Package
+- candidate_id: {id}
+- candidate_branch: {branch}
+- commit_hash: {hash}
+
+### Required Files Check
+- [ ] task.txt
+- [ ] aider.log
+- [ ] candidate.diff
+- [ ] report.json
+
+### Git Status
+- modified_files: {count}
+- untracked_files: {count}
+- working_tree_clean: {yes/no}
+
+### Test Evidence
+- test_files: {list}
+- test_passed: {count}/{total}
+
+### Validation Result
+- status: {PASS/FAIL}
+- can_mark_candidate_ready: {true/false}
+- missing_evidence: {list}
+```
+
+---
+
 ## 備註
 
 本文件依《交易系統極限嚴格母表法典》建立，用於明確現行治理基準，避免舊版驗收狀態造成誤解。
+
+**更新記錄**:
+- 2026-04-16: 新增候選證據守門機制與驗證腳本
 
 ---
 
