@@ -38,15 +38,16 @@
   },
   "evidence_check": {
     "task_txt": true,
-    "aider_log": false,
-    "candidate_diff": false,
+    "aider_log": true,
+    "candidate_diff": true,
     "report_json": true
   },
   "validation": {
     "evidence_script": "scripts/validation/validate_evidence.ps1",
-    "status": "pending",
-    "executed": false,
-    "result": null
+    "status": "completed",
+    "executed": true,
+    "result": "PASS",
+    "timestamp": "2026-04-16T21:35:00"
   },
   "notes": "R-009 Round 9 command priority implementation. All 19 tests passing. Evidence files created."
 }
