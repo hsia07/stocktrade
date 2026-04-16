@@ -148,7 +148,10 @@ if ($state.ready_for_signoff_rounds -and $state.ready_for_signoff_rounds.Count -
         $selectableRoundsHtml += @"
 <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
   <input type="checkbox" id="merge_$round" style="cursor: pointer;">
-  <label for="merge_$round" style="cursor: pointer; color: #86efac;">$round｜$topic｜可簽字</label>
+  <div style="display: flex; flex-direction: column;">
+    <span style="color: #86efac;">$round｜$topic</span>
+    <span style="font-size: 0.9em; color: #86efac;">可簽字</span>
+  </div>
 </div>
 "@
     }
@@ -167,7 +170,10 @@ if ($state.non_selectable_rounds_with_reasons) {
         $nonSelectableRoundsHtml += @"
 <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px; opacity: 0.6;">
   <input type="checkbox" disabled style="cursor: not-allowed;">
-  <span>$round｜$topic｜尚不可 merge：$reason</span>
+  <div style="display: flex; flex-direction: column;">
+    <span>$round｜$topic</span>
+    <span style="font-size: 0.9em; opacity: 0.8;">尚不可 merge：$reason</span>
+  </div>
 </div>
 "@
     }

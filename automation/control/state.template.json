@@ -74,10 +74,24 @@
   "merge_selection_ui_spec": {
     "selectable_section_title": "可批次 Merge 輪次（已達 ready_for_signoff）",
     "non_selectable_section_title": "尚不可 Merge 輪次",
-    "selectable_format": "{round_id}｜{topic}｜可簽字",
-    "non_selectable_format": "{round_id}｜{topic}｜尚不可 merge：{reason}",
-    "disabled_behavior": "checkbox_disabled_and_grayed",
-    "selection_rule": "only_ready_for_signoff_rounds_can_be_selected"
+    "button_name_format": {
+      "body": "{round_id}｜{topic}",
+      "status_separate": true,
+      "note": "狀態不得混入名稱本體，必須另外顯示"
+    },
+    "selectable_display": {
+      "name_body": "{round_id}｜{topic}",
+      "status_line": "可簽字",
+      "html_structure": "<div style='display: flex; flex-direction: column;'><span>{name_body}</span><span style='font-size: 0.9em;'>{status_line}</span></div>"
+    },
+    "non_selectable_display": {
+      "name_body": "{round_id}｜{topic}",
+      "reason_line": "尚不可 merge：{reason}",
+      "html_structure": "<div style='display: flex; flex-direction: column;'><span>{name_body}</span><span style='font-size: 0.9em; opacity: 0.8;'>{reason_line}</span></div>",
+      "disabled_behavior": "checkbox_disabled_and_grayed"
+    },
+    "selection_rule": "only_ready_for_signoff_rounds_can_be_selected",
+    "format_validation": "name_and_status_separated"
   },
   
   "mode": "running",
