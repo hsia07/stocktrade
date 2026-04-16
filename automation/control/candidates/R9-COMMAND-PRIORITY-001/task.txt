@@ -1,0 +1,68 @@
+# Task Description for R9-COMMAND-PRIORITY-001
+# Round 9: Commands and Task Priority
+# Timestamp: 2026-04-16T18:49:00+0800
+
+## Candidate ID
+R9-COMMAND-PRIORITY-001
+
+## Round
+R-009: 指令與任務優先級 (Commands and Task Priority)
+
+## Objective
+避免背景任務把主交易任務拖死，確保關鍵任務獲得必要資源。
+
+## Subtasks
+
+### R9-T1: Priority Scheduler Module
+Create priority-based task scheduler with:
+- 4 priority levels: CRITICAL, HIGH, MEDIUM, LOW
+- Queue management with max size and preemption
+- Task submission with automatic priority sorting
+- Execution order: CRITICAL > HIGH > MEDIUM > LOW
+- Queue status reporting by priority level
+- Output: scheduler/priority/scheduler.py
+
+### R9-T2: Command Router Module
+Create command routing system with:
+- CommandRouter class for task type handlers
+- Handler registration for different task types
+- Route commands to appropriate handlers via scheduler
+- Support for: TRADE_EXECUTION, RISK_CHECK, MARKET_DATA, HEARTBEAT, etc.
+- Output: scheduler/priority/scheduler.py (integrated)
+
+### R9-T3: Priority Monitor Module
+Create monitoring system with:
+- PriorityMonitor for tracking execution metrics
+- Alert generation for delayed critical tasks
+- Queue saturation warnings
+- Task starvation detection
+- Metrics export for evidence
+- Output: scheduler/priority/monitor.py
+
+### R9-T4: Integration Tests
+Create comprehensive tests for:
+- PriorityScheduler: 7 tests (submission, sorting, preemption, execution)
+- CommandRouter: 4 tests (routing, handlers)
+- PriorityMonitor: 7 tests (metrics, alerts, starvation)
+- Integration: 2 tests (workflow, preemption scenarios)
+- Output: tests/test_r009_command_priority.py
+
+## Success Criteria
+- All 19 tests passing
+- Evidence package complete
+- No forbidden paths modified
+- validate_evidence.ps1 PASS
+
+## Execution Method
+Direct implementation
+No auto-commits, no dirty-commits
+
+## Generated Evidence
+- scheduler/priority/scheduler.py (new)
+- scheduler/priority/monitor.py (new)
+- tests/test_r009_command_priority.py (new)
+- automation/control/candidates/R9-COMMAND-PRIORITY-001/* (evidence)
+
+## Final Status
+Implementation complete, all tests passing (19/19)
+Awaiting validation and manual review
