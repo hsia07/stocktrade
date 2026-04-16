@@ -38,15 +38,28 @@
   },
   "evidence_check": {
     "task_txt": true,
-    "aider_log": false,
-    "candidate_diff": false,
+    "aider_log": true,
+    "candidate_diff": true,
     "report_json": true
   },
   "validation": {
     "evidence_script": "scripts/validation/validate_evidence.ps1",
-    "status": "pending",
-    "executed": false,
-    "result": null
+    "status": "completed",
+    "executed": true,
+    "result": "PASS",
+    "summary": {
+      "overall_status": "PASS",
+      "can_mark_candidate_ready": true,
+      "candidate_directory": "PASS",
+      "required_files": {
+        "task_txt": "PASS",
+        "aider_log": "PASS",
+        "candidate_diff": "PASS",
+        "report_json": "PASS"
+      },
+      "formal_status_code": "candidate_ready_eligible",
+      "formal_status_reason": "all_required_evidence_present"
+    }
   },
   "notes": "R-007 Round 7 silence protection implementation. All 11 tests passing. Evidence files created."
 }
