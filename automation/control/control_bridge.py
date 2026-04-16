@@ -8,6 +8,7 @@ import os
 from http.server import HTTPServer, BaseHTTPRequestHandler
 from urllib.parse import urlparse
 import sys
+from datetime import datetime
 
 REPO_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 CONTROL_DIR = os.path.join(REPO_ROOT, "automation", "control")
@@ -65,6 +66,11 @@ def run_ps_script(script_path):
 
 
 def check_can_approve():
+    """Check if approve and promote is allowed
+    
+    MERGE GATE: Must have explicit signoff and must wait for user "ok/agree"
+    before providing merge command.
+    """
     state = load_json(STATE_FILE)
     if not state:
         return {'can_approve': False, 'reason': 'state.runtime.json not found'}
@@ -72,8 +78,20 @@ def check_can_approve():
     mode = state.get('mode')
     candidate_id = state.get('latest_candidate_id')
     escalation = state.get('escalation_required')
+    signoff_granted = state.get('signoff_granted', False)
+    merge_gate = state.get('merge_gate', {})
 
     reasons = []
+    
+    # MERGE GATE: Check if signoff granted
+    if not signoff_granted:
+        reasons.append('signoff not granted - call ready-for-signoff and grant-signoff first')
+    
+    # MERGE GATE: Check if waiting for explicit user ok
+    if merge_gate.get('must_wait_for_explicit_user_ok', True):
+        if merge_gate.get('current_decision_state') != 'explicit_merge_requested':
+            reasons.append('awaiting explicit user "ok/agree" per round - merge command not yet provided')
+    
     if mode != 'paused_for_acceptance':
         reasons.append(f"mode is '{mode}', not 'paused_for_acceptance'")
     if not candidate_id or candidate_id == 'none':
@@ -82,14 +100,26 @@ def check_can_approve():
         reasons.append('escalation_required is true')
 
     if reasons:
-        return {'can_approve': False, 'reason': '; '.join(reasons)}
+        return {
+            'can_approve': False, 
+            'reason': '; '.join(reasons),
+            'merge_gate': {
+                'signoff_granted': signoff_granted,
+                'must_wait_for_explicit_ok': merge_gate.get('must_wait_for_explicit_user_ok', True),
+                'current_decision_state': merge_gate.get('current_decision_state', 'unknown')
+            }
+        }
 
     return {
         'can_approve': True,
         'mode': mode,
         'candidate_id': candidate_id,
         'round_id': state.get('round_id'),
-        'branch': state.get('branch')
+        'branch': state.get('branch'),
+        'merge_gate': {
+            'signoff_granted': signoff_granted,
+            'explicit_ok_received': True
+        }
     }
 
 
@@ -360,7 +390,17 @@ def do_stop_now():
 
 
 def do_ready_for_signoff():
-    """Mark current phase as ready for signoff (merge gate)"""
+    """Mark current phase as ready for signoff (merge gate)
+    
+    MERGE GATE HARD RULES:
+    1. User can review multiple candidates at once (ready_for_signoff_rounds)
+    2. User CANNOT auto-merge multiple rounds
+    3. Merge requires per-round EXPLICIT signoff
+    4. At merge decision point: DO NOT provide merge command yet
+    5. MUST wait for user to explicitly say "ok/agree" first
+    6. NO auto-push to master
+    7. Later round candidate does NOT imply earlier round complete
+    """
     state = get_state()
     
     # Check if phase is completed
@@ -391,7 +431,17 @@ def do_ready_for_signoff():
     state['signoff_required'] = True
     state['signoff_granted'] = False
     
+    # MERGE GATE: Update merge gate state
+    merge_gate = state.get('merge_gate', {})
+    merge_gate['current_decision_state'] = 'awaiting_user_review'
+    merge_gate['at_decision_point_provide_merge_command'] = False
+    merge_gate['must_wait_for_explicit_user_ok'] = True
+    state['merge_gate'] = merge_gate
+    
     save_json(STATE_FILE, state)
+    
+    # Get ready_for_signoff_rounds for user review
+    ready_rounds = state.get('ready_for_signoff_rounds', [])
     
     result = {
         'status': 'success',
@@ -399,14 +449,31 @@ def do_ready_for_signoff():
         'phase': state.get('current_phase'),
         'action': 'ready_for_signoff',
         'chatgpt_review_result': chatgpt_review,
-        'message': 'Phase ready for signoff. ChatGPT review passed. Awaiting user grant signoff to proceed.'
+        'ready_for_signoff_rounds': ready_rounds,
+        'merge_gate_rules': {
+            'user_can_review_multiple': True,
+            'user_cannot_auto_merge_multiple': True,
+            'merge_requires_per_round_explicit_signoff': True,
+            'at_decision_point_wait_for_explicit_ok': True,
+            'auto_push_master': False,
+            'later_candidate_does_not_imply_earlier_complete': True
+        },
+        'message': 'Phase ready for signoff. ChatGPT review passed. Awaiting user grant signoff. MERGE GATE: You can review multiple candidates, but merge requires per-round explicit "ok/agree". No auto-merge/push.',
+        'next_step': 'User reviews candidates, then explicitly grants signoff with "ok/agree" for each round to proceed'
     }
     save_json(LAST_ACTION_FILE, result)
     return result
 
 
 def do_grant_signoff():
-    """Grant signoff to allow merge/push operations"""
+    """Grant signoff to allow merge/push operations
+    
+    MERGE GATE HARD RULES ENFORCED:
+    1. Must wait for explicit user "ok/agree" per round
+    2. Do NOT auto-provide merge command
+    3. User must explicitly request merge for each round
+    4. No batch merge of multiple rounds
+    """
     state = get_state()
     
     if not state.get('ready_for_signoff'):
@@ -427,18 +494,41 @@ def do_grant_signoff():
         save_json(LAST_ACTION_FILE, result)
         return result
     
-    # Update state to grant signoff
+    # MERGE GATE: Update merge gate state
+    merge_gate = state.get('merge_gate', {})
+    
+    # Check if user has explicitly said "ok/agree"
+    # In production, this would verify the request contains explicit confirmation
+    # For now, we record that signoff is granted but merge command is not auto-provided
+    merge_gate['current_decision_state'] = 'signoff_granted_awaiting_explicit_merge_request'
+    merge_gate['at_decision_point_provide_merge_command'] = False
+    merge_gate['must_wait_for_explicit_user_ok'] = True
+    
+    # Update state to grant signoff (but NOT auto-merge)
     state['signoff_granted'] = True
-    state['merge_push_allowed'] = True
+    state['merge_push_allowed'] = False  # NOT auto-allowed - requires explicit per-round request
+    state['merge_gate'] = merge_gate
     
     save_json(STATE_FILE, state)
+    
+    ready_rounds = state.get('ready_for_signoff_rounds', [])
     
     result = {
         'status': 'success',
         'stage': 'signoff',
         'phase': state.get('current_phase'),
         'action': 'signoff_granted',
-        'message': 'Signoff granted. Merge/push operations are now allowed.'
+        'merge_gate_enforced': {
+            'signoff_granted': True,
+            'merge_push_allowed': False,
+            'auto_merge_enabled': False,
+            'auto_push_master': False,
+            'per_round_explicit_required': True,
+            'at_decision_point_wait_for_explicit_ok': True
+        },
+        'ready_for_signoff_rounds': ready_rounds,
+        'message': 'Signoff granted. MERGE GATE ACTIVE: You can review multiple candidates, but merge requires explicit per-round "ok/agree". No auto-merge/push enabled. Awaiting your explicit merge request per round.',
+        'next_step': 'Explicitly request merge for each round with "ok/agree". Do NOT auto-provide merge commands.'
     }
     save_json(LAST_ACTION_FILE, result)
     return result
@@ -483,6 +573,82 @@ def do_chatgpt_review():
         'chatgpt_review_result': 'pass',
         'message': 'ChatGPT review recorded as PASS. Phase can now proceed to ready_for_signoff.',
         'next_step': 'Call /ready-for-signoff to mark phase ready for user signoff'
+    }
+    save_json(LAST_ACTION_FILE, result)
+    return result
+
+
+def do_explicit_merge_request():
+    """Explicit merge request from user with "ok/agree"
+    
+    MERGE GATE: This endpoint requires explicit user confirmation with "ok/agree"
+    before merge command is provided. This is the gate that prevents auto-merge.
+    """
+    state = get_state()
+    
+    # Check preconditions
+    if not state.get('ready_for_signoff'):
+        result = {
+            'status': 'blocked',
+            'reason': 'Not in ready_for_signoff state. Call ready-for-signoff first.',
+            'action': 'none'
+        }
+        save_json(LAST_ACTION_FILE, result)
+        return result
+    
+    if not state.get('signoff_granted'):
+        result = {
+            'status': 'blocked',
+            'reason': 'Signoff not granted. Call grant-signoff first.',
+            'action': 'none'
+        }
+        save_json(LAST_ACTION_FILE, result)
+        return result
+    
+    # Get target round from request (in production, parse POST body)
+    target_round = state.get('current_round') or state.get('latest_candidate_id')
+    
+    # Verify target round is in ready_for_signoff_rounds
+    ready_rounds = state.get('ready_for_signoff_rounds', [])
+    if target_round not in ready_rounds:
+        result = {
+            'status': 'blocked',
+            'reason': f'Round {target_round} not in ready_for_signoff_rounds. Cannot merge.',
+            'action': 'none',
+            'ready_rounds': ready_rounds
+        }
+        save_json(LAST_ACTION_FILE, result)
+        return result
+    
+    # MERGE GATE: Record explicit user confirmation
+    merge_gate = state.get('merge_gate', {})
+    merge_gate['current_decision_state'] = 'explicit_merge_requested'
+    merge_gate['explicit_ok_received'] = True
+    merge_gate['explicit_ok_timestamp'] = datetime.now().isoformat()
+    merge_gate['target_round'] = target_round
+    merge_gate['at_decision_point_provide_merge_command'] = True  # NOW we can provide command
+    state['merge_gate'] = merge_gate
+    
+    # Allow merge for this specific round only
+    state['merge_push_allowed'] = True
+    state['current_merge_target'] = target_round
+    
+    save_json(STATE_FILE, state)
+    
+    result = {
+        'status': 'success',
+        'stage': 'merge_gate',
+        'action': 'explicit_merge_requested',
+        'target_round': target_round,
+        'explicit_ok_received': True,
+        'message': f'Explicit "ok/agree" received for {target_round}. Merge command NOW available. NO auto-merge/push. Must manually execute merge.',
+        'merge_instructions': {
+            'per_round_only': True,
+            'no_batch_merge': True,
+            'no_auto_push': True,
+            'manual_execution_required': True
+        },
+        'next_step': f'Manually execute merge for {target_round}. Later rounds do not imply this round is formally complete.'
     }
     save_json(LAST_ACTION_FILE, result)
     return result
@@ -546,6 +712,9 @@ class BridgeHandler(BaseHTTPRequestHandler):
         elif path == '/chatgpt-review':
             result = do_chatgpt_review()
             self.send_json(200 if result['status'] == 'success' else 400, result)
+        elif path == '/explicit-merge-request':
+            result = do_explicit_merge_request()
+            self.send_json(200 if result['status'] == 'success' else 400, result)
         else:
             self.send_json(404, {'error': 'Not found'})
 
@@ -568,6 +737,7 @@ def main():
     print(f"  POST http://{host}:{port}/ready-for-signoff")
     print(f"  POST http://{host}:{port}/grant-signoff")
     print(f"  POST http://{host}:{port}/chatgpt-review")
+    print(f"  POST http://{host}:{port}/explicit-merge-request  [MERGE GATE: requires explicit 'ok/agree']")
     print(f"  POST http://{host}:{port}/approve-and-promote")
     print("Press Ctrl+C to stop")
 

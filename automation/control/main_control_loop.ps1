@@ -65,13 +65,94 @@ function Initialize-State {
     # Ensure all required fields exist with defaults
     if (!$state.schema_version) { $state | Add-Member -NotePropertyName "schema_version" -NotePropertyValue "2.0" }
     if (!$state.run_state) { $state | Add-Member -NotePropertyName "run_state" -NotePropertyValue "stopped" }
+    if (!$state.current_mode) { $state | Add-Member -NotePropertyName "current_mode" -NotePropertyValue "idle" }
     if (!$state.current_phase) { $state | Add-Member -NotePropertyName "current_phase" -NotePropertyValue $Phase }
     if (!$state.current_round) { $state | Add-Member -NotePropertyName "current_round" -NotePropertyValue $StartRound }
     if (!$state.phase_completion_state) { $state | Add-Member -NotePropertyName "phase_completion_state" -NotePropertyValue "not_started" }
     if (!$state.rounds_in_current_run) { $state | Add-Member -NotePropertyName "rounds_in_current_run" -NotePropertyValue @() }
     if (!$state.completed_rounds) { $state | Add-Member -NotePropertyName "completed_rounds" -NotePropertyValue @() }
+    if (!$state.completed_candidate_rounds) { $state | Add-Member -NotePropertyName "completed_candidate_rounds" -NotePropertyValue @() }
     if (!$state.ready_for_signoff_rounds) { $state | Add-Member -NotePropertyName "ready_for_signoff_rounds" -NotePropertyValue @() }
     if (!$state.blocked_rounds) { $state | Add-Member -NotePropertyName "blocked_rounds" -NotePropertyValue @() }
+    if (!$state.authorized_scope) { $state | Add-Member -NotePropertyName "authorized_scope" -NotePropertyValue $null }
+    
+    # Ensure candidate checklist exists
+    if (!$state.candidate_checklist) {
+        $state | Add-Member -NotePropertyName "candidate_checklist" -NotePropertyValue (ConvertFrom-Json '{
+            "theme_completed": false,
+            "rerunnable_tests_passed": false,
+            "evidence_package_complete": false,
+            "validate_evidence_ps1_executed": false,
+            "validate_evidence_result": null,
+            "formal_status_code": null,
+            "candidate_branch_auditable": false,
+            "candidate_commit_auditable": false,
+            "no_fabricated_evidence": false,
+            "no_unauthorized_modifications": false,
+            "complete_return_to_chatgpt": false
+        }')
+    }
+    
+    # Ensure merge gate exists
+    if (!$state.merge_gate) {
+        $state | Add-Member -NotePropertyName "merge_gate" -NotePropertyValue (ConvertFrom-Json '{
+            "user_can_review_multiple_candidates": true,
+            "user_cannot_auto_merge_multiple": true,
+            "merge_requires_per_round_explicit_signoff": true,
+            "at_decision_point_provide_merge_command": false,
+            "must_wait_for_explicit_user_ok": true,
+            "explicit_ok_keywords": ["好", "同意", "ok", "approve", "yes"],
+            "auto_push_master": false,
+            "later_candidate_does_not_imply_earlier_complete": true,
+            "current_decision_state": "waiting_for_candidates"
+        }')
+    }
+    
+    # Ensure forbidden scope guardrails exist
+    if (!$state.forbidden_scope_guardrails) {
+        $state | Add-Member -NotePropertyName "forbidden_scope_guardrails" -NotePropertyValue (ConvertFrom-Json '{
+            "master_branch": { "blocked": true, "reason": "master_branch_protected" },
+            "server_v2_py": { "blocked": true, "requires_explicit_auth": true, "reason": "core_server_file" },
+            "broker_core": { "blocked": true, "reason": "broker_core_protected" },
+            "live_trading": { "blocked": true, "reason": "live_trading_protected" },
+            "risk_core": { "blocked": true, "reason": "risk_core_protected" },
+            "future_phase_content": { "blocked": true, "reason": "future_phase_protected" },
+            "unrelated_promotion_panel_governance": { "blocked": true, "reason": "scope_restricted" },
+            "action_on_violation": "stop_and_report_blocked"
+        }')
+    }
+    
+    # Ensure aider scheduling exists
+    if (!$state.aider_scheduling) {
+        $state | Add-Member -NotePropertyName "aider_scheduling" -NotePropertyValue (ConvertFrom-Json '{
+            "current_task_id": null,
+            "current_task_description": null,
+            "target_files": [],
+            "aider_args_used": {
+                "file": null,
+                "message": null,
+                "message_file": null,
+                "no_auto_commits": true,
+                "no_dirty_commits": true,
+                "yes_always": false
+            },
+            "last_execution": {
+                "task_id": null,
+                "exit_code": null,
+                "files_written": [],
+                "status": null,
+                "disposition": null
+            },
+            "rules": {
+                "one_shot_per_call": true,
+                "max_files_per_task": 2,
+                "minimal_context_required": true,
+                "no_full_repo_understanding": true,
+                "no_cross_round_mixed_tasks": true,
+                "disposition_on_text_only": ["no_change", "not_applied", "needs_manual_review"]
+            }
+        }')
+    }
     
     return $state
 }
@@ -244,6 +325,97 @@ next_recommended_action: $NextAction
     }
 }
 
+# Check if all 9 candidate criteria are met
+function Test-CandidateCriteria {
+    param([hashtable]$State, [string]$RoundId)
+    
+    Write-Host "[CRITERIA] Checking 9 candidate criteria for $RoundId..." -ForegroundColor Cyan
+    
+    $checklist = $State.candidate_checklist
+    $results = @{
+        all_passed = $true
+        failed_criteria = @()
+    }
+    
+    # 1. Unique theme completed
+    if (-not $checklist.theme_completed) {
+        $results.all_passed = $false
+        $results.failed_criteria += "theme_completed"
+        Write-Host "[CRITERIA-FAIL] Theme not completed" -ForegroundColor Red
+    }
+    
+    # 2. Re-runnable tests passed
+    if (-not $checklist.rerunnable_tests_passed) {
+        $results.all_passed = $false
+        $results.failed_criteria += "rerunnable_tests_passed"
+        Write-Host "[CRITERIA-FAIL] Tests not passed" -ForegroundColor Red
+    }
+    
+    # 3. Evidence package complete
+    if (-not $checklist.evidence_package_complete) {
+        $results.all_passed = $false
+        $results.failed_criteria += "evidence_package_complete"
+        Write-Host "[CRITERIA-FAIL] Evidence package incomplete" -ForegroundColor Red
+    }
+    
+    # 4. validate_evidence.ps1 executed
+    if (-not $checklist.validate_evidence_ps1_executed) {
+        $results.all_passed = $false
+        $results.failed_criteria += "validate_evidence_ps1_executed"
+        Write-Host "[CRITERIA-FAIL] validate_evidence.ps1 not executed" -ForegroundColor Red
+    }
+    
+    # 5. Formal status code = candidate_ready_awaiting_manual_review
+    if ($checklist.formal_status_code -ne "candidate_ready_awaiting_manual_review") {
+        $results.all_passed = $false
+        $results.failed_criteria += "formal_status_code != candidate_ready_awaiting_manual_review"
+        Write-Host "[CRITERIA-FAIL] formal_status_code = $($checklist.formal_status_code), expected: candidate_ready_awaiting_manual_review" -ForegroundColor Red
+    }
+    
+    # 6. Candidate branch auditable
+    if (-not $checklist.candidate_branch_auditable) {
+        $results.all_passed = $false
+        $results.failed_criteria += "candidate_branch_auditable"
+        Write-Host "[CRITERIA-FAIL] Candidate branch not auditable" -ForegroundColor Red
+    }
+    
+    # 7. Candidate commit auditable
+    if (-not $checklist.candidate_commit_auditable) {
+        $results.all_passed = $false
+        $results.failed_criteria += "candidate_commit_auditable"
+        Write-Host "[CRITERIA-FAIL] Candidate commit not auditable" -ForegroundColor Red
+    }
+    
+    # 8. No fabricated evidence
+    if (-not $checklist.no_fabricated_evidence) {
+        $results.all_passed = $false
+        $results.failed_criteria += "no_fabricated_evidence"
+        Write-Host "[CRITERIA-FAIL] Fabricated evidence detected" -ForegroundColor Red
+    }
+    
+    # 9. No unauthorized modifications
+    if (-not $checklist.no_unauthorized_modifications) {
+        $results.all_passed = $false
+        $results.failed_criteria += "no_unauthorized_modifications"
+        Write-Host "[CRITERIA-FAIL] Unauthorized modifications detected" -ForegroundColor Red
+    }
+    
+    # 10. Complete RETURN_TO_CHATGPT
+    if (-not $checklist.complete_return_to_chatgpt) {
+        $results.all_passed = $false
+        $results.failed_criteria += "complete_return_to_chatgpt"
+        Write-Host "[CRITERIA-FAIL] RETURN_TO_CHATGPT incomplete" -ForegroundColor Red
+    }
+    
+    if ($results.all_passed) {
+        Write-Host "[CRITERIA] All 10 criteria PASSED for $RoundId" -ForegroundColor Green
+    } else {
+        Write-Host "[CRITERIA] FAILED criteria: $($results.failed_criteria -join ', ')" -ForegroundColor Red
+    }
+    
+    return $results
+}
+
 # Check if phase is complete
 function Test-PhaseComplete {
     param([hashtable]$State)
@@ -318,20 +490,38 @@ function Invoke-Round {
     
     Write-Progress -Activity "Main Control Loop" -Status "Executing $RoundId" -PercentComplete -1
     
+    # CRITICAL: Reset candidate checklist for this round
+    $State.candidate_checklist.theme_completed = $false
+    $State.candidate_checklist.rerunnable_tests_passed = $false
+    $State.candidate_checklist.evidence_package_complete = $false
+    $State.candidate_checklist.validate_evidence_ps1_executed = $false
+    $State.candidate_checklist.validate_evidence_result = $null
+    $State.candidate_checklist.formal_status_code = "candidate_prep_in_progress"
+    $State.candidate_checklist.candidate_branch_auditable = $false
+    $State.candidate_checklist.candidate_commit_auditable = $false
+    $State.candidate_checklist.no_fabricated_evidence = $false
+    $State.candidate_checklist.no_unauthorized_modifications = $false
+    $State.candidate_checklist.complete_return_to_chatgpt = $false
+    
     # Update state
     $State.current_round = $RoundId
     $State.phase_completion_state = "in_progress"
     $State.run_state = "running"
     $State.last_action = "round_start"
+    $State.current_candidate_id = $null
     Save-State $State
+    
+    Write-Host "[LOOP] ===== STARTING $RoundId (Candidate Pre-Fabrication Mode) =====" -ForegroundColor Cyan
+    Write-Host "[LOOP] Mode: multi_round_candidate_prep" -ForegroundColor Yellow
+    Write-Host "[LOOP] Legal Effect: Candidate != Formal Pass | NO auto-merge/push" -ForegroundColor Yellow
     
     # Generate prompt artifact
     $promptArtifact = Generate-PromptArtifact `
         -RoundId $RoundId `
-        -TaskType "candidate_execution" `
-        -TaskDescription "Execute $RoundId with full formal governance compliance" `
-        -AuthorizedScope "Single round execution within current phase only" `
-        -PreviousContext "Previous round completed successfully. State updated."
+        -TaskType "candidate_execution_multi_round_prep" `
+        -TaskDescription "Execute $RoundId to create independent candidate. Must reach candidate_ready_awaiting_manual_review before proceeding to next round. NO auto-merge/push. Candidate != formal pass." `
+        -AuthorizedScope "Single round execution within current phase only. Stop if any round not candidate_ready." `
+        -PreviousContext "Multi-round candidate prep mode active. Each round independent candidate. Previous rounds: $($State.completed_candidate_rounds -join ', ')"
     
     $State.latest_prompt_artifact = $promptArtifact.path
     Save-State $State
@@ -351,34 +541,76 @@ function Invoke-Round {
         Start-Sleep -Seconds 2
         
         # For demonstration, generate a mock return artifact
+        # IN PRODUCTION: This would be generated by actual OpenCode execution
         $returnArtifact = Generate-ReturnArtifact `
             -RoundId $RoundId `
             -Status "candidate_ready" `
             -FormalStatusCode "candidate_ready_awaiting_manual_review" `
-            -Summary "Round execution completed. Candidate ready for review." `
+            -Summary "Round execution completed. Candidate ready for review. NOT formal pass. Merge requires explicit signoff." `
             -FilesModified @() `
             -ReplyId $promptArtifact.reply_id `
             -CommitHash "NONE" `
-            -NextAction "Review candidate and approve/promote or request corrections"
+            -NextAction "Verify candidate checklist complete, then proceed to next round or stop for review"
         
         $State.latest_return_artifact = $returnArtifact.archive_path
+        $State.candidate_checklist.complete_return_to_chatgpt = $true
         Save-State $State
         
         Write-Host "[LOOP] Return artifact captured" -ForegroundColor Green
     }
+    
+    # CRITICAL: Check all 9 candidate criteria before proceeding
+    Write-Host "[LOOP] Validating 9 candidate criteria for $RoundId..." -ForegroundColor Cyan
+    $criteriaResults = Test-CandidateCriteria -State $State -RoundId $RoundId
+    
+    if (-not $criteriaResults.all_passed) {
+        Write-Host "[LOOP] BLOCKED: $RoundId failed candidate criteria" -ForegroundColor Red
+        Write-Host "[LOOP] Failed: $($criteriaResults.failed_criteria -join ', ')" -ForegroundColor Red
+        
+        $State.run_state = "stopped"
+        $State.stop_reason = "candidate_criteria_not_met"
+        $State.last_action = "round_blocked_criteria_not_met"
+        $State.blocked_rounds += @($RoundId)
+        Save-State $State
+        
+        $RunReport.blockers += @("Round $RoundId failed candidate criteria: $($criteriaResults.failed_criteria -join ', ')")
+        $RunReport.stop_reason = "candidate_criteria_not_met"
+        
+        return @{
+            success = $false
+            prompt_artifact = $promptArtifact
+            status = "blocked"
+            reason = "candidate_criteria_not_met"
+            failed_criteria = $criteriaResults.failed_criteria
+        }
+    }
+    
+    # Candidate criteria met - mark as ready
+    Write-Host "[LOOP] $RoundId candidate criteria PASSED" -ForegroundColor Green
+    $State.candidate_checklist.formal_status_code = "candidate_ready_awaiting_manual_review"
+    $State.current_candidate_id = $RoundId
     
     # Add to rounds in current run
     if ($State.rounds_in_current_run -notcontains $RoundId) {
         $State.rounds_in_current_run += $RoundId
     }
     
+    # Track completed candidate rounds (NOT formal pass rounds)
+    if ($State.completed_candidate_rounds -notcontains $RoundId) {
+        $State.completed_candidate_rounds += @($RoundId)
+    }
+    
     # Update run report
     $RunReport.rounds_executed += @($RoundId)
+    
+    Write-Host "[LOOP] $RoundId candidate ready. Awaiting manual review." -ForegroundColor Green
+    Write-Host "[LOOP] ===== COMPLETED $RoundId (Candidate Only, NOT Formal Pass) =====" -ForegroundColor Cyan
     
     return @{
         success = $true
         prompt_artifact = $promptArtifact
-        status = "candidate_ready"
+        status = "candidate_ready_awaiting_manual_review"
+        is_candidate_not_formal_pass = $true
     }
 }
 

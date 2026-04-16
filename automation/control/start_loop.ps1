@@ -76,19 +76,42 @@ foreach ($flag in @($pauseFlag, $stopFlag, $acceptanceFlag)) {
     }
 }
 
-# Update state
+# Calculate authorized scope based on phase
+$phaseStartRound = $state.phase_definition.($Phase).start_round
+$phaseEndRound = $state.phase_definition.($Phase).end_round
+$authorizedScope = "$phaseStartRound ~ $phaseEndRound"
+
+# Update state with multi-round candidate prep mode
 $state.run_state = "running"
-$state.last_action = "loop_start"
+$state.current_mode = "multi_round_candidate_prep"
+$state.authorized_scope = $authorizedScope
+$state.last_action = "loop_start_multi_round_candidate_prep"
 $state.last_error = $null
 $state.stop_reason = $null
 $state.current_phase = $Phase
 $state.current_round = $StartRound
-$state.desired_action = "auto_execute_rounds"
+$state.desired_action = "auto_execute_rounds_candidate_only"
+$state.merge_gate.current_decision_state = "candidate_prep_in_progress"
+$state.candidate_checklist.formal_status_code = "candidate_prep_in_progress"
 $state.updated_at = (Get-Date).ToString("yyyy-MM-ddTHH:mm:ss")
+
+# Reset candidate checklist for new run
+$state.candidate_checklist.theme_completed = $false
+$state.candidate_checklist.rerunnable_tests_passed = $false
+$state.candidate_checklist.evidence_package_complete = $false
+$state.candidate_checklist.validate_evidence_ps1_executed = $false
+$state.candidate_checklist.validate_evidence_result = $null
+$state.candidate_checklist.candidate_branch_auditable = $false
+$state.candidate_checklist.candidate_commit_auditable = $false
+$state.candidate_checklist.no_fabricated_evidence = $false
+$state.candidate_checklist.no_unauthorized_modifications = $false
+$state.candidate_checklist.complete_return_to_chatgpt = $false
 
 $state | ConvertTo-Json -Depth 10 | Set-Content $statePath -Encoding UTF8
 
-Write-Host "[START] State updated: run_state = running" -ForegroundColor Green
+Write-Host "[START] State updated: run_state = running, mode = multi_round_candidate_prep" -ForegroundColor Green
+Write-Host "[START] Authorized scope: $authorizedScope" -ForegroundColor Gray
+Write-Host "[START] Legal effect: Candidate prep only, NO auto-merge/push" -ForegroundColor Yellow
 
 # Verify main control loop script exists
 if (!(Test-Path $loopScript)) {

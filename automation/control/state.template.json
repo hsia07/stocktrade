@@ -29,9 +29,26 @@
   
   "desired_action": null,
   
+  "current_mode": "idle",
+  "authorized_scope": null,
+  "completed_candidate_rounds": [],
+  
   "mode_definition": {
     "description": "Start / Resume button = Multi-Round Candidate Pre-Fabrication Mode",
     "behavior": "When user clicks Start/Resume, it authorizes automatic sequential processing of authorized rounds within current phase, creating independent candidates for each round",
+    "legal_effect": {
+      "start_button_means": "multi_round_candidate_prep_mode",
+      "candidate_is_not_formal_pass": true,
+      "no_auto_merge": true,
+      "no_auto_push_master": true,
+      "no_auto_continue_to_next_phase": true,
+      "stop_if_any_round_not_candidate_ready": true,
+      "merge_requires_explicit_user_signoff_per_round": true,
+      "user_can_review_multiple_candidates_at_once": true,
+      "user_cannot_auto_merge_multiple": true,
+      "later_round_candidate_does_not_imply_earlier_round_complete": true,
+      "at_merge_decision_point_wait_for_explicit_ok": true
+    },
     "restrictions": [
       "candidate != formal_pass",
       "no_auto_merge",
@@ -40,6 +57,72 @@
       "stop_if_any_round_not_candidate_ready",
       "merge_requires_explicit_user_signoff_per_round"
     ]
+  },
+  
+  "candidate_checklist": {
+    "theme_completed": false,
+    "rerunnable_tests_passed": false,
+    "evidence_package_complete": false,
+    "validate_evidence_ps1_executed": false,
+    "validate_evidence_result": null,
+    "formal_status_code": null,
+    "candidate_branch_auditable": false,
+    "candidate_commit_auditable": false,
+    "no_fabricated_evidence": false,
+    "no_unauthorized_modifications": false,
+    "complete_return_to_chatgpt": false
+  },
+  
+  "aider_scheduling": {
+    "current_task_id": null,
+    "current_task_description": null,
+    "target_files": [],
+    "aider_args_used": {
+      "file": null,
+      "message": null,
+      "message_file": null,
+      "no_auto_commits": true,
+      "no_dirty_commits": true,
+      "yes_always": false
+    },
+    "last_execution": {
+      "task_id": null,
+      "exit_code": null,
+      "files_written": [],
+      "status": null,
+      "disposition": null
+    },
+    "rules": {
+      "one_shot_per_call": true,
+      "max_files_per_task": 2,
+      "minimal_context_required": true,
+      "no_full_repo_understanding": true,
+      "no_cross_round_mixed_tasks": true,
+      "disposition_on_text_only": ["no_change", "not_applied", "needs_manual_review"]
+    }
+  },
+  
+  "forbidden_scope_guardrails": {
+    "master_branch": { "blocked": true, "reason": "master_branch_protected" },
+    "server_v2_py": { "blocked": true, "requires_explicit_auth": true, "reason": "core_server_file" },
+    "broker_core": { "blocked": true, "reason": "broker_core_protected" },
+    "live_trading": { "blocked": true, "reason": "live_trading_protected" },
+    "risk_core": { "blocked": true, "reason": "risk_core_protected" },
+    "future_phase_content": { "blocked": true, "reason": "future_phase_protected" },
+    "unrelated_promotion_panel_governance": { "blocked": true, "reason": "scope_restricted" },
+    "action_on_violation": "stop_and_report_blocked"
+  },
+  
+  "merge_gate": {
+    "user_can_review_multiple_candidates": true,
+    "user_cannot_auto_merge_multiple": true,
+    "merge_requires_per_round_explicit_signoff": true,
+    "at_decision_point_provide_merge_command": false,
+    "must_wait_for_explicit_user_ok": true,
+    "explicit_ok_keywords": ["好", "同意", "ok", "approve", "yes"],
+    "auto_push_master": false,
+    "later_candidate_does_not_imply_earlier_complete": true,
+    "current_decision_state": "waiting_for_candidates"
   },
   
   "last_commit": null,
