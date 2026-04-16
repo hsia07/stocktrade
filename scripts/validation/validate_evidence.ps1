@@ -1,17 +1,17 @@
-﻿# validate_evidence.ps1
-# ?霅?摰?璈 - 霅?撽?蝖祇?瑼?
+# validate_evidence.ps1
+# Candidate Evidence Gate - Hard Gate for candidate_ready
 # 
-# ?? 蝖祈????芸銵撽??單嚗?敺?閮?candidate_ready
-# ?? 蝖祈????祇?霅仃??嚗?賢???technical_unfinished / blocked
-# ?? 蝖祈????芣??祇?霅?敺??? candidate_ready
+# HARD RULE: Must execute this validation script before marking candidate_ready
+# HARD RULE: On validation failure, only report technical_unfinished / blocked
+# HARD RULE: Only after passing this validation can you report candidate_ready
 #
-# 雿輻?寞?嚗?
+# Usage:
 #   .\scripts\validation\validate_evidence.ps1 -CandidateId "TASK-001"
 #
-# ??潘?
-#   - overall_status: "PASS" ??"FAIL"
-#   - can_mark_candidate_ready: true ??false
-#   - ??FAIL嚗?????technical_unfinished ??blocked
+# Returns:
+#   - overall_status: "PASS" or "FAIL"
+#   - can_mark_candidate_ready: true or false
+#   - If FAIL, must report technical_unfinished or blocked
 
 param(
     [Parameter(Mandatory=$true)]
@@ -29,7 +29,7 @@ param(
 
 $ErrorActionPreference = 'Stop'
 
-# 憿摰儔
+# Color definitions
 $Red = "Red"
 $Green = "Green"
 $Yellow = "Yellow"
@@ -44,7 +44,7 @@ function Write-CheckResult {
     }
 }
 
-# ??????
+# Initialize results
 $results = @{
     candidate_id = $CandidateId
     timestamp = Get-Date -Format "yyyy-MM-ddTHH:mm:ss"
@@ -54,12 +54,14 @@ $results = @{
     missing_evidence = @()
 }
 
-Write-Host "`n================================================================" -ForegroundColor Cyan
+Write-Host ""
+Write-Host "================================================================" -ForegroundColor Cyan
 Write-Host "  Candidate Evidence Validation" -ForegroundColor Cyan
 Write-Host "  Candidate ID: $CandidateId" -ForegroundColor Cyan
-Write-Host "================================================================`n" -ForegroundColor Cyan
+Write-Host "================================================================" -ForegroundColor Cyan
+Write-Host ""
 
-# 1. 瑼Ｘ candidate ?桅??臬摮
+# 1. Check if candidate directory exists
 $candidatePath = Join-Path $CandidateDir $CandidateId
 $dirExists = Test-Path $candidatePath -PathType Container
 $results.checks += @{
@@ -73,16 +75,17 @@ Write-CheckResult -Item "Candidate Directory" -Status $(if ($dirExists) { "PASS"
 if (-not $dirExists) {
     $results.overall_status = "FAIL"
     $results.missing_evidence += "candidate_directory"
-    Write-Host "`n霅?撽?憭望?: Candidate ?桅?銝??? -ForegroundColor $Red
+    Write-Host ""
+    Write-Host "Validation Failed: Candidate directory does not exist" -ForegroundColor $Red
     return $results | ConvertTo-Json -Depth 10
 }
 
-# 2. 瑼Ｘ敹?霅??辣
+# 2. Check required evidence files
 $requiredFiles = @(
-    @{ name = "task.txt"; description = "隞餃??膩?辣"; required = $true },
-    @{ name = "aider.log"; description = "Aider ?瑁??亥?"; required = $true },
-    @{ name = "candidate.diff"; description = "隞?Ⅳ霈 diff"; required = $true },
-    @{ name = "report.json"; description = "?瑁??勗?"; required = $true }
+    @{ name = "task.txt"; description = "Task description file"; required = $true },
+    @{ name = "aider.log"; description = "Aider execution log"; required = $true },
+    @{ name = "candidate.diff"; description = "Code changes diff"; required = $true },
+    @{ name = "report.json"; description = "Execution report"; required = $true }
 )
 
 foreach ($file in $requiredFiles) {
@@ -104,7 +107,7 @@ foreach ($file in $requiredFiles) {
     Write-CheckResult -Item $file.name -Status $(if ($exists) { "PASS" } else { if ($file.required) { "FAIL" } else { "WARN" } }) -Details $file.description
 }
 
-# 3. 瑼Ｘ git ???
+# 3. Check git status
 Set-Location $PSScriptRoot\..\..
 
 try {
@@ -118,16 +121,16 @@ try {
         output = $gitStatus
     }
     
-    Write-CheckResult -Item "Git Status" -Status $(if (-not $hasUncommitted) { "PASS" } else { "WARN" }) -Details $(if ($hasUncommitted) { "??漱?湔" } else { "撌乩??銋暹楊" })
+    Write-CheckResult -Item "Git Status" -Status $(if (-not $hasUncommitted) { "PASS" } else { "WARN" }) -Details $(if ($hasUncommitted) { "Uncommitted changes present" } else { "Working tree clean" })
 } catch {
     $results.checks += @{
         item = "git_status"
         error = $_.Exception.Message
     }
-    Write-CheckResult -Item "Git Status" -Status "FAIL" -Details "?⊥??? git ???
+    Write-CheckResult -Item "Git Status" -Status "FAIL" -Details "Cannot get git status"
 }
 
-# 4. 瑼Ｘ git diff
+# 4. Check git diff
 $modifiedFiles = @()
 try {
     $diffFiles = cmd /c "git diff --name-only HEAD 2>&1"
@@ -148,13 +151,14 @@ try {
         item = "git_diff"
         error = $_.Exception.Message
     }
-    Write-CheckResult -Item "Git Diff" -Status "WARN" -Details "?⊥??? diff"
+    Write-CheckResult -Item "Git Diff" -Status "WARN" -Details "Cannot get diff"
 }
 
-# 5. 瑼Ｘ?祈憚??皜祈岫霅?
+# 5. Check test evidence if specified
 $testEvidenceFound = $false
 if ($RequiredTests.Count -gt 0) {
-    Write-Host "`n--- 皜祈岫霅?瑼Ｘ ---" -ForegroundColor Yellow
+    Write-Host ""
+    Write-Host "--- Test Evidence Check ---" -ForegroundColor Yellow
     foreach ($testPath in $RequiredTests) {
         $fullPath = Join-Path $PSScriptRoot "..\.." $testPath
         $exists = Test-Path $fullPath -PathType Leaf
@@ -174,10 +178,11 @@ if ($RequiredTests.Count -gt 0) {
     }
 } else {
     $testEvidenceFound = $true
-    Write-Host "`n--- ?⊥?摰葫閰西???瘙?---" -ForegroundColor Yellow
+    Write-Host ""
+    Write-Host "--- No specific test evidence required ---" -ForegroundColor Yellow
 }
 
-# 6. 瑼Ｘ report.json ?批捆
+# 6. Check report.json content
 $reportPath = Join-Path $candidatePath "report.json"
 if (Test-Path $reportPath) {
     try {
@@ -202,14 +207,13 @@ if (Test-Path $reportPath) {
             error = $_.Exception.Message
             valid = $false
         }
-        Write-CheckResult -Item "Report.json Content" -Status "FAIL" -Details "JSON 閫???航炊"
+        Write-CheckResult -Item "Report.json Content" -Status "FAIL" -Details "JSON parse error"
     }
 }
 
-# 7. 瑼Ｘ摰??
+# 7. Check safety switch
 $hasSafetyIssues = $false
 if ($StrictMode) {
-    # ?典?潭芋撘?嚗遙雿?漱?湔?質??箏??典?憿?
     if ($hasUncommitted) {
         $hasSafetyIssues = $true
         $results.checks += @{
@@ -217,11 +221,11 @@ if ($StrictMode) {
             description = "Strict mode: uncommitted changes detected"
             safe = $false
         }
-        Write-CheckResult -Item "Safety Switch" -Status "FAIL" -Details "?湔璅∪?銝??迂?芣?鈭斗??
+        Write-CheckResult -Item "Safety Switch" -Status "FAIL" -Details "Strict mode does not allow uncommitted changes"
     }
 }
 
-# 閮??蝯???
+# Calculate final result
 $requiredChecks = $results.checks | Where-Object { $_.required -eq $true }
 $allRequiredPresent = ($requiredChecks | Where-Object { $_.exists -eq $false }).Count -eq 0
 $noCriticalFailures = ($results.checks | Where-Object { 
@@ -229,13 +233,13 @@ $noCriticalFailures = ($results.checks | Where-Object {
     ($_.item -eq "report_json_content" -and $_.valid -eq $false)
 }).Count -eq 0
 
-# candidate_ready 璇辣?文?
+# candidate_ready condition check
 $canBeCandidateReady = $allRequiredPresent -and $noCriticalFailures -and (-not $hasSafetyIssues)
 
 $results.can_mark_candidate_ready = $canBeCandidateReady
 $results.overall_status = if ($canBeCandidateReady) { "PASS" } else { "FAIL" }
 
-# ?文?甇????Ⅳ
+# Determine formal status code
 if (-not $canBeCandidateReady) {
     if (-not (Test-Path $candidatePath)) {
         $results.formal_status_code = "technical_unfinished"
@@ -255,33 +259,37 @@ if (-not $canBeCandidateReady) {
     $results.formal_status_reason = "all_required_evidence_present"
 }
 
-# 頛詨蝯???
-Write-Host "`n???????????????????????????????????????????????????????????????? -ForegroundColor Cyan
-Write-Host "  撽?蝯???" -ForegroundColor Cyan
-Write-Host "???????????????????????????????????????????????????????????????? -ForegroundColor Cyan
+# Output result summary
+Write-Host ""
+Write-Host "================================================================" -ForegroundColor Cyan
+Write-Host "  Validation Result Summary" -ForegroundColor Cyan
+Write-Host "================================================================" -ForegroundColor Cyan
 Write-Host "Overall Status: $($results.overall_status)" -ForegroundColor $(if ($results.overall_status -eq "PASS") { $Green } else { $Red })
 Write-Host "Can Mark Candidate Ready: $($results.can_mark_candidate_ready)" -ForegroundColor $(if ($results.can_mark_candidate_ready) { $Green } else { $Red })
 
-# 憿舐內甇????Ⅳ
+# Display formal status code
 if ($results.formal_status_code) {
     Write-Host "Formal Status Code: $($results.formal_status_code)" -ForegroundColor $(if ($results.overall_status -eq "PASS") { $Green } else { $Red })
     Write-Host "Reason: $($results.formal_status_reason)" -ForegroundColor Gray
     
     if (-not $canBeCandidateReady) {
-        Write-Host "`n??  撽?憭望?嚗?敺???completed ??candidate_ready" -ForegroundColor $Red
-        Write-Host "??  敹??: $($results.formal_status_code)" -ForegroundColor $Red
+        Write-Host ""
+        Write-Host "[WARN] Validation failed! Cannot report completed or candidate_ready" -ForegroundColor $Red
+        Write-Host "[WARN] Must report: $($results.formal_status_code)" -ForegroundColor $Red
     }
 }
 
 if ($results.missing_evidence.Count -gt 0) {
-    Write-Host "`nMissing Evidence:" -ForegroundColor $Red
+    Write-Host ""
+    Write-Host "Missing Evidence:" -ForegroundColor $Red
     foreach ($item in $results.missing_evidence) {
         Write-Host "  - $item" -ForegroundColor $Red
     }
 }
 
-Write-Host "`n???????????????????????????????????????????????????????????????n" -ForegroundColor Cyan
+Write-Host ""
+Write-Host "================================================================" -ForegroundColor Cyan
+Write-Host ""
 
-# 頛詨 JSON 蝯?
+# Output JSON result
 return $results | ConvertTo-Json -Depth 10
-
