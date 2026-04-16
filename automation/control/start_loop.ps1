@@ -42,7 +42,8 @@ if (!(Test-Path $statePath)) {
     throw "State file not found: $statePath"
 }
 
-$state = Get-Content $statePath -Raw | ConvertFrom-Json
+$stateJson = [System.IO.File]::ReadAllText($statePath, [System.Text.Encoding]::UTF8)
+$state = $stateJson | ConvertFrom-Json
 
 # Check for phase completion stop
 if ($state.stop_reason -eq "phase_completed") {
