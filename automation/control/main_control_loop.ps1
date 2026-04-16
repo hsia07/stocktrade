@@ -331,7 +331,7 @@ next_recommended_action: $NextAction
 
 # Check if all 10 candidate criteria are met
 function Test-CandidateCriteria {
-    param([hashtable]$State, [string]$RoundId)
+    param([object]$State, [string]$RoundId)
     
     Write-Host "[CRITERIA] Checking 10 candidate criteria for $RoundId..." -ForegroundColor Cyan
     
@@ -424,7 +424,7 @@ function Test-CandidateCriteria {
 
 # Check if phase is complete
 function Test-PhaseComplete {
-    param([hashtable]$State)
+    param([object]$State)
     
     # Phase is complete if:
     # 1. Current round exceeds phase boundary
@@ -490,8 +490,8 @@ function Test-PhaseComplete {
 function Invoke-Round {
     param(
         [string]$RoundId,
-        [hashtable]$State,
-        [hashtable]$RunReport
+        [object]$State,
+        [object]$RunReport
     )
     
     Write-Progress -Activity "Main Control Loop" -Status "Executing $RoundId" -PercentComplete -1
@@ -670,7 +670,7 @@ function Invoke-Round {
 
 # Main loop
 function Start-MainControlLoop {
-    param([hashtable]$State)
+    param([object]$State)
     
     $runId = New-RunId
     $startTime = Get-Date
