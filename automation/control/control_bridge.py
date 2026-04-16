@@ -49,7 +49,8 @@ def run_ps_script(script_path):
         result = subprocess.run(
             ['powershell.exe', '-ExecutionPolicy', 'Bypass', '-NoProfile', '-File', script_path],
             capture_output=True,
-            text=True,
+            encoding='utf-8',
+            errors='replace',
             timeout=60,
             cwd=REPO_ROOT
         )
