@@ -29,6 +29,19 @@
   
   "desired_action": null,
   
+  "mode_definition": {
+    "description": "Start / Resume button = Multi-Round Candidate Pre-Fabrication Mode",
+    "behavior": "When user clicks Start/Resume, it authorizes automatic sequential processing of authorized rounds within current phase, creating independent candidates for each round",
+    "restrictions": [
+      "candidate != formal_pass",
+      "no_auto_merge",
+      "no_auto_push_master",
+      "each_round_independent_candidate",
+      "stop_if_any_round_not_candidate_ready",
+      "merge_requires_explicit_user_signoff_per_round"
+    ]
+  },
+  
   "last_commit": null,
   "last_error": null,
   "last_reply_id": null,

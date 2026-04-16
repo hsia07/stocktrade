@@ -28,6 +28,12 @@ if (!(Test-Path $logDir)) {
 
 Write-Host "[START] Initializing control loop..." -ForegroundColor Cyan
 Write-Host "[START] Mode: $(if ($Resume) { 'RESUME' } else { 'START' })" -ForegroundColor Cyan
+Write-Host "[START] Mode Definition: Multi-Round Candidate Pre-Fabrication Mode" -ForegroundColor Yellow
+Write-Host "[START]   - Will auto-process rounds within authorized phase" -ForegroundColor Gray
+Write-Host "[START]   - Each round becomes independent candidate (not formal pass)" -ForegroundColor Gray
+Write-Host "[START]   - Will NOT auto-merge or auto-push" -ForegroundColor Gray
+Write-Host "[START]   - Will stop if any round fails to reach candidate_ready" -ForegroundColor Gray
+Write-Host "[START]   - Merge requires explicit user signoff per round" -ForegroundColor Gray
 Write-Host "[START] Phase: $Phase" -ForegroundColor Cyan
 Write-Host "[START] Start Round: $StartRound" -ForegroundColor Cyan
 
