@@ -232,4 +232,61 @@ OpenCode 在回報 candidate_ready / merge_approved 前，必須自檢：
 
 ---
 
+## Governance Drift 檢查判定時
+
+### Promote / Merge 前必須執行
+
+**檢查命令**：
+```bash
+git diff --name-only work/r006-governance...<target_branch>
+```
+
+### 必須比較的治理檔集合
+
+| 檔案/目錄 | 用途 |
+|-----------|------|
+| CURRENT_GOVERNANCE_BASELINE.md | 現行治理基準 |
+| _governance/law/00_入口與使用規則/** | 法典入口與使用規則 |
+| _governance/law/04_交易系統法典補強版_20260416_修正版.md | 補強治理規則 |
+| _governance/law/readable/** | OpenCode 可讀鏡像 |
+
+### 判定邏輯
+
+- 若 diff 輸出命中上表任何治理檔 → **governance_drift = true**
+- 若 governance_drift = true → **必須 blocked**，不得繼續 promote / merge
+
+### 回報內容
+
+```yaml
+target_branch: <branch_name>
+base_work_branch: work/r006-governance
+governance_drift_detected: true
+drifted_files:
+  - <governance_file_1>
+  - <governance_file_2>
+decision: BLOCK
+suggested_resolution:
+  - rebase onto latest work branch
+  - replay branch from latest work
+  - split governance changes into separate task
+```
+
+### 新單輪 Branch 開出流程
+
+```bash
+# 1. 確認 work branch 最新
+git fetch origin work/r006-governance
+
+# 2. 從最新 work branch 開出
+git checkout -b <new_round_branch> work/r006-governance
+
+# 3. 實作單輪功能（不得碰治理檔）
+# ...
+
+# 4. Push candidate
+git push origin <new_round_branch>
+```
+
+---
+
 *最後更新：2026-04-16*

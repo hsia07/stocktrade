@@ -149,4 +149,46 @@
 
 ---
 
+## Governance Drift 檢查與單輪分支管理
+
+### 單輪任務若不是治理修法任務
+
+**原則上不得碰治理檔**：
+- ❌ CURRENT_GOVERNANCE_BASELINE.md
+- ❌ _governance/law/00_入口與使用規則/**
+- ❌ _governance/law/04_交易系統法典補強版_20260416_修正版.md
+- ❌ _governance/law/readable/**
+
+### Promote / Merge 前必做 Governance Drift Check
+
+**檢查命令**：
+```bash
+git diff --name-only <work_branch>...<target_branch>
+```
+
+**若輸出治理檔，不得繼續**，必須回報：
+- target branch
+- base work branch
+- drifted governance files
+- resolution suggestion
+
+### 建議解決方案
+
+| 方案 | 適用情境 |
+|------|----------|
+| **rebase onto latest work** | branch 基底落後，但功能內容完整 |
+| **replay branch** | 從最新 work branch 重新開出 branch |
+| **split governance changes** | 治理檔變更應拆分為獨立治理任務 |
+
+### 新單輪 Branch 開出規則
+
+**必須從最新 work branch 開出**：
+```bash
+git checkout -b <new_round_branch> work/r006-governance
+```
+
+**禁止從落後基底開出**，避免帶入舊版治理文件。
+
+---
+
 *最後更新：2026-04-16*

@@ -75,6 +75,17 @@
 6. **失敗回報**：失敗時必須完整回報 executed_command、stdout、stderr、failure_point
 7. **禁止猜測**：不得自行進行多輪猜測式 shell 嘗試
 
+### Governance Drift 治理與單輪分支管理
+
+1. **單輪分支禁改治理檔**：單輪 candidate / review branch 原則上不得修改治理檔（baseline、00-入口規則、04-補強版、readable 鏡像）
+2. **治理檔修改屬治理任務**：非單輪功能任務，單輪實作不得夾帶治理檔變更
+3. **單輪新 branch 開出基準**：必須從最新 work branch 開出，不得從落後基底開出
+4. **單輪 approve / promote / merge 前必做 governance drift check**：比較 target branch 與 work branch 的治理檔差異
+5. **governance drift check 比較基底**：最新 work/r006-governance
+6. **命中 drift 即 blocked**：發現治理檔漂移時，立即停止並回報 drifted files 與建議解決方案
+7. **Rebase / Replay 義務**：若 branch 基底落後，應先 rebase / replay，不得硬 merge
+8. **解決方案**：rebase onto latest work / replay branch / split governance changes into separate task
+
 ---
 
 ## 目前正式輪次
