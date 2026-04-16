@@ -915,23 +915,35 @@ function Invoke-AiderExecution {
     
     # Create candidate branch
     $candidateBranch = "candidates/$RoundId"
-    $currentBranch = git branch --show-current
+    $currentBranch = git branch --show-current 2>&1
     
-    # Check if candidate branch exists
-    $localExists = git branch --list $candidateBranch 2>&1
-    if ($localExists) {
-        Write-Host "[AIDER] Removing existing candidate branch..." -ForegroundColor Yellow
-        git branch -D $candidateBranch 2>&1 | Out-Null
-    }
-    
-    # Create and switch to candidate branch
-    Write-Host "[AIDER] Creating candidate branch: $candidateBranch" -ForegroundColor Cyan
-    git checkout -b $candidateBranch 2>&1 | Out-Null
-    if ($LASTEXITCODE -ne 0) {
-        return @{
-            success = $false
-            error = "Failed to create candidate branch"
-            summary = "Branch creation failed"
+    # CRITICAL: Check if we're already on the candidate branch
+    if ($currentBranch -eq $candidateBranch) {
+        Write-Host "[AIDER] Already on candidate branch: $candidateBranch - continuing execution" -ForegroundColor Green
+        # No need to create/switch - already there
+    } else {
+        # We're not on the candidate branch, safe to delete and recreate
+        # Check if candidate branch exists
+        $localExists = git branch --list $candidateBranch 2>&1
+        if ($localExists) {
+            Write-Host "[AIDER] Removing existing candidate branch..." -ForegroundColor Yellow
+            git branch -D $candidateBranch 2>&1
+            $deleteExitCode = $LASTEXITCODE
+            if ($deleteExitCode -ne 0) {
+                Write-Host "[AIDER] Warning: Failed to delete branch (exit: $deleteExitCode), continuing..." -ForegroundColor Yellow
+            }
+        }
+        
+        # Create and switch to candidate branch
+        Write-Host "[AIDER] Creating candidate branch: $candidateBranch" -ForegroundColor Cyan
+        git checkout -b $candidateBranch 2>&1
+        $createExitCode = $LASTEXITCODE
+        if ($createExitCode -ne 0) {
+            return @{
+                success = $false
+                error = "Failed to create candidate branch (exit: $createExitCode)"
+                summary = "Branch creation failed - current branch: $currentBranch"
+            }
         }
     }
     
