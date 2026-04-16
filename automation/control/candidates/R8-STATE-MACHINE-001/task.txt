@@ -1,0 +1,61 @@
+# Task Description for R8-STATE-MACHINE-001
+# Round 8: State Machine and Mode Switching Governance
+# Timestamp: 2026-04-16T18:44:00+0800
+
+## Candidate ID
+R8-STATE-MACHINE-001
+
+## Round
+R-008: 狀態機與模式切換治理 (State Machine and Mode Switching Governance)
+
+## Objective
+明確管理 observe / sim / shadow / live / pause / recovery 等模式，確保模式切換可追蹤、可驗證、可審計。
+
+## Subtasks
+
+### R8-T1: Mode Controller Module
+Create mode governance module with:
+- ModeController class managing 6 modes: OBSERVE, SIM, SHADOW, LIVE, PAUSE, RECOVERY
+- validate_transition(from_mode, to_mode) with allowed/disallowed logic
+- get_allowed_transitions(current_mode) for UI display
+- transition_requires_approval() for high-risk transitions (e.g., to LIVE)
+- get_mode_description() for human-readable explanations
+- Output: governance/state_machine/mode_controller.py
+
+### R8-T2: Mode Recorder Module
+Create audit trail module with:
+- ModeRecorder class logging all transitions with timestamp
+- record_transition() with operator and reason tracking
+- get_transition_history() for compliance review
+- export_to_json() for evidence preservation
+- Output: governance/state_machine/mode_recorder.py
+
+### R8-T3: Integration Tests
+Create comprehensive tests for:
+- ModeController: 7 tests (initialization, validation, transitions, approval, descriptions)
+- ModeRecorder: 7 tests (recording, history, filtering, export)
+- Integration: 1 test (controller + recorder workflow)
+- Output: tests/test_r008_state_machine_governance.py
+
+### R8-T4: Evidence Package
+Create candidate evidence files in automation/control/candidates/R8-STATE-MACHINE-001/
+
+## Success Criteria
+- All 14 tests passing
+- Evidence package complete
+- No forbidden paths modified
+- validate_evidence.ps1 PASS
+
+## Execution Method
+Direct implementation + aider where needed
+No auto-commits, no dirty-commits
+
+## Generated Evidence
+- governance/state_machine/mode_controller.py (new)
+- governance/state_machine/mode_recorder.py (new)
+- tests/test_r008_state_machine_governance.py (new)
+- automation/control/candidates/R8-STATE-MACHINE-001/* (evidence)
+
+## Final Status
+Implementation complete, all tests passing (14/14)
+Awaiting validation and manual review
