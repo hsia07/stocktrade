@@ -859,11 +859,14 @@ function Start-MainControlLoop {
     $runReport.end_time = $endTime.ToString("yyyy-MM-ddTHH:mm:ss")
     $runReport.duration_seconds = [int]($endTime - $startTime).TotalSeconds
     
-    # Get git status for report
+    # Get git status for report (relax EAP for git stderr)
+    $savedEAP3 = $ErrorActionPreference
+    $ErrorActionPreference = 'Continue'
     $runReport.local_head = (git rev-parse HEAD 2>&1) | Out-String
     try { $runReport.remote_head = (git rev-parse origin/work/r006-governance 2>&1) | Out-String } catch { $runReport.remote_head = "unknown" }
     $runReport.working_tree_clean = ((git status --porcelain 2>&1) | Out-String).Trim().Length -eq 0
     $runReport.untracked_files = (git ls-files --others --exclude-standard 2>&1) | Out-String
+    $ErrorActionPreference = $savedEAP3
     
     # Save run report
     $reportPath = Join-Path $reportsDir "run_report_${runId}.json"
@@ -923,31 +926,29 @@ function Invoke-AiderExecution {
     
     # Create candidate branch
     $candidateBranch = "candidates/$RoundId"
+    $savedEAP = $ErrorActionPreference
+    $ErrorActionPreference = 'Continue'
     $currentBranch = (git branch --show-current 2>&1) | Out-String
     $currentBranch = $currentBranch.Trim()
     
     # CRITICAL: Check if we're already on the candidate branch
     if ($currentBranch -eq $candidateBranch) {
         Write-Host "[AIDER] Already on candidate branch: $candidateBranch - continuing execution" -ForegroundColor Green
-        # No need to create/switch - already there
     } else {
-        # We're not on the candidate branch, safe to delete and recreate
-        # Check if candidate branch exists
         $localExists = (git branch --list $candidateBranch 2>&1) | Out-String
         if ($localExists -match $candidateBranch) {
             Write-Host "[AIDER] Removing existing candidate branch..." -ForegroundColor Yellow
             git branch -D $candidateBranch 2>&1 | Out-Null
-            $deleteExitCode = $LASTEXITCODE
-            if ($deleteExitCode -ne 0) {
-                Write-Host "[AIDER] Warning: Failed to delete branch (exit: $deleteExitCode), continuing..." -ForegroundColor Yellow
+            if ($LASTEXITCODE -ne 0) {
+                Write-Host "[AIDER] Warning: Failed to delete branch, continuing..." -ForegroundColor Yellow
             }
         }
         
-        # Create and switch to candidate branch
         Write-Host "[AIDER] Creating candidate branch: $candidateBranch" -ForegroundColor Cyan
         git checkout -b $candidateBranch 2>&1 | Out-Null
         $createExitCode = $LASTEXITCODE
         if ($createExitCode -ne 0) {
+            $ErrorActionPreference = $savedEAP
             return @{
                 success = $false
                 error = "Failed to create candidate branch (exit: $createExitCode)"
@@ -955,6 +956,7 @@ function Invoke-AiderExecution {
             }
         }
     }
+    $ErrorActionPreference = $savedEAP
     
     # Prepare Aider task file
     $aiderTask = @"
@@ -1077,19 +1079,24 @@ BEGIN IMPLEMENTATION NOW.
             Write-Host "[AIDER] WARNING: Execution was killed due to timeout" -ForegroundColor Red
         }
         
-        # Get modified files
+        # Get modified files (temporarily relax EAP for git stderr)
+        $savedEAP2 = $ErrorActionPreference
+        $ErrorActionPreference = 'Continue'
         $modifiedFiles = (git diff --name-only HEAD 2>&1) | Out-String
         $untrackedFiles = (git ls-files --others --exclude-standard 2>&1) | Out-String
+        $ErrorActionPreference = $savedEAP2
         $modArray = if ($modifiedFiles.Trim()) { $modifiedFiles.Trim() -split "`n" | Where-Object { $_.Trim() } } else { @() }
         $untArray = if ($untrackedFiles.Trim()) { $untrackedFiles.Trim() -split "`n" | Where-Object { $_.Trim() } } else { @() }
         $allChanges = @($modArray) + @($untArray)
         
         # Commit the changes
         if ($allChanges.Count -gt 0) {
+            $ErrorActionPreference = 'Continue'
             git add . 2>&1 | Out-Null
             git commit -m "candidate($RoundId): Implement round requirements - $TaskDescription" 2>&1 | Out-Null
             $commitHash = (git rev-parse HEAD 2>&1) | Out-String
             $commitHash = $commitHash.Trim()
+            $ErrorActionPreference = $savedEAP2
         } else {
             $commitHash = "NO_CHANGES"
         }
@@ -1111,7 +1118,9 @@ BEGIN IMPLEMENTATION NOW.
         [System.IO.File]::WriteAllText($reportPath, $reportJson, [System.Text.Encoding]::UTF8)
         
         # Return to original branch
+        $ErrorActionPreference = 'Continue'
         git checkout $currentBranch 2>&1 | Out-Null
+        $ErrorActionPreference = $savedEAP2
         
         if ($report.success) {
             return @{
@@ -1131,8 +1140,10 @@ BEGIN IMPLEMENTATION NOW.
         }
         
     } catch {
-        # Cleanup on error
+        # Cleanup on error (relax EAP for git stderr)
+        $ErrorActionPreference = 'Continue'
         git checkout $currentBranch 2>&1 | Out-Null
+        $ErrorActionPreference = $savedEAP
         
         return @{
             success = $false
