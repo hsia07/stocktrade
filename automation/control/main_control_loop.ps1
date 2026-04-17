@@ -63,7 +63,7 @@ function Initialize-State {
         }
     }
     
-    $state = Get-Content $stateFile -Raw | ConvertFrom-Json
+    $state = Get-Content $stateFile -Raw -Encoding UTF8 | ConvertFrom-Json
     
     # Ensure all required fields exist with defaults
     # Use Get-Member to check if property exists before adding
