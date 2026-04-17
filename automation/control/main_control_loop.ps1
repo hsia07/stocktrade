@@ -26,7 +26,6 @@ $ErrorActionPreference = "Stop"
 $ProgressPreference = "Continue"
 $OutputEncoding = [System.Text.Encoding]::UTF8
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
-[System.Text.Encoding]::Default = [System.Text.Encoding]::UTF8
 
 # Setup paths
 $repoRoot = Resolve-Path $RepoRoot
