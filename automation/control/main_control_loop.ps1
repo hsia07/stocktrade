@@ -963,6 +963,8 @@ function Invoke-AiderExecution {
 # Task: $RoundId
 # Description: $TaskDescription
 
+IMPORTANT: Use /drop to remove server_v2.py and any large files from chat BEFORE responding. Only keep files in automation/control/ directory.
+
 REQUIREMENTS:
 1. Implement all required functionality for $RoundId
 2. Follow formal governance compliance
@@ -1033,7 +1035,7 @@ BEGIN IMPLEMENTATION NOW.
         # Run Aider using System.Diagnostics.Process with timeout
         $psi = New-Object System.Diagnostics.ProcessStartInfo
         $psi.FileName = $aiderExe
-        $psi.Arguments = "--model ollama_chat/qwen2.5-coder:7b --no-auto-commits --no-dirty-commits --yes-always --map-tokens 2048 --subtree-only automation/control --message-file `"$taskFile`""
+        $psi.Arguments = "--model ollama_chat/qwen2.5-coder:7b --no-auto-commits --no-dirty-commits --yes-always --map-tokens 1024 --subtree-only automation/control --message-file `"$taskFile`""
         $psi.RedirectStandardOutput = $true
         $psi.RedirectStandardError = $true
         $psi.UseShellExecute = $false
