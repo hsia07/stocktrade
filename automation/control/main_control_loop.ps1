@@ -897,22 +897,22 @@ function Get-RoundTaskDescription {
     param([string]$RoundId)
     
     $tasks = @{
-        "R-007" = "Implement abnormal silence protection: Add monitoring for silent failures, create health check alerts, ensure system gracefully handles unresponsive components"
-        "R-008" = "Implement state machine and mode transition governance: Create formal state transitions, add guards against invalid mode changes, ensure state consistency"
-        "R-009" = "Implement command and task priority system: Create priority queue, handle urgent vs normal tasks, ensure critical commands execute first"
-        "R-010" = "Implement circuit breaker pattern: Create failure detection, auto-disable failing components, manual recovery interface"
-        "R-011" = "Implement degradation strategies: Define graceful degradation levels, auto-activate on system stress, preserve core functionality"
-        "R-012" = "Implement comprehensive logging: Add structured logging, create log rotation, ensure audit trail completeness"
-        "R-013" = "Implement metrics collection: Create performance metrics, add system health dashboards, enable trend analysis"
-        "R-014" = "Implement automated testing: Create integration tests, add smoke tests, ensure test coverage for critical paths"
-        "R-015" = "Implement deployment automation: Create deployment scripts, add rollback capability, ensure zero-downtime deployment"
+        "R-007" = "Implement abnormal silence protection in automation/control/: Add monitoring for silent failures, create health check alerts, ensure system gracefully handles unresponsive components. Target files: main_control_loop.ps1, health_monitor.ps1 (create if needed)."
+        "R-008" = "Implement state machine and mode transition governance: Create formal state transitions, add guards against invalid mode changes, ensure state consistency. Target: main_control_loop.ps1, state_machine.ps1 (create)."
+        "R-009" = "Implement command and task priority system: Create priority queue, handle urgent vs normal tasks, ensure critical commands execute first. Target: main_control_loop.ps1, priority_queue.ps1 (create)."
+        "R-010" = "Implement circuit breaker pattern in automation/control/: Add health_monitor.ps1 with circuit breaker states (CLOSED/OPEN/HALF_OPEN), auto-disable components after N failures, add manual reset capability, add re-runnable tests in test_circuit_breaker.ps1. Specific files to create/modify: health_monitor.ps1 (new), test_circuit_breaker.ps1 (new)."
+        "R-011" = "Implement degradation strategies: Define graceful degradation levels, auto-activate on system stress, preserve core functionality. Target: automation/control/ directory, focus on health_monitor.ps1 and main_control_loop.ps1."
+        "R-012" = "Implement comprehensive logging in automation/control/: Add structured logging with timestamps and levels, create log rotation, ensure audit trail. Target: logger.ps1 (create), integrate into main_control_loop.ps1."
+        "R-013" = "Implement metrics collection: Create performance metrics tracking, add system health dashboards, enable trend analysis. Target: metrics.ps1 (create), metrics_report.ps1 (create), integrate into main_control_loop.ps1."
+        "R-014" = "Implement automated testing in automation/control/test/: Create integration tests, add smoke tests, ensure test coverage for critical paths. Target: test_main_control_loop.ps1 (create), test_candidates.ps1 (create)."
+        "R-015" = "Implement deployment automation in automation/control/: Create deployment scripts with rollback capability, ensure zero-downtime deployment process. Target: deploy.ps1 (create), rollback.ps1 (create)."
     }
     
     if ($tasks.ContainsKey($RoundId)) {
         return $tasks[$RoundId]
     }
     
-    return "Execute $RoundId with full formal governance compliance"
+    return "Execute $RoundId with full formal governance compliance. Focus on automation/control/ directory. Create new .ps1 files as needed, add re-runnable tests, produce evidence artifacts."
 }
 
 # Execute Aider for a round
@@ -967,22 +967,24 @@ function Invoke-AiderExecution {
 
 IMPORTANT: Use /drop to remove server_v2.py and any large files from chat BEFORE responding. Only keep files in automation/control/ directory.
 
-REQUIREMENTS:
-1. Implement all required functionality for $RoundId
-2. Follow formal governance compliance
-3. Add re-runnable tests
-4. Generate evidence artifacts
-5. Do NOT modify forbidden files (master, server_v2.py, broker core, etc.)
-6. Create minimal, focused changes
-7. Ensure working tree remains clean after changes
+CRITICAL REQUIREMENTS (ALL MUST BE DONE):
+1. CREATE a test file: automation/control/test/test_${RoundId}.ps1
+   - Add at least 3 re-runnable test cases using Describe/It blocks or simple function tests
+   - Tests must be executable with: py -m pytest OR powershell -File test.ps1
+2. CREATE an evidence package file: automation/control/candidates/$RoundId/evidence.json
+   - Format: { "round": "$RoundId", "files_created": [...], "files_modified": [...], "implementation_summary": "...", "test_results": "PASS/FAIL" }
+3. MODIFY the report.json in candidates/$RoundId/ to include:
+   - "tests_created": true
+   - "evidence_package_created": true
+   - "formal_status_code": "candidate_ready_awaiting_manual_review"
+4. Run your tests to verify they pass
 
-STRICT RULES:
-- One clear small task only
-- Max 2 highly related files
-- Use --no-auto-commits
-- Use --no-dirty-commits
-- If task too large, must split first
-- Mark no_change/not_applied/needs_manual_review if no actual changes
+DO NOT just create artifact files. You MUST:
+- Actually write code to .ps1 files in automation/control/
+- Create real test cases in automation/control/test/
+- Produce real evidence in automation/control/candidates/$RoundId/
+
+If implementation is complex, create a minimal viable version that passes basic tests.
 
 BEGIN IMPLEMENTATION NOW.
 "@
@@ -1037,7 +1039,7 @@ BEGIN IMPLEMENTATION NOW.
         # Run Aider using System.Diagnostics.Process with timeout
         $psi = New-Object System.Diagnostics.ProcessStartInfo
         $psi.FileName = $aiderExe
-        $psi.Arguments = "--model ollama_chat/qwen2.5-coder:7b --no-auto-commits --no-dirty-commits --yes-always --map-tokens 1024 --subtree-only automation/control --message-file `"$taskFile`""
+        $psi.Arguments = "--model ollama_chat/qwen2.5-coder:7b --no-auto-commits --no-dirty-commits --yes-always --map-tokens 2048 --subtree-only automation/control --message-file `"$taskFile`""
         $psi.RedirectStandardOutput = $true
         $psi.RedirectStandardError = $true
         $psi.UseShellExecute = $false
