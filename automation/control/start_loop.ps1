@@ -133,10 +133,10 @@ Write-Host "[START] Script: $loopScript" -ForegroundColor Gray
 Write-Host "[START] Log: $logFile" -ForegroundColor Gray
 Write-Host ""
 
-# Build arguments
+# Build arguments - use current_round from state, not hardcoded default
 $loopArgs = @(
     "-Phase", $Phase,
-    "-StartRound", $StartRound
+    "-StartRound", $state.current_round
 )
 
 if ($Resume) {

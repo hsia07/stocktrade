@@ -68,7 +68,7 @@ function Initialize-State {
     if (-not ($state | Get-Member -Name "run_state" -MemberType NoteProperty)) { $state | Add-Member -NotePropertyName "run_state" -NotePropertyValue "stopped" }
     if (-not ($state | Get-Member -Name "current_mode" -MemberType NoteProperty)) { $state | Add-Member -NotePropertyName "current_mode" -NotePropertyValue "idle" }
     if (-not ($state | Get-Member -Name "current_phase" -MemberType NoteProperty)) { $state | Add-Member -NotePropertyName "current_phase" -NotePropertyValue $Phase }
-    if (-not ($state | Get-Member -Name "current_round" -MemberType NoteProperty)) { $state | Add-Member -NotePropertyName "current_round" -NotePropertyValue $StartRound }
+    if (-not ($state | Get-Member -Name "current_round" -MemberType NoteProperty)) { $state | Add-Member -NotePropertyName "current_round" -NotePropertyValue $StartRound } else { $state.current_round = $state.current_round }
     if (-not ($state | Get-Member -Name "phase_completion_state" -MemberType NoteProperty)) { $state | Add-Member -NotePropertyName "phase_completion_state" -NotePropertyValue "not_started" }
     if (-not ($state | Get-Member -Name "rounds_in_current_run" -MemberType NoteProperty)) { $state | Add-Member -NotePropertyName "rounds_in_current_run" -NotePropertyValue @() }
     if (-not ($state | Get-Member -Name "completed_rounds" -MemberType NoteProperty)) { $state | Add-Member -NotePropertyName "completed_rounds" -NotePropertyValue @() }
@@ -742,7 +742,7 @@ function Start-MainControlLoop {
     }
     
     $roundCounter = 0
-    $currentRound = $StartRound
+    $currentRound = $state.current_round
     
     while ($roundCounter -lt $MaxRounds) {
         # Check control flags
