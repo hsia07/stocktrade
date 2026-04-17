@@ -1107,7 +1107,9 @@ BEGIN IMPLEMENTATION NOW.
         # Run Aider using System.Diagnostics.Process with timeout
         $psi = New-Object System.Diagnostics.ProcessStartInfo
         $psi.FileName = $aiderExe
-        $psi.Arguments = "--model ollama_chat/qwen2.5-coder:7b --no-auto-commits --no-dirty-commits --yes-always --map-tokens 2048 --subtree-only automation/control --message-file `"$taskFile`""
+        $psi.Arguments = "--model ollama_chat/qwen2.5-coder:7b --no-auto-commits --no-dirty-commits --yes-always --map-tokens 2048 --subtree-only automation/control --message-file `"$taskFile`" --no-pretty"
+        $psi.EnvironmentVariables["PYTHONIOENCODING"] = "utf-8:replace"
+        $psi.EnvironmentVariables["PYTHONUTF8"] = "1"
         $psi.RedirectStandardOutput = $true
         $psi.RedirectStandardError = $true
         $psi.UseShellExecute = $false
