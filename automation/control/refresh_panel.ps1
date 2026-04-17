@@ -1,4 +1,4 @@
-$repoRoot = (Resolve-Path (Join-Path $PSScriptRoot "..\..")).Path
+﻿$repoRoot = (Resolve-Path (Join-Path $PSScriptRoot "..\..")).Path
 Set-Location $repoRoot
 
 $controlDir = Join-Path $repoRoot "automation\control"

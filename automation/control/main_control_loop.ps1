@@ -1,4 +1,4 @@
-#!/usr/bin/env pwsh
+﻿#!/usr/bin/env pwsh
 # main_control_loop.ps1
 # Main Control Loop for Stocktrade Automation
 # Orchestrates candidate execution, prompt/artifact generation, and phase boundary management
@@ -919,7 +919,6 @@ function Start-MainControlLoop {
 function Get-RoundTaskDescription {
     param([string]$RoundId)
     
-    # Load detailed requirements from law document
     $lawDocPath = Join-Path $RepoRoot "_governance\law\readable\03_161輪逐輪施行細則法典_整合法條增補版.md"
     $lawContent = ""
     if (Test-Path $lawDocPath) {
@@ -932,136 +931,52 @@ function Get-RoundTaskDescription {
     }
     
     $roundMap = @{
-        "R-010" = @{
-            title = "核心與非核心隔離"
-            law_section = "# 第 10 輪：核心與非核心隔離"
-            purpose = "讓非核心功能壞掉也不影響交易核心"
-            deliverables = @(
-                "核心組件（委託/成交/風控）必須與非核心組件（研究/教學/多帳戶）完全隔離",
-                "非核心失敗時核心必須繼續正常運作",
-                "隔離邊界必須有清楚的介面契約，不可直接依賴"
-            )
-            test_targets = @(
-                "test_core_isolation.ps1: 模擬非核心失敗（timeout/error），驗證核心不受影響",
-                "test_fallback.ps1: 驗證降級到保守模式仍可執行核心交易"
-            )
-        }
-        "R-011" = @{
-            title = "效能與載入架構優化"
-            law_section = "# 第 11 輪：效能與載入架構優化"
-            purpose = "避免功能一多網站就卡死"
-            deliverables = @(
-                "頁面載入變輕（lazy load、code splitting）",
-                "API 響應時間改善",
-                "大資料查詢不阻擋主執行緒"
-            )
-            test_targets = @(
-                "test_page_load.ps1: 測量頁面載入時間，設定閾值",
-                "test_api_latency.ps1: 驗證 API 響應時間在限制內"
-            )
-        }
-        "R-011A" = @{
-            title = "決策延遲預算 / AI 超時降級機制"
-            law_section = "# 第 11A 輪：決策延遲預算 / AI 超時降級機制"
-            purpose = "避免 AI 推論延遲過高，導致決策落後於市場"
-            deliverables = @(
-                "定義決策延遲預算（latency budget）",
-                "AI 推論超時時自動降級到保守策略",
-                "降級條件、觸發門檻必須可配置"
-            )
-            test_targets = @(
-                "test_timeout_degradation.ps1: 模擬 AI 延遲，驗證觸發降級",
-                "test_latency_budget.ps1: 驗證延遲超標時的行為"
-            )
-        }
-        "R-012" = @{
-            title = "實時與歷史資料分離"
-            law_section = "# 第 12 輪：實時與歷史資料分離"
-            purpose = "避免歷史查詢影響即時決策"
-            deliverables = @(
-                "實時資料流（行情/持倉）與歷史查詢完全分離",
-                "歷史查詢不得阻塞實時決策路徑",
-                "資料流分離架構必須可驗證"
-            )
-            test_targets = @(
-                "test_data_flow_separation.ps1: 驗證實時與歷史資料隔離",
-                "test_query_non_blocking.ps1: 歷史查詢不影響實時延遲"
-            )
-        }
-        "R-013" = @{
-            title = "可觀測性統一格式"
-            law_section = "# 第 13 輪：可觀測性統一格式"
-            purpose = "讓所有 log、alert、event 格式一致，便於排查"
-            deliverables = @(
-                "統一 event schema（timestamp, level, source, message, metadata）",
-                "所有模組使用相同日誌格式",
-                "異常事件有統一路由和告警格式"
-            )
-            test_targets = @(
-                "test_log_format.ps1: 驗證所有日誌符合統一 schema",
-                "test_event_schema.ps1: 驗證 event 格式一致性"
-            )
-        }
-        "R-014" = @{
-            title = "多層快取策略"
-            law_section = "# 第 14 輪：多層快取策略"
-            purpose = "減少重複查詢與延遲"
-            deliverables = @(
-                "API 壓力下降（cache hit ratio 可測量）",
-                "頁面反應變快（快取策略可配置）",
-                "快取失效邏輯明確"
-            )
-            test_targets = @(
-                "test_cache_hit.ps1: 驗證快取命中率",
-                "test_cache_invalidation.ps1: 驗證快取失效邏輯"
-            )
-        }
-        "R-015" = @{
-            title = "欄位命名 / API schema / 資料契約固定"
-            law_section = "# 第 15 輪：欄位命名 / API schema / 資料契約固定"
-            purpose = "避免前後端欄位名與資料格式越做越亂"
-            deliverables = @(
-                "統一欄位命名規範（PascalCase/camelCase 一致）",
-                "API schema 版本化",
-                "資料契約文件化"
-            )
-            test_targets = @(
-                "test_schema_consistency.ps1: 驗證 API 回應符合 schema",
-                "test_field_naming.ps1: 驗證欄位命名一致性"
-            )
-        }
+        "R-010" = @{ t="Core/Non-Core Isolation"; p="Prevent non-core failures from affecting trading core"; ls="R-010: Core/Non-Core Isolation"; d=@("Core components (order/fill/risk) must be fully isolated from non-core (research/teaching/multi-account)","Core must continue operating when non-core fails","Isolation boundary must have clear interface contracts, no direct dependency"); tt=@("test_core_isolation.ps1","test_fallback.ps1") }
+        "R-011" = @{ t="Performance & Loading Optimization"; p="Prevent site from hanging when features increase"; ls="R-011: Performance & Loading Optimization"; d=@("Reduce page load weight (lazy load, code splitting)","Improve API response time","Large data queries must not block main thread"); tt=@("test_page_load.ps1","test_api_latency.ps1") }
+        "R-011A" = @{ t="Decision Latency Budget / AI Timeout Degradation"; p="Prevent AI inference delays from causing decisions to lag market"; ls="R-011A: Decision Latency Budget / AI Timeout Degradation"; d=@("Define decision latency budget","Auto-degrade to conservative strategy on AI timeout","Degradation conditions and trigger thresholds must be configurable"); tt=@("test_timeout_degradation.ps1","test_latency_budget.ps1") }
+        "R-012" = @{ t="Real-Time vs Historical Data Separation"; p="Prevent historical queries from affecting real-time decisions"; ls="R-012: Real-Time vs Historical Data Separation"; d=@("Real-time data flow (quotes/positions) completely separated from historical queries","Historical queries must not block real-time decision path","Data flow separation architecture must be verifiable"); tt=@("test_data_flow_separation.ps1","test_query_non_blocking.ps1") }
+        "R-013" = @{ t="Unified Observability Format"; p="Standardize all log/alert/event formats for easier debugging"; ls="R-013: Unified Observability Format"; d=@("Unified event schema (timestamp, level, source, message, metadata)","All modules use the same log format","Anomaly events have unified routing and alert format"); tt=@("test_log_format.ps1","test_event_schema.ps1") }
+        "R-014" = @{ t="Multi-Layer Cache Strategy"; p="Reduce repeated queries and latency"; ls="R-014: Multi-Layer Cache Strategy"; d=@("API pressure reduced (cache hit ratio measurable)","Page response improved (cache strategy configurable)","Cache invalidation logic explicit"); tt=@("test_cache_hit.ps1","test_cache_invalidation.ps1") }
+        "R-015" = @{ t="Field Naming / API Schema / Data Contract Stabilization"; p="Prevent frontend/backend field names and data formats from becoming inconsistent"; ls="R-015: Field Naming / API Schema / Data Contract Stabilization"; d=@("Unified field naming convention (PascalCase/camelCase consistent)","API schema versioned","Data contracts documented"); tt=@("test_schema_consistency.ps1","test_field_naming.ps1") }
     }
     
     if ($roundMap.ContainsKey($RoundId)) {
         $info = $roundMap[$RoundId]
-        $task = @"
-[TASK] $RoundId: $($info.title)
-[目的] $($info.purpose)
-
-[法典來源] 詳見：$($info.law_section)
-
-[本輪必須交付]
-$($info.deliverables | ForEach-Object { "  - $_" } | Out-String)
-
-[實作要求]
-1. 在 automation/control/ 目錄下實作相關功能
-2. 建立對應測試檔案（test_*.ps1）驗證核心邏輯
-3. 更新 candidates/$RoundId/report.json 包含：
-   - tests_created: true
-   - evidence_package_created: true
-   - formal_status_code: candidate_ready_awaiting_manual_review
-   - files_created: [實際建立的檔案列表]
-   - implementation_summary: "具體做了什麼"
-4. 運行測試並確保通過
-
-[禁止]
-- 不要修改 server_v2.py、broker core、live trading、risk core
-- 不要只做表層顯示或假資料
-- 不要只留 TODO 或註解
-- 不要修改已通過的輪次內容
-
-[BEGIN IMPLEMENTATION]
-"@
+        $title = $info.t
+        $purpose = $info.p
+        $lawSection = $info.ls
+        $dlist = ($info.d | ForEach-Object { "  - $_" }) -join "`n"
+        $ttlist = ($info.tt | ForEach-Object { "  - $_" }) -join "`n"
+        
+        $task = "[TASK] ${RoundId}: $title`n" +
+            "[Purpose] $purpose`n`n" +
+            "[Law Source] See: $lawSection`n`n" +
+            "[Law Document] Full details in: $lawDocPath`n`n" +
+            "[Mandatory Deliverables]`n$dlist`n`n" +
+            "[Implementation Targets]`n" +
+            "  - Create new .ps1 files in automation/control/ implementing the above deliverables`n" +
+            "  - Create test_*.ps1 files in automation/control/ for each deliverable`n" +
+            "  - Update candidates/${RoundId}/report.json with: tests_created=true, evidence_package_created=true, formal_status_code=candidate_ready_awaiting_manual_review, files_created=[list], implementation_summary=[what was done]`n`n" +
+            "[Test Files Required]`n$ttlist`n`n" +
+            "[FORBIDDEN]`n" +
+            "  - Do NOT modify server_v2.py, broker core, live trading, risk core`n" +
+            "  - Do NOT modify already-merged rounds (R-001 to R-009)`n" +
+            "  - Do NOT create placeholder TODOs or comments instead of real implementation`n" +
+            "  - Do NOT create only display-layer or fake data`n`n" +
+            "[BEGIN IMPLEMENTATION]`n"
+            "[Law Document] Full details in: $lawDocPath`n`n" +
+            "[Mandatory Deliverables]`n$dlist`n`n" +
+            "[Implementation Targets]`n" +
+            "  - Create new .ps1 files in automation/control/ implementing the above deliverables`n" +
+            "  - Create test_*.ps1 files in automation/control/ for each deliverable`n" +
+            "  - Update candidates/$RoundId/report.json with: tests_created=true, evidence_package_created=true, formal_status_code=candidate_ready_awaiting_manual_review, files_created=[list], implementation_summary=[what was done]`n`n" +
+            "[Test Files Required]`n$ttlist`n`n" +
+            "[FORBIDDEN]`n" +
+            "  - Do NOT modify server_v2.py, broker core, live trading, risk core`n" +
+            "  - Do NOT modify already-merged rounds (R-001 to R-009)`n" +
+            "  - Do NOT create placeholder TODOs or comments instead of real implementation`n" +
+            "  - Do NOT create only display-layer or fake data`n`n" +
+            "[BEGIN IMPLEMENTATION]`n"
         return $task
     }
     
