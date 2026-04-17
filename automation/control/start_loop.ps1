@@ -148,10 +148,33 @@ if ($DryRun) {
 }
 
 try {
-    # Start the loop and capture output
-    & powershell -ExecutionPolicy Bypass -NoProfile -File $loopScript @loopArgs *>&1 | Tee-Object -FilePath $logFile
+    # Start the loop and capture output with UTF-8 encoding
+    $psi = New-Object System.Diagnostics.ProcessStartInfo
+    $psi.FileName = "powershell.exe"
+    $psi.Arguments = "-ExecutionPolicy Bypass -NoProfile -File `"$loopScript`" $($loopArgs -join ' ')"
+    $psi.RedirectStandardOutput = $true
+    $psi.RedirectStandardError = $true
+    $psi.UseShellExecute = $false
+    $psi.CreateNoWindow = $true
+    $psi.WorkingDirectory = $repoRoot
+    $psi.StandardOutputEncoding = [System.Text.Encoding]::UTF8
+    $psi.StandardErrorEncoding = [System.Text.Encoding]::UTF8
     
-    $exitCode = $LASTEXITCODE
+    $proc = [System.Diagnostics.Process]::Start($psi)
+    $stdout = $proc.StandardOutput.ReadToEnd()
+    $stderr = $proc.StandardError.ReadToEnd()
+    $proc.WaitForExit()
+    $exitCode = $proc.ExitCode
+    
+    # Write output to log with UTF-8 encoding
+    $logWriter = New-Object System.IO.StreamWriter($logFile, $false, [System.Text.Encoding]::UTF8)
+    $logWriter.WriteLine($stdout)
+    if ($stderr) { $logWriter.WriteLine($stderr) }
+    $logWriter.Close()
+    
+    # Print stdout to console
+    Write-Host $stdout
+    if ($stderr) { Write-Host $stderr }
     
     if ($exitCode -eq 0) {
         Write-Host ""
