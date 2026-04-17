@@ -425,19 +425,19 @@ $html = @"
         <div class="mini-grid">
           <div class="metric">
             <div class="label">目前輪次</div>
-            <div class="value">$roundEscaped</div>
+            <div class="value" id="overviewRound">$roundEscaped</div>
           </div>
           <div class="metric">
             <div class="label">目前分支</div>
-            <div class="value">$branchEscaped</div>
+            <div class="value" id="overviewBranch">$branchEscaped</div>
           </div>
           <div class="metric">
-            <div class="label">目前 Phase</div>
-            <div class="value">$phaseCompletionEscaped</div>
+            <div class="label">最新 Candidate</div>
+            <div class="value" id="overviewCandidate">$latestCandidateEscaped</div>
           </div>
           <div class="metric">
             <div class="label">最後更新</div>
-            <div class="value">$lastUpdateEscaped</div>
+            <div class="value" id="overviewLastUpdate">$lastUpdateEscaped</div>
           </div>
         </div>
       </div>
@@ -548,30 +548,33 @@ $html = @"
         <h2>最新狀態</h2>
         <div class="mini-grid" style="margin-bottom: 14px;">
           <div class="metric">
-            <div class="label">current_phase</div>
-            <div class="value">$currentPhase</div>
+            <div class="label">round</div>
+            <div class="value" id="latestStatusRound">$currentRound</div>
           </div>
           <div class="metric">
-            <div class="label">current_round</div>
-            <div class="value">$currentRound</div>
+            <div class="label">mode</div>
+            <div class="value" id="latestStatusMode">$displayMode</div>
           </div>
           <div class="metric">
-            <div class="label">phase_completion_state</div>
-            <div class="value">$phaseCompletionEscaped</div>
+            <div class="label">aider</div>
+            <div class="value" id="latestStatusAider">idle</div>
           </div>
           <div class="metric">
-            <div class="label">stop_reason</div>
-            <div class="value">$stopReason</div>
+            <div class="label">candidate</div>
+            <div class="value" id="latestStatusCandidate">$latestCandidateEscaped</div>
+          </div>
+          <div class="metric">
+            <div class="label">updated</div>
+            <div class="value" id="latestStatusUpdated">$lastUpdateEscaped</div>
           </div>
         </div>
-        <div class="mono">$stateBlockEscaped</div>
+        <div class="mono" id="latestStatusMono">$stateBlockEscaped</div>
       </div>
 
       <div class="card">
         <h2>最新 Candidate / 建議動作</h2>
-        <div class="mono">current_candidate_id: $currentCandidateEscaped
-latest_candidate_id: $latestCandidateEscaped
-phase_completion_state: $phaseCompletionEscaped
+        <div class="mono" id="latestCandidateMono">candidate: $latestCandidateEscaped
+cycle: $currentCycle
 stop_reason: $stopReason
 last_action: $lastAction</div>
         <div class="helper">
@@ -841,6 +844,78 @@ last_action: $lastAction</div>
         const response = await fetch(`${API_BASE}/state`);
         const state = await response.json();
         
+        // Update quick overview section
+        const overviewRound = document.getElementById('overviewRound');
+        if (overviewRound) overviewRound.textContent = state.current_round || '—';
+        const overviewBranch = document.getElementById('overviewBranch');
+        if (overviewBranch) overviewBranch.textContent = state.branch || '—';
+        const overviewCandidate = document.getElementById('overviewCandidate');
+        if (overviewCandidate) overviewCandidate.textContent = state.latest_candidate_id || state.current_candidate_id || 'none';
+        const overviewLastUpdate = document.getElementById('overviewLastUpdate');
+        if (overviewLastUpdate) overviewLastUpdate.textContent = state.updated_at || state.last_update || '—';
+        
+        // Update latest status card
+        const latestStatusRound = document.getElementById('latestStatusRound');
+        if (latestStatusRound) latestStatusRound.textContent = state.current_round || '—';
+        const latestStatusMode = document.getElementById('latestStatusMode');
+        if (latestStatusMode) latestStatusMode.textContent = state.mode || state.run_state || '—';
+        const latestStatusAider = document.getElementById('latestStatusAider');
+        if (latestStatusAider) latestStatusAider.textContent = state.aider_status || 'idle';
+        const latestStatusCandidate = document.getElementById('latestStatusCandidate');
+        if (latestStatusCandidate) latestStatusCandidate.textContent = state.latest_candidate_id || 'none';
+        const latestStatusUpdated = document.getElementById('latestStatusUpdated');
+        if (latestStatusUpdated) latestStatusUpdated.textContent = state.updated_at || '—';
+        
+        // Update mono blocks
+        const latestStatusMono = document.getElementById('latestStatusMono');
+        if (latestStatusMono) latestStatusMono.textContent = 
+          `round: ${state.current_round||'—'} | mode: ${state.mode||state.run_state||'—'} | aider: ${state.aider_status||'—'} | candidate: ${state.latest_candidate_id||'none'}`;
+        const latestCandidateMono = document.getElementById('latestCandidateMono');
+        if (latestCandidateMono) latestCandidateMono.textContent = 
+          `candidate: ${state.latest_candidate_id||'none'} | cycle: ${state.current_cycle_id||'none'} | aide: ${state.aider_status||'—'} | ready: ${state.ready_for_signoff||false}`;
+        
+        // Update RETURN_TO_CHATGPT block dynamically
+        const completed = state.completed_rounds || [];
+        const blocked = state.blocked_rounds || [];
+        const ready = state.ready_for_signoff_rounds || [];
+        const returnBlock = [
+          '=== RETURN_TO_CHATGPT ===',
+          `round_id: ${state.current_round || '—'}`,
+          `branch: ${state.branch || '—'}`,
+          `status: ${state.run_state === 'running' ? 'candidate_running' : state.run_state || 'stopped'}`,
+          `candidate_id: ${state.latest_candidate_id || state.current_candidate_id || 'none'}`,
+          'summary:',
+          `- mode: ${state.mode || state.run_state || '—'}`,
+          `- aide: ${state.aider_status || 'idle'}`,
+          `- run_state: ${state.run_state || '—'}`,
+          `- current_phase: ${state.current_phase || '—'}`,
+          `- phase_completion_state: ${state.phase_completion_state || '—'}`,
+          `- completed_rounds: ${completed.length ? completed.join(', ') : 'none'}`,
+          `- blocked_rounds: ${blocked.length ? blocked.join(', ') : 'none'}`,
+          `- ready_for_signoff: ${ready.length ? ready.join(', ') : 'none'}`,
+          `- latest_candidate_id: ${state.latest_candidate_id || 'none'}`,
+          `- last_action: ${state.last_action || '—'}`,
+          `- last_error: ${state.last_error || 'none'}`,
+          `- updated_at: ${state.updated_at || '—'}`,
+          'escalation_required: ' + (state.escalation_required ? 'yes' : 'no'),
+          `escalation_reason: ${state.escalation_required ? (state.escalation_reason || 'escalation triggered') : 'none'}`,
+          '',
+          'next_recommended_action: ' + (state.run_state === 'running' ? 'wait for loop to complete, then review candidate' : 'click Start/Resume to continue'),
+          '=== END_RETURN_TO_CHATGPT ===',
+        ].join('\n');
+        const returnBox = document.getElementById('returnBox');
+        if (returnBox) returnBox.textContent = returnBlock;
+        
+        // Try to load actual return artifact if available
+        fetch(`${API_BASE}/return-artifact`)
+          .then(r => r.json())
+          .then(data => {
+            if (data.status === 'found' && data.content && returnBox) {
+              returnBox.textContent = data.content;
+            }
+          })
+          .catch(() => {});
+        
         // Update signoff card visibility
         const signoffCard = document.getElementById('signoffCard');
         if (state.phase_completion_state === 'completed' || state.ready_for_signoff) {
@@ -861,7 +936,7 @@ last_action: $lastAction</div>
         if (state.run_state === 'running') {
           const resumeBtn = document.getElementById('resumeBtn');
           resumeBtn.className = 'btn done';
-          resumeBtn.textContent = '執行中';
+          resumeBtn.textContent = '執行中: ' + (state.current_round || '...');
           resumeBtn.disabled = true;
         }
       } catch (err) {

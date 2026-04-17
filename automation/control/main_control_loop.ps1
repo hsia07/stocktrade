@@ -919,23 +919,153 @@ function Start-MainControlLoop {
 function Get-RoundTaskDescription {
     param([string]$RoundId)
     
-    $tasks = @{
-        "R-007" = "Implement abnormal silence protection in automation/control/: Add monitoring for silent failures, create health check alerts, ensure system gracefully handles unresponsive components. Target files: main_control_loop.ps1, health_monitor.ps1 (create if needed)."
-        "R-008" = "Implement state machine and mode transition governance: Create formal state transitions, add guards against invalid mode changes, ensure state consistency. Target: main_control_loop.ps1, state_machine.ps1 (create)."
-        "R-009" = "Implement command and task priority system: Create priority queue, handle urgent vs normal tasks, ensure critical commands execute first. Target: main_control_loop.ps1, priority_queue.ps1 (create)."
-        "R-010" = "Implement circuit breaker pattern in automation/control/: Add health_monitor.ps1 with circuit breaker states (CLOSED/OPEN/HALF_OPEN), auto-disable components after N failures, add manual reset capability, add re-runnable tests in test_circuit_breaker.ps1. Specific files to create/modify: health_monitor.ps1 (new), test_circuit_breaker.ps1 (new)."
-        "R-011" = "Implement degradation strategies: Define graceful degradation levels, auto-activate on system stress, preserve core functionality. Target: automation/control/ directory, focus on health_monitor.ps1 and main_control_loop.ps1."
-        "R-012" = "Implement comprehensive logging in automation/control/: Add structured logging with timestamps and levels, create log rotation, ensure audit trail. Target: logger.ps1 (create), integrate into main_control_loop.ps1."
-        "R-013" = "Implement metrics collection: Create performance metrics tracking, add system health dashboards, enable trend analysis. Target: metrics.ps1 (create), metrics_report.ps1 (create), integrate into main_control_loop.ps1."
-        "R-014" = "Implement automated testing in automation/control/test/: Create integration tests, add smoke tests, ensure test coverage for critical paths. Target: test_main_control_loop.ps1 (create), test_candidates.ps1 (create)."
-        "R-015" = "Implement deployment automation in automation/control/: Create deployment scripts with rollback capability, ensure zero-downtime deployment process. Target: deploy.ps1 (create), rollback.ps1 (create)."
+    # Load detailed requirements from law document
+    $lawDocPath = Join-Path $RepoRoot "_governance\law\readable\03_161輪逐輪施行細則法典_整合法條增補版.md"
+    $lawContent = ""
+    if (Test-Path $lawDocPath) {
+        try {
+            $savedEAP2 = $ErrorActionPreference
+            $ErrorActionPreference = 'Continue'
+            $lawContent = Get-Content $lawDocPath -Raw -Encoding UTF8
+            $ErrorActionPreference = $savedEAP2
+        } catch {}
     }
     
-    if ($tasks.ContainsKey($RoundId)) {
-        return $tasks[$RoundId]
+    $roundMap = @{
+        "R-010" = @{
+            title = "核心與非核心隔離"
+            law_section = "# 第 10 輪：核心與非核心隔離"
+            purpose = "讓非核心功能壞掉也不影響交易核心"
+            deliverables = @(
+                "核心組件（委託/成交/風控）必須與非核心組件（研究/教學/多帳戶）完全隔離",
+                "非核心失敗時核心必須繼續正常運作",
+                "隔離邊界必須有清楚的介面契約，不可直接依賴"
+            )
+            test_targets = @(
+                "test_core_isolation.ps1: 模擬非核心失敗（timeout/error），驗證核心不受影響",
+                "test_fallback.ps1: 驗證降級到保守模式仍可執行核心交易"
+            )
+        }
+        "R-011" = @{
+            title = "效能與載入架構優化"
+            law_section = "# 第 11 輪：效能與載入架構優化"
+            purpose = "避免功能一多網站就卡死"
+            deliverables = @(
+                "頁面載入變輕（lazy load、code splitting）",
+                "API 響應時間改善",
+                "大資料查詢不阻擋主執行緒"
+            )
+            test_targets = @(
+                "test_page_load.ps1: 測量頁面載入時間，設定閾值",
+                "test_api_latency.ps1: 驗證 API 響應時間在限制內"
+            )
+        }
+        "R-011A" = @{
+            title = "決策延遲預算 / AI 超時降級機制"
+            law_section = "# 第 11A 輪：決策延遲預算 / AI 超時降級機制"
+            purpose = "避免 AI 推論延遲過高，導致決策落後於市場"
+            deliverables = @(
+                "定義決策延遲預算（latency budget）",
+                "AI 推論超時時自動降級到保守策略",
+                "降級條件、觸發門檻必須可配置"
+            )
+            test_targets = @(
+                "test_timeout_degradation.ps1: 模擬 AI 延遲，驗證觸發降級",
+                "test_latency_budget.ps1: 驗證延遲超標時的行為"
+            )
+        }
+        "R-012" = @{
+            title = "實時與歷史資料分離"
+            law_section = "# 第 12 輪：實時與歷史資料分離"
+            purpose = "避免歷史查詢影響即時決策"
+            deliverables = @(
+                "實時資料流（行情/持倉）與歷史查詢完全分離",
+                "歷史查詢不得阻塞實時決策路徑",
+                "資料流分離架構必須可驗證"
+            )
+            test_targets = @(
+                "test_data_flow_separation.ps1: 驗證實時與歷史資料隔離",
+                "test_query_non_blocking.ps1: 歷史查詢不影響實時延遲"
+            )
+        }
+        "R-013" = @{
+            title = "可觀測性統一格式"
+            law_section = "# 第 13 輪：可觀測性統一格式"
+            purpose = "讓所有 log、alert、event 格式一致，便於排查"
+            deliverables = @(
+                "統一 event schema（timestamp, level, source, message, metadata）",
+                "所有模組使用相同日誌格式",
+                "異常事件有統一路由和告警格式"
+            )
+            test_targets = @(
+                "test_log_format.ps1: 驗證所有日誌符合統一 schema",
+                "test_event_schema.ps1: 驗證 event 格式一致性"
+            )
+        }
+        "R-014" = @{
+            title = "多層快取策略"
+            law_section = "# 第 14 輪：多層快取策略"
+            purpose = "減少重複查詢與延遲"
+            deliverables = @(
+                "API 壓力下降（cache hit ratio 可測量）",
+                "頁面反應變快（快取策略可配置）",
+                "快取失效邏輯明確"
+            )
+            test_targets = @(
+                "test_cache_hit.ps1: 驗證快取命中率",
+                "test_cache_invalidation.ps1: 驗證快取失效邏輯"
+            )
+        }
+        "R-015" = @{
+            title = "欄位命名 / API schema / 資料契約固定"
+            law_section = "# 第 15 輪：欄位命名 / API schema / 資料契約固定"
+            purpose = "避免前後端欄位名與資料格式越做越亂"
+            deliverables = @(
+                "統一欄位命名規範（PascalCase/camelCase 一致）",
+                "API schema 版本化",
+                "資料契約文件化"
+            )
+            test_targets = @(
+                "test_schema_consistency.ps1: 驗證 API 回應符合 schema",
+                "test_field_naming.ps1: 驗證欄位命名一致性"
+            )
+        }
     }
     
-    return "Execute $RoundId with full formal governance compliance. Focus on automation/control/ directory. Create new .ps1 files as needed, add re-runnable tests, produce evidence artifacts."
+    if ($roundMap.ContainsKey($RoundId)) {
+        $info = $roundMap[$RoundId]
+        $task = @"
+[TASK] $RoundId: $($info.title)
+[目的] $($info.purpose)
+
+[法典來源] 詳見：$($info.law_section)
+
+[本輪必須交付]
+$($info.deliverables | ForEach-Object { "  - $_" } | Out-String)
+
+[實作要求]
+1. 在 automation/control/ 目錄下實作相關功能
+2. 建立對應測試檔案（test_*.ps1）驗證核心邏輯
+3. 更新 candidates/$RoundId/report.json 包含：
+   - tests_created: true
+   - evidence_package_created: true
+   - formal_status_code: candidate_ready_awaiting_manual_review
+   - files_created: [實際建立的檔案列表]
+   - implementation_summary: "具體做了什麼"
+4. 運行測試並確保通過
+
+[禁止]
+- 不要修改 server_v2.py、broker core、live trading、risk core
+- 不要只做表層顯示或假資料
+- 不要只留 TODO 或註解
+- 不要修改已通過的輪次內容
+
+[BEGIN IMPLEMENTATION]
+"@
+        return $task
+    }
+    
+    return "Execute $RoundId with full formal governance compliance. Target: automation/control/ directory. Create test files and evidence package."
 }
 
 # Execute Aider for a round

@@ -745,6 +745,18 @@ class BridgeHandler(BaseHTTPRequestHandler):
                 'last_action_status': last_action.get('status', 'none'),
                 'last_action_action': last_action.get('action', 'none')
             })
+        elif path == '/return-artifact':
+            state = get_state()
+            artifact_path = state.get('latest_return_artifact', '')
+            if artifact_path and os.path.exists(artifact_path):
+                try:
+                    with open(artifact_path, 'r', encoding='utf-8-sig') as f:
+                        content = f.read()
+                    self.send_json(200, {'status': 'found', 'content': content})
+                except Exception as e:
+                    self.send_json(200, {'status': 'error', 'message': str(e)})
+            else:
+                self.send_json(200, {'status': 'not_found'})
         else:
             self.send_json(404, {'error': 'Not found'})
 
@@ -792,6 +804,7 @@ def main():
     print(f"  GET  http://{host}:{port}/last-action")
     print(f"  GET  http://{host}:{port}/health")
     print(f"  GET  http://{host}:{port}/loop-status")
+    print(f"  GET  http://{host}:{port}/return-artifact")
     print(f"  POST http://{host}:{port}/start-loop")
     print(f"  POST http://{host}:{port}/drain")
     print(f"  POST http://{host}:{port}/stop-now")
