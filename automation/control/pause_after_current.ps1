@@ -1,4 +1,4 @@
-﻿$repoRoot = (Resolve-Path (Join-Path $PSScriptRoot "..\..")).Path
+$repoRoot = (Resolve-Path (Join-Path $PSScriptRoot "..\..")).Path
 Set-Location $repoRoot
 
 $controlDir = Join-Path $repoRoot "automation\control"
@@ -30,7 +30,8 @@ $state.last_update = (Get-Date).ToString("s")
 $state.updated_at = (Get-Date).ToString("s")
 $state.last_action = "drain_requested"
 
-$state | ConvertTo-Json -Depth 10 | Set-Content $statePath -Encoding UTF8
+$stateJson = $state | ConvertTo-Json -Depth 10
+[System.IO.File]::WriteAllText($statePath, $stateJson, [System.Text.Encoding]::UTF8)
 
 Write-Host "Drain requested. Will pause after current cycle." -ForegroundColor Yellow
 Write-Host "Flag: $flagPath"

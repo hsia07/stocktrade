@@ -173,7 +173,9 @@ try {
     $state.run_state = "stopped_error"
     $state.stop_reason = "start_failed"
     $state.last_error = $_.Exception.Message
-    $state | ConvertTo-Json -Depth 10 | Set-Content $statePath -Encoding UTF8
+    $state | ConvertTo-Json -Depth 10 | Out-Null
+    $stateJson = $state | ConvertTo-Json -Depth 10
+    [System.IO.File]::WriteAllText($statePath, $stateJson, [System.Text.Encoding]::UTF8)
     
     exit 1
 }

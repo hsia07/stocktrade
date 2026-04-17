@@ -1,4 +1,4 @@
-﻿$repoRoot = (Resolve-Path (Join-Path $PSScriptRoot "..\..")).Path
+$repoRoot = (Resolve-Path (Join-Path $PSScriptRoot "..\..")).Path
 Set-Location $repoRoot
 
 $controlDir = Join-Path $repoRoot "automation\control"
@@ -36,7 +36,8 @@ $state.updated_at = (Get-Date).ToString("s")
 $state.last_action = "stop_now"
 $state.last_error = "Immediate stop requested by user"
 
-$state | ConvertTo-Json -Depth 10 | Set-Content $statePath -Encoding UTF8
+$stateJson = $state | ConvertTo-Json -Depth 10
+[System.IO.File]::WriteAllText($statePath, $stateJson, [System.Text.Encoding]::UTF8)
 
 Write-Host "Immediate stop requested." -ForegroundColor Red
 Write-Host "Flag: $stopFlag"

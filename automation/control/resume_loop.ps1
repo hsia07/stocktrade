@@ -1,4 +1,4 @@
-﻿$repoRoot = (Resolve-Path (Join-Path $PSScriptRoot "..\..")).Path
+$repoRoot = (Resolve-Path (Join-Path $PSScriptRoot "..\..")).Path
 Set-Location $repoRoot
 
 $controlDir = Join-Path $repoRoot "automation\control"
@@ -40,7 +40,8 @@ $state.pause_requested = $false
 $state.acceptance_mode = $false
 $state.escalation_required = $false
 $state.last_update = (Get-Date).ToString("s")
-$state | ConvertTo-Json -Depth 5 | Set-Content $statePath -Encoding UTF8
+$stateJson = $state | ConvertTo-Json -Depth 5
+[System.IO.File]::WriteAllText($statePath, $stateJson, [System.Text.Encoding]::UTF8)
 
 Write-Host "Loop resumed." -ForegroundColor Green
 Write-Host "State updated: $statePath"

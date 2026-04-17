@@ -1,4 +1,4 @@
-﻿$repoRoot = (Resolve-Path (Join-Path $PSScriptRoot "..\..")).Path
+$repoRoot = (Resolve-Path (Join-Path $PSScriptRoot "..\..")).Path
 Set-Location $repoRoot
 
 $controlDir = Join-Path $repoRoot "automation\control"
@@ -58,7 +58,7 @@ next_recommended_action: $nextAction
 === END_RETURN_TO_CHATGPT ===
 "@
 
-Set-Content -Path $returnPath -Value $returnBlock -Encoding UTF8
+[System.IO.File]::WriteAllText($returnPath, $returnBlock, [System.Text.Encoding]::UTF8)
 Write-Host "RETURN_TO_CHATGPT synced." -ForegroundColor Green
 Write-Host $returnPath
 

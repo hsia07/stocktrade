@@ -5,6 +5,7 @@
 import json
 import subprocess
 import os
+import threading
 from http.server import HTTPServer, BaseHTTPRequestHandler
 from urllib.parse import urlparse
 import sys
@@ -44,14 +45,14 @@ def save_json(path, data):
         json.dump(data, f, ensure_ascii=True, indent=2)
 
 
-def run_ps_script(script_path):
+def run_ps_script(script_path, timeout=60):
     try:
         result = subprocess.run(
             ['powershell.exe', '-ExecutionPolicy', 'Bypass', '-NoProfile', '-File', script_path],
             capture_output=True,
             encoding='utf-8',
             errors='replace',
-            timeout=60,
+            timeout=timeout,
             cwd=REPO_ROOT
         )
         return {
@@ -64,6 +65,55 @@ def run_ps_script(script_path):
         return {'success': False, 'exit_code': -1, 'stdout': '', 'stderr': 'Timeout'}
     except Exception as e:
         return {'success': False, 'exit_code': -1, 'stdout': '', 'stderr': str(e)}
+
+
+def run_ps_script_background(script_path):
+    """Run a PS script in a background thread with long timeout.
+    
+    Updates last_action.runtime.json when done.
+    The panel polls /last-action and /state to see progress.
+    """
+    def _worker():
+        try:
+            result = subprocess.run(
+                ['powershell.exe', '-ExecutionPolicy', 'Bypass', '-NoProfile', '-File', script_path],
+                capture_output=True,
+                encoding='utf-8',
+                errors='replace',
+                timeout=1800,
+                cwd=REPO_ROOT
+            )
+            ps_result = {
+                'success': result.returncode == 0,
+                'exit_code': result.returncode,
+                'stdout': result.stdout,
+                'stderr': result.stderr
+            }
+        except subprocess.TimeoutExpired:
+            ps_result = {'success': False, 'exit_code': -1, 'stdout': '', 'stderr': 'Timeout (30min)'}
+        except Exception as e:
+            ps_result = {'success': False, 'exit_code': -1, 'stdout': '', 'stderr': str(e)}
+        
+        if ps_result['success']:
+            action_result = {
+                'status': 'success',
+                'stage': 'start_loop_completed',
+                'stdout': ps_result.get('stdout', '')[-2000:],
+                'action': 'loop_completed'
+            }
+        else:
+            action_result = {
+                'status': 'failed',
+                'stage': 'start_loop',
+                'reason': ps_result.get('stderr', 'Start loop failed')[-1000:],
+                'stdout': ps_result.get('stdout', '')[-2000:],
+                'action': 'start_failed'
+            }
+        save_json(LAST_ACTION_FILE, action_result)
+    
+    t = threading.Thread(target=_worker, daemon=True)
+    t.start()
+    return t
 
 
 def check_can_approve():
@@ -272,7 +322,11 @@ def check_can_start():
 
 
 def do_start_loop():
-    """Execute start_loop.ps1 to begin or resume the main control loop"""
+    """Execute start_loop.ps1 in a background thread.
+    
+    Returns immediately so the panel doesn't hang.
+    The panel polls /state and /last-action to see progress.
+    """
     check = check_can_start()
     if not check['can_start']:
         result = {
@@ -285,9 +339,7 @@ def do_start_loop():
     
     start_script = os.path.join(CONTROL_DIR, 'start_loop.ps1')
     
-    # Check if script exists
     if not os.path.exists(start_script):
-        # If start_loop.ps1 doesn't exist, run main_control_loop.ps1 directly
         start_script = os.path.join(CONTROL_DIR, 'main_control_loop.ps1')
         if not os.path.exists(start_script):
             result = {
@@ -298,26 +350,23 @@ def do_start_loop():
             save_json(LAST_ACTION_FILE, result)
             return result
     
-    ps_result = run_ps_script(start_script)
+    # Record that we're starting (before the thread finishes)
+    save_json(LAST_ACTION_FILE, {
+        'status': 'running',
+        'stage': 'start_loop',
+        'action': 'loop_starting',
+        'message': 'Control loop starting in background. Poll /state and /last-action for progress.'
+    })
     
-    if ps_result['success']:
-        result = {
-            'status': 'success',
-            'stage': 'start_loop',
-            'stdout': ps_result.get('stdout', ''),
-            'action': 'loop_started'
-        }
-    else:
-        result = {
-            'status': 'failed',
-            'stage': 'start_loop',
-            'reason': ps_result.get('stderr', 'Start loop failed'),
-            'stdout': ps_result.get('stdout', ''),
-            'action': 'start_failed'
-        }
+    # Run in background thread - won't block the HTTP response
+    run_ps_script_background(start_script)
     
-    save_json(LAST_ACTION_FILE, result)
-    return result
+    return {
+        'status': 'started',
+        'stage': 'start_loop',
+        'action': 'loop_starting_in_background',
+        'message': 'Control loop started in background. Poll /state for progress and /last-action for completion.'
+    }
 
 
 def do_drain():
@@ -686,6 +735,16 @@ class BridgeHandler(BaseHTTPRequestHandler):
             self.send_json(200, get_state())
         elif path == '/can-start':
             self.send_json(200, check_can_start())
+        elif path == '/loop-status':
+            last_action = get_last_action()
+            state = get_state()
+            self.send_json(200, {
+                'loop_active': state.get('run_state') == 'running',
+                'run_state': state.get('run_state', 'unknown'),
+                'current_round': state.get('current_round', 'none'),
+                'last_action_status': last_action.get('status', 'none'),
+                'last_action_action': last_action.get('action', 'none')
+            })
         else:
             self.send_json(404, {'error': 'Not found'})
 
@@ -732,6 +791,7 @@ def main():
     print(f"  GET  http://{host}:{port}/can-start")
     print(f"  GET  http://{host}:{port}/last-action")
     print(f"  GET  http://{host}:{port}/health")
+    print(f"  GET  http://{host}:{port}/loop-status")
     print(f"  POST http://{host}:{port}/start-loop")
     print(f"  POST http://{host}:{port}/drain")
     print(f"  POST http://{host}:{port}/stop-now")

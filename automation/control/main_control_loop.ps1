@@ -269,7 +269,7 @@ REPLY_ID: $replyId
 "@
 
     $artifactPath = Join-Path $artifactsDir "prompt_${RoundId}_${replyId}.txt"
-    Set-Content -Path $artifactPath -Value $promptArtifact -Encoding UTF8
+    [System.IO.File]::WriteAllText($artifactPath, $promptArtifact, [System.Text.Encoding]::UTF8)
     
     return @{
         path = $artifactPath
@@ -317,10 +317,10 @@ next_recommended_action: $NextAction
 === END_RETURN_TO_CHATGPT ===
 "@
 
-    Set-Content -Path $returnArtifactFile -Value $returnArtifact -Encoding UTF8
+    [System.IO.File]::WriteAllText($returnArtifactFile, $returnArtifact, [System.Text.Encoding]::UTF8)
     
     $artifactPath = Join-Path $artifactsDir "return_${RoundId}_${ReplyId}.txt"
-    Set-Content -Path $artifactPath -Value $returnArtifact -Encoding UTF8
+    [System.IO.File]::WriteAllText($artifactPath, $returnArtifact, [System.Text.Encoding]::UTF8)
     
     return @{
         runtime_path = $returnArtifactFile
@@ -540,6 +540,11 @@ function Invoke-Round {
     # ACTUAL EXECUTION: Call Aider to execute the round task
     Write-Host "[LOOP] ACTUAL EXECUTION: Starting Aider for $RoundId..." -ForegroundColor Green
     
+    # Update state to show Aider is running (panel polls this)
+    $State.last_action = "aider_executing"
+    $State.aider_status = "running"
+    Save-State $State
+    
     # Prepare task description based on round
     $taskDescription = Get-RoundTaskDescription -RoundId $RoundId
     
@@ -551,6 +556,7 @@ function Invoke-Round {
         -RepoRoot $repoRoot
     
     if ($aiderResult.success) {
+        $State.aider_status = "completed"
         $State.candidate_checklist.theme_completed = $true
         $State.candidate_checklist.candidate_branch_auditable = $true
         $State.candidate_checklist.candidate_commit_auditable = $true
@@ -574,6 +580,7 @@ function Invoke-Round {
         Write-Host "[LOOP] Aider execution completed successfully" -ForegroundColor Green
     } else {
         Write-Host "[LOOP] Aider execution FAILED: $($aiderResult.error)" -ForegroundColor Red
+        $State.aider_status = "failed"
         $State.run_state = "stopped"
         $State.stop_reason = "aider_execution_failed"
         $State.last_action = "round_blocked_aider_failed"
@@ -853,18 +860,19 @@ function Start-MainControlLoop {
     $runReport.duration_seconds = [int]($endTime - $startTime).TotalSeconds
     
     # Get git status for report
-    $runReport.local_head = git rev-parse HEAD 2>&1
-    try { $runReport.remote_head = git rev-parse origin/work/r006-governance 2>&1 } catch { $runReport.remote_head = "unknown" }
-    $runReport.working_tree_clean = (git status --porcelain 2>&1 | Measure-Object).Count -eq 0
-    $runReport.untracked_files = git ls-files --others --exclude-standard 2>&1
+    $runReport.local_head = (git rev-parse HEAD 2>&1) | Out-String
+    try { $runReport.remote_head = (git rev-parse origin/work/r006-governance 2>&1) | Out-String } catch { $runReport.remote_head = "unknown" }
+    $runReport.working_tree_clean = ((git status --porcelain 2>&1) | Out-String).Trim().Length -eq 0
+    $runReport.untracked_files = (git ls-files --others --exclude-standard 2>&1) | Out-String
     
     # Save run report
     $reportPath = Join-Path $reportsDir "run_report_${runId}.json"
-    $runReport | ConvertTo-Json -Depth 10 | Set-Content $reportPath -Encoding UTF8
+    $runReportJson = $runReport | ConvertTo-Json -Depth 10
+    [System.IO.File]::WriteAllText($reportPath, $runReportJson, [System.Text.Encoding]::UTF8)
     
     # Update latest report link
     $latestReportPath = Join-Path $reportsDir "latest_run_report.json"
-    $runReport | ConvertTo-Json -Depth 10 | Set-Content $latestReportPath -Encoding UTF8
+    [System.IO.File]::WriteAllText($latestReportPath, $runReportJson, [System.Text.Encoding]::UTF8)
     
     Write-Host ""
     Write-Host "========================================" -ForegroundColor Cyan
@@ -915,7 +923,8 @@ function Invoke-AiderExecution {
     
     # Create candidate branch
     $candidateBranch = "candidates/$RoundId"
-    $currentBranch = git branch --show-current 2>&1
+    $currentBranch = (git branch --show-current 2>&1) | Out-String
+    $currentBranch = $currentBranch.Trim()
     
     # CRITICAL: Check if we're already on the candidate branch
     if ($currentBranch -eq $candidateBranch) {
@@ -924,10 +933,10 @@ function Invoke-AiderExecution {
     } else {
         # We're not on the candidate branch, safe to delete and recreate
         # Check if candidate branch exists
-        $localExists = git branch --list $candidateBranch 2>&1
-        if ($localExists) {
+        $localExists = (git branch --list $candidateBranch 2>&1) | Out-String
+        if ($localExists -match $candidateBranch) {
             Write-Host "[AIDER] Removing existing candidate branch..." -ForegroundColor Yellow
-            git branch -D $candidateBranch 2>&1
+            git branch -D $candidateBranch 2>&1 | Out-Null
             $deleteExitCode = $LASTEXITCODE
             if ($deleteExitCode -ne 0) {
                 Write-Host "[AIDER] Warning: Failed to delete branch (exit: $deleteExitCode), continuing..." -ForegroundColor Yellow
@@ -936,7 +945,7 @@ function Invoke-AiderExecution {
         
         # Create and switch to candidate branch
         Write-Host "[AIDER] Creating candidate branch: $candidateBranch" -ForegroundColor Cyan
-        git checkout -b $candidateBranch 2>&1
+        git checkout -b $candidateBranch 2>&1 | Out-Null
         $createExitCode = $LASTEXITCODE
         if ($createExitCode -ne 0) {
             return @{
@@ -1004,7 +1013,7 @@ BEGIN IMPLEMENTATION NOW.
     }
     
     Write-Host "[AIDER] Executing Aider for $RoundId..." -ForegroundColor Cyan
-    Write-Host "[AIDER] This may take several minutes..." -ForegroundColor Yellow
+    Write-Host "[AIDER] Timeout: 600 seconds (10 minutes max)" -ForegroundColor Yellow
     
     # Execute Aider
     $outputDir = Join-Path $RepoRoot "automation\control\candidates\$RoundId"
@@ -1014,30 +1023,73 @@ BEGIN IMPLEMENTATION NOW.
     
     $logFile = Join-Path $outputDir "aider.log"
     $errorFile = Join-Path $outputDir "aider.error.log"
+    $aiderTimeoutSeconds = 600
     
     try {
         $env:OLLAMA_API_BASE = "http://127.0.0.1:11434"
         
-        # Run Aider with minimal context - let it analyze the codebase itself
-        & $aiderExe `
-            "--model", "ollama_chat/qwen2.5-coder:7b" `
-            "--no-auto-commits" `
-            "--no-dirty-commits" `
-            "--message-file", $taskFile `
-            2>&1 | Tee-Object -FilePath $logFile
+        # Run Aider using System.Diagnostics.Process with timeout
+        $psi = New-Object System.Diagnostics.ProcessStartInfo
+        $psi.FileName = $aiderExe
+        $psi.Arguments = "--model ollama_chat/qwen2.5-coder:7b --no-auto-commits --no-dirty-commits --message-file `"$taskFile`""
+        $psi.RedirectStandardOutput = $true
+        $psi.RedirectStandardError = $true
+        $psi.UseShellExecute = $false
+        $psi.CreateNoWindow = $true
+        $psi.WorkingDirectory = $RepoRoot
+        $psi.EnvironmentVariables["OLLAMA_API_BASE"] = "http://127.0.0.1:11434"
         
-        $exitCode = $LASTEXITCODE
+        $process = [System.Diagnostics.Process]::Start($psi)
+        
+        # Read stdout and stderr asynchronously
+        $stdoutBuilder = New-Object System.Text.StringBuilder
+        $stderrBuilder = New-Object System.Text.StringBuilder
+        
+        $stdoutTask = $process.StandardOutput.ReadToEndAsync()
+        $stderrTask = $process.StandardError.ReadToEndAsync()
+        
+        $exited = $process.WaitForExit($aiderTimeoutSeconds * 1000)
+        
+        if (-not $exited) {
+            Write-Host "[AIDER] TIMEOUT: Aider exceeded $($aiderTimeoutSeconds)s, killing process..." -ForegroundColor Red
+            try {
+                $process.Kill()
+            } catch {}
+            
+            $exitCode = -1
+            $timedOut = $true
+        } else {
+            $exitCode = $process.ExitCode
+            $timedOut = $false
+        }
+        
+        $stdout = $stdoutTask.Result
+        $stderr = $stderrTask.Result
+        
+        # Write logs
+        [System.IO.File]::WriteAllText($logFile, $stdout, [System.Text.Encoding]::UTF8)
+        if ($stderr) {
+            [System.IO.File]::WriteAllText($errorFile, $stderr, [System.Text.Encoding]::UTF8)
+        }
+        
+        Write-Host "[AIDER] Exit code: $exitCode" -ForegroundColor $(if ($exitCode -eq 0) {'Green'} else {'Yellow'})
+        if ($timedOut) {
+            Write-Host "[AIDER] WARNING: Execution was killed due to timeout" -ForegroundColor Red
+        }
         
         # Get modified files
-        $modifiedFiles = git diff --name-only HEAD 2>&1
-        $untrackedFiles = git ls-files --others --exclude-standard 2>&1
-        $allChanges = @($modifiedFiles) + @($untrackedFiles) | Where-Object { $_ }
+        $modifiedFiles = (git diff --name-only HEAD 2>&1) | Out-String
+        $untrackedFiles = (git ls-files --others --exclude-standard 2>&1) | Out-String
+        $modArray = if ($modifiedFiles.Trim()) { $modifiedFiles.Trim() -split "`n" | Where-Object { $_.Trim() } } else { @() }
+        $untArray = if ($untrackedFiles.Trim()) { $untrackedFiles.Trim() -split "`n" | Where-Object { $_.Trim() } } else { @() }
+        $allChanges = @($modArray) + @($untArray)
         
         # Commit the changes
         if ($allChanges.Count -gt 0) {
             git add . 2>&1 | Out-Null
             git commit -m "candidate($RoundId): Implement round requirements - $TaskDescription" 2>&1 | Out-Null
-            $commitHash = git rev-parse HEAD 2>&1
+            $commitHash = (git rev-parse HEAD 2>&1) | Out-String
+            $commitHash = $commitHash.Trim()
         } else {
             $commitHash = "NO_CHANGES"
         }
@@ -1050,11 +1102,13 @@ BEGIN IMPLEMENTATION NOW.
             exit_code = $exitCode
             log_file = $logFile
             modified_files = @($allChanges)
-            success = ($exitCode -eq 0 -or $commitHash -ne "NO_CHANGES")
+            timed_out = $timedOut
+            success = (-not $timedOut -and ($exitCode -eq 0 -or $commitHash -ne "NO_CHANGES"))
         }
         
         $reportPath = Join-Path $outputDir "report.json"
-        $report | ConvertTo-Json -Depth 10 | Set-Content $reportPath -Encoding UTF8
+        $reportJson = $report | ConvertTo-Json -Depth 10
+        [System.IO.File]::WriteAllText($reportPath, $reportJson, [System.Text.Encoding]::UTF8)
         
         # Return to original branch
         git checkout $currentBranch 2>&1 | Out-Null
@@ -1067,10 +1121,12 @@ BEGIN IMPLEMENTATION NOW.
                 commit_hash = $commitHash
             }
         } else {
+            $failReason = if ($timedOut) { "Aider timed out after $($aiderTimeoutSeconds)s" } else { "Aider execution failed or no changes made" }
             return @{
                 success = $false
-                error = "Aider execution failed or no changes made"
+                error = $failReason
                 summary = "Execution failed - check $logFile"
+                timed_out = $timedOut
             }
         }
         

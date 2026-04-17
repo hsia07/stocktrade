@@ -91,7 +91,8 @@ Write-Host "[INFO] Set OLLAMA_API_BASE=$env:OLLAMA_API_BASE" -ForegroundColor Gr
 Write-Host ""
 Write-Host "[INFO] Running pre-flight checks..." -ForegroundColor Cyan
 
-$currentBranch = git branch --show-current 2>&1
+$currentBranch = (git branch --show-current 2>&1) | Out-String
+$currentBranch = $currentBranch.Trim()
 if ($currentBranch -notmatch '^work/') {
     Write-Host "[ERROR] BLOCKED: Not on work/* branch" -ForegroundColor Red
     Write-Host "[ERROR] Current: $currentBranch"
@@ -160,8 +161,8 @@ Write-Host "[INFO] Creating candidate branch..." -ForegroundColor Cyan
 
 $candidateBranch = "candidates/$CandidateId"
 
-$localExists = git branch --list $candidateBranch 2>&1
-if ($localExists) {
+$localExists = (git branch --list $candidateBranch 2>&1) | Out-String
+if ($localExists -match $candidateBranch) {
     Write-Host "[ERROR] BLOCKED: Local candidate branch already exists: $candidateBranch" -ForegroundColor Red
     exit 1
 }
@@ -188,7 +189,7 @@ $logFile = "$outputDir/aider.log"
 $diffFile = "$outputDir/candidate.diff"
 $reportFile = "$outputDir/report.json"
 
-$taskContent | Set-Content $taskFile -Encoding UTF8
+[System.IO.File]::WriteAllText((Resolve-Path $taskFile).Path, $taskContent, [System.Text.Encoding]::UTF8)
 Write-Host "[OK] Task saved to: $taskFile" -ForegroundColor Gray
 
 Write-Host ""
@@ -281,7 +282,8 @@ $report = @{
     modified_forbidden_paths = @($modifiedForbidden)
 }
 
-$report | ConvertTo-Json -Depth 10 | Set-Content $reportFile -Encoding UTF8
+$reportJson = $report | ConvertTo-Json -Depth 10
+[System.IO.File]::WriteAllText((Resolve-Path $reportFile).Path, $reportJson, [System.Text.Encoding]::UTF8)
 Write-Host "[OK] Report saved to: $reportFile" -ForegroundColor Gray
 
 Write-Host ""

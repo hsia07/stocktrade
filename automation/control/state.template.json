@@ -4,6 +4,7 @@
   
   "run_state": "stopped",
   "last_action": "system_init",
+  "aider_status": "idle",
   "stop_reason": null,
   
   "current_phase": "Phase 1",

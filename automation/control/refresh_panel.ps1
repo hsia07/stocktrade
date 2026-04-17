@@ -637,11 +637,12 @@ last_action: $lastAction</div>
         });
         const data = await response.json();
 
-        if (data.status === 'success') {
+        if (data.status === 'started' || data.status === 'success') {
           btn.className = 'btn done';
           btn.textContent = '執行中';
-          setOperationStatus('主控制循環已啟動', 'success');
+          setOperationStatus('主控制循環已啟動 (背景執行中)，輪詢狀態更新...', 'success');
           updateStateDisplay();
+          pollLoopProgress();
         } else if (data.status === 'blocked') {
           btn.className = 'btn warn';
           btn.textContent = 'Start / Resume';
@@ -659,6 +660,38 @@ last_action: $lastAction</div>
         btn.disabled = false;
         setOperationStatus('無法連接到控制橋接器，請確認 bridge 是否在執行', 'error');
       }
+    }
+
+    let loopPollTimer = null;
+    function pollLoopProgress() {
+      if (loopPollTimer) clearInterval(loopPollTimer);
+      loopPollTimer = setInterval(async () => {
+        try {
+          const resp = await fetch(`${API_BASE}/loop-status`);
+          const ls = await resp.json();
+          const btn = document.getElementById('resumeBtn');
+
+          if (ls.loop_active) {
+            btn.textContent = '執行中: ' + (ls.current_round || '...');
+            updateStateDisplay();
+          } else {
+            clearInterval(loopPollTimer);
+            loopPollTimer = null;
+            btn.className = 'btn ok';
+            btn.textContent = 'Start / Resume';
+            btn.disabled = false;
+            updateStateDisplay();
+
+            const lastResp = await fetch(`${API_BASE}/last-action`);
+            const lastData = await lastResp.json();
+            if (lastData.status === 'success') {
+              setOperationStatus('循環完成', 'success');
+            } else if (lastData.status === 'failed') {
+              setOperationStatus('循環失敗: ' + (lastData.reason || ''), 'error');
+            }
+          }
+        } catch (e) {}
+      }, 3000);
     }
 
     async function drainAfterCurrent() {
@@ -898,6 +931,6 @@ last_action: $lastAction</div>
 </html>
 "@
 
-Set-Content -Path $outputPath -Value $html -Encoding UTF8
+[System.IO.File]::WriteAllText($outputPath, $html, [System.Text.Encoding]::UTF8)
 Write-Host "Runtime panel generated:" -ForegroundColor Green
 Write-Host $outputPath
