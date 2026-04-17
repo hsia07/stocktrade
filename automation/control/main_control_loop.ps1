@@ -24,6 +24,9 @@ param(
 
 $ErrorActionPreference = "Stop"
 $ProgressPreference = "Continue"
+$OutputEncoding = [System.Text.Encoding]::UTF8
+[Console]::OutputEncoding = [System.Text.Encoding]::UTF8
+[System.Text.Encoding]::Default = [System.Text.Encoding]::UTF8
 
 # Setup paths
 $repoRoot = Resolve-Path $RepoRoot
@@ -165,7 +168,7 @@ function Save-State {
     param($State)
     $State.updated_at = (Get-Date).ToString("yyyy-MM-ddTHH:mm:ss")
     $json = $State | ConvertTo-Json -Depth 10
-    [System.IO.File]::WriteAllText($stateFile, $json, [System.Text.Encoding]::UTF8)
+    [System.IO.File]::WriteAllText($stateFile, $json, (New-Object System.Text.UTF8Encoding $true))
 }
 
 # Generate unique run ID
