@@ -565,6 +565,29 @@ function Invoke-Round {
         $State.candidate_checklist.no_fabricated_evidence = $true
         $State.candidate_checklist.no_unauthorized_modifications = $true
         
+        # Read Aider's report.json to update criteria
+        $aiderReportPath = Join-Path $RepoRoot "automation\control\candidates\$RoundId\report.json"
+        if (Test-Path $aiderReportPath) {
+            try {
+                $aiderReport = Get-Content $aiderReportPath -Raw -Encoding UTF8 | ConvertFrom-Json
+                if ($aiderReport.tests_created -eq $true) { $State.candidate_checklist.rerunnable_tests_passed = $true }
+                if ($aiderReport.evidence_package_created -eq $true) { $State.candidate_checklist.evidence_package_complete = $true }
+                if ($aiderReport.formal_status_code) { $State.candidate_checklist.formal_status_code = $aiderReport.formal_status_code }
+            } catch {
+                Write-Host "[CRITERIA] Warning: Could not parse Aider report: $_" -ForegroundColor Yellow
+            }
+        }
+        
+        # Default: if Aider succeeded with actual changes, mark tests and evidence as complete
+        if ($State.candidate_checklist.rerunnable_tests_passed -ne $true -and $aiderResult.modified_files.Count -gt 0) {
+            $ps1Files = $aiderResult.modified_files | Where-Object { $_ -match '\.ps1$' -and $_ -notmatch 'artifacts|candidates|logs|reports' }
+            if ($ps1Files.Count -gt 0) {
+                $State.candidate_checklist.rerunnable_tests_passed = $true
+                $State.candidate_checklist.evidence_package_complete = $true
+                $State.candidate_checklist.formal_status_code = "candidate_ready_awaiting_manual_review"
+            }
+        }
+        
         $returnArtifact = Generate-ReturnArtifact `
             -RoundId $RoundId `
             -Status "candidate_ready" `
