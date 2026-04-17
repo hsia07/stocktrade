@@ -335,7 +335,7 @@ next_recommended_action: $NextAction
 function Test-CandidateCriteria {
     param([object]$State, [string]$RoundId)
     
-    Write-Host "[CRITERIA] Checking 10 candidate criteria for $RoundId..." -ForegroundColor Cyan
+    Write-Host "[CRITERIA] Checking 10 candidate criteria for $RoundId against law requirements..." -ForegroundColor Cyan
     
     $checklist = $State.candidate_checklist
     $results = @{
@@ -343,7 +343,100 @@ function Test-CandidateCriteria {
         failed_criteria = @()
     }
     
-    # 1. Unique theme completed
+    # Per-round test files required by law document
+    $requiredTests = @{
+        "R-010" = @("test_core_isolation.ps1", "test_fallback.ps1")
+        "R-011" = @("test_page_load.ps1", "test_api_latency.ps1")
+        "R-011A" = @("test_timeout_degradation.ps1", "test_latency_budget.ps1")
+        "R-012" = @("test_data_flow_separation.ps1", "test_query_non_blocking.ps1")
+        "R-013" = @("test_log_format.ps1", "test_event_schema.ps1")
+        "R-014" = @("test_cache_hit.ps1", "test_cache_invalidation.ps1")
+        "R-015" = @("test_schema_consistency.ps1", "test_field_naming.ps1")
+    }
+    
+    # Per-round law deliverables (what must be implemented)
+    $lawDeliverables = @{
+        "R-010" = @("isolation", "fallback", "circuit")
+        "R-011" = @("performance", "lazy", "cache")
+        "R-011A" = @("timeout", "degradation", "budget")
+        "R-012" = @("separation", "realtime", "historical")
+        "R-013" = @("logging", "schema", "event")
+        "R-014" = @("cache", "layer", "strategy")
+        "R-015" = @("schema", "contract", "naming")
+    }
+    
+    $candidateDir = Join-Path $RepoRoot "automation\control\candidates\$RoundId"
+    $candidateBranch = "candidates/$RoundId"
+    
+    # ===== LAW REQUIREMENT CHECKS =====
+    
+    # Law Check 1: Required test files must exist and pass
+    if ($requiredTests.ContainsKey($RoundId)) {
+        foreach ($testFile in $requiredTests[$RoundId]) {
+            $testPath = Join-Path $candidateDir $testFile
+            if (-not (Test-Path $testPath)) {
+                $results.all_passed = $false
+                $results.failed_criteria += "law_required_test_missing: $testFile"
+                Write-Host "[CRITERIA-FAIL] Law requires $testFile but it does not exist" -ForegroundColor Red
+            } else {
+                # Try to run the test
+                try {
+                    $savedEAP = $ErrorActionPreference
+                    $ErrorActionPreference = 'Continue'
+                    $testOutput = & powershell -ExecutionPolicy Bypass -NoProfile -File $testPath 2>&1
+                    $testExit = $LASTEXITCODE
+                    $ErrorActionPreference = $savedEAP
+                    if ($testExit -ne 0) {
+                        $results.all_passed = $false
+                        $results.failed_criteria += "law_required_test_failed: $testFile (exit $testExit)"
+                        Write-Host "[CRITERIA-FAIL] $testFile exists but FAILED (exit $testExit)" -ForegroundColor Red
+                    } else {
+                        Write-Host "[CRITERIA] $testFile PASSED" -ForegroundColor Green
+                    }
+                } catch {
+                    $results.all_passed = $false
+                    $results.failed_criteria += "law_required_test_error: $testFile"
+                    Write-Host "[CRITERIA-FAIL] $testFile could not be executed: $_" -ForegroundColor Red
+                }
+            }
+        }
+    }
+    
+    # Law Check 2: Implementation must contain law-specific keywords (not just TODOs/comments)
+    $implDir = Join-Path $RepoRoot "automation\control"
+    $ps1Files = Get-ChildItem -Path $implDir -Filter "*.ps1" -Recurse -ErrorAction SilentlyContinue | Where-Object { $_.Name -notmatch '^(main_control_loop|refresh_panel|start_loop|validate_|sync_|reset_|check_|inspect|fix|apply)' }
+    $implKeywords = $lawDeliverables[$RoundId]
+    $hasRealImplementation = $false
+    if ($ps1Files -and $implKeywords) {
+        foreach ($file in $ps1Files) {
+            $content = Get-Content $file.FullName -Raw -Encoding UTF8 -ErrorAction SilentlyContinue
+            if ($content) {
+                $keywordFound = $false
+                foreach ($kw in $implKeywords) {
+                    if ($content -match $kw) { $keywordFound = $true; break }
+                }
+                if ($keywordFound) {
+                    # Also check it's not just TODO/comment
+                    $todoLines = ($content -split "`n" | Where-Object { $_ -match 'TODO|FIXME|placeholder|mock data' -and $_ -notmatch '^\s*#' }).Count
+                    $totalLines = ($content -split "`n").Count
+                    if ($todoLines -lt ($totalLines * 0.5)) {
+                        $hasRealImplementation = $true
+                        Write-Host "[CRITERIA] Found real implementation in: $($file.Name)" -ForegroundColor Green
+                        break
+                    }
+                }
+            }
+        }
+        if (-not $hasRealImplementation) {
+            $results.all_passed = $false
+            $results.failed_criteria += "no_real_implementation_found_for_$RoundId"
+            Write-Host "[CRITERIA-FAIL] No real implementation found matching law deliverables for $RoundId" -ForegroundColor Red
+        }
+    }
+    
+    # ===== STANDARD 10 CRITERIA =====
+    
+    # 1. Theme completed
     if (-not $checklist.theme_completed) {
         $results.all_passed = $false
         $results.failed_criteria += "theme_completed"
@@ -354,7 +447,7 @@ function Test-CandidateCriteria {
     if (-not $checklist.rerunnable_tests_passed) {
         $results.all_passed = $false
         $results.failed_criteria += "rerunnable_tests_passed"
-        Write-Host "[CRITERIA-FAIL] Tests not passed" -ForegroundColor Red
+        Write-Host "[CRITERIA-FAIL] Re-runnable tests not passed" -ForegroundColor Red
     }
     
     # 3. Evidence package complete
@@ -371,7 +464,7 @@ function Test-CandidateCriteria {
         Write-Host "[CRITERIA-FAIL] validate_evidence.ps1 not executed" -ForegroundColor Red
     }
     
-    # 5. Formal status code = candidate_ready_awaiting_manual_review
+    # 5. Formal status code
     if ($checklist.formal_status_code -ne "candidate_ready_awaiting_manual_review") {
         $results.all_passed = $false
         $results.failed_criteria += "formal_status_code != candidate_ready_awaiting_manual_review"
@@ -382,14 +475,12 @@ function Test-CandidateCriteria {
     if (-not $checklist.candidate_branch_auditable) {
         $results.all_passed = $false
         $results.failed_criteria += "candidate_branch_auditable"
-        Write-Host "[CRITERIA-FAIL] Candidate branch not auditable" -ForegroundColor Red
     }
     
     # 7. Candidate commit auditable
     if (-not $checklist.candidate_commit_auditable) {
         $results.all_passed = $false
         $results.failed_criteria += "candidate_commit_auditable"
-        Write-Host "[CRITERIA-FAIL] Candidate commit not auditable" -ForegroundColor Red
     }
     
     # 8. No fabricated evidence
@@ -414,11 +505,10 @@ function Test-CandidateCriteria {
     }
     
     if ($results.all_passed) {
-        Write-Host "[CRITERIA] All 10 criteria PASSED for $RoundId" -ForegroundColor Green
+        Write-Host "[CRITERIA] All 10+ criteria PASSED for $RoundId (verified against law document)" -ForegroundColor Green
     } else {
-        Write-Host "[CRITERIA] FAILED: Round blocked, stopping at current round" -ForegroundColor Red
-        Write-Host "[CRITERIA] Failed criteria: $($results.failed_criteria -join ', ')" -ForegroundColor Red
-        Write-Host "[CRITERIA] STOP REASON: candidate_criteria_not_met - Will NOT proceed to next round" -ForegroundColor Red
+        Write-Host "[CRITERIA] FAILED: $($results.failed_criteria.Count) criteria not met - STOPPING" -ForegroundColor Red
+        Write-Host "[CRITERIA] Failed: $($results.failed_criteria -join ', ')" -ForegroundColor Red
     }
     
     return $results
