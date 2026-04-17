@@ -1,0 +1,9 @@
+server_v2.py
+broker/
+*.log
+*.json
+__pycache__/
+*.pyc
+.git/
+node_modules/
+*.bad.json
