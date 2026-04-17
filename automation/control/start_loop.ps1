@@ -12,7 +12,7 @@ param(
 
 $ErrorActionPreference = "Stop"
 
-$repoRoot = (Resolve-Path (Join-Path $PSScriptRoot "..\..")).Path
+$repoRoot = ([System.IO.Path]::GetFullPath(Join-Path $PSScriptRoot "..\..")).Path
 Set-Location $repoRoot
 
 $controlDir = Join-Path $repoRoot "automation\control"

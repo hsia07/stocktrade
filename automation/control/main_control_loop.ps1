@@ -27,8 +27,8 @@ $ProgressPreference = "Continue"
 $OutputEncoding = [System.Text.Encoding]::UTF8
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
 
-# Setup paths
-$repoRoot = Resolve-Path $RepoRoot
+# Setup paths - use GetFullPath to avoid Resolve-Path encoding issues with Chinese chars
+$repoRoot = [System.IO.Path]::GetFullPath($RepoRoot)
 $controlDir = Join-Path $repoRoot $ControlDir
 $artifactsDir = Join-Path $repoRoot $ArtifactsDir
 $logsDir = Join-Path $repoRoot $LogsDir
