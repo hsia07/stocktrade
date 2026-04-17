@@ -578,13 +578,21 @@ function Invoke-Round {
             }
         }
         
-        # Default: if Aider succeeded with actual changes, mark tests and evidence as complete
+        # Default: if Aider succeeded with actual .ps1 changes, mark tests and evidence as complete
+        # STRICT: must have .ps1 files in automation/control/ (not just artifacts/candidates/logs/reports)
         if ($State.candidate_checklist.rerunnable_tests_passed -ne $true -and $aiderResult.modified_files.Count -gt 0) {
-            $ps1Files = $aiderResult.modified_files | Where-Object { $_ -match '\.ps1$' -and $_ -notmatch 'artifacts|candidates|logs|reports' }
+            $ps1Files = $aiderResult.modified_files | Where-Object { 
+                $_ -match '\.ps1$' -and 
+                $_ -notmatch 'artifacts|candidates|logs|reports|inspect|fix|test[0-9]|reset|apply|check|verify|full' -and
+                $_ -match '^automation[/\\]control[/\\]'
+            }
             if ($ps1Files.Count -gt 0) {
                 $State.candidate_checklist.rerunnable_tests_passed = $true
                 $State.candidate_checklist.evidence_package_complete = $true
                 $State.candidate_checklist.formal_status_code = "candidate_ready_awaiting_manual_review"
+                Write-Host "[CRITERIA] Fallback pass: Found $($ps1Files.Count) real .ps1 file(s): $($ps1Files -join ', ')" -ForegroundColor Yellow
+            } else {
+                Write-Host "[CRITERIA] Aider made changes but no real .ps1 code files found in automation/control/ - STRICT validation will FAIL" -ForegroundColor Red
             }
         }
         
@@ -1091,6 +1099,32 @@ BEGIN IMPLEMENTATION NOW.
     Write-Host "[AIDER] Executing Aider for $RoundId..." -ForegroundColor Cyan
     Write-Host "[AIDER] Timeout: 600 seconds (10 minutes max)" -ForegroundColor Yellow
     
+    # Warmup Ollama: check if model is loaded, if not try to load it
+    Write-Host "[OLLAMA] Checking Ollama health..." -ForegroundColor Cyan
+    $ollamaHealthy = $false
+    try {
+        $response = Invoke-RestMethod "http://127.0.0.1:11434/api/tags" -TimeoutSec 5 -ErrorAction Stop
+        $models = $response.models
+        $modelLoaded = $models | Where-Object { $_.name -match "qwen2.5-coder" }
+        if ($modelLoaded) {
+            Write-Host "[OLLAMA] Model qwen2.5-coder:7b available" -ForegroundColor Green
+            $ollamaHealthy = $true
+        } else {
+            Write-Host "[OLLAMA] Model not found in Ollama" -ForegroundColor Yellow
+        }
+    } catch {
+        Write-Host "[OLLAMA] Ollama not reachable: $_" -ForegroundColor Red
+    }
+    
+    if (-not $ollamaHealthy) {
+        git checkout $currentBranch 2>&1 | Out-Null
+        return @{
+            success = $false
+            error = "Ollama not healthy or model not available"
+            summary = "Cannot execute Aider - Ollama check failed"
+        }
+    }
+    
     # Execute Aider
     $outputDir = Join-Path $RepoRoot "automation\control\candidates\$RoundId"
     if (!(Test-Path $outputDir)) {
@@ -1165,6 +1199,17 @@ BEGIN IMPLEMENTATION NOW.
         $untArray = if ($untrackedFiles.Trim()) { $untrackedFiles.Trim() -split "`n" | Where-Object { $_.Trim() } } else { @() }
         $allChanges = @($modArray) + @($untArray)
         
+        # Check Aider log for errors (Ollama crash, UnicodeEncodeError, etc)
+        $hasAiderError = $false
+        $aiderErrorKeywords = @("llama runner process has terminated", "UnicodeEncodeError", "APIConnectionError", "Connection refused", "ConnectionError", "APIConnectionTimeout")
+        foreach ($keyword in $aiderErrorKeywords) {
+            if ($stdout -match $keyword -or $stderr -match $keyword) {
+                $hasAiderError = $true
+                Write-Host "[AIDER] Detected error keyword: $keyword" -ForegroundColor Red
+                break
+            }
+        }
+        
         # Commit the changes
         if ($allChanges.Count -gt 0) {
             $ErrorActionPreference = 'Continue'
@@ -1186,7 +1231,7 @@ BEGIN IMPLEMENTATION NOW.
             log_file = $logFile
             modified_files = @($allChanges)
             timed_out = $timedOut
-            success = (-not $timedOut -and ($exitCode -eq 0 -or $commitHash -ne "NO_CHANGES"))
+            success = (-not $timedOut -and -not $hasAiderError -and ($exitCode -eq 0 -or $commitHash -ne "NO_CHANGES"))
         }
         
         $reportPath = Join-Path $outputDir "report.json"
