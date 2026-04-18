@@ -1,0 +1,17 @@
+=== RETURN_TO_CHATGPT ===
+round_id: R-999
+reply_id: R-999-test-FAIL-case
+timestamp: 2026-04-18T00:00:00
+status: completed
+formal_status_code: completed
+
+summary:
+This is a test case to verify the validator catches status inconsistency.
+
+files_modified: []
+
+blockers: none
+
+next_action: proceed to next round
+
+=== END_RETURN_TO_CHATGPT ===
