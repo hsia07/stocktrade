@@ -15,7 +15,7 @@
 | **work/phase1-consolidation** | R-006 (Phase 1 base point) | **WORK** (active work branch) | Phase 1 | RENAMED from work/r006-governance - now correctly named |
 | work/r007-silence-protection | R-007 | ABSORBED / CONTENT-EQUIVALENT HISTORICAL WORK BRANCH | Phase 1 | Content absorbed into canonical mainline baseline; branch remains as historical reference |
 | work/r008-state-machine-governance | R-008 | ABSORBED / CONTENT-EQUIVALENT HISTORICAL WORK BRANCH | Phase 1 | Absorbed into canonical baseline; historical reference retained |
-| work/r009-command-priority | R-009 | WORK (not merged) | Phase 1 | R-009 complete but not merged back |
+| work/r009-command-priority | R-009 | BLOCKED | Phase 1 | R-009 blocked; environment readiness required to absorb into canonical baseline |
 | **candidates/multi-round-attempt-001** | R-006~R-015 | CANDIDATE STALLED | Phase 1 | RENAMED from candidates/R-015 - now correctly named |
 | candidates/R-010 | R-010 | INVALIDATED | Phase 1 |废止 |
 | candidates/R-011 | R-011 | INVALIDATED | Phase 1 |废止 |
@@ -66,6 +66,12 @@ The current execution state in state.runtime.json.
 | candidates/multi-round-attempt-001 | Named R-015 but is actually multi-round attempt (R-006~R-015) | RENAMED to `candidates/multi-round-attempt-001` (EXECUTED) |
 | work/r007-silence-protection | Absorbed into canonical baseline; not a separate alias | ABSORBED (EXECUTED) |
 | current_phase in state | Was showing R-006 instead of Phase 1 | FIXED - now shows "Phase 1" |
+
+## Unblock Prerequisites
+
+- baseline history reachability: fetch/unshallow baseline; enumerate 941cd18bd25e55002fade912d3858a805034b9b8..0493cf8d95cd8777d8ce4d442f35d3b65258dd4f
+- candidate evidence integrity: plan to compare  baseline vs source vs merged for six R-009 files; determine integrity flag
+- validation environment readiness: confirm Python/pytest availability; ensure static validation commands exist
 
 ## Current Runtime State (from state.runtime.json)
 
