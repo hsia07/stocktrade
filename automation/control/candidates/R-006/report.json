@@ -7,8 +7,15 @@
     "automation/control/test/test_R-010.ps1",
     "candidates/R-010/report.json"
   ],
+  "changed_files": [
+    "automation/control/candidates/R-006/report.json",
+    "automation/control/candidates/R-006/task.txt",
+    "automation/control/candidates/R-006/evidence.json",
+    "automation/control/candidates/R-006/candidate.diff"
+  ],
   "exit_code": 0,
   "success": true,
+  "status": "candidate_prep_in_progress",
   "timed_out": false,
   "tests_created": false,
   "evidence_package_created": false,
