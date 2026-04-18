@@ -16,7 +16,7 @@
 | work/r007-silence-protection | R-007 | WORK (not merged) | Phase 1 | R-007 complete but not merged back |
 | work/r008-state-machine-governance | R-008 | WORK (not merged) | Phase 1 | R-008 complete but not merged back |
 | work/r009-command-priority | R-009 | WORK (not merged) | Phase 1 | R-009 complete but not merged back |
-| candidates/R-015 | R-006~R-015 | CANDIDATE STALLED | Phase 1 | Multi-round attempt, stalled - MISLEADING NAME |
+| **candidates/multi-round-attempt-001** | R-006~R-015 | CANDIDATE STALLED | Phase 1 | RENAMED from candidates/R-015 - now correctly named |
 | candidates/R-010 | R-010 | INVALIDATED | Phase 1 |废止 |
 | candidates/R-011 | R-011 | INVALIDATED | Phase 1 |废止 |
 | candidates/R-012 | R-012 | INVALIDATED | Phase 1 |废止 |
@@ -63,7 +63,7 @@ The current execution state in state.runtime.json.
 | Name | Why Misleading | Recommendation |
 |------|---------------|-----------------|
 | work/phase1-consolidation | Contains R-006 but is Phase 1 base point, not R-006 completion | RENAMED to `work/phase1-consolidation` (EXECUTED) |
-| candidates/R-015 | Named R-015 but is actually multi-round attempt (R-006~R-015) | RENAME recommended to `candidates/multi-round-attempt-001` (NOT YET EXECUTED) |
+| candidates/multi-round-attempt-001 | Named R-015 but is actually multi-round attempt (R-006~R-015) | RENAMED to `candidates/multi-round-attempt-001` (EXECUTED) |
 | current_phase in state | Was showing R-006 instead of Phase 1 | FIXED - now shows "Phase 1" |
 
 ## Current Runtime State (from state.runtime.json)
