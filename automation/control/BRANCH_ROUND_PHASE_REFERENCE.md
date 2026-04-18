@@ -67,6 +67,15 @@ The current execution state in state.runtime.json.
 | work/r007-silence-protection | Absorbed into canonical baseline; not a separate alias | ABSORBED (EXECUTED) |
 | current_phase in state | Was showing R-006 instead of Phase 1 | FIXED - now shows "Phase 1" |
 
+## Phase 1 Status & Definitions
+
+- Phase 1 Status: not closed
+- Active blocker: R-009
+- R-007: absorbed/content-equivalent historical work (已收口)
+- R-008: absorbed/content-equivalent historical work (已收口)
+- R-009: local merge performed but acceptance blocked
+- R-010 ~ R-015: Phase 1 remaining pending rounds / not yet formally closed
+
 ## Unblock Prerequisites
 
 - baseline history reachability: fetch/unshallow baseline; enumerate 941cd18bd25e55002fade912d3858a805034b9b8..0493cf8d95cd8777d8ce4d442f35d3b65258dd4f
