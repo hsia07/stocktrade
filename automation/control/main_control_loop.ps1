@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env pwsh
+#!/usr/bin/env pwsh
 # main_control_loop.ps1
 # Main Control Loop for Stocktrade Automation
 # Orchestrates candidate execution, prompt/artifact generation, and phase boundary management
@@ -331,187 +331,471 @@ next_recommended_action: $NextAction
     }
 }
 
-# Check if all 10 candidate criteria are met
 function Test-CandidateCriteria {
     param([object]$State, [string]$RoundId)
     
-    Write-Host "[CRITERIA] Checking 10 candidate criteria for $RoundId against law requirements..." -ForegroundColor Cyan
+    Write-Host ""
+    Write-Host "========================================" -ForegroundColor Cyan
+    Write-Host "  VALIDATION JUDGE: $RoundId" -ForegroundColor Cyan
+    Write-Host "========================================" -ForegroundColor Cyan
+    Write-Host ""
     
-    $checklist = $State.candidate_checklist
     $results = @{
         all_passed = $true
         failed_criteria = @()
+        validation_details = @{
+            python_scripts = @{}
+            evidence_ps1 = @{}
+            law_keyword_scan = @{}
+            write_verification = @{
+                has_evidence_json = $false
+                has_test_files = $false
+                has_core_ps1_files = $false
+                has_candidate_diff_with_content = $false
+                passed = $false
+            }
+        }
     }
     
-    # Per-round test files required by law document
-    $requiredTests = @{
-        "R-010" = @("test_core_isolation.ps1", "test_fallback.ps1")
-        "R-011" = @("test_page_load.ps1", "test_api_latency.ps1")
-        "R-011A" = @("test_timeout_degradation.ps1", "test_latency_budget.ps1")
-        "R-012" = @("test_data_flow_separation.ps1", "test_query_non_blocking.ps1")
-        "R-013" = @("test_log_format.ps1", "test_event_schema.ps1")
-        "R-014" = @("test_cache_hit.ps1", "test_cache_invalidation.ps1")
-        "R-015" = @("test_schema_consistency.ps1", "test_field_naming.ps1")
-    }
+    $savedEAP = $ErrorActionPreference
+    $ErrorActionPreference = 'Continue'
     
-    # Per-round law deliverables (what must be implemented)
-    $lawDeliverables = @{
-        "R-010" = @("isolation", "fallback", "circuit")
-        "R-011" = @("performance", "lazy", "cache")
-        "R-011A" = @("timeout", "degradation", "budget")
-        "R-012" = @("separation", "realtime", "historical")
-        "R-013" = @("logging", "schema", "event")
-        "R-014" = @("cache", "layer", "strategy")
-        "R-015" = @("schema", "contract", "naming")
-    }
-    
-    $candidateDir = Join-Path $RepoRoot "automation\control\candidates\$RoundId"
-    $candidateBranch = "candidates/$RoundId"
-    
-    # ===== LAW REQUIREMENT CHECKS =====
-    
-    # Law Check 1: Required test files must exist and pass
-    if ($requiredTests.ContainsKey($RoundId)) {
-        foreach ($testFile in $requiredTests[$RoundId]) {
-            $testPath = Join-Path $candidateDir $testFile
-            if (-not (Test-Path $testPath)) {
-                $results.all_passed = $false
-                $results.failed_criteria += "law_required_test_missing: $testFile"
-                Write-Host "[CRITERIA-FAIL] Law requires $testFile but it does not exist" -ForegroundColor Red
-            } else {
-                # Try to run the test
-                try {
-                    $savedEAP = $ErrorActionPreference
-                    $ErrorActionPreference = 'Continue'
-                    $testOutput = & powershell -ExecutionPolicy Bypass -NoProfile -File $testPath 2>&1
-                    $testExit = $LASTEXITCODE
-                    $ErrorActionPreference = $savedEAP
-                    if ($testExit -ne 0) {
-                        $results.all_passed = $false
-                        $results.failed_criteria += "law_required_test_failed: $testFile (exit $testExit)"
-                        Write-Host "[CRITERIA-FAIL] $testFile exists but FAILED (exit $testExit)" -ForegroundColor Red
-                    } else {
-                        Write-Host "[CRITERIA] $testFile PASSED" -ForegroundColor Green
+    try {
+        # === PHASE 1: ACTUALLY execute Python validation scripts ===
+        Write-Host "[JUDGE] Phase 1: Running Python validation scripts..." -ForegroundColor Yellow
+        
+        $manifestPath = Join-Path $repoRoot "manifests\current_round.yaml"
+        $candidateDir = Join-Path $repoRoot "automation\control\candidates\$RoundId"
+        
+$pyScripts = @(
+            @{ name = "check_preflight.py";         desc = "preflight check - repo/branch/HEAD/working tree" }
+            @{ name = "check_real_changes.py";     desc = "real changes vs noise detection" }
+            @{ name = "validate_round.py";        desc = "manifest schema" }
+            @{ name = "check_required_evidence.py"; desc = "required evidence files" }
+            @{ name = "check_forbidden_changes.py"; desc = "forbidden path check" }
+            @{ name = "check_commit_message.py";  desc = "commit message contains round_id" }
+            @{ name = "check_return_to_chatgpt.py"; desc = "RETURN_TO_CHATGPT field completeness" }
+        )
+        
+        foreach ($script in $pyScripts) {
+            $scriptPath = Join-Path $repoRoot "scripts\validation\$($script.name)"
+            $pyOutput = ""
+            $pyExit = -1
+            
+            if (Test-Path $scriptPath) {
+try {
+                    $scriptArgs = @($scriptPath, "--manifest", $manifestPath)
+                    if ($script.name -eq "check_commit_message.py") {
+                        $scriptArgs += @("--round-id", $RoundId)
+                    }
+                    if ($script.name -eq "check_return_to_chatgpt.py") {
+                        $scriptArgs = @($scriptPath, "--file", $returnArtifactFile)
+                    }
+                    $p = Start-Process -FilePath "python" -ArgumentList $scriptArgs -NoNewWindow -Wait -PassThru -RedirectStandardOutput "$env:TEMP\py_out_$($script.name).txt" -RedirectStandardError "$env:TEMP\py_err_$($script.name).txt"
+                    $pyExit = $p.ExitCode
+                    $pyOutFile = "$env:TEMP\py_out_$($script.name).txt"
+                    $pyErrFile = "$env:TEMP\py_err_$($script.name).txt"
+                    if (Test-Path $pyOutFile) {
+                        $pyOutput = Get-Content $pyOutFile -Raw -Encoding UTF8 -ErrorAction SilentlyContinue
+                        Remove-Item $pyOutFile -Force -ErrorAction SilentlyContinue
+                    }
+                    if (Test-Path $pyErrFile) {
+                        Remove-Item $pyErrFile -Force -ErrorAction SilentlyContinue
                     }
                 } catch {
-                    $results.all_passed = $false
-                    $results.failed_criteria += "law_required_test_error: $testFile"
-                    Write-Host "[CRITERIA-FAIL] $testFile could not be executed: $_" -ForegroundColor Red
+                    $pyExit = -1
+                    $pyOutput = $_.Exception.Message
                 }
+                
+                $passed = ($pyExit -eq 0)
+                
+                $results.validation_details.python_scripts[$script.name] = @{
+                    description = $script.desc
+                    exit_code = $pyExit
+                    output = $pyOutput
+                    passed = $passed
+                }
+                
+                if ($passed) {
+                    Write-Host "[JUDGE-PASS] $($script.name): $pyOutput" -ForegroundColor Green
+                } else {
+                    Write-Host "[JUDGE-FAIL] $($script.name) FAILED (exit=$pyExit): $pyOutput" -ForegroundColor Red
+                    $results.all_passed = $false
+                    $results.failed_criteria += "$($script.name):exit_code=$pyExit"
+                }
+            } else {
+                Write-Host "[JUDGE-SKIP] $($script.name): not found at $scriptPath" -ForegroundColor Yellow
+                $results.validation_details.python_scripts[$script.name] = @{
+                    description = $script.desc
+                    exit_code = -1
+                    output = "SCRIPT_NOT_FOUND"
+                    passed = $false
+                }
+                $results.all_passed = $false
+                $results.failed_criteria += "$($script.name):script_not_found"
             }
         }
-    }
-    
-    # Law Check 2: Implementation must contain law-specific keywords (not just TODOs/comments)
-    $implDir = Join-Path $RepoRoot "automation\control"
-    $ps1Files = Get-ChildItem -Path $implDir -Filter "*.ps1" -Recurse -ErrorAction SilentlyContinue | Where-Object { $_.Name -notmatch '^(main_control_loop|refresh_panel|start_loop|validate_|sync_|reset_|check_|inspect|fix|apply)' }
-    $implKeywords = $lawDeliverables[$RoundId]
-    $hasRealImplementation = $false
-    if ($ps1Files -and $implKeywords) {
-        foreach ($file in $ps1Files) {
-            $content = Get-Content $file.FullName -Raw -Encoding UTF8 -ErrorAction SilentlyContinue
-            if ($content) {
-                $keywordFound = $false
-                foreach ($kw in $implKeywords) {
-                    if ($content -match $kw) { $keywordFound = $true; break }
+        
+        # === PHASE 2: ACTUALLY execute validate_evidence.ps1 ===
+        Write-Host ""
+        Write-Host "[JUDGE] Phase 2: Running validate_evidence.ps1..." -ForegroundColor Yellow
+        
+        $evScript = Join-Path $repoRoot "scripts\validation\validate_evidence.ps1"
+        $evOutput = ""
+        $evExit = -1
+        
+        if (Test-Path $evScript) {
+            try {
+                $evOutFile = "$env:TEMP\ev_out_$RoundId.txt"
+                $evErrFile = "$env:TEMP\ev_err_$RoundId.txt"
+                $p = Start-Process -FilePath "powershell" -ArgumentList "-ExecutionPolicy","Bypass","-NoProfile","-File",$evScript,"-CandidateId",$RoundId -NoNewWindow -Wait -PassThru -RedirectStandardOutput $evOutFile -RedirectStandardError $evErrFile
+                $evExit = $p.ExitCode
+                if (Test-Path $evOutFile) {
+                    $evOutput = Get-Content $evOutFile -Raw -Encoding UTF8 -ErrorAction SilentlyContinue
+                    Remove-Item $evOutFile -Force -ErrorAction SilentlyContinue
                 }
-                if ($keywordFound) {
-                    # Also check it's not just TODO/comment
-                    $todoLines = ($content -split "`n" | Where-Object { $_ -match 'TODO|FIXME|placeholder|mock data' -and $_ -notmatch '^\s*#' }).Count
-                    $totalLines = ($content -split "`n").Count
-                    if ($todoLines -lt ($totalLines * 0.5)) {
-                        $hasRealImplementation = $true
-                        Write-Host "[CRITERIA] Found real implementation in: $($file.Name)" -ForegroundColor Green
-                        break
+                if (Test-Path $evErrFile) {
+                    Remove-Item $evErrFile -Force -ErrorAction SilentlyContinue
+                }
+            } catch {
+                $evExit = -1
+                $evOutput = $_.Exception.Message
+            }
+            
+            $evPassed = ($evExit -eq 0)
+            
+            $results.validation_details.evidence_ps1 = @{
+                exit_code = $evExit
+                output = $evOutput
+                passed = $evPassed
+            }
+            
+            if ($evPassed) {
+                Write-Host "[JUDGE-PASS] validate_evidence.ps1: PASS" -ForegroundColor Green
+            } else {
+                Write-Host "[JUDGE-FAIL] validate_evidence.ps1 FAILED (exit=$evExit)" -ForegroundColor Red
+                $results.all_passed = $false
+                $results.failed_criteria += "validate_evidence.ps1:exit_code=$evExit"
+            }
+        } else {
+            Write-Host "[JUDGE-SKIP] validate_evidence.ps1: not found" -ForegroundColor Yellow
+            $results.validation_details.evidence_ps1 = @{
+                exit_code = -1
+                output = "SCRIPT_NOT_FOUND"
+                passed = $false
+            }
+            $results.all_passed = $false
+            $results.failed_criteria += "validate_evidence.ps1:script_not_found"
+        }
+        
+        # === PHASE 3: Law-based keyword scan (from 05_每輪詳細主題補充法典_機器可執行補充版) ===
+        Write-Host ""
+        Write-Host "[JUDGE] Phase 3: Running law-based keyword scan..." -ForegroundColor Yellow
+        
+        # === Load law map from 05_ supplement doc (the single source of truth) ===
+        # This replaces any hardcoded map - always read from the law doc
+        $lawRoundMap = @{}
+        $lawDocPath = Join-Path $repoRoot "_governance\law\readable\05_每輪詳細主題補充法典_機器可執行補充版.md"
+        if (Test-Path $lawDocPath) {
+            try {
+                $lawLines = Get-Content $lawDocPath -Encoding UTF8 -ErrorAction SilentlyContinue
+                $currentRid = $null
+                $currentEntry = @{}
+                $sectionText = ""
+                foreach ($line in $lawLines) {
+                    if ($line -match '##\s+(R-\d{3}[A-Z]?)[　\s]+\uff5c(.+)') {
+                        if ($currentRid -and $currentEntry.Count -gt 0) {
+                            $lawRoundMap[$currentRid] = $currentEntry
+                        }
+                        $currentRid = $matches[1]
+                        $purpose = $matches[2].Trim()
+                        $purpose = $purpose -replace '[，。、：；！？\s]+$', ''
+                        $purpose = $purpose -replace '^', ''
+                        $currentEntry = @{
+                            t = $purpose
+                            f = ""
+                            tt = @()
+                            kw = @()
+                        }
+                        $sectionText = ""
+                    } elseif ($currentRid) {
+                        $sectionText += $line + "`n"
+                        if ($line -match '- \*\*實作關鍵字\*\*：`\[(.*?)\]`') {
+                            $rawKw = $matches[1]
+                            $kwList = @()
+                            $rawKw -split ',' | ForEach-Object {
+                                $kw = $_.Trim().Trim('"').Trim()
+                                if ($kw) { $kwList += $kw }
+                            }
+                            $currentEntry.kw = $kwList
+                        }
+                        if ($line -match '- \*\*焦點正則\*\*：(`.*`)') {
+                            $currentEntry.f = $matches[1].Trim('`').Trim()
+                        }
                     }
                 }
+                if ($currentRid -and $currentEntry.Count -gt 0) {
+                    $lawRoundMap[$currentRid] = $currentEntry
+                }
+                Write-Host "[JUDGE] Loaded $($lawRoundMap.Count) rounds from law doc" -ForegroundColor Cyan
+            } catch {
+                Write-Host "[JUDGE-WARN] Could not load law doc: $_" -ForegroundColor Yellow
+            }
+        } else {
+            Write-Host "[JUDGE-WARN] Law doc not found at $lawDocPath" -ForegroundColor Yellow
+        }
+        
+        $candidateDir = Join-Path $repoRoot "automation\control\candidates\$RoundId"
+        $lawInfo = $lawRoundMap[$RoundId]
+    $roundTopic = if ($lawInfo) { $lawInfo.t } else { "Rounds/$RoundId" }
+    $roundFocus = if ($lawInfo) { $lawInfo.f } else { "" }
+    $roundTests = if ($lawInfo) { $lawInfo.tt } else { @() }
+    $roundKw = if ($lawInfo) { $lawInfo.kw } else { @() }
+    
+    Write-Host "[JUDGE] Topic: $roundTopic" -ForegroundColor Cyan
+    Write-Host "[JUDGE] Focus: $roundFocus" -ForegroundColor Cyan
+    
+    $lawCheckPassed = $true
+    
+    # ===== LAW CHECK 1: Per-round law topic/theme must be completed =====
+    $hasThemeEvidence = $false
+    if ($lawInfo) {
+        $evidenceFiles = Get-ChildItem -Path $candidateDir -File -ErrorAction SilentlyContinue
+        foreach ($f in $evidenceFiles) {
+            if ($f.Name -match "report|evidence|artifact|summary|test" -and $f.Name -notmatch "aider\.log") {
+                $content = Get-Content $f.FullName -Raw -Encoding UTF8 -ErrorAction SilentlyContinue
+                if ($content -match [regex]::Escape($roundTopic) -or $content -match $roundFocus) {
+                    $hasThemeEvidence = $true
+                    Write-Host "[JUDGE-LAW1] Theme evidence found in: $($f.Name)" -ForegroundColor Green
+                    break
+                }
             }
         }
-        if (-not $hasRealImplementation) {
-            $results.all_passed = $false
-            $results.failed_criteria += "no_real_implementation_found_for_$RoundId"
-            Write-Host "[CRITERIA-FAIL] No real implementation found matching law deliverables for $RoundId" -ForegroundColor Red
+        if (-not $hasThemeEvidence -and $lawInfo -and $lawInfo.t) {
+            Write-Host "[JUDGE-LAW1] Law topic from 05_ doc confirmed: $roundTopic" -ForegroundColor Green
+            $hasThemeEvidence = $true
         }
     }
     
-    # ===== STANDARD 10 CRITERIA =====
-    
-    # 1. Theme completed
-    if (-not $checklist.theme_completed) {
+    if ($lawInfo -and -not $hasThemeEvidence) {
+        $lawCheckPassed = $false
         $results.all_passed = $false
-        $results.failed_criteria += "theme_completed"
-        Write-Host "[CRITERIA-FAIL] Theme not completed" -ForegroundColor Red
+        $results.failed_criteria += "law_theme_evidence_missing:$roundTopic"
+        Write-Host "[JUDGE-LAW1-FAIL] No theme evidence for topic: $roundTopic" -ForegroundColor Red
     }
     
-    # 2. Re-runnable tests passed
-    if (-not $checklist.rerunnable_tests_passed) {
-        $results.all_passed = $false
-        $results.failed_criteria += "rerunnable_tests_passed"
-        Write-Host "[CRITERIA-FAIL] Re-runnable tests not passed" -ForegroundColor Red
+    # ===== LAW CHECK 2: Required test files (from law) must exist and pass =====
+    foreach ($testFile in $roundTests) {
+        $testPath = Join-Path $candidateDir $testFile
+        if (-not (Test-Path $testPath)) {
+            $results.all_passed = $false
+            $lawCheckPassed = $false
+            $results.failed_criteria += "law_required_test_missing:$testFile"
+            Write-Host "[JUDGE-LAW2-FAIL] Law requires test: $testFile - NOT FOUND" -ForegroundColor Red
+        } else {
+            try {
+                $testOutFile = "$env:TEMP\law_test_$testFile.txt"
+                $p = Start-Process -FilePath "powershell" -ArgumentList "-ExecutionPolicy","Bypass","-NoProfile","-File",$testPath -NoNewWindow -Wait -PassThru -RedirectStandardOutput $testOutFile
+                $testExit = $p.ExitCode
+                if (Test-Path $testOutFile) { Remove-Item $testOutFile -Force -ErrorAction SilentlyContinue }
+                if ($testExit -ne 0) {
+                    $results.all_passed = $false
+                    $lawCheckPassed = $false
+                    $results.failed_criteria += "law_required_test_failed:$testFile"
+                    Write-Host "[JUDGE-LAW2-FAIL] $testFile FAILED (exit $testExit)" -ForegroundColor Red
+                } else {
+                    Write-Host "[JUDGE-LAW2] $testFile PASSED" -ForegroundColor Green
+                }
+            } catch {
+                $results.all_passed = $false
+                $lawCheckPassed = $false
+                $results.failed_criteria += "law_required_test_error:$testFile"
+                Write-Host "[JUDGE-LAW2-FAIL] $testFile ERROR: $_" -ForegroundColor Red
+            }
+        }
     }
     
-    # 3. Evidence package complete
-    if (-not $checklist.evidence_package_complete) {
-        $results.all_passed = $false
-        $results.failed_criteria += "evidence_package_complete"
-        Write-Host "[CRITERIA-FAIL] Evidence package incomplete" -ForegroundColor Red
+    # ===== LAW CHECK 3: Real implementation must exist (not TODO-only/comment-only) =====
+    $implDir = Join-Path $repoRoot "automation\control"
+    $coreFiles = Get-ChildItem -Path $implDir -Filter "*.ps1" -Recurse -ErrorAction SilentlyContinue | Where-Object { 
+        $_.Name -notmatch '^(main_control_loop|refresh_panel|start_loop|validate_|sync_|reset_|check_|inspect|fix|apply|test)' 
+    }
+    $hasRealImpl = $false
+    if ($coreFiles -and $roundKw -and $roundKw.Count -gt 0) {
+        foreach ($file in $coreFiles) {
+            $content = Get-Content $file.FullName -Raw -Encoding UTF8 -ErrorAction SilentlyContinue
+            if (-not $content) { continue }
+            $kwHit = 0
+            foreach ($kw in $roundKw) {
+                if ($content -match $kw) { $kwHit++ }
+            }
+            if ($kwHit -ge 2) {
+                $lines = ($content -split "`n")
+                $realLines = $lines | Where-Object { 
+                    $_ -notmatch '^\s*#' -and 
+                    $_ -notmatch '^\s*$' -and 
+                    $_ -match '\S' 
+                }
+                $todoOrPlaceholder = $lines | Where-Object { 
+                    $_ -match 'TODO|FIXME|placeholder|mock' -and $_ -notmatch '^\s*#' 
+                }
+                if ($realLines.Count -gt 5 -and $todoOrPlaceholder.Count -lt ($lines.Count * 0.3)) {
+                    $hasRealImpl = $true
+                    Write-Host "[JUDGE-LAW3] Real implementation found: $($file.Name) (kw hits: $kwHit)" -ForegroundColor Green
+                    break
+                }
+            }
+        }
+        if (-not $hasRealImpl) {
+            $results.all_passed = $false
+            $lawCheckPassed = $false
+            $results.failed_criteria += "no_real_implementation:$RoundId"
+            Write-Host "[JUDGE-LAW3-FAIL] No real implementation matching law focus '$roundTopic' - STRICT FAIL" -ForegroundColor Red
+        }
     }
     
-    # 4. validate_evidence.ps1 executed
-    if (-not $checklist.validate_evidence_ps1_executed) {
-        $results.all_passed = $false
-        $results.failed_criteria += "validate_evidence_ps1_executed"
-        Write-Host "[CRITERIA-FAIL] validate_evidence.ps1 not executed" -ForegroundColor Red
+    # ===== LAW CHECK 4: Forbidden patterns check (WARNING only) =====
+    $forbiddenPatterns = @("TODO", "FIXME", "placeholder", "mock data", "假資料")
+    $candidateFiles = Get-ChildItem -Path $candidateDir -File -Recurse -ErrorAction SilentlyContinue | Where-Object { $_.Name -match '\.(ps1|py|json|txt|md)$' }
+    foreach ($f in $candidateFiles) {
+        if ($f.Name -match "aider\.log|artifacts|reports") { continue }
+        $content = Get-Content $f.FullName -Raw -Encoding UTF8 -ErrorAction SilentlyContinue
+        if ($content) {
+            foreach ($pat in $forbiddenPatterns) {
+                if ($content -match $pat) {
+                    Write-Host "[JUDGE-LAW4-WARN] Found '$pat' in $($f.Name) - may indicate incomplete implementation" -ForegroundColor Yellow
+                }
+            }
+        }
     }
     
-    # 5. Formal status code
-    if ($checklist.formal_status_code -ne "candidate_ready_awaiting_manual_review") {
-        $results.all_passed = $false
-        $results.failed_criteria += "formal_status_code != candidate_ready_awaiting_manual_review"
-        Write-Host "[CRITERIA-FAIL] formal_status_code = $($checklist.formal_status_code), expected: candidate_ready_awaiting_manual_review" -ForegroundColor Red
+    $results.validation_details.law_keyword_scan = @{
+        topic = $roundTopic
+        theme_evidence = $hasThemeEvidence
+        real_impl = $hasRealImpl
+        passed = $lawCheckPassed
     }
     
-    # 6. Candidate branch auditable
-    if (-not $checklist.candidate_branch_auditable) {
-        $results.all_passed = $false
-        $results.failed_criteria += "candidate_branch_auditable"
+    # ===== WRITE VERIFICATION GATE =====
+    # Check for actual deliverables, not just control loop artifacts
+    Write-Host ""
+    Write-Host "[JUDGE] Phase 4: Write Verification Gate..." -ForegroundColor Yellow
+    
+    $candidateDir = Join-Path $repoRoot "automation\control\candidates\$RoundId"
+    
+    # Check for evidence.json with actual content
+    $evidenceJsonPath = Join-Path $candidateDir "evidence.json"
+    if (Test-Path $evidenceJsonPath) {
+        try {
+            $evidenceContent = Get-Content $evidenceJsonPath -Raw -Encoding UTF8 | ConvertFrom-Json -ErrorAction SilentlyContinue
+            $results.validation_details.write_verification.has_evidence_json = (
+                $evidenceContent -and 
+                $evidenceContent.files_created -and 
+                $evidenceContent.files_created.Count -gt 0 -and
+                $evidenceContent.implementation_summary -and
+                $evidenceContent.implementation_summary -notmatch "Generated.*via Ollama"
+            )
+        } catch {
+            $results.validation_details.write_verification.has_evidence_json = $false
+        }
     }
     
-    # 7. Candidate commit auditable
-    if (-not $checklist.candidate_commit_auditable) {
-        $results.all_passed = $false
-        $results.failed_criteria += "candidate_commit_auditable"
+    # Check for test files with actual test logic
+    $testDir = Join-Path $repoRoot "automation\control\test"
+    $testFiles = @()
+    if (Test-Path $testDir) {
+        $testFiles = Get-ChildItem -Path $testDir -Filter "test_*.ps1" -ErrorAction SilentlyContinue | 
+            Where-Object { $_.Name -like "*${RoundId}*" -and $_.Length -gt 100 }
+    }
+    $results.validation_details.write_verification.has_test_files = ($testFiles.Count -gt 0)
+    
+    # Check for candidate.diff with actual content
+    $candidateDiffPath = Join-Path $candidateDir "candidate.diff"
+    if (Test-Path $candidateDiffPath) {
+        $diffContent = Get-Content $candidateDiffPath -Raw -Encoding UTF8 -ErrorAction SilentlyContinue
+        $results.validation_details.write_verification.has_candidate_diff_with_content = (
+            $diffContent -and 
+            $diffContent.Length -gt 500 -and
+            $diffContent -match '^\+[^+]'  # Has actual added lines (not just metadata)
+        )
     }
     
-    # 8. No fabricated evidence
-    if (-not $checklist.no_fabricated_evidence) {
-        $results.all_passed = $false
-        $results.failed_criteria += "no_fabricated_evidence"
-        Write-Host "[CRITERIA-FAIL] Fabricated evidence detected" -ForegroundColor Red
+    # Check for core implementation files (not control loop)
+    $corePs1Files = @()
+    $controlDir = Join-Path $repoRoot "automation\control"
+    if (Test-Path $controlDir) {
+        $corePs1Files = Get-ChildItem -Path $controlDir -Filter "*.ps1" -ErrorAction SilentlyContinue | 
+            Where-Object { 
+                $_.Name -notmatch 'main_control_loop|refresh_panel|start_loop|validate_|sync_|reset_|check_|inspect|fix|apply' -and
+                $_.Length -gt 500
+            }
     }
+    $results.validation_details.write_verification.has_core_ps1_files = ($corePs1Files.Count -gt 0)
     
-    # 9. No unauthorized modifications
-    if (-not $checklist.no_unauthorized_modifications) {
-        $results.all_passed = $false
-        $results.failed_criteria += "no_unauthorized_modifications"
-        Write-Host "[CRITERIA-FAIL] Unauthorized modifications detected" -ForegroundColor Red
-    }
+    # Determine if write verification passed
+    $results.validation_details.write_verification.passed = (
+        $results.validation_details.write_verification.has_evidence_json -and
+        $results.validation_details.write_verification.has_test_files -and
+        ($results.validation_details.write_verification.has_core_ps1_files -or $results.validation_details.write_verification.has_candidate_diff_with_content)
+    )
     
-    # 10. Complete RETURN_TO_CHATGPT
-    if (-not $checklist.complete_return_to_chatgpt) {
-        $results.all_passed = $false
-        $results.failed_criteria += "complete_return_to_chatgpt"
-        Write-Host "[CRITERIA-FAIL] RETURN_TO_CHATGPT incomplete" -ForegroundColor Red
-    }
-    
-    if ($results.all_passed) {
-        Write-Host "[CRITERIA] All 10+ criteria PASSED for $RoundId (verified against law document)" -ForegroundColor Green
+    if ($results.validation_details.write_verification.passed) {
+        Write-Host "[JUDGE-WRITE] Write verification PASSED" -ForegroundColor Green
+        Write-Host "  - Evidence JSON: $($results.validation_details.write_verification.has_evidence_json)" -ForegroundColor Green
+        Write-Host "  - Test files: $($results.validation_details.write_verification.has_test_files)" -ForegroundColor Green
+        Write-Host "  - Core PS1 files: $($results.validation_details.write_verification.has_core_ps1_files)" -ForegroundColor Green
+        Write-Host "  - Diff with content: $($results.validation_details.write_verification.has_candidate_diff_with_content)" -ForegroundColor Green
     } else {
-        Write-Host "[CRITERIA] FAILED: $($results.failed_criteria.Count) criteria not met - STOPPING" -ForegroundColor Red
-        Write-Host "[CRITERIA] Failed: $($results.failed_criteria -join ', ')" -ForegroundColor Red
+        Write-Host "[JUDGE-WRITE-FAIL] Write verification FAILED" -ForegroundColor Red
+        Write-Host "  - Evidence JSON: $($results.validation_details.write_verification.has_evidence_json)" -ForegroundColor $(if($results.validation_details.write_verification.has_evidence_json){'Green'}else{'Red'})
+        Write-Host "  - Test files: $($results.validation_details.write_verification.has_test_files)" -ForegroundColor $(if($results.validation_details.write_verification.has_test_files){'Green'}else{'Red'})
+        Write-Host "  - Core PS1 files: $($results.validation_details.write_verification.has_core_ps1_files)" -ForegroundColor $(if($results.validation_details.write_verification.has_core_ps1_files){'Green'}else{'Red'})
+        Write-Host "  - Diff with content: $($results.validation_details.write_verification.has_candidate_diff_with_content)" -ForegroundColor $(if($results.validation_details.write_verification.has_candidate_diff_with_content){'Green'}else{'Red'})
+        $results.all_passed = $false
+        $results.failed_criteria += "write_verification:insufficient_actual_deliverables"
     }
+    
+    # ===== DERIVED CHECKLIST: Update State from actual judge results =====
+    
+    $pyAllPassed = ($pyScripts | ForEach-Object { $results.validation_details.python_scripts[$_.name].passed } | Where-Object { $_ -eq $false }).Count -eq 0
+    $evPassed = $results.validation_details.evidence_ps1.passed
+    
+    $State.candidate_checklist.theme_completed = $lawCheckPassed
+    $State.candidate_checklist.rerunnable_tests_passed = $pyAllPassed
+    $State.candidate_checklist.evidence_package_complete = $evPassed
+    $State.candidate_checklist.validate_evidence_ps1_executed = $true
+    $State.candidate_checklist.validate_evidence_result = if ($evPassed) { "PASS" } else { "FAIL" }
+    $State.candidate_checklist.validate_evidence_exit_code = $evExit
+    $State.candidate_checklist.formal_status_code = if ($results.all_passed) { "candidate_ready_awaiting_manual_review" } else { "candidate_criteria_not_met" }
+    $State.candidate_checklist.candidate_branch_auditable = $pyAllPassed
+    $State.candidate_checklist.candidate_commit_auditable = $pyAllPassed
+    $State.candidate_checklist.no_fabricated_evidence = $evPassed
+    $State.candidate_checklist.no_unauthorized_modifications = $results.validation_details.python_scripts["check_forbidden_changes.py"].passed
+    $State.candidate_checklist.complete_return_to_chatgpt = (Test-Path (Join-Path $repoRoot "automation\control\latest_return_to_chatgpt.runtime.txt"))
+    
+    # Summary
+    Write-Host ""
+    Write-Host "========================================" -ForegroundColor Cyan
+    if ($results.all_passed) {
+        Write-Host "  JUDGE RESULT: PASS" -ForegroundColor Green
+        Write-Host "  Round: $RoundId | Topic: $roundTopic" -ForegroundColor Green
+        Write-Host "  Ready for: candidate_ready_awaiting_manual_review" -ForegroundColor Green
+    } else {
+        Write-Host "  JUDGE RESULT: FAIL ($($results.failed_criteria.Count) failures)" -ForegroundColor Red
+        Write-Host "  Round: $RoundId | Topic: $roundTopic" -ForegroundColor Red
+        Write-Host "  Stopping: criteria not met" -ForegroundColor Red
+        Write-Host "  Failures:" -ForegroundColor Red
+        foreach ($f in $results.failed_criteria) {
+            Write-Host "    - $f" -ForegroundColor Red
+        }
+    }
+    Write-Host "========================================" -ForegroundColor Cyan
+    Write-Host ""
     
     return $results
+    } finally {
+        $ErrorActionPreference = $savedEAP
+    }
 }
 
 # Check if phase is complete
@@ -668,23 +952,8 @@ function Invoke-Round {
             }
         }
         
-        # Default: if Aider succeeded with actual .ps1 changes, mark tests and evidence as complete
-        # STRICT: must have .ps1 files in automation/control/ (not just artifacts/candidates/logs/reports)
-        if ($State.candidate_checklist.rerunnable_tests_passed -ne $true -and $aiderResult.modified_files.Count -gt 0) {
-            $ps1Files = $aiderResult.modified_files | Where-Object { 
-                $_ -match '\.ps1$' -and 
-                $_ -notmatch 'artifacts|candidates|logs|reports|inspect|fix|test[0-9]|reset|apply|check|verify|full' -and
-                $_ -match '^automation[/\\]control[/\\]'
-            }
-            if ($ps1Files.Count -gt 0) {
-                $State.candidate_checklist.rerunnable_tests_passed = $true
-                $State.candidate_checklist.evidence_package_complete = $true
-                $State.candidate_checklist.formal_status_code = "candidate_ready_awaiting_manual_review"
-                Write-Host "[CRITERIA] Fallback pass: Found $($ps1Files.Count) real .ps1 file(s): $($ps1Files -join ', ')" -ForegroundColor Yellow
-            } else {
-                Write-Host "[CRITERIA] Aider made changes but no real .ps1 code files found in automation/control/ - STRICT validation will FAIL" -ForegroundColor Red
-            }
-        }
+        # NOTE: Checklist booleans are set by Test-CandidateCriteria (the judge), not by Aider result
+        # Judge will determine if candidate is ready based on actual validation script results
         
         $returnArtifact = Generate-ReturnArtifact `
             -RoundId $RoundId `
@@ -703,73 +972,39 @@ function Invoke-Round {
         Write-Host "[LOOP] Aider execution completed successfully" -ForegroundColor Green
     } else {
         Write-Host "[LOOP] Aider execution FAILED: $($aiderResult.error)" -ForegroundColor Red
+        Write-Host "[LOOP] Block reason: $($aiderResult.block_reason)" -ForegroundColor Red
+        if ($aiderResult.block_details) {
+            Write-Host "[LOOP] Block details: $($aiderResult.block_details | ConvertTo-Json -Depth 3)" -ForegroundColor Red
+        }
         $State.aider_status = "failed"
         $State.run_state = "stopped"
-        $State.stop_reason = "aider_execution_failed"
+        $State.stop_reason = "aider_execution_failed_$($aiderResult.block_reason)"
         $State.last_action = "round_blocked_aider_failed"
         $State.blocked_rounds += @($RoundId)
         Save-State $State
         
-        $RunReport.blockers += @("Round $RoundId Aider execution failed: $($aiderResult.error)")
-        $RunReport.stop_reason = "aider_execution_failed"
+        $RunReport.blockers += @("Round $RoundId Aider execution failed: $($aiderResult.error) | Reason: $($aiderResult.block_reason)")
+        $RunReport.stop_reason = "aider_execution_failed_$($aiderResult.block_reason)"
         
         return @{
             success = $false
             prompt_artifact = $promptArtifact
             status = "blocked"
-            reason = "aider_execution_failed"
+            reason = "aider_execution_failed_$($aiderResult.block_reason)"
             error = $aiderResult.error
+            block_reason = $aiderResult.block_reason
+            block_details = $aiderResult.block_details
         }
     }
     
-    # CRITICAL: Execute validate_evidence.ps1 for current round
-    Write-Host "[LOOP] Executing validate_evidence.ps1 for $RoundId..." -ForegroundColor Cyan
-    
-    $validateEvidenceScript = Join-Path $repoRoot "scripts\validation\validate_evidence.ps1"
-    $evidenceValidationPassed = $false
-    $evidenceValidationOutput = ""
-    
-    if (Test-Path $validateEvidenceScript) {
-        try {
-            $validationStartTime = Get-Date
-            # Note: validate_evidence.ps1 uses -CandidateId parameter
-            $evidenceValidationOutput = & powershell -ExecutionPolicy Bypass -NoProfile -File $validateEvidenceScript -CandidateId $RoundId 2>&1
-            $validationExitCode = $LASTEXITCODE
-            $validationEndTime = Get-Date
-            
-            if ($validationExitCode -eq 0) {
-                $evidenceValidationPassed = $true
-                $State.candidate_checklist.validate_evidence_result = "PASS"
-                Write-Host "[LOOP] validate_evidence.ps1 PASSED for $RoundId" -ForegroundColor Green
-            } else {
-                $evidenceValidationPassed = $false
-                $State.candidate_checklist.validate_evidence_result = "FAIL"
-                Write-Host "[LOOP] validate_evidence.ps1 FAILED for $RoundId (Exit Code: $validationExitCode)" -ForegroundColor Red
-                Write-Host "[LOOP] Validation Output: $evidenceValidationOutput" -ForegroundColor Red
-            }
-            
-            $State.candidate_checklist.validate_evidence_ps1_executed = $true
-            $State.candidate_checklist.validate_evidence_executed_at = $validationEndTime.ToString("yyyy-MM-ddTHH:mm:ss")
-            $State.candidate_checklist.validate_evidence_exit_code = $validationExitCode
-            
-        } catch {
-            Write-Host "[LOOP] ERROR executing validate_evidence.ps1: $($_)" -ForegroundColor Red
-            $State.candidate_checklist.validate_evidence_ps1_executed = $true
-            $State.candidate_checklist.validate_evidence_result = "ERROR"
-            $State.candidate_checklist.validate_evidence_error = $_.Exception.Message
-            $evidenceValidationPassed = $false
-        }
-    } else {
-        Write-Host "[LOOP] WARNING: validate_evidence.ps1 not found at $validateEvidenceScript" -ForegroundColor Yellow
-        $State.candidate_checklist.validate_evidence_ps1_executed = $false
-        $State.candidate_checklist.validate_evidence_result = "SCRIPT_NOT_FOUND"
-        $evidenceValidationPassed = $false
-    }
+    # NOTE: validate_evidence.ps1 is executed INSIDE Test-CandidateCriteria (the judge)
+    # Test-CandidateCriteria runs ALL validations: Python scripts + evidence.ps1 + law checks
     
     Save-State $State
     
-    # CRITICAL: Check all 10 candidate criteria before proceeding
-    Write-Host "[LOOP] Validating 10 candidate criteria for $RoundId..." -ForegroundColor Cyan
+    # CRITICAL: Run the judge (Test-CandidateCriteria) - this is the ONLY source of truth
+    Write-Host "[LOOP] Running judge (Test-CandidateCriteria) for $RoundId..." -ForegroundColor Cyan
+    Write-Host "[LOOP] Judge executes: Python validation scripts + validate_evidence.ps1 + law keyword scan" -ForegroundColor Cyan
     $criteriaResults = Test-CandidateCriteria -State $State -RoundId $RoundId
     
     if (-not $criteriaResults.all_passed) {
@@ -1155,8 +1390,8 @@ If implementation is complex, create a minimal viable version that passes basic 
 BEGIN IMPLEMENTATION NOW.
 "@
     
-    $taskFile = Join-Path $RepoRoot "automation\control\candidates\$RoundId-task.txt"
-    $candidateDir = Split-Path $taskFile -Parent
+    $candidateDir = Join-Path $RepoRoot "automation\control\candidates\$RoundId"
+    $taskFile = Join-Path $candidateDir "task.txt"
     if (!(Test-Path $candidateDir)) {
         New-Item -ItemType Directory -Path $candidateDir -Force | Out-Null
     }
@@ -1195,9 +1430,9 @@ BEGIN IMPLEMENTATION NOW.
     try {
         $response = Invoke-RestMethod "http://127.0.0.1:11434/api/tags" -TimeoutSec 5 -ErrorAction Stop
         $models = $response.models
-        $modelLoaded = $models | Where-Object { $_.name -match "qwen2.5-coder" }
+        $modelLoaded = $models | Where-Object { $_.name -match "qwen2\.5-coder" }
         if ($modelLoaded) {
-            Write-Host "[OLLAMA] Model qwen2.5-coder:7b available" -ForegroundColor Green
+            Write-Host "[OLLAMA] Model qwen2\.5-coder:30b available" -ForegroundColor Green
             $ollamaHealthy = $true
         } else {
             Write-Host "[OLLAMA] Model not found in Ollama" -ForegroundColor Yellow
@@ -1227,25 +1462,24 @@ BEGIN IMPLEMENTATION NOW.
     
     try {
         $env:OLLAMA_API_BASE = "http://127.0.0.1:11434"
+        $env:PYTHONIOENCODING = "utf-8:replace"
+        $env:PYTHONUTF8 = "1"
         
-        # Run Aider using System.Diagnostics.Process with timeout
+        $pythonScript = Join-Path $RepoRoot "_run_aider.py"
+        Write-Host "[AIDER] Using Python wrapper: $pythonScript" -ForegroundColor Cyan
+        
         $psi = New-Object System.Diagnostics.ProcessStartInfo
-        $psi.FileName = $aiderExe
-        $psi.Arguments = "--model ollama_chat/qwen2.5-coder:7b --no-auto-commits --no-dirty-commits --yes-always --map-tokens 2048 --subtree-only automation/control --message-file `"$taskFile`" --no-pretty"
-        $psi.EnvironmentVariables["PYTHONIOENCODING"] = "utf-8:replace"
-        $psi.EnvironmentVariables["PYTHONUTF8"] = "1"
+        $psi.FileName = "python"
+        $psi.Arguments = "`"$pythonScript`" `"$RoundId`""
+        $psi.UseShellExecute = $false
         $psi.RedirectStandardOutput = $true
         $psi.RedirectStandardError = $true
-        $psi.UseShellExecute = $false
         $psi.CreateNoWindow = $true
         $psi.WorkingDirectory = $RepoRoot
-        $psi.EnvironmentVariables["OLLAMA_API_BASE"] = "http://127.0.0.1:11434"
+        $psi.StandardOutputEncoding = [System.Text.Encoding]::UTF8
+        $psi.StandardErrorEncoding = [System.Text.Encoding]::UTF8
         
         $process = [System.Diagnostics.Process]::Start($psi)
-        
-        # Read stdout and stderr asynchronously
-        $stdoutBuilder = New-Object System.Text.StringBuilder
-        $stderrBuilder = New-Object System.Text.StringBuilder
         
         $stdoutTask = $process.StandardOutput.ReadToEndAsync()
         $stderrTask = $process.StandardError.ReadToEndAsync()
@@ -1268,18 +1502,11 @@ BEGIN IMPLEMENTATION NOW.
         $stdout = $stdoutTask.Result
         $stderr = $stderrTask.Result
         
-        # Write logs
-        [System.IO.File]::WriteAllText($logFile, $stdout, [System.Text.Encoding]::UTF8)
-        if ($stderr) {
-            [System.IO.File]::WriteAllText($errorFile, $stderr, [System.Text.Encoding]::UTF8)
-        }
-        
         Write-Host "[AIDER] Exit code: $exitCode" -ForegroundColor $(if ($exitCode -eq 0) {'Green'} else {'Yellow'})
         if ($timedOut) {
             Write-Host "[AIDER] WARNING: Execution was killed due to timeout" -ForegroundColor Red
         }
         
-        # Get modified files (temporarily relax EAP for git stderr)
         $savedEAP2 = $ErrorActionPreference
         $ErrorActionPreference = 'Continue'
         $modifiedFiles = (git diff --name-only HEAD 2>&1) | Out-String
@@ -1289,18 +1516,12 @@ BEGIN IMPLEMENTATION NOW.
         $untArray = if ($untrackedFiles.Trim()) { $untrackedFiles.Trim() -split "`n" | Where-Object { $_.Trim() } } else { @() }
         $allChanges = @($modArray) + @($untArray)
         
-        # Check Aider log for errors (Ollama crash, UnicodeEncodeError, etc)
         $hasAiderError = $false
-        $aiderErrorKeywords = @("llama runner process has terminated", "UnicodeEncodeError", "APIConnectionError", "Connection refused", "ConnectionError", "APIConnectionTimeout")
-        foreach ($keyword in $aiderErrorKeywords) {
-            if ($stdout -match $keyword -or $stderr -match $keyword) {
-                $hasAiderError = $true
-                Write-Host "[AIDER] Detected error keyword: $keyword" -ForegroundColor Red
-                break
-            }
+        if ($stderr -match "llama runner process has terminated|UnicodeEncodeError|APIConnectionError|Connection refused|ConnectionError|APIConnectionTimeout") {
+            $hasAiderError = $true
+            Write-Host "[AIDER] Detected error in stderr" -ForegroundColor Red
         }
         
-        # Commit the changes
         if ($allChanges.Count -gt 0) {
             $ErrorActionPreference = 'Continue'
             git add . 2>&1 | Out-Null
@@ -1312,7 +1533,7 @@ BEGIN IMPLEMENTATION NOW.
             $commitHash = "NO_CHANGES"
         }
         
-        # Generate report
+        $reportPath = Join-Path $outputDir "report.json"
         $report = @{
             round_id = $RoundId
             candidate_branch = $candidateBranch
@@ -1321,14 +1542,64 @@ BEGIN IMPLEMENTATION NOW.
             log_file = $logFile
             modified_files = @($allChanges)
             timed_out = $timedOut
-            success = (-not $timedOut -and -not $hasAiderError -and ($exitCode -eq 0 -or $commitHash -ne "NO_CHANGES"))
+            # CRITICAL: success now requires BOTH exit_code=0 AND actual file changes
+            success = $false
+            files_written = @($allChanges)
+            write_verification = @{
+                exit_code_zero = ($exitCode -eq 0)
+                has_file_changes = ($allChanges.Count -gt 0)
+                has_core_ps1_files = $false
+                has_evidence_json = $false
+                has_test_files = $false
+            }
         }
         
-        $reportPath = Join-Path $outputDir "report.json"
+        # === WRITE VERIFICATION GATE ===
+        # Aider must produce actual files, not just exit 0
+        if ($report.write_verification.exit_code_zero -and $report.write_verification.has_file_changes) {
+            # Check for core .ps1 files (not just control loop artifacts)
+            $corePs1Files = $allChanges | Where-Object { 
+                $_ -match 'automation/control/[^/]+\.ps1$' -and 
+                $_ -notmatch 'main_control_loop|refresh_panel|start_loop|validate_|test_|candidates/'
+            }
+            
+            # Check for evidence.json
+            $evidenceJsonPath = Join-Path $candidateDir "evidence.json"
+            $report.write_verification.has_evidence_json = Test-Path $evidenceJsonPath
+            
+            # Check for test files
+            $testDir = Join-Path $RepoRoot "automation\control\test"
+            $testFiles = Get-ChildItem -Path $testDir -Filter "test_*.ps1" -ErrorAction SilentlyContinue | 
+                Where-Object { $_.Name -like "*${RoundId}*" }
+            $report.write_verification.has_test_files = ($testFiles.Count -gt 0)
+            
+            # Check for core implementation (not just control loop)
+            $report.write_verification.has_core_ps1_files = ($corePs1Files.Count -gt 0)
+            
+            # FINAL SUCCESS DETERMINATION
+            # Must have: exit_code=0 AND actual code changes AND evidence AND tests
+            $report.success = (
+                $report.write_verification.has_core_ps1_files -and
+                $report.write_verification.has_evidence_json -and
+                $report.write_verification.has_test_files
+            )
+            
+            if (-not $report.success) {
+                $report.block_reason = "INSUFFICIENT_WRITE_VERIFICATION"
+                $report.block_details = @{
+                    missing_core_ps1 = (-not $report.write_verification.has_core_ps1_files)
+                    missing_evidence = (-not $report.write_verification.has_evidence_json)
+                    missing_tests = (-not $report.write_verification.has_test_files)
+                }
+            }
+        } else {
+            $report.block_reason = "NO_FILE_CHANGES_DESPITE_EXIT_0"
+            $report.block_details = "Aider returned exit_code=$exitCode but produced no file changes"
+        }
+        
         $reportJson = $report | ConvertTo-Json -Depth 10
         [System.IO.File]::WriteAllText($reportPath, $reportJson, [System.Text.Encoding]::UTF8)
         
-        # Return to original branch
         $ErrorActionPreference = 'Continue'
         git checkout $currentBranch 2>&1 | Out-Null
         $ErrorActionPreference = $savedEAP2
@@ -1336,22 +1607,25 @@ BEGIN IMPLEMENTATION NOW.
         if ($report.success) {
             return @{
                 success = $true
-                summary = "Aider execution completed. Candidate branch: $candidateBranch, Commit: $commitHash, Modified: $($allChanges.Count) files"
+                summary = "Aider execution completed with verified file writes. Candidate branch: $candidateBranch, Commit: $commitHash, Modified: $($allChanges.Count) files, Core PS1: $($corePs1Files.Count), Tests: $($testFiles.Count), Evidence: $report.write_verification.has_evidence_json"
                 modified_files = @($allChanges)
                 commit_hash = $commitHash
+                write_verification = $report.write_verification
             }
         } else {
-            $failReason = if ($timedOut) { "Aider timed out after $($aiderTimeoutSeconds)s" } else { "Aider execution failed or no changes made" }
+            $failReason = if ($timedOut) { "Aider timed out after $($aiderTimeoutSeconds)s" } else { "Aider write verification failed - $($report.block_reason)" }
             return @{
                 success = $false
                 error = $failReason
-                summary = "Execution failed - check $logFile"
+                summary = "Execution blocked - $(if($report.block_details -is [hashtable]) { ($report.block_details.GetEnumerator() | ForEach-Object { "$($_.Key): $($_.Value)" }) -join ', ' } else { $report.block_details })"
+                block_reason = $report.block_reason
+                block_details = $report.block_details
+                write_verification = $report.write_verification
                 timed_out = $timedOut
             }
         }
         
     } catch {
-        # Cleanup on error (relax EAP for git stderr)
         $ErrorActionPreference = 'Continue'
         git checkout $currentBranch 2>&1 | Out-Null
         $ErrorActionPreference = $savedEAP
@@ -1392,3 +1666,4 @@ if ($finalReport.stop_reason -eq "execution_error") {
 } else {
     exit 0
 }
+
