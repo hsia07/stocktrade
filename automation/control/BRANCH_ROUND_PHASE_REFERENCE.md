@@ -15,7 +15,7 @@
 | **work/phase1-consolidation** | R-006 (Phase 1 base point) | **WORK** (active work branch) | Phase 1 | RENAMED from work/r006-governance - now correctly named |
 | work/r007-silence-protection | R-007 | ABSORBED / CONTENT-EQUIVALENT HISTORICAL WORK BRANCH | Phase 1 | Content absorbed into canonical mainline baseline; branch remains as historical reference |
 | work/r008-state-machine-governance | R-008 | ABSORBED / CONTENT-EQUIVALENT HISTORICAL WORK BRANCH | Phase 1 | Absorbed into canonical baseline; historical reference retained |
-| work/r009-command-priority | R-009 | BLOCKED | Phase 1 | R-009 blocked; environment readiness required to absorb into canonical baseline |
+| work/r009-command-priority | R-009 | EVIDENCE RERULED / REACCEPTANCE READY | Phase 1 | Evidence reruling recorded; no longer the active blocker; see automation/control/R009_EVIDENCE_RERULING.md |
 | **candidates/multi-round-attempt-001** | R-006~R-015 | CANDIDATE STALLED | Phase 1 | RENAMED from candidates/R-015 - now correctly named |
 | candidates/R-010 | R-010 | INVALIDATED | Phase 1 |废止 |
 | candidates/R-011 | R-011 | INVALIDATED | Phase 1 |废止 |
@@ -70,17 +70,28 @@ The current execution state in state.runtime.json.
 ## Phase 1 Status & Definitions
 
 - Phase 1 Status: not closed
-- Active blocker: R-009
+- Active blocker: none at R-009 level
 - R-007: absorbed/content-equivalent historical work (已收口)
 - R-008: absorbed/content-equivalent historical work (已收口)
-- R-009: local merge performed but acceptance blocked
+- R-009: evidence reruled; reacceptance ready; no longer the active blocker
 - R-010 ~ R-015: Phase 1 remaining pending rounds / not yet formally closed
 
-## Unblock Prerequisites
+## R-009 Reruling Summary
 
-- baseline history reachability: fetch/unshallow baseline; enumerate 941cd18bd25e55002fade912d3858a805034b9b8..0493cf8d95cd8777d8ce4d442f35d3b65258dd4f
-- candidate evidence integrity: plan to compare  baseline vs source vs merged for six R-009 files; determine integrity flag
-- validation environment readiness: confirm Python/pytest availability; ensure static validation commands exist
+- previous_actual_start_head_wrong = true
+- wrong_actual_start_head = 0493cf8d95cd8777d8ce4d442f35d3b65258dd4f
+- corrected_actual_start_head = 0493cf804cdf1510276e3b0153ee1c1a647d940e
+- merge_commit first_parent = corrected_actual_start_head
+- merge_base = 941cd18bd25e55002fade912d3858a805034b9b8
+- rev-list left-right count = 0 2
+- validation_capability_ok = true
+- candidate_evidence_integrity_ok = true
+- r009_reacceptance_ready = true
+
+## Remaining Phase 1 Constraint
+
+- Phase 1 is still not closed because R-010 ~ R-015 remain pending rounds.
+- push remains unauthorized at this stage.
 
 ## Current Runtime State (from state.runtime.json)
 
