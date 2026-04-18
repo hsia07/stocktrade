@@ -64,6 +64,7 @@ The current execution state in state.runtime.json.
 |------|---------------|-----------------|
 | work/phase1-consolidation | Contains R-006 but is Phase 1 base point, not R-006 completion | RENAMED to `work/phase1-consolidation` (EXECUTED) |
 | candidates/multi-round-attempt-001 | Named R-015 but is actually multi-round attempt (R-006~R-015) | RENAMED to `candidates/multi-round-attempt-001` (EXECUTED) |
+| work/r007-silence-protection | Absorbed into canonical baseline; not a separate alias | ABSORBED (EXECUTED) |
 | current_phase in state | Was showing R-006 instead of Phase 1 | FIXED - now shows "Phase 1" |
 
 ## Current Runtime State (from state.runtime.json)
