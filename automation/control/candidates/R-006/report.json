@@ -1,0 +1,17 @@
+{
+  "round_id": "R-006",
+  "modified_files": [
+    "automation/control/candidates/R-010/candidate.diff",
+    "automation/control/candidates/R-010/evidence.json",
+    "automation/control/main_control_loop.ps1",
+    "automation/control/test/test_R-010.ps1",
+    "candidates/R-010/report.json"
+  ],
+  "exit_code": 0,
+  "success": true,
+  "timed_out": false,
+  "tests_created": false,
+  "evidence_package_created": false,
+  "formal_status_code": "candidate_prep_in_progress",
+  "log_file": "C:\\Users\\richa\\OneDrive\\桌面\\stocktrade\\automation\\control\\candidates\\R-006\\aider.log"
+}

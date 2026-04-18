@@ -1,0 +1,25 @@
+# Task: R-006
+# Description: Execute R-006 with full formal governance compliance. Target: automation/control/ directory. Create test files and evidence package.
+
+IMPORTANT: Use /drop to remove server_v2.py and any large files from chat BEFORE responding. Only keep files in automation/control/ directory.
+
+CRITICAL REQUIREMENTS (ALL MUST BE DONE):
+1. CREATE a test file: automation/control/test/test_R-006.ps1
+   - Add at least 3 re-runnable test cases using Describe/It blocks or simple function tests
+   - Tests must be executable with: py -m pytest OR powershell -File test.ps1
+2. CREATE an evidence package file: automation/control/candidates/R-006/evidence.json
+   - Format: { "round": "R-006", "files_created": [...], "files_modified": [...], "implementation_summary": "...", "test_results": "PASS/FAIL" }
+3. MODIFY the report.json in candidates/R-006/ to include:
+   - "tests_created": true
+   - "evidence_package_created": true
+   - "formal_status_code": "candidate_ready_awaiting_manual_review"
+4. Run your tests to verify they pass
+
+DO NOT just create artifact files. You MUST:
+- Actually write code to .ps1 files in automation/control/
+- Create real test cases in automation/control/test/
+- Produce real evidence in automation/control/candidates/R-006/
+
+If implementation is complex, create a minimal viable version that passes basic tests.
+
+BEGIN IMPLEMENTATION NOW.
