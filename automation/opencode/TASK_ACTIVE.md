@@ -3,7 +3,7 @@
 ## Round
 - round_id: R-006
 - title: 健康檢查 / 熔斷 / 降級中心
-- branch: work/r006-governance
+- branch: work/phase1-consolidation
 
 ## Objective
 只允許治理骨架相關工作，不允許修改核心交易程式。

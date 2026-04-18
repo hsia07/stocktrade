@@ -1221,7 +1221,7 @@ function Start-MainControlLoop {
     $savedEAP3 = $ErrorActionPreference
     $ErrorActionPreference = 'Continue'
     $runReport.local_head = (git rev-parse HEAD 2>&1) | Out-String
-    try { $runReport.remote_head = (git rev-parse origin/work/r006-governance 2>&1) | Out-String } catch { $runReport.remote_head = "unknown" }
+    try { $runReport.remote_head = (git rev-parse origin/work/phase1-consolidation 2>&1) | Out-String } catch { $runReport.remote_head = "unknown" }
     $runReport.working_tree_clean = ((git status --porcelain 2>&1) | Out-String).Trim().Length -eq 0
     $runReport.untracked_files = (git ls-files --others --exclude-standard 2>&1) | Out-String
     $ErrorActionPreference = $savedEAP3

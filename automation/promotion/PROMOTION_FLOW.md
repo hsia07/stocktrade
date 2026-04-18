@@ -1,10 +1,10 @@
-﻿# PROMOTION_FLOW
+# PROMOTION_FLOW
 
 ## Goal
 Safely promote an approved candidate from work branch into main core through a review branch.
 
 ## Source Branch
-- work/r006-governance
+- work/phase1-consolidation
 
 ## Target Branch
 - master

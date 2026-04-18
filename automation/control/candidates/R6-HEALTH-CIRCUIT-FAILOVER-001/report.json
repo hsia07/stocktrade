@@ -1,6 +1,6 @@
 {
   "candidate_id": "R6-HEALTH-CIRCUIT-FAILOVER-001",
-  "source_branch": "work/r006-governance",
+  "source_branch": "work/phase1-consolidation",
   "candidate_branch": "candidates/R6-HEALTH-CIRCUIT-FAILOVER-001",
   "commit_hash": "71c788db3572ad95d09491f824578e9fa7ca8aee",
   "commit_short": "71c788d",

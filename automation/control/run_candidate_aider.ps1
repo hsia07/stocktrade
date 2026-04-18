@@ -5,7 +5,7 @@ param(
     [string]$Task,
     [string]$TaskFile,
     [string]$CandidateId,
-    [string]$SourceBranch = "work/r006-governance",
+    [string]$SourceBranch = "work/phase1-consolidation",
     [string]$AiderPath,
     [switch]$AllowDirtyStart,
     [switch]$YesAlways

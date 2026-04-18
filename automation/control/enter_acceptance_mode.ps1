@@ -18,7 +18,7 @@ if (Test-Path $statePath) {
     $state = [pscustomobject]@{
         mode = "paused_for_acceptance"
         round_id = "R-006"
-        branch = "work/r006-governance"
+        branch = "work/phase1-consolidation"
         current_cycle_id = $null
         latest_candidate_id = $null
         pause_requested = $false

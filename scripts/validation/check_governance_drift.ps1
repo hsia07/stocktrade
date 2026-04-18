@@ -21,7 +21,7 @@ param(
     [string]$TargetBranch,
     
     [Parameter(Mandatory=$false)]
-    [string]$BaseBranch = "work/r006-governance",
+    [string]$BaseBranch = "work/phase1-consolidation",
     
     [Parameter(Mandatory=$false)]
     [switch]$AllowGovernanceTask = $false

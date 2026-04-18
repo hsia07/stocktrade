@@ -1,6 +1,6 @@
-﻿=== RETURN_TO_CHATGPT ===
+=== RETURN_TO_CHATGPT ===
 round_id: R-006
-branch: work/r006-governance
+branch: work/phase1-consolidation
 status: none
 candidate_id: none
 summary:
