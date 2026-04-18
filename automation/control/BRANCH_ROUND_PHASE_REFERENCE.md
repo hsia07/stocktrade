@@ -14,7 +14,7 @@
 | **work/canonical-mainline-repair-001** | R-006 | **CANONICAL MAINLINE BASELINE** | Phase 1 | Currently verified, ready for consideration |
 | **work/phase1-consolidation** | R-006 (Phase 1 base point) | **WORK** (active work branch) | Phase 1 | RENAMED from work/r006-governance - now correctly named |
 | work/r007-silence-protection | R-007 | ABSORBED / CONTENT-EQUIVALENT HISTORICAL WORK BRANCH | Phase 1 | Content absorbed into canonical mainline baseline; branch remains as historical reference |
-| work/r008-state-machine-governance | R-008 | WORK (not merged) | Phase 1 | R-008 complete but not merged back |
+| work/r008-state-machine-governance | R-008 | ABSORBED / CONTENT-EQUIVALENT HISTORICAL WORK BRANCH | Phase 1 | Absorbed into canonical baseline; historical reference retained |
 | work/r009-command-priority | R-009 | WORK (not merged) | Phase 1 | R-009 complete but not merged back |
 | **candidates/multi-round-attempt-001** | R-006~R-015 | CANDIDATE STALLED | Phase 1 | RENAMED from candidates/R-015 - now correctly named |
 | candidates/R-010 | R-010 | INVALIDATED | Phase 1 |废止 |
