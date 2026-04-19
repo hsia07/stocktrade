@@ -30,7 +30,11 @@ direct_fail_conditions:
   - "claim pass before full round recheck"
 risk_level: "yellow"
 owner: "you"
-notes: "R-010 completed. R-011 pending - not yet started. Auto-continue blocked until governance explicit authorization."
+notes: "R-010 completed. R-011 authorized to start - governance explicit approval received."
+r011_authorization:
+  authorized: true
+  authorized_at: "2026-04-20"
+  authorized_by: "governance"
 r010_closeout:
   completed: true
   nested_push: "68332ac"
