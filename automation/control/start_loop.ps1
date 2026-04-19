@@ -20,13 +20,6 @@ $statePath = Join-Path $controlDir "state.runtime.json"
 $loopScript = Join-Path $controlDir "main_control_loop.ps1"
 $logFile = Join-Path $controlDir "logs\start_loop_$(Get-Date -Format 'yyyyMMdd_HHmmss').log"
 
-# Target integrity check: verify main_control_loop.ps1 exists before execution
-if (!(Test-Path $loopScript)) {
-    Write-Host "[ERROR] main_control_loop.ps1 not found at: $loopScript" -ForegroundColor Red
-    Write-Host "[ERROR] Target integrity check failed - cannot start control loop" -ForegroundColor Red
-    exit 1
-}
-
 # Ensure log directory exists
 $logDir = Split-Path $logFile -Parent
 if (!(Test-Path $logDir)) {

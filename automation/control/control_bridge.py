@@ -358,18 +358,7 @@ def do_start_loop():
         'message': 'Control loop starting in background. Poll /state and /last-action for progress.'
     })
     
-    # Target integrity: verify start_loop.ps1 exists before execution
-    if not os.path.exists(start_script):
-        result = {
-            'status': 'blocked',
-            'reason': f'start_loop.ps1 not found at {start_script}',
-            'action': 'target_integrity_check_failed'
-        }
-        save_json(LAST_ACTION_FILE, result)
-        return result
-    
     # Run in background thread - won't block the HTTP response
-    # Note: Failure will be recorded by background worker in LAST_ACTION_FILE
     run_ps_script_background(start_script)
     
     return {
