@@ -82,6 +82,10 @@
     },
     "notes": {
       "type": "string"
+    },
+    "start_authorized": {
+      "type": "boolean",
+      "description": "Explicit governance authorization to start this round"
     }
   }
 }

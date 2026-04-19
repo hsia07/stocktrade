@@ -30,6 +30,7 @@ direct_fail_conditions:
   - "claim pass before full round recheck"
 risk_level: "yellow"
 owner: "you"
+start_authorized: true
 notes: "R-010 completed. R-011 authorized to start - governance explicit approval received."
 r011_authorization:
   authorized: true
