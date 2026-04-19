@@ -1,0 +1,25 @@
+{
+  "candidate_id": "R-010-startup-chain-alignment-v2",
+  "round": "R-010",
+  "topic": "啟動鏈、bridge、wrapper、actual command 對齊",
+  "phase": "Phase 1",
+  "status": "candidate_ready_awaiting_manual_review",
+  "overall_status": "PASS",
+  "exit_code": 0,
+  "changed_files": [
+    "automation/control/start_loop.ps1",
+    "automation/control/control_bridge.py",
+    "stocktrade/start.bat (via nested repo)"
+  ],
+  "dual_chain_structure": {
+    "parent_candidate_branch": "candidates/R-010-startup-chain-alignment-v2",
+    "nested_candidate_branch": "stocktrade/candidates/R-010-start-bat",
+    "nested_commit": "4899a42f353c7aceb2299d7c905bee5fec408a5b"
+  },
+  "implementation_summary": {
+    "start_loop.ps1": "Added main_control_loop.ps1 existence guard",
+    "control_bridge.py": "Added start_loop.ps1 existence check",
+    "start.bat": "Added server_v2.py existence guard (nested repo)"
+  },
+  "design_intent_preserved": true
+}
