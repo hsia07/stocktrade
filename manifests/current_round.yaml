@@ -1,5 +1,5 @@
-﻿round_id: "R-006"
-title: "健康檢查 / 熔斷 / 降級中心"
+round_id: "R-010"
+title: "啟動鏈、bridge、wrapper、actual command 對齊"
 status: "in_progress"
 depends_on:
   - "R-005"
