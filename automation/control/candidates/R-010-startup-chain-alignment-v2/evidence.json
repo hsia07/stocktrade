@@ -1,0 +1,24 @@
+{
+  "round": "R-010",
+  "candidate_id": "R-010-startup-chain-alignment-v2",
+  "phase": "Phase 1",
+  "topic": "啟動鏈、bridge、wrapper、actual command 對齊",
+  "implementation": "fail-fast guards added to 3 startup chain files",
+  "dual_chain_verification": {
+    "nested_repo_start_bat_committed": true,
+    "nested_commit": "4899a42",
+    "nested_branch": "candidates/R-010-start-bat",
+    "parent_files_integrated": true
+  },
+  "design_intent_preserved": true,
+  "parser_hard_proof": {
+    "method": "[System.Management.Automation.Language.Parser]::ParseFile()",
+    "ast_returned": true,
+    "tokens_count": 1115,
+    "errors_count": 0
+  },
+  "target_existence_verified": true,
+  "call_chain_verified": true,
+  "fail_fast_verified": true,
+  "created_at": "2026-04-20T02:30:00"
+}

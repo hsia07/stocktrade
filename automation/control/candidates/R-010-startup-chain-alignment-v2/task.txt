@@ -1,0 +1,22 @@
+R-010: Startup Chain Alignment (v2 - Nested Repo Fixed)
+==============================================
+
+Round: R-010
+Topic: 啟動鏈、bridge、wrapper、actual command 對齊
+Phase: Phase 1
+
+Primary File: automation/control/start_loop.ps1
+Related Files:
+- automation/control/control_bridge.py
+- stocktrade/start.bat (nested repo: candidates/R-010-start-bat -> commit 4899a42)
+
+Implementation:
+- start_loop.ps1: Added main_control_loop.ps1 existence guard + exit 1 on failure
+- control_bridge.py: Added start_loop.ps1 existence check + blocked status
+- stocktrade/start.bat: Added server_v2.py existence guard (nested repo commit 4899a42)
+
+Dual-Chain Structure:
+- Parent: work/canonical-mainline-repair-001
+- Nested: stocktrade (candidate branch: candidates/R-010-start-bat -> commit 4899a42)
+
+Design Intent: Multi-entry startup chain with fail-fast integrity

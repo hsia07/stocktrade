@@ -1,0 +1,20 @@
+Nested Repo Boundary Evidence for R-010
+=======================================
+
+Nested Repository: stocktrade/
+Nested Candidate Branch: candidates/R-010-start-bat
+Nested Commit: 4899a42f353c7aceb2299d7c905bee5fec408a5b
+Nested Commit Message: R-010: Add server_v2.py existence guard + execution failure detection
+Changes: start.bat (+11 lines)
+
+Parent Repository Evidence:
+- Parent Candidate Branch: candidates/R-010-startup-chain-alignment-v2 (on work/canonical-mainline-repair-001)
+- stocktrade/ reference: Points to dirty submodule (not yet updated)
+- scope files: start_loop.ps1, control_bridge.py (parent-level)
+
+Dual-Chain Audit Trail:
+1. Nested repo: commit 4899a42 adds start.bat changes
+2. Parent repo: candidate package with reference to nested commit
+3. Merge will require updating stocktrade pointer after nested repo merge
+
+This structure ensures start.bat is legally committed in nested repo, with full audit trail.
