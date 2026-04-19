@@ -1,0 +1,18 @@
+R-010: Startup Chain Alignment
+===============================
+
+Round: R-010
+Topic: 啟動鏈、bridge、wrapper、actual command 對齊
+Phase: Phase 1
+
+Primary File: automation/control/start_loop.ps1
+Related Files:
+- automation/control/control_bridge.py
+- stocktrade/start.bat
+
+Implementation:
+- Added server_v2.py existence guard in start.bat
+- Added start_loop.ps1 existence check in control_bridge.py
+- Added main_control_loop.ps1 existence guard in start_loop.ps1
+
+Design Intent: Multi-entry startup chain with fail-fast integrity
