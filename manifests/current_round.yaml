@@ -1,8 +1,8 @@
-round_id: "R-010"
-title: "啟動鏈、bridge、wrapper、actual command 對齊"
-status: "in_progress"
+round_id: "R-011"
+title: "artifact、report、latest/history 產物完整化"
+status: "pending"
 depends_on:
-  - "R-005"
+  - "R-010"
 allowed_paths:
   - "manifests/"
   - "reports/"
@@ -30,4 +30,10 @@ direct_fail_conditions:
   - "claim pass before full round recheck"
 risk_level: "yellow"
 owner: "you"
-notes: "目前先只啟用治理骨架，不允許自動修改核心交易檔。"
+notes: "R-010 completed. R-011 pending - not yet started. Auto-continue blocked until governance explicit authorization."
+r010_closeout:
+  completed: true
+  nested_push: "68332ac"
+  parent_push: "686dbd3"
+  pointer_verified: true
+  dual_chain_complete: true
