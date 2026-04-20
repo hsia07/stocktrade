@@ -1,0 +1,11 @@
+{
+    "round_id": "ENGINE-REPAIR-CANDIDATE-001",
+    "title": "Auto-Run Engine Fail-Closed Repair Candidate",
+    "status": "candidate_ready_awaiting_manual_review",
+    "candidate_id": "ENGINE-REPAIR-001",
+    "candidate_commit": "5e8e0cb8a5bdb121a47fd51fda406142ff182da4",
+    "candidate_branch": "work/auto-run-engine-fail-closed-repair-001",
+    "parent_commit": "f2f2c185d155f56e3b5366722f4dd190703dec36",
+    "report_summary": "Auto-run engine hardened with 8 fail-closed guards. All guards installed, committed, and tested. Ready for governance review.",
+    "timestamp": "20260420-171330"
+}

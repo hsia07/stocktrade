@@ -1,0 +1,5 @@
+=== ENGINE-REPAIR-CANDIDATE-001 ===
+Title: Auto-Run Engine Fail-Closed Repair
+Work: 8 guards installed, 5 files committed, 453 insertions(+), 1883 deletions(-)
+Status: candidate_ready_awaiting_manual_review
+Commit: 5e8e0cb8a5bdb121a47fd51fda406142ff182da4
