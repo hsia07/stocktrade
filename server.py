@@ -63,6 +63,45 @@ class AgentReport:
         if not self.timestamp:
             self.timestamp = datetime.now().strftime("%H:%M:%S")
 
+class DataPathSeparator:
+    def __init__(self):
+        self._realtime_cache = {}
+        self._history_cache = {}
+        self._query_count = {"realtime": 0, "history": 0}
+
+    def get_realtime_data(self, symbol: str, bars: list) -> dict:
+        if symbol in self._realtime_cache:
+            return self._realtime_cache[symbol]
+        data = {
+            "close": bars[-1]["close"] if bars else 0,
+            "volume": bars[-1]["volume"] if bars else 0,
+            "bid_vol": 0,
+            "ask_vol": 0,
+        }
+        self._realtime_cache[symbol] = data
+        self._query_count["realtime"] += 1
+        return data
+
+    def get_history_data(self, symbol: str, bars: list, lookback: int = 20) -> list:
+        cache_key = f"{symbol}_{lookback}"
+        if cache_key in self._history_cache:
+            return self._history_cache[cache_key]
+        data = bars[-lookback:] if len(bars) >= lookback else bars
+        self._history_cache[cache_key] = data
+        self._query_count["history"] += 1
+        return data
+
+    def clear_history_cache(self):
+        self._history_cache.clear()
+
+    def get_stats(self) -> dict:
+        return {
+            "realtime_queries": self._query_count["realtime"],
+            "history_queries": self._query_count["history"],
+            "realtime_cache_size": len(self._realtime_cache),
+            "history_cache_size": len(self._history_cache),
+        }
+
 @dataclass
 class TradeRecord:
     id: str
@@ -612,6 +651,7 @@ class TradingEngine:
         self.execution  = ExecutionEngineer()
         self.analyst    = MarketAnalyst()
         self.mock       = MockDataEngine()
+        self.data_sep   = DataPathSeparator()
         self.trades_log: list[TradeRecord] = []
         self.latest_ticks  = {}
         self.agent_reports = {}
@@ -656,10 +696,14 @@ class TradingEngine:
                 if bar:
                     self.signal_eng.update_vwap(sym, bar)
 
+                rt_data = self.data_sep.get_realtime_data(sym, bars)
+
                 obook = {"bid_vol": tick["bid_vol"], "ask_vol": tick["ask_vol"]}
 
-                self.agent_reports[f"quant_{sym}"]    = asdict(self.quant.analyze(sym, bars))
-                self.agent_reports[f"backtest_{sym}"] = asdict(self.backtester.run(sym, bars))
+                hist_data = self.data_sep.get_history_data(sym, bars, 20)
+
+                self.agent_reports[f"quant_{sym}"]    = asdict(self.quant.analyze(sym, hist_data))
+                self.agent_reports[f"backtest_{sym}"] = asdict(self.backtester.run(sym, hist_data))
                 self.agent_reports[f"signal_{sym}"], sig = self._signal_and_report(sym, bars, tick, obook)
                 self.agent_reports["risk"]             = asdict(self.risk.get_report())
                 self.agent_reports["execution"]        = asdict(self.execution.get_report())
