@@ -1,0 +1,27 @@
+=== R-011 Task ===
+round_id: R-011
+title: artifact、report、latest/history 產物完整化
+
+=== Description ===
+R-011 focuses on completing artifact, report, latest, and history output mechanisms:
+1. Enhance automation/control/artifacts/ with structured artifact management
+2. Complete run_history.json with proper schema and session tracking
+3. Update latest_return_to_chatgpt.template.txt with all required fields
+4. Add history/ directory for historical artifact tracking
+5. Implement structured report generation in reports/run_record.json
+6. Complete review_packet.md with comprehensive review data
+
+=== Primary Implementation ===
+automation/control/artifacts/r011_artifact_management.py - ArtifactManager class with:
+- create_artifact, create_history_entry, get_latest_artifact, list_artifacts, validate_artifacts
+
+=== Target Files ===
+- automation/control/artifacts/r011_artifact_management.py
+- automation/control/output/r011_artifacts_report_completion/task.txt
+- reports/run_record.json
+- reports/review_packet.md
+- automation/control/latest_return_to_chatgpt.template.txt
+
+=== Status ===
+candidate_awaiting_manual_review
+=== END_TASK ===

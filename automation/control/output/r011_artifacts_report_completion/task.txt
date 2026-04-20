@@ -1,0 +1,33 @@
+=== R-011 Task Definition ===
+round_id: R-011
+title: artifact、report、latest/history 產物完整化
+theme: artifact_report_completion
+status: pending_start
+
+=== Task Description ===
+R-011 focuses on completing artifact, report, latest, and history output mechanisms:
+1. Enhance automation/control/artifacts/ with structured artifact management
+2. Complete run_history.json with proper schema and session tracking
+3. Update latest_return_to_chatgpt.template.txt with all required fields
+4. Enhance latest_return_to_chatgpt.runtime.txt with real-time outputs
+5. Add history/ directory for historical artifact tracking
+6. Implement structured report generation in reports/run_record.json
+7. Complete review_packet.md with comprehensive review data
+
+=== Target Files ===
+- automation/control/artifacts/*.txt
+- automation/control/run_history.json
+- automation/control/latest_return_to_chatgpt.template.txt
+- automation/control/latest_return_to_chatgpt.runtime.txt
+- automation/control/history/*.json
+- reports/run_record.json
+- reports/review_packet.md
+- automation/control/candidates/R-011/candidate.diff
+- automation/control/candidates/R-011/report.json
+- automation/control/candidates/R-011/evidence.json
+
+=== Implementation Notes ===
+- Use fail-closed guards to prevent false candidates
+- OpenCode as primary contractor
+- Real code changes required for candidate_ready
+- Must pass validate_evidence
