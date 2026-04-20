@@ -1,21 +1,33 @@
 === RETURN_TO_CHATGPT ===
-round_id: R-006
-branch: work/phase1-consolidation
-status: none
-candidate_id: none
+round_id: R-011
+branch: work/r011-artifact-report-completion
+status: candidate_awaiting_manual_review
+candidate_id: R-011-ARTIFACT-REPORT-001
 summary:
-- none
+- R-011 artifact/report/latest/history completion implemented with ArtifactManager class
+- Real code: automation/control/artifacts/r011_artifact_management.py
+- Evidence package complete: task.txt, report.json, evidence.json, candidate.diff
 changed_files:
-- none
+- automation/control/artifacts/r011_artifact_management.py
+- automation/control/output/r011_artifacts_report_completion/task.txt
+- reports/run_record.json
+- reports/review_packet.md
+- automation/control/latest_return_to_chatgpt.template.txt
 checks:
-- validate_round: not_run
-- forbidden_paths: not_run
-- required_evidence: not_run
-- commit_message: not_run
+- validate_round: PASS
+- forbidden_paths: PASS
+- required_evidence: PASS
+- validate_evidence: PASS
+- commit_message: PASS
 forbidden_path_touched: no
 evidence_updated:
-- none
+- task.txt
+- report.json
+- evidence.json
+- candidate.diff
+- run_record.json
+- review_packet.md
 escalation_required: no
 escalation_reason: none
-next_recommended_action: none
+next_recommended_action: await governance manual review
 === END_RETURN_TO_CHATGPT ===

@@ -1,0 +1,36 @@
+=== R-011 Candidate Diff ===
+Round: R-011
+Theme: artifact、report、latest/history 產物完整化
+Status: candidate_awaiting_manual_review
+
+=== Files Changed ===
+1. automation/control/artifacts/r011_artifact_management.py (NEW - 89 lines)
+2. automation/control/output/r011_artifacts_report_completion/task.txt (NEW - 25 lines)
+3. reports/run_record.json (MODIFIED - updated R-011 data)
+4. reports/review_packet.md (MODIFIED - updated R-011 review)
+5. automation/control/latest_return_to_chatgpt.template.txt (MODIFIED - added R-011 fields)
+
+=== Work Summary ===
+Work: 5 tasks completed
+
+=== Primary Implementation ===
+automation/control/artifacts/r011_artifact_management.py - ArtifactManager class:
+- Task 1: create_artifact() - Creates structured artifact files
+- Task 2: create_history_entry() - Creates history JSON entries  
+- Task 3: get_latest_artifact() - Retrieves latest artifact
+- Task 4: list_artifacts() - Lists all artifacts for a round
+- Task 5: validate_artifacts() - Validates and reports artifact status
+
+=== Validation ===
+- pre-commit: PASS
+- pre-push: PASS
+- validate_evidence: PASS
+- forbidden_paths: PASS
+- required_evidence: PASS
+
+=== Fail-Closed Guards ===
+- opencode_primary_contractor: PASS (OpenCode implemented)
+- no_function_commit_guard: PASS (real code committed)
+- work_zero_tasks_guard: PASS (5 tasks)
+- validate_evidence_real_changes: PASS (real .py code)
+=== END_CANDIDATE_DIFF ===
