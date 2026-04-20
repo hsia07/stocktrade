@@ -1,275 +1,39 @@
 {
-    "schema_version":  "2.0",
-    "updated_at":  "2026-04-18T22:24:44",
-    "run_state":  "stopped",
-    "last_action":  "r006_purified_validation_completed",
-    "aider_status":  "completed",
-"stop_reason": "r006_purified_validation_completed",
-    "current_phase":  "Phase 1",
-    "current_round":  "R-006",
-    "phase_start_round":  "R-001",
-    "phase_end_round":  "R-015",
-    "current_candidate_id":  null,
-    "phase_definition":  {
-                             "Phase 1":  {
-                                             "start_round":  "R-001",
-                                             "end_round":  "R-015",
-                                             "description":  "穩定性與基礎建設"
-                                         },
-                             "Phase 2":  {
-                                             "start_round":  "R-016",
-                                             "end_round":  "R-045A",
-                                             "description":  "交易鏈追責與執行"
-                                         },
-                             "Phase 3":  {
-                                             "start_round":  "R-046",
-                                             "end_round":  "R-128",
-                                             "description":  "成熟化與 shadow 準備"
-                                         },
-                             "Phase 4":  {
-                                             "start_round":  "R-129",
-                                             "end_round":  "R-161",
-                                             "description":  "多帳戶與營運化"
-                                         }
-                         },
-    "round_topics":  {
-                         "R-007":  "異常靜默保護",
-                         "R-008":  "狀態機與模式切換治理",
-                         "R-009":  "指令與任務優先級"
-                     },
-    "phase_completion_state":  "in_progress",
-    "chatgpt_review_result":  "pending",
-    "desired_action":  "auto_execute_rounds_candidate_only",
-    "current_mode":  "multi_round_candidate_prep",
-    "authorized_scope":  " ~ ",
-    "completed_candidate_rounds":  [
-
-                                   ],
-    "mode_definition":  {
-                            "description":  "Start / Resume button = Multi-Round Candidate Pre-Fabrication Mode",
-                            "behavior":  "When user clicks Start/Resume, it authorizes automatic sequential processing of authorized rounds within current phase, creating independent candidates for each round",
-                            "legal_effect":  {
-                                                 "start_button_means":  "multi_round_candidate_prep_mode",
-                                                 "candidate_is_not_formal_pass":  true,
-                                                 "no_auto_merge":  true,
-                                                 "no_auto_push_master":  true,
-                                                 "no_auto_continue_to_next_phase":  true,
-                                                 "stop_if_any_round_not_candidate_ready":  true,
-                                                 "merge_requires_explicit_user_signoff_per_round":  true,
-                                                 "user_can_review_multiple_candidates_at_once":  true,
-                                                 "user_cannot_auto_merge_multiple":  true,
-                                                 "later_round_candidate_does_not_imply_earlier_round_complete":  true,
-                                                 "at_merge_decision_point_wait_for_explicit_ok":  true
-                                             },
-                            "restrictions":  [
-                                                 "candidate != formal_pass",
-                                                 "no_auto_merge",
-                                                 "no_auto_push_master",
-                                                 "each_round_independent_candidate",
-                                                 "stop_if_any_round_not_candidate_ready",
-                                                 "merge_requires_explicit_user_signoff_per_round"
-                                             ]
-                        },
-    "candidate_checklist":  {
-                                "theme_completed":  false,
-                                "rerunnable_tests_passed":  false,
-                                "evidence_package_complete":  false,
-                                "validate_evidence_ps1_executed":  false,
-                                "validate_evidence_result":  null,
-                                "validate_evidence_executed_at":  null,
-                                "validate_evidence_exit_code":  null,
-                                "formal_status_code":  "candidate_prep_in_progress",
-                                "candidate_branch_auditable":  false,
-                                "candidate_commit_auditable":  false,
-                                "no_fabricated_evidence":  false,
-                                "no_unauthorized_modifications":  false,
-                                "complete_return_to_chatgpt":  false
-                            },
-    "aider_scheduling":  {
-                             "current_task_id":  null,
-                             "current_task_description":  null,
-                             "target_files":  [
-
-                                              ],
-                             "aider_args_used":  {
-                                                     "file":  null,
-                                                     "message":  null,
-                                                     "message_file":  null,
-                                                     "no_auto_commits":  true,
-                                                     "no_dirty_commits":  true,
-                                                     "yes_always":  false
-                                                 },
-                             "last_execution":  {
-                                                    "task_id":  null,
-                                                    "exit_code":  null,
-                                                    "files_written":  [
-
-                                                                      ],
-                                                    "status":  null,
-                                                    "disposition":  null
-                                                },
-                             "rules":  {
-                                           "one_shot_per_call":  true,
-                                           "max_files_per_task":  2,
-                                           "minimal_context_required":  true,
-                                           "no_full_repo_understanding":  true,
-                                           "no_cross_round_mixed_tasks":  true,
-                                           "disposition_on_text_only":  [
-                                                                            "no_change",
-                                                                            "not_applied",
-                                                                            "needs_manual_review"
-                                                                        ]
-                                       }
-                         },
-    "forbidden_scope_guardrails":  {
-                                       "master_branch":  {
-                                                             "blocked":  true,
-                                                             "reason":  "master_branch_protected"
-                                                         },
-                                       "server_v2_py":  {
-                                                            "blocked":  true,
-                                                            "requires_explicit_auth":  true,
-                                                            "reason":  "core_server_file"
-                                                        },
-                                       "broker_core":  {
-                                                           "blocked":  true,
-                                                           "reason":  "broker_core_protected"
-                                                       },
-                                       "live_trading":  {
-                                                            "blocked":  true,
-                                                            "reason":  "live_trading_protected"
-                                                        },
-                                       "risk_core":  {
-                                                         "blocked":  true,
-                                                         "reason":  "risk_core_protected"
-                                                     },
-                                       "future_phase_content":  {
-                                                                    "blocked":  true,
-                                                                    "reason":  "future_phase_protected"
-                                                                },
-                                       "unrelated_promotion_panel_governance":  {
-                                                                                    "blocked":  true,
-                                                                                    "reason":  "scope_restricted"
-                                                                                },
-                                       "action_on_violation":  "stop_and_report_blocked"
-                                   },
-    "merge_gate":  {
-                       "user_can_review_multiple_candidates":  true,
-                       "user_cannot_auto_merge_multiple":  true,
-                       "merge_requires_per_round_explicit_signoff":  true,
-                       "at_decision_point_provide_merge_command":  false,
-                       "must_wait_for_explicit_user_ok":  true,
-                       "explicit_ok_keywords":  [
-                                                    "好",
-                                                    "同意",
-                                                    "ok",
-                                                    "approve",
-                                                    "yes"
-                                                ],
-                       "auto_push_master":  false,
-                       "later_candidate_does_not_imply_earlier_complete":  true,
-                       "current_decision_state":  "candidate_prep_in_progress"
-                   },
-    "last_commit":  null,
-    "last_error":  "Immediate stop requested by user",
-    "last_reply_id":  null,
-    "ready_for_signoff":  false,
-    "signoff_required":  false,
-    "signoff_granted":  false,
-    "merge_push_allowed":  false,
-    "latest_candidate_id":  null,
-    "latest_return_artifact":  null,
-    "latest_prompt_artifact":  "C:\\Users\\richa\\OneDrive\\桌面\\stocktrade\\automation\\control\\artifacts\\prompt_R-006_R-006-20260418-222444.txt",
-    "rounds_in_current_run":  [
-
-                              ],
-    "completed_rounds":  [
-
-                         ],
-    "ready_for_signoff_rounds":  [
-
-                                 ],
-    "blocked_rounds":  [
-
-                       ],
-    "non_selectable_rounds_with_reasons":  {
-                                               "R-001":  {
-                                                             "reason":  "archived_historical_round",
-                                                             "merge_eligible":  false,
-                                                             "topic":  "歷史歸檔"
-                                                         },
-                                               "R-002":  {
-                                                             "reason":  "archived_historical_round",
-                                                             "merge_eligible":  false,
-                                                             "topic":  "歷史歸檔"
-                                                         },
-                                               "R-003":  {
-                                                             "reason":  "archived_historical_round",
-                                                             "merge_eligible":  false,
-                                                             "topic":  "歷史歸檔"
-                                                         },
-                                               "R-004":  {
-                                                             "reason":  "archived_historical_round",
-                                                             "merge_eligible":  false,
-                                                             "topic":  "歷史歸檔"
-                                                         },
-                                               "R-005":  {
-                                                             "reason":  "archived_historical_round",
-                                                             "merge_eligible":  false,
-                                                             "topic":  "歷史歸檔"
-                                                         },
-"R-006": {
-            "reason": "candidate_ready_awaiting_manual_review",
-            "merge_eligible": false,
-            "topic": "健康檢查 / 熔斷 / 降級中心"
-        },
-                                               "R-007":  {
-                                                             "reason":  "not_yet_started",
-                                                             "merge_eligible":  false,
-                                                             "topic":  "異常靜默保護"
-                                                         },
-                                               "R-008":  {
-                                                             "reason":  "not_yet_started",
-                                                             "merge_eligible":  false,
-                                                             "topic":  "狀態機與模式切換治理"
-                                                         },
-                                               "R-009":  {
-                                                             "reason":  "not_yet_started",
-                                                             "merge_eligible":  false,
-                                                             "topic":  "指令與任務優先級"
-                                                         }
-                                           },
-    "selectable_rounds_for_merge":  [
-
-                                    ],
-    "merge_selection_ui_spec":  {
-                                    "selectable_section_title":  "可批次 Merge 輪次（已達 ready_for_signoff）",
-                                    "non_selectable_section_title":  "尚不可 Merge 輪次",
-                                    "button_name_format":  {
-                                                               "body":  "{round_id}｜{topic}",
-                                                               "status_separate":  true,
-                                                               "note":  "狀態不得混入名稱本體，必須另外顯示"
-                                                           },
-                                    "selectable_display":  {
-                                                               "name_body":  "{round_id}｜{topic}",
-                                                               "status_line":  "可簽字",
-                                                               "html_structure":  "\u003cdiv style=\u0027display: flex; flex-direction: column;\u0027\u003e\u003cspan\u003e{name_body}\u003c/span\u003e\u003cspan style=\u0027font-size: 0.9em;\u0027\u003e{status_line}\u003c/span\u003e\u003c/div\u003e"
-                                                           },
-                                    "non_selectable_display":  {
-                                                                   "name_body":  "{round_id}｜{topic}",
-                                                                   "reason_line":  "尚不可 merge：{reason}",
-                                                                   "html_structure":  "\u003cdiv style=\u0027display: flex; flex-direction: column;\u0027\u003e\u003cspan\u003e{name_body}\u003c/span\u003e\u003cspan style=\u0027font-size: 0.9em; opacity: 0.8;\u0027\u003e{reason_line}\u003c/span\u003e\u003c/div\u003e",
-                                                                   "disabled_behavior":  "checkbox_disabled_and_grayed"
-                                                               },
-                                    "selection_rule":  "only_ready_for_signoff_rounds_can_be_selected",
-                                    "format_validation":  "name_and_status_separated"
-},
-    "mode": "stopped",
-    "stop_reason": "r006_purified_validation_completed",
-    "round_id": "R-006",
+    "schema_version": "2.0",
+    "run_state": "stopped",
+    "current_round": "R-011",
+    "round_id": "R-011",
+    "current_phase": "Phase 1",
     "branch": "work/canonical-mainline-repair-001",
-    "current_cycle_id": null,
-    "pause_requested": false,
-    "acceptance_mode":  false,
-    "escalation_required":  true
+    "last_action": "fail_closed_guards_installed",
+    "last_error": "none",
+    "status_flags": {
+        "authorized": true,
+        "started": false,
+        "candidate_ready": false,
+        "start_authorized": true,
+        "whether_started": false,
+        "whether_candidate_ready": false,
+        "desired_action": null,
+        "auto_continue": false
+    },
+    "valid_candidates": {
+        "r011": false,
+        "r012": false,
+        "r013": false,
+        "r014": false,
+        "r015": false
+    },
+    "fail_closed_guards": {
+        "opencode_primary_contractor": true,
+        "aider_failure_reclaim": true,
+        "no_start_event_blocked": true,
+        "no_function_commit_blocked": true,
+        "work_zero_tasks_blocked": true,
+        "untracked_candidate_blocked": true,
+        "shared_commit_reuse_blocked": true,
+        "validate_evidence_real_changes": true
+    },
+    "containment_note": "Phase 1 containment complete. Fail-closed guards installed. Awaiting governance restart authorization.",
+    "awaiting": "governance_restart_authorization_for_R011_with_fail_closed_engine"
 }
