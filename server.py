@@ -83,6 +83,18 @@ class TradeRecord:
 class QuantResearcher:
     def __init__(self):
         self.alpha_signals = {}
+        self._cache = {}
+
+    def _fast_ma(self, data: list, period: int) -> float:
+        if len(data) < period:
+            return 0.0
+        return sum(data[-period:]) / period
+
+    def _fast_std(self, data: list, period: int, mean: float) -> float:
+        if len(data) < period:
+            return 0.0
+        variance = sum((x - mean) ** 2 for x in data[-period:]) / period
+        return variance ** 0.5
 
     def analyze(self, symbol: str, bars: list) -> AgentReport:
         if len(bars) < 20:
@@ -133,24 +145,34 @@ class QuantResearcher:
 class Backtester:
     def __init__(self):
         self.results = {}
+        self._cache = {}
+
+    def _compute_emas(self, closes: list) -> tuple:
+        if len(closes) < 21:
+            return []
+        ema5_arr = []
+        ema20_arr = []
+        for i in range(20, len(closes)):
+            window = closes[:i+1]
+            ema5_arr.append(sum(window[-5:]) / 5)
+            ema20_arr.append(sum(window[-20:]) / 20)
+        return ema5_arr, ema20_arr
 
     def run(self, symbol: str, bars: list) -> AgentReport:
         if len(bars) < 30:
             return AgentReport("Backtester", "BT", "idle", "Need more history for backtest", ["Need at least 30 bars"])
 
         closes = [b["close"] for b in bars]
+        ema5_arr, ema20_arr = self._compute_emas(closes)
+        
         trades = []
         in_trade = None
-
-        for i in range(20, len(closes)):
-            window = closes[: i + 1]
-            ema5  = sum(window[-5:]) / 5
-            ema20 = sum(window[-20:]) / 20
-
+        for i, (ema5, ema20) in enumerate(zip(ema5_arr, ema20_arr)):
+            actual_idx = i + 20
             if in_trade is None and ema5 > ema20 * 1.002:
-                in_trade = {"entry": closes[i], "idx": i}
-            elif in_trade and (ema5 < ema20 or i - in_trade["idx"] >= 30):
-                pnl = closes[i] - in_trade["entry"]
+                in_trade = {"entry": closes[actual_idx], "idx": actual_idx}
+            elif in_trade and (ema5 < ema20 or actual_idx - in_trade["idx"] >= 30):
+                pnl = closes[actual_idx] - in_trade["entry"]
                 trades.append(pnl)
                 in_trade = None
 
