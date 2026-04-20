@@ -18,27 +18,33 @@ forbidden_paths:
 required_evidence:
   - "reports/run_record.json"
   - "reports/review_packet.md"
+  - "automation/control/candidates/R-011/evidence.json"
 required_checks:
   - "py ./scripts/validation/validate_round.py --manifest ./manifests/current_round.yaml"
-  - "py ./scripts/validation/check_forbidden_changes.py"
-  - "py ./scripts/validation/check_required_evidence.py"
-  - "py ./scripts/validation/check_commit_message.py"
+  - "py ./scripts/validation/check_forbidden_changes.py --manifest ./manifests/current_round.yaml"
+  - "py ./scripts/validation/check_required_evidence.py --manifest ./manifests/current_round.yaml"
+  - "py ./scripts/validation/validate_evidence.py --manifest ./manifests/current_round.yaml --repo-root ."
 direct_fail_conditions:
   - "modified forbidden paths"
   - "missing required evidence"
-  - "manifest/schema inconsistency"
-  - "claim pass before full round recheck"
+  - "evidence shows packaging only (no real code changes)"
+  - "candidate.diff shows Work: 0 tasks"
+  - "candidate directory untracked"
+  - "commit reused from previous round"
 risk_level: "yellow"
 owner: "you"
 start_authorized: true
-notes: "R-010 completed. R-011 authorized to start - governance explicit approval received."
-r011_authorization:
-  authorized: true
-  authorized_at: "2026-04-20"
-  authorized_by: "governance"
-r010_closeout:
-  completed: true
-  nested_push: "68332ac"
-  parent_push: "686dbd3"
-  pointer_verified: true
-  dual_chain_complete: true
+notes: "Phase 1 fail-closed engine installed. All false-candidates invalidated. State: authorized but NOT started. Awaiting governance restart with real OpenCode execution."
+containment_status: "R011_R015_INVALIDATED_FAIL_CLOSED_GUARDS_INSTALLED"
+auto_run: false
+desired_action: null
+fail_closed_guards:
+  opencode_primary_contractor: true
+  aider_failure_reclaim: true
+  no_start_event_guard: true
+  no_function_commit_guard: true
+  work_zero_tasks_guard: true
+  untracked_candidate_guard: true
+  shared_commit_reuse_guard: true
+  validate_evidence_real_changes: true
+guard_status: "ACTIVE"
