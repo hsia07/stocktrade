@@ -1,0 +1,21 @@
+{
+  "round_id": "R-011",
+  "title": "artifact、report、latest/history 產物完整化",
+  "status": "pending_not_started",
+  "baseline_state": true,
+  "work_done": [],
+  "exact_primary_file": null,
+  "exact_related_files": [],
+  "implementation_summary": "R-011 baseline state: pending. No functional work committed. 8 fail-closed guards installed. Awaiting governance restart authorization.",
+  "validation": "PENDING",
+  "formal_status_code": "baseline_pending_not_started",
+  "timestamp": "20260420-160500",
+  "candidate_commit": null,
+  "candidate_branch": null,
+  "fail_closed_guards_installed": true,
+  "started": false,
+  "authorized": true,
+  "candidate_ready": false,
+  "desired_action": null,
+  "notes": "R-011 is in baseline pending state. Not started. Awaiting governance restart. Evidence files added for hook compatibility only - NOT candidate_ready."
+}
