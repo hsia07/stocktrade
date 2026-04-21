@@ -1,0 +1,30 @@
+{
+  "round_id": "GOV-SOURCE-LOCK",
+  "task_type": "governance_source_of_truth_lock_repair",
+  "validation_timestamp": "2026-04-22T04:00:00Z",
+  "integrity_check": {
+    "authority_lock_guard_exists": true,
+    "authority_lock_guard_loads": true,
+    "topic_extraction_works": true,
+    "excluded_sources_defined": true
+  },
+  "test_results": [
+    {"test": "authority lock guard load", "result": "pass"},
+    {"test": "topic authority path correct", "result": "pass"},
+    {"test": "validation authority path correct", "result": "pass"}
+  ],
+  "authority_files_inventory": [
+    {"path": "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md", "type": "topic_authority"},
+    {"path": "_governance/law/03_161輪逐輪施行細則法典_整合法條增補版.docx", "type": "validation_authority"}
+  ],
+  "excluded_non_authoritative_sources": [
+    "opencode_readable_laws/",
+    "_governance/law/readable/03",
+    "05_每輪詳細主題補充法典",
+    "archive/",
+    "historical/"
+  ],
+  "blockers_found": [],
+  "validate_evidence_result": "PASS",
+  "ready_for_candidate": true
+}

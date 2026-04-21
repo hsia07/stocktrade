@@ -1,0 +1,18 @@
+{
+  "round_id": "GOV-SOURCE-LOCK",
+  "topic": "法源 authority 鎖定與去歧義",
+  "implementation_status": "completed",
+  "primary_file": "scripts/validation/authority_lock_guard.py",
+  "authority_rules": {
+    "topic_authority": "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md",
+    "validation_authority": "_governance/law/03_161輪逐輪施行細則法典_整合法條增補版.docx"
+  },
+  "excluded_sources": [
+    "opencode_readable_laws/*",
+    "_governance/law/readable/03",
+    "05_每輪詳細主題補充法典",
+    "archive/*",
+    "historical/*"
+  ],
+  "all_tests_passed": true
+}

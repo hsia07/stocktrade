@@ -1,0 +1,6 @@
+GOV-SOURCE-LOCK: 法源 authority 鎖定與去歧義
+===
+Primary File: scripts/validation/authority_lock_guard.py
+Related Files: .githooks/pre-push
+Implementation: authority_lock_guard.py validates correct topic/validation sources
+Status: IMPLEMENTATION_COMPLETED
