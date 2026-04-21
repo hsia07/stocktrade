@@ -1,0 +1,14 @@
+{
+  "round_id": "GOV-PUSH-LEGALITY",
+  "topic": "governance round hook/manifest 合法 push 鏈修復",
+  "implementation_status": "completed",
+  "primary_file": "scripts/validation/check_commit_message.py",
+  "governance_identity_rule": {
+    "pattern": "GOV-[A-Z0-9_-]+",
+    "extraction": "from commit message first line",
+    "manifest_match": "required for GOV rounds"
+  },
+  "legacy_r_round_behavior_preserved": true,
+  "no_verify_required": true,
+  "all_tests_passed": true
+}

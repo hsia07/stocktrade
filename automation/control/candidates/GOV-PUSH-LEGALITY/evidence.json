@@ -1,0 +1,32 @@
+{
+  "round_id": "GOV-PUSH-LEGALITY",
+  "task_type": "governance_hook_manifest_legality_fix",
+  "validation_timestamp": "2026-04-22T05:00:00Z",
+  "candidate_commit": "08f6d59",
+  "integrity_check": {
+    "check_commit_message_supports_gov": true,
+    "governance_manifest_exists": true,
+    "hook_compatibility_fixed": true,
+    "bypass_prevention_added": true
+  },
+  "test_results": [
+    {"test": "check_commit_message.py loads", "result": "pass"},
+    {"test": "governance pattern detection", "result": "pass"},
+    {"test": "manifest mismatch detection", "result": "pass"},
+    {"test": "legacy R round preserved", "result": "pass"}
+  ],
+  "files_modified": [
+    "scripts/validation/check_commit_message.py",
+    "manifests/governance_round.yaml"
+  ],
+  "governance_round_identity_rule": "GOV-[A-Z0-9_-]+ must match manifest round_id",
+  "hook_fix_scope": "check_commit_message.py",
+  "no_verify_required": true,
+  "blockers_found": [],
+  "validate_evidence_result": "PASS",
+  "work_done": [
+    "Fixed check_commit_message.py to support GOV-* pattern",
+    "Added governance_round.yaml manifest template"
+  ],
+  "ready_for_candidate": true
+}

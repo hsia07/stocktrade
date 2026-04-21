@@ -1,0 +1,36 @@
+round_id: "GOV-PUSH-LEGALITY"
+title: "governance round hook / manifest 合法 push 鏈修復"
+status: "pending"
+depends_on: []
+allowed_paths:
+  - ".githooks/"
+  - "scripts/validation/"
+  - "manifests/"
+  - "automation/control/candidates/GOV-PUSH-LEGALITY/"
+forbidden_paths:
+  - "server.py"
+  - "server_v2.py"
+  - "index_v2.html"
+  - ".env"
+  - ".env.*"
+required_evidence:
+  - "automation/control/candidates/GOV-PUSH-LEGALITY/evidence.json"
+required_checks:
+  - "py ./scripts/validation/check_commit_message.py --manifest ./manifests/governance_round.yaml"
+  - "py ./scripts/validation/validate_evidence.py --manifest ./manifests/governance_round.yaml --repo-root ."
+direct_fail_conditions:
+  - "modified forbidden paths"
+  - "missing required evidence"
+  - "bypass unauthorized"
+risk_level: "yellow"
+owner: "governance"
+start_authorized: true
+notes: "Governance round for fixing hook/manifest compatibility for GOV rounds"
+containment_status: "GOVERNANCE_FIX_TASK"
+auto_run: false
+desired_action: null
+fail_closed_guards:
+  opencode_primary_contractor: true
+  no_bypass_guard: true
+  governance_identity_enforced: true
+guard_status: "ACTIVE"
