@@ -115,6 +115,92 @@ class TradeRecord:
     open_time: str
     close_time: str
 
+class DecisionLatencyBudget:
+    DISPLAY_ONLY_MS = 2000
+    TRADING_DECISION_MS = 5000
+    UNACCEPTABLE_MS = 10000
+    
+    def __init__(self):
+        self._decision_times = {}
+        self._degrade_count = 0
+        self._fallback_mode = False
+        self._last_fallback_reason = ""
+
+    def check_latency(self, component: str, latency_ms: float) -> dict:
+        if latency_ms > self.UNACCEPTABLE_MS:
+            self._degrade_count += 1
+            self._fallback_mode = True
+            self._last_fallback_reason = f"{component} exceeded {self.UNACCEPTABLE_MS}ms"
+            return {
+                "status": "degraded",
+                "mode": "fallback",
+                "latency_ms": latency_ms,
+                "reason": self._last_fallback_reason,
+                "can_trade": False,
+                "output_format": "fallback"
+            }
+        elif latency_ms > self.TRADING_DECISION_MS:
+            return {
+                "status": "warning",
+                "mode": "display_only",
+                "latency_ms": latency_ms,
+                "can_trade": False,
+                "output_format": "display"
+            }
+        elif latency_ms > self.DISPLAY_ONLY_MS:
+            return {
+                "status": "ok",
+                "mode": "full",
+                "latency_ms": latency_ms,
+                "can_trade": True,
+                "output_format": "full"
+            }
+        else:
+            return {
+                "status": "ok",
+                "mode": "full",
+                "latency_ms": latency_ms,
+                "can_trade": True,
+                "output_format": "full"
+            }
+
+    def check_ai_timeout(self, component: str, timeout_ms: float) -> dict:
+        if timeout_ms > self.TRADING_DECISION_MS:
+            self._degrade_count += 1
+            self._fallback_mode = True
+            self._last_fallback_reason = f"AI {component} timeout"
+            return {
+                "status": "degraded",
+                "mode": "fallback",
+                "timeout_ms": timeout_ms,
+                "reason": self._last_fallback_reason,
+                "can_trade": False,
+                "output_format": "fallback",
+                "explanation": "AI timeout - revert to last known safe state"
+            }
+        return {
+            "status": "ok",
+            "mode": "full",
+            "timeout_ms": timeout_ms,
+            "can_trade": True,
+            "output_format": "full"
+        }
+
+    def recover_from_fallback(self) -> bool:
+        if self._fallback_mode and self._degrade_count < 3:
+            self._fallback_mode = False
+            self._last_fallback_reason = ""
+            return True
+        return False
+
+    def get_status(self) -> dict:
+        return {
+            "degrade_count": self._degrade_count,
+            "fallback_mode": self._fallback_mode,
+            "last_fallback_reason": self._last_fallback_reason,
+            "can_trade": not self._fallback_mode
+        }
+
 # ══════════════════════════════════════════════
 # 角色一：量化研究員 (Quant Researcher)
 # 職責：發現 alpha、設計策略邏輯
@@ -652,6 +738,7 @@ class TradingEngine:
         self.analyst    = MarketAnalyst()
         self.mock       = MockDataEngine()
         self.data_sep   = DataPathSeparator()
+        self.latency_budget = DecisionLatencyBudget()
         self.trades_log: list[TradeRecord] = []
         self.latest_ticks  = {}
         self.agent_reports = {}
@@ -708,6 +795,11 @@ class TradingEngine:
                 self.agent_reports["risk"]             = asdict(self.risk.get_report())
                 self.agent_reports["execution"]        = asdict(self.execution.get_report())
                 self.agent_reports[f"market_{sym}"]    = asdict(self.analyst.analyze(sym, bars, tick))
+
+                latency_check = self.latency_budget.check_latency(f"signal_{sym}", 100)
+                if latency_check["mode"] == "fallback":
+                    log.warning(f"Latency degraded - fallback mode: {latency_check['reason']}")
+                    sig = None
 
                 if sig and AUTO_TRADE:
                     ok, reason = self.risk.can_enter(sig, tick["price"])
