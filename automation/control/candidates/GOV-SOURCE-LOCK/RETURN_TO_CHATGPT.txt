@@ -1,0 +1,92 @@
+================================================================================
+FORMAL RETURN TO CHATGPT - GOV-SOURCE-LOCK CANDIDATE RECONTAINMENT
+================================================================================
+
+round_id: GOV-SOURCE-LOCK
+task_type: governance_candidate_recontainment
+reply_id: GOV-RECONTAIN-20260422-001
+
+status: completed
+formal_status_code: candidate_ready_awaiting_manual_review
+
+exact_primary_file: scripts/validation/authority_lock_guard.py
+exact_related_files:
+  - automation/control/candidates/GOV-SOURCE-LOCK/task.txt
+  - automation/control/candidates/GOV-SOURCE-LOCK/report.json
+  - automation/control/candidates/GOV-SOURCE-LOCK/evidence.json
+  - automation/control/candidates/GOV-SOURCE-LOCK/candidate.diff
+
+files_modified:
+  - scripts/validation/authority_lock_guard.py (new)
+  - automation/control/candidates/GOV-SOURCE-LOCK/ (evidence package)
+
+implementation_summary: |
+  Created authority_lock_guard.py that enforces correct topic/validation
+  source precedence. The guard validates that topic authority comes from
+  _governance/law/161輪正式重編主題總表_唯一基準版_v2.md and validation
+  authority from _governance/law/03_161輪逐輪施行細則法典_整合法條增補版.docx.
+  Excluded sources (opencode_readable_laws, archives, etc.) cannot be used
+  as topic authority.
+
+validation_summary: |
+  authority_lock_guard.py loads and executes successfully.
+  Pre-commit hook passes all validations.
+  No forbidden paths modified.
+
+validate_evidence_executed: true
+validate_evidence_result: PASS
+
+evidence_package_files:
+  - task.txt
+  - report.json
+  - evidence.json
+  - candidate.diff
+
+candidate_branch: work/gov-source-lock
+candidate_commit: edf8464
+
+blockers_found: []
+
+ready_for_candidate: true
+
+next_action: |
+  Manual review of governance candidate by human reviewer.
+  R016 candidate (f9b6bba) remains frozen on work/r016-decision-trace.
+  Do NOT merge, push, or promote until explicit authorization.
+
+source_contaminated_branch: work/r016-decision-trace
+governance_recontained_branch: work/gov-source-lock
+governance_recontained_commit: edf8464
+
+r016_candidate_frozen: true
+r016_candidate_commit: f9b6bba
+
+branch_split_method: |
+  Created new branch work/gov-source-lock from canonical baseline
+  work/canonical-mainline-repair-001 (b6c9913), then applied governance
+  fix. Original contaminated candidate 3586a07 remains on work/r016-decision-trace
+  but is NOT part of this clean governance candidate.
+
+contamination_removed: true
+
+evidence_package_isolated: true
+
+actual_files_touched_ruling: |
+  Only governance-related files touched. R016 DecisionTracer content
+  (f9b6bba) NOT included in this candidate. Strict branch isolation maintained.
+
+================================================================================
+VERIFICATION CHECKLIST
+================================================================================
+[A] Independent governance candidate branch created: YES (work/gov-source-lock)
+[B] Governance candidate no longer shares branch with f9b6bba: YES
+[C] Independent evidence package exists: YES
+[D] R016 candidate explicitly frozen: YES (f9b6bba on work/r016-decision-trace)
+[E] No merge/push/promotion attempted: YES
+[F] validate_evidence executed: YES
+[G] validate_evidence result: PASS
+[H] No unauthorized R016 new work: YES
+
+================================================================================
+END OF RETURN TO CHATGPT
+================================================================================
