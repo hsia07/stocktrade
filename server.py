@@ -63,6 +63,80 @@ class AgentReport:
         if not self.timestamp:
             self.timestamp = datetime.now().strftime("%H:%M:%S")
 
+OBSERVER_SCHEMA_VERSION = "1.0"
+
+class ObservableEvent:
+    OBSERVER_SCHEMA_VERSION = OBSERVER_SCHEMA_VERSION
+    VALID_STATUSES = {"ok", "warn", "alert", "idle", "info", "error", "success", "pending"}
+    VALID_EVENT_TYPES = {"trade", "signal", "risk", "market", "system", "recovery", "error", "audit"}
+    
+    def __init__(self):
+        self.events = []
+        self._schema = {
+            "version": self.OBSERVER_SCHEMA_VERSION,
+            "required_fields": ["event_id", "timestamp", "event_type", "source", "status", "message", "details"]
+        }
+
+    def emit(self, event_type: str, source: str, status: str, message: str, details: dict = None) -> dict:
+        if status not in self.VALID_STATUSES:
+            raise ValueError(f"Invalid status: {status}. Must be one of {self.VALID_STATUSES}")
+        if event_type not in self.VALID_EVENT_TYPES:
+            raise ValueError(f"Invalid event_type: {event_type}. Must be one of {self.VALID_EVENT_TYPES}")
+        
+        event = {
+            "event_id": f"{event_type}_{int(time.time() * 1000)}",
+            "timestamp": datetime.now().isoformat(),
+            "event_type": event_type,
+            "source": source,
+            "status": status,
+            "message": message,
+            "details": details or {},
+            "schema_version": self.OBSERVER_SCHEMA_VERSION
+        }
+        self.events.append(event)
+        return event
+
+    def emit_trade(self, symbol: str, action: str, price: float, lots: int, pnl: float = None) -> dict:
+        details = {"symbol": symbol, "action": action, "price": price, "lots": lots}
+        if pnl is not None:
+            details["pnl"] = pnl
+        return self.emit("trade", f"execution_{symbol}", "success", f"{action} {symbol}", details)
+
+    def emit_signal(self, symbol: str, direction: str, confidence: float, reason: str) -> dict:
+        details = {"symbol": symbol, "direction": direction, "confidence": confidence, "reason": reason}
+        return self.emit("signal", f"signal_{symbol}", "info", f"{direction} signal", details)
+
+    def emit_risk_alert(self, symbol: str, alert_type: str, details: dict) -> dict:
+        return self.emit("risk", f"risk_{symbol}", "alert", alert_type, details)
+
+    def emit_error(self, source: str, error_type: str, message: str, details: dict = None) -> dict:
+        return self.emit("error", source, "error", message, details or {"error_type": error_type})
+
+    def emit_recovery(self, source: str, recovery_type: str, details: dict = None) -> dict:
+        return self.emit("recovery", source, "success", f"Recovery: {recovery_type}", details)
+
+    def emit_audit(self, action: str, actor: str, details: dict = None) -> dict:
+        return self.emit("audit", "audit_system", "info", f"Audit: {action}", details or {"actor": actor})
+
+    def get_events(self, event_type: str = None, source: str = None, status: str = None) -> list:
+        filtered = self.events
+        if event_type:
+            filtered = [e for e in filtered if e.get("event_type") == event_type]
+        if source:
+            filtered = [e for e in filtered if e.get("source") == source]
+        if status:
+            filtered = [e for e in filtered if e.get("status") == status]
+        return filtered
+
+    def validate_schema(self) -> dict:
+        valid = True
+        for event in self.events:
+            for field in self._schema["required_fields"]:
+                if field not in event:
+                    valid = False
+                    break
+        return {"valid": valid, "schema": self._schema, "event_count": len(self.events)}
+
 class DataPathSeparator:
     def __init__(self):
         self._realtime_cache = {}
@@ -739,6 +813,7 @@ class TradingEngine:
         self.mock       = MockDataEngine()
         self.data_sep   = DataPathSeparator()
         self.latency_budget = DecisionLatencyBudget()
+        self.observer = ObservableEvent()
         self.trades_log: list[TradeRecord] = []
         self.latest_ticks  = {}
         self.agent_reports = {}
@@ -796,10 +871,16 @@ class TradingEngine:
                 self.agent_reports["execution"]        = asdict(self.execution.get_report())
                 self.agent_reports[f"market_{sym}"]    = asdict(self.analyst.analyze(sym, bars, tick))
 
+                self.observer.emit("market", f"market_{sym}", "info", f"Updated {sym}", {"price": tick["price"]})
+
                 latency_check = self.latency_budget.check_latency(f"signal_{sym}", 100)
                 if latency_check["mode"] == "fallback":
+                    self.observer.emit_error("latency", "degraded", latency_check["reason"])
                     log.warning(f"Latency degraded - fallback mode: {latency_check['reason']}")
                     sig = None
+                else:
+                    if sig:
+                        self.observer.emit_signal(sym, str(sig.direction), sig.confidence, sig.reason)
 
                 if sig and AUTO_TRADE:
                     ok, reason = self.risk.can_enter(sig, tick["price"])
@@ -809,7 +890,9 @@ class TradingEngine:
                             act = "Buy" if sig.direction == Direction.LONG else "Sell"
                             self.execution.place(sym, act, lots, tick["price"], sig.reason)
                             self.risk.on_entry(sig, lots, tick["price"])
+                            self.observer.emit_trade(sym, act, tick["price"], lots)
                     else:
+                        self.observer.emit_risk_alert(sym, "signal_blocked", {"reason": reason})
                         log.info(f"Risk blocked {sym} signal: {reason}")
                 elif sig and not AUTO_TRADE:
                     log.info(f"Signal generated for {sym} but AUTO_TRADE is disabled")
