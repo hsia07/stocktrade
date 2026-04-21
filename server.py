@@ -176,6 +176,128 @@ class DataPathSeparator:
             "history_cache_size": len(self._history_cache),
         }
 
+class MultiLayerCache:
+    L1_TTL_MS = 1000
+    L2_TTL_MS = 30000
+    
+    def __init__(self):
+        self._l1_cache = {}
+        self._l2_cache = {}
+        self._l1_timestamps = {}
+        self._l2_timestamps = {}
+        self._source_priority = ["live", "mock", "historical"]
+        self._cache_stats = {"l1_hit": 0, "l1_miss": 0, "l2_hit": 0, "l2_miss": 0, "source_fallback": 0}
+
+    def _make_key(self, category: str, symbol: str, source: str = "live") -> str:
+        return f"{category}:{source}:{symbol}"
+
+    def _is_expired(self, timestamp: float, ttl_ms: int) -> bool:
+        import time
+        return (time.time() * 1000) - timestamp > ttl_ms
+
+    def get(self, category: str, symbol: str, source: str = "live", allow_fallback: bool = True) -> tuple:
+        cache_key = self._make_key(category, symbol, source)
+        
+        if cache_key in self._l1_cache:
+            if not self._is_expired(self._l1_timestamps[cache_key], self.L1_TTL_MS):
+                self._cache_stats["l1_hit"] += 1
+                return self._l1_cache[cache_key], "l1", "hit"
+            else:
+                del self._l1_cache[cache_key]
+                del self._l1_timestamps[cache_key]
+        
+        self._cache_stats["l1_miss"] += 1
+        
+        if cache_key in self._l2_cache:
+            if not self._is_expired(self._l2_timestamps[cache_key], self.L2_TTL_MS):
+                self._cache_stats["l2_hit"] += 1
+                self._l1_cache[cache_key] = self._l2_cache[cache_key]
+                import time
+                self._l1_timestamps[cache_key] = time.time() * 1000
+                return self._l2_cache[cache_key], "l2", "hit"
+            else:
+                del self._l2_cache[cache_key]
+                del self._l2_timestamps[cache_key]
+        
+        self._cache_stats["l2_miss"] += 1
+        
+        if allow_fallback:
+            for fallback_source in self._source_priority:
+                if fallback_source == source:
+                    continue
+                fallback_key = self._make_key(category, symbol, fallback_source)
+                if fallback_key in self._l2_cache:
+                    import time
+                    if not self._is_expired(self._l2_timestamps[fallback_key], self.L2_TTL_MS):
+                        self._cache_stats["source_fallback"] += 1
+                        return self._l2_cache[fallback_key], "fallback", fallback_source
+        
+        return None, "miss", None
+
+    def set(self, category: str, symbol: str, data: any, source: str = "live"):
+        import time
+        cache_key = self._make_key(category, symbol, source)
+        timestamp = time.time() * 1000
+        
+        self._l1_cache[cache_key] = data
+        self._l1_timestamps[cache_key] = timestamp
+        self._l2_cache[cache_key] = data
+        self._l2_timestamps[cache_key] = timestamp
+
+    def invalidate(self, category: str, symbol: str, source: str = None):
+        if source:
+            cache_key = self._make_key(category, symbol, source)
+            self._l1_cache.pop(cache_key, None)
+            self._l1_timestamps.pop(cache_key, None)
+            self._l2_cache.pop(cache_key, None)
+            self._l2_timestamps.pop(cache_key, None)
+        else:
+            for src in self._source_priority:
+                cache_key = self._make_key(category, symbol, src)
+                self._l1_cache.pop(cache_key, None)
+                self._l1_timestamps.pop(cache_key, None)
+                self._l2_cache.pop(cache_key, None)
+                self._l2_timestamps.pop(cache_key, None)
+
+    def clear_all(self):
+        self._l1_cache.clear()
+        self._l2_cache.clear()
+        self._l1_timestamps.clear()
+        self._l2_timestamps.clear()
+
+    def get_stats(self) -> dict:
+        return {
+            "l1_hit": self._cache_stats["l1_hit"],
+            "l1_miss": self._cache_stats["l1_miss"],
+            "l2_hit": self._cache_stats["l2_hit"],
+            "l2_miss": self._cache_stats["l2_miss"],
+            "source_fallback": self._cache_stats["source_fallback"],
+            "l1_size": len(self._l1_cache),
+            "l2_size": len(self._l2_cache)
+        }
+
+    def get_realtime_data(self, symbol: str, bars: list) -> dict:
+        if symbol in self._realtime_cache:
+            return self._realtime_cache[symbol]
+        data = {
+            "close": bars[-1]["close"] if bars else 0,
+            "volume": bars[-1]["volume"] if bars else 0,
+            "bid_vol": 0,
+            "ask_vol": 0,
+        }
+        self._realtime_cache[symbol] = data
+        self._query_count["realtime"] += 1
+        return data
+
+    def get_history_data(self, symbol: str, bars: list, lookback: int = 20) -> list:
+        cache_key = f"{symbol}_{lookback}"
+        if cache_key in self._history_cache:
+            return self._history_cache[cache_key]
+        data = bars[-lookback:] if len(bars) >= lookback else bars
+        self._history_cache[cache_key] = data
+        self._query_count["history"] += 1
+        return data
+
 @dataclass
 class TradeRecord:
     id: str
@@ -814,6 +936,7 @@ class TradingEngine:
         self.data_sep   = DataPathSeparator()
         self.latency_budget = DecisionLatencyBudget()
         self.observer = ObservableEvent()
+        self.cache = MultiLayerCache()
         self.trades_log: list[TradeRecord] = []
         self.latest_ticks  = {}
         self.agent_reports = {}

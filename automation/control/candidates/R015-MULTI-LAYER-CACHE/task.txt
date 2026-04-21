@@ -1,0 +1,7 @@
+R015: 多層快取策略
+===
+Primary File: server.py
+Related Files: automation/control/state.runtime.json, manifests/current_round.yaml
+Implementation: MultiLayerCache class with L1/L2 cache layers, source priority, TTL, fallback rules
+Tests Executed: L1 hit/miss, L2 hit/miss, source fallback, invalidate, cross-source isolation
+Status: IMPLEMENTATION_COMPLETED
