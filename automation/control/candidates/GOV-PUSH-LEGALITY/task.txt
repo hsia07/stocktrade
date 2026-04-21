@@ -1,0 +1,6 @@
+GOV-PUSH-LEGALITY: governance hook/manifest 合法 push 鏈修復
+===
+Primary File: scripts/validation/check_commit_message.py
+Related Files: manifests/governance_round.yaml
+Implementation: check_commit_message.py now supports GOV-* patterns
+Status: IMPLEMENTATION_COMPLETED
