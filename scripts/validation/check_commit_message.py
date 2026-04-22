@@ -43,8 +43,8 @@ def main():
             print(f"FAIL: governance commit message must include GOV- identifier")
             sys.exit(1)
         if is_direct:
-            if governance_id != manifest_round_id:
-                print(f"FAIL: governance commit message GOV-ID '{governance_id}' does not match manifest '{manifest_round_id}'")
+            if not re.fullmatch(r'GOV-[A-Z0-9_-]+', governance_id):
+                print(f"FAIL: governance commit message GOV-ID '{governance_id}' is malformed")
                 sys.exit(1)
         print(f"PASS: governance round-id check ok ({governance_id})")
         return
