@@ -109,6 +109,49 @@ BLOCK CONDITION 3: r016 Branch Modification
 - 原因: R016 candidate 已凍結
 - 動作: 立即停止，報告 "r016_frozen_violation"
 
+================================================================================
+SECTION 3A: FROZEN BRANCH REGISTRY (凍結分支登記簿)
+================================================================================
+
+以下分支已經正式凍結，任何修改嘗試都必須自動 BLOCK：
+
+┌────────────────────────┬────────────────────────────────────────────────────┐
+│ 屬性                    │ work/r016-decision-trace                           │
+├────────────────────────┼────────────────────────────────────────────────────┤
+│ 凍結狀態                │ FORMALLY FROZEN                                    │
+│ 凍結日期                │ 2026-04-23                                         │
+│ 凍結文件                │ _governance/frozen/R016-work-r016-decision-trace-  │
+│                         │ freeze.md                                          │
+│ 凍結候選                │ f9b6bba8b21ea53f03b0bcb2bfc690674def2b41          │
+│                         │ "R016: Decision source traceability -              │
+│                         │  DecisionTracer class"                             │
+│ 審計時 HEAD             │ 3586a07                                            │
+│ 主題                    │ R016 - 決策來源追溯與主張者紀錄                     │
+│ 凍結原因                │ Branch contamination (mixed rounds R-006~R-015     │
+│                         │ + GOV commits)                                     │
+│ 不可刪除原因            │ 保留 R016 候選實作，供未來 cherry-pick 恢復        │
+├────────────────────────┼────────────────────────────────────────────────────┤
+│ 禁止動作                │ MERGE into canonical → ABSOLUTELY PROHIBITED       │
+│                         │ DELETE branch → ABSOLUTELY PROHIBITED              │
+│                         │ MODIFY contents → PROHIBITED                       │
+│                         │ REBASE / REWRITE → ABSOLUTELY PROHIBITED           │
+│                         │ FORCE-PUSH → ABSOLUTELY PROHIBITED                 │
+├────────────────────────┼────────────────────────────────────────────────────┤
+│ 未來恢復路徑            │ 1. 從 canonical HEAD 開新乾淨分支                  │
+│                         │ 2. 只 cherry-pick f9b6bba                          │
+│                         │ 3. 驗證無污染                                      │
+│                         │ 4. 按標準治理流程提交為新候選                       │
+│                         │ 5. 永遠不可重用被污染的原分支                       │
+└────────────────────────┴────────────────────────────────────────────────────┘
+
+FROZEN BRANCH POLICY:
+1. 凍結分支不得以任何理由 merge 進 canonical
+2. 凍結分支不得刪除（保留候選參考與審計追蹤）
+3. 凍結分支的歷史不得以 rebase/rewrite 修改
+4. 凍結分支不得以 force-push 推送到 remote
+5. 未來恢復只能走「新乾淨分支 + cherry-pick 候選 commit」
+6. 任何違反凍結規則的行為必須觸發 STOP condition 6.4
+
 BLOCK CONDITION 4: Cross-Round Topic Change
 - 原因: 本輪主題被擅自更改
 - 動作: 立即停止，報告 "topic_changed_mid_round"

@@ -205,7 +205,41 @@ All decisions (especially approvals/rejections) MUST be logged with:
 - Authorization source (human/system)
 
 ================================================================================
-SECTION 8: PRE-AUTO-MODE PREREQUISITES (自動模式上線前置條件)
+SECTION 8: FROZEN BRANCH REGISTRY (凍結分支登記簿)
+================================================================================
+
+RULE 8.1 - Formally Frozen Branches:
+The following branches are FORMALLY FROZEN and may NOT be modified:
+
+[A] work/r016-decision-trace
+    - Frozen Candidate: f9b6bba8b21ea53f03b0bcb2bfc690674def2b41
+    - HEAD at Audit: 3586a07
+    - Topic: R016 - 決策來源追溯與主張者紀錄
+    - Frozen Since: 2026-04-23
+    - Frozen By: R016-FORMAL-FREEZE-DOCUMENTATION
+    - Freeze Document: _governance/frozen/R016-work-r016-decision-trace-freeze.md
+    - Why Frozen: Branch contamination (mixed rounds R-006 through R-015 + GOV)
+    - Why Not Deleted: Preserves R016 candidate (f9b6bba) for future recovery
+    - Prohibited Actions: MERGE, DELETE, MODIFY, REBASE, FORCE-PUSH
+    - Future Recovery: Clean branch + cherry-pick f9b6bba ONLY
+
+RULE 8.2 - Freeze Enforcement:
+Any attempt to merge, delete, or modify a frozen branch:
+- status = failed
+- formal_status_code = blocked
+- blocker: "frozen_branch_violation"
+- Must trigger STOP condition 6.4 (Cross-Round Contamination)
+
+RULE 8.3 - Recovery Path:
+To recover a frozen branch's candidate in the future:
+1. Create new clean branch from canonical HEAD
+2. Cherry-pick ONLY the frozen candidate commit
+3. Verify no contamination
+4. Submit as new candidate through standard governance process
+5. NEVER reuse the contaminated original branch
+
+================================================================================
+SECTION 9: PRE-AUTO-MODE PREREQUISITES (自動模式上線前置條件)
 ================================================================================
 
 Before enabling auto-mode (releasing the lane), the following MUST be met:
