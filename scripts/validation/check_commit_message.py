@@ -13,11 +13,16 @@ def get_last_commit_message() -> str:
 def is_governance_round(manifest_round_id: str) -> bool:
     return manifest_round_id.startswith("GOV-")
 
-def extract_governance_id_from_message(msg: str) -> str | None:
-    match = re.search(r'^(GOV-[A-Z0-9_-]+):', msg, re.MULTILINE)
-    if match:
-        return match.group(1)
-    return None
+def extract_governance_id_from_message(msg: str) -> tuple[str | None, bool]:
+    direct_match = re.search(r'^(GOV-[A-Z0-9_-]+):', msg, re.MULTILINE)
+    if direct_match:
+        return direct_match.group(1), True
+    merge_match = re.search(r'^MERGE:\s+(GOV-[A-Z0-9_-]+)', msg, re.MULTILINE)
+    if merge_match:
+        gov_id = merge_match.group(1)
+        if re.fullmatch(r'GOV-[A-Z0-9_-]+', gov_id):
+            return gov_id, False
+    return None, False
 
 def main():
     ap = argparse.ArgumentParser()
@@ -33,13 +38,14 @@ def main():
         return
 
     if is_governance_round(manifest_round_id):
-        governance_id = extract_governance_id_from_message(msg)
+        governance_id, is_direct = extract_governance_id_from_message(msg)
         if governance_id is None:
             print(f"FAIL: governance commit message must include GOV- identifier")
             sys.exit(1)
-        if governance_id != manifest_round_id:
-            print(f"FAIL: governance commit message GOV-ID '{governance_id}' does not match manifest '{manifest_round_id}'")
-            sys.exit(1)
+        if is_direct:
+            if governance_id != manifest_round_id:
+                print(f"FAIL: governance commit message GOV-ID '{governance_id}' does not match manifest '{manifest_round_id}'")
+                sys.exit(1)
         print(f"PASS: governance round-id check ok ({governance_id})")
         return
 
