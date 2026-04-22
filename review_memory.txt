@@ -1,0 +1,248 @@
+================================================================================
+AUTO-MODE-UNIQUE-TOPIC-GOVERNANCE-LOCK
+Review Memory - Formal Governance Rules for Automated Rounds
+================================================================================
+
+Document Version: 1.0
+Last Updated: 2026-04-23
+Canonical Branch: work/canonical-mainline-repair-001
+Status: CANDIDATE
+
+================================================================================
+SECTION 1: UNIQUE TOPIC LOCK (每輪唯一主題鎖)
+================================================================================
+
+RULE 1.1 - Single Topic Enforcement:
+Each round MUST have exactly ONE unique topic.
+Format: "本輪唯一主題 = [topic_description]"
+
+RULE 1.2 - Topic Source Verification:
+The round topic MUST be found in:
+- Primary: _governance/law/161輪正式重編主題總表_唯一基準版_v2.md
+- Secondary: _governance/law/03_161輪逐輪施行細則法典_整合法條增補版.docx
+
+RULE 1.3 - Topic Mismatch = BLOCKED:
+If the round topic does not match the formal law index:
+- status = failed
+- formal_status_code = blocked
+- blocker: "topic_mismatch_with_law_index"
+
+RULE 1.4 - No Cross-Round Operations:
+- 不得偷做下一輪
+- 不得提前準備下一輪內容
+- 不得擴大檔案修改範圍至非授權檔案
+- 不得自行改題
+
+================================================================================
+SECTION 2: LEGAL COMPLIANCE LOCK (法典遵循鎖)
+================================================================================
+
+RULE 2.1 - Law Source Anchor:
+Every round MUST anchor to:
+1. 唯一輪次主題索引
+2. 歷史條文正文 / 驗收與 FAIL 條件來源
+
+RULE 2.2 - Constraint Compliance:
+All constraints from the law document MUST be followed:
+- 不得自行放寬
+- 不得越權
+- 不得偷做未授權動作
+
+RULE 2.3 - Status Code Rules:
+Status codes MUST follow the formal rules:
+- Only return "completed / manual_review_completed" when ALL conditions met
+- Otherwise return "failed / blocked"
+- No exceptions, no自行放寬
+
+RULE 2.4 - RETURN_TO_CHATGPT Completeness:
+All required fields MUST be present:
+- round_id, task_type, reply_id
+- status, formal_status_code
+- exact_primary_file, exact_related_files
+- files_modified, implementation_summary
+- validation_summary, validate_evidence_executed
+- validate_evidence_result, evidence_package_files
+- blockers_found, next_action
+- Plus round-specific required fields
+
+================================================================================
+SECTION 3: HIGH-RISK SIGNATURE GATE (高風險動作必簽字)
+================================================================================
+
+RULE 3.1 - Signature Required Actions:
+The following actions REQUIRE explicit human authorization:
+
+A. MERGE OPERATIONS
+   - Any git merge into canonical branch
+   - Any merge of candidate branches
+   - Risk: Can introduce unauthorized changes
+
+B. PUSH OPERATIONS
+   - Any git push to remote
+   - Any force-push operation
+   - Risk: Can modify remote state unexpectedly
+
+C. FORCE-PUSH OPERATIONS
+   - git push --force or --force-with-lease
+   - Risk: Can rewrite history, bypass validation
+   - Special: --force-with-lease is fail-closed but still requires authorization
+
+D. LANE RELEASE
+   - Removing STOP_NOW.flag
+   - Changing run_state from stopped to active
+   - Risk: Can enable unauthorized automation
+
+E. GOVERNANCE INFRASTRUCTURE CHANGES
+   - Modifying .githooks/pre-push
+   - Modifying validators (check_commit_message.py, etc.)
+   - Modifying manifests/governance_round.yaml
+   - Risk: Can bypass or weaken governance controls
+
+RULE 3.2 - Signature Process:
+1. System detects high-risk action
+2. System PAUSES execution
+3. System requests explicit authorization via:
+   - Telegram approval keyboard (approve/reject/pause)
+   - Or explicit human message confirmation
+4. System logs authorization timestamp and content
+5. Only after authorization: proceed with action
+6. If rejected: abort and report failure
+
+RULE 3.3 - No Auto-Approval:
+- System MUST NOT auto-approve any high-risk action
+- System MUST NOT use --no-verify to bypass hooks
+- System MUST NOT modify hooks/validators to self-approve
+
+================================================================================
+SECTION 4: VALIDATION GATE (驗證鎖)
+================================================================================
+
+RULE 4.1 - validate_evidence Required:
+Every round MUST execute validate_evidence.
+If not applicable, MUST write why-not-applicable, not just N/A.
+
+RULE 4.2 - Validation Failure = BLOCKED:
+If validate_evidence fails:
+- status = failed
+- formal_status_code = blocked
+- blocker: "validate_evidence_failed"
+
+RULE 4.3 - Pre-Push Validation:
+Every push MUST go through .githooks/pre-push:
+- Hook MUST execute successfully
+- Hook MUST NOT be bypassed with --no-verify
+- Hook MUST fail-closed on validation failure
+
+================================================================================
+SECTION 5: CONTRADICTION DETECTION (矛盾偵測)
+================================================================================
+
+RULE 5.1 - Status vs Content Consistency:
+If status says "completed" but content shows incomplete work:
+- System MUST detect contradiction
+- System MUST pause or block
+- Example: status=completed but blockers_found is not empty
+
+RULE 5.2 - Field Completeness Check:
+If required fields are missing from RETURN_TO_CHATGPT:
+- System MUST detect missing fields
+- System MUST list them as blockers
+- System MUST NOT return incomplete reports
+
+RULE 5.3 - Legal Conflict Detection:
+If round actions conflict with governance law:
+- System MUST detect conflict
+- System MUST block immediately
+- Example: Modifying master when law says "不得碰 master"
+
+================================================================================
+SECTION 6: EMERGENCY STOP CONDITIONS (緊急停機條件)
+================================================================================
+
+STOP CONDITION 6.1 - Unauthorized Remote Modification:
+If system detects remote state changed without authorization:
+- IMMEDIATE STOP
+- Report: "unauthorized_remote_modification"
+
+STOP CONDITION 6.2 - Hook Bypass Detected:
+If system detects --no-verify was used:
+- IMMEDIATE STOP
+- Report: "hook_bypass_detected"
+
+STOP CONDITION 6.3 - Lane Frozen Violation:
+If system detects STOP_NOW.flag removed without authorization:
+- IMMEDIATE STOP
+- Report: "lane_frozen_violation"
+
+STOP CONDITION 6.4 - Cross-Round Contamination:
+If system detects work from another round mixed in:
+- IMMEDIATE STOP
+- Report: "cross_round_contamination"
+
+================================================================================
+SECTION 7: AUDIT TRAIL REQUIREMENTS (審計追蹤要求)
+================================================================================
+
+RULE 7.1 - Evidence Package:
+Every round MUST produce:
+- task.txt
+- report.json
+- evidence.json
+- Plus any round-specific evidence files
+
+RULE 7.2 - Command Logging:
+All executed commands MUST be logged with:
+- Command text
+- Timestamp
+- Result (success/failure)
+- Output summary
+
+RULE 7.3 - Decision Logging:
+All decisions (especially approvals/rejections) MUST be logged with:
+- Decision type (approve/reject/pause)
+- Decision timestamp
+- Decision content
+- Authorization source (human/system)
+
+================================================================================
+SECTION 8: PRE-AUTO-MODE PREREQUISITES (自動模式上線前置條件)
+================================================================================
+
+Before enabling auto-mode (releasing the lane), the following MUST be met:
+
+PREREQUISITE 8.1 - Governance Infrastructure:
+- [ ] Hook toolchain working on Windows (verified)
+- [ ] Pre-push validation passing for GOV and R rounds
+- [ ] Fail-closed behavior verified
+- [ ] No --no-verify dependency
+
+PREREQUISITE 8.2 - Bridge Readiness:
+- [ ] index.js configured and tested
+- [ ] Telegram bot token configured (or simulation mode if testing)
+- [ ] Approval flow (approve/reject/pause) tested
+- [ ] run_opencode_loop.ps1 in real CLI mode
+
+PREREQUISITE 8.3 - Runtime Hygiene:
+- [ ] runtime/opencode_input.txt empty or properly initialized
+- [ ] runtime/opencode_output.txt empty or properly initialized
+- [ ] No residual test content
+
+PREREQUISITE 8.4 - Governance Lock Files:
+- [ ] review_memory.txt established (this file)
+- [ ] auto_mode_round_input.md template established
+- [ ] auto_mode_governance_guide.md established
+
+PREREQUISITE 8.5 - Testing:
+- [ ] At least one complete governance round executed end-to-end
+- [ ] Hook validation tested on Windows
+- [ ] Bridge polling loop tested
+- [ ] High-risk signature gate tested
+
+PREREQUISITE 8.6 - Monitoring:
+- [ ] STOP_NOW.flag mechanism tested
+- [ ] Lane freeze/resume tested
+- [ ] Error alerting configured
+
+================================================================================
+END OF REVIEW MEMORY
+================================================================================
