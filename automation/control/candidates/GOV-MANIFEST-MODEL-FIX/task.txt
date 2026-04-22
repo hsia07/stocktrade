@@ -1,0 +1,30 @@
+TASK: GOV-MANIFEST-MODEL-FIX
+================================================================================
+
+round_id: GOV-MANIFEST-MODEL-FIX
+task_type: governance_manifest_model_fix_candidate
+unique_topic: 多個 GOV round 可合法共存的 manifest / validator 路由修復
+
+STATUS: CANDIDATE_READY
+
+BASE: 990f394
+CANDIDATE BRANCH: work/gov-manifest-model-fix
+CANDIDATE COMMIT: 4e48273
+
+FIX APPLIED:
+- scripts/validation/check_commit_message.py
+
+CHANGE SUMMARY:
+- Removed strict manifest round_id match requirement for governance commits
+- Now accepts any GOV-* round_id as valid (not just GOV-PUSH-LEGALITY)
+- Still validates GOV-* format is correct (fail-closed for malformed)
+- Preserves R-* round validation unchanged
+
+VALIDATION TESTS:
+- GOV direct path: PASS (GOV-HOOK-REGEX-FIX, GOV-MANIFEST-MODEL-FIX)
+- GOV merge path: PASS (MERGE: GOV-* recognized)
+- GOV-PUSH-LEGALITY: PASS (still works)
+- R path (unchanged): PASS
+- Unknown: FAIL (as expected)
+
+================================================================================

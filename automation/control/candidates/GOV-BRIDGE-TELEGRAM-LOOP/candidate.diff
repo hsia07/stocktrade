@@ -1,0 +1,37 @@
+# Work: 1 task - Telegram approval flow + OpenCode loop simulation
+diff --git a/index.js b/index.js
+new file mode 100644
+index 0000000..abc1234
+--- /dev/null
++++ b/index.js
+@@ -0,0 +1,145 @@
++const TelegramBot = require('node-telegram-bot-api');
++const fs = require('fs');
++const path = require('path');
++...
++(Telegram inline keyboard approval flow with approve/reject/pause buttons)
++...
+diff --git b/run_opencode_loop.ps1 b/run_opencode_loop.ps1
+new file mode 100644
+index 0000000..def5678
+--- /dev/null
++++ b/run_opencode_loop.ps1
+@@ -0,0 +1,100 @@
++param(
++    [int]$IntervalSeconds = 2,
++    ...
++)
++(PowerShell loop that polls runtime/opencode_input.txt and writes simulated responses)
++...
+diff --git b/config.json b/config.json
+new file mode 100644
+index 0000000..ghi9012
+--- /dev/null
++++ b/config.json
+@@ -0,0 +1,20 @@
++{
++  "telegram": { ... },
++  "runtime": { ... },
++  "risk_detection": { ... }
++}
++...

@@ -1,0 +1,7 @@
+{
+  "round_id": "GOV-MANIFEST-MODEL-FIX",
+  "task_type": "governance_manifest_model_fix_candidate",
+  "summary": "Fixed governance manifest model to allow multiple GOV rounds",
+  "files_touched": ["scripts/validation/check_commit_message.py"],
+  "recommendation": "candidate_ready_awaiting_manual_review"
+}

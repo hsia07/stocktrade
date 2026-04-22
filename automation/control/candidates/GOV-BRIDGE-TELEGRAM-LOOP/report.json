@@ -1,0 +1,11 @@
+{
+  "round_id": "GOV-BRIDGE-TELEGRAM-LOOP",
+  "task_type": "bridge_telegram_approval_and_opencode_loop_candidate",
+  "summary": "Telegram approval flow + OpenCode loop simulation",
+  "files_touched": [
+    "index.js",
+    "run_opencode_loop.ps1", 
+    "config.json"
+  ],
+  "recommendation": "candidate_ready_awaiting_manual_review"
+}
