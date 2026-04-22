@@ -1,0 +1,5 @@
+round_id: PHASE1-FORMAL-CLOSURE-DECLARATION
+round_name: "Phase 1 Formal Closure Declaration"
+topic: "Formal declaration of Phase 1 (R001-R016) closure without lane release"
+task_type: phase1_formal_closure_declaration
+manifest_version: "1.0"
