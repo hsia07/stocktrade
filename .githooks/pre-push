@@ -2,8 +2,17 @@
 set -euo pipefail
 
 MANIFEST_PATH="manifests/current_round.yaml"
+GOV_MANIFEST_PATH="manifests/governance_round.yaml"
+
+LAST_MSG=$(git log -1 --pretty=%B 2>/dev/null || echo "")
 
 echo "[pre-push] run strict validation"
+
+if echo "$LAST_MSG" | grep -qE "^GOV-[A-Z0-9_-]+:"; then
+    echo "[pre-push] governance commit detected, using governance manifest"
+    MANIFEST_PATH="$GOV_MANIFEST_PATH"
+fi
+
 py ./scripts/validation/validate_round.py --manifest "$MANIFEST_PATH"
 py ./scripts/validation/check_forbidden_changes.py --manifest "$MANIFEST_PATH"
 py ./scripts/validation/check_required_evidence.py --manifest "$MANIFEST_PATH"
