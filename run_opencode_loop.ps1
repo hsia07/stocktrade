@@ -46,64 +46,65 @@ function Write-Output-File {
     Write-Status "Wrote result to $OutputFile"
 }
 
-function Invoke-Simulation {
+function Invoke-OpenCodeCLI {
     param([string]$Instruction)
     
-    Write-Status "SIMULATION MODE: Processing instruction (no real OpenCode CLI call)"
+    Write-Status "REAL CLI MODE: Executing via OpenCode CLI"
     
-    $simulatedResponse = @"
-================================================================================
-FORMAL RETURN TO CHATGPT - SIMULATED RESPONSE
-================================================================================
-
-round_id: SIMULATED_BRIDGE_LOOP
-task_type: simulation_response
-reply_id: SIM-$(Get-Date -Format "yyyyMMdd-HHmmss")
-
-status: simulation_completed
-formal_status_code: no_execution_simulation
-
-implementation_summary: |
-  Simulation mode: This is a simulated response to demonstrate the bridge loop.
-  No actual OpenCode CLI execution was performed.
-  
-  Received instruction: $Instruction
-  
-  In production, this would:
-  1. Parse the instruction
-  2. Execute via OpenCode CLI
-  3. Capture the real RETURN_TO_CHATGPT
-  4. Write to runtime/opencode_output.txt
-
-validation_summary: |
-  - Loop detected new input: YES
-  - Simulation mode: YES
-  - Output written: YES
-  - Lane frozen: PRESERVED (simulation only)
-  - Remote untrusted: PRESERVED (simulation only)
-
-next_action: |
-  Bridge continues polling. In production:
-  - Telegram approval flow handles high-risk operations
-  - Real OpenCode CLI executes approved instructions
-  - Results written to runtime/opencode_output.txt
-
-================================================================================
-END OF SIMULATION
-================================================================================
-"@
+    $cliPath = "opencode"
+    $cliFullPath = "C:\Users\richa\AppData\Roaming\npm\opencode.cmd"
     
-    return $simulatedResponse
+    if (Test-Path $cliFullPath) {
+        $cliPath = $cliFullPath
+    }
+    
+    Write-Status "CLI path: $cliPath"
+    
+    try {
+        # Execute opencode CLI with the instruction
+        # Note: opencode 1.4.8 is interactive (TUI). For automation,
+        # we pass the instruction and capture output.
+        $processInfo = New-Object System.Diagnostics.ProcessStartInfo
+        $processInfo.FileName = $cliPath
+        $processInfo.Arguments = "`"$Instruction`""
+        $processInfo.RedirectStandardOutput = $true
+        $processInfo.RedirectStandardError = $true
+        $processInfo.UseShellExecute = $false
+        $processInfo.WorkingDirectory = (Get-Location)
+        
+        $process = New-Object System.Diagnostics.Process
+        $process.StartInfo = $processInfo
+        $process.Start() | Out-Null
+        
+        $stdout = $process.StandardOutput.ReadToEnd()
+        $stderr = $process.StandardError.ReadToEnd()
+        $process.WaitForExit(30000)  # 30 second timeout
+        
+        if ($process.ExitCode -eq 0) {
+            Write-Status "CLI execution completed successfully"
+            return $stdout
+        } else {
+            Write-Status "CLI execution failed with exit code: $($process.ExitCode)"
+            if ($stderr) {
+                Write-Status "Error: $stderr"
+            }
+            return "ERROR: CLI execution failed. Exit code: $($process.ExitCode)`n$stderr"
+        }
+    } catch {
+        Write-Status "ERROR: Failed to execute CLI - $($_.Exception.Message)"
+        return "ERROR: $($_.Exception.Message)"
+    }
 }
 
-Write-Status "Starting OpenCode Loop (Simulation Mode)"
+Write-Status "Starting OpenCode Loop (REAL CLI MODE)"
+Write-Status "CLI: opencode 1.4.8"
 Write-Status "Monitoring: $InputFile"
 Write-Status "Output: $OutputFile"
 Write-Status "Interval: $IntervalSeconds seconds"
 Write-Status ""
 
 if ($Simulation) {
-    Write-Status "RUNNING IN SIMULATION MODE - No real OpenCode CLI calls"
+    Write-Status "WARNING: Simulation switch provided but real CLI mode is active"
 }
 
 while ($true) {
@@ -126,7 +127,7 @@ while ($true) {
         
         Write-Status "Instruction: $instruction"
         
-        $result = Invoke-Simulation -Instruction $instruction
+        $result = Invoke-OpenCodeCLI -Instruction $instruction
         
         Write-Output-File -Content $result
         

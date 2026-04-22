@@ -23,8 +23,14 @@
       "promotion"
     ]
   },
+  "cli": {
+    "command": "opencode",
+    "version": "1.4.8",
+    "path": "C:\\Users\\richa\\AppData\\Roaming\\npm\\opencode.cmd",
+    "description": "Real OpenCode CLI mode"
+  },
   "simulation": {
-    "enabled": true,
-    "description": "Simulation mode - no real OpenCode CLI calls"
+    "enabled": false,
+    "description": "Simulation mode disabled - using real OpenCode CLI"
   }
 }
