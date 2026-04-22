@@ -1,0 +1,8 @@
+{
+  "round_id": "GOV-BRIDGE-TELEGRAM-LOOP",
+  "task_type": "bridge_telegram_approval_and_opencode_loop_merge_pre_rereview",
+  "summary": "Merge-pre rereview completed - candidate ready",
+  "candidate_commit": "f76995a",
+  "base_commit": "2a22eb6",
+  "rereview_result": "PASS"
+}

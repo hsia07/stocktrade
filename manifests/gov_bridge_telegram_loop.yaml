@@ -1,0 +1,15 @@
+round_id: "GOV-BRIDGE-TELEGRAM-LOOP"
+title: "governance bridge telegram approval flow and opencode loop simulation"
+status: "pending"
+depends_on: []
+allowed_paths:
+  - "index.js"
+  - "run_opencode_loop.ps1"
+  - "config.json"
+forbidden_paths: []
+required_evidence:
+  - "automation/control/candidates/GOV-BRIDGE-TELEGRAM-LOOP/evidence.json"
+required_checks: []
+risk_level: "yellow"
+owner: "governance"
+start_authorized: true

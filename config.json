@@ -1,0 +1,30 @@
+{
+  "telegram": {
+    "enabled": true,
+    "approval_buttons": {
+      "approve": "✅ 同意",
+      "reject": "❌ 拒絕",
+      "pause": "⏸ 暫停"
+    }
+  },
+  "runtime": {
+    "input_file": "runtime/opencode_input.txt",
+    "output_file": "runtime/opencode_output.txt",
+    "poll_interval_ms": 2000
+  },
+  "risk_detection": {
+    "manual_confirmation_required": [
+      "merge",
+      "push",
+      "force-push",
+      "force_push",
+      "lane_release",
+      "resume",
+      "promotion"
+    ]
+  },
+  "simulation": {
+    "enabled": true,
+    "description": "Simulation mode - no real OpenCode CLI calls"
+  }
+}

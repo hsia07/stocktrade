@@ -1,0 +1,26 @@
+{
+  "round_id": "GOV-MANIFEST-MODEL-FIX",
+  "task_type": "governance_manifest_model_fix_candidate",
+  "validation_timestamp": "2026-04-22T01:34:00Z",
+  "status": "completed",
+  "formal_status_code": "candidate_ready_awaiting_manual_review",
+  "candidate_branch": "work/gov-manifest-model-fix",
+  "candidate_commit": "4e48273",
+  "base_commit_verified": "990f394",
+  "base_commit_used": "990f394",
+  "exact_primary_file": "scripts/validation/check_commit_message.py",
+  "files_modified": [
+    "scripts/validation/check_commit_message.py"
+  ],
+  "validation_tests": {
+    "gov_direct_path": "PASS - GOV-HOOK-REGEX-FIX, GOV-MANIFEST-MODEL-FIX pass",
+    "gov_merge_path": "PASS - MERGE: GOV-* pattern recognized",
+    "historical_gov_push_legality_path": "PASS - GOV-PUSH-LEGALITY passes",
+    "r_path_preserved": "PASS - R-011 still required (not relaxed)",
+    "fail_closed": "PASS - unknown patterns fail"
+  },
+  "automation_lane_frozen": true,
+  "remote_canonical_formally_trusted": false,
+  "r016_candidate_excluded_ruling": "CONFIRMED",
+  "ready_for_candidate": true
+}

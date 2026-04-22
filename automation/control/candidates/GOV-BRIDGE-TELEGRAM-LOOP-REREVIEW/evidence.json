@@ -1,0 +1,33 @@
+{
+  "round_id": "GOV-BRIDGE-TELEGRAM-LOOP",
+  "task_type": "bridge_telegram_approval_and_opencode_loop_merge_pre_rereview",
+  "validation_timestamp": "2026-04-22T03:45:00Z",
+  "status": "completed",
+  "formal_status_code": "manual_review_completed",
+  "audited_candidate_branch": "work/gov-bridge-telegram-loop",
+  "audited_candidate_commit": "f76995a",
+  "base_commit_verified": "2a22eb6",
+  "base_commit_used": "2a22eb6",
+  "base_ancestry_verified": true,
+  "exact_primary_file": "index.js (primary - contains Telegram bot logic)",
+  "files_modified": [
+    "index.js",
+    "run_opencode_loop.ps1",
+    "config.json"
+  ],
+  "telegram_approval_flow_ruling": "IMPLEMENTED - inline keyboard with approve/reject/pause",
+  "telegram_button_paths_verified": {
+    "approve": "Line 54: callback_data:approve:{instruction}",
+    "reject": "Line 55: callback_data:reject:{instruction}",
+    "pause": "Line 58: callback_data:pause:{instruction}",
+    "all_three_verified": true
+  },
+  "loop_simulation_ruling": "CONFIRMED - only simulation, no real OpenCode CLI calls",
+  "bridge_loop_integration_ruling": "Loop polls runtime/opencode_input.txt, writes runtime/opencode_output.txt - VERIFIED",
+  "secret_leak_ruling": "NO LEAKS - TOKEN loaded from process.env.TELEGRAM_BOT_TOKEN (environment), no hardcoded secrets",
+  "high_risk_trigger_ruling": "Only merge/push/force-push/lane_release/promotion trigger Telegram - VERIFIED in config.json",
+  "r016_candidate_excluded_ruling": "f9b6bba unchanged, work/r016-decision-trace untouched - VERIFIED",
+  "automation_lane_frozen": true,
+  "merge_pre_rereview_ruling": "PASS - candidate ready for merge",
+  "ready_for_candidate": true
+}

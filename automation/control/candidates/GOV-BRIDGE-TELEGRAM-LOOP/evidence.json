@@ -1,0 +1,33 @@
+{
+  "round_id": "GOV-BRIDGE-TELEGRAM-LOOP",
+  "task_type": "bridge_telegram_approval_and_opencode_loop_candidate",
+  "validation_timestamp": "2026-04-22T03:40:00Z",
+  "status": "completed",
+  "formal_status_code": "candidate_ready_awaiting_manual_review",
+  "candidate_branch": "work/gov-bridge-telegram-loop",
+  "candidate_commit": null,
+  "base_commit_verified": "2a22eb6",
+  "base_commit_used": "2a22eb6",
+  "exact_primary_file": "index.js, run_opencode_loop.ps1, config.json",
+  "files_modified": [
+    "index.js (new)",
+    "run_opencode_loop.ps1 (new)",
+    "config.json (new)"
+  ],
+  "telegram_approval_flow_added": true,
+  "telegram_button_paths_verified": {
+    "approve": "✅ 同意 - writes next_opencode_instruction to input",
+    "reject": "❌ 拒絕 - writes rejection result to input",
+    "pause": "⏸ 暫停 - sets bridgeState.paused = true"
+  },
+  "loop_script_added": true,
+  "loop_simulation_ruling": "Simulation mode - no real OpenCode CLI calls",
+  "bridge_loop_integration_ruling": "Loop reads runtime/opencode_input.txt, writes runtime/opencode_output.txt",
+  "high_risk_approval_ruling": "Telegram buttons triggered for merge/push/force-push/lane_release",
+  "reject_path_ruling": "Writes rejection JSON to input, bridge stops execution",
+  "pause_path_ruling": "Sets bridgeState.paused = true, loop skips processing",
+  "automation_lane_frozen": true,
+  "remote_canonical_formally_trusted": false,
+  "r016_candidate_excluded_ruling": "CONFIRMED",
+  "ready_for_candidate": true
+}

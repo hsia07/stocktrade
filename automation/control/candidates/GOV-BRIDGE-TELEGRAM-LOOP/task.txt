@@ -1,0 +1,36 @@
+TASK: GOV-BRIDGE-TELEGRAM-LOOP
+================================================================================
+
+round_id: GOV-BRIDGE-TELEGRAM-LOOP
+task_type: bridge_telegram_approval_and_opencode_loop_candidate
+unique_topic: Telegram 按鈕簽字流 + OpenCode loop 模擬版
+
+STATUS: CANDIDATE_READY
+
+BASE: 2a22eb6
+CANDIDATE BRANCH: work/gov-bridge-telegram-loop
+FILES CREATED:
+- index.js (Telegram bot with inline keyboard)
+- run_opencode_loop.ps1 (PowerShell polling loop)
+- config.json (configuration)
+
+TELEGRAM APPROVAL FLOW:
+- Inline keyboard: ✅ 同意 | ❌ 拒絕 | ⏸ 暫停
+- Approve: writes next_opencode_instruction
+- Reject: writes rejection result
+- Pause: sets paused state
+
+LOOP SIMULATION:
+- Polls runtime/opencode_input.txt every 2 seconds
+- Detects new instructions
+- Simulates RETURN_TO_CHATGPT response
+- Writes to runtime/opencode_output.txt
+- No real OpenCode CLI calls
+
+VERIFICATION:
+- Telegram buttons: ✅ Implemented
+- Loop integration: ✅ Works
+- Simulation mode: ✅ No real execution
+- Lane frozen: ✅ Preserved
+
+================================================================================
