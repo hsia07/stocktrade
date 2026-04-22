@@ -217,6 +217,50 @@ PREREQUISITE 7: Documentation
 - [ ] 回滾計畫: 出問題時知道如何回滾
 
 ================================================================================
+SECTION 5A: PHASE 1 CLOSURE DECLARATION (Phase 1 正式收口宣告)
+================================================================================
+
+PHASE 1 STATUS: FORMALLY CLOSED
+Closure Date: 2026-04-23
+Closure Document: _governance/closure/phase1-formal-closure-declaration.md
+
+Phase 1 範圍：R001 – R016（依 161輪正式重編主題總表_唯一基準版_v2.md）
+
+收口依據：
+- PHASE1-CLOSURE-READINESS-AUDIT-RERUN (PHASE1-AUDIT-RERUN-001)
+- 確認 phase1_closure_ready = true
+- 確認 remaining_phase1_blockers = []
+- R016 透過 formal freeze 完成收口（凍結文件已進 canonical/remote）
+
+────────────────────────────────────────────────────────────────────────
+⚠️ 關鍵區分：Phase 1 Closed ≠ Lane Release Authorized ⚠️
+────────────────────────────────────────────────────────────────────────
+
+「Phase 1 收口完成」僅代表 R001–R016 的交付物已齊備或已正式凍結。
+不代表以下事項獲得授權：
+
+┌────────────────────────┬──────────────────────────────────────────────┐
+│ 事項                    │ 狀態                                         │
+├────────────────────────┼──────────────────────────────────────────────┤
+│ Phase 1 Closure        │ ✅ FORMALLY CLOSED                           │
+│ Lane Release           │ ❌ NOT AUTHORIZED (STOP_NOW.flag present)    │
+│ Auto-Mode Release      │ ❌ NOT AUTHORIZED (blockers remain)          │
+│ Promotion to master    │ ❌ NOT AUTHORIZED (master not valid baseline)│
+│ Phase 2 Startup        │ ❌ NOT AUTHORIZED (requires separate auth)   │
+└────────────────────────┴──────────────────────────────────────────────┘
+
+remaining_lane_release_blockers:
+- LR-001: runtime/opencode_output.txt residual (14115 bytes)
+- LR-002: runtime enforcement gap (documentation-only locks)
+- LR-003: no end-to-end auto-mode testing
+- LR-004: stale state.runtime.json
+
+auto_mode_release_allowed_now = false
+lane_release_ready_now = false
+
+Lane release 必須另案處理，不得與 Phase 1 closure 混為一談。
+
+================================================================================
 SECTION 5: POST-RELEASE MONITORING
 ================================================================================
 
