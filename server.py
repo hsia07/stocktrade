@@ -30,6 +30,9 @@ from failover.center import DegradationCenter, DegradationStrategy
 # R008 Mode Control Integration imports
 from governance.state_machine.mode_controller import ModeController, Mode
 from governance.state_machine.mode_recorder import ModeRecorder
+# R009 Execution Model Integration imports
+from scheduler.priority.scheduler import PriorityScheduler, CommandRouter, Priority, Task, TaskType
+from scheduler.priority.monitor import PriorityMonitor
 
 load_dotenv()
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
@@ -976,6 +979,12 @@ class TradingEngine:
         self.mode_recorder = ModeRecorder()
         # Initialize R008 mode from current runtime state
         self._current_r008_mode = self._map_to_r008_mode()
+        # R009: Execution Model Integration instances (advisory only)
+        self.priority_scheduler = PriorityScheduler()
+        self.priority_monitor = PriorityMonitor()
+        self.command_router = CommandRouter(self.priority_scheduler)
+        # Register R009 task type handlers (advisory recording)
+        self._register_r009_handlers()
 
     def _map_to_r008_mode(self) -> Mode:
         """Map existing PAPER_TRADE/AUTO_TRADE state to R008 Mode"""
@@ -1000,6 +1009,31 @@ class TradingEngine:
         current_mode = self._current_r008_mode
         # Trading allowed in SIM, SHADOW, LIVE modes
         return current_mode in (Mode.SIM, Mode.SHADOW, Mode.LIVE)
+
+    # R009: Advisory task recording methods
+    def _register_r009_handlers(self):
+        """Register R009 task type handlers (advisory only, no execution control)"""
+        # Handlers are no-ops because R009 is advisory only
+        # Actual execution remains in run_loop()
+        self.command_router.register_handler(TaskType.TRADE_EXECUTION, lambda: None)
+        self.command_router.register_handler(TaskType.RISK_CHECK, lambda: None)
+        self.command_router.register_handler(TaskType.MARKET_DATA, lambda: None)
+        self.command_router.register_handler(TaskType.HEARTBEAT, lambda: None)
+
+    def _record_priority_task(self, task_id: str, task_name: str, priority: Priority, task_type: TaskType):
+        """Record a task in PriorityScheduler for advisory tracking (R009)"""
+        try:
+            task = Task(
+                id=task_id,
+                name=task_name,
+                priority=priority,
+                task_type=task_type,
+                created_at=datetime.now()
+            )
+            self.priority_scheduler.submit_task(task)
+        except Exception:
+            # R009 is advisory only - failures must not block execution
+            pass
 
     def connect_shioaji(self):
         if PAPER_TRADE:
@@ -1046,6 +1080,13 @@ class TradingEngine:
                 self._current_r008_mode = Mode.PAUSE
                 self._record_mode_transition(old_mode, Mode.PAUSE, "R006 DegradationCenter triggered PAUSE_TRADING")
                 log.info(f"R008 Mode transition: {old_mode.value} -> {Mode.PAUSE.value} (degradation)")
+                # R009: Record degradation as CRITICAL priority task (advisory)
+                self._record_priority_task(
+                    f"degradation-{datetime.now().strftime('%H%M%S')}",
+                    "R006 Degradation PAUSE_TRADING",
+                    Priority.CRITICAL,
+                    TaskType.RISK_CHECK
+                )
             elif self.degradation_center.get_current_strategy() is not None:
                 self.degradation_center.restore()
                 # R008: Record PAUSE -> previous mode transition
@@ -1111,6 +1152,13 @@ class TradingEngine:
                 else:
                     if sig:
                         self.observer.emit_signal(sym, str(sig.direction), sig.confidence, sig.reason)
+                        # R009: Record signal generation as MARKET_DATA task (advisory)
+                        self._record_priority_task(
+                            f"signal-{sym}-{datetime.now().strftime('%H%M%S')}",
+                            f"Signal {sym} {sig.direction}",
+                            Priority.HIGH,
+                            TaskType.MARKET_DATA
+                        )
 
                 if sig and AUTO_TRADE:
                     # R008: Mode validation before trade execution
@@ -1140,9 +1188,23 @@ class TradingEngine:
                                 content=f"Trade executed: {act} {sym} {lots} lots @ {tick['price']} | {sig.reason}",
                                 artifact_type="trade"
                             )
+                            # R009: Record trade execution as TRADE_EXECUTION task (advisory)
+                            self._record_priority_task(
+                                f"trade-{sym}-{datetime.now().strftime('%H%M%S')}",
+                                f"Trade {act} {sym} {lots} lots",
+                                Priority.CRITICAL,
+                                TaskType.TRADE_EXECUTION
+                            )
                     else:
                         self.observer.emit_risk_alert(sym, "signal_blocked", {"reason": reason})
                         log.info(f"Risk blocked {sym} signal: {reason}")
+                        # R009: Record risk block as RISK_CHECK task (advisory)
+                        self._record_priority_task(
+                            f"risk-block-{sym}-{datetime.now().strftime('%H%M%S')}",
+                            f"Risk blocked {sym}: {reason}",
+                            Priority.HIGH,
+                            TaskType.RISK_CHECK
+                        )
                 elif sig and not AUTO_TRADE:
                     log.info(f"Signal generated for {sym} but AUTO_TRADE is disabled")
                     # R011: Create artifact for signal (even if not traded)
@@ -1150,6 +1212,13 @@ class TradingEngine:
                         round_id="runtime",
                         content=f"Signal: {sym} {sig.direction} conf={sig.confidence}% | {sig.reason}",
                         artifact_type="signal"
+                    )
+                    # R009: Record non-traded signal as MARKET_DATA task (advisory)
+                    self._record_priority_task(
+                        f"signal-obs-{sym}-{datetime.now().strftime('%H%M%S')}",
+                        f"Signal observed {sym} (no trade)",
+                        Priority.MEDIUM,
+                        TaskType.MARKET_DATA
                     )
 
                 self._manage_positions(sym, tick["price"])
@@ -1267,6 +1336,17 @@ class TradingEngine:
             state["mode_transition_count"] = len(self.mode_recorder.get_transition_history())
         except Exception:
             state["r008_mode"] = {"error": "mode_controller_not_ready"}
+        # R009: Expose priority system state
+        try:
+            queue_status = self.priority_scheduler.get_queue_status()
+            state["r009_queue"] = {
+                "total_tasks": queue_status.get("total_tasks", 0),
+                "by_priority": queue_status.get("by_priority", {}),
+                "oldest_task_age": queue_status.get("oldest_task_age"),
+            }
+            state["r009_alerts"] = self.priority_monitor.check_alerts(queue_status)
+        except Exception:
+            state["r009_queue"] = {"error": "priority_scheduler_not_ready"}
         return state
 
 # FastAPI WebSocket 伺服器
@@ -1422,6 +1502,37 @@ def get_mode_history():
     return {
         "transitions": engine.mode_recorder.get_transition_history(),
         "current_mode": engine._current_r008_mode.value
+    }
+
+@app.get("/api/priority_status")
+def get_priority_status():
+    """R009: Get priority queue status (advisory only)"""
+    queue_status = engine.priority_scheduler.get_queue_status()
+    return {
+        "queue": queue_status,
+        "execution_history_count": len(engine.priority_scheduler.execution_history),
+        "advisory_only": True,
+        "note": "R009 is observability layer; execution authority remains in TradingEngine.run_loop()"
+    }
+
+@app.get("/api/priority_alerts")
+def get_priority_alerts():
+    """R009: Get priority system alerts (advisory only)"""
+    queue_status = engine.priority_scheduler.get_queue_status()
+    alerts = engine.priority_monitor.check_alerts(queue_status)
+    metrics = engine.priority_monitor.calculate_metrics(window_seconds=60)
+    return {
+        "alerts": alerts,
+        "metrics": [
+            {
+                "priority": m.priority_level,
+                "avg_wait": m.avg_wait_time,
+                "max_wait": m.max_wait_time,
+                "executed": m.tasks_executed
+            }
+            for m in metrics
+        ],
+        "advisory_only": True
     }
 
 if __name__ == "__main__":

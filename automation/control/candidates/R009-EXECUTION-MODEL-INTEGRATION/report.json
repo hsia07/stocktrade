@@ -1,0 +1,63 @@
+{
+  "round_id": "R009-EXECUTION-MODEL-INTEGRATION",
+  "task_type": "r009_execution_model_integration_candidate",
+  "reply_id": "r009-execution-model-integration-candidate-001",
+  "status": "completed",
+  "formal_status_code": "candidate_ready_awaiting_manual_review",
+  "implementation_plan": "Plan B (Advisory Overlay)",
+  "base_commit": "02c114b59c6274f1a4b0a0497a10fa83171f1d94",
+  "candidate_branch": "work/R009-EXECUTION-MODEL-INTEGRATION-candidate",
+  "files_modified": [
+    "server.py",
+    "tests/test_r009_integration.py"
+  ],
+  "lines_changed": {
+    "server.py": "+47 lines (imports, __init__, _register_r009_handlers, _record_priority_task, 5 task recording calls, get_state, 2 API endpoints)",
+    "tests/test_r009_integration.py": "NEW 225 lines, 28 tests"
+  },
+  "integration_points": {
+    "TradingEngine.__init__": "PriorityScheduler, PriorityMonitor, CommandRouter instantiated; handlers registered",
+    "run_loop degradation branch": "CRITICAL RISK_CHECK task recorded",
+    "run_loop signal branch": "HIGH MARKET_DATA task recorded",
+    "run_loop trade execution": "CRITICAL TRADE_EXECUTION task recorded",
+    "run_loop risk block": "HIGH RISK_CHECK task recorded",
+    "run_loop non-traded signal": "MEDIUM MARKET_DATA task recorded",
+    "get_state()": "r009_queue and r009_alerts exposed",
+    "API endpoints": "/api/priority_status and /api/priority_alerts added"
+  },
+  "execution_authority": "TradingEngine.run_loop()",
+  "priority_scheduler_role": "advisory_only",
+  "priority_monitor_role": "metrics_and_alerts_only",
+  "run_loop_structure_changed": false,
+  "symbol_processing_changed": false,
+  "queue_driven_execution": false,
+  "preemption_enabled": false,
+  "test_results": {
+    "test_r009_integration.py": "28/28 PASS",
+    "test_r006_integration.py": "19/19 PASS",
+    "test_r007_integration.py": "10/10 PASS",
+    "test_r008_integration.py": "43/43 PASS",
+    "test_r011_integration.py": "10/10 PASS"
+  },
+  "validators": {
+    "validate_evidence.py": "NOT_APPLICABLE - R009 manifest does not exist; previous use of R011 manifest was incorrect",
+    "check_forbidden_changes.py": "NOT_APPLICABLE - R009 manifest does not exist; previous use of R011 manifest was incorrect",
+    "check_required_evidence.py": "NOT_APPLICABLE - R009 manifest does not exist; previous use of R011 manifest was incorrect",
+    "check_branch_workflow.py": "PASS"
+  },
+  "candidate_diff_repair": {
+    "original_state": "0 bytes empty file",
+    "repair_action": "regenerated from git diff base..head",
+    "current_state": "35702 bytes, 398 lines",
+    "content_verified": "matches git diff 02c114b..48c480b -- server.py tests/test_r009_integration.py"
+  },
+  "manifest_gap": {
+    "status": "acknowledged",
+    "r009_manifest_exists": false,
+    "impact": "Formal validators (validate_evidence, check_forbidden_changes, check_required_evidence) cannot be executed against a correct R009 manifest. Direct evidence (git diff, pytest, grep, branch workflow) used instead.",
+    "previous_r011_manifest_use": "invalidated_in_prior_audit"
+  },
+  "blockers_found": [],
+  "forbidden_paths_touched": [],
+  "next_action": "candidate_ready_awaiting_manual_review"
+}

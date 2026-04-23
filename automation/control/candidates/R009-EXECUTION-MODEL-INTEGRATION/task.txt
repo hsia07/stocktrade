@@ -1,0 +1,60 @@
+round_id: R009-EXECUTION-MODEL-INTEGRATION
+task_type: r009_execution_model_integration_candidate
+base_commit: 02c114b59c6274f1a4b0a0497a10fa83171f1d94
+canonical_branch: work/canonical-mainline-repair-001
+candidate_branch: work/R009-EXECUTION-MODEL-INTEGRATION-candidate
+
+implementation_plan: Plan B (Advisory Overlay)
+strategy: Minimal integration of R009 PriorityScheduler/PriorityMonitor/CommandRouter into TradingEngine as observability layer only. Execution authority remains with existing run_loop().
+
+files_modified:
+  - server.py (R009 instances in __init__, task recording in run_loop, API endpoints, get_state)
+  - tests/test_r009_integration.py (NEW, 28 tests)
+
+task_recording_points:
+  - Degradation event: CRITICAL RISK_CHECK task (run_loop health critical branch)
+  - Signal generation: HIGH MARKET_DATA task (signal evaluation branch)
+  - Trade execution: CRITICAL TRADE_EXECUTION task (successful trade placement)
+  - Risk block: HIGH RISK_CHECK task (risk.can_enter blocks signal)
+  - Non-traded signal: MEDIUM MARKET_DATA task (AUTO_TRADE disabled)
+
+api_endpoints_added:
+  - GET /api/priority_status: Returns queue status with advisory_only flag
+  - GET /api/priority_alerts: Returns alerts and metrics with advisory_only flag
+
+state_exposure_added:
+  - get_state()["r009_queue"]: total_tasks, by_priority, oldest_task_age
+  - get_state()["r009_alerts"]: PriorityMonitor.check_alerts() output
+
+authority_ruling:
+  - execution_authority: TradingEngine.run_loop() (unchanged)
+  - priority_scheduler: Advisory task tracking only
+  - priority_monitor: Metrics and alerts only
+  - conflict_resolution: Actual execution chain prevails over scheduler state
+
+regression_tests_passed:
+  - test_r009_integration.py: 28/28 PASS
+  - test_r006_integration.py: 19/19 PASS
+  - test_r007_integration.py: 10/10 PASS
+  - test_r008_integration.py: 43/43 PASS
+  - test_r011_integration.py: 10/10 PASS
+
+validators_executed:
+  - validate_evidence.py: NOT_APPLICABLE (R009 manifest does not exist; cannot validate against R011 manifest)
+  - check_forbidden_changes.py: NOT_APPLICABLE (R009 manifest does not exist; cannot validate against R011 manifest)
+  - check_required_evidence.py: NOT_APPLICABLE (R009 manifest does not exist; cannot validate against R011 manifest)
+  - check_branch_workflow.py: PASS
+
+candidate_diff_repair:
+  - original_state: 0 bytes (empty file)
+  - repair_action: regenerated from git diff base..head
+  - current_state: 35702 bytes, 398 lines
+  - content_verified: matches git diff 02c114b..48c480b -- server.py tests/test_r009_integration.py
+
+manifest_gap_acknowledged:
+  - R009 dedicated manifest does not exist
+  - Previous rereview used R011 manifest incorrectly
+  - Direct evidence used instead: git diff, pytest 110/110, grep, branch workflow
+
+blockers_found: []
+next_action: candidate_ready_awaiting_manual_review
