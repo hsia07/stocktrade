@@ -1,0 +1,39 @@
+================================================================================
+TASK: R006-HEALTH-CIRCUIT-INTEGRATION
+================================================================================
+
+round_id: R006-HEALTH-CIRCUIT-INTEGRATION
+task_type: r006_health_circuit_integration_candidate
+reply_id: r006-health-circuit-integration-001
+
+OBJECTIVE:
+Integrate HealthMonitor / CircuitBreaker / DegradationCenter into TradingEngine.run_loop() following Plan B (safety net approach).
+
+INTEGRATION POINTS:
+1. TradingEngine.__init__(): Add 3 R006 instances
+2. run_loop() top: Health check + degradation evaluation
+3. run_loop() before trade: Circuit breaker check
+4. run_loop() position close: Record trade result to circuit breaker
+5. get_state(): Expose R006 state
+
+HALT AUTHORITY PRECEDENCE:
+- Infrastructure (DegradationCenter) > CircuitBreaker > RiskOfficer
+- Any level halt = no trade (fail-closed)
+
+DUPLICATE STATE:
+- RiskOfficer retains daily_pnl and consecutive_loss tracking
+- CircuitBreaker tracks independently as safety net
+- Double tracking is intentional (fail-closed safety)
+
+FILES MODIFIED:
+- server.py: TradingEngine.__init__, run_loop, _manage_positions, get_state
+- tests/test_r006_integration.py: NEW (15 integration tests)
+
+CONSTRAINTS:
+- No modify RiskOfficer core logic (9 checks retained)
+- No modify other rounds (R007, R011, R016)
+- No lane release / push / next round
+
+================================================================================
+END OF TASK
+================================================================================

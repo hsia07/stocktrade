@@ -23,6 +23,10 @@ from monitoring.silence.detector import SilenceDetector
 from monitoring.silence.recovery import SilenceRecovery, SilenceReport
 # R011 Artifact Management import
 from automation.control.artifacts.r011_artifact_management import ArtifactManager
+# R006 Health Circuit Integration imports
+from health.monitor import HealthMonitor
+from circuit.breaker import CircuitBreaker
+from failover.center import DegradationCenter, DegradationStrategy
 
 load_dotenv()
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
@@ -956,6 +960,14 @@ class TradingEngine:
             artifacts_dir="automation/control/artifacts/runtime",
             history_dir="automation/control/history"
         )
+        # R006: Health Circuit Integration instances
+        self.health_monitor = HealthMonitor()
+        self.circuit_breaker = CircuitBreaker(
+            max_daily_loss=float(os.getenv("MAX_DAILY_LOSS", "5000")),
+            max_consecutive_losses=int(os.getenv("MAX_CONSEC_LOSS", "3")),
+            max_drawdown_pct=float(os.getenv("MAX_DRAWDOWN_PCT", "10"))
+        )
+        self.degradation_center = DegradationCenter()
 
     def connect_shioaji(self):
         if PAPER_TRADE:
@@ -987,10 +999,27 @@ class TradingEngine:
             self.risk.ensure_session()
             # R007: Update heartbeat each loop iteration
             self.silence_detector.update_heartbeat()
+            # R006: Health check at loop start
+            health_results = self.health_monitor.run_checks()
+            self._last_health_aggregate = self.health_monitor.aggregate_status(health_results)
+            health_aggregate = self._last_health_aggregate
+            if health_aggregate['status'] == 'critical':
+                class SimpleHealthStatus:
+                    def is_healthy(self): return False
+                    def has_paper_trading_enabled(self): return PAPER_TRADE
+                self.degradation_center.evaluate_and_degrade(SimpleHealthStatus())
+                log.warning(f"R006 Health critical: {health_aggregate['details']}")
+            elif self.degradation_center.get_current_strategy() is not None:
+                self.degradation_center.restore()
             ticks = self.mock.tick()
             self.latest_ticks = ticks
             # R007: Update market data timestamp
             self.silence_detector.update_market_data()
+
+            # R006: Circuit breaker check before processing symbols
+            circuit_blocked = self.circuit_breaker.should_block_trade()
+            if circuit_blocked:
+                log.warning(f"R006 Circuit breaker OPEN: {self.circuit_breaker.get_status()}")
 
             for sym in WATCH_LIST:
                 tick  = ticks[sym]
@@ -1035,6 +1064,11 @@ class TradingEngine:
                         self.observer.emit_signal(sym, str(sig.direction), sig.confidence, sig.reason)
 
                 if sig and AUTO_TRADE:
+                    # R006: Circuit breaker check (precedence: CircuitBreaker > RiskOfficer)
+                    if circuit_blocked:
+                        self.observer.emit_risk_alert(sym, "circuit_breaker", {"state": "OPEN", "reason": "Circuit breaker blocking new trades"})
+                        log.warning(f"R006 Circuit breaker blocked {sym} signal")
+                        continue
                     ok, reason = self.risk.can_enter(sig, tick["price"])
                     if ok:
                         lots = self.risk.calc_lots(sig, tick["price"])
@@ -1100,6 +1134,8 @@ class TradingEngine:
             pnl   = (price - entry) * mult * pos["lots"] * 1000 * 0.9985
             self.execution.place(symbol, act, pos["lots"], price, reason)
             self.risk.on_exit(symbol, pnl)
+            # R006: Record trade result to circuit breaker
+            self.circuit_breaker.record_trade_result(pnl)
             self.trades_log.append(TradeRecord(
                 id=f"T{int(time.time())}",
                 symbol=symbol,
@@ -1130,6 +1166,8 @@ class TradingEngine:
             pos["partial"] = True
             pos["realized_pnl"] = pos.get("realized_pnl", 0.0) + partial_pnl
             self.risk.on_partial_exit(symbol, partial_pnl)
+            # R006: Record partial trade result to circuit breaker
+            self.circuit_breaker.record_trade_result(partial_pnl)
 
     def get_state(self) -> dict:
         state = {
@@ -1153,6 +1191,15 @@ class TradingEngine:
             }
         except Exception:
             state["artifact_stats"] = {"error": "artifact_manager_not_ready"}
+        # R006: Expose health/circuit state to state
+        try:
+            state["health_status"] = getattr(self, '_last_health_aggregate', {"status": "unknown"})
+            state["circuit_breaker"] = self.circuit_breaker.get_status()
+            state["degradation_strategy"] = self.degradation_center.get_current_strategy().name if self.degradation_center.get_current_strategy() else None
+        except Exception:
+            state["health_status"] = {"error": "health_monitor_not_ready"}
+            state["circuit_breaker"] = {"error": "circuit_breaker_not_ready"}
+            state["degradation_strategy"] = None
         return state
 
 # FastAPI WebSocket 伺服器
