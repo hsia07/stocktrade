@@ -102,6 +102,26 @@ lane 狀態:
 - [ ] 不得把 run_state 從 stopped 改回 active
 
 ================================================================================
+SECTION 4B: BRANCH STRATEGY (分支策略 — MANDATORY)
+================================================================================
+
+branch_strategy: [REQUIRED - 以下三選一]
+  - [ ] side_branch: 建立 work/[round-id]-candidate，commit 後 merge 回 canonical
+  - [ ] direct_commit_authorized: 緊急修復，且人工授權明確包含 "direct commit on canonical authorized"
+  - [ ] merge_existing: 合併已存在的側線 branch candidate
+
+BRANCH STRATEGY FAIL-CLOSED:
+- [ ] 若未選擇 branch_strategy → blocked
+- [ ] 若選擇 side_branch 但未實際建立側線 branch → blocked
+- [ ] 若選擇 direct_commit_authorized 但授權文字不含明確例外語句 → blocked
+- [ ] canonical 上出現非 merge、非授權、非閘門安裝的 direct commit → blocked
+
+CANONICAL DIRECT COMMIT PROHIBITION:
+- 預設禁止 direct commit 於 work/canonical-mainline-repair-001
+- 例外僅限：merge commit / 緊急 hotfix（明確授權）/ 機械閘門安裝（一次性）
+- 違反者觸發 incident + STOP condition
+
+================================================================================
 SECTION 5: ACCEPTANCE CRITERIA
 ================================================================================
 

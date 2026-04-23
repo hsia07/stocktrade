@@ -1,0 +1,26 @@
+Work: 2 tasks (created/modified hook scripts)
+Work: 1 tasks (created validator script)
+Work: 3 tasks (updated governance files)
+Work: 1 tasks (updated round template)
+Work: 1 tasks (created gate specification document)
+Code modifications: none (not permitted; only governance infrastructure)
+
+Gate Scope: 3 categories of mechanical gates (hook, validator, template)
+Incident Reference: GOV-161-REPEATED-DIRECT-ON-CANONICAL-INCIDENT-AUDIT
+
+Files created:
+1. .githooks/check_canonical_direct_commit.ps1 - hook-level direct commit block
+2. scripts/validation/check_branch_workflow.py - validator-level branch workflow + old source + source-of-truth
+3. _governance/audit/mechanical_gate_specification.md - readable gate spec
+4. manifests/gov_mechanical_gate_for_direct_canonical_block.yaml - this round manifest
+5. automation/control/candidates/GOV-MECHANICAL-GATE-FOR-DIRECT-CANONICAL-BLOCK/task.txt
+6. automation/control/candidates/GOV-MECHANICAL-GATE-FOR-DIRECT-CANONICAL-BLOCK/candidate.diff
+7. automation/control/candidates/GOV-MECHANICAL-GATE-FOR-DIRECT-CANONICAL-BLOCK/report.json
+8. automation/control/candidates/GOV-MECHANICAL-GATE-FOR-DIRECT-CANONICAL-BLOCK/evidence.json
+
+Files modified:
+1. .githooks/pre-commit - added check_branch_workflow.py call
+2. .githooks/pre-push.ps1 - added check_branch_workflow.py to script list
+3. docs/auto_mode_governance_guide.md - added Section 6 (Mechanical Gates)
+4. review_memory.txt - added Section 12 (Mechanical Gates)
+5. templates/auto_mode_round_input.md - added Section 4B (Branch Strategy mandatory)

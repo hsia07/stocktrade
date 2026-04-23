@@ -1,0 +1,10 @@
+round_id: GOV-MECHANICAL-GATE-FOR-DIRECT-CANONICAL-BLOCK
+task_type: gov_mechanical_gate_for_direct_canonical_block_candidate
+topic: "建立 canonical direct-commit 防呆 + 新版法源唯一基準 fail-closed gate"
+description: |
+  依 GOV-161-REPEATED-DIRECT-ON-CANONICAL-INCIDENT-AUDIT 的推薦 Plan A，
+  建立最小但有效的機械閘門，防止未來再次發生 direct-on-canonical。
+  包含：hook 層、validator 層、模板層的 fail-closed gate。
+base_commit: 38fc2954990920ec70bba9f1926e7854ec1b030f
+audit_date: 2026-04-23
+auditor: OpenCode formal governance agent

@@ -1,0 +1,57 @@
+{
+  "round_id": "GOV-MECHANICAL-GATE-FOR-DIRECT-CANONICAL-BLOCK",
+  "reply_id": "GOV-MECH-001",
+  "status": "completed",
+  "formal_status_code": "candidate_ready_awaiting_manual_review",
+  "candidate_commit": "3bbcf272cb393c7eef399153c333a1ee66379a19",
+  "base_commit": "38fc2954990920ec70bba9f1926e7854ec1b030f",
+  "audit_type": "gov_mechanical_gate_for_direct_canonical_block_candidate",
+  "files_modified": [
+    ".githooks/pre-commit",
+    ".githooks/pre-push.ps1",
+    "docs/auto_mode_governance_guide.md",
+    "review_memory.txt",
+    "templates/auto_mode_round_input.md"
+  ],
+  "files_created": [
+    ".githooks/check_canonical_direct_commit.ps1",
+    "scripts/validation/check_branch_workflow.py",
+    "_governance/audit/mechanical_gate_specification.md",
+    "manifests/gov_mechanical_gate_for_direct_canonical_block.yaml",
+    "automation/control/candidates/GOV-MECHANICAL-GATE-FOR-DIRECT-CANONICAL-BLOCK/task.txt",
+    "automation/control/candidates/GOV-MECHANICAL-GATE-FOR-DIRECT-CANONICAL-BLOCK/candidate.diff",
+    "automation/control/candidates/GOV-MECHANICAL-GATE-FOR-DIRECT-CANONICAL-BLOCK/report.json",
+    "automation/control/candidates/GOV-MECHANICAL-GATE-FOR-DIRECT-CANONICAL-BLOCK/evidence.json"
+  ],
+  "validation_summary": {
+    "validate_evidence": "to_be_executed_after_commit",
+    "check_forbidden_changes": "to_be_executed_after_commit",
+    "check_required_evidence": "to_be_executed_after_commit",
+    "check_branch_workflow": "to_be_executed_after_commit"
+  },
+  "mechanical_gates": {
+    "gate_a_hook": {
+      "script": ".githooks/check_canonical_direct_commit.ps1",
+      "layer": "hook",
+      "mechanical": true,
+      "enforces": "direct commit block on canonical",
+      "status": "implemented"
+    },
+    "gate_b_validator": {
+      "script": "scripts/validation/check_branch_workflow.py",
+      "layer": "validator",
+      "mechanical": true,
+      "enforces": "branch workflow + old source block + source-of-truth lock",
+      "status": "implemented"
+    },
+    "gate_c_template": {
+      "file": "templates/auto_mode_round_input.md Section 4B",
+      "layer": "template",
+      "mechanical": "partial (human-enforced)",
+      "enforces": "branch strategy + source-of-truth + old source block",
+      "status": "implemented"
+    }
+  },
+  "blockers_found": [],
+  "next_action": "stage_all_files_commit_run_validators_output_return_to_chatgpt"
+}

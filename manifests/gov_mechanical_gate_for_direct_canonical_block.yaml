@@ -1,0 +1,41 @@
+round_id: "GOV-MECHANICAL-GATE-FOR-DIRECT-CANONICAL-BLOCK"
+title: "建立 canonical direct-commit 防呆 + 新版法源唯一基準 fail-closed gate"
+status: "pending"
+depends_on:
+  - "GOV-161-SOFT-CONTAINMENT-AND-NEW-BASELINE-LOCK"
+allowed_paths:
+  - ".githooks/"
+  - "scripts/validation/"
+  - "_governance/"
+  - "docs/"
+  - "review_memory.txt"
+  - "templates/"
+  - "manifests/"
+  - "automation/control/candidates/GOV-MECHANICAL-GATE-FOR-DIRECT-CANONICAL-BLOCK/"
+forbidden_paths:
+  - "server.py"
+  - "index.js"
+  - "config.json"
+  - "run_opencode_loop.ps1"
+required_evidence:
+  - "automation/control/candidates/GOV-MECHANICAL-GATE-FOR-DIRECT-CANONICAL-BLOCK/evidence.json"
+  - "automation/control/candidates/GOV-MECHANICAL-GATE-FOR-DIRECT-CANONICAL-BLOCK/report.json"
+  - "automation/control/candidates/GOV-MECHANICAL-GATE-FOR-DIRECT-CANONICAL-BLOCK/candidate.diff"
+  - "automation/control/candidates/GOV-MECHANICAL-GATE-FOR-DIRECT-CANONICAL-BLOCK/task.txt"
+required_checks:
+  - "scripts/validation/validate_evidence.py"
+  - "scripts/validation/check_forbidden_changes.py"
+  - "scripts/validation/check_required_evidence.py"
+  - "scripts/validation/check_branch_workflow.py"
+risk_level: "yellow"
+owner: "governance"
+start_authorized: true
+mechanical_gates:
+  - "Gate A: Hook-level canonical direct commit block"
+  - "Gate B: Validator-level branch workflow + old source + source-of-truth"
+  - "Gate C: Template-level mandatory branch strategy"
+notes: |
+  本輪建立機械閘門以防止 future direct-on-canonical commits。
+  可以修改 .githooks/* 和 scripts/validation/*（本輪主題明確授權）。
+  STOP_NOW.flag 仍生效，lane 維持凍結。
+  不得 merge / push / lane release / Phase 2 啟動。

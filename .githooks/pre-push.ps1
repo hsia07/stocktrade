@@ -19,12 +19,17 @@ $scripts = @(
     ".\scripts\validation\validate_round.py",
     ".\scripts\validation\check_forbidden_changes.py",
     ".\scripts\validation\check_required_evidence.py",
-    ".\scripts\validation\check_commit_message.py"
+    ".\scripts\validation\check_commit_message.py",
+    ".\scripts\validation\check_branch_workflow.py"
 )
 
 foreach ($script in $scripts) {
     Write-Host "[pre-push] running $script"
-    & python $script --manifest $MANIFEST_PATH
+    if ($script -match "check_branch_workflow") {
+        & python $script --manifest $MANIFEST_PATH --all --repo-root .
+    } else {
+        & python $script --manifest $MANIFEST_PATH
+    }
     if ($LASTEXITCODE -ne 0) {
         Write-Host "[pre-push] FAILED: $script returned non-zero"
         exit 1

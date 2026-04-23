@@ -416,5 +416,54 @@ DEVIATION-002: R016 Frozen Branch Topic Mismatch
   Status: DOCUMENTED, FROZEN, NOT MERGED
 
 ================================================================================
+SECTION 12: MECHANICAL GATES (機械閘門)
+================================================================================
+
+RULE 12.1 - Mechanical Gate Mandate:
+Governance text alone is insufficient. Mechanical (automated, fail-closed)
+gates MUST be installed for rules that have been violated more than once.
+
+RULE 12.2 - Gate A: Canonical Direct Commit Block (Hook Layer):
+- Script: .githooks/check_canonical_direct_commit.ps1
+- Triggered by: pre-commit and pre-push hooks
+- Behavior: Blocks non-merge direct commits on work/canonical-mainline-repair-001
+- Exceptions: merge commits, DIRECT-COMMIT-AUTHORIZED message, gate installation
+- Status: ACTIVE
+
+RULE 12.3 - Gate B: Branch Workflow Validator (Validator Layer):
+- Script: scripts/validation/check_branch_workflow.py
+- Checks:
+  B1: Canonical branch workflow (direct commit block)
+  B2: Old source reference block (05_補充法典, readable/03, old topics)
+  B3: Source-of-truth lock (manifest authority verification)
+- Called by: pre-commit hook, pre-push hook, validate_evidence
+- Status: ACTIVE
+
+RULE 12.4 - Gate C: Mandatory Branch Strategy Template (Template Layer):
+- File: templates/auto_mode_round_input.md Section 4B
+- Mandatory fields:
+  - branch_strategy: [side_branch / direct_commit_authorized / merge_existing]
+  - source_of_truth verification
+  - old_source_reference_blocked
+  - topic_mismatch_fail_closed
+  - phase_mapping_mismatch_fail_closed
+- Enforcement: Human review + validator cross-check
+- Status: ACTIVE
+
+RULE 12.5 - Gate Coverage:
+| Gate | Layer | Mechanical | Enforces |
+|------|-------|------------|----------|
+| A1-A2 | Hook | YES | Direct commit block |
+| B1-B3 | Validator | YES | Branch workflow + old source + source-of-truth |
+| C1-C3 | Template | PARTIAL | Branch strategy + source-of-truth |
+
+RULE 12.6 - Non-Mechanical Rules (Future Work):
+The following rules remain non-mechanical and rely on human compliance:
+- 不得自行改題
+- 不得偷做下一輪
+- 狀態碼正確性
+- lane frozen 維持
+
+================================================================================
 END OF REVIEW MEMORY
 ================================================================================

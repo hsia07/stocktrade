@@ -314,5 +314,58 @@ MONITORING 5: Lane State
 - 意外消失 → 立即恢復並告警
 
 ================================================================================
+SECTION 6: MECHANICAL GATES (機械閘門)
+================================================================================
+
+Philosophy:
+「治理文字本身不足以防止重複違規。必須建立機械閘門，讓違規在發生前就被阻擋，
+  而非事後被發現。」
+
+GATE A: Hook Layer — Canonical Direct Commit Block
+- Script: .githooks/check_canonical_direct_commit.ps1
+- Integrated into: pre-commit (bash) and pre-push.ps1
+- Behavior:
+  - 檢查當前 branch 是否為 work/canonical-mainline-repair-001
+  - 檢查 commit 是否為 merge commit（2+ parents）
+  - 檢查 commit message 是否含 "DIRECT-COMMIT-AUTHORIZED"
+  - 檢查是否為閘門安裝 commit（一次性例外）
+  - 以上皆非 → FAIL，阻止 commit/push
+- Status: ACTIVE
+- Exceptions: merge commits, emergency hotfix with auth, gate installation
+
+GATE B: Validator Layer — Branch Workflow + Old Source + Source-of-Truth
+- Script: scripts/validation/check_branch_workflow.py
+- Checks:
+  B1: Canonical branch workflow (non-merge direct commit block)
+  B2: Old source reference block (05_補充法典, readable/03, old topic strings)
+  B3: Source-of-truth lock (manifest authority verification)
+- Called by: pre-commit hook, pre-push hook, manual validation
+- Status: ACTIVE
+
+GATE C: Template Layer — Mandatory Branch Strategy
+- File: templates/auto_mode_round_input.md Section 4B
+- Mandatory fields:
+  - branch_strategy: [side_branch / direct_commit_authorized / merge_existing]
+  - source_of_truth verification (PRIMARY + VALIDATION authority)
+  - old_source_reference_blocked
+  - topic_mismatch_fail_closed
+  - phase_mapping_mismatch_fail_closed
+- Enforcement: Human review + validator cross-check
+- Status: ACTIVE
+
+GATE COVERAGE MATRIX:
+| Gate | Layer | 機械化程度 | 阻擋對象 |
+|------|-------|-----------|---------|
+| A1-A2 | Hook | 100% mechanical | Direct commit on canonical |
+| B1-B3 | Validator | 100% mechanical | Branch workflow + old source + authority |
+| C1-C3 | Template | Partial (human+validator) | Branch strategy + source-of-truth |
+
+REMAINING NON-MECHANICAL RULES:
+- 不得自行改題（無機械檢查）
+- 不得偷做下一輪（無機械檢查）
+- 狀態碼正確性（無機械檢查）
+- lane frozen 維持（STOP_NOW.flag 為人工檢查）
+
+================================================================================
 END OF GOVERNANCE GUIDE
 ================================================================================

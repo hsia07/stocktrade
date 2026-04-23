@@ -8,4 +8,7 @@ py ./scripts/validation/validate_round.py --manifest "$MANIFEST_PATH"
 py ./scripts/validation/check_forbidden_changes.py --manifest "$MANIFEST_PATH"
 py ./scripts/validation/check_required_evidence.py --manifest "$MANIFEST_PATH"
 
+echo "[pre-commit] check branch workflow (canonical direct commit block)"
+py ./scripts/validation/check_branch_workflow.py --all --repo-root .
+
 echo "[pre-commit] ok"

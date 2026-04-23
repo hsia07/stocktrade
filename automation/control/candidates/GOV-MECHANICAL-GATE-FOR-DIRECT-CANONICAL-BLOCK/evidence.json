@@ -1,0 +1,47 @@
+{
+  "round_id": "GOV-MECHANICAL-GATE-FOR-DIRECT-CANONICAL-BLOCK",
+  "reply_id": "GOV-MECH-001",
+  "candidate_commit": "3bbcf272cb393c7eef399153c333a1ee66379a19",
+  "base_commit": "38fc2954990920ec70bba9f1926e7854ec1b030f",
+  "audit_type": "gov_mechanical_gate_for_direct_canonical_block_candidate",
+  "evidence_date": "2026-04-23",
+  "work_done": [
+    "Created .githooks/check_canonical_direct_commit.ps1 (hook-level direct commit block)",
+    "Created scripts/validation/check_branch_workflow.py (validator-level branch workflow + old source + source-of-truth)",
+    "Modified .githooks/pre-commit to call check_branch_workflow.py",
+    "Modified .githooks/pre-push.ps1 to call check_branch_workflow.py",
+    "Updated docs/auto_mode_governance_guide.md with Section 6 (Mechanical Gates)",
+    "Updated review_memory.txt with Section 12 (Mechanical Gates)",
+    "Updated templates/auto_mode_round_input.md with Section 4B (mandatory branch strategy)",
+    "Created _governance/audit/mechanical_gate_specification.md"
+  ],
+  "verification_commands": [
+    "git branch --show-current -> work/canonical-mainline-repair-001",
+    "git rev-parse HEAD -> 38fc2954990920ec70bba9f1926e7854ec1b030f",
+    "python scripts\\validation\\check_branch_workflow.py --all --repo-root . -> PASS",
+    "Test-Path automation/control/STOP_NOW.flag -> True"
+  ],
+  "mechanical_gates_summary": {
+    "gate_a_hook": "Blocks non-merge direct commits on canonical via PowerShell script called from pre-commit/pre-push",
+    "gate_b_validator": "Python validator checks branch workflow, old source references, and source-of-truth lock",
+    "gate_c_template": "Round input template mandates branch_strategy field and source-of-truth verification"
+  },
+  "governance_constraints": {
+    "stop_now_flag_present": true,
+    "lane_frozen": true,
+    "no_merge": true,
+    "no_push": true,
+    "no_next_round_startup": true,
+    "business_logic_modifications_permitted": false,
+    "master_untouched": true,
+    "work_r016_untouched": true
+  },
+  "blockers_found": [],
+  "observations": [
+    "This is a governance infrastructure round with no business logic changes.",
+    "Hook and validator modifications are explicitly authorized by this round's topic.",
+    "All 3 gate categories are implemented: hook (A), validator (B), template (C).",
+    "Gate C (template) is partially mechanical because it relies on human checkbox verification.",
+    "Future work: make template layer fully mechanical by parsing round input at commit time."
+  ]
+}
