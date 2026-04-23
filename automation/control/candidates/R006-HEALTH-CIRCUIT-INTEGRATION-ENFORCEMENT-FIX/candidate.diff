@@ -1,0 +1,41 @@
+================================================================================
+CANDIDATE DIFF
+R006-HEALTH-CIRCUIT-INTEGRATION-ENFORCEMENT-FIX
+================================================================================
+
+Task: Fix two blockers identified in R006 enforcement audit
+
+BLOCKER-1: DegradationCenter PAUSE_TRADING lacks hard gate
+BLOCKER-2: RiskOfficer/CircuitBreaker daily_pnl and consecutive_loss double tracking
+
+Files modified:
+- server.py: Added degradation hard gate, added sync calls
+- circuit/breaker.py: Added sync_from_risk_officer() method
+- tests/test_r006_integration.py: Added 4 enforcement tests
+
+Changes in server.py:
+1. run_loop(): Added hard gate before symbol processing:
+   if degradation_center.get_current_strategy() == DegradationStrategy.PAUSE_TRADING:
+       log.warning(...); await asyncio.sleep(3); continue
+
+2. _manage_positions close(): Added sync after on_exit() and record_trade_result():
+   self.circuit_breaker.sync_from_risk_officer(self.risk.daily_pnl, self.risk.consecutive_loss)
+
+3. _manage_positions partial exit: Same sync added
+
+Changes in circuit/breaker.py:
+1. Added sync_from_risk_officer(daily_pnl, consecutive_loss) method:
+   - Updates circuit breaker state from RiskOfficer (authoritative)
+   - Re-evaluates circuit breaker state based on synced values
+
+Changes in tests/test_r006_integration.py:
+1. test_run_loop_has_degradation_hard_gate: Verify hard gate exists in source
+2. test_circuit_breaker_syncs_from_risk_officer: Verify sync works
+3. test_circuit_breaker_opens_after_sync: Verify state transitions after sync
+4. test_degradation_pause_blocks_symbol_processing: Verify PAUSE_TRADING blocks
+
+Work: 2 blockers fixed
+
+================================================================================
+END OF CANDIDATE DIFF
+================================================================================
