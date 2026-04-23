@@ -1,19 +1,18 @@
-round_id: R011-VALIDATION-CHAIN-RECOVERY
-task_type: r011_validation_chain_recovery
-reply_id: r011-validation-chain-recovery-001
-status: completed
-formal_status_code: candidate_ready_awaiting_manual_review
-timestamp: "2026-04-23T12:45:00+08:00"
+round_id: R011-VALIDATION-CHAIN-RECOVERY-REPAIR
+task_type: r011_validation_chain_recovery_repair
+reply_id: r011-validation-chain-recovery-repair-001
+status: pending
+formal_status_code: in_progress
+timestamp: "2026-04-23T12:55:00+08:00"
 
 canonical_head: ea62ba14d1a9bc0e95706235640415f1e8093a11
-candidate_commit: 08bcc690d931b2a85e9fe4bf64755c3166f25aa3
 base_commit: 44a20995a6f0e6297a5a3af6a5e50eac0d282d09
 merge_commit: ea62ba14d1a9bc0e95706235640415f1e8093a11
 merge_authorized: true
 merge_authorization_source: prior human authorization in R011-ARTIFACT-MANAGEMENT-INTEGRATION local merge execution round
 
 evidence_package:
-  base_dir: automation/control/candidates/R011-VALIDATION-CHAIN-RECOVERY
+  base_dir: automation/control/candidates/R011-VALIDATION-CHAIN-RECOVERY-REPAIR
   required_files:
     - task.txt
     - report.json
@@ -21,17 +20,18 @@ evidence_package:
     - candidate.diff
 
 files_modified_in_scope:
-  - server.py
-  - tests/test_r011_integration.py
+  - manifests/r011_local_merge_validation.yaml (修正)
+  - automation/control/candidates/R011-VALIDATION-CHAIN-RECOVERY-REPAIR/* (NEW)
 
 constraints:
   allowed_branches:
+    - work/R011-VALIDATION-CHAIN-RECOVERY-REPAIR-candidate
     - work/canonical-mainline-repair-001
   forbidden_branches:
     - master
     - work/r016-decision-trace
   allowed_paths:
-    - automation/control/candidates/R011-VALIDATION-CHAIN-RECOVERY/**
+    - automation/control/candidates/R011-VALIDATION-CHAIN-RECOVERY-REPAIR/**
     - manifests/**
     - scripts/validation/**
   forbidden_paths:
