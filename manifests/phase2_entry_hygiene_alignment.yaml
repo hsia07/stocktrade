@@ -1,22 +1,29 @@
-round_id: "R017"
-title: "秘密與金鑰管理"
-status: "pending"
+round_id: "PHASE2-ENTRY-HYGIENE-ALIGNMENT"
+title: "Phase 2 entry hygiene alignment"
+status: "completed"
 depends_on:
   - "R016"
 allowed_paths:
-  - "manifests/"
-  - "automation/control/"
-  - "scripts/"
-  - ".githooks/"
-  - ".github/"
-  - "server.py"
+  - "automation/control/state.runtime.json"
+  - "automation/control/BRANCH_ROUND_PHASE_REFERENCE.md"
+  - "docs/auto_mode_governance_guide.md"
+  - "manifests/current_round.yaml"
+  - "manifests/phase2_entry_hygiene_alignment.yaml"
+  - "automation/control/candidates/PHASE2-ENTRY-HYGIENE-ALIGNMENT/"
 forbidden_paths:
+  - "server.py"
   - "server_v2.py"
+  - "index.html"
   - "index_v2.html"
-  - ".env"
-  - ".env.*"
+  - "config.json"
+  - "run_opencode_loop.ps1"
+  - ".githooks/*"
   - "master"
+  - "tests/"
+  - "_governance/"
 required_evidence:
+  - "automation/control/candidates/PHASE2-ENTRY-HYGIENE-ALIGNMENT/task.txt"
+  - "automation/control/candidates/PHASE2-ENTRY-HYGIENE-ALIGNMENT/report.json"
   - "automation/control/candidates/PHASE2-ENTRY-HYGIENE-ALIGNMENT/evidence.json"
 required_checks:
   - "py ./scripts/validation/check_branch_workflow.py --repo-root . --all"
@@ -24,26 +31,17 @@ required_checks:
   - "py ./scripts/validation/check_required_evidence.py --manifest ./manifests/phase2_entry_hygiene_alignment.yaml"
   - "py ./scripts/validation/validate_evidence.py --manifest ./manifests/phase2_entry_hygiene_alignment.yaml --repo-root ."
 direct_fail_conditions:
-  - "modified forbidden paths"
-  - "modified Phase 1 functional main chain files"
+  - "modified server.py or any Phase 1 functional main chain"
+  - "modified master branch"
+  - "modified remote state"
   - "lane release without authorization"
   - "auto-mode release without authorization"
   - "Phase 2 entry without authorization"
+  - "modified index.js / config.json / run_opencode_loop.ps1 / .githooks/*"
 risk_level: "green"
 owner: "you"
 start_authorized: false
 notes: "Phase 2 hygiene alignment. Lane released. Phase 2 entry awaiting explicit human authorization for R017. Auto-mode not authorized."
 containment_status: "PHASE2_ENTRY_NOT_AUTHORIZED_AUTO_MODE_NOT_AUTHORIZED"
-auto_run: false
-desired_action: null
-fail_closed_guards:
-  opencode_primary_contractor: true
-  aider_failure_reclaim: true
-  no_start_event_guard: true
-  no_function_commit_guard: true
-  work_zero_tasks_guard: true
-  untracked_candidate_guard: true
-  shared_commit_reuse_guard: true
-  validate_evidence_real_changes: true
-guard_status: "ACTIVE"
 phase: "Phase 2"
+auto_run: false

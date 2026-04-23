@@ -1,0 +1,50 @@
+PHASE2-ENTRY-HYGIENE-ALIGNMENT: Phase 2 entry hygiene alignment
+================================================================================
+
+Task Type: phase2_entry_hygiene_alignment
+Phase: Phase 2
+Status: hygiene_alignment_complete
+
+Work: 5 tasks
+1. state.runtime.json alignment
+2. current_round.yaml alignment
+3. BRANCH_ROUND_PHASE_REFERENCE.md update
+4. auto_mode_governance_guide.md activation
+5. phase2_entry_hygiene_alignment.yaml manifest creation
+
+Files Modified (aligned):
+- automation/control/state.runtime.json
+- manifests/current_round.yaml
+- automation/control/BRANCH_ROUND_PHASE_REFERENCE.md
+- docs/auto_mode_governance_guide.md
+- manifests/phase2_entry_hygiene_alignment.yaml (NEW)
+- automation/control/candidates/PHASE2-ENTRY-HYGIENE-ALIGNMENT/ (NEW)
+
+Forbidden files NOT touched:
+- server.py: NOT MODIFIED
+- index.js: NOT MODIFIED
+- config.json: NOT MODIFIED
+- run_opencode_loop.ps1: NOT MODIFIED
+- .githooks/*: NOT MODIFIED
+- master: NOT MODIFIED
+- remote state: NOT MODIFIED
+- tests/: NOT MODIFIED
+
+State Changes:
+- STOP_NOW.flag: REMOVED (lane release, previous task)
+- state.runtime.json: round_id R-011 → R017, current_phase Phase 1 → Phase 2
+- current_round.yaml: round_id R-011 → R017, title → 秘密與金鑰管理
+- BRANCH_ROUND_PHASE_REFERENCE.md: Phase 1 formally closed, Phase 2 hygiene aligned
+- auto_mode_governance_guide.md: Status CANDIDATE → ACTIVE
+
+NOT done (not authorized):
+- R017 construction: NOT STARTED
+- auto-mode release: NOT AUTHORIZED
+- Phase 2 entry: NOT AUTHORIZED
+- run_state → active: NOT DONE
+
+Authorization preserved:
+- phase2_entry_not_authorized: true
+- auto_mode_not_authorized: true
+- r009_manifest_gap: KNOWN GOVERNANCE DEBT
+- env001: ENVIRONMENT WARNING

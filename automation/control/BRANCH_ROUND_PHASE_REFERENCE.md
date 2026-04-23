@@ -3,30 +3,31 @@
 ## Canonical Mainline Baseline
 
 - **Current Canonical Mainline**: `work/canonical-mainline-repair-001`
-- **Legal Status**: VERIFIED - R-006 theme (Health Check / Circuit Breaker / Degradation Center) completed
-- **State Sync**: Completed with zero drift
-- **Push Authorization**: NOT AUTHORIZED - requires explicit human signoff
+- **Legal Status**: PHASE 1 FORMALLY CLOSED — R001-R016 all resolved (15 merged, 1 replaced by R008)
+- **Phase 2 Status**: HYGIENE ALIGNED — R017 entry pending explicit human authorization
+- **Lane Release**: COMPLETED — STOP_NOW.flag removed
 
 ## Branch Legal Status Table
 
 | Branch | Round Reference | Legal Status | Phase Role | Note |
 |--------|-----------------|--------------|------------|------|
-| **work/canonical-mainline-repair-001** | R-006 | **CANONICAL MAINLINE BASELINE** | Phase 1 | Currently verified, ready for consideration |
-| **work/phase1-consolidation** | R-006 (Phase 1 base point) | **WORK** (active work branch) | Phase 1 | RENAMED from work/r006-governance - now correctly named |
-| work/r007-silence-protection | R-007 | ABSORBED / CONTENT-EQUIVALENT HISTORICAL WORK BRANCH | Phase 1 | Content absorbed into canonical mainline baseline; branch remains as historical reference |
-| work/r008-state-machine-governance | R-008 | ABSORBED / CONTENT-EQUIVALENT HISTORICAL WORK BRANCH | Phase 1 | Absorbed into canonical baseline; historical reference retained |
-| work/r009-command-priority | R-009 | EVIDENCE RERULED / REACCEPTANCE READY | Phase 1 | Evidence reruling recorded; no longer the active blocker; see automation/control/R009_EVIDENCE_RERULING.md |
-| **candidates/multi-round-attempt-001** | R-006~R-015 | CANDIDATE STALLED | Phase 1 | RENAMED from candidates/R-015 - now correctly named |
-| candidates/R-010 | R-010 | INVALIDATED | Phase 1 |废止 |
-| candidates/R-011 | R-011 | INVALIDATED | Phase 1 |废止 |
-| candidates/R-012 | R-012 | INVALIDATED | Phase 1 |废止 |
-| candidates/R-013 | R-013 | INVALIDATED | Phase 1 |废止 |
-| candidates/R-014 | R-014 | INVALIDATED | Phase 1 |废止 |
-| candidates/R-006 | R-006 | CANDIDATE | Phase 1 | Historical candidate |
-| review/R6-HEALTH-CIRCUIT-FAILOVER-001 | R-006 | REVIEW COMPLETED | Phase 1 | Already merged to work |
-| review/R7-SILENCE-PROTECTION-001 | R-007 | REVIEW COMPLETED | Phase 1 | Already merged to work |
-| review/R8-STATE-MACHINE-001 | R-008 | REVIEW COMPLETED | Phase 1 | Already merged to work |
-| review/R9-COMMAND-PRIORITY-001 | R-009 | REVIEW COMPLETED | Phase 1 | Already merged to work |
+| **work/canonical-mainline-repair-001** | R017 | **CANONICAL MAINLINE BASELINE** | Phase 2 | Phase 2 entry hygiene aligned. R017 not yet authorized to start. |
+| **work/phase1-consolidation** | R006 (Phase 1 base point) | ABSORBED | Phase 1 | Historical reference only; Phase 1 complete |
+| work/r007-silence-protection | R007 | ABSORBED / CONTENT-EQUIVALENT HISTORICAL WORK BRANCH | Phase 1 | Content absorbed into canonical mainline baseline |
+| work/r008-state-machine-governance | R008 | ABSORBED / CONTENT-EQUIVALENT HISTORICAL WORK BRANCH | Phase 1 | R008 replaced R010; mode governance covers core/non-core isolation |
+| work/r009-command-priority | R009 | MERGED+REMOTE | Phase 1 | EVIDENCE RERULED / REACCEPTANCE READY; functional content in canonical chain |
+| **work/R016-MINIMAL-DOCUMENTATION-BACKFILL-candidate** | R016 | MERGED+REMOTE | Phase 1 | Minimal documentation backfill; schema_version frozen; API schema documented |
+| work/r016-decision-trace | R016 | INVALIDATED | Phase 1 | WRONG TOPIC — "Decision source traceability" vs law "欄位命名/API schema/資料契約固定"; fully excluded |
+| **candidates/multi-round-attempt-001** | R006-R015 | CANDIDATE STALLED | Phase 1 | Historical reference only |
+| candidates/R-011 | R011 | INVALIDATED | Phase 1 |废止 |
+| candidates/R-012 | R012 | INVALIDATED | Phase 1 |废止 |
+| candidates/R-013 | R013 | INVALIDATED | Phase 1 |废止 |
+| candidates/R-014 | R014 | INVALIDATED | Phase 1 |废止 |
+| candidates/R-006 | R006 | CANDIDATE | Phase 1 | Historical candidate |
+| review/R6-HEALTH-CIRCUIT-FAILOVER-001 | R006 | REVIEW COMPLETED | Phase 1 | Already merged |
+| review/R7-SILENCE-PROTECTION-001 | R007 | REVIEW COMPLETED | Phase 1 | Already merged |
+| review/R8-STATE-MACHINE-001 | R008 | REVIEW COMPLETED | Phase 1 | Already merged |
+| review/R9-COMMAND-PRIORITY-001 | R009 | REVIEW COMPLETED | Phase 1 | Already merged |
 | master | N/A | PROTECTED | N/A | No direct push allowed |
 
 ## Five Concepts Clearly Separated
@@ -67,60 +68,98 @@ The current execution state in state.runtime.json.
 | work/r007-silence-protection | Absorbed into canonical baseline; not a separate alias | ABSORBED (EXECUTED) |
 | current_phase in state | Was showing R-006 instead of Phase 1 | FIXED - now shows "Phase 1" |
 
-## Phase 1 Status & Definitions
+## Phase 1 Status (FORMALLY CLOSED)
 
-- Phase 1 Status: not closed
-- Active blocker: none at R-009 level
-- R-007: absorbed/content-equivalent historical work (已收口)
-- R-008: absorbed/content-equivalent historical work (已收口)
-- R-009: evidence reruled; reacceptance ready; no longer the active blocker
-- R-010 ~ R-015: Phase 1 remaining pending rounds / not yet formally closed
+- Phase 1 Status: **FORMALLY CLOSED** — Phase 1 formal closure signed off
+- R001-R005: Absorbed into baseline
+- R006: MERGED+REMOTE (HealthMonitor/CircuitBreaker/DegradationCenter)
+- R007: MERGED+REMOTE (SilenceDetector/SilenceRecovery)
+- R008: MERGED+REMOTE (ModeController/ModeRecorder; also replaced R010)
+- R009: MERGED+REMOTE (Execution model; advisory overlay)
+- R010: REPLACED by R008
+- R011: MERGED+REMOTE (ArtifactManager/caching/EMAs)
+- R012: MERGED+REMOTE (DecisionLatencyBudget/DataPathSeparator)
+- R013: Absorbed
+- R014: MERGED+REMOTE (ObservableEvent schema)
+- R015: MERGED+REMOTE (MultiLayerCache)
+- R016: MERGED+REMOTE (schema_version/API schema/25 contract tests)
+- R016 old wrong topic (DecisionTracer): EXCLUDED
+
+## Phase 2 Status
+
+- Phase 2 Status: HYGIENE ALIGNED — lane released
+- R017: awaiting_authorization (topic: 秘密與金鑰管理)
+- Phase 2 entry: NOT YET AUTHORIZED
+- Auto-mode: NOT YET AUTHORIZED
 
 ## R-009 Reruling Summary
 
-- previous_actual_start_head_wrong = true
-- wrong_actual_start_head = 0493cf8d95cd8777d8ce4d442f35d3b65258dd4f
-- corrected_actual_start_head = 0493cf804cdf1510276e3b0153ee1c1a647d940e
-- merge_commit first_parent = corrected_actual_start_head
-- merge_base = 941cd18bd25e55002fade912d3858a805034b9b8
-- rev-list left-right count = 0 2
-- validation_capability_ok = true
-- candidate_evidence_integrity_ok = true
-- r009_reacceptance_ready = true
+- R009 functional content: MERGED+REMOTE at commits 48c480b/6a22130
+- Evidence gap: KNOWN GOVERNANCE DEBT (old commit hash in evidence files predating 161-round normalization)
+- Functional impact: NONE (code is in canonical chain)
+- R009 manifest gap does not block Phase 2 entry
 
-## Remaining Phase 1 Constraint
+## Current Runtime State (from state.runtime.json, Phase 2 hygiene aligned)
 
-- Phase 1 is still not closed because R-010 ~ R-015 remain pending rounds.
-- push remains unauthorized at this stage.
-
-## Current Runtime State (from state.runtime.json)
-
-- **round_id**: R-006
+- **round_id**: R017
 - **branch**: work/canonical-mainline-repair-001
-- **current_phase**: Phase 1
+- **current_phase**: Phase 2
 - **run_state**: stopped
-- **last_action**: r006_purified_validation_completed
+- **last_action**: awaiting_phase2_entry_authorization
+- **awaiting**: phase2_entry_authorization_for_R017
 
-## Phase Definition
+## Phase 2 Definition
 
 | Phase | Round Range | Description |
 |-------|------------|-------------|
-| Phase 1 | R-001 ~ R-015 | 穩定性與基礎建設 |
-| Phase 2 | R-016 ~ R-045A | 交易鏈追責與執行 |
-| Phase 3 | R-046 ~ R-128 | 成熟化與 shadow 準備 |
-| Phase 4 | R-129 ~ R-161 | 多帳戶與營運化 |
+| Phase 1 | R001-R016 | 穩定性與基礎建設 — **FORMALLY CLOSED** |
+| Phase 2 | R017-R048 | 交易鏈追責與執行 — HYGIENE ALIGNED, entry pending authorization |
+| Phase 3 | R049-R132 | 成熟化與 shadow 準備 |
+| Phase 4 | R133-R161 | 多帳戶與營運化 |
 
-## R-006 Official Theme
+## R017 Official Topic
 
-According to 03_161輪逐輪施行細則法典_整合法條增補版:
-- **Theme**: 健康檢查 / 熔斷 / 降級中心
-- **Source of Truth**: 03 (not external 05 supplement)
-- **Verification**: Passed with 12/12 tests
+Per _governance/law/161輪正式重編主題總表_唯一基準版_v2.md line 48:
+- **Topic**: 秘密與金鑰管理 (Secret and Key Management)
+- **Round**: R017 — first round of Phase 2
+- **Phase 2 entry authorization**: NOT YET GRANTED
+
+## R008 Replaced R010 — Formal Ruling
+
+- R010 topic: "核心與非核心隔離" — REPLACED by R008
+- R008 mode governance (cbf5091) implements "core/non-core isolation" via trading-capable vs trading-blocked mode enforcement
+- R010 INVALIDATED; R008 absorbed R010's functional intent
+
+## Lane Release & Phase 2 Status
+
+- **Lane Release**: COMPLETED — STOP_NOW.flag removed
+- **Phase 2 Entry**: NOT AUTHORIZED — awaiting explicit human authorization for R017
+- **Auto-mode**: NOT AUTHORIZED — requires separate explicit human authorization
+
+## Phase 1 Known Governance Debts
+
+| Debt | Type | Impact |
+|------|------|--------|
+| R009 manifest gap | KNOWN GOVERNANCE DEBT | Functional content in canonical chain; evidence files reference old commit hash; does NOT block Phase 2 |
+| ENV-001 | ENVIRONMENT WARNING | pydantic.v1 import error blocks pytest only; server.py unaffected; does NOT block Phase 2 |
+
+## Authorization Chain
+
+```
+Phase 1 formal closure (DONE) → Lane release (DONE) → Phase 2 hygiene alignment (DONE) → R017 authorization (PENDING) → R017 construction
+```
 
 ## Push Authorization Status
 
-- **NOT AUTHORIZED**: Push requires explicit human signoff
-- This document does NOT constitute push authorization
+- **Lane Release**: COMPLETED
+- **Phase 2 Entry (R017)**: NOT AUTHORIZED — requires explicit human signoff
+- **Auto-mode Release**: NOT AUTHORIZED — requires separate explicit human signoff
+- This document does NOT constitute Phase 2 entry authorization
+
+---
+
+*Last Updated: 2026-04-24*
+*Status: Phase 2 hygiene aligned; R017 awaiting authorization*
 
 ---
 

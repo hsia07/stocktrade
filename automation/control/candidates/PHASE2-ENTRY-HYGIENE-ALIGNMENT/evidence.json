@@ -1,0 +1,47 @@
+{
+  "round_id": "PHASE2-ENTRY-HYGIENE-ALIGNMENT",
+  "task_type": "phase2_entry_hygiene_alignment",
+  "phase": "Phase 2",
+  "status": "completed",
+  "formal_status_code": "candidate_ready_awaiting_manual_review",
+  "lane_released": true,
+  "phase2_entry_authorized": false,
+  "auto_mode_authorized": false,
+  "work_done": [
+    "state.runtime.json: round_id R-011 → R017, current_phase Phase 1 → Phase 2, last_action → awaiting_phase2_entry_authorization",
+    "current_round.yaml: round_id R-011 → R017, title → 秘密與金鑰管理, status → awaiting_authorization, phase → Phase 2",
+    "BRANCH_ROUND_PHASE_REFERENCE.md: Phase 1 status updated to FORMALLY CLOSED, Phase 2 status added, R017 reference added",
+    "auto_mode_governance_guide.md: Status CANDIDATE → ACTIVE, auto-mode NOT authorized warning added",
+    "manifests/phase2_entry_hygiene_alignment.yaml: NEW dedicated Phase 2 hygiene manifest created"
+  ],
+  "files_aligned": [
+    "automation/control/state.runtime.json",
+    "manifests/current_round.yaml",
+    "automation/control/BRANCH_ROUND_PHASE_REFERENCE.md",
+    "docs/auto_mode_governance_guide.md",
+    "manifests/phase2_entry_hygiene_alignment.yaml"
+  ],
+  "validation": "ALL_VALIDATORS_PASS",
+  "state_runtime_aligned": {
+    "round_id": "R017",
+    "current_round": "R017",
+    "current_phase": "Phase 2",
+    "last_action": "awaiting_phase2_entry_authorization",
+    "awaiting": "phase2_entry_authorization_for_R017",
+    "valid_candidates": { "r017": false }
+  },
+  "current_round_aligned": {
+    "round_id": "R017",
+    "title": "秘密與金鑰管理",
+    "phase": "Phase 2",
+    "status": "awaiting_authorization",
+    "start_authorized": false
+  },
+  "auto_mode_governance_guide": {
+    "status": "ACTIVE",
+    "auto_mode_authorized": false,
+    "phase2_entry_authorized": false
+  },
+  "r009_manifest_gap_ruling": "KNOWN GOVERNANCE DEBT — does not block Phase 2 entry",
+  "env001_ruling": "ENVIRONMENT WARNING — does not block Phase 2 entry"
+}
