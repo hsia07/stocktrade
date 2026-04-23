@@ -4,8 +4,20 @@ AUTO-MODE GOVERNANCE GUIDE
 ================================================================================
 
 Version: 1.0
-Status: CANDIDATE
+Status: ACTIVE
 Purpose: Define high-risk actions requiring human signature in auto-mode
+
+================================================================================
+IMPORTANT — AUTO-MODE NOT YET AUTHORIZED
+================================================================================
+
+This guide is ACTIVE (governance rules in force) but:
+  *** AUTO-MODE RELEASE IS NOT YET AUTHORIZED ***
+  *** PHASE 2 ENTRY (R017) IS NOT YET AUTHORIZED ***
+
+"ACTIVE" means the governance rules herein are valid and applicable.
+"ACTIVE" does NOT mean auto-mode execution is enabled.
+Auto-mode release and Phase 2 entry each require separate explicit human authorization.
 
 ================================================================================
 SECTION 1: HIGH-RISK ACTION SIGNATURE MATRIX
