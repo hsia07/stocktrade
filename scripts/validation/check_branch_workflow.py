@@ -207,6 +207,58 @@ def check_source_of_truth_lock() -> tuple:
         return False, violations
     return True, []
 
+def check_merge_authorization() -> tuple:
+    """
+    Check if merge authorization evidence exists in manifest files.
+    This is a fail-closed check: if a manifest implies merge will happen
+    but lacks merge authorization evidence, it is blocked.
+    Returns (pass: bool, violations: list).
+    """
+    violations = []
+    manifest_files = list(Path("manifests").glob("*.yaml"))
+    
+    for mf in manifest_files:
+        try:
+            content = mf.read_text(encoding="utf-8", errors="replace")
+        except Exception:
+            continue
+        
+        # Skip manifests that are not round manifests (e.g., validator manifests)
+        if "round_id:" not in content:
+            continue
+        
+        # Skip read-only audit manifests
+        if "read_only" in content.lower() or "audit" in content.lower():
+            continue
+        
+        # Check if manifest mentions merge operations
+        merge_indicators = [
+            "merge_commit",
+            "git merge",
+            "merge to canonical",
+            "merge into canonical",
+        ]
+        
+        has_merge_indicator = any(ind in content.lower() for ind in merge_indicators)
+        
+        # Check if merge authorization is documented
+        has_merge_auth = (
+            "merge_authorized" in content.lower() or
+            "merge_authorization" in content.lower() or
+            "merge authorized" in content.lower()
+        )
+        
+        # If merge is implied but no authorization evidence → blocked
+        if has_merge_indicator and not has_merge_auth:
+            violations.append(
+                f"{mf}: manifest implies merge but lacks merge_authorized evidence. "
+                f"Add 'merge_authorized: true' with authorization documentation."
+            )
+    
+    if violations:
+        return False, violations
+    return True, []
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--repo-root", default=".")
@@ -214,6 +266,7 @@ def main():
     ap.add_argument("--check-canonical", action="store_true", help="Enable canonical direct commit check")
     ap.add_argument("--check-old-source", action="store_true", help="Enable old source reference check")
     ap.add_argument("--check-source-of-truth", action="store_true", help="Enable source-of-truth lock check")
+    ap.add_argument("--check-merge-auth", action="store_true", help="Enable merge authorization evidence check")
     ap.add_argument("--all", action="store_true", help="Run all checks")
     args = ap.parse_args()
     
@@ -248,6 +301,17 @@ def main():
             print("PASS: source-of-truth lock verified")
         else:
             print("FAIL: source-of-truth violations:")
+            for v in violations:
+                print(f"  - {v}")
+            all_pass = False
+    
+    # Check 4: Merge authorization evidence
+    if args.check_merge_auth or args.all:
+        ok, violations = check_merge_authorization()
+        if ok:
+            print("PASS: merge authorization evidence verified")
+        else:
+            print("FAIL: merge authorization violations:")
             for v in violations:
                 print(f"  - {v}")
             all_pass = False

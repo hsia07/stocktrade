@@ -122,6 +122,30 @@ CANONICAL DIRECT COMMIT PROHIBITION:
 - 違反者觸發 incident + STOP condition
 
 ================================================================================
+SECTION 4C: MERGE AUTHORIZATION (合併授權 — MANDATORY)
+================================================================================
+
+merge_authorized: [REQUIRED - true/false]
+  - [ ] true: 人工已明確授權 merge 進 canonical
+  - [ ] false: 僅完成 candidate，尚未授權 merge
+
+MERGE AUTHORIZATION FAIL-CLOSED:
+- [ ] 若 merge_authorized = false → 不得執行 git merge
+- [ ] 若 merge_authorized = true 但無人工授權文字證據 → blocked
+- [ ] 若 branch_strategy = side_branch 但 merge_authorized 未勾選 → blocked
+- [ ] 若 branch_strategy = merge_existing 但 merge_authorized 未勾選 → blocked
+
+MERGE DECISION POINT REQUIRED:
+- Candidate ready != Merge authorized
+- Merge is a SEPARATE decision point from candidate completion
+- No merge authorization evidence → STOP condition
+
+UNAUTHORIZED MERGE INCIDENT REFERENCE:
+- R007 incident: 551b3bc merged without authorization
+- Status: Single-incident exception, formally acknowledged
+- This is NOT precedent — future unauthorized merges are strictly blocked
+
+================================================================================
 SECTION 5: ACCEPTANCE CRITERIA
 ================================================================================
 
