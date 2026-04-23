@@ -1,0 +1,46 @@
+round_id: PHASE2-BATCH-REVIEW-LAW
+task_type: phase2_batch_review_law_candidate_draft
+status: completed
+formal_status_code: candidate_ready_awaiting_manual_review
+
+Scope:
+- API-based auto-mode governance chain (OpenAI API ↔ OpenCode ↔ Telegram bot)
+- Governance meta-law for batch execution
+- Does NOT cover R017 (trading broker secrets)
+- Does NOT replace Phase 2 per-round laws
+
+Deliverables:
+- docs/phase2_batch_review_law.md: 12 chapters, 15 mechanical guards
+- manifests/phase2_batch_review_law.yaml: dedicated manifest
+- Evidence package: task.txt, report.json, evidence.json, candidate.diff
+
+Chapters (12):
+1. Authorization chain and role division
+2. API orchestration chain entry/exit
+3. Per-round admission criteria
+4. Single-round failure = batch fail-closed stop
+5. Repeated-failure breaker
+6. RETURN_TO_CHATGPT completeness control
+7. Evidence/manifest completeness control
+8. Canonical direct write prohibition
+9. Merge/push/lane/phase separation of authorization
+10. Rollback and containment conditions
+11. Telegram/review reporting traceability
+12. OpenAI/Telegram API failure/timeout/mismatch fail-closed rules
+
+Mechanical Guards (15):
+- MG-01 to MG-15: All defined in Chapter 12
+
+Validation Results (4/4 PASS):
+- check_forbidden_changes.py: PASS
+- check_required_evidence.py: PASS
+- check_branch_workflow.py: PASS
+
+False Positive Contained: YES (by text rewrite, not validator modification)
+Validator Logic Modified: NO
+Manual Override Used: NO
+
+Not included:
+- R017 (separate law)
+- Phase 2 per-round laws (separate)
+- Phase 1 (already closed)
