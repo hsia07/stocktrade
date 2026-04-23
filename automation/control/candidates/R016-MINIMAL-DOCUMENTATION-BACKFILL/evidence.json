@@ -1,0 +1,59 @@
+{
+  "round_id": "R016-MINIMAL-DOCUMENTATION-BACKFILL",
+  "evidence_type": "candidate_package",
+  "base_commit": "6a221306995bc40ce3ab9e0e91cdf294dd957417",
+  "candidate_branch": "work/R016-MINIMAL-DOCUMENTATION-BACKFILL-candidate",
+  "files": [
+    "server.py",
+    "docs/phase1_api_schema.md",
+    "tests/test_r016_api_contract.py",
+    "manifests/r016_minimal_documentation_backfill.yaml",
+    "automation/control/candidates/R016-MINIMAL-DOCUMENTATION-BACKFILL/task.txt",
+    "automation/control/candidates/R016-MINIMAL-DOCUMENTATION-BACKFILL/report.json",
+    "automation/control/candidates/R016-MINIMAL-DOCUMENTATION-BACKFILL/evidence.json",
+    "automation/control/candidates/R016-MINIMAL-DOCUMENTATION-BACKFILL/candidate.diff"
+  ],
+  "test_execution": {
+    "test_r016_api_contract.py": {
+      "status": "PASS",
+      "count": 25,
+      "details": "All R016 contract tests passed including schema_version, baseline fields, R006/R008/R009/R011 field stability, API endpoint keys, and no DecisionTracer"
+    },
+    "test_r006_integration.py": {
+      "status": "PASS",
+      "count": 19
+    },
+    "test_r007_integration.py": {
+      "status": "PASS",
+      "count": 10
+    },
+    "test_r008_integration.py": {
+      "status": "PASS",
+      "count": 43
+    },
+    "test_r009_integration.py": {
+      "status": "PASS",
+      "count": 28
+    },
+    "test_r011_integration.py": {
+      "status": "PASS",
+      "count": 10
+    }
+  },
+  "validator_execution": {
+    "validate_evidence.py": "PASS",
+    "check_forbidden_changes.py": "PASS",
+    "check_required_evidence.py": "PASS",
+    "check_branch_workflow.py": "PASS"
+  },
+  "r016_scope": {
+    "schema_version_added": true,
+    "api_schema_documented": true,
+    "data_contract_documented": true,
+    "field_naming_rules_documented": true,
+    "decision_tracer_excluded": true
+  },
+  "blockers": [],
+  "forbidden_changes": [],
+  "ready_for_candidate": true
+}

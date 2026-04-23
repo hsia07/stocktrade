@@ -1,0 +1,50 @@
+{
+  "round_id": "R016-MINIMAL-DOCUMENTATION-BACKFILL",
+  "task_type": "r016_minimal_documentation_backfill_candidate",
+  "reply_id": "r016-minimal-documentation-backfill-candidate-001",
+  "status": "completed",
+  "formal_status_code": "candidate_ready_awaiting_manual_review",
+  "base_commit": "6a221306995bc40ce3ab9e0e91cdf294dd957417",
+  "candidate_branch": "work/R016-MINIMAL-DOCUMENTATION-BACKFILL-candidate",
+  "files_modified": [
+    "server.py",
+    "docs/phase1_api_schema.md",
+    "tests/test_r016_api_contract.py",
+    "manifests/r016_minimal_documentation_backfill.yaml"
+  ],
+  "lines_changed": {
+    "server.py": "+1 line (schema_version added to get_state())",
+    "docs/phase1_api_schema.md": "NEW 120 lines",
+    "tests/test_r016_api_contract.py": "NEW 160 lines, 25 tests",
+    "manifests/r016_minimal_documentation_backfill.yaml": "NEW 46 lines"
+  },
+  "r016_scope": {
+    "field_naming_standardization": "documented in phase1_api_schema.md",
+    "api_schema_fixation": "documented all 8 endpoints with response keys",
+    "data_contract_fixation": "documented 19 state fields with compatibility rules",
+    "schema_version": "added to get_state() as '1.0.0'"
+  },
+  "forbidden_scope": [
+    "No new functional endpoints",
+    "No DecisionTracer / decision traceability code",
+    "No changes to existing round modules",
+    "No changes to run_loop execution semantics"
+  ],
+  "test_results": {
+    "test_r016_api_contract.py": "25/25 PASS",
+    "test_r006_integration.py": "19/19 PASS",
+    "test_r007_integration.py": "10/10 PASS",
+    "test_r008_integration.py": "43/43 PASS",
+    "test_r009_integration.py": "28/28 PASS",
+    "test_r011_integration.py": "10/10 PASS"
+  },
+  "validators": {
+    "validate_evidence.py": "PASS",
+    "check_forbidden_changes.py": "PASS",
+    "check_required_evidence.py": "PASS",
+    "check_branch_workflow.py": "PASS"
+  },
+  "blockers_found": [],
+  "forbidden_paths_touched": [],
+  "next_action": "candidate_ready_awaiting_manual_review"
+}

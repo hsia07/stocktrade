@@ -1299,6 +1299,7 @@ class TradingEngine:
 
     def get_state(self) -> dict:
         state = {
+            "schema_version": "1.0.0",
             "ticks":        self.latest_ticks,
             "agents":       self.agent_reports,
             "positions":    self.risk.open_positions,
