@@ -1,0 +1,22 @@
+Work: 4 tasks (created governance documents)
+Work: 3 tasks (updated existing governance files)
+Work: 1 tasks (updated round template)
+Code modifications: none (not permitted for governance-only candidate)
+
+Containment Scope: Plan C soft containment for bf2c16f + new baseline lock
+Source of Truth: 03_161輪逐輪施行細則法典（整合法條增補版）+ 161輪正式重編主題總表（唯一主題基準版）
+
+Files created:
+1. _governance/incident/GOV-161-direct-commit-deviation.md - incident containment document
+2. _governance/audit/future_side_branch_backfill_rounds.md - backfill rounds list
+3. _governance/audit/gov_161_baseline_lock_matrix.md - baseline lock matrix
+4. automation/control/candidates/GOV-161-SOFT-CONTAINMENT-AND-NEW-BASELINE-LOCK/task.txt
+5. automation/control/candidates/GOV-161-SOFT-CONTAINMENT-AND-NEW-BASELINE-LOCK/candidate.diff
+6. automation/control/candidates/GOV-161-SOFT-CONTAINMENT-AND-NEW-BASELINE-LOCK/report.json
+7. automation/control/candidates/GOV-161-SOFT-CONTAINMENT-AND-NEW-BASELINE-LOCK/evidence.json
+8. manifests/gov_161_soft_containment_and_new_baseline_lock.yaml
+
+Files modified:
+1. docs/auto_mode_governance_guide.md - added Section 5B (source-of-truth lock, old-source block, direct commit prohibition)
+2. review_memory.txt - added Sections 9B, 9C, 9D, 11 (source-of-truth lock, old source block, direct commit prohibition, known deviations)
+3. templates/auto_mode_round_input.md - added source_of_truth_required, old_source_reference_blocked, topic mismatch fail-closed, phase mapping mismatch fail-closed

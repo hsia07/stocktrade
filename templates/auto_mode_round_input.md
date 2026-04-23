@@ -28,15 +28,35 @@ SECTION 2: LEGAL SOURCE ANCHOR
 ================================================================================
 
 法源錨定:
-1. 唯一輪次主題索引:
-   _governance/law/161輪正式重編主題總表_唯一基準版_v2.md
-2. 歷史條文正文 / 驗收與 FAIL 條件來源:
-   _governance/law/03_161輪逐輪施行細則法典_整合法條增補版.docx
+1. 唯一輪次主題索引 (PRIMARY AUTHORITY):
+   _governance/law/161輪正式重編主題總表_唯一基準版_v2.md (post-bf2c16f version ONLY)
+2. 歷史條文正文 / 驗收與 FAIL 條件來源 (VALIDATION AUTHORITY):
+   opencode_readable_laws/03_161輪逐輪施行細則法典_整合法條增補版.txt
 
 主題驗證:
 - [ ] 主題存在於法源索引中
 - [ ] 主題與法源條文一致
 - [ ] 無自行改題
+
+SOURCE_OF_TRUTH_REQUIRED (法源鎖定 — FAIL-CLOSED):
+- [ ] 本輪主題已從 PRIMARY AUTHORITY 讀取
+- [ ] 本輪主題已與 VALIDATION AUTHORITY 交叉驗證
+- [ ] 未引用任何 BLOCKED SOURCE (05_補充法典、readable/03、archive、historical)
+- [ ] 未引用舊版主題字串 (pre-v2.1)
+
+OLD_SOURCE_REFERENCE_BLOCKED (舊版引用封鎖):
+- [ ] 本輪未使用 pre-bf2c16f 版本的 161輪正式重編主題總表
+- [ ] 本輪未引用 05_每輪詳細主題補充法典
+- [ ] 本輪未引用 _governance/law/readable/03
+
+TOPIC MISMATCH FAIL-CLOSED:
+- [ ] 本輪主題與 PRIMARY AUTHORITY 完全一致
+- [ ] 若不一致 → 必須 status=failed, formal_status_code=blocked
+- [ ] 不得自行放寬主題定義
+
+PHASE MAPPING MISMATCH FAIL-CLOSED:
+- [ ] 本輪 phase 歸屬與 PRIMARY AUTHORITY 完全一致
+- [ ] 若不一致 → 必須 status=failed, formal_status_code=blocked
 
 ================================================================================
 SECTION 3: SCOPE DEFINITION

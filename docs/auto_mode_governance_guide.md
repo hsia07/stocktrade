@@ -261,6 +261,33 @@ lane_release_ready_now = false
 Lane release 必須另案處理，不得與 Phase 1 closure 混為一談。
 
 ================================================================================
+SECTION 5B: SOURCE-OF-TRUTH LOCK AND OLD-SOURCE BLOCK (法源鎖定與舊版封鎖)
+================================================================================
+
+PRIMARY TOPIC AUTHORITY (唯一主題基準):
+  _governance/law/161輪正式重編主題總表_唯一基準版_v2.md (post-bf2c16f)
+VALIDATION AUTHORITY (法條驗證基準):
+  opencode_readable_laws/03_161輪逐輪施行細則法典_整合法條增補版.txt
+
+BLOCKED SOURCES (永久封鎖，禁止引用):
+  - opencode_readable_laws/05_每輪詳細主題補充法典_機器可執行補充版.md
+  - _governance/law/readable/03
+  - 任何 pre-bf2c16f 版本的 161輪正式重編主題總表
+  - archive/, historical/ 中的主題參考
+
+FAIL-CLOSED RULES:
+  - 主題與法源索引不符 → status=failed, formal_status_code=blocked
+  - phase mapping 與法源索引不符 → status=failed, formal_status_code=blocked
+  - 引用舊版主題/舊法源 → status=failed, formal_status_code=blocked
+  - 檢測到舊版主題字串 → warning, 若出現在 round input/manifest 則 block
+
+DIRECT COMMIT ON CANONICAL PROHIBITION:
+  - work/canonical-mainline-repair-001 上禁止直接 commit
+  - 例外：merge commit（標準流程）、緊急 hotfix（需明確授權文字）、
+    已事後承認的 incident containment（如 bf2c16f）
+  - 違反時必須產出 _governance/incident/ 文件並進入人工審閱
+
+================================================================================
 SECTION 5: POST-RELEASE MONITORING
 ================================================================================
 

@@ -1,0 +1,11 @@
+round_id: GOV-161-SOFT-CONTAINMENT-AND-NEW-BASELINE-LOCK
+task_type: gov_161_soft_containment_and_new_baseline_lock_candidate
+topic: "事故收容 + 新版唯一基準永久鎖定"
+description: |
+  採納 Plan C（Soft Containment），正式收容 bf2c16f direct-on-canonical 事故，
+  並把「新版法源/主題基準」永久鎖進治理鏈。
+  包含：incident 文件、backfill 輪次清單、baseline lock 矩陣、
+  governance guide / review_memory / template 更新。
+base_commit: bf2c16f486f96b34200ccf341cbe75ec704abc9a
+audit_date: 2026-04-23
+auditor: OpenCode formal governance agent

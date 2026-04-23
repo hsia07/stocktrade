@@ -1,0 +1,37 @@
+round_id: "GOV-161-SOFT-CONTAINMENT-AND-NEW-BASELINE-LOCK"
+title: "GOV-161 Soft Containment and New Baseline Lock — 事故收容 + 新版唯一基準永久鎖定"
+status: "pending"
+depends_on:
+  - "GOV-161-ROUND-LAW-SOURCE-NORMALIZATION"
+allowed_paths:
+  - "_governance/"
+  - "docs/"
+  - "review_memory.txt"
+  - "templates/"
+  - "manifests/"
+  - "automation/control/candidates/GOV-161-SOFT-CONTAINMENT-AND-NEW-BASELINE-LOCK/"
+forbidden_paths:
+  - "server.py"
+  - "index.js"
+  - "config.json"
+  - ".githooks/"
+  - "work/r016-decision-trace/"
+required_evidence:
+  - "automation/control/candidates/GOV-161-SOFT-CONTAINMENT-AND-NEW-BASELINE-LOCK/evidence.json"
+  - "automation/control/candidates/GOV-161-SOFT-CONTAINMENT-AND-NEW-BASELINE-LOCK/report.json"
+  - "automation/control/candidates/GOV-161-SOFT-CONTAINMENT-AND-NEW-BASELINE-LOCK/candidate.diff"
+  - "automation/control/candidates/GOV-161-SOFT-CONTAINMENT-AND-NEW-BASELINE-LOCK/task.txt"
+required_checks:
+  - "scripts/validation/validate_evidence.py"
+  - "scripts/validation/check_forbidden_changes.py"
+  - "scripts/validation/check_required_evidence.py"
+risk_level: "yellow"
+owner: "governance"
+start_authorized: true
+containment_plan: "Plan C (Soft Containment)"
+incident_commit: "bf2c16f486f96b34200ccf341cbe75ec704abc9a"
+notes: |
+  本候選為純治理文件修正，不涉及業務邏輯程式碼修改。
+  STOP_NOW.flag 仍生效，lane 維持凍結。
+  不得 revert bf2c16f。
+  不得 merge / push / lane release / Phase 2 啟動。

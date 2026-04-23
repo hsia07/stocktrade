@@ -1,0 +1,47 @@
+{
+  "round_id": "GOV-161-SOFT-CONTAINMENT-AND-NEW-BASELINE-LOCK",
+  "reply_id": "GOV-161-SC-001",
+  "candidate_commit": "5db14a1b1c56ed5ae3fbb3146b68cd98cf2d2462",
+  "base_commit": "bf2c16f486f96b34200ccf341cbe75ec704abc9a",
+  "audit_type": "gov_161_soft_containment_and_new_baseline_lock_candidate",
+  "evidence_date": "2026-04-23",
+  "work_done": [
+    "Created incident containment document: _governance/incident/GOV-161-direct-commit-deviation.md",
+    "Created backfill rounds list: _governance/audit/future_side_branch_backfill_rounds.md",
+    "Created baseline lock matrix: _governance/audit/gov_161_baseline_lock_matrix.md",
+    "Updated docs/auto_mode_governance_guide.md with Section 5B (source-of-truth lock, old-source block, direct commit prohibition)",
+    "Updated review_memory.txt with Sections 9B, 9C, 9D, 11",
+    "Updated templates/auto_mode_round_input.md with source_of_truth_required, old_source_reference_blocked, topic mismatch fail-closed, phase mapping mismatch fail-closed"
+  ],
+  "verification_commands": [
+    "git branch --show-current -> work/canonical-mainline-repair-001",
+    "git rev-parse HEAD -> bf2c16f486f96b34200ccf341cbe75ec704abc9a",
+    "Test-Path automation/control/STOP_NOW.flag -> True"
+  ],
+  "source_of_truth_lock": {
+    "primary_topic_authority": "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md",
+    "validation_authority": "opencode_readable_laws/03_161輪逐輪施行細則法典_整合法條增補版.txt",
+    "blocked_sources": [
+      "opencode_readable_laws/05_每輪詳細主題補充法典_機器可執行補充版.md",
+      "_governance/law/readable/03",
+      "archive/",
+      "historical/"
+    ]
+  },
+  "governance_constraints": {
+    "stop_now_flag_present": true,
+    "lane_frozen": true,
+    "no_merge": true,
+    "no_push": true,
+    "no_next_round_startup": true,
+    "business_logic_modifications_permitted": false,
+    "master_untouched": true,
+    "work_r016_untouched": true
+  },
+  "blockers_found": [],
+  "observations": [
+    "This is a governance-only candidate with no business logic changes.",
+    "All 3 modified files and 9 created files are within authorized scope.",
+    "validate_evidence will be executed after commit."
+  ]
+}

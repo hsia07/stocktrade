@@ -278,6 +278,70 @@ PREREQUISITE 8.6 - Monitoring:
 - [ ] Error alerting configured
 
 ================================================================================
+SECTION 9B: SOURCE-OF-TRUTH LOCK (法源鎖定)
+================================================================================
+
+RULE 9B.1 - Primary Topic Authority:
+The ONLY valid source for round topics is:
+  _governance/law/161輪正式重編主題總表_唯一基準版_v2.md (committed in bf2c16f)
+All references to pre-bf2c16f versions of this file are BLOCKED.
+
+RULE 9B.2 - Validation Authority:
+The ONLY valid source for per-round detailed rules is:
+  opencode_readable_laws/03_161輪逐輪施行細則法典_整合法條增補版.txt
+
+RULE 9B.3 - Blocked Sources:
+The following sources are PERMANENTLY BLOCKED:
+  - opencode_readable_laws/05_每輪詳細主題補充法典_機器可執行補充版.md
+  - _governance/law/readable/03
+  - archive/, historical/ (for current topic reference)
+  - Any document containing old v2.0 topic strings
+
+RULE 9B.4 - Topic Mismatch = BLOCKED:
+If a round's topic does not match the primary topic authority:
+  → status = failed
+  → formal_status_code = blocked
+  → blocker: "topic_mismatch_with_law_index"
+
+RULE 9B.5 - Phase Mapping Mismatch = BLOCKED:
+If a round's phase mapping does not match the primary topic authority:
+  → status = failed
+  → formal_status_code = blocked
+  → blocker: "phase_mapping_mismatch_with_law_index"
+
+================================================================================
+SECTION 9C: OLD SOURCE REFERENCE BLOCKED (舊版引用封鎖)
+================================================================================
+
+RULE 9C.1 - Old Topic String Detection:
+Old topic strings (pre-v2.1) detected in round input, manifest, or governance
+document MUST trigger correction or block.
+
+RULE 9C.2 - Old Source Path Detection:
+Any reference to blocked source paths (Section 9B.3) MUST be rejected.
+
+RULE 9C.3 - Fail-Closed Enforcement:
+Agent MUST NOT proceed with a round if source-of-truth verification fails.
+Human MUST NOT authorize a round that references blocked sources.
+
+================================================================================
+SECTION 9D: DIRECT COMMIT ON CANONICAL PROHIBITION
+================================================================================
+
+RULE 9D.1 - Standard Workflow:
+All work MUST be committed to a side branch first, then merged to canonical.
+
+RULE 9D.2 - Exceptions:
+  - Merge commits from reviewed side branches (standard)
+  - Emergency hotfixes with explicit "direct commit on canonical authorized"
+  - Incident containment commits that are formally acknowledged
+
+RULE 9D.3 - Incident Reference:
+Commit bf2c16f was a direct commit on canonical without side branch.
+It is formally contained via _governance/incident/GOV-161-direct-commit-deviation.md.
+Future direct commits require incident documentation or explicit authorization.
+
+================================================================================
 SECTION 10: PHASE 1 CLOSURE DECLARATION (Phase 1 正式收口宣告)
 ================================================================================
 
@@ -322,6 +386,34 @@ The following blockers remain and prevent lane release:
 
 These blockers are LANE RELEASE blockers, NOT Phase 1 closure blockers.
 Phase 1 closure is independent of lane release readiness.
+
+================================================================================
+SECTION 11: KNOWN DEVIATIONS (已知偏差登記簿)
+================================================================================
+
+DEVIATION-001: GOV-161 Direct-on-Canonical Commit
+  Commit: bf2c16f486f96b34200ccf341cbe75ec704abc9a
+  Type: process violation only
+  Description: Direct commit on work/canonical-mainline-repair-001 without
+               side-branch isolation.
+  Content Impact: NONE (all changes governance-only)
+  System Impact: NONE
+  Master Impact: NONE
+  Containment: Plan C (Soft Containment) adopted
+  Containment Document: _governance/incident/GOV-161-direct-commit-deviation.md
+  Baseline Lock Document: _governance/audit/gov_161_baseline_lock_matrix.md
+  Backfill Document: _governance/audit/future_side_branch_backfill_rounds.md
+  Status: CONTAINED
+  R016 Topic Mismatch: Documented in freeze file with warning note
+
+DEVIATION-002: R016 Frozen Branch Topic Mismatch
+  Branch: work/r016-decision-trace
+  Candidate: f9b6bba8b21ea53f03b0bcb2bfc690674def2b41
+  Old Topic: 決策來源追溯與主張者紀錄
+  Correct Topic: 欄位命名 / API schema / 資料契約固定
+  Impact: Frozen candidate does not implement correct topic.
+  Future Action: Re-qualification or re-implementation required before any merge.
+  Status: DOCUMENTED, FROZEN, NOT MERGED
 
 ================================================================================
 END OF REVIEW MEMORY
