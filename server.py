@@ -21,6 +21,8 @@ from dotenv import load_dotenv
 # R007 Silence Protection imports
 from monitoring.silence.detector import SilenceDetector
 from monitoring.silence.recovery import SilenceRecovery, SilenceReport
+# R011 Artifact Management import
+from automation.control.artifacts.r011_artifact_management import ArtifactManager
 
 load_dotenv()
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
@@ -949,6 +951,11 @@ class TradingEngine:
         # R007 Silence Protection instances
         self.silence_detector = SilenceDetector()
         self.silence_recovery = SilenceRecovery()
+        # R011 Artifact Manager instance
+        self.artifact_manager = ArtifactManager(
+            artifacts_dir="automation/control/artifacts/runtime",
+            history_dir="automation/control/history"
+        )
 
     def connect_shioaji(self):
         if PAPER_TRADE:
@@ -1038,13 +1045,40 @@ class TradingEngine:
                             self.observer.emit_trade(sym, act, tick["price"], lots)
                             # R007: Update trades timestamp on successful trade
                             self.silence_detector.update_trades()
+                            # R011: Create artifact for executed trade
+                            self.artifact_manager.create_artifact(
+                                round_id="runtime",
+                                content=f"Trade executed: {act} {sym} {lots} lots @ {tick['price']} | {sig.reason}",
+                                artifact_type="trade"
+                            )
                     else:
                         self.observer.emit_risk_alert(sym, "signal_blocked", {"reason": reason})
                         log.info(f"Risk blocked {sym} signal: {reason}")
                 elif sig and not AUTO_TRADE:
                     log.info(f"Signal generated for {sym} but AUTO_TRADE is disabled")
+                    # R011: Create artifact for signal (even if not traded)
+                    self.artifact_manager.create_artifact(
+                        round_id="runtime",
+                        content=f"Signal: {sym} {sig.direction} conf={sig.confidence}% | {sig.reason}",
+                        artifact_type="signal"
+                    )
 
                 self._manage_positions(sym, tick["price"])
+
+            # R011: Create history entry for engine state snapshot
+            try:
+                self.artifact_manager.create_history_entry(
+                    round_id="runtime",
+                    data={
+                        "daily_pnl": self.risk.daily_pnl,
+                        "daily_trades": self.risk.daily_trades,
+                        "is_halted": self.risk.is_halted,
+                        "open_positions": list(self.risk.open_positions.keys()),
+                        "timestamp": datetime.now().isoformat(),
+                    }
+                )
+            except Exception:
+                pass
 
             await asyncio.sleep(3)
 
@@ -1098,7 +1132,7 @@ class TradingEngine:
             self.risk.on_partial_exit(symbol, partial_pnl)
 
     def get_state(self) -> dict:
-        return {
+        state = {
             "ticks":        self.latest_ticks,
             "agents":       self.agent_reports,
             "positions":    self.risk.open_positions,
@@ -1110,6 +1144,16 @@ class TradingEngine:
             "mode":         "PAPER" if PAPER_TRADE else "LIVE",
             "auto_trade":  AUTO_TRADE,
         }
+        # R011: Expose artifact stats to state
+        try:
+            state["artifact_stats"] = {
+                "latest_artifact": self.artifact_manager.get_latest_artifact(),
+                "total_artifacts": len(self.artifact_manager.list_artifacts()),
+                "artifacts_dir": str(self.artifact_manager.artifacts_dir),
+            }
+        except Exception:
+            state["artifact_stats"] = {"error": "artifact_manager_not_ready"}
+        return state
 
 # FastAPI WebSocket 伺服器
 # ══════════════════════════════════════════════
