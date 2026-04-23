@@ -40,10 +40,22 @@
     "test_r011_integration.py": "10/10 PASS"
   },
   "validators": {
-    "validate_evidence.py": "PASS",
-    "check_forbidden_changes.py": "PASS",
-    "check_required_evidence.py": "PASS",
+    "validate_evidence.py": "NOT_APPLICABLE - R009 manifest does not exist; previous use of R011 manifest was incorrect",
+    "check_forbidden_changes.py": "NOT_APPLICABLE - R009 manifest does not exist; previous use of R011 manifest was incorrect",
+    "check_required_evidence.py": "NOT_APPLICABLE - R009 manifest does not exist; previous use of R011 manifest was incorrect",
     "check_branch_workflow.py": "PASS"
+  },
+  "candidate_diff_repair": {
+    "original_state": "0 bytes empty file",
+    "repair_action": "regenerated from git diff base..head",
+    "current_state": "35702 bytes, 398 lines",
+    "content_verified": "matches git diff 02c114b..48c480b -- server.py tests/test_r009_integration.py"
+  },
+  "manifest_gap": {
+    "status": "acknowledged",
+    "r009_manifest_exists": false,
+    "impact": "Formal validators (validate_evidence, check_forbidden_changes, check_required_evidence) cannot be executed against a correct R009 manifest. Direct evidence (git diff, pytest, grep, branch workflow) used instead.",
+    "previous_r011_manifest_use": "invalidated_in_prior_audit"
   },
   "blockers_found": [],
   "forbidden_paths_touched": [],

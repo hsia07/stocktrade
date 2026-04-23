@@ -40,10 +40,21 @@ regression_tests_passed:
   - test_r011_integration.py: 10/10 PASS
 
 validators_executed:
-  - validate_evidence.py: PASS
-  - check_forbidden_changes.py: PASS
-  - check_required_evidence.py: PASS
+  - validate_evidence.py: NOT_APPLICABLE (R009 manifest does not exist; cannot validate against R011 manifest)
+  - check_forbidden_changes.py: NOT_APPLICABLE (R009 manifest does not exist; cannot validate against R011 manifest)
+  - check_required_evidence.py: NOT_APPLICABLE (R009 manifest does not exist; cannot validate against R011 manifest)
   - check_branch_workflow.py: PASS
+
+candidate_diff_repair:
+  - original_state: 0 bytes (empty file)
+  - repair_action: regenerated from git diff base..head
+  - current_state: 35702 bytes, 398 lines
+  - content_verified: matches git diff 02c114b..48c480b -- server.py tests/test_r009_integration.py
+
+manifest_gap_acknowledged:
+  - R009 dedicated manifest does not exist
+  - Previous rereview used R011 manifest incorrectly
+  - Direct evidence used instead: git diff, pytest 110/110, grep, branch workflow
 
 blockers_found: []
 next_action: candidate_ready_awaiting_manual_review

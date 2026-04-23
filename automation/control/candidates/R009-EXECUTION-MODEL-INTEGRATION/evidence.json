@@ -3,6 +3,7 @@
   "evidence_type": "candidate_package",
   "base_commit": "02c114b59c6274f1a4b0a0497a10fa83171f1d94",
   "candidate_branch": "work/R009-EXECUTION-MODEL-INTEGRATION-candidate",
+  "candidate_commit": "48c480b9db806dacda15695efd28fce671c9ea09",
   "files": [
     "server.py",
     "tests/test_r009_integration.py",
@@ -39,10 +40,18 @@
     }
   },
   "validator_execution": {
-    "validate_evidence.py": "PASS",
-    "check_forbidden_changes.py": "PASS - no forbidden paths modified",
-    "check_required_evidence.py": "PASS - all required evidence present",
+    "validate_evidence.py": "NOT_APPLICABLE - R009 manifest does not exist",
+    "check_forbidden_changes.py": "NOT_APPLICABLE - R009 manifest does not exist",
+    "check_required_evidence.py": "NOT_APPLICABLE - R009 manifest does not exist",
     "check_branch_workflow.py": "PASS - not on canonical branch, source-of-truth lock verified"
+  },
+  "direct_evidence": {
+    "git_diff_verification": "git diff 02c114b..48c480b shows only server.py and tests/test_r009_integration.py changed",
+    "forbidden_files_check": "git diff --name-only base..head -- <forbidden files> returns empty output",
+    "execute_next_absence": "grep execute_next server.py returns 0 occurrences",
+    "preempt_low_priority_absence": "grep preempt_low_priority server.py returns 0 occurrences",
+    "handler_noops": "CommandRouter handlers registered as lambda: None",
+    "run_loop_order": "Source code inspection confirms R009 records appended after existing hooks only"
   },
   "authority_rulings": {
     "execution_authority": "TradingEngine.run_loop() retains sole execution authority",
@@ -52,6 +61,18 @@
   },
   "runtime_order_impact": "MINIMAL - existing execution order preserved exactly. R009 records tasks after execution without changing flow.",
   "api_contract_impact": "MINIMAL - two new GET endpoints added (/api/priority_status, /api/priority_alerts). Both return advisory_only=true. Existing endpoints unchanged.",
+  "candidate_diff_repair": {
+    "original_state": "0 bytes empty file",
+    "repair_action": "regenerated from git diff base..head",
+    "current_state": "35702 bytes, 398 lines",
+    "content_verified": "matches git diff 02c114b..48c480b -- server.py tests/test_r009_integration.py"
+  },
+  "manifest_gap": {
+    "status": "acknowledged",
+    "r009_manifest_exists": false,
+    "previous_invalid_use": "R011 manifest was incorrectly used in prior rereview",
+    "direct_evidence_used_instead": "git diff, pytest 110/110, grep, branch workflow"
+  },
   "blockers": [],
   "forbidden_changes": [],
   "ready_for_candidate": true
