@@ -230,7 +230,7 @@ Phase 1 範圍：R001 – R016（依 161輪正式重編主題總表_唯一基準
 - PHASE1-CLOSURE-READINESS-AUDIT-RERUN (PHASE1-AUDIT-RERUN-001)
 - 確認 phase1_closure_ready = true
 - 確認 remaining_phase1_blockers = []
-- R016 透過 formal freeze 完成收口（凍結文件已進 canonical/remote）
+- R016 透過 formal freeze 完成收口（凍結文件已進 canonical/remote；主題已依 v2.1 校正為「欄位命名 / API schema / 資料契約固定」）
 
 ────────────────────────────────────────────────────────────────────────
 ⚠️ 關鍵區分：Phase 1 Closed ≠ Lane Release Authorized ⚠️

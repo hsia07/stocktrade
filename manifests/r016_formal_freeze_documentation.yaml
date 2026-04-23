@@ -1,5 +1,7 @@
 round_id: R016-FORMAL-FREEZE-DOCUMENTATION
-round_name: "R016 Formal Freeze Documentation"
-topic: "R016 - 決策來源追溯與主張者紀錄"
+round_name: R016 Formal Freeze Documentation
+topic: R016 - 欄位命名 / API schema / 資料契約固定 (CORRECTED per v2.1)
 task_type: governance_documentation
-manifest_version: "1.0"
+manifest_version: '1.0'
+correction_note: Topic corrected from "決策來源追溯與主張者紀錄" to "欄位命名 / API schema / 資料契約固定"
+  per GOV-161-ROUND-LAW-SOURCE-NORMALIZATION

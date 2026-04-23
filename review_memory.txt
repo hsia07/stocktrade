@@ -214,7 +214,7 @@ The following branches are FORMALLY FROZEN and may NOT be modified:
 [A] work/r016-decision-trace
     - Frozen Candidate: f9b6bba8b21ea53f03b0bcb2bfc690674def2b41
     - HEAD at Audit: 3586a07
-    - Topic: R016 - 決策來源追溯與主張者紀錄
+    - Topic: R016 - 欄位命名 / API schema / 資料契約固定 (CORRECTED per v2.1)
     - Frozen Since: 2026-04-23
     - Frozen By: R016-FORMAL-FREEZE-DOCUMENTATION
     - Freeze Document: _governance/frozen/R016-work-r016-decision-trace-freeze.md
@@ -297,7 +297,7 @@ Phase 1 closure is based on PHASE1-CLOSURE-READINESS-AUDIT-RERUN
 - remaining_phase1_blockers = []
 
 RULE 10.3 - R016 Resolution:
-R016 (決策來源追溯與主張者紀錄) is resolved through formal freeze:
+R016 (欄位命名 / API schema / 資料契約固定) is resolved through formal freeze (CORRECTED per v2.1):
 - work/r016-decision-trace is FORMALLY FROZEN
 - f9b6bba is the designated frozen candidate
 - Freeze documentation is in canonical and remote

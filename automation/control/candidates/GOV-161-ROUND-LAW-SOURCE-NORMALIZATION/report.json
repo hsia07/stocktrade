@@ -1,0 +1,73 @@
+{
+  "round_id": "GOV-161-ROUND-LAW-SOURCE-NORMALIZATION",
+  "reply_id": "GOV-161-001",
+  "status": "completed",
+  "formal_status_code": "governance_normalization_completed",
+  "candidate_commit": "cbd36cafcf8a3527986c087cf5ce94c1b56e7989",
+  "base_commit": "cbd36cafcf8a3527986c087cf5ce94c1b56e7989",
+  "audit_type": "gov_161_round_law_source_normalization",
+  "files_modified": [
+    "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md",
+    "_governance/frozen/R016-work-r016-decision-trace-freeze.md",
+    "_governance/closure/phase1-formal-closure-declaration.md",
+    "review_memory.txt",
+    "docs/auto_mode_governance_guide.md",
+    "manifests/r016_formal_freeze_documentation.yaml",
+    "manifests/phase1_formal_closure_declaration.yaml"
+  ],
+  "files_created": [
+    "_governance/audit/161_round_law_source_normalization_matrix.json",
+    "_governance/audit/161_round_law_source_normalization_matrix.md"
+  ],
+  "validation_summary": {
+    "total_rounds_audited": 161,
+    "rounds_with_topic_mismatch": 155,
+    "rounds_with_correct_topic": 6,
+    "governance_documents_corrected": 7,
+    "audit_files_created": 2,
+    "business_logic_files_modified": 0,
+    "code_modifications_permitted": false
+  },
+  "source_of_truth": {
+    "topic_authority": "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md",
+    "validation_authority": "opencode_readable_laws/03_161輪逐輪施行細則法典_整合法條增補版.txt"
+  },
+  "critical_findings": {
+    "r016_topic_mismatch": {
+      "severity": "CRITICAL",
+      "old_topic": "決策來源追溯與主張者紀錄",
+      "correct_topic": "欄位命名 / API schema / 資料契約固定",
+      "impact": "Frozen branch infrastructure (work/r016-decision-trace, candidate f9b6bba) was built on wrong topic. DecisionTracer does not implement correct R016 topic.",
+      "disposition": "All governance document topic references updated. Freeze status preserved per lane freeze governance. Branch remains frozen and must not be merged."
+    }
+  },
+  "high_risk_findings": {
+    "phase1_topic_mismatch": {
+      "affected_rounds": ["R001", "R002", "R003", "R004", "R005", "R006", "R010", "R011"],
+      "severity": "HIGH",
+      "impact": "Phase 1 closure declaration contained incorrect topic table. Corrected in phase1-formal-closure-declaration.md and v2 index."
+    }
+  },
+  "medium_risk_findings": {
+    "phase2_topic_mismatch": {
+      "affected_rounds": ["R017-R048"],
+      "severity": "MEDIUM",
+      "impact": "Phase 2 topic table completely misaligned with source-of-truth. Affects future round planning until corrected."
+    },
+    "phase3_topic_mismatch": {
+      "affected_rounds": ["R049-R132"],
+      "severity": "MEDIUM",
+      "impact": "Phase 3 topic table completely misaligned with source-of-truth. Affects long-term roadmap accuracy."
+    },
+    "phase4_topic_mismatch": {
+      "affected_rounds": ["R133-R161"],
+      "severity": "MEDIUM",
+      "impact": "Phase 4 topic table completely misaligned with source-of-truth. Affects long-term roadmap accuracy."
+    }
+  },
+  "rounds_corrected": 155,
+  "rounds_unchanged": 6,
+  "stop_now_flag_present": true,
+  "lane_frozen": true,
+  "next_action": "awaiting_human_review_and_authorization_for_evidence_commit_and_lane_unfreeze"
+}

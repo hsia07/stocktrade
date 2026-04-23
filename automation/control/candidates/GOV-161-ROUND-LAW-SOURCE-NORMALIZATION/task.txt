@@ -1,0 +1,11 @@
+round_id: GOV-161-ROUND-LAW-SOURCE-NORMALIZATION
+task_type: gov_161_round_law_source_normalization_candidate
+topic: "依 03 法典增補版 + 161 輪唯一主題基準版，逐輪校正所有不相符治理資料"
+description: |
+  逐輪比對 161 輪，修正所有與兩份基準不相符的治理資料。
+  基準來源：
+  1. 03_161輪逐輪施行細則法典（整合法條增補版）
+  2. 161輪正式重編主題總表（唯一主題基準版）
+base_commit: cbd36cafcf8a3527986c087cf5ce94c1b56e7989
+audit_date: 2026-04-23
+auditor: OpenCode formal governance agent

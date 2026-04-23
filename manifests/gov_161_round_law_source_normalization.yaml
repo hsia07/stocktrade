@@ -1,0 +1,39 @@
+round_id: "GOV-161-ROUND-LAW-SOURCE-NORMALIZATION"
+title: "161輪法源主題統一校正候選 — 依 03 法典增補版 + 161 輪唯一主題基準版逐輪修正"
+status: "pending"
+depends_on:
+  - "PHASE1-FUNCTIONAL-REALIZATION-MASTER-AUDIT"
+allowed_paths:
+  - "_governance/"
+  - "docs/"
+  - "review_memory.txt"
+  - "manifests/"
+  - "automation/control/candidates/GOV-161-ROUND-LAW-SOURCE-NORMALIZATION/"
+forbidden_paths:
+  - "server.py"
+  - "index.js"
+  - "config.json"
+  - ".githooks/"
+  - "work/r016-decision-trace/"
+required_evidence:
+  - "automation/control/candidates/GOV-161-ROUND-LAW-SOURCE-NORMALIZATION/evidence.json"
+  - "automation/control/candidates/GOV-161-ROUND-LAW-SOURCE-NORMALIZATION/report.json"
+  - "automation/control/candidates/GOV-161-ROUND-LAW-SOURCE-NORMALIZATION/candidate.diff"
+  - "automation/control/candidates/GOV-161-ROUND-LAW-SOURCE-NORMALIZATION/task.txt"
+required_checks:
+  - "scripts/validation/validate_evidence.py"
+risk_level: "red"
+owner: "governance"
+start_authorized: false
+correction_scope:
+  total_rounds: 161
+  rounds_corrected: 155
+  rounds_unchanged: 6
+  source_of_truth:
+    - "opencode_readable_laws/03_161輪逐輪施行細則法典_整合法條增補版.txt"
+    - "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+notes: |
+  本候選為純治理文件修正，不涉及業務邏輯程式碼修改。
+  所有變更位於工作目錄（working tree），尚未提交。
+  STOP_NOW.flag 仍生效，lane 維持凍結。
+  R016 凍結基礎設施主題錯位已標註，凍結狀態保留。

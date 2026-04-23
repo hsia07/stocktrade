@@ -1,0 +1,2251 @@
+{
+  "audit_round": "GOV-161-ROUND-LAW-SOURCE-NORMALIZATION",
+  "total_rounds": 161,
+  "mismatched_rounds": 155,
+  "unchanged_rounds": 6,
+  "corrections_required": 155,
+  "matrix": [
+    {
+      "round_id": "R001",
+      "original_round": "第 1 輪",
+      "phase": "Phase 1",
+      "old_topic": "基礎治理入口與執行邊界建立",
+      "correct_topic": "穩定性 / 一致性 / restore / validate / 設定同步",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "HIGH",
+      "risk_reason": "Phase 1 topic mismatch affects closure declaration and governance references",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R002",
+      "original_round": "第 2 輪",
+      "phase": "Phase 1",
+      "old_topic": "啟動/停止/暫停控制基底",
+      "correct_topic": "網站掛掉風險清單 + 防呆機制",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "HIGH",
+      "risk_reason": "Phase 1 topic mismatch affects closure declaration and governance references",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R003",
+      "original_round": "第 3 輪",
+      "phase": "Phase 1",
+      "old_topic": "狀態檔與持久化基底",
+      "correct_topic": "單一真實來源",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "HIGH",
+      "risk_reason": "Phase 1 topic mismatch affects closure declaration and governance references",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R004",
+      "original_round": "第 4 輪",
+      "phase": "Phase 1",
+      "old_topic": "候選、證據、回報骨架",
+      "correct_topic": "時間同步與時序一致性",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "HIGH",
+      "risk_reason": "Phase 1 topic mismatch affects closure declaration and governance references",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R005",
+      "original_round": "第 5 輪",
+      "phase": "Phase 1",
+      "old_topic": "歷史歸檔與可追溯鏈銜接",
+      "correct_topic": "版本一致性與決策快照",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "HIGH",
+      "risk_reason": "Phase 1 topic mismatch affects closure declaration and governance references",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R006",
+      "original_round": "第 6 輪",
+      "phase": "Phase 1",
+      "old_topic": "控制面板完整功能落地",
+      "correct_topic": "健康檢查 / 熔斷 / 降級中心",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "HIGH",
+      "risk_reason": "Phase 1 topic mismatch affects closure declaration and governance references",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R007",
+      "original_round": "第 7 輪",
+      "phase": "Phase 1",
+      "old_topic": "異常靜默保護",
+      "correct_topic": "異常靜默保護",
+      "consistent": true,
+      "needs_correction": false,
+      "risk_level": "NONE",
+      "risk_reason": "No change needed",
+      "affected_files": []
+    },
+    {
+      "round_id": "R008",
+      "original_round": "第 8 輪",
+      "phase": "Phase 1",
+      "old_topic": "狀態機與模式切換治理",
+      "correct_topic": "狀態機與模式切換治理",
+      "consistent": true,
+      "needs_correction": false,
+      "risk_level": "NONE",
+      "risk_reason": "No change needed",
+      "affected_files": []
+    },
+    {
+      "round_id": "R009",
+      "original_round": "第 9 輪",
+      "phase": "Phase 1",
+      "old_topic": "指令與任務優先級",
+      "correct_topic": "指令與任務優先級",
+      "consistent": true,
+      "needs_correction": false,
+      "risk_level": "NONE",
+      "risk_reason": "No change needed",
+      "affected_files": []
+    },
+    {
+      "round_id": "R010",
+      "original_round": "第 10 輪",
+      "phase": "Phase 1",
+      "old_topic": "啟動鏈、bridge、wrapper、actual command 對齊",
+      "correct_topic": "核心與非核心隔離",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "HIGH",
+      "risk_reason": "Phase 1 topic mismatch affects closure declaration and governance references",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R011",
+      "original_round": "第 11 輪",
+      "phase": "Phase 1",
+      "old_topic": "artifact、report、latest/history 產物完整化",
+      "correct_topic": "效能與載入架構優化",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "HIGH",
+      "risk_reason": "Phase 1 topic mismatch affects closure declaration and governance references",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R012",
+      "original_round": "第 11A 輪",
+      "phase": "Phase 1",
+      "old_topic": "決策延遲預算/AI 超時降級機制",
+      "correct_topic": "決策延遲預算 / AI 超時降級機制",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "LOW",
+      "risk_reason": "Topic unchanged, no governance impact",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R013",
+      "original_round": "第 12 輪",
+      "phase": "Phase 1",
+      "old_topic": "實時與歷史資料分離",
+      "correct_topic": "實時與歷史資料分離",
+      "consistent": true,
+      "needs_correction": false,
+      "risk_level": "NONE",
+      "risk_reason": "No change needed",
+      "affected_files": []
+    },
+    {
+      "round_id": "R014",
+      "original_round": "第 13 輪",
+      "phase": "Phase 1",
+      "old_topic": "可觀測性統一格式",
+      "correct_topic": "可觀測性統一格式",
+      "consistent": true,
+      "needs_correction": false,
+      "risk_level": "NONE",
+      "risk_reason": "No change needed",
+      "affected_files": []
+    },
+    {
+      "round_id": "R015",
+      "original_round": "第 14 輪",
+      "phase": "Phase 1",
+      "old_topic": "多層快取策略",
+      "correct_topic": "多層快取策略",
+      "consistent": true,
+      "needs_correction": false,
+      "risk_level": "NONE",
+      "risk_reason": "No change needed",
+      "affected_files": []
+    },
+    {
+      "round_id": "R016",
+      "original_round": "第 15 輪",
+      "phase": "Phase 1",
+      "old_topic": "決策來源追溯與主張者紀錄",
+      "correct_topic": "欄位命名 / API schema / 資料契約固定",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "CRITICAL",
+      "risk_reason": "Frozen infrastructure built on wrong topic; requires re-qualification",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R017",
+      "original_round": "第 16 輪",
+      "phase": "Phase 2",
+      "old_topic": "風控前置檢查與阻擋",
+      "correct_topic": "秘密與金鑰管理",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 2 topic mismatch affects future round planning",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R018",
+      "original_round": "第 17 輪",
+      "phase": "Phase 2",
+      "old_topic": "下單意圖序列化",
+      "correct_topic": "資料遷移與 schema 升級機制",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 2 topic mismatch affects future round planning",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R019",
+      "original_round": "第 18 輪",
+      "phase": "Phase 2",
+      "old_topic": "委託前驗證與白名單",
+      "correct_topic": "SLO / 延遲預算 / 穩定目標",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 2 topic mismatch affects future round planning",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R020",
+      "original_round": "第 19 輪",
+      "phase": "Phase 2",
+      "old_topic": "部位/曝險/資金佔用計算",
+      "correct_topic": "使用者誤操作保護",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 2 topic mismatch affects future round planning",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R021",
+      "original_round": "第 20 輪",
+      "phase": "Phase 2",
+      "old_topic": "停損停利與熔斷中斷",
+      "correct_topic": "重要設定鎖定",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 2 topic mismatch affects future round planning",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R022",
+      "original_round": "第 21 輪",
+      "phase": "Phase 2",
+      "old_topic": "斷線/API失敗 fallback",
+      "correct_topic": "新手可理解化 / 教學式 UI",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 2 topic mismatch affects future round planning",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R023",
+      "original_round": "第 22 輪",
+      "phase": "Phase 2",
+      "old_topic": "委託狀態一致性與回寫",
+      "correct_topic": "首頁與新手操作體驗強化",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 2 topic mismatch affects future round planning",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R024",
+      "original_round": "第 23 輪",
+      "phase": "Phase 2",
+      "old_topic": "訂單/成交/持倉三表一致",
+      "correct_topic": "智慧摘要層",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 2 topic mismatch affects future round planning",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R025",
+      "original_round": "第 24 輪",
+      "phase": "Phase 2",
+      "old_topic": "日誌可追責鏈補全",
+      "correct_topic": "手機友善 / 行動版 / 緊急接管介面",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 2 topic mismatch affects future round planning",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R026",
+      "original_round": "第 25 輪",
+      "phase": "Phase 2",
+      "old_topic": "滑價與流動性保守估算",
+      "correct_topic": "模擬交易介面重構 / 真實感升級 / 新手友善化",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 2 topic mismatch affects future round planning",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R027",
+      "original_round": "第 26 輪",
+      "phase": "Phase 2",
+      "old_topic": "漲跌停 ±10% 規則映射",
+      "correct_topic": "開盤 / 收盤保護機制",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 2 topic mismatch affects future round planning",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R028",
+      "original_round": "第 27 輪",
+      "phase": "Phase 2",
+      "old_topic": "T+2 交割限制映射",
+      "correct_topic": "交易生命週期 / execution / outcome / review",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 2 topic mismatch affects future round planning",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R029",
+      "original_round": "第 28 輪",
+      "phase": "Phase 2",
+      "old_topic": "競價撮合節奏與可成交性",
+      "correct_topic": "六大 AI 決策會議可視化",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 2 topic mismatch affects future round planning",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R030",
+      "original_round": "第 29 輪",
+      "phase": "Phase 2",
+      "old_topic": "價格/數量合法性檢查",
+      "correct_topic": "決策前檢查清單",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 2 topic mismatch affects future round planning",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R031",
+      "original_round": "第 30 輪",
+      "phase": "Phase 2",
+      "old_topic": "重啟後持倉還原",
+      "correct_topic": "信心來源拆解",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 2 topic mismatch affects future round planning",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R032",
+      "original_round": "第 31 輪",
+      "phase": "Phase 2",
+      "old_topic": "重啟後訂單還原",
+      "correct_topic": "交易日誌可追責鏈",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 2 topic mismatch affects future round planning",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R033",
+      "original_round": "第 32 輪",
+      "phase": "Phase 2",
+      "old_topic": "重啟後風控狀態還原",
+      "correct_topic": "交易回放與決策前後對照",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 2 topic mismatch affects future round planning",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R034",
+      "original_round": "第 33 輪",
+      "phase": "Phase 2",
+      "old_topic": "影子下單/模擬執行一致性",
+      "correct_topic": "回放與真實模式隔離",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 2 topic mismatch affects future round planning",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R035",
+      "original_round": "第 34 輪",
+      "phase": "Phase 2",
+      "old_topic": "交易中斷後恢復策略",
+      "correct_topic": "快速驗證與壓力測試框架",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 2 topic mismatch affects future round planning",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R036",
+      "original_round": "第 35 輪",
+      "phase": "Phase 2",
+      "old_topic": "例外分類與分級停機",
+      "correct_topic": "固定測試資料集",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 2 topic mismatch affects future round planning",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R037",
+      "original_round": "第 36 輪",
+      "phase": "Phase 2",
+      "old_topic": "人工介入點與覆核",
+      "correct_topic": "自動回歸檢查",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 2 topic mismatch affects future round planning",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R038",
+      "original_round": "第 36A 輪",
+      "phase": "Phase 2",
+      "old_topic": "盤中時間窗限制",
+      "correct_topic": "策略 CI/CD 驗證鏈",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 2 topic mismatch affects future round planning",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R039",
+      "original_round": "第 37 輪",
+      "phase": "Phase 2",
+      "old_topic": "多來源行情一致性檢查",
+      "correct_topic": "資料標註與人工審閱工具",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 2 topic mismatch affects future round planning",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R040",
+      "original_round": "第 38 輪",
+      "phase": "Phase 2",
+      "old_topic": "行情遲延與陳舊資料阻擋",
+      "correct_topic": "全市場候選池與任意股票查詢",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 2 topic mismatch affects future round planning",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R041",
+      "original_round": "第 39 輪",
+      "phase": "Phase 2",
+      "old_topic": "主張→否決→最終成交鏈",
+      "correct_topic": "features / regimes / strategies",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 2 topic mismatch affects future round planning",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R042",
+      "original_round": "第 40 輪",
+      "phase": "Phase 2",
+      "old_topic": "損益歸因與事後檢討",
+      "correct_topic": "股票池分層治理",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 2 topic mismatch affects future round planning",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R043",
+      "original_round": "第 41 輪",
+      "phase": "Phase 2",
+      "old_topic": "警報/通知/升級鏈",
+      "correct_topic": "新聞 / 事件分析層",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 2 topic mismatch affects future round planning",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R044",
+      "original_round": "第 42 輪",
+      "phase": "Phase 2",
+      "old_topic": "候選前台股規則總檢",
+      "correct_topic": "事件去重與舊聞污染保護",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 2 topic mismatch affects future round planning",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R045",
+      "original_round": "第 43 輪",
+      "phase": "Phase 2",
+      "old_topic": "Phase 2 尾輪補遺與總封箱",
+      "correct_topic": "事件重要度分層與壽命管理",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 2 topic mismatch affects future round planning",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R046",
+      "original_round": "第 44 輪",
+      "phase": "Phase 2",
+      "old_topic": "Phase 2 特別補遺輪",
+      "correct_topic": "事件衝突整合器",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 2 topic mismatch affects future round planning",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R047",
+      "original_round": "第 45 輪",
+      "phase": "Phase 2",
+      "old_topic": "Phase 2 特別補遺輪（45A）",
+      "correct_topic": "execution / slippage / liquidity / sizing / 強風控",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 2 topic mismatch affects future round planning",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R048",
+      "original_round": "第 45A 輪",
+      "phase": "Phase 2",
+      "old_topic": "Phase 2 特別補遺輪（45A）",
+      "correct_topic": "市場微觀結構基礎引擎",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 2 topic mismatch affects future round planning",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R049",
+      "original_round": "第 46 輪",
+      "phase": "Phase 3",
+      "old_topic": "NOT_IN_OLD_V2",
+      "correct_topic": "成交真實度模擬升級",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 3-4 topic mismatch affects long-term roadmap",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R050",
+      "original_round": "第 47 輪",
+      "phase": "Phase 3",
+      "old_topic": "NOT_IN_OLD_V2",
+      "correct_topic": "真實淨損益計算",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 3-4 topic mismatch affects long-term roadmap",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R051",
+      "original_round": "第 48 輪",
+      "phase": "Phase 3",
+      "old_topic": "NOT_IN_OLD_V2",
+      "correct_topic": "風險預算可視化",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 3-4 topic mismatch affects long-term roadmap",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R052",
+      "original_round": "第 49 輪",
+      "phase": "Phase 3",
+      "old_topic": "NOT_IN_OLD_V2",
+      "correct_topic": "低虧損核心 / 超強風控 / No-Trade 機制",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 3-4 topic mismatch affects long-term roadmap",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R053",
+      "original_round": "第 50 輪",
+      "phase": "Phase 3",
+      "old_topic": "NOT_IN_OLD_V2",
+      "correct_topic": "部位與風險硬上限保險絲",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 3-4 topic mismatch affects long-term roadmap",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R054",
+      "original_round": "第 51 輪",
+      "phase": "Phase 3",
+      "old_topic": "NOT_IN_OLD_V2",
+      "correct_topic": "資料品質稽核層",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 3-4 topic mismatch affects long-term roadmap",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R055",
+      "original_round": "第 52 輪",
+      "phase": "Phase 3",
+      "old_topic": "NOT_IN_OLD_V2",
+      "correct_topic": "容量管理 / 記憶體與儲存優化",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 3-4 topic mismatch affects long-term roadmap",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R056",
+      "original_round": "第 53 輪",
+      "phase": "Phase 3",
+      "old_topic": "NOT_IN_OLD_V2",
+      "correct_topic": "自動封存與安全清理機制",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 3-4 topic mismatch affects long-term roadmap",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R057",
+      "original_round": "第 54 輪",
+      "phase": "Phase 3",
+      "old_topic": "NOT_IN_OLD_V2",
+      "correct_topic": "週月複盤 / walk-forward / 策略淘汰 / 健康度",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 3-4 topic mismatch affects long-term roadmap",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R058",
+      "original_round": "第 55 輪",
+      "phase": "Phase 3",
+      "old_topic": "NOT_IN_OLD_V2",
+      "correct_topic": "成功 / 失敗定義標準化",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 3-4 topic mismatch affects long-term roadmap",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R059",
+      "original_round": "第 56 輪",
+      "phase": "Phase 3",
+      "old_topic": "NOT_IN_OLD_V2",
+      "correct_topic": "系統自我診斷報告",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 3-4 topic mismatch affects long-term roadmap",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R060",
+      "original_round": "第 57 輪",
+      "phase": "Phase 3",
+      "old_topic": "NOT_IN_OLD_V2",
+      "correct_topic": "交易後學習品質分層",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 3-4 topic mismatch affects long-term roadmap",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R061",
+      "original_round": "第 58 輪",
+      "phase": "Phase 3",
+      "old_topic": "NOT_IN_OLD_V2",
+      "correct_topic": "反事實分析",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 3-4 topic mismatch affects long-term roadmap",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R062",
+      "original_round": "第 59 輪",
+      "phase": "Phase 3",
+      "old_topic": "NOT_IN_OLD_V2",
+      "correct_topic": "誤報與漏報分析",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 3-4 topic mismatch affects long-term roadmap",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R063",
+      "original_round": "第 60 輪",
+      "phase": "Phase 3",
+      "old_topic": "NOT_IN_OLD_V2",
+      "correct_topic": "學習資料品質評估",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 3-4 topic mismatch affects long-term roadmap",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R064",
+      "original_round": "第 61 輪",
+      "phase": "Phase 3",
+      "old_topic": "NOT_IN_OLD_V2",
+      "correct_topic": "樣本污染與倖存者偏差防護",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 3-4 topic mismatch affects long-term roadmap",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R065",
+      "original_round": "第 62 輪",
+      "phase": "Phase 3",
+      "old_topic": "NOT_IN_OLD_V2",
+      "correct_topic": "權重更新節流",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 3-4 topic mismatch affects long-term roadmap",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R066",
+      "original_round": "第 63 輪",
+      "phase": "Phase 3",
+      "old_topic": "NOT_IN_OLD_V2",
+      "correct_topic": "學習停手機制",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 3-4 topic mismatch affects long-term roadmap",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R067",
+      "original_round": "第 64 輪",
+      "phase": "Phase 3",
+      "old_topic": "NOT_IN_OLD_V2",
+      "correct_topic": "學習回滾機制",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 3-4 topic mismatch affects long-term roadmap",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R068",
+      "original_round": "第 65 輪",
+      "phase": "Phase 3",
+      "old_topic": "NOT_IN_OLD_V2",
+      "correct_topic": "多時間框架 / 市場上下文資料層",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 3-4 topic mismatch affects long-term roadmap",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R069",
+      "original_round": "第 66 輪",
+      "phase": "Phase 3",
+      "old_topic": "NOT_IN_OLD_V2",
+      "correct_topic": "市場地圖",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 3-4 topic mismatch affects long-term roadmap",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R070",
+      "original_round": "第 67 輪",
+      "phase": "Phase 3",
+      "old_topic": "NOT_IN_OLD_V2",
+      "correct_topic": "portfolio / 曝險 / 組合風控",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 3-4 topic mismatch affects long-term roadmap",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R071",
+      "original_round": "第 68 輪",
+      "phase": "Phase 3",
+      "old_topic": "NOT_IN_OLD_V2",
+      "correct_topic": "組合再平衡機制",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 3-4 topic mismatch affects long-term roadmap",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R072",
+      "original_round": "第 69 輪",
+      "phase": "Phase 3",
+      "old_topic": "NOT_IN_OLD_V2",
+      "correct_topic": "自動股票輪動與優先級切換",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 3-4 topic mismatch affects long-term roadmap",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R073",
+      "original_round": "第 70 輪",
+      "phase": "Phase 3",
+      "old_topic": "NOT_IN_OLD_V2",
+      "correct_topic": "候選股培養機制",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 3-4 topic mismatch affects long-term roadmap",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R074",
+      "original_round": "第 71 輪",
+      "phase": "Phase 3",
+      "old_topic": "NOT_IN_OLD_V2",
+      "correct_topic": "決策穩定度監控",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 3-4 topic mismatch affects long-term roadmap",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R075",
+      "original_round": "第 72 輪",
+      "phase": "Phase 3",
+      "old_topic": "NOT_IN_OLD_V2",
+      "correct_topic": "組合關聯風險網路",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 3-4 topic mismatch affects long-term roadmap",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R076",
+      "original_round": "第 73 輪",
+      "phase": "Phase 3",
+      "old_topic": "NOT_IN_OLD_V2",
+      "correct_topic": "觀察名單智慧化",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 3-4 topic mismatch affects long-term roadmap",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R077",
+      "original_round": "第 74 輪",
+      "phase": "Phase 3",
+      "old_topic": "NOT_IN_OLD_V2",
+      "correct_topic": "研究平台 / 壓力測試 / robustness / attribution",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 3-4 topic mismatch affects long-term roadmap",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R078",
+      "original_round": "第 75 輪",
+      "phase": "Phase 3",
+      "old_topic": "NOT_IN_OLD_V2",
+      "correct_topic": "交易成本總帳",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 3-4 topic mismatch affects long-term roadmap",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R079",
+      "original_round": "第 76 輪",
+      "phase": "Phase 3",
+      "old_topic": "NOT_IN_OLD_V2",
+      "correct_topic": "實驗追蹤中心",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 3-4 topic mismatch affects long-term roadmap",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R080",
+      "original_round": "第 77 輪",
+      "phase": "Phase 3",
+      "old_topic": "NOT_IN_OLD_V2",
+      "correct_topic": "研究結論驗證關卡",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 3-4 topic mismatch affects long-term roadmap",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R081",
+      "original_round": "第 78 輪",
+      "phase": "Phase 3",
+      "old_topic": "NOT_IN_OLD_V2",
+      "correct_topic": "治理 / 版本 / 審計 / rollback",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 3-4 topic mismatch affects long-term roadmap",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R082",
+      "original_round": "第 79 輪",
+      "phase": "Phase 3",
+      "old_topic": "NOT_IN_OLD_V2",
+      "correct_topic": "政策與規則變更追蹤",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 3-4 topic mismatch affects long-term roadmap",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R083",
+      "original_round": "第 80 輪",
+      "phase": "Phase 3",
+      "old_topic": "NOT_IN_OLD_V2",
+      "correct_topic": "規則衝突檢查器",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 3-4 topic mismatch affects long-term roadmap",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R084",
+      "original_round": "第 81 輪",
+      "phase": "Phase 3",
+      "old_topic": "NOT_IN_OLD_V2",
+      "correct_topic": "LLM 研究助理接口",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 3-4 topic mismatch affects long-term roadmap",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R085",
+      "original_round": "第 82 輪",
+      "phase": "Phase 3",
+      "old_topic": "NOT_IN_OLD_V2",
+      "correct_topic": "策略失效偵測 / 自動研究待辦 / 自我評分",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 3-4 topic mismatch affects long-term roadmap",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R086",
+      "original_round": "第 83 輪",
+      "phase": "Phase 3",
+      "old_topic": "NOT_IN_OLD_V2",
+      "correct_topic": "部件健康度儀表",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 3-4 topic mismatch affects long-term roadmap",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R087",
+      "original_round": "第 84 輪",
+      "phase": "Phase 3",
+      "old_topic": "NOT_IN_OLD_V2",
+      "correct_topic": "股票人格檔案 / 個股行為模型",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 3-4 topic mismatch affects long-term roadmap",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R088",
+      "original_round": "第 85 輪",
+      "phase": "Phase 3",
+      "old_topic": "NOT_IN_OLD_V2",
+      "correct_topic": "因子 / 特徵淘汰機制",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 3-4 topic mismatch affects long-term roadmap",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R089",
+      "original_round": "第 86 輪",
+      "phase": "Phase 3",
+      "old_topic": "NOT_IN_OLD_V2",
+      "correct_topic": "策略與股票配對矩陣",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 3-4 topic mismatch affects long-term roadmap",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R090",
+      "original_round": "第 87 輪",
+      "phase": "Phase 3",
+      "old_topic": "NOT_IN_OLD_V2",
+      "correct_topic": "個股生命週期管理",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 3-4 topic mismatch affects long-term roadmap",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R091",
+      "original_round": "第 88 輪",
+      "phase": "Phase 3",
+      "old_topic": "NOT_IN_OLD_V2",
+      "correct_topic": "影子模式 / 安全上線 / 多層風險開關",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 3-4 topic mismatch affects long-term roadmap",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R092",
+      "original_round": "第 89 輪",
+      "phase": "Phase 3",
+      "old_topic": "NOT_IN_OLD_V2",
+      "correct_topic": "重大操作模擬預演",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 3-4 topic mismatch affects long-term roadmap",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R093",
+      "original_round": "第 90 輪",
+      "phase": "Phase 3",
+      "old_topic": "NOT_IN_OLD_V2",
+      "correct_topic": "重大異常後恢復觀察期",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 3-4 topic mismatch affects long-term roadmap",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R094",
+      "original_round": "第 90A 輪",
+      "phase": "Phase 3",
+      "old_topic": "NOT_IN_OLD_V2",
+      "correct_topic": "恢復期階梯式冷啟動授權",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 3-4 topic mismatch affects long-term roadmap",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R095",
+      "original_round": "第 91 輪",
+      "phase": "Phase 3",
+      "old_topic": "NOT_IN_OLD_V2",
+      "correct_topic": "人工接管與多層暫停",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 3-4 topic mismatch affects long-term roadmap",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R096",
+      "original_round": "第 92 輪",
+      "phase": "Phase 3",
+      "old_topic": "NOT_IN_OLD_V2",
+      "correct_topic": "最終人工保險絲",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 3-4 topic mismatch affects long-term roadmap",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R097",
+      "original_round": "第 93 輪",
+      "phase": "Phase 3",
+      "old_topic": "NOT_IN_OLD_V2",
+      "correct_topic": "備份 / 快照 / 回滾保護",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 3-4 topic mismatch affects long-term roadmap",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R098",
+      "original_round": "第 94 輪",
+      "phase": "Phase 3",
+      "old_topic": "NOT_IN_OLD_V2",
+      "correct_topic": "實盤準備",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 3-4 topic mismatch affects long-term roadmap",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R099",
+      "original_round": "第 95 輪",
+      "phase": "Phase 3",
+      "old_topic": "NOT_IN_OLD_V2",
+      "correct_topic": "零股驗證 / 成交累積模式",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 3-4 topic mismatch affects long-term roadmap",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R100",
+      "original_round": "第 96 輪",
+      "phase": "Phase 3",
+      "old_topic": "NOT_IN_OLD_V2",
+      "correct_topic": "冷啟動策略",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 3-4 topic mismatch affects long-term roadmap",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R101",
+      "original_round": "第 97 輪",
+      "phase": "Phase 3",
+      "old_topic": "NOT_IN_OLD_V2",
+      "correct_topic": "不同模式不同 KPI",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 3-4 topic mismatch affects long-term roadmap",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R102",
+      "original_round": "第 98 輪",
+      "phase": "Phase 3",
+      "old_topic": "NOT_IN_OLD_V2",
+      "correct_topic": "富邦 Neo API 專用接入架構",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 3-4 topic mismatch affects long-term roadmap",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R103",
+      "original_round": "第 99 輪",
+      "phase": "Phase 3",
+      "old_topic": "NOT_IN_OLD_V2",
+      "correct_topic": "模擬資金與盤前/盤中自動模擬交易",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 3-4 topic mismatch affects long-term roadmap",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R104",
+      "original_round": "第 100 輪",
+      "phase": "Phase 3",
+      "old_topic": "NOT_IN_OLD_V2",
+      "correct_topic": "富邦配額保護與訂閱池管理",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 3-4 topic mismatch affects long-term roadmap",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R105",
+      "original_round": "第 101 輪",
+      "phase": "Phase 3",
+      "old_topic": "NOT_IN_OLD_V2",
+      "correct_topic": "Tick 訂閱池預排與盤中動態替換",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 3-4 topic mismatch affects long-term roadmap",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R106",
+      "original_round": "第 102 輪",
+      "phase": "Phase 3",
+      "old_topic": "NOT_IN_OLD_V2",
+      "correct_topic": "當沖資金保護 / 最壞情境交割能力檢查",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 3-4 topic mismatch affects long-term roadmap",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R107",
+      "original_round": "第 103 輪",
+      "phase": "Phase 3",
+      "old_topic": "NOT_IN_OLD_V2",
+      "correct_topic": "盤前模擬沙盤",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 3-4 topic mismatch affects long-term roadmap",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R108",
+      "original_round": "第 104 輪",
+      "phase": "Phase 3",
+      "old_topic": "NOT_IN_OLD_V2",
+      "correct_topic": "盤中節奏控制",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 3-4 topic mismatch affects long-term roadmap",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R109",
+      "original_round": "第 105 輪",
+      "phase": "Phase 3",
+      "old_topic": "NOT_IN_OLD_V2",
+      "correct_topic": "市場制度 / 規則引擎",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 3-4 topic mismatch affects long-term roadmap",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R110",
+      "original_round": "第 106 輪",
+      "phase": "Phase 3",
+      "old_topic": "NOT_IN_OLD_V2",
+      "correct_topic": "多層回測模式",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 3-4 topic mismatch affects long-term roadmap",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R111",
+      "original_round": "第 107 輪",
+      "phase": "Phase 3",
+      "old_topic": "NOT_IN_OLD_V2",
+      "correct_topic": "依賴替身模式",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 3-4 topic mismatch affects long-term roadmap",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R112",
+      "original_round": "第 108 輪",
+      "phase": "Phase 3",
+      "old_topic": "NOT_IN_OLD_V2",
+      "correct_topic": "shadow 與小資金 live",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 3-4 topic mismatch affects long-term roadmap",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R113",
+      "original_round": "第 109 輪",
+      "phase": "Phase 3",
+      "old_topic": "NOT_IN_OLD_V2",
+      "correct_topic": "真實 vs 模擬偏差追蹤",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 3-4 topic mismatch affects long-term roadmap",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R114",
+      "original_round": "第 110 輪",
+      "phase": "Phase 3",
+      "old_topic": "NOT_IN_OLD_V2",
+      "correct_topic": "正式 live gating",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 3-4 topic mismatch affects long-term roadmap",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R115",
+      "original_round": "第 111 輪",
+      "phase": "Phase 3",
+      "old_topic": "NOT_IN_OLD_V2",
+      "correct_topic": "券商回報對帳中心",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 3-4 topic mismatch affects long-term roadmap",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R116",
+      "original_round": "第 112 輪",
+      "phase": "Phase 3",
+      "old_topic": "NOT_IN_OLD_V2",
+      "correct_topic": "故障演練與災難恢復演習",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 3-4 topic mismatch affects long-term roadmap",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R117",
+      "original_round": "第 113 輪",
+      "phase": "Phase 3",
+      "old_topic": "NOT_IN_OLD_V2",
+      "correct_topic": "實盤監控中心",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 3-4 topic mismatch affects long-term roadmap",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R118",
+      "original_round": "第 114 輪",
+      "phase": "Phase 3",
+      "old_topic": "NOT_IN_OLD_V2",
+      "correct_topic": "實盤事故中心",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 3-4 topic mismatch affects long-term roadmap",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R119",
+      "original_round": "第 115 輪",
+      "phase": "Phase 3",
+      "old_topic": "NOT_IN_OLD_V2",
+      "correct_topic": "總指揮中心收斂版",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 3-4 topic mismatch affects long-term roadmap",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R120",
+      "original_round": "第 116 輪",
+      "phase": "Phase 3",
+      "old_topic": "NOT_IN_OLD_V2",
+      "correct_topic": "比較與評估中心",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 3-4 topic mismatch affects long-term roadmap",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R121",
+      "original_round": "第 117 輪",
+      "phase": "Phase 3",
+      "old_topic": "NOT_IN_OLD_V2",
+      "correct_topic": "信心校準與衝突管理",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 3-4 topic mismatch affects long-term roadmap",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R122",
+      "original_round": "第 118 輪",
+      "phase": "Phase 3",
+      "old_topic": "NOT_IN_OLD_V2",
+      "correct_topic": "全局決策品質評分",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 3-4 topic mismatch affects long-term roadmap",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R123",
+      "original_round": "第 119 輪",
+      "phase": "Phase 3",
+      "old_topic": "NOT_IN_OLD_V2",
+      "correct_topic": "反脆弱與極端市場保護",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 3-4 topic mismatch affects long-term roadmap",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R124",
+      "original_round": "第 120 輪",
+      "phase": "Phase 3",
+      "old_topic": "NOT_IN_OLD_V2",
+      "correct_topic": "AI 治理中心",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 3-4 topic mismatch affects long-term roadmap",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R125",
+      "original_round": "第 121 輪",
+      "phase": "Phase 3",
+      "old_topic": "NOT_IN_OLD_V2",
+      "correct_topic": "元控制器",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 3-4 topic mismatch affects long-term roadmap",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R126",
+      "original_round": "第 122 輪",
+      "phase": "Phase 3",
+      "old_topic": "NOT_IN_OLD_V2",
+      "correct_topic": "任務中心與自動研究排程",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 3-4 topic mismatch affects long-term roadmap",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R127",
+      "original_round": "第 123 輪",
+      "phase": "Phase 3",
+      "old_topic": "NOT_IN_OLD_V2",
+      "correct_topic": "個人化工作流",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 3-4 topic mismatch affects long-term roadmap",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R128",
+      "original_round": "第 124 輪",
+      "phase": "Phase 3",
+      "old_topic": "NOT_IN_OLD_V2",
+      "correct_topic": "自動待辦與欠債清單",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 3-4 topic mismatch affects long-term roadmap",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R129",
+      "original_round": "第 125 輪",
+      "phase": "Phase 3",
+      "old_topic": "NOT_IN_OLD_V2",
+      "correct_topic": "研究工廠",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 3-4 topic mismatch affects long-term roadmap",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R130",
+      "original_round": "第 126 輪",
+      "phase": "Phase 3",
+      "old_topic": "NOT_IN_OLD_V2",
+      "correct_topic": "策略工廠強化",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 3-4 topic mismatch affects long-term roadmap",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R131",
+      "original_round": "第 127 輪",
+      "phase": "Phase 3",
+      "old_topic": "NOT_IN_OLD_V2",
+      "correct_topic": "研究筆記自動化",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 3-4 topic mismatch affects long-term roadmap",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R132",
+      "original_round": "第 128 輪",
+      "phase": "Phase 3",
+      "old_topic": "NOT_IN_OLD_V2",
+      "correct_topic": "資料與功能淘汰機制",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 3-4 topic mismatch affects long-term roadmap",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R133",
+      "original_round": "第 129 輪",
+      "phase": "Phase 4",
+      "old_topic": "NOT_IN_OLD_V2",
+      "correct_topic": "多帳戶與營運化",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 3-4 topic mismatch affects long-term roadmap",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R134",
+      "original_round": "第 130 輪",
+      "phase": "Phase 4",
+      "old_topic": "NOT_IN_OLD_V2",
+      "correct_topic": "正式環境發版隔離與灰度發布",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 3-4 topic mismatch affects long-term roadmap",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R135",
+      "original_round": "第 131 輪",
+      "phase": "Phase 4",
+      "old_topic": "NOT_IN_OLD_V2",
+      "correct_topic": "配置檔環境分離",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 3-4 topic mismatch affects long-term roadmap",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R136",
+      "original_round": "第 132 輪",
+      "phase": "Phase 4",
+      "old_topic": "NOT_IN_OLD_V2",
+      "correct_topic": "自適應市場模式",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 3-4 topic mismatch affects long-term roadmap",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R137",
+      "original_round": "第 133 輪",
+      "phase": "Phase 4",
+      "old_topic": "NOT_IN_OLD_V2",
+      "correct_topic": "知識庫與學習節奏控制",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 3-4 topic mismatch affects long-term roadmap",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R138",
+      "original_round": "第 134 輪",
+      "phase": "Phase 4",
+      "old_topic": "NOT_IN_OLD_V2",
+      "correct_topic": "人機協作與授權層",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 3-4 topic mismatch affects long-term roadmap",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R139",
+      "original_round": "第 135 輪",
+      "phase": "Phase 4",
+      "old_topic": "NOT_IN_OLD_V2",
+      "correct_topic": "權限最小化",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 3-4 topic mismatch affects long-term roadmap",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R140",
+      "original_round": "第 136 輪",
+      "phase": "Phase 4",
+      "old_topic": "NOT_IN_OLD_V2",
+      "correct_topic": "核心目標管理器",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 3-4 topic mismatch affects long-term roadmap",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R141",
+      "original_round": "第 137 輪",
+      "phase": "Phase 4",
+      "old_topic": "NOT_IN_OLD_V2",
+      "correct_topic": "長期人格與目標管理",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 3-4 topic mismatch affects long-term roadmap",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R142",
+      "original_round": "第 138 輪",
+      "phase": "Phase 4",
+      "old_topic": "NOT_IN_OLD_V2",
+      "correct_topic": "使用者風格與解釋品質升級",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 3-4 topic mismatch affects long-term roadmap",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R143",
+      "original_round": "第 139 輪",
+      "phase": "Phase 4",
+      "old_topic": "NOT_IN_OLD_V2",
+      "correct_topic": "模式切換細化",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 3-4 topic mismatch affects long-term roadmap",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R144",
+      "original_round": "第 140 輪",
+      "phase": "Phase 4",
+      "old_topic": "NOT_IN_OLD_V2",
+      "correct_topic": "使用痕跡與操作記錄",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 3-4 topic mismatch affects long-term roadmap",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R145",
+      "original_round": "第 141 輪",
+      "phase": "Phase 4",
+      "old_topic": "NOT_IN_OLD_V2",
+      "correct_topic": "可解釋性評分",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 3-4 topic mismatch affects long-term roadmap",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R146",
+      "original_round": "第 142 輪",
+      "phase": "Phase 4",
+      "old_topic": "NOT_IN_OLD_V2",
+      "correct_topic": "使用者偏好學習",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 3-4 topic mismatch affects long-term roadmap",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R147",
+      "original_round": "第 143 輪",
+      "phase": "Phase 4",
+      "old_topic": "NOT_IN_OLD_V2",
+      "correct_topic": "交易心理模擬層",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 3-4 topic mismatch affects long-term roadmap",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R148",
+      "original_round": "第 144 輪",
+      "phase": "Phase 4",
+      "old_topic": "NOT_IN_OLD_V2",
+      "correct_topic": "沙盒市場與合成情境訓練",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 3-4 topic mismatch affects long-term roadmap",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R149",
+      "original_round": "第 145 輪",
+      "phase": "Phase 4",
+      "old_topic": "NOT_IN_OLD_V2",
+      "correct_topic": "沙盒教學模式",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 3-4 topic mismatch affects long-term roadmap",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R150",
+      "original_round": "第 146 輪",
+      "phase": "Phase 4",
+      "old_topic": "NOT_IN_OLD_V2",
+      "correct_topic": "通知系統升級",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 3-4 topic mismatch affects long-term roadmap",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R151",
+      "original_round": "第 147 輪",
+      "phase": "Phase 4",
+      "old_topic": "NOT_IN_OLD_V2",
+      "correct_topic": "搜尋與全域查詢",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 3-4 topic mismatch affects long-term roadmap",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R152",
+      "original_round": "第 148 輪",
+      "phase": "Phase 4",
+      "old_topic": "NOT_IN_OLD_V2",
+      "correct_topic": "可自訂儀表板",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 3-4 topic mismatch affects long-term roadmap",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R153",
+      "original_round": "第 149 輪",
+      "phase": "Phase 4",
+      "old_topic": "NOT_IN_OLD_V2",
+      "correct_topic": "最終整合頁",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 3-4 topic mismatch affects long-term roadmap",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R154",
+      "original_round": "第 150 輪",
+      "phase": "Phase 4",
+      "old_topic": "NOT_IN_OLD_V2",
+      "correct_topic": "可視化再升級",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 3-4 topic mismatch affects long-term roadmap",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R155",
+      "original_round": "第 151 輪",
+      "phase": "Phase 4",
+      "old_topic": "NOT_IN_OLD_V2",
+      "correct_topic": "真正的總控台模式",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 3-4 topic mismatch affects long-term roadmap",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R156",
+      "original_round": "第 152 輪",
+      "phase": "Phase 4",
+      "old_topic": "NOT_IN_OLD_V2",
+      "correct_topic": "API / 外部整合能力",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 3-4 topic mismatch affects long-term roadmap",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R157",
+      "original_round": "第 153 輪",
+      "phase": "Phase 4",
+      "old_topic": "NOT_IN_OLD_V2",
+      "correct_topic": "法遵 / 使用者警示層",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 3-4 topic mismatch affects long-term roadmap",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R158",
+      "original_round": "第 154 輪",
+      "phase": "Phase 4",
+      "old_topic": "NOT_IN_OLD_V2",
+      "correct_topic": "多語言 / 國際化",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 3-4 topic mismatch affects long-term roadmap",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R159",
+      "original_round": "第 155 輪",
+      "phase": "Phase 4",
+      "old_topic": "NOT_IN_OLD_V2",
+      "correct_topic": "知識傳承與交接模式",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 3-4 topic mismatch affects long-term roadmap",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R160",
+      "original_round": "第 156 輪",
+      "phase": "Phase 4",
+      "old_topic": "NOT_IN_OLD_V2",
+      "correct_topic": "最終治理總表",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 3-4 topic mismatch affects long-term roadmap",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    },
+    {
+      "round_id": "R161",
+      "original_round": "第 157 輪",
+      "phase": "Phase 4",
+      "old_topic": "NOT_IN_OLD_V2",
+      "correct_topic": "系統邊界與禁區總表",
+      "consistent": false,
+      "needs_correction": true,
+      "risk_level": "MEDIUM",
+      "risk_reason": "Phase 3-4 topic mismatch affects long-term roadmap",
+      "affected_files": [
+        "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
+      ]
+    }
+  ]
+}

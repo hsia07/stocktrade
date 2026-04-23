@@ -1,0 +1,20 @@
+Work: 155 tasks (corrected round topics)
+Work: 7 tasks (corrected governance documents)
+Work: 2 tasks (created audit matrix files)
+Code modifications: none (not permitted for governance-only candidate)
+
+Correction Scope: R001-R161 full topic normalization
+Source of Truth: 03_161輪逐輪施行細則法典（整合法條增補版）+ 161輪正式重編主題總表（唯一主題基準版）
+
+Files corrected:
+1. _governance/law/161輪正式重編主題總表_唯一基準版_v2.md - full rewrite with correct 161-round topics
+2. _governance/frozen/R016-work-r016-decision-trace-freeze.md - corrected R016 topic, added topic mismatch note
+3. _governance/closure/phase1-formal-closure-declaration.md - corrected Phase 1 topic table
+4. review_memory.txt - corrected Section 8 and Section 10 R016 topic references
+5. docs/auto_mode_governance_guide.md - corrected Section 3A and Section 5A R016 topic references
+6. manifests/r016_formal_freeze_documentation.yaml - corrected topic field
+7. manifests/phase1_formal_closure_declaration.yaml - added correction_note
+
+Files created:
+1. _governance/audit/161_round_law_source_normalization_matrix.json
+2. _governance/audit/161_round_law_source_normalization_matrix.md

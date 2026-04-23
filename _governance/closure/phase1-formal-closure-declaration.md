@@ -18,22 +18,22 @@ Phase 1 covers the following rounds as defined in the formal law index:
 
 | Round | Original Round | Topic |
 |-------|---------------|-------|
-| R001 | 原第1輪 | 基礎治理入口與執行邊界建立 |
-| R002 | 原第2輪 | 啟動/停止/暫停控制基底 |
-| R003 | 原第3輪 | 狀態檔與持久化基底 |
-| R004 | 原第4輪 | 候選、證據、回報骨架 |
-| R005 | 原第5輪 | 歷史歸檔與可追溯鏈銜接 |
-| R006 | 原第6輪 | 控制面板完整功能落地 |
+| R001 | 原第1輪 | 穩定性 / 一致性 / restore / validate / 設定同步 |
+| R002 | 原第2輪 | 網站掛掉風險清單 + 防呆機制 |
+| R003 | 原第3輪 | 單一真實來源 |
+| R004 | 原第4輪 | 時間同步與時序一致性 |
+| R005 | 原第5輪 | 版本一致性與決策快照 |
+| R006 | 原第6輪 | 健康檢查 / 熔斷 / 降級中心 |
 | R007 | 原第7輪 | 異常靜默保護 |
 | R008 | 原第8輪 | 狀態機與模式切換治理 |
 | R009 | 原第9輪 | 指令與任務優先級 |
-| R010 | 原第10輪 | 啟動鏈、bridge、wrapper、actual command 對齊 |
-| R011 | 原第11輪 | artifact、report、latest/history 產物完整化 |
-| R012 | 原11A輪 | 決策延遲預算/AI 超時降級機制 |
+| R010 | 原第10輪 | 核心與非核心隔離 |
+| R011 | 原第11輪 | 效能與載入架構優化 |
+| R012 | 原11A輪 | 決策延遲預算 / AI 超時降級機制 |
 | R013 | 原第12輪 | 實時與歷史資料分離 |
 | R014 | 原第13輪 | 可觀測性統一格式 |
 | R015 | 原第14輪 | 多層快取策略 |
-| R016 | 原第15輪 | 決策來源追溯與主張者紀錄 |
+| R016 | 原第15輪 | 欄位命名 / API schema / 資料契約固定 |
 
 ================================================================================
 SECTION 2: CLOSURE RATIONALE
@@ -46,7 +46,7 @@ Phase 1 is formally declared CLOSED based on:
     - Evidence packages exist in automation/control/candidates/
     - Commits are in the canonical chain
 
-[B] R016: Formally frozen with complete documentation
+[B] R016: Formally frozen with complete documentation (NOTE: corrected topic from "決策來源追溯與主張者紀錄" to "欄位命名 / API schema / 資料契約固定" per v2.1 index)
     - Freeze document: _governance/frozen/R016-work-r016-decision-trace-freeze.md
     - Frozen branch registry in review_memory.txt Section 8
     - Frozen branch registry in docs/auto_mode_governance_guide.md Section 3A

@@ -19,7 +19,7 @@ HEAD at Audit:      3586a07
                     "GOV: Authority lock guard - prevent wrong topic source precedence"
 Frozen Candidate:   f9b6bba8b21ea53f03b0bcb2bfc690674def2b41
                     "R016: Decision source traceability - DecisionTracer class"
-Law Index Topic:    R016 - 決策來源追溯與主張者紀錄
+Law Index Topic:    R016 - 欄位命名 / API schema / 資料契約固定
 Phase:              Phase 1
 
 ================================================================================
@@ -57,7 +57,7 @@ The commit f9b6bba contains:
 - File changes: server.py + evidence files (4 files, 120 insertions)
 
 This commit is the ONLY existing implementation of R016 topic
-("決策來源追溯與主張者紀錄") in the entire repository.
+("欄位命名 / API schema / 資料契約固定") in the entire repository.
 
 Deleting the branch would:
 - Permanently lose the R016 candidate implementation

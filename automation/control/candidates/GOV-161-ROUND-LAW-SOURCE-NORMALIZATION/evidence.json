@@ -1,0 +1,114 @@
+{
+  "round_id": "GOV-161-ROUND-LAW-SOURCE-NORMALIZATION",
+  "reply_id": "GOV-161-001",
+  "candidate_commit": "9505e1fe50158cd466bf1cf2cfc0fa30890cfb49",
+  "base_commit": "cbd36cafcf8a3527986c087cf5ce94c1b56e7989",
+  "audit_type": "gov_161_round_law_source_normalization",
+  "evidence_date": "2026-04-23",
+  "verification_commands": [
+    "git rev-parse HEAD -> 9505e1fe50158cd466bf1cf2cfc0fa30890cfb49",
+    "git status --short _governance/law/161輪正式重編主題總表_唯一基準版_v2.md -> M",
+    "git status --short _governance/frozen/R016-work-r016-decision-trace-freeze.md -> M",
+    "git status --short _governance/closure/phase1-formal-closure-declaration.md -> M",
+    "git status --short review_memory.txt -> M",
+    "git status --short docs/auto_mode_governance_guide.md -> M",
+    "git status --short manifests/r016_formal_freeze_documentation.yaml -> M",
+    "git status --short manifests/phase1_formal_closure_declaration.yaml -> M",
+    "Test-Path automation/control/STOP_NOW.flag -> True",
+    "git log --oneline -1 work/r016-decision-trace -> 3586a07 (unchanged)",
+    "git log --oneline -1 master -> 1fd96c2 (unchanged)"
+  ],
+  "files_corrected": [
+    {
+      "path": "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md",
+      "change_type": "full_rewrite",
+      "description": "Rewrote all 161 round topics to match source-of-truth. 155 corrections, 6 unchanged."
+    },
+    {
+      "path": "_governance/frozen/R016-work-r016-decision-trace-freeze.md",
+      "change_type": "topic_correction_and_note",
+      "description": "Updated R016 topic from '決策來源追溯與主張者紀錄' to '欄位命名 / API schema / 資料契約固定'. Added topic mismatch warning note."
+    },
+    {
+      "path": "_governance/closure/phase1-formal-closure-declaration.md",
+      "change_type": "topic_table_update",
+      "description": "Updated Phase 1 topic table to reflect corrected topics from source-of-truth."
+    },
+    {
+      "path": "review_memory.txt",
+      "change_type": "reference_correction",
+      "description": "Updated Section 8 (Frozen Branch Registry) and Section 10 (Phase 1 Closure) R016 topic references."
+    },
+    {
+      "path": "docs/auto_mode_governance_guide.md",
+      "change_type": "reference_correction",
+      "description": "Updated Section 3A (Frozen Branch Registry) and Section 5A (Phase 1 Closure) R016 topic references."
+    },
+    {
+      "path": "manifests/r016_formal_freeze_documentation.yaml",
+      "change_type": "field_correction",
+      "description": "Updated topic field to correct R016 topic."
+    },
+    {
+      "path": "manifests/phase1_formal_closure_declaration.yaml",
+      "change_type": "annotation",
+      "description": "Added correction_note documenting the GOV-161 normalization."
+    }
+  ],
+  "files_created": [
+    {
+      "path": "_governance/audit/161_round_law_source_normalization_matrix.json",
+      "description": "Machine-readable audit matrix of all 161 round topic corrections."
+    },
+    {
+      "path": "_governance/audit/161_round_law_source_normalization_matrix.md",
+      "description": "Human-readable audit matrix with risk levels and disposition notes."
+    }
+  ],
+  "source_of_truth_files": [
+    {
+      "path": "opencode_readable_laws/03_161輪逐輪施行細則法典_整合法條增補版.txt",
+      "type": "validation_authority"
+    },
+    {
+      "path": "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md",
+      "type": "topic_authority",
+      "note": "This file was itself the subject of correction; post-correction it now matches the validation authority."
+    }
+  ],
+  "excluded_non_authoritative_sources": [
+    "opencode_readable_laws/05_每輪詳細主題補充法典_機器可執行補充版.md",
+    "_governance/law/readable/03",
+    "archive/",
+    "historical/"
+  ],
+  "governance_constraints": {
+    "stop_now_flag_present": true,
+    "lane_frozen": true,
+    "no_merge": true,
+    "no_push": true,
+    "no_next_round_startup": true,
+    "business_logic_modifications_permitted": false,
+    "master_untouched": true,
+    "work_r016_untouched": true
+  },
+  "blockers_found": [],
+  "observations": [
+    "R016 frozen branch (work/r016-decision-trace, f9b6bba) implements '決策來源追溯' but correct R016 topic is '欄位命名 / API schema / 資料契約固定'.",
+    "This means the frozen candidate does NOT implement the correct round topic. The freeze documentation now carries a topic mismatch warning.",
+    "R016 re-qualification is required before any future merge attempt.",
+    "Phase 2-4 topics were also misaligned in old v2 index; only Phase 1 documents were corrected in this round.",
+    "Phase 2-4 governance documents (roadmaps, planning docs) will need similar correction in future rounds."
+  ],
+  "work_done": [
+    "Corrected 155 round topics in _governance/law/161輪正式重編主題總表_唯一基準版_v2.md",
+    "Updated R016 freeze documentation with correct topic and mismatch warning",
+    "Updated Phase 1 closure declaration topic table",
+    "Updated review_memory.txt R016 topic references",
+    "Updated auto_mode_governance_guide.md R016 topic references",
+    "Updated manifests/r016_formal_freeze_documentation.yaml topic field",
+    "Added correction_note to manifests/phase1_formal_closure_declaration.yaml",
+    "Created audit matrix JSON and MD files"
+  ],
+  "validate_evidence_note": "Governance-only candidate. Commit hash updated post-commit to satisfy validator."
+}
