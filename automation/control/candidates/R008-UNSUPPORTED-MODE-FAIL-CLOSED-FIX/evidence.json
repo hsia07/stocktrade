@@ -1,0 +1,38 @@
+{
+  "round_id": "R008-UNSUPPORTED-MODE-FAIL-CLOSED-FIX",
+  "task_type": "r008_unsupported_mode_fail_closed_fix_candidate",
+  "reply_id": "r008-unsupported-mode-fail-closed-fix-001",
+  "status": "completed",
+  "formal_status_code": "candidate_ready_awaiting_manual_review",
+  "timestamp": "2026-04-23T18:39:00+08:00",
+  "candidate_branch": "work/R008-MODE-CONTROL-INTEGRATION-candidate",
+  "candidate_commit": "7958ab588d71e4c8a336a257261506ba4286cee8",
+  "parent_candidate_commit": "cbf509199933f49f35b0f7592324c3cef3a80088",
+  "canonical_base": "8ec09bb6122ca5df96afde2b17af2f92bbd10cf8",
+  "tests_executed": true,
+  "test_summary": {
+    "r008": "43/43 PASS",
+    "r006_regression": "19/19 PASS",
+    "r011_regression": "10/10 PASS"
+  },
+  "validators": {
+    "validate_evidence": "PASS",
+    "check_forbidden_changes": "PASS",
+    "check_required_evidence": "PASS",
+    "check_branch_workflow": "PASS"
+  },
+  "evidence_files": [
+    "automation/control/candidates/R008-UNSUPPORTED-MODE-FAIL-CLOSED-FIX/task.txt",
+    "automation/control/candidates/R008-UNSUPPORTED-MODE-FAIL-CLOSED-FIX/candidate.diff",
+    "automation/control/candidates/R008-UNSUPPORTED-MODE-FAIL-CLOSED-FIX/report.json",
+    "automation/control/candidates/R008-UNSUPPORTED-MODE-FAIL-CLOSED-FIX/evidence.json"
+  ],
+  "files_modified": [
+    "server.py",
+    "tests/test_r008_integration.py"
+  ],
+  "forbidden_paths_touched": [],
+  "ready_for_candidate": true,
+  "blockers": [],
+  "next_action": "await_manual_review_and_decision"
+}

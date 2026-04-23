@@ -156,6 +156,51 @@ class TestR008ModeTransitionAPI:
             data = response.json()
             assert "requires_approval" in data
             assert isinstance(data["requires_approval"], bool)
+    
+    def test_mode_transition_blocks_shadow_mode(self):
+        """SHADOW is blocked by design - no runtime mapping"""
+        from server import app
+        from fastapi.testclient import TestClient
+        client = TestClient(app)
+        response = client.post("/api/mode_transition", json={
+            "from_mode": "OBSERVE",
+            "to_mode": "SHADOW",
+            "reason": "test"
+        })
+        assert response.status_code == 400
+        data = response.json()
+        assert "detail" in data
+        assert "shadow" in data["detail"]
+    
+    def test_mode_transition_blocks_pause_mode(self):
+        """PAUSE via API is blocked by design - use degradation for PAUSE"""
+        from server import app
+        from fastapi.testclient import TestClient
+        client = TestClient(app)
+        response = client.post("/api/mode_transition", json={
+            "from_mode": "LIVE",
+            "to_mode": "PAUSE",
+            "reason": "test"
+        })
+        assert response.status_code == 400
+        data = response.json()
+        assert "detail" in data
+        assert "pause" in data["detail"]
+    
+    def test_mode_transition_blocks_recovery_mode(self):
+        """RECOVERY is blocked by design - no runtime mapping"""
+        from server import app
+        from fastapi.testclient import TestClient
+        client = TestClient(app)
+        response = client.post("/api/mode_transition", json={
+            "from_mode": "LIVE",
+            "to_mode": "RECOVERY",
+            "reason": "test"
+        })
+        assert response.status_code == 400
+        data = response.json()
+        assert "detail" in data
+        assert "recovery" in data["detail"]
 
 class TestR008ModeRecording:
     """ModeRecorder integration"""

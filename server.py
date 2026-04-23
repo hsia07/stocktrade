@@ -1345,6 +1345,10 @@ class ModeTransitionRequest(BaseModel):
     to_mode: str
     reason: str = "API mode transition request"
 
+# R008: Runtime-supported modes with complete bidirectional mapping to PAPER_TRADE/AUTO_TRADE
+# Modes not in this set are blocked by design to prevent "API success but runtime overwritten"
+R008_RUNTIME_SUPPORTED_MODES = {Mode.SIM, Mode.OBSERVE, Mode.LIVE}
+
 @app.get("/api/mode")
 def get_mode():
     return {"mode": "PAPER" if PAPER_TRADE else "LIVE", "paper_trade": PAPER_TRADE, "auto_trade": AUTO_TRADE}
@@ -1378,6 +1382,14 @@ def mode_transition(request: ModeTransitionRequest):
         raise HTTPException(
             status_code=403,
             detail=validation_reason
+        )
+    
+    # R008: Fail-closed - only allow modes with complete runtime mapping
+    # SHADOW, PAUSE, RECOVERY are blocked by design to prevent "API success but runtime overwritten"
+    if to_mode not in R008_RUNTIME_SUPPORTED_MODES:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Mode {to_mode.value} is not supported for runtime transition. Supported modes: {[m.value for m in R008_RUNTIME_SUPPORTED_MODES]}"
         )
     
     # Check if approval required
