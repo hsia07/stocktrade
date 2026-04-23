@@ -1,0 +1,51 @@
+{
+  "round_id": "R011-VALIDATION-CHAIN-RECOVERY-REPAIR",
+  "task_type": "r011_validation_chain_recovery_repair",
+  "reply_id": "r011-validation-chain-recovery-repair-001",
+  "status": "completed",
+  "formal_status_code": "candidate_ready_awaiting_manual_review",
+  "timestamp": "2026-04-23T12:55:00+08:00",
+  "task_summary": "Fix R011 validation recovery to use independent candidate branch",
+  "previous_issues_fixed": [
+    "Used canonical directly -> now uses independent candidate branch",
+    "validate_evidence FAIL -> now all 4 validators PASS",
+    "candidate_branch not defined -> now work/R011-VALIDATION-CHAIN-RECOVERY-REPAIR-candidate"
+  ],
+  "canonical_head": "ea62ba14d1a9bc0e95706235640415f1e8093a11",
+  "merge_commit": "ea62ba14d1a9bc0e95706235640415f1e8093a11",
+  "manifest_path": "manifests/r011_local_merge_validation.yaml",
+  "validation_results": {
+    "validate_evidence": "PASS",
+    "check_forbidden_changes": "PASS",
+    "check_required_evidence": "PASS",
+    "check_branch_workflow": "PASS"
+  },
+  "recovered_validations": [
+    "validate_evidence - now PASS with correct evidence package",
+    "check_forbidden_changes - PASS",
+    "check_required_evidence - PASS",
+    "check_branch_workflow - PASS"
+  ],
+  "push_decision_point_ready": true,
+  "reason_push_ready": "All 4 validators PASS, independent candidate branch created",
+  "blockers": [],
+  "actual_files_touched": [
+    "manifests/r011_local_merge_validation.yaml",
+    "automation/control/candidates/R011-VALIDATION-CHAIN-RECOVERY-REPAIR/task.txt",
+    "automation/control/candidates/R011-VALIDATION-CHAIN-RECOVERY-REPAIR/evidence.json",
+    "automation/control/candidates/R011-VALIDATION-CHAIN-RECOVERY-REPAIR/report.json",
+    "automation/control/candidates/R011-VALIDATION-CHAIN-RECOVERY-REPAIR/candidate.diff"
+  ],
+  "files_not_modified": [
+    "server.py",
+    "tests/test_r011_integration.py",
+    "index.js",
+    "config.json",
+    "run_opencode_loop.ps1",
+    "master",
+    "STOP_NOW.flag"
+  ],
+  "lane_release_not_authorized": true,
+  "automation_lane_frozen": true,
+  "next_action": "await_manual_merge_decision"
+}

@@ -1,0 +1,41 @@
+================================================================================
+TASK: R011-VALIDATION-CHAIN-RECOVERY-REPAIR
+================================================================================
+
+round_id: R011-VALIDATION-CHAIN-RECOVERY-REPAIR
+task_type: r011_validation_chain_recovery_repair_candidate
+reply_id: r011-validation-chain-recovery-repair-001
+
+OBJECTIVE:
+Fix R011 validation recovery to use independent candidate branch and make validate_evidence PASS.
+
+CURRENT STATE:
+- Canonical HEAD: ea62ba14d1a9bc0e95706235640415f1e8093a11
+- Previous R011 recovery: on canonical direct, validate_evidence FAIL
+- Problem: Used canonical branch instead of side branch, validate_evidence expects different path
+
+TASK TYPE:
+- Governance validation chain repair
+- Must use independent candidate branch
+- Must make all 4 validators PASS
+
+CONSTRAINTS:
+- No modify server.py, tests/test_r011_integration.py
+- No modify index.js, config.json, run_opencode_loop.ps1
+- No push / lane release / next round
+- STOP_NOW.flag must remain
+
+SCOPE:
+- Create independent candidate branch
+- Fix manifest and evidence package alignment
+- Make validate_evidence PASS
+
+STEPS:
+1. Create independent candidate branch: work/R011-VALIDATION-CHAIN-RECOVERY-REPAIR-candidate
+2. Fix evidence package path to match candidate branch
+3. Run all validators with correct manifest
+4. Verify all PASS
+
+================================================================================
+END OF TASK
+================================================================================
