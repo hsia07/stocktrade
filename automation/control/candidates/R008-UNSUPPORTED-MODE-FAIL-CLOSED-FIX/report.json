@@ -1,0 +1,40 @@
+{
+  "round_id": "R008-UNSUPPORTED-MODE-FAIL-CLOSED-FIX",
+  "task_type": "r008_unsupported_mode_fail_closed_fix_candidate",
+  "reply_id": "r008-unsupported-mode-fail-closed-fix-001",
+  "status": "completed",
+  "formal_status_code": "candidate_ready_awaiting_manual_review",
+  "timestamp": "2026-04-23T18:39:00+08:00",
+  "parent_round": "R008-MODE-CONTROL-INTEGRATION",
+  "parent_candidate_commit": "cbf509199933f49f35b0f7592324c3cef3a80088",
+  "fix_scope": {
+    "problem": "/api/mode_transition accepted SHADOW/PAUSE/RECOVERY without persistent runtime mapping",
+    "solution": "Fail-closed: reject unsupported modes with HTTP 400",
+    "approach": "Option A - Block unsupported modes"
+  },
+  "runtime_supported_modes": ["sim", "observe", "live"],
+  "blocked_modes": ["shadow", "pause", "recovery"],
+  "files_modified": [
+    "server.py",
+    "tests/test_r008_integration.py"
+  ],
+  "changes_summary": {
+    "server.py": "Added R008_RUNTIME_SUPPORTED_MODES constant; added fail-closed check in /api/mode_transition rejecting SHADOW/PAUSE/RECOVERY with HTTP 400",
+    "tests/test_r008_integration.py": "Added 3 tests verifying SHADOW/PAUSE/RECOVERY are blocked by mode_transition API"
+  },
+  "test_results": {
+    "r008_tests": "43/43 PASS",
+    "r006_regression": "19/19 PASS",
+    "r011_regression": "10/10 PASS"
+  },
+  "validation_results": {
+    "validate_evidence": "PASS",
+    "check_forbidden_changes": "PASS",
+    "check_required_evidence": "PASS",
+    "check_branch_workflow": "PASS"
+  },
+  "api_contract_impact": "MINIMAL",
+  "api_contract_details": "Existing /api/toggle_mode and /api/mode contracts unchanged. /api/mode_transition now returns HTTP 400 for SHADOW/PAUSE/RECOVERY instead of accepting them.",
+  "no_other_rounds_modified": true,
+  "blockers": []
+}

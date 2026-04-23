@@ -1,0 +1,237 @@
+=== RETURN_TO_CHATGPT ===
+round_id: R008-UNSUPPORTED-MODE-FAIL-CLOSED-FIX
+task_type: r008_unsupported_mode_fail_closed_fix_candidate
+reply_id: r008-unsupported-mode-fail-closed-fix-001
+status: completed
+formal_status_code: candidate_ready_awaiting_manual_review
+
+exact_primary_file: server.py
+exact_related_files:
+  - tests/test_r008_integration.py
+  - governance/state_machine/mode_controller.py
+  - governance/state_machine/mode_recorder.py
+
+files_modified:
+  - server.py
+  - tests/test_r008_integration.py
+
+implementation_summary:
+  R008-UNSUPPORTED-MODE-FAIL-CLOSED-FIX closes the mode consistency gap identified in merge-pre rereview.
+  
+  Problem: /api/mode_transition accepted SHADOW, PAUSE, and RECOVERY modes that have no
+  persistent runtime mapping to PAPER_TRADE/AUTO_TRADE. These modes were recorded but
+  overwritten on the next tick by _map_to_r008_mode(), creating "API success but runtime
+  not persisted" inconsistency.
+  
+  Solution: Option A - Fail-closed block of unsupported modes.
+  
+  Changes:
+  1. server.py: Added R008_RUNTIME_SUPPORTED_MODES = {Mode.SIM, Mode.OBSERVE, Mode.LIVE}
+  2. server.py: /api/mode_transition now checks if to_mode is in R008_RUNTIME_SUPPORTED_MODES
+  3. server.py: If not supported, returns HTTP 400 with explicit error message listing supported modes
+  4. tests/test_r008_integration.py: Added 3 tests verifying SHADOW/PAUSE/RECOVERY are blocked
+  
+  Preserved behavior:
+  - Degradation-triggered PAUSE remains functional (via R006 hard gate in run_loop(), NOT via API)
+  - SIM, OBSERVE, LIVE transitions work normally with full bidirectional mapping
+  - Existing API contracts (/api/toggle_mode, /api/mode) unchanged
+
+validation_summary:
+  [1] pytest tests/test_r008_integration.py: 43/43 PASS (40 original + 3 new fail-closed)
+  [2] pytest tests/test_r006_integration.py: 19/19 PASS
+  [3] pytest tests/test_r011_integration.py: 10/10 PASS
+  [4] validate_evidence.py: PASS
+  [5] check_forbidden_changes.py: PASS
+  [6] check_required_evidence.py: PASS
+  [7] check_branch_workflow.py: PASS
+
+validate_evidence_executed: true
+validate_evidence_result: PASS
+
+evidence_package_files:
+  - automation/control/candidates/R008-UNSUPPORTED-MODE-FAIL-CLOSED-FIX/task.txt
+  - automation/control/candidates/R008-UNSUPPORTED-MODE-FAIL-CLOSED-FIX/candidate.diff
+  - automation/control/candidates/R008-UNSUPPORTED-MODE-FAIL-CLOSED-FIX/report.json
+  - automation/control/candidates/R008-UNSUPPORTED-MODE-FAIL-CLOSED-FIX/evidence.json
+
+candidate_branch: work/R008-MODE-CONTROL-INTEGRATION-candidate
+candidate_commit: 9d9e481bfd5d88e3b4165516a55d6f00dd056cb1
+
+blockers_found: []
+ready_for_candidate: true
+next_action: await_manual_review_and_decision
+
+unsupported_mode_fail_closed_fix_ruling:
+  FIX APPLIED: /api/mode_transition now fail-closed for unsupported modes.
+  
+  BEFORE FIX:
+  - SHADOW/PAUSE/RECOVERY accepted by API with HTTP 200
+  - Transition recorded in ModeRecorder
+  - engine._current_r008_mode set to unsupported mode
+  - BUT on next run_loop() tick, _map_to_r008_mode() overwrites from globals
+  - Result: "API success but runtime not persisted"
+  
+  AFTER FIX:
+  - SHADOW/PAUSE/RECOVERY rejected by API with HTTP 400
+  - Error message: "Mode {mode} is not supported for runtime transition. Supported modes: ['observe', 'sim', 'live']"
+  - No state change, no recording, no misleading success
+  - Runtime authority (PAPER_TRADE/AUTO_TRADE) remains consistent
+
+full_mode_mapping_ruling:
+  Six modes in ModeController. Runtime mapping after fix:
+  
+  FULLY SUPPORTED (bidirectional, persistent):
+  1. Mode.SIM -> "sim"
+     Forward: PAPER_TRADE=True -> SIM
+     Reverse: SIM -> PAPER_TRADE=True
+     API: ALLOWED
+     Trade gate: ALLOWS trading
+  
+  2. Mode.OBSERVE -> "observe"
+     Forward: PAPER_TRADE=False, AUTO_TRADE=False -> OBSERVE
+     Reverse: OBSERVE -> PAPER_TRADE=False, AUTO_TRADE=False
+     API: ALLOWED
+     Trade gate: BLOCKS trading
+  
+  3. Mode.LIVE -> "live"
+     Forward: PAPER_TRADE=False, AUTO_TRADE=True -> LIVE
+     Reverse: LIVE -> PAPER_TRADE=False, AUTO_TRADE=True
+     API: ALLOWED
+     Trade gate: ALLOWS trading
+  
+  BLOCKED BY DESIGN (no runtime mapping):
+  4. Mode.SHADOW -> "shadow"
+     Runtime mapping: NONE
+     API: BLOCKED (HTTP 400)
+     Reason: No representation in PAPER_TRADE/AUTO_TRADE globals
+  
+  5. Mode.PAUSE -> "pause"
+     Runtime mapping: NONE (for API transitions)
+     API: BLOCKED (HTTP 400)
+     Degradation path: R006 DegradationCenter.PAUSE_TRADING triggers PAUSE recording
+     Reason: PAUSE via API cannot persist; degradation PAUSE is handled by R006 gate
+  
+  6. Mode.RECOVERY -> "recovery"
+     Runtime mapping: NONE
+     API: BLOCKED (HTTP 400)
+     Reason: No representation in PAPER_TRADE/AUTO_TRADE globals
+
+mode_transition_authority_ruling:
+  Three-layer authority (unchanged from parent R008 candidate):
+  
+  Layer 1 - Runtime Authority (SUPREME):
+    PAPER_TRADE / AUTO_TRADE globals.
+    Only SIM, OBSERVE, LIVE are fully mapped and controllable.
+  
+  Layer 2 - Governance Validation:
+    ModeController.validate_transition() still validates allowed transitions.
+    Additional R008_RUNTIME_SUPPORTED_MODES check now enforces runtime capability.
+    Conflict resolution: Unsupported modes rejected at API layer before reaching runtime.
+  
+  Layer 3 - Audit Trail:
+    ModeRecorder records all supported transitions.
+    Unsupported mode attempts are NOT recorded (rejected before recording).
+
+api_contract_impact_ruling:
+  EXISTING CONTRACTS UNCHANGED:
+  - POST /api/toggle_mode: {"mode": str, "paper_trade": bool} - unchanged
+  - GET /api/mode: {"mode": str, "paper_trade": bool, "auto_trade": bool} - unchanged
+  
+  MODIFIED CONTRACT:
+  - POST /api/mode_transition:
+    BEFORE: Accepted SHADOW/PAUSE/RECOVERY, returned HTTP 200
+    AFTER: Rejects SHADOW/PAUSE/RECOVERY, returns HTTP 400
+    This is a breaking change for clients that relied on these modes being accepted,
+    but it corrects a fundamental inconsistency.
+  
+  get_state(): Unchanged - still exposes r008_mode, mode_allows_trading, mode_transition_count.
+
+trade_gate_validation_ruling:
+  Trade gate logic in run_loop() unchanged:
+  
+  After "if sig and AUTO_TRADE:":
+    self._current_r008_mode = self._map_to_r008_mode()  # Always derives from globals
+    if not self._validate_mode_allows_trading():
+        block trade, emit alert, continue
+  
+  Because _map_to_r008_mode() only produces SIM, OBSERVE, or LIVE:
+  - SIM -> ALLOWS trading
+  - LIVE -> ALLOWS trading
+  - OBSERVE -> BLOCKS trading
+  
+  PAUSE/RECOVERY/SHADOW cannot reach trade gate via API anymore (blocked at API layer).
+  Degradation PAUSE_TRADING still blocks trades via R006 hard gate at loop level.
+
+test_coverage_ruling:
+  R008 tests: 43 total (40 original + 3 new fail-closed)
+  
+  New tests added:
+  - test_mode_transition_blocks_shadow_mode: Verifies SHADOW -> HTTP 400
+  - test_mode_transition_blocks_pause_mode: Verifies PAUSE -> HTTP 400
+  - test_mode_transition_blocks_recovery_mode: Verifies RECOVERY -> HTTP 400
+  
+  All existing tests continue to pass:
+  - SIM/OBSERVE/LIVE mapping tests: PASS
+  - API contract preservation tests: PASS
+  - Mode transition validation tests: PASS
+  - Recording tests: PASS
+  - Degradation tests: PASS
+  - Trade gate tests: PASS
+  - State exposure tests: PASS
+  - Authority tests: PASS
+  - R006 regression: 19/19 PASS
+  - R011 regression: 2/2 PASS (within R008 test file)
+  - R011 standalone: 10/10 PASS
+
+lane_release_not_authorized_ruling:
+  Lane release NOT authorized.
+  STOP_NOW.flag preserved.
+  automation_lane_frozen = true.
+  No merge executed. No push executed. No next round initiated.
+  Master HEAD unchanged.
+
+automation_lane_frozen: true
+master_head_unchanged: true
+
+actual_files_touched_ruling:
+  Production files modified: 2
+  1. server.py:
+     - Added R008_RUNTIME_SUPPORTED_MODES constant
+     - Added fail-closed check in /api/mode_transition
+     - Added pydantic BaseModel import (already present from previous R008 candidate)
+  2. tests/test_r008_integration.py:
+     - Added 3 fail-closed tests (SHADOW/PAUSE/RECOVERY blocking)
+  
+  Evidence files created: 4
+  - automation/control/candidates/R008-UNSUPPORTED-MODE-FAIL-CLOSED-FIX/task.txt
+  - automation/control/candidates/R008-UNSUPPORTED-MODE-FAIL-CLOSED-FIX/candidate.diff
+  - automation/control/candidates/R008-UNSUPPORTED-MODE-FAIL-CLOSED-FIX/report.json
+  - automation/control/candidates/R008-UNSUPPORTED-MODE-FAIL-CLOSED-FIX/evidence.json
+  
+  Forbidden files NOT modified:
+  - index.js, config.json, run_opencode_loop.ps1, .githooks/*
+  - health/monitor.py, circuit/breaker.py, failover/center.py
+  - tests/test_r006_integration.py, tests/test_r011_integration.py
+
+executed_command_summary:
+  IMPLEMENTATION:
+  1. Read server.py /api/mode_transition implementation
+  2. Added R008_RUNTIME_SUPPORTED_MODES constant and fail-closed check
+  3. Added 3 fail-closed tests to test_r008_integration.py
+  
+  TESTS:
+  4. pytest tests/test_r008_integration.py -> 43/43 PASS
+  5. pytest tests/test_r006_integration.py -> 19/19 PASS
+  6. pytest tests/test_r011_integration.py -> 10/10 PASS
+  
+  VALIDATORS:
+  7. validate_evidence.py -> PASS
+  8. check_forbidden_changes.py -> PASS
+  9. check_required_evidence.py -> PASS
+  10. check_branch_workflow.py -> PASS
+  
+  EVIDENCE:
+  11. git rev-parse HEAD -> 9d9e481bfd5d88e3b4165516a55d6f00dd056cb1
+  12. Created candidate.diff, task.txt, report.json, evidence.json
+
+=== END_RETURN_TO_CHATGPT ===

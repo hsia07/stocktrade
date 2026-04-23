@@ -14,7 +14,7 @@ from dataclasses import dataclass, asdict, field
 from enum import Enum
 from typing import Optional
 import uvicorn
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 
@@ -27,6 +27,9 @@ from automation.control.artifacts.r011_artifact_management import ArtifactManage
 from health.monitor import HealthMonitor
 from circuit.breaker import CircuitBreaker
 from failover.center import DegradationCenter, DegradationStrategy
+# R008 Mode Control Integration imports
+from governance.state_machine.mode_controller import ModeController, Mode
+from governance.state_machine.mode_recorder import ModeRecorder
 
 load_dotenv()
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
@@ -968,6 +971,35 @@ class TradingEngine:
             max_drawdown_pct=float(os.getenv("MAX_DRAWDOWN_PCT", "10"))
         )
         self.degradation_center = DegradationCenter()
+        # R008: Mode Control Integration instances
+        self.mode_controller = ModeController()
+        self.mode_recorder = ModeRecorder()
+        # Initialize R008 mode from current runtime state
+        self._current_r008_mode = self._map_to_r008_mode()
+
+    def _map_to_r008_mode(self) -> Mode:
+        """Map existing PAPER_TRADE/AUTO_TRADE state to R008 Mode"""
+        if PAPER_TRADE:
+            return Mode.SIM
+        elif not AUTO_TRADE:
+            return Mode.OBSERVE
+        else:
+            return Mode.LIVE
+
+    def _record_mode_transition(self, from_mode: Mode, to_mode: Mode, reason: str):
+        """Record mode transition in ModeRecorder"""
+        self.mode_recorder.record_transition(
+            from_mode=from_mode.value,
+            to_mode=to_mode.value,
+            operator="TradingEngine",
+            reason=reason
+        )
+
+    def _validate_mode_allows_trading(self) -> bool:
+        """Check if current R008 mode allows trading"""
+        current_mode = self._current_r008_mode
+        # Trading allowed in SIM, SHADOW, LIVE modes
+        return current_mode in (Mode.SIM, Mode.SHADOW, Mode.LIVE)
 
     def connect_shioaji(self):
         if PAPER_TRADE:
@@ -1009,8 +1041,19 @@ class TradingEngine:
                     def has_paper_trading_enabled(self): return PAPER_TRADE
                 self.degradation_center.evaluate_and_degrade(SimpleHealthStatus())
                 log.warning(f"R006 Health critical: {health_aggregate['details']}")
+                # R008: Record degradation -> PAUSE mode transition
+                old_mode = self._current_r008_mode
+                self._current_r008_mode = Mode.PAUSE
+                self._record_mode_transition(old_mode, Mode.PAUSE, "R006 DegradationCenter triggered PAUSE_TRADING")
+                log.info(f"R008 Mode transition: {old_mode.value} -> {Mode.PAUSE.value} (degradation)")
             elif self.degradation_center.get_current_strategy() is not None:
                 self.degradation_center.restore()
+                # R008: Record PAUSE -> previous mode transition
+                old_mode = self._current_r008_mode
+                restored_mode = self._map_to_r008_mode()
+                self._current_r008_mode = restored_mode
+                self._record_mode_transition(old_mode, restored_mode, "R006 DegradationCenter restored")
+                log.info(f"R008 Mode transition: {old_mode.value} -> {restored_mode.value} (degradation restored)")
             ticks = self.mock.tick()
             self.latest_ticks = ticks
             # R007: Update market data timestamp
@@ -1070,6 +1113,12 @@ class TradingEngine:
                         self.observer.emit_signal(sym, str(sig.direction), sig.confidence, sig.reason)
 
                 if sig and AUTO_TRADE:
+                    # R008: Mode validation before trade execution
+                    self._current_r008_mode = self._map_to_r008_mode()
+                    if not self._validate_mode_allows_trading():
+                        self.observer.emit_risk_alert(sym, "mode_validation", {"mode": self._current_r008_mode.value, "reason": "Current mode does not allow trading"})
+                        log.warning(f"R008 Mode validation blocked {sym} signal: {self._current_r008_mode.value}")
+                        continue
                     # R006: Circuit breaker check (precedence: CircuitBreaker > RiskOfficer)
                     if circuit_blocked:
                         self.observer.emit_risk_alert(sym, "circuit_breaker", {"state": "OPEN", "reason": "Circuit breaker blocking new trades"})
@@ -1210,6 +1259,14 @@ class TradingEngine:
             state["health_status"] = {"error": "health_monitor_not_ready"}
             state["circuit_breaker"] = {"error": "circuit_breaker_not_ready"}
             state["degradation_strategy"] = None
+        # R008: Expose mode control state
+        try:
+            self._current_r008_mode = self._map_to_r008_mode()
+            state["r008_mode"] = self._current_r008_mode.value
+            state["mode_allows_trading"] = self._validate_mode_allows_trading()
+            state["mode_transition_count"] = len(self.mode_recorder.get_transition_history())
+        except Exception:
+            state["r008_mode"] = {"error": "mode_controller_not_ready"}
         return state
 
 # FastAPI WebSocket 伺服器
@@ -1271,14 +1328,101 @@ def get_trades():
 @app.post("/api/toggle_mode")
 def toggle_mode():
     global PAPER_TRADE, AUTO_TRADE
+    # R008: Record transition before change
+    old_mode = engine._map_to_r008_mode()
     PAPER_TRADE = not PAPER_TRADE
+    new_mode = engine._map_to_r008_mode()
+    engine._record_mode_transition(old_mode, new_mode, "toggle_mode API called")
     mode = "PAPER" if PAPER_TRADE else "LIVE"
-    log.info(f"交易模式切換: {mode}")
+    log.info(f"交易模式切換: {mode} (R008: {old_mode.value} -> {new_mode.value})")
     return {"mode": mode, "paper_trade": PAPER_TRADE}
+
+# R008: Mode transition request model
+from pydantic import BaseModel
+
+class ModeTransitionRequest(BaseModel):
+    from_mode: str = None
+    to_mode: str
+    reason: str = "API mode transition request"
+
+# R008: Runtime-supported modes with complete bidirectional mapping to PAPER_TRADE/AUTO_TRADE
+# Modes not in this set are blocked by design to prevent "API success but runtime overwritten"
+R008_RUNTIME_SUPPORTED_MODES = {Mode.SIM, Mode.OBSERVE, Mode.LIVE}
 
 @app.get("/api/mode")
 def get_mode():
     return {"mode": "PAPER" if PAPER_TRADE else "LIVE", "paper_trade": PAPER_TRADE, "auto_trade": AUTO_TRADE}
+
+@app.post("/api/mode_transition")
+def mode_transition(request: ModeTransitionRequest):
+    """R008: Mode transition with validation and recording"""
+    global PAPER_TRADE, AUTO_TRADE
+    
+    from_mode_str = (request.from_mode or engine._current_r008_mode.value).lower()
+    to_mode_str = (request.to_mode or "").lower()
+    reason = request.reason
+    
+    if not to_mode_str:
+        raise HTTPException(status_code=400, detail="to_mode is required")
+    
+    # Map string to Mode enum
+    mode_map = {m.value: m for m in Mode}
+    from_mode = mode_map.get(from_mode_str)
+    to_mode = mode_map.get(to_mode_str)
+    
+    if not from_mode or not to_mode:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Invalid mode. Allowed: {[m.value for m in Mode]}"
+        )
+    
+    # Validate transition
+    is_valid, validation_reason = engine.mode_controller.validate_transition(from_mode, to_mode)
+    if not is_valid:
+        raise HTTPException(
+            status_code=403,
+            detail=validation_reason
+        )
+    
+    # R008: Fail-closed - only allow modes with complete runtime mapping
+    # SHADOW, PAUSE, RECOVERY are blocked by design to prevent "API success but runtime overwritten"
+    if to_mode not in R008_RUNTIME_SUPPORTED_MODES:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Mode {to_mode.value} is not supported for runtime transition. Supported modes: {[m.value for m in R008_RUNTIME_SUPPORTED_MODES]}"
+        )
+    
+    # Check if approval required
+    requires_approval = engine.mode_controller.transition_requires_approval(from_mode, to_mode)
+    
+    # Record transition
+    engine._record_mode_transition(from_mode, to_mode, reason)
+    engine._current_r008_mode = to_mode
+    
+    # Map R008 mode back to runtime state
+    if to_mode == Mode.SIM:
+        PAPER_TRADE = True
+    elif to_mode in (Mode.LIVE, Mode.OBSERVE):
+        PAPER_TRADE = False
+        AUTO_TRADE = (to_mode == Mode.LIVE)
+    
+    return {
+        "status": "success",
+        "from_mode": from_mode.value,
+        "to_mode": to_mode.value,
+        "requires_approval": requires_approval,
+        "current_mode": to_mode.value,
+        "paper_trade": PAPER_TRADE,
+        "auto_trade": AUTO_TRADE
+    }
+
+@app.get("/api/mode_history")
+def get_mode_history():
+    """R008: Get mode transition history"""
+    return {
+        "transitions": engine.mode_recorder.get_transition_history(),
+        "current_mode": engine._current_r008_mode.value
+    }
 
 if __name__ == "__main__":
     uvicorn.run("server:app", host="0.0.0.0", port=8765, reload=False)

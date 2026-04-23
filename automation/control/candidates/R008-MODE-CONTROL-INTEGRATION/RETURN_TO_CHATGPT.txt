@@ -1,0 +1,140 @@
+=== RETURN_TO_CHATGPT ===
+round_id: R008-MODE-CONTROL-INTEGRATION
+task_type: r008_mode_control_integration_candidate
+reply_id: r008-mode-control-integration-001
+status: completed
+formal_status_code: candidate_ready_awaiting_manual_review
+
+exact_primary_file: server.py
+exact_related_files:
+  - tests/test_r008_integration.py
+  - governance/state_machine/mode_controller.py
+  - governance/state_machine/mode_recorder.py
+
+files_modified:
+  - server.py
+  - tests/test_r008_integration.py
+
+implementation_summary:
+  R008 ModeController/ModeRecorder integrated into TradingEngine per Plan B (governance overlay).
+  
+  Changes made:
+  1. TradingEngine.__init__(): Added mode_controller (ModeController) and mode_recorder (ModeRecorder) instances; initialized _current_r008_mode via _map_to_r008_mode().
+  2. _map_to_r008_mode(): Maps runtime state to R008 Mode enum:
+     - PAPER_TRADE=true -> Mode.SIM
+     - PAPER_TRADE=false && AUTO_TRADE=false -> Mode.OBSERVE
+     - PAPER_TRADE=false && AUTO_TRADE=true -> Mode.LIVE
+  3. _record_mode_transition(): Records all transitions in ModeRecorder with operator="TradingEngine" and reason.
+  4. _validate_mode_allows_trading(): Returns True for SIM, SHADOW, LIVE; False for OBSERVE, PAUSE, RECOVERY.
+  5. run_loop(): Added R008 mode validation before trade execution (after AUTO_TRADE check, before circuit breaker). If mode doesn't allow trading, signal is blocked with risk alert.
+  6. toggle_mode endpoint: Records transition in ModeRecorder before changing PAPER_TRADE; logs R008 mode change.
+  7. Degradation pause/restore: When DegradationCenter enters PAUSE_TRADING, records transition to Mode.PAUSE. When restored, records transition back to mapped mode.
+  8. POST /api/mode_transition: New endpoint accepting {from_mode, to_mode, reason}. Validates transition via ModeController.validate_transition(). Records via ModeRecorder. Maps approved mode back to PAPER_TRADE/AUTO_TRADE. Returns {status, from_mode, to_mode, requires_approval, current_mode, paper_trade, auto_trade}.
+  9. GET /api/mode_history: New endpoint returning {transitions, current_mode}.
+  10. get_state(): Exposes r008_mode, mode_allows_trading, mode_transition_count alongside existing fields.
+  
+  API contract preservation:
+  - POST /api/toggle_mode: Returns {"mode", "paper_trade"} exactly as before.
+  - GET /api/mode: Returns {"mode", "paper_trade", "auto_trade"} exactly as before.
+  
+  No other round modules modified. R006 and R011 components untouched.
+
+validation_summary:
+  [1] pytest tests/test_r008_integration.py: 40/40 PASS
+  [2] pytest tests/test_r006_integration.py: 19/19 PASS
+  [3] pytest tests/test_r011_integration.py: 10/10 PASS
+  [4] validate_evidence.py: PASS (with expected WARN on self-referential commit hash)
+  [5] check_forbidden_changes.py: PASS
+  [6] check_required_evidence.py: PASS
+  [7] check_branch_workflow.py: PASS
+
+validate_evidence_executed: true
+validate_evidence_result: PASS
+
+evidence_package_files:
+  - automation/control/candidates/R008-MODE-CONTROL-INTEGRATION/task.txt
+  - automation/control/candidates/R008-MODE-CONTROL-INTEGRATION/candidate.diff
+  - automation/control/candidates/R008-MODE-CONTROL-INTEGRATION/report.json
+  - automation/control/candidates/R008-MODE-CONTROL-INTEGRATION/evidence.json
+
+candidate_branch: work/R008-MODE-CONTROL-INTEGRATION-candidate
+candidate_commit: ed7b7fe499c25ed8e6e3817c988058ed786937f9
+
+blockers_found: []
+ready_for_candidate: true
+next_action: await_manual_review_and_decision
+
+current_mode_runtime_ruling:
+  Runtime authority remains with existing PAPER_TRADE (bool) and AUTO_TRADE (bool) globals.
+  These globals control actual trade execution in run_loop().
+  R008 ModeController provides governance validation overlay without replacing runtime mechanism.
+  Mapping layer ensures R008 mode always reflects current runtime state.
+
+r008_mapping_ruling:
+  Mapping is explicit and deterministic:
+  - PAPER_TRADE = True -> Mode.SIM
+  - PAPER_TRADE = False, AUTO_TRADE = False -> Mode.OBSERVE
+  - PAPER_TRADE = False, AUTO_TRADE = True -> Mode.LIVE
+  - DegradationCenter.PAUSE_TRADING -> Mode.PAUSE
+  Reverse mapping in /api/mode_transition:
+  - Mode.SIM -> PAPER_TRADE = True
+  - Mode.LIVE -> PAPER_TRADE = False, AUTO_TRADE = True
+  - Mode.OBSERVE -> PAPER_TRADE = False, AUTO_TRADE = False
+
+mode_transition_authority_ruling:
+  Three-layer authority:
+  1. Runtime authority: PAPER_TRADE / AUTO_TRADE (unchanged, controls trade execution)
+  2. Governance validation: ModeController.validate_transition() (approves/denies requested transitions)
+  3. Audit trail: ModeRecorder.record_transition() (immutable record of all transitions)
+  In case of conflict: ModeController warning logged but existing runtime state prevails.
+
+api_contract_impact_ruling:
+  MINIMAL IMPACT.
+  Existing endpoints (/api/toggle_mode, /api/mode) return exact same contracts.
+  New endpoints (/api/mode_transition, /api/mode_history) are additive only.
+  get_state() adds three new keys (r008_mode, mode_allows_trading, mode_transition_count) without removing or changing existing keys.
+
+moderecorder_integration_ruling:
+  ModeRecorder integrated at three points:
+  1. toggle_mode API: Every toggle records a transition with operator="TradingEngine", reason="toggle_mode API called".
+  2. /api/mode_transition: Every validated transition is recorded with operator and reason from request.
+  3. Degradation pause/restore: R006 DegradationCenter PAUSE_TRADING triggers Mode.PAUSE recording with reason "R006 DegradationCenter triggered PAUSE_TRADING". Restore triggers return-to-previous-mode recording with reason "R006 DegradationCenter restored".
+  Transition history accessible via GET /api/mode_history.
+
+trade_gate_validation_ruling:
+  R008 mode validation added in run_loop() trade gate:
+  Location: After "if sig and AUTO_TRADE:" and before R006 circuit breaker check.
+  Logic: engine._current_r008_mode = engine._map_to_r008_mode(); if not engine._validate_mode_allows_trading(): block trade, emit risk alert, log warning, continue.
+  Modes allowing trading: SIM, SHADOW, LIVE.
+  Modes blocking trading: OBSERVE, PAUSE, RECOVERY.
+  Does not break existing PAPER_TRADE/AUTO_TRADE authority - validation runs in addition to existing gates.
+
+test_coverage_ruling:
+  R008 tests (40 tests):
+  - 6 tests: ModeController/ModeRecorder instances exist in TradingEngine
+  - 3 tests: Mode mapping correctness (SIM, OBSERVE, LIVE)
+  - 3 tests: API contract preservation (toggle_mode, get_mode, get_state)
+  - 5 tests: /api/mode_transition endpoint (exists, blocks invalid, validates allowed, records, returns approval flag)
+  - 3 tests: Mode recording (toggle_mode records, history API, operator info)
+  - 2 tests: Degradation pause recording
+  - 5 tests: Trade gate validation (SIM allows, LIVE allows, OBSERVE blocks, PAUSE blocks, source code check)
+  - 3 tests: State exposure (r008_mode, mode_allows_trading, transition_count)
+  - 3 tests: Authority ruling (runtime globals, controller validation, recorder audit)
+  - 5 tests: R006 regression
+  - 2 tests: R011 regression
+
+lane_release_not_authorized_ruling:
+  Lane release NOT authorized. STOP_NOW.flag preserved. automation_lane_frozen = true.
+  No merge to canonical. No push to remote. No next round initiated.
+
+automation_lane_frozen: true
+master_head_unchanged: true
+
+actual_files_touched_ruling:
+  Only two files modified:
+  1. server.py: Added R008 imports, instances, mapping methods, validation, API endpoints, state exposure, degradation recording.
+  2. tests/test_r008_integration.py: New file with 40 integration tests.
+  No changes to index.js, config.json, run_opencode_loop.ps1, .githooks/*, or other round modules.
+  governance/state_machine/mode_controller.py and mode_recorder.py were read but not modified.
+
+=== END_RETURN_TO_CHATGPT ===

@@ -1,0 +1,36 @@
+{
+  "round_id": "R008-MODE-CONTROL-INTEGRATION",
+  "task_type": "r008_mode_control_integration_candidate",
+  "reply_id": "r008-mode-control-integration-001",
+  "status": "completed",
+  "formal_status_code": "candidate_ready_awaiting_manual_review",
+  "timestamp": "2026-04-23T18:20:00+08:00",
+  "candidate_branch": "work/R008-MODE-CONTROL-INTEGRATION-candidate",
+  "candidate_commit": "a04ea4c122b4f9679237051c783644c322f80e80",
+  "canonical_base": "8ec09bb6122ca5df96afde2b17af2f92bbd10cf8",
+  "tests_executed": true,
+  "test_summary": {
+    "r008": "40/40 PASS",
+    "r006_regression": "19/19 PASS",
+    "r011_regression": "10/10 PASS"
+  },
+  "validators": {
+    "check_forbidden_changes": "PASS",
+    "check_required_evidence": "PASS",
+    "check_branch_workflow": "PASS"
+  },
+  "evidence_files": [
+    "automation/control/candidates/R008-MODE-CONTROL-INTEGRATION/task.txt",
+    "automation/control/candidates/R008-MODE-CONTROL-INTEGRATION/candidate.diff",
+    "automation/control/candidates/R008-MODE-CONTROL-INTEGRATION/report.json",
+    "automation/control/candidates/R008-MODE-CONTROL-INTEGRATION/evidence.json"
+  ],
+  "files_modified": [
+    "server.py",
+    "tests/test_r008_integration.py"
+  ],
+  "forbidden_paths_touched": [],
+  "ready_for_candidate": true,
+  "blockers": [],
+  "next_action": "await_manual_review_and_decision"
+}

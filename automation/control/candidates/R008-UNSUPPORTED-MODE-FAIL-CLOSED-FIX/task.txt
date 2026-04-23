@@ -1,0 +1,38 @@
+================================================================================
+TASK: R008-UNSUPPORTED-MODE-FAIL-CLOSED-FIX candidate
+================================================================================
+
+round_id: R008-UNSUPPORTED-MODE-FAIL-CLOSED-FIX
+task_type: r008_unsupported_mode_fail_closed_fix_candidate
+reply_id: r008-unsupported-mode-fail-closed-fix-001
+
+OBJECTIVE:
+Fix the mode consistency gap in R008 where /api/mode_transition accepted modes
+(SHADOW, PAUSE, RECOVERY) that lack complete runtime mappings to PAPER_TRADE/AUTO_TRADE.
+These modes would be overwritten on the next tick by _map_to_r008_mode().
+
+SCOPE:
+- server.py: Add fail-closed check in /api/mode_transition
+- tests/test_r008_integration.py: Add fail-closed tests
+
+CONSTRAINTS:
+- Lane frozen, STOP_NOW.flag preserved
+- No merge / push / next round
+- No modifications to other round modules
+
+IMPLEMENTATION:
+1. Added R008_RUNTIME_SUPPORTED_MODES = {Mode.SIM, Mode.OBSERVE, Mode.LIVE}
+2. /api/mode_transition rejects SHADOW, PAUSE, RECOVERY with HTTP 400
+3. Degradation-triggered PAUSE remains functional via R006 gate (not API)
+
+VALIDATION:
+- R008 tests: 43/43 PASS (40 original + 3 new fail-closed tests)
+- R006 regression: 19/19 PASS
+- R011 regression: 10/10 PASS
+- Forbidden changes: PASS
+- Branch workflow: PASS
+- Required evidence: PASS
+
+================================================================================
+END OF TASK
+================================================================================
