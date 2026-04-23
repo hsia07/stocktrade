@@ -360,6 +360,38 @@ GATE COVERAGE MATRIX:
 | B1-B3 | Validator | 100% mechanical | Branch workflow + old source + authority |
 | C1-C3 | Template | Partial (human+validator) | Branch strategy + source-of-truth |
 
+SECTION 7: PHASE 2 ENTRY GOVERNANCE
+================================================================================
+
+PHASE 2 START DECLARATION:
+Phase 2 is formally declared started under the following governance lock:
+
+- Phase 2 Start != Lane Release
+- Phase 2 Start != Auto-Mode Release
+- Phase 2 Start != STOP_NOW.flag Removal
+- Phase 2 Start != run_state = active
+
+FROZEN ELEMENTS (remain locked during Phase 2):
+| Element | Status | Authorization Required |
+|---------|--------|------------------------|
+| STOP_NOW.flag | FROZEN | Separate lane release round |
+| run_state | stopped | Separate lane release round |
+| Automation lane | frozen | Separate lane release round |
+| Auto-mode loop | not started | Separate auto-mode release round |
+| Master branch | untouched | Separate promotion round |
+
+LANE RELEASE BLOCKERS (must be resolved before lane release):
+- LR-001: runtime/opencode_output.txt = 15,103 bytes
+- LR-002: Runtime enforcement gap
+- LR-003: No end-to-end auto-mode testing
+- LR-004: state.runtime.json stale
+
+PHASE 2 EARLY PRIORITIES:
+1. R006-R011 integration into server.py / main execution chain
+2. R016 backfill planning (deferred)
+3. Mechanical gate residual hardening (low priority)
+
+================================================================================
 REMAINING NON-MECHANICAL RULES:
 - 不得自行改題（無機械檢查）
 - 不得偷做下一輪（無機械檢查）
