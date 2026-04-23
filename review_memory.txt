@@ -465,5 +465,49 @@ The following rules remain non-mechanical and rely on human compliance:
 - lane frozen 維持
 
 ================================================================================
+SECTION 13: PHASE 2 START DECLARATION AND ENTRY LOCK
+================================================================================
+
+RULE 13.1 - Phase 2 Start Declaration:
+Phase 2 MAY be formally declared started while the automation lane remains frozen.
+Declaration does NOT imply authorization for lane release or auto-mode release.
+
+RULE 13.2 - Critical Distinction (MUST be enforced in all Phase 2 rounds):
+```
+Phase 2 Started != Lane Release Authorized
+Phase 2 Started != Auto-Mode Release Authorized
+```
+Any round that conflates Phase 2 start with lane/auto-mode release is BLOCKED.
+
+RULE 13.3 - Phase 2 Frozen Status:
+Despite Phase 2 declaration, the following remain FROZEN:
+- STOP_NOW.flag MUST remain present
+- run_state MUST remain "stopped"
+- Automation lane MUST remain frozen
+- No auto-mode loop MAY be started without explicit authorization
+
+RULE 13.4 - Remaining Lane Release Blockers (LR-001 ~ LR-004):
+| Blocker | Description |
+|---------|-------------|
+| LR-001 | runtime/opencode_output.txt exceeds threshold (15,103 bytes) |
+| LR-002 | Runtime enforcement gap (documentation-only locks) |
+| LR-003 | No end-to-end auto-mode testing performed |
+| LR-004 | state.runtime.json stale (shows R-011, Phase 1) |
+Resolution requires dedicated "Lane Release Preparation Round" with explicit authorization.
+
+RULE 13.5 - Early Phase 2 Priorities:
+1. R006-R011 integration into main execution chain
+2. R016 backfill planning (deferred)
+3. Mechanical gate residual hardening (low priority)
+
+RULE 13.6 - Phase 2 Round Authorization:
+Every Phase 2 round requires explicit human authorization with:
+- round_id
+- task_type
+- scope_boundary (what is and is not included)
+- lane_release_authorized: true/false
+- auto_mode_release_authorized: true/false
+
+================================================================================
 END OF REVIEW MEMORY
 ================================================================================
