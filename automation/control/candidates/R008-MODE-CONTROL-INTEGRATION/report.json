@@ -1,0 +1,47 @@
+{
+  "round_id": "R008-MODE-CONTROL-INTEGRATION",
+  "task_type": "r008_mode_control_integration_candidate",
+  "reply_id": "r008-mode-control-integration-001",
+  "status": "completed",
+  "formal_status_code": "candidate_ready_awaiting_manual_review",
+  "timestamp": "2026-04-23T18:20:00+08:00",
+  "plan_b_adopted": true,
+  "files_modified": [
+    "server.py",
+    "tests/test_r008_integration.py"
+  ],
+  "integration_points": {
+    "trading_engine_init": "Added mode_controller and mode_recorder instances; initialized _current_r008_mode via _map_to_r008_mode()",
+    "mode_mapping": "PAPER_TRADE=true -> SIM; PAPER_TRADE=false+AUTO_TRADE=false -> OBSERVE; PAPER_TRADE=false+AUTO_TRADE=true -> LIVE",
+    "trade_gate_validation": "run_loop() checks _validate_mode_allows_trading() before trade execution; blocks if mode doesn't allow trading",
+    "toggle_mode_recording": "toggle_mode endpoint records transition in ModeRecorder",
+    "degradation_pause_recording": "DegradationCenter PAUSE_TRADING triggers Mode.PAUSE recording; restore triggers return-to-previous-mode recording",
+    "api_endpoints": {
+      "POST /api/toggle_mode": "Unchanged contract; added internal recording",
+      "GET /api/mode": "Unchanged contract",
+      "POST /api/mode_transition": "New endpoint; validates transition via ModeController; records via ModeRecorder; maps back to PAPER_TRADE/AUTO_TRADE",
+      "GET /api/mode_history": "New endpoint; returns transition history and current mode"
+    },
+    "state_exposure": "get_state() exposes r008_mode, mode_allows_trading, mode_transition_count"
+  },
+  "authority_ruling": {
+    "runtime_authority": "PAPER_TRADE / AUTO_TRADE globals",
+    "governance_validation": "ModeController.validate_transition()",
+    "audit_trail": "ModeRecorder.record_transition()",
+    "conflict_resolution": "ModeController warning logged but existing state prevails to avoid breaking runtime"
+  },
+  "test_results": {
+    "r008_tests": "40/40 PASS",
+    "r006_regression": "19/19 PASS",
+    "r011_regression": "10/10 PASS"
+  },
+  "validation_results": {
+    "check_forbidden_changes": "PASS",
+    "check_required_evidence": "PASS",
+    "check_branch_workflow": "PASS"
+  },
+  "api_contract_impact": "MINIMAL",
+  "api_contract_details": "Existing /api/toggle_mode and /api/mode contracts preserved exactly. New endpoints added without affecting existing clients.",
+  "no_other_rounds_modified": true,
+  "blockers": []
+}

@@ -1,0 +1,46 @@
+================================================================================
+TASK: R008-MODE-CONTROL-INTEGRATION candidate
+================================================================================
+
+round_id: R008-MODE-CONTROL-INTEGRATION
+task_type: r008_mode_control_integration_candidate
+reply_id: r008-mode-control-integration-001
+
+OBJECTIVE:
+Integrate R008 ModeController / ModeRecorder into TradingEngine per Plan B from
+R008-MODE-CONTROL-INTEGRATION-DECISION-AUDIT, with minimal changes and preserving
+existing PAPER_TRADE / AUTO_TRADE as runtime authority.
+
+SCOPE:
+- server.py: Add ModeController/ModeRecorder instances, mapping layer, validation
+- tests/test_r008_integration.py: Integration tests
+- No changes to other round modules
+
+CONSTRAINTS:
+- Lane frozen, STOP_NOW.flag preserved
+- No merge / push / next round
+- No modifications to index.js, config.json, run_opencode_loop.ps1, .githooks/*
+
+IMPLEMENTATION:
+1. TradingEngine.__init__(): Added mode_controller, mode_recorder instances
+2. _map_to_r008_mode(): Maps PAPER_TRADE/AUTO_TRADE to Mode enum
+3. _record_mode_transition(): Records transitions in ModeRecorder
+4. _validate_mode_allows_trading(): Checks if current mode permits trading
+5. run_loop(): Added R008 mode validation before trade execution
+6. toggle_mode(): Records transition in ModeRecorder
+7. /api/mode_transition: New endpoint with transition validation
+8. /api/mode_history: New endpoint for transition history
+9. get_state(): Exposes r008_mode, mode_allows_trading, mode_transition_count
+10. Degradation pause/restore: Records mode transitions
+
+VALIDATION:
+- R008 tests: 40/40 PASS
+- R006 regression: 19/19 PASS
+- R011 regression: 10/10 PASS
+- Forbidden changes: PASS
+- Branch workflow: PASS
+- Required evidence: PASS
+
+================================================================================
+END OF TASK
+================================================================================
