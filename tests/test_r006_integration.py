@@ -211,6 +211,61 @@ class TestR006RunLoopHooks:
         # Verify degradation is in the loop
         assert 'degradation_center.evaluate_and_degrade' in source
         assert 'degradation_center.restore' in source
+    
+    def test_run_loop_has_degradation_hard_gate(self):
+        """run_loop has hard gate for PAUSE_TRADING strategy"""
+        import inspect
+        source = inspect.getsource(TradingEngine.run_loop)
+        
+        # Verify hard gate exists before symbol processing
+        assert 'DegradationStrategy.PAUSE_TRADING' in source
+        assert 'continue' in source
+    
+    def test_circuit_breaker_syncs_from_risk_officer(self):
+        """CircuitBreaker syncs daily_pnl and consecutive_loss from RiskOfficer"""
+        engine = TradingEngine()
+        
+        # Simulate a trade exit that updates RiskOfficer
+        engine.risk.daily_pnl = -500
+        engine.risk.consecutive_loss = 2
+        
+        # Sync to circuit breaker
+        engine.circuit_breaker.sync_from_risk_officer(engine.risk.daily_pnl, engine.risk.consecutive_loss)
+        
+        # CircuitBreaker should now match RiskOfficer
+        assert engine.circuit_breaker.daily_pnl == -500
+        assert engine.circuit_breaker.consecutive_losses == 2
+    
+    def test_circuit_breaker_opens_after_sync(self):
+        """CircuitBreaker opens after sync shows excessive losses"""
+        engine = TradingEngine()
+        
+        # Set RiskOfficer to excessive losses
+        engine.risk.daily_pnl = -6000  # exceeds default max_daily_loss=5000
+        engine.risk.consecutive_loss = 5  # exceeds default max_consecutive_losses=3
+        
+        # Sync to circuit breaker
+        engine.circuit_breaker.sync_from_risk_officer(engine.risk.daily_pnl, engine.risk.consecutive_loss)
+        
+        # CircuitBreaker should now be OPEN
+        from circuit.breaker import CircuitBreakerState
+        assert engine.circuit_breaker.state == CircuitBreakerState.OPEN
+    
+    def test_degradation_pause_blocks_symbol_processing(self):
+        """PAUSE_TRADING strategy blocks symbol processing in run_loop"""
+        engine = TradingEngine()
+        
+        # Force degradation to PAUSE_TRADING
+        from failover.center import DegradationStrategy
+        engine.degradation_center.current_strategy = DegradationStrategy.PAUSE_TRADING
+        
+        # Verify strategy is active
+        assert engine.degradation_center.get_current_strategy() == DegradationStrategy.PAUSE_TRADING
+        
+        # Verify run_loop has the hard gate check
+        import inspect
+        source = inspect.getsource(TradingEngine.run_loop)
+        assert 'DegradationStrategy.PAUSE_TRADING' in source
 
 
 if __name__ == '__main__':

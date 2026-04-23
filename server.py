@@ -1016,6 +1016,12 @@ class TradingEngine:
             # R007: Update market data timestamp
             self.silence_detector.update_market_data()
 
+            # R006: Degradation hard gate - health critical blocks trading
+            if self.degradation_center.get_current_strategy() == DegradationStrategy.PAUSE_TRADING:
+                log.warning("R006 Degradation: PAUSE_TRADING active, skipping trade execution")
+                await asyncio.sleep(3)
+                continue
+
             # R006: Circuit breaker check before processing symbols
             circuit_blocked = self.circuit_breaker.should_block_trade()
             if circuit_blocked:
@@ -1136,6 +1142,8 @@ class TradingEngine:
             self.risk.on_exit(symbol, pnl)
             # R006: Record trade result to circuit breaker
             self.circuit_breaker.record_trade_result(pnl)
+            # R006: Sync circuit breaker from RiskOfficer (authoritative source for daily_pnl/consecutive_loss)
+            self.circuit_breaker.sync_from_risk_officer(self.risk.daily_pnl, self.risk.consecutive_loss)
             self.trades_log.append(TradeRecord(
                 id=f"T{int(time.time())}",
                 symbol=symbol,
@@ -1168,6 +1176,8 @@ class TradingEngine:
             self.risk.on_partial_exit(symbol, partial_pnl)
             # R006: Record partial trade result to circuit breaker
             self.circuit_breaker.record_trade_result(partial_pnl)
+            # R006: Sync circuit breaker from RiskOfficer (authoritative source)
+            self.circuit_breaker.sync_from_risk_officer(self.risk.daily_pnl, self.risk.consecutive_loss)
 
     def get_state(self) -> dict:
         state = {

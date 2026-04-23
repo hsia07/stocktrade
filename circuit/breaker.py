@@ -49,6 +49,24 @@ class CircuitBreaker:
             self.state = CircuitBreakerState.HALF_OPEN
             self.logger.info("Circuit breaker transitioning to half-open state.")
 
+    def sync_from_risk_officer(self, daily_pnl: float, consecutive_loss: int) -> None:
+        """Sync circuit breaker state from RiskOfficer (authoritative source)."""
+        self.daily_pnl = daily_pnl
+        self.consecutive_losses = consecutive_loss
+        # Re-evaluate state based on synced values
+        if self.daily_pnl <= -self.max_daily_loss or self.consecutive_losses >= self.max_consecutive_losses:
+            if self.state != CircuitBreakerState.OPEN:
+                self.state = CircuitBreakerState.OPEN
+                self.logger.warning("Circuit breaker opened after sync from RiskOfficer.")
+        elif self.state == CircuitBreakerState.OPEN:
+            # Check if enough time passed for half-open
+            if datetime.now() - self.last_reset_date > timedelta(minutes=1):
+                self.state = CircuitBreakerState.HALF_OPEN
+                self.logger.info("Circuit breaker transitioning to half-open state after sync.")
+        elif self.state == CircuitBreakerState.HALF_OPEN and self.consecutive_losses == 0:
+            self.state = CircuitBreakerState.CLOSED
+            self.logger.info("Circuit breaker closed after sync - consecutive losses cleared.")
+
     def get_status(self) -> dict:
         return {
             "state": self.state.name,
