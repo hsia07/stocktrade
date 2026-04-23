@@ -1,0 +1,35 @@
+================================================================================
+TASK: R006-HEALTH-CIRCUIT-INTEGRATION-ENFORCEMENT-FIX
+================================================================================
+
+round_id: R006-HEALTH-CIRCUIT-INTEGRATION-ENFORCEMENT-FIX
+task_type: r006_health_circuit_integration_enforcement_fix_candidate
+reply_id: r006-health-circuit-integration-enforcement-fix-001
+
+OBJECTIVE:
+Fix two blockers identified in R006 enforcement audit:
+1. DegradationCenter PAUSE_TRADING lacks hard gate in run_loop
+2. RiskOfficer/CircuitBreaker daily_pnl and consecutive_loss double tracking
+
+FIXES APPLIED:
+BLOCKER-1:
+- Added hard gate in run_loop() before symbol processing:
+  if degradation_center.get_current_strategy() == DegradationStrategy.PAUSE_TRADING:
+      log.warning(...); await asyncio.sleep(3); continue
+- Health critical now hard-blocks trading, not just logs warning
+
+BLOCKER-2:
+- Added CircuitBreaker.sync_from_risk_officer(daily_pnl, consecutive_loss) method
+- In close() and partial exit: after on_exit() and record_trade_result(),
+  call sync_from_risk_officer() to sync CircuitBreaker FROM RiskOfficer
+- RiskOfficer is authoritative source; CircuitBreaker mirrors it
+- get_state() reflects authoritative RiskOfficer values
+
+FILES MODIFIED:
+- server.py: Added degradation hard gate, added sync calls
+- circuit/breaker.py: Added sync_from_risk_officer() method
+- tests/test_r006_integration.py: Added 4 enforcement tests
+
+================================================================================
+END OF TASK
+================================================================================
