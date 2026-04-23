@@ -1,0 +1,46 @@
+round_id: "PHASE2-BATCH-REVIEW-LAW"
+title: "Phase 2 Batch Review Law — Governance Meta-Law for API Auto-Mode"
+status: "pending"
+depends_on:
+  - "R016"
+allowed_paths:
+  - "docs/phase2_batch_review_law.md"
+  - "manifests/phase2_batch_review_law.yaml"
+  - "automation/control/candidates/PHASE2-BATCH-REVIEW-LAW/"
+forbidden_paths:
+  - "server.py"
+  - "server_v2.py"
+  - "index.html"
+  - "index_v2.html"
+  - "config.json"
+  - "run_opencode_loop.ps1"
+  - "tests/"
+  - ".githooks/*"
+  - "master"
+required_evidence:
+  - "automation/control/candidates/PHASE2-BATCH-REVIEW-LAW/task.txt"
+  - "automation/control/candidates/PHASE2-BATCH-REVIEW-LAW/report.json"
+  - "automation/control/candidates/PHASE2-BATCH-REVIEW-LAW/evidence.json"
+  - "automation/control/candidates/PHASE2-BATCH-REVIEW-LAW/candidate.diff"
+required_checks:
+  - "py ./scripts/validation/check_branch_workflow.py --repo-root . --all"
+  - "py ./scripts/validation/check_forbidden_changes.py --manifest ./manifests/phase2_batch_review_law.yaml"
+  - "py ./scripts/validation/check_required_evidence.py --manifest ./manifests/phase2_batch_review_law.yaml"
+  - "py ./scripts/validation/validate_evidence.py --manifest ./manifests/phase2_batch_review_law.yaml --repo-root ."
+direct_fail_conditions:
+  - "modified server.py or any Phase 1 functional main chain"
+  - "modified master branch"
+  - "modified forbidden paths (index.js, config.json, run_opencode_loop.ps1, .githooks/*)"
+  - "lane release without authorization"
+  - "auto-mode release without authorization"
+  - "Phase 2 entry without authorization"
+  - "direct commit on canonical"
+  - "evidence shows packaging only (no real governance work)"
+  - "candidate.diff shows zero工作量"
+risk_level: "green"
+owner: "you"
+start_authorized: false
+notes: "Phase 2 Batch Review Law governance meta-law. Draft candidate. Defines 12 chapters and 15 mechanical guards for API-based auto-mode governance chain. Does NOT cover R017 (trading secrets) or Phase 2 per-round laws. Auto-mode not authorized. Phase 2 entry not authorized."
+containment_status: "BATCH_REVIEW_LAW_DRAFT_CANDIDATE"
+phase: "Phase 2"
+auto_run: false
