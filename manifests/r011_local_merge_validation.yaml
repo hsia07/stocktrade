@@ -1,0 +1,70 @@
+round_id: R011-VALIDATION-CHAIN-RECOVERY
+task_type: r011_validation_chain_recovery
+reply_id: r011-validation-chain-recovery-001
+status: completed
+formal_status_code: candidate_ready_awaiting_manual_review
+timestamp: "2026-04-23T12:45:00+08:00"
+
+canonical_head: ea62ba14d1a9bc0e95706235640415f1e8093a11
+candidate_commit: 08bcc690d931b2a85e9fe4bf64755c3166f25aa3
+base_commit: 44a20995a6f0e6297a5a3af6a5e50eac0d282d09
+merge_commit: ea62ba14d1a9bc0e95706235640415f1e8093a11
+merge_authorized: true
+merge_authorization_source: prior human authorization in R011-ARTIFACT-MANAGEMENT-INTEGRATION local merge execution round
+
+evidence_package:
+  base_dir: automation/control/candidates/R011-VALIDATION-CHAIN-RECOVERY
+  required_files:
+    - task.txt
+    - report.json
+    - evidence.json
+    - candidate.diff
+
+files_modified_in_scope:
+  - server.py
+  - tests/test_r011_integration.py
+
+constraints:
+  allowed_branches:
+    - work/canonical-mainline-repair-001
+  forbidden_branches:
+    - master
+    - work/r016-decision-trace
+  allowed_paths:
+    - automation/control/candidates/R011-VALIDATION-CHAIN-RECOVERY/**
+    - manifests/**
+    - scripts/validation/**
+  forbidden_paths:
+    - index.js
+    - config.json
+    - run_opencode_loop.ps1
+    - .githooks/**
+    - monitoring/silence/recovery.py
+    - master
+  forbidden_actions:
+    - lane_release
+    - promotion
+    - phase2_startup
+    - revert
+    - reset
+    - cherry_pick
+    - modify_server
+    - modify_tests
+    - modify_index
+    - modify_config
+    - modify_run_script
+    - modify_master
+
+validators:
+  - script: scripts/validation/validate_evidence.py
+    args:
+      manifest: manifests/r011_local_merge_validation.yaml
+  - script: scripts/validation/check_forbidden_changes.py
+    args:
+      manifest: manifests/r011_local_merge_validation.yaml
+  - script: scripts/validation/check_required_evidence.py
+    args:
+      manifest: manifests/r011_local_merge_validation.yaml
+  - script: scripts/validation/check_branch_workflow.py
+    args:
+      all: true

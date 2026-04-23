@@ -1,0 +1,23 @@
+================================================================================
+CANDIDATE DIFF
+R011-VALIDATION-CHAIN-RECOVERY-REPAIR
+================================================================================
+
+Task: Repair R011 validation recovery to use independent candidate branch
+
+This round FIXES the prior R011 validation chain recovery:
+- Prior issue: Used canonical directly, validate_evidence FAIL
+- Fix: Uses independent candidate branch
+
+Files in this repair:
+- manifests/r011_local_merge_validation.yaml (修正 round_id, allowed_branches)
+- automation/control/candidates/R011-VALIDATION-CHAIN-RECOVERY-REPAIR/task.txt (NEW)
+- automation/control/candidates/R011-VALIDATION-CHAIN-RECOVERY-REPAIR/evidence.json (NEW)
+- automation/control/candidates/R011-VALIDATION-CHAIN-RECOVERY-REPAIR/report.json (NEW)
+- automation/control/candidates/R011-VALIDATION-CHAIN-RECOVERY-REPAIR/candidate.diff (NEW)
+
+Work: 1 task (fix validation chain repair)
+
+================================================================================
+END OF CANDIDATE DIFF
+================================================================================

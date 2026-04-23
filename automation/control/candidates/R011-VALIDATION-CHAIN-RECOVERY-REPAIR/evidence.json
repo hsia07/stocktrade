@@ -1,0 +1,24 @@
+{
+  "round_id": "R011-VALIDATION-CHAIN-RECOVERY-REPAIR",
+  "task_type": "r011_validation_chain_recovery_repair",
+  "reply_id": "r011-validation-chain-recovery-repair-001",
+  "status": "completed",
+  "formal_status_code": "candidate_ready_awaiting_manual_review",
+  "timestamp": "2026-04-23T12:55:00+08:00",
+  "recovered_validation": true,
+  "canonical_head": "ea62ba14d1a9bc0e95706235640415f1e8093a11",
+  "merge_commit": "ea62ba14d1a9bc0e95706235640415f1e8093a11",
+  "validation_results": {
+    "validate_evidence": "PASS",
+    "check_forbidden_changes": "PASS",
+    "check_required_evidence": "PASS",
+    "check_branch_workflow": "PASS"
+  },
+  "previous_invalidation_addressed": {
+    "independent_candidate_branch_created": true,
+    "correct_manifest_round_id": true,
+    "all_four_validators_pass": true
+  },
+  "blockers": [],
+  "next_action": "await_manual_merge_decision"
+}
