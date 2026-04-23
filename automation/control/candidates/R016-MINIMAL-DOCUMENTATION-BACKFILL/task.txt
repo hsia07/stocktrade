@@ -1,0 +1,43 @@
+round_id: R016-MINIMAL-DOCUMENTATION-BACKFILL
+task_type: r016_minimal_documentation_backfill_candidate
+base_commit: 6a221306995bc40ce3ab9e0e91cdf294dd957417
+canonical_branch: work/canonical-mainline-repair-001
+candidate_branch: work/R016-MINIMAL-DOCUMENTATION-BACKFILL-candidate
+
+implementation_plan: Plan C (Minimal Documentation Backfill)
+strategy: Create formal API schema snapshot documenting all current endpoints and state fields, add schema_version to get_state(), zero functional code changes.
+
+files_modified:
+  - server.py: Added schema_version to get_state() return dict (1 line change)
+  - docs/phase1_api_schema.md: NEW formal API schema snapshot document
+  - tests/test_r016_api_contract.py: NEW contract tests (25 tests)
+  - manifests/r016_minimal_documentation_backfill.yaml: NEW R016 dedicated manifest
+
+r016_scope:
+  - Field naming standardization: documented in phase1_api_schema.md
+  - API schema fixation: documented all 8 endpoints with response keys
+  - Data contract fixation: documented 19 state fields with compatibility rules
+  - schema_version: added to get_state() as "1.0.0"
+
+forbidden_scope:
+  - No new functional endpoints
+  - No DecisionTracer / decision traceability code
+  - No changes to existing round modules
+  - No changes to run_loop execution semantics
+
+regression_tests_passed:
+  - test_r016_api_contract.py: 25/25 PASS
+  - test_r006_integration.py: 19/19 PASS
+  - test_r007_integration.py: 10/10 PASS
+  - test_r008_integration.py: 43/43 PASS
+  - test_r009_integration.py: 28/28 PASS
+  - test_r011_integration.py: 10/10 PASS
+
+validators_executed:
+  - validate_evidence.py: PASS
+  - check_forbidden_changes.py: PASS
+  - check_required_evidence.py: PASS
+  - check_branch_workflow.py: PASS
+
+blockers_found: []
+next_action: candidate_ready_awaiting_manual_review
