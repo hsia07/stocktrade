@@ -1,0 +1,58 @@
+{
+  "round_id": "R009-EXECUTION-MODEL-INTEGRATION",
+  "evidence_type": "candidate_package",
+  "base_commit": "02c114b59c6274f1a4b0a0497a10fa83171f1d94",
+  "candidate_branch": "work/R009-EXECUTION-MODEL-INTEGRATION-candidate",
+  "files": [
+    "server.py",
+    "tests/test_r009_integration.py",
+    "automation/control/candidates/R009-EXECUTION-MODEL-INTEGRATION/task.txt",
+    "automation/control/candidates/R009-EXECUTION-MODEL-INTEGRATION/report.json",
+    "automation/control/candidates/R009-EXECUTION-MODEL-INTEGRATION/evidence.json",
+    "automation/control/candidates/R009-EXECUTION-MODEL-INTEGRATION/candidate.diff"
+  ],
+  "test_execution": {
+    "test_r009_integration.py": {
+      "status": "PASS",
+      "count": 28,
+      "details": "All R009 integration tests passed including instances, task recording, API endpoints, state exposure, authority ruling, and R006/R007/R008/R011 regression"
+    },
+    "test_r006_integration.py": {
+      "status": "PASS",
+      "count": 19,
+      "details": "R006 regression tests passed; degradation center, circuit breaker, health monitor all functional"
+    },
+    "test_r007_integration.py": {
+      "status": "PASS",
+      "count": 10,
+      "details": "R007 regression tests passed; silence detector and recovery strategy functional"
+    },
+    "test_r008_integration.py": {
+      "status": "PASS",
+      "count": 43,
+      "details": "R008 regression tests passed; mode controller, mode recorder, fail-closed validation all functional"
+    },
+    "test_r011_integration.py": {
+      "status": "PASS",
+      "count": 10,
+      "details": "R011 regression tests passed; artifact manager create/list/validate all functional"
+    }
+  },
+  "validator_execution": {
+    "validate_evidence.py": "PASS",
+    "check_forbidden_changes.py": "PASS - no forbidden paths modified",
+    "check_required_evidence.py": "PASS - all required evidence present",
+    "check_branch_workflow.py": "PASS - not on canonical branch, source-of-truth lock verified"
+  },
+  "authority_rulings": {
+    "execution_authority": "TradingEngine.run_loop() retains sole execution authority",
+    "priority_scheduler": "Advisory task tracking only; does not control execution order",
+    "priority_monitor": "Metrics and alerts only; does not block or modify execution",
+    "conflict_resolution": "Actual execution chain prevails over scheduler state"
+  },
+  "runtime_order_impact": "MINIMAL - existing execution order preserved exactly. R009 records tasks after execution without changing flow.",
+  "api_contract_impact": "MINIMAL - two new GET endpoints added (/api/priority_status, /api/priority_alerts). Both return advisory_only=true. Existing endpoints unchanged.",
+  "blockers": [],
+  "forbidden_changes": [],
+  "ready_for_candidate": true
+}
