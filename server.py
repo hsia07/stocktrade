@@ -8,7 +8,7 @@ Run:
 """
 
 import asyncio, json, logging, os, time, math
-from datetime import datetime, date
+from datetime import datetime, date, timedelta
 from collections import deque
 from dataclasses import dataclass, asdict, field
 from enum import Enum
@@ -17,6 +17,10 @@ import uvicorn
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
+
+# R007 Silence Protection imports
+from monitoring.silence.detector import SilenceDetector
+from monitoring.silence.recovery import SilenceRecovery, SilenceReport
 
 load_dotenv()
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
@@ -942,6 +946,9 @@ class TradingEngine:
         self.agent_reports = {}
         self._shioaji_api  = None
         self._running      = False
+        # R007 Silence Protection instances
+        self.silence_detector = SilenceDetector()
+        self.silence_recovery = SilenceRecovery()
 
     def connect_shioaji(self):
         if PAPER_TRADE:
@@ -971,8 +978,12 @@ class TradingEngine:
         log.info("Trading engine started")
         while self._running:
             self.risk.ensure_session()
+            # R007: Update heartbeat each loop iteration
+            self.silence_detector.update_heartbeat()
             ticks = self.mock.tick()
             self.latest_ticks = ticks
+            # R007: Update market data timestamp
+            self.silence_detector.update_market_data()
 
             for sym in WATCH_LIST:
                 tick  = ticks[sym]
@@ -980,6 +991,17 @@ class TradingEngine:
                 bar   = bars[-1] if bars else None
                 if bar:
                     self.signal_eng.update_vwap(sym, bar)
+
+                # R007: Check silence before signal evaluation
+                if self.silence_detector.is_silent():
+                    silence_report = SilenceReport(
+                        start_time=datetime.now() - timedelta(seconds=30),
+                        duration=30
+                    )
+                    strategy = self.silence_recovery.evaluate_and_recover(silence_report)
+                    self.observer.emit_error("silence", "recovery", f"Silence detected for {sym}, strategy: {strategy.name}")
+                    log.warning(f"Silence detected for {sym}, applying recovery strategy: {strategy.name}")
+                    continue
 
                 rt_data = self.data_sep.get_realtime_data(sym, bars)
 
@@ -1014,6 +1036,8 @@ class TradingEngine:
                             self.execution.place(sym, act, lots, tick["price"], sig.reason)
                             self.risk.on_entry(sig, lots, tick["price"])
                             self.observer.emit_trade(sym, act, tick["price"], lots)
+                            # R007: Update trades timestamp on successful trade
+                            self.silence_detector.update_trades()
                     else:
                         self.observer.emit_risk_alert(sym, "signal_blocked", {"reason": reason})
                         log.info(f"Risk blocked {sym} signal: {reason}")

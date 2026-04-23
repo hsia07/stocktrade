@@ -17,7 +17,7 @@ class SilenceRecovery:
     def __init__(self):
         self.recovery_history = []
 
-    def evaluate_and_recover(self, silence_report: SilenceReport) -> None:
+    def evaluate_and_recover(self, silence_report: SilenceReport) -> RecoveryStrategy:
         escalation_level = self._determine_escalation_level(silence_report.duration)
         strategy = self._get_strategy(escalation_level)
 
@@ -35,6 +35,7 @@ class SilenceRecovery:
             'duration': silence_report.duration,
             'strategy': strategy.name
         })
+        return strategy
 
     def _determine_escalation_level(self, duration: int) -> int:
         if duration < 10:
