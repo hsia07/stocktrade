@@ -509,5 +509,33 @@ Every Phase 2 round requires explicit human authorization with:
 - auto_mode_release_authorized: true/false
 
 ================================================================================
+SECTION 14: MERGE AUTHORIZATION RULES
+================================================================================
+
+RULE 14.1 - Merge Authorization Mandatory:
+Candidate completion does NOT imply merge authorization.
+The following actions require SEPARATE explicit human authorization:
+- git merge (any branch into canonical)
+- git merge --no-ff
+- git merge --squash
+- Any operation that brings candidate commits into canonical
+
+RULE 14.2 - Merge Authorization Evidence Required:
+Every merge into canonical MUST have corresponding evidence:
+- merge_authorized: true in round manifest
+- merge_authorization_commit: [commit_hash_or_human_signature]
+- merge_decision_point_documented: true
+
+RULE 14.3 - Unauthorized Merge Blocked:
+If merge authorization evidence is missing:
+- status = blocked
+- formal_status_code = unauthorized_merge_blocked
+- action = STOP — do not proceed with merge
+
+RULE 14.4 - Incident Reference:
+R007 unauthorized merge (551b3bc) is a SINGLE-INCIDENT EXCEPTION.
+It is NOT precedent. Future unauthorized merges are strictly blocked.
+
+================================================================================
 END OF REVIEW MEMORY
 ================================================================================

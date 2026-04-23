@@ -392,11 +392,35 @@ PHASE 2 EARLY PRIORITIES:
 3. Mechanical gate residual hardening (low priority)
 
 ================================================================================
+SECTION 8: MERGE AUTHORIZATION GOVERNANCE
+================================================================================
+
+MERGE AUTHORIZATION MANDATORY:
+- Candidate completion != Merge authorization
+- git merge into canonical requires EXPLICIT separate authorization
+- merge_authorized: true MUST be present in round manifest
+- merge_authorization_commit: [evidence] MUST be documented
+
+UNAUTHORIZED MERGE INCIDENT (R007):
+- Incident commit: 551b3bc
+- Status: Single-incident exception, formally acknowledged
+- NOT precedent for future unauthorized merges
+- Future unauthorized merges: STRICTLY BLOCKED
+
+MERGE DECISION POINT:
+Before executing git merge, the following MUST be confirmed:
+1. Human has explicitly authorized merge
+2. merge_authorized field is true in manifest
+3. Candidate has passed all tests
+4. No blocked files in candidate
+
+================================================================================
 REMAINING NON-MECHANICAL RULES:
 - 不得自行改題（無機械檢查）
 - 不得偷做下一輪（無機械檢查）
 - 狀態碼正確性（無機械檢查）
 - lane frozen 維持（STOP_NOW.flag 為人工檢查）
+- merge authorization（新增：template + validator 已機械化，human 最終簽字）
 
 ================================================================================
 END OF GOVERNANCE GUIDE
