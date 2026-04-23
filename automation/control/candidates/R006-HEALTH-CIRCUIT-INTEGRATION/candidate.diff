@@ -1,0 +1,47 @@
+================================================================================
+CANDIDATE DIFF
+R006-HEALTH-CIRCUIT-INTEGRATION
+================================================================================
+
+Task: Integrate HealthMonitor/CircuitBreaker/DegradationCenter into TradingEngine
+
+Files modified:
+- server.py (+47 lines): Added R006 instances, hooks in run_loop, trade result recording
+- tests/test_r006_integration.py (NEW, 217 lines): 15 integration tests
+
+Work: 5 integration points
+
+Integration Points:
+1. TradingEngine.__init__():
+   - Added self.health_monitor = HealthMonitor()
+   - Added self.circuit_breaker = CircuitBreaker(...)
+   - Added self.degradation_center = DegradationCenter()
+
+2. run_loop() start:
+   - Added health_results = self.health_monitor.run_checks()
+   - Added health_aggregate evaluation
+   - Added degradation_center.evaluate_and_degrade() on critical
+   - Added degradation_center.restore() on recovery
+
+3. run_loop() before trade:
+   - Added circuit_blocked = self.circuit_breaker.should_block_trade()
+   - Added circuit breaker check before risk.can_enter()
+
+4. _manage_positions():
+   - Added self.circuit_breaker.record_trade_result(pnl) in close()
+   - Added self.circuit_breaker.record_trade_result(partial_pnl) in partial exit
+
+5. get_state():
+   - Added health_status exposure
+   - Added circuit_breaker exposure
+   - Added degradation_strategy exposure
+
+No changes to:
+- RiskOfficer core logic (9 checks retained)
+- R007 SilenceProtection
+- R011 ArtifactManager
+- Other business logic files
+
+================================================================================
+END OF CANDIDATE DIFF
+================================================================================
