@@ -26,6 +26,6 @@
   "heads_unchanged": true,
   "check_branch_workflow_passed": true,
   "slice_boundary_honored": true,
-  "candidate_commit": "cb90661292aedf2ea66ca45aad9b085d2b44b14c",
+  "candidate_commit": "e27c95f713e40d5cfde02d41b0135947828e94a7",
   "candidate_branch": "work/candidate-c3-slice2-retry-backoff"
 }
