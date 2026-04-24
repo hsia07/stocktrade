@@ -1,0 +1,28 @@
+PHASE2-API-AUTOMODE-EXTERNAL-DEPENDENCY-VERIFICATION-CONTRACT
+
+Task: Create external dependency verification contract for API auto-mode.
+
+Preconditions:
+- Phase 2 Batch Review Law on remote
+- Phase 2 API Governance Chain on remote
+- Evidence reconciliation complete
+- Activation authorized (activation_authorized = true)
+- Unlock state (UNLOCKED)
+
+Work performed:
+1. Created external dependency verification contract document (docs/phase2_api_automode_external_dependency_verification_contract.md)
+2. Created verification manifest (manifests/phase2_api_automode_external_dependency_verification.yaml)
+3. Created credential verification fixture (docs/phase2_api_automode_credential_verification_fixture.md)
+
+Status:
+- Verification contract framework established
+- Credential format verification defined
+- Secret masking rules established
+- No real credentials stored
+
+Blockers:
+- execution_authorized: false (requires separate authorization)
+- r017_not_authorized: true (separate round)
+- phase2_entry_not_authorized: true (separate)
+
+Next step: Await merge authorization for verification contract.

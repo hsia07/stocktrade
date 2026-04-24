@@ -1,0 +1,63 @@
+---
+round_id: PHASE2-API-AUTOMODE-EXTERNAL-DEPENDENCY-VERIFICATION-CONTRACT
+task_type: api_automode_external_dependency_verification_contract_creation
+phase: Phase 2
+status: candidate
+
+primary_file: docs/phase2_api_automode_external_dependency_verification_contract.md
+exact_related_files:
+  - docs/phase2_api_automode_credential_verification_fixture.md
+  - manifests/phase2_api_automode_external_dependency_verification.yaml
+  - automation/control/AUTO_MODE_ACTIVATION_LOCK
+
+parent_laws:
+  - docs/phase2_batch_review_law.md
+  - docs/phase2_api_automode_governance_chain.md
+
+governance_preconditions:
+  phase2_batch_review_law: "on_remote"
+  phase2_api_governance_chain: "on_remote"
+  evidence_reconciliation: "complete"
+  activation_authorized: true
+  unlock_state: "UNLOCKED"
+
+scope: external_dependency_verification_contract_creation
+
+files_created:
+  - docs/phase2_api_automode_external_dependency_verification_contract.md
+  - manifests/phase2_api_automode_external_dependency_verification.yaml
+  - docs/phase2_api_automode_credential_verification_fixture.md
+
+files_not_modified:
+  - server.py
+  - tests/*
+  - index.js
+  - config.json
+  - run_opencode_loop.ps1
+  - .githooks/*
+  - _governance/*
+  - master
+
+blockers:
+  execution_authorized: false
+  r017_not_authorized: true
+  phase2_entry_not_authorized: true
+
+non_authorization:
+  - OpenAI API calls NOT AUTHORIZED
+  - Telegram bot execution NOT AUTHORIZED
+  - Execution authorization NOT YET
+  - R017 secrets separate
+  - Phase 2 entry separate
+
+validation:
+  validate_evidence: required
+  check_forbidden_changes: required
+  check_required_evidence: required
+  check_branch_workflow: required
+
+status_codes:
+  candidate: "created_awaiting_merge"
+  merge_authorized: false
+  push_authorized: false
+  execution_authorized: false
