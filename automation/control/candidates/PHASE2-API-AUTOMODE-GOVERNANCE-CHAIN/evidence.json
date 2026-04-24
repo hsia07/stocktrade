@@ -1,0 +1,33 @@
+{
+  "round_id": "PHASE2-API-AUTOMODE-GOVERNANCE-CHAIN",
+  "task_type": "api_automode_governance_chain_candidate_draft",
+  "status": "completed",
+  "formal_status_code": "manual_review_completed",
+  "phase": "Phase 2",
+  "work_done": [
+    "Drafted docs/phase2_api_automode_governance_chain.md: governance chain with 8 chapters",
+    "Created manifests/phase2_api_automode_governance_chain.yaml: dedicated manifest",
+    "Created evidence package: task.txt, report.json, evidence.json, candidate.diff"
+  ],
+  "files_created": [
+    "docs/phase2_api_automode_governance_chain.md",
+    "manifests/phase2_api_automode_governance_chain.yaml",
+    "automation/control/candidates/PHASE2-API-AUTOMODE-GOVERNANCE-CHAIN/task.txt",
+    "automation/control/candidates/PHASE2-API-AUTOMODE-GOVERNANCE-CHAIN/report.json",
+    "automation/control/candidates/PHASE2-API-AUTOMODE-GOVERNANCE-CHAIN/evidence.json",
+    "automation/control/candidates/PHASE2-API-AUTOMODE-GOVERNANCE-CHAIN/candidate.diff"
+  ],
+  "chapters": 8,
+  "scope": "API auto-mode governance chain (OpenAI API ↔ OpenCode ↔ Telegram bot)",
+  "excluded": [
+    "R017 (trading broker secrets) — separate round-specific law",
+    "Phase 2 per-round implementation laws — separate round-specific laws",
+    "Phase 1 (R001-R016) — already closed"
+  ],
+  "r17_not_included": true,
+  "api_automode_governance_chain_included": true,
+  "batch_review_law_dependency": "DEPENDS ON PHASE2-BATCH-REVIEW-LAW",
+  "auto_mode_not_authorized": true,
+  "phase2_entry_not_authorized": true,
+  "validation": "4/4 validators must PASS"
+}

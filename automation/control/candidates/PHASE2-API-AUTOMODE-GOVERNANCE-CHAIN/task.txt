@@ -1,0 +1,35 @@
+round_id: PHASE2-API-AUTOMODE-GOVERNANCE-CHAIN
+task_type: api_automode_governance_chain_candidate_draft
+status: pending
+formal_status_code: candidate_ready_awaiting_manual_review
+
+Scope:
+- API Auto-Mode Governance Chain (OpenAI API ↔ OpenCode ↔ Telegram bot orchestration)
+- Defines role, entry/exit, alignment, fail-closed, traceability rules
+- Does NOT cover: R017 (trading secrets), Phase 2 per-round laws, auto-mode activation
+- Dependency: Depends on PHASE2-BATCH-REVIEW-LAW (already merged)
+
+Deliverables:
+- docs/phase2_api_automode_governance_chain.md: governance chain definition
+- manifests/phase2_api_automode_governance_chain.yaml: dedicated manifest
+- Evidence package: task.txt, report.json, evidence.json, candidate.diff
+
+Chapters (8):
+1. Role Definitions (Telegram, OpenAI, OpenCode, Human)
+2. Entry/Exit/Authorization Events
+3. Round ID / Task Type / Reply ID Alignment Rules
+4. Fail-Closed Rules (API failure, Telegram failure, mismatch)
+5. Human Approval Gate (what requires approval, what OpenCode can do)
+6. Batch Stop / Containment Integration (relationship with batch review law)
+7. Audit Trail / Traceability (idempotency, deduplication)
+8. Non-Authorization Declarations (explicit non-authorizations)
+
+Key Points:
+- Auto-mode NOT ACTIVATED - this defines governance chain only
+- Phase 2 entry NOT AUTHORIZED - requires separate approval
+- R017 EXCLUDED - separate law
+- Message alignment guards defined
+- Fail-closed rules for API/Telegram failures
+- Traceability chain defined
+
+Validation: All governance validators must pass
