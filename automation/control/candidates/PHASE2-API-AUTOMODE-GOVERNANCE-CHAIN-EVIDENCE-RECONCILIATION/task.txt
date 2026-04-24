@@ -1,0 +1,21 @@
+round_id: PHASE2-API-AUTOMODE-GOVERNANCE-CHAIN-EVIDENCE-RECONCILIATION
+task_type: api_automode_governance_chain_evidence_reconciliation
+status: pending
+formal_status_code: candidate_ready_awaiting_manual_review
+
+Scope:
+- PHASE2-API-AUTOMODE-GOVERNANCE-CHAIN evidence reconciliation
+- Fix: candidate.diff was staged AFTER merge (6d5f492), not in original merge commit
+- Does NOT modify: law text, manifest, server.py, tests/*, master
+- Does NOT authorize: auto-mode activation, Phase 2 entry
+
+Deliverables:
+- manifests/phase2_api_automode_governance_chain_evidence_reconciliation.yaml
+- Evidence package: task.txt, report.json, evidence.json, candidate.diff
+
+Previous State:
+- Merge commit 6d5f492 contains: 5 files (governance chain doc + manifest + evidence + report + task)
+- candidate.diff was STAGED AFTER merge, not in original commit
+- This reconciliation formalizes that gap closure
+
+Validation: All governance validators must pass
