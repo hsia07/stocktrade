@@ -1,0 +1,34 @@
+{
+  "evidence_type": "c3_slice3_queue_dlq",
+  "timestamp": "2026-04-25T05:00:00Z",
+  "evidence_files": [
+    "automation/runtime/queue.py",
+    "automation/runtime/dlq.py",
+    "automation/runtime/dlq_adapter.py",
+    "automation/runtime/test_slice3.py",
+    "automation/runtime/api_automode_loop.py",
+    "manifests/phase2_api_automode_c3_slice3_queue_dlq.yaml"
+  ],
+  "preflight_passed": true,
+  "postcheck_passed": true,
+  "tests_executed": true,
+  "test_results": {
+    "enqueue_1000_under_5s": true,
+    "dequeue_ack_1000_under_5s": true,
+    "ack_removes_from_queue": true,
+    "nack_increments_retry_count": true,
+    "nack_max_retries_moves_to_dlq": true,
+    "dlq_schema_complete": true,
+    "dlq_survives_restart": true,
+    "pending_recovery_after_restart": true,
+    "slice2_terminal_failure_to_dlq_adapter": true,
+    "no_idempotency_dedupe_audit_compliance": true,
+    "no_real_api_calls": true
+  },
+  "lock_unchanged": true,
+  "heads_unchanged": true,
+  "check_branch_workflow_passed": true,
+  "slice_boundary_honored": true,
+  "candidate_commit": "TBD_AFTER_COMMIT",
+  "candidate_branch": "work/candidate-c3-slice3-queue-dlq"
+}

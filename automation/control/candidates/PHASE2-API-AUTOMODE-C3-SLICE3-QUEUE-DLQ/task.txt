@@ -1,0 +1,30 @@
+Task: PHASE2-API-AUTOMODE-C3-SLICE3-QUEUE-DLQ
+Date: 2026-04-25
+Scope: C3 Slice 3 only - SQLite Queue + DLQ + Ack/Nack + Restart Recovery
+Constraints: No real API calls, no idempotency, no dedupe, no audit trail, no compliance reporting
+
+Files Created:
+  - automation/runtime/queue.py (SQLite-backed message queue)
+  - automation/runtime/dlq.py (DLQ manager with schema)
+  - automation/runtime/dlq_adapter.py (Slice 2 terminal failure → DLQ adapter)
+  - automation/runtime/test_slice3.py (test suite)
+  - manifests/phase2_api_automode_c3_slice3_queue_dlq.yaml
+
+Files Modified:
+  - automation/runtime/api_automode_loop.py (minimal queue/DLQ integration)
+
+Test Results:
+  - 1000 messages enqueue < 5s: PASS (3.28s)
+  - 1000 messages dequeue + ack < 5s: PASS (0.05s)
+  - ack removes message from queue: PASS
+  - nack increments retry count: PASS
+  - nack max_retries moves to DLQ: PASS
+  - DLQ schema complete (timestamp/provider/correlation_key/failure_reason/original_payload_ref): PASS
+  - DLQ survives restart: PASS
+  - Pending messages recoverable after restart: PASS
+  - Slice 2 terminal failure routes to DLQ via adapter: PASS
+  - No idempotency / dedupe / audit trail / compliance reporting: PASS
+  - No real API calls: PASS
+
+Acceptance Criteria: All met
+Blockers: None

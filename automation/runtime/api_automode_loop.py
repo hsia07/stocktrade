@@ -20,6 +20,15 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Optional, Dict, Any
 
+# Slice 3 integration: queue available for future message-driven processing
+# (imported but not activated in Slice 1/2 loop to preserve core semantics)
+try:
+    from automation.runtime.queue import MessageQueue
+    from automation.runtime.dlq import DLQManager
+except ImportError:
+    MessageQueue = None
+    DLQManager = None
+
 # Configuration
 REPO_ROOT = Path(__file__).parent.parent.parent
 STOP_NOW_FLAG = REPO_ROOT / "automation" / "control" / "STOP_NOW.flag"
@@ -49,6 +58,9 @@ class AutomodeRuntimeLoop:
             "start_time": None,
             "stop_time": None,
         }
+        # Slice 3: queue and DLQ available for integration in later slices
+        self._queue = MessageQueue() if MessageQueue else None
+        self._dlq = DLQManager() if DLQManager else None
         self._setup_signal_handlers()
 
     def _setup_signal_handlers(self):
