@@ -16,5 +16,7 @@
   "lock_unchanged": true,
   "heads_unchanged": true,
   "check_branch_workflow_passed": true,
-  "slice_boundary_honored": true
+  "slice_boundary_honored": true,
+  "candidate_commit": "193a52fb569814df74438c615126feedb0ec3a92",
+  "candidate_branch": "work/candidate-c3-slice1-runtime-loop"
 }

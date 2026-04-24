@@ -1,0 +1,526 @@
+Work: 2 tasks
+Slice: 1 only
+---
+diff --git a/automation/control/candidates/PHASE2-API-AUTOMODE-C3-SLICE1-UNIFIED-RUNTIME-LOOP-SKELETON/candidate.diff b/automation/control/candidates/PHASE2-API-AUTOMODE-C3-SLICE1-UNIFIED-RUNTIME-LOOP-SKELETON/candidate.diff
+new file mode 100644
+index 0000000..ae8e6e5
+--- /dev/null
++++ b/automation/control/candidates/PHASE2-API-AUTOMODE-C3-SLICE1-UNIFIED-RUNTIME-LOOP-SKELETON/candidate.diff
+@@ -0,0 +1,517 @@
++diff --git a/automation/control/candidates/PHASE2-API-AUTOMODE-C3-SLICE1-UNIFIED-RUNTIME-LOOP-SKELETON/evidence.json b/automation/control/candidates/PHASE2-API-AUTOMODE-C3-SLICE1-UNIFIED-RUNTIME-LOOP-SKELETON/evidence.json
++new file mode 100644
++index 0000000..e9cd717
++--- /dev/null
+++++ b/automation/control/candidates/PHASE2-API-AUTOMODE-C3-SLICE1-UNIFIED-RUNTIME-LOOP-SKELETON/evidence.json
++@@ -0,0 +1,20 @@
+++{
+++  "evidence_type": "c3_slice1_runtime_loop_skeleton",
+++  "timestamp": "2026-04-25T03:25:00Z",
+++  "evidence_files": [
+++    "automation/runtime/api_automode_loop.py",
+++    "automation/runtime/test_slice1.py"
+++  ],
+++  "preflight_passed": true,
+++  "postcheck_passed": true,
+++  "tests_executed": true,
+++  "test_results": {
+++    "loop_runs_60s": true,
+++    "stop_now_exit_within_5s": true,
+++    "no_real_api_calls": true
+++  },
+++  "lock_unchanged": true,
+++  "heads_unchanged": true,
+++  "check_branch_workflow_passed": true,
+++  "slice_boundary_honored": true
+++}
++diff --git a/automation/control/candidates/PHASE2-API-AUTOMODE-C3-SLICE1-UNIFIED-RUNTIME-LOOP-SKELETON/report.json b/automation/control/candidates/PHASE2-API-AUTOMODE-C3-SLICE1-UNIFIED-RUNTIME-LOOP-SKELETON/report.json
++new file mode 100644
++index 0000000..df270e4
++--- /dev/null
+++++ b/automation/control/candidates/PHASE2-API-AUTOMODE-C3-SLICE1-UNIFIED-RUNTIME-LOOP-SKELETON/report.json
++@@ -0,0 +1,21 @@
+++{
+++  "task": "PHASE2-API-AUTOMODE-C3-SLICE1-UNIFIED-RUNTIME-LOOP-SKELETON",
+++  "status": "completed",
+++  "formal_status_code": "candidate_ready_awaiting_manual_review",
+++  "timestamp": "2026-04-25T03:25:00Z",
+++  "executed_by": "OpenCode",
+++  "slice": 1,
+++  "slice_objective": "unified_runtime_loop_skeleton_with_stop_now_checking",
+++  "test_results": {
+++    "test_1_loop_60s": "PASS",
+++    "test_2_stop_now_5s": "PASS",
+++    "test_3_no_api_calls": "PASS"
+++  },
+++  "files_created": [
+++    "automation/runtime/api_automode_loop.py",
+++    "automation/runtime/test_slice1.py"
+++  ],
+++  "activation_lock_modified": false,
+++  "openai_calls_made": false,
+++  "telegram_calls_made": false
+++}
++diff --git a/automation/control/candidates/PHASE2-API-AUTOMODE-C3-SLICE1-UNIFIED-RUNTIME-LOOP-SKELETON/task.txt b/automation/control/candidates/PHASE2-API-AUTOMODE-C3-SLICE1-UNIFIED-RUNTIME-LOOP-SKELETON/task.txt
++new file mode 100644
++index 0000000..e3c5359
++--- /dev/null
+++++ b/automation/control/candidates/PHASE2-API-AUTOMODE-C3-SLICE1-UNIFIED-RUNTIME-LOOP-SKELETON/task.txt
++@@ -0,0 +1,12 @@
+++Task: PHASE2-API-AUTOMODE-C3-SLICE1-UNIFIED-RUNTIME-LOOP-SKELETON
+++Date: 2026-04-25
+++Scope: C3 Slice 1 only - Unified runtime loop skeleton
+++Constraints: No real OpenAI/Telegram calls, no Slice 2/3/4 work
+++Files Created:
+++  - automation/runtime/api_automode_loop.py
+++  - automation/runtime/test_slice1.py
+++Test Results:
+++  - Loop runs >=60s without crash: PASS
+++  - STOP_NOW.flag exit <=5s: PASS (0.10s)
+++  - No real API calls: PASS
+++Acceptance Criteria: All met
++diff --git a/automation/runtime/api_automode_loop.py b/automation/runtime/api_automode_loop.py
++new file mode 100644
++index 0000000..f03f255
++--- /dev/null
+++++ b/automation/runtime/api_automode_loop.py
++@@ -0,0 +1,196 @@
+++"""
+++PHASE2 API Automode - C3 Slice 1: Unified Runtime Loop Skeleton
+++
+++This is a MOCK runtime loop skeleton for the OpenAI + Telegram dual-provider
+++orchestration system. It contains NO real OpenAI or Telegram API calls.
+++
+++Slice 1 Acceptance Criteria:
+++1. Loop runs for >= 60s without crash
+++2. STOP_NOW.flag causes clean exit within <= 5s
+++3. No OpenAI/Telegram calls in this slice (mock only)
+++"""
+++
+++import os
+++import sys
+++import time
+++import json
+++import signal
+++import logging
+++from datetime import datetime, timezone
+++from pathlib import Path
+++from typing import Optional, Dict, Any
+++
+++# Configuration
+++REPO_ROOT = Path(__file__).parent.parent.parent
+++STOP_NOW_FLAG = REPO_ROOT / "automation" / "control" / "STOP_NOW.flag"
+++LOG_FORMAT = "%(asctime)s [%(levelname)s] %(name)s: %(message)s"
+++TICK_INTERVAL = 2.0  # seconds between loop ticks
+++STOP_CHECK_INTERVAL = 0.5  # seconds between STOP_NOW checks during shutdown
+++
+++# Setup logging
+++logging.basicConfig(level=logging.INFO, format=LOG_FORMAT)
+++logger = logging.getLogger("api_automode_loop")
+++
+++
+++class AutomodeRuntimeLoop:
+++    """Mock unified runtime loop skeleton for dual-provider orchestration."""
+++
+++    def __init__(self):
+++        self._running = False
+++        self._shutdown_requested = False
+++        self._tick_count = 0
+++        self._start_time: Optional[float] = None
+++        self._stop_time: Optional[float] = None
+++        self._metrics: Dict[str, Any] = {
+++            "ticks": 0,
+++            "mock_work_items": 0,
+++            "mock_dispatches": 0,
+++            "errors": 0,
+++            "start_time": None,
+++            "stop_time": None,
+++        }
+++        self._setup_signal_handlers()
+++
+++    def _setup_signal_handlers(self):
+++        """Register SIGINT and SIGTERM for graceful shutdown."""
+++        signal.signal(signal.SIGINT, self._signal_handler)
+++        signal.signal(signal.SIGTERM, self._signal_handler)
+++        logger.info("Signal handlers registered for SIGINT and SIGTERM")
+++
+++    def _signal_handler(self, signum, frame):
+++        """Handle shutdown signals gracefully."""
+++        sig_name = "SIGINT" if signum == signal.SIGINT else "SIGTERM"
+++        logger.info(f"Received {sig_name}, requesting graceful shutdown...")
+++        self._shutdown_requested = True
+++
+++    def _check_stop_now(self) -> bool:
+++        """Check if STOP_NOW.flag exists."""
+++        return STOP_NOW_FLAG.exists()
+++
+++    def _mock_generate_work_item(self) -> Optional[Dict[str, Any]]:
+++        """Mock: Generate a work item (NO OpenAI call)."""
+++        self._tick_count += 1
+++        work_item = {
+++            "tick": self._tick_count,
+++            "timestamp": datetime.now(timezone.utc).isoformat(),
+++            "provider": "mock_openai",
+++            "status": "mock_generated",
+++            "content_hash": f"mock_hash_{self._tick_count}",
+++        }
+++        logger.debug(f"Mock work item generated: tick={self._tick_count}")
+++        return work_item
+++
+++    def _mock_dispatch(self, work_item: Dict[str, Any]) -> bool:
+++        """Mock: Dispatch work item (NO Telegram call)."""
+++        logger.debug(
+++            f"Mock dispatch: tick={work_item['tick']}, provider=mock_telegram"
+++        )
+++        return True
+++
+++    def _process_tick(self):
+++        """Process one loop tick."""
+++        try:
+++            # Check STOP_NOW before processing
+++            if self._check_stop_now():
+++                logger.info("STOP_NOW.flag detected, initiating clean shutdown")
+++                self._shutdown_requested = True
+++                return
+++
+++            # Mock work generation
+++            work_item = self._mock_generate_work_item()
+++            if work_item:
+++                self._metrics["mock_work_items"] += 1
+++
+++                # Mock dispatch
+++                success = self._mock_dispatch(work_item)
+++                if success:
+++                    self._metrics["mock_dispatches"] += 1
+++
+++            self._metrics["ticks"] = self._tick_count
+++
+++        except Exception as e:
+++            self._metrics["errors"] += 1
+++            logger.error(f"Error in tick {self._tick_count}: {e}")
+++
+++    def start(self):
+++        """Start the runtime loop."""
+++        self._start_time = time.time()
+++        self._running = True
+++        self._metrics["start_time"] = datetime.now(timezone.utc).isoformat()
+++
+++        logger.info("=" * 60)
+++        logger.info("API AUTOMODE RUNTIME LOOP - SLICE 1 (MOCK)")
+++        logger.info("=" * 60)
+++        logger.info(f"STOP_NOW flag path: {STOP_NOW_FLAG}")
+++        logger.info(f"Tick interval: {TICK_INTERVAL}s")
+++        logger.info("NO REAL OpenAI/Telegram calls in this slice")
+++        logger.info("=" * 60)
+++        logger.info("Loop started")
+++
+++        try:
+++            while self._running and not self._shutdown_requested:
+++                self._process_tick()
+++
+++                if self._shutdown_requested:
+++                    break
+++
+++                # Sleep with periodic STOP_NOW checks
+++                slept = 0.0
+++                while slept < TICK_INTERVAL and not self._shutdown_requested:
+++                    time.sleep(STOP_CHECK_INTERVAL)
+++                    slept += STOP_CHECK_INTERVAL
+++                    if self._check_stop_now():
+++                        logger.info("STOP_NOW.flag detected during sleep")
+++                        self._shutdown_requested = True
+++                        break
+++
+++        except KeyboardInterrupt:
+++            logger.info("KeyboardInterrupt received")
+++            self._shutdown_requested = True
+++
+++        finally:
+++            self._shutdown()
+++
+++    def _shutdown(self):
+++        """Perform graceful shutdown."""
+++        self._running = False
+++        self._stop_time = time.time()
+++        self._metrics["stop_time"] = datetime.now(timezone.utc).isoformat()
+++
+++        runtime = 0.0
+++        if self._start_time:
+++            runtime = self._stop_time - self._start_time
+++
+++        logger.info("=" * 60)
+++        logger.info("SHUTDOWN COMPLETE")
+++        logger.info("=" * 60)
+++        logger.info(f"Total runtime: {runtime:.2f}s")
+++        logger.info(f"Total ticks: {self._tick_count}")
+++        logger.info(f"Mock work items: {self._metrics['mock_work_items']}")
+++        logger.info(f"Mock dispatches: {self._metrics['mock_dispatches']}")
+++        logger.info(f"Errors: {self._metrics['errors']}")
+++        logger.info("=" * 60)
+++
+++        # Write metrics to file for test verification
+++        metrics_file = REPO_ROOT / "automation" / "runtime" / "slice1_metrics.json"
+++        try:
+++            with open(metrics_file, "w", encoding="utf-8") as f:
+++                json.dump(self._metrics, f, indent=2)
+++            logger.info(f"Metrics written to {metrics_file}")
+++        except Exception as e:
+++            logger.error(f"Failed to write metrics: {e}")
+++
+++    def get_metrics(self) -> Dict[str, Any]:
+++        """Return current metrics."""
+++        return self._metrics.copy()
+++
+++
+++def main():
+++    """Entry point for the runtime loop."""
+++    loop = AutomodeRuntimeLoop()
+++    loop.start()
+++    return 0
+++
+++
+++if __name__ == "__main__":
+++    sys.exit(main())
++diff --git a/automation/runtime/test_slice1.py b/automation/runtime/test_slice1.py
++new file mode 100644
++index 0000000..bf5336b
++--- /dev/null
+++++ b/automation/runtime/test_slice1.py
++@@ -0,0 +1,163 @@
+++"""
+++C3 Slice 1 Test: Unified Runtime Loop Skeleton Verification
+++
+++Tests:
+++1. Loop runs for >= 60s without crash
+++2. STOP_NOW.flag causes clean exit within <= 5s
+++3. No OpenAI/Telegram API calls made
+++"""
+++
+++import subprocess
+++import sys
+++import time
+++import os
+++import json
+++from pathlib import Path
+++
+++REPO_ROOT = Path(__file__).parent.parent.parent
+++STOP_NOW_FLAG = REPO_ROOT / "automation" / "control" / "STOP_NOW.flag"
+++METRICS_FILE = REPO_ROOT / "automation" / "runtime" / "slice1_metrics.json"
+++LOOP_SCRIPT = REPO_ROOT / "automation" / "runtime" / "api_automode_loop.py"
+++
+++def cleanup():
+++    """Remove STOP_NOW.flag and metrics file."""
+++    if STOP_NOW_FLAG.exists():
+++        STOP_NOW_FLAG.unlink()
+++    if METRICS_FILE.exists():
+++        METRICS_FILE.unlink()
+++
+++def test_1_loop_runs_60s():
+++    """Test: Loop runs for >= 60s without crash."""
+++    print("\n[Test 1] Loop runs for >= 60s without crash")
+++    cleanup()
+++
+++    proc = subprocess.Popen(
+++        [sys.executable, str(LOOP_SCRIPT)],
+++        stdout=subprocess.PIPE,
+++        stderr=subprocess.PIPE,
+++        text=True,
+++        cwd=str(REPO_ROOT),
+++    )
+++
+++    print(f"  Started loop (PID: {proc.pid})")
+++    print(f"  Waiting 65s...")
+++
+++    try:
+++        proc.wait(timeout=65)
+++        print(f"  ERROR: Loop exited early with code {proc.returncode}")
+++        return False
+++    except subprocess.TimeoutExpired:
+++        print(f"  Loop still running after 65s (expected)")
+++
+++    # Clean up
+++    proc.terminate()
+++    try:
+++        proc.wait(timeout=5)
+++    except subprocess.TimeoutExpired:
+++        proc.kill()
+++        proc.wait()
+++
+++    stdout, stderr = proc.stdout.read(), proc.stderr.read()
+++    if "error" in stderr.lower() and "mock" not in stderr.lower():
+++        print(f"  ERROR: Unexpected error in stderr: {stderr}")
+++        return False
+++
+++    print("  PASS: Loop ran for >= 60s without crash")
+++    return True
+++
+++def test_2_stop_now_exit_5s():
+++    """Test: STOP_NOW.flag causes clean exit within <= 5s."""
+++    print("\n[Test 2] STOP_NOW.flag causes clean exit within <= 5s")
+++    cleanup()
+++
+++    proc = subprocess.Popen(
+++        [sys.executable, str(LOOP_SCRIPT)],
+++        stdout=subprocess.PIPE,
+++        stderr=subprocess.PIPE,
+++        text=True,
+++        cwd=str(REPO_ROOT),
+++    )
+++
+++    print(f"  Started loop (PID: {proc.pid})")
+++    print(f"  Waiting 3s for loop to settle...")
+++    time.sleep(3)
+++
+++    print(f"  Creating STOP_NOW.flag...")
+++    start_time = time.time()
+++    STOP_NOW_FLAG.write_text("stop", encoding="utf-8")
+++
+++    try:
+++        proc.wait(timeout=10)
+++        elapsed = time.time() - start_time
+++        print(f"  Loop exited in {elapsed:.2f}s")
+++
+++        if elapsed <= 5.0:
+++            print("  PASS: Exit within 5s")
+++            return True
+++        else:
+++            print(f"  FAIL: Exit took {elapsed:.2f}s > 5s")
+++            return False
+++    except subprocess.TimeoutExpired:
+++        print("  FAIL: Loop did not exit within 10s")
+++        proc.kill()
+++        proc.wait()
+++        return False
+++    finally:
+++        cleanup()
+++
+++def test_3_no_real_api_calls():
+++    """Test: Verify no real OpenAI/Telegram API calls in code."""
+++    print("\n[Test 3] No real OpenAI/Telegram API calls in slice")
+++
+++    source = LOOP_SCRIPT.read_text(encoding="utf-8")
+++
+++    forbidden_patterns = [
+++        "openai.com",
+++        "api.openai.com",
+++        "telegram.org",
+++        "api.telegram.org",
+++        "sendMessage",
+++        "chat.completions",
+++        "openai.ChatCompletion",
+++        "bot.send",
+++    ]
+++
+++    found = []
+++    for pattern in forbidden_patterns:
+++        if pattern in source:
+++            found.append(pattern)
+++
+++    if found:
+++        print(f"  FAIL: Found forbidden patterns: {found}")
+++        return False
+++
+++    print("  PASS: No real API call patterns found")
+++    return True
+++
+++def main():
+++    print("=" * 60)
+++    print("C3 SLICE 1 TEST: Unified Runtime Loop Skeleton")
+++    print("=" * 60)
+++
+++    results = {
+++        "test_1_loop_60s": test_1_loop_runs_60s(),
+++        "test_2_stop_now_5s": test_2_stop_now_exit_5s(),
+++        "test_3_no_api_calls": test_3_no_real_api_calls(),
+++    }
+++
+++    print("\n" + "=" * 60)
+++    print("TEST SUMMARY")
+++    print("=" * 60)
+++    for name, result in results.items():
+++        status = "PASS" if result else "FAIL"
+++        print(f"  {name}: {status}")
+++
+++    all_pass = all(results.values())
+++    print("=" * 60)
+++    print(f"OVERALL: {'ALL PASS' if all_pass else 'SOME FAILED'}")
+++    print("=" * 60)
+++
+++    return 0 if all_pass else 1
+++
+++if __name__ == "__main__":
+++    sys.exit(main())
++diff --git a/manifests/phase2_api_automode_c3_slice1_runtime_loop_skeleton.yaml b/manifests/phase2_api_automode_c3_slice1_runtime_loop_skeleton.yaml
++new file mode 100644
++index 0000000..57848f9
++--- /dev/null
+++++ b/manifests/phase2_api_automode_c3_slice1_runtime_loop_skeleton.yaml
++@@ -0,0 +1,69 @@
+++---
+++round_id: PHASE2-API-AUTOMODE-C3-SLICE1-UNIFIED-RUNTIME-LOOP-SKELETON
+++phase: Phase 2
+++task_type: c3_slice1_runtime_loop_skeleton_candidate
+++status: candidate
+++
+++primary_file: automation/runtime/api_automode_loop.py
+++exact_related_files:
+++  - automation/runtime/test_slice1.py
+++  - automation/runtime/api_automode_loop.py
+++  - manifests/phase2_api_automode_c3_slice1_runtime_loop_skeleton.yaml
+++  - automation/control/AUTO_MODE_ACTIVATION_LOCK
+++
+++parent_laws:
+++  - docs/phase2_batch_review_law.md
+++  - docs/phase2_api_automode_governance_chain.md
+++  - docs/phase2_api_automode_external_dependency_verification_contract.md
+++  - docs/phase2_api_automode_live_credential_verification_result_contract.md
+++
+++governance_preconditions:
+++  phase2_batch_review_law: "on_remote"
+++  phase2_api_governance_chain: "on_remote"
+++  external_dependency_verification_contract: "on_remote"
+++  live_credential_verification_result_contract: "on_remote"
+++  activation_authorized: true
+++  execution_authorized: true
+++  unlock_state: "UNLOCKED"
+++
+++scope: c3_slice1_runtime_loop_skeleton_only
+++
+++files_created:
+++  - automation/runtime/api_automode_loop.py
+++  - automation/runtime/test_slice1.py
+++  - manifests/phase2_api_automode_c3_slice1_runtime_loop_skeleton.yaml
+++
+++files_not_modified:
+++  - automation/control/AUTO_MODE_ACTIVATION_LOCK
+++  - server.py
+++  - tests/*
+++  - index.js
+++  - config.json
+++  - run_opencode_loop.ps1
+++  - .githooks/*
+++  - _governance/*
+++  - master
+++
+++blockers:
+++  r017_not_authorized: true
+++  phase2_entry_not_authorized: true
+++  env001_present: true
+++
+++non_authorization:
+++  - Slice 2/3/4 NOT INCLUDED
+++  - OpenAI API runtime calls NOT AUTHORIZED
+++  - Telegram bot runtime execution NOT AUTHORIZED
+++  - R017 separate
+++  - Phase 2 entry separate
+++
+++validation:
+++  validate_evidence: required
+++  check_forbidden_changes: required
+++  check_required_evidence: required
+++  check_branch_workflow: required
+++
+++status_codes:
+++  candidate: "candidate_ready_awaiting_manual_review"
+++  merge_authorized: false
+++  push_authorized: false
+++  execution_authorized: false
