@@ -1,0 +1,22 @@
+{
+  "evidence_type": "c3_slice1_runtime_loop_skeleton",
+  "timestamp": "2026-04-25T03:25:00Z",
+  "evidence_files": [
+    "automation/runtime/api_automode_loop.py",
+    "automation/runtime/test_slice1.py"
+  ],
+  "preflight_passed": true,
+  "postcheck_passed": true,
+  "tests_executed": true,
+  "test_results": {
+    "loop_runs_60s": true,
+    "stop_now_exit_within_5s": true,
+    "no_real_api_calls": true
+  },
+  "lock_unchanged": true,
+  "heads_unchanged": true,
+  "check_branch_workflow_passed": true,
+  "slice_boundary_honored": true,
+  "candidate_commit": "193a52fb569814df74438c615126feedb0ec3a92",
+  "candidate_branch": "work/candidate-c3-slice1-runtime-loop"
+}
