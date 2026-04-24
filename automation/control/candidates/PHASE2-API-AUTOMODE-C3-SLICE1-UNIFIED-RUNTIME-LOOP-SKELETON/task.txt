@@ -1,0 +1,12 @@
+Task: PHASE2-API-AUTOMODE-C3-SLICE1-UNIFIED-RUNTIME-LOOP-SKELETON
+Date: 2026-04-25
+Scope: C3 Slice 1 only - Unified runtime loop skeleton
+Constraints: No real OpenAI/Telegram calls, no Slice 2/3/4 work
+Files Created:
+  - automation/runtime/api_automode_loop.py
+  - automation/runtime/test_slice1.py
+Test Results:
+  - Loop runs >=60s without crash: PASS
+  - STOP_NOW.flag exit <=5s: PASS (0.10s)
+  - No real API calls: PASS
+Acceptance Criteria: All met
