@@ -23,5 +23,7 @@
   "lock_unchanged": true,
   "heads_unchanged": true,
   "check_branch_workflow_passed": true,
-  "slice_boundary_honored": true
+  "slice_boundary_honored": true,
+  "candidate_commit": "fc06189acfd4bea60f7f8dd300d7db15b4d05641",
+  "candidate_branch": "work/candidate-c3-slice2-retry-backoff"
 }
