@@ -1,0 +1,45 @@
+{
+  "round_id": "PHASE2-API-AUTOMODE-ACTIVATION-CONTRACT",
+  "task_type": "api_automode_activation_contract_creation",
+  "phase": "Phase 2",
+  "candidate_branch": "work/PHASE2-API-AUTOMODE-ACTIVATION-CONTRACT-candidate",
+  "status": "candidate_ready_awaiting_manual_review",
+  "implementation_summary": "PHASE2-API-AUTOMODE-ACTIVATION-CONTRACT: Created activation contract framework, authorization lock (LOCKED state), and message contract fixture.",
+  "work": "WORK_1_TASKS",
+  "description": "Created activation contract document, activation manifest, authorization lock, and message contract fixture.",
+  "files_created": [
+    "docs/phase2_api_automode_activation_contract.md",
+    "manifests/phase2_api_automode_activation.yaml",
+    "automation/control/AUTO_MODE_ACTIVATION_LOCK",
+    "docs/phase2_api_automode_message_contract_fixture.md"
+  ],
+  "files_not_modified": [
+    "server.py",
+    "tests/*",
+    "index.js",
+    "config.json",
+    "run_opencode_loop.ps1",
+    ".githooks/*",
+    "_governance/*",
+    "master"
+  ],
+  "blockers": {
+    "auto_mode_not_authorized": true,
+    "phase2_entry_not_authorized": true,
+    "env001": true
+  },
+  "non_authorization": {
+    "api_auto_mode_execution": "NOT_AUTHORIZED",
+    "r017_construction": "separate_round",
+    "phase2_entry": "NOT_AUTHORIZED",
+    "external_api_calls": "NOT_AUTHORIZED"
+  },
+  "validation_required": {
+    "validate_evidence": true,
+    "check_forbidden_changes": true,
+    "check_required_evidence": true,
+    "check_branch_workflow": true
+  },
+  "ready_for_candidate": true,
+  "next_action": "await_merge_authorization_for_activation_contract"
+}

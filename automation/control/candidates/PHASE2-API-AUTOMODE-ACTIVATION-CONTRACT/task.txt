@@ -1,0 +1,28 @@
+PHASE2-API-AUTOMODE-ACTIVATION-CONTRACT
+
+Task: Create activation contract, authorization lock, message fixture for API auto-mode.
+
+Preconditions:
+- Phase 2 Batch Review Law on remote
+- Phase 2 API Governance Chain on remote
+- Evidence reconciliation complete
+- Lane released
+
+Work performed:
+1. Created activation contract document (docs/phase2_api_automode_activation_contract.md)
+2. Created activation manifest (manifests/phase2_api_automode_activation.yaml)
+3. Created authorization lock (automation/control/AUTO_MODE_ACTIVATION_LOCK)
+4. Created message contract fixture (docs/phase2_api_automode_message_contract_fixture.md)
+
+Status:
+- Contract framework established
+- Authorization lock created (LOCKED state)
+- Message fixture created
+- No execution authorized
+
+Blockers:
+- auto_mode_not_authorized: true
+- phase2_entry_not_authorized: true
+- env001: true
+
+Next step: Await merge authorization, then human authorization for UNLOCKED state.
