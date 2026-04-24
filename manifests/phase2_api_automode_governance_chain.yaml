@@ -1,0 +1,48 @@
+round_id: "PHASE2-API-AUTOMODE-GOVERNANCE-CHAIN"
+title: "Phase 2 API Auto-Mode Governance Chain — Orchestration Governance"
+status: "pending"
+depends_on:
+  - "PHASE2-BATCH-REVIEW-LAW"
+allowed_paths:
+  - "docs/phase2_api_automode_governance_chain.md"
+  - "manifests/phase2_api_automode_governance_chain.yaml"
+  - "automation/control/candidates/PHASE2-API-AUTOMODE-GOVERNANCE-CHAIN/*"
+forbidden_paths:
+  - "server.py"
+  - "server_v2.py"
+  - "index.html"
+  - "index_v2.html"
+  - "config.json"
+  - "run_opencode_loop.ps1"
+  - "tests/"
+  - ".githooks/*"
+  - "master"
+  - "_governance/*"
+required_evidence:
+  - "automation/control/candidates/PHASE2-API-AUTOMODE-GOVERNANCE-CHAIN/task.txt"
+  - "automation/control/candidates/PHASE2-API-AUTOMODE-GOVERNANCE-CHAIN/report.json"
+  - "automation/control/candidates/PHASE2-API-AUTOMODE-GOVERNANCE-CHAIN/evidence.json"
+  - "automation/control/candidates/PHASE2-API-AUTOMODE-GOVERNANCE-CHAIN/candidate.diff"
+required_checks:
+  - "py ./scripts/validation/check_branch_workflow.py --repo-root . --all"
+  - "py ./scripts/validation/check_forbidden_changes.py --manifest manifests/phase2_api_automode_governance_chain.yaml"
+  - "py ./scripts/validation/check_required_evidence.py --manifest manifests/phase2_api_automode_governance_chain.yaml"
+  - "py ./scripts/validation/validate_evidence.py --manifest manifests/phase2_api_automode_governance_chain.yaml --repo-root ."
+direct_fail_conditions:
+  - "modified server.py or any Phase 1 functional main chain"
+  - "modified master branch"
+  - "modified forbidden paths (index.js, config.json, run_opencode_loop.ps1, .githooks/*)"
+  - "lane release without authorization"
+  - "auto-mode release without authorization"
+  - "Phase 2 entry without authorization"
+  - "R017 construction in this round"
+  - "direct commit on canonical"
+  - "evidence shows packaging only (no real governance work)"
+  - "candidate.diff shows Work: 0 tasks"
+risk_level: "green"
+owner: "you"
+start_authorized: false
+notes: "Phase 2 API Auto-Mode Governance Chain candidate. Defines OpenAI API ↔ OpenCode ↔ Telegram bot orchestration governance. DEPENDS ON Phase 2 Batch Review Law. Does NOT authorize auto-mode activation or Phase 2 entry. Auto-mode not authorized. Phase 2 entry not authorized."
+containment_status: "API_AUTOMODE_GOVERNANCE_CHAIN_CANDIDATE"
+phase: "Phase 2"
+auto_run: false
