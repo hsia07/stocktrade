@@ -1,6 +1,6 @@
 {
   "evidence_type": "c3_slice2_retry_backoff",
-  "timestamp": "2026-04-25T04:00:00Z",
+  "timestamp": "2026-04-25T04:30:00Z",
   "evidence_files": [
     "automation/runtime/retry.py",
     "automation/runtime/test_slice2.py",
@@ -20,10 +20,12 @@
     "no_api_calls": true,
     "no_durable_queue": true
   },
+  "retry_attempts_semantics_ruling": "max_retries represents TOTAL maximum number of attempts (including initial). Example: max_retries=3 means up to 3 calls total.",
+  "terminal_failure_attempts_semantics_ruling": "The 'attempts' field in terminal failure result represents the total number of calls made. With max_retries=3 and all failures, attempts=3.",
   "lock_unchanged": true,
   "heads_unchanged": true,
   "check_branch_workflow_passed": true,
   "slice_boundary_honored": true,
-  "candidate_commit": "fc06189acfd4bea60f7f8dd300d7db15b4d05641",
+  "candidate_commit": "TBD_AFTER_COMMIT",
   "candidate_branch": "work/candidate-c3-slice2-retry-backoff"
 }

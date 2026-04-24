@@ -38,6 +38,7 @@ def test_1_openai_mock_fail_twice_then_success():
             raise Exception(f"OpenAI mock error #{call_count[0]}")
         return "openai_success"
 
+    # max_retries=3 means up to 3 total attempts (1 initial + 2 retries)
     config = RetryConfig(max_retries=3, base_delay_seconds=1.0, jitter=False)
     retry = ExponentialBackoffRetry(config)
 
@@ -50,7 +51,9 @@ def test_1_openai_mock_fail_twice_then_success():
     assert result["attempts"] == 3, f"Expected 3 attempts, got {result['attempts']}"
     assert call_count[0] == 3
 
-    # Backoff: attempt 0 delay = 1s, attempt 1 delay = 2s, total >= 3s
+    # Backoff: attempt 0 fails, delay = 1.0 * 2^0 = 1.0s
+    #          attempt 1 fails, delay = 1.0 * 2^1 = 2.0s
+    #          total >= 3.0s
     assert elapsed >= 3.0, f"Expected >= 3s backoff, got {elapsed:.2f}s"
 
     print(f"  PASS: Success after 3 attempts, backoff = {elapsed:.2f}s")
@@ -68,6 +71,7 @@ def test_2_telegram_mock_fail_twice_then_success():
             raise Exception(f"Telegram mock error #{call_count[0]}")
         return "telegram_success"
 
+    # max_retries=3 means up to 3 total attempts (1 initial + 2 retries)
     config = RetryConfig(max_retries=3, base_delay_seconds=1.0, jitter=False)
     retry = ExponentialBackoffRetry(config)
 
@@ -93,6 +97,7 @@ def test_3_openai_terminal_failure():
         call_count[0] += 1
         raise Exception(f"OpenAI terminal error #{call_count[0]}")
 
+    # max_retries=3 means exactly 3 total attempts; all fail -> terminal failure with attempts=3
     config = RetryConfig(max_retries=3, base_delay_seconds=0.5, jitter=False)
     retry = ExponentialBackoffRetry(config)
 
@@ -102,12 +107,12 @@ def test_3_openai_terminal_failure():
         return False
     except RetryExhaustedError as e:
         assert e.provider == "openai"
-        assert e.attempts == 4  # initial + 3 retries
+        assert e.attempts == 3, f"Expected attempts=3, got {e.attempts}"
         error_dict = e.to_dict()
         assert error_dict["status"] == "terminal_failure"
         assert error_dict["provider"] == "openai"
-        assert error_dict["attempts"] == 4
-        assert "OpenAI terminal error #4" in error_dict["last_error"]
+        assert error_dict["attempts"] == 3
+        assert "OpenAI terminal error #3" in error_dict["last_error"]
         print(f"  PASS: Terminal failure raised correctly: {error_dict}")
         return True
 
@@ -121,6 +126,7 @@ def test_4_telegram_terminal_failure():
         call_count[0] += 1
         raise Exception(f"Telegram terminal error #{call_count[0]}")
 
+    # max_retries=3 means exactly 3 total attempts; all fail -> terminal failure with attempts=3
     config = RetryConfig(max_retries=3, base_delay_seconds=0.5, jitter=False)
     retry = ExponentialBackoffRetry(config)
 
@@ -129,8 +135,8 @@ def test_4_telegram_terminal_failure():
 
     assert result["status"] == "terminal_failure"
     assert result["provider"] == "telegram"
-    assert result["attempts"] == 4
-    assert "Telegram terminal error #4" in result["last_error"]
+    assert result["attempts"] == 3, f"Expected attempts=3, got {result['attempts']}"
+    assert "Telegram terminal error #3" in result["last_error"]
     print(f"  PASS: Terminal failure dict returned correctly: {result}")
     return True
 

@@ -2,22 +2,24 @@
   "task": "PHASE2-API-AUTOMODE-C3-SLICE2-RETRY-BACKOFF",
   "status": "completed",
   "formal_status_code": "candidate_ready_awaiting_manual_review",
-  "timestamp": "2026-04-25T04:00:00Z",
+  "timestamp": "2026-04-25T04:30:00Z",
   "executed_by": "OpenCode",
   "slice": 2,
   "slice_objective": "retry_with_exponential_backoff_and_terminal_failure_contract",
+  "retry_attempts_semantics_ruling": "max_retries represents TOTAL maximum number of attempts (including initial). Example: max_retries=3 means up to 3 calls total. This makes 'fail 3 times then terminal failure' exactly match attempts=3.",
+  "terminal_failure_attempts_semantics_ruling": "The 'attempts' field in terminal failure result represents the total number of calls made. With max_retries=3 and all failures, attempts=3.",
   "test_results": {
-    "test_1_openai_mock_fail_twice_success": "PASS",
-    "test_2_telegram_mock_fail_twice_success": "PASS",
-    "test_3_openai_terminal_failure": "PASS",
-    "test_4_telegram_terminal_failure": "PASS",
+    "test_1_openai_mock_fail_twice_success": "PASS (attempts=3, backoff=3.01s)",
+    "test_2_telegram_mock_fail_twice_success": "PASS (attempts=3, backoff=3.01s)",
+    "test_3_openai_terminal_failure": "PASS (attempts=3)",
+    "test_4_telegram_terminal_failure": "PASS (attempts=3)",
     "test_5_configurable_max_retries": "PASS",
     "test_6_configurable_base_delay": "PASS",
     "test_7_jitter_policy": "PASS",
     "test_8_no_api_calls": "PASS",
     "test_9_no_durable_queue": "PASS"
   },
-  "files_created": [
+  "files_created_or_modified": [
     "automation/runtime/retry.py",
     "automation/runtime/test_slice2.py",
     "manifests/phase2_api_automode_c3_slice2_retry_backoff.yaml"

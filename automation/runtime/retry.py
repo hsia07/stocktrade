@@ -74,13 +74,17 @@ class ExponentialBackoffRetry:
         """
         Execute fn with retry logic.
 
+        Semantics:
+            max_retries = TOTAL maximum number of attempts (including initial).
+            Example: max_retries=3 means up to 3 calls total.
+
         Returns:
             On success: {"status": "success", "result": ..., "attempts": N}
             On terminal failure: raises RetryExhaustedError
         """
         last_error = ""
 
-        for attempt in range(self.config.max_retries + 1):
+        for attempt in range(self.config.max_retries):
             try:
                 result = fn()
                 return {
@@ -92,10 +96,10 @@ class ExponentialBackoffRetry:
             except Exception as e:
                 last_error = str(e)
                 logger.warning(
-                    f"{provider} attempt {attempt + 1}/{self.config.max_retries + 1} failed: {last_error}"
+                    f"{provider} attempt {attempt + 1}/{self.config.max_retries} failed: {last_error}"
                 )
 
-                if attempt < self.config.max_retries:
+                if attempt < self.config.max_retries - 1:
                     delay = self._calculate_delay(attempt)
                     logger.info(f"Retrying {provider} in {delay:.2f}s...")
                     time.sleep(delay)
@@ -103,10 +107,10 @@ class ExponentialBackoffRetry:
                     break
 
         # All retries exhausted
-        logger.error(f"{provider} retry exhausted after {self.config.max_retries + 1} attempts")
+        logger.error(f"{provider} retry exhausted after {self.config.max_retries} attempts")
         raise RetryExhaustedError(
             provider=provider,
-            attempts=self.config.max_retries + 1,
+            attempts=self.config.max_retries,
             last_error=last_error,
         )
 
