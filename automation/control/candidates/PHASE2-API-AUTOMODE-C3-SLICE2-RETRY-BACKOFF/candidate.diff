@@ -1,0 +1,632 @@
+Work: 2 tasks
+Slice: 2 only
+---
+diff --git a/automation/control/candidates/PHASE2-API-AUTOMODE-C3-SLICE2-RETRY-BACKOFF/evidence.json b/automation/control/candidates/PHASE2-API-AUTOMODE-C3-SLICE2-RETRY-BACKOFF/evidence.json
+new file mode 100644
+index 0000000..6440277
+--- /dev/null
++++ b/automation/control/candidates/PHASE2-API-AUTOMODE-C3-SLICE2-RETRY-BACKOFF/evidence.json
+@@ -0,0 +1,27 @@
++{
++  "evidence_type": "c3_slice2_retry_backoff",
++  "timestamp": "2026-04-25T04:00:00Z",
++  "evidence_files": [
++    "automation/runtime/retry.py",
++    "automation/runtime/test_slice2.py",
++    "manifests/phase2_api_automode_c3_slice2_retry_backoff.yaml"
++  ],
++  "preflight_passed": true,
++  "postcheck_passed": true,
++  "tests_executed": true,
++  "test_results": {
++    "openai_mock_fail_twice_success": true,
++    "telegram_mock_fail_twice_success": true,
++    "openai_terminal_failure": true,
++    "telegram_terminal_failure": true,
++    "configurable_max_retries": true,
++    "configurable_base_delay": true,
++    "jitter_policy": true,
++    "no_api_calls": true,
++    "no_durable_queue": true
++  },
++  "lock_unchanged": true,
++  "heads_unchanged": true,
++  "check_branch_workflow_passed": true,
++  "slice_boundary_honored": true
++}
+diff --git a/automation/control/candidates/PHASE2-API-AUTOMODE-C3-SLICE2-RETRY-BACKOFF/report.json b/automation/control/candidates/PHASE2-API-AUTOMODE-C3-SLICE2-RETRY-BACKOFF/report.json
+new file mode 100644
+index 0000000..89f9edd
+--- /dev/null
++++ b/automation/control/candidates/PHASE2-API-AUTOMODE-C3-SLICE2-RETRY-BACKOFF/report.json
+@@ -0,0 +1,32 @@
++{
++  "task": "PHASE2-API-AUTOMODE-C3-SLICE2-RETRY-BACKOFF",
++  "status": "completed",
++  "formal_status_code": "candidate_ready_awaiting_manual_review",
++  "timestamp": "2026-04-25T04:00:00Z",
++  "executed_by": "OpenCode",
++  "slice": 2,
++  "slice_objective": "retry_with_exponential_backoff_and_terminal_failure_contract",
++  "test_results": {
++    "test_1_openai_mock_fail_twice_success": "PASS",
++    "test_2_telegram_mock_fail_twice_success": "PASS",
++    "test_3_openai_terminal_failure": "PASS",
++    "test_4_telegram_terminal_failure": "PASS",
++    "test_5_configurable_max_retries": "PASS",
++    "test_6_configurable_base_delay": "PASS",
++    "test_7_jitter_policy": "PASS",
++    "test_8_no_api_calls": "PASS",
++    "test_9_no_durable_queue": "PASS"
++  },
++  "files_created": [
++    "automation/runtime/retry.py",
++    "automation/runtime/test_slice2.py",
++    "manifests/phase2_api_automode_c3_slice2_retry_backoff.yaml"
++  ],
++  "activation_lock_modified": false,
++  "openai_calls_made": false,
++  "telegram_calls_made": false,
++  "durable_queue_implemented": false,
++  "dlq_persistence_implemented": false,
++  "idempotency_implemented": false,
++  "audit_trail_implemented": false
++}
+diff --git a/automation/control/candidates/PHASE2-API-AUTOMODE-C3-SLICE2-RETRY-BACKOFF/task.txt b/automation/control/candidates/PHASE2-API-AUTOMODE-C3-SLICE2-RETRY-BACKOFF/task.txt
+new file mode 100644
+index 0000000..245470b
+--- /dev/null
++++ b/automation/control/candidates/PHASE2-API-AUTOMODE-C3-SLICE2-RETRY-BACKOFF/task.txt
+@@ -0,0 +1,19 @@
++Task: PHASE2-API-AUTOMODE-C3-SLICE2-RETRY-BACKOFF
++Date: 2026-04-25
++Scope: C3 Slice 2 only - Retry with exponential backoff
++Constraints: No real API calls, no durable queue, no DLQ, no idempotency, no audit trail
++Files Created:
++  - automation/runtime/retry.py
++  - automation/runtime/test_slice2.py
++  - manifests/phase2_api_automode_c3_slice2_retry_backoff.yaml
++Test Results:
++  - OpenAI mock fail 2x then success: PASS (backoff >= 3s)
++  - Telegram mock fail 2x then success: PASS (backoff >= 3s)
++  - OpenAI terminal failure: PASS
++  - Telegram terminal failure: PASS
++  - Configurable max_retries: PASS
++  - Configurable base_delay: PASS
++  - Jitter policy: PASS
++  - No real API calls: PASS
++  - No durable queue: PASS
++Acceptance Criteria: All met
+diff --git a/automation/runtime/retry.py b/automation/runtime/retry.py
+new file mode 100644
+index 0000000..2db032f
+--- /dev/null
++++ b/automation/runtime/retry.py
+@@ -0,0 +1,126 @@
++"""
++PHASE2 API Automode - C3 Slice 2: Retry with Exponential Backoff
++
++Provides retry logic for OpenAI + Telegram dual-provider orchestration.
++Slice 2 scope ONLY: retry + backoff + terminal failure contract.
++NO real API calls, NO durable queue, NO DLQ persistence.
++"""
++
++import time
++import random
++import logging
++from typing import Callable, Any, Optional, Dict
++from dataclasses import dataclass
++
++logger = logging.getLogger("api_automode_retry")
++
++
++class RetryExhaustedError(Exception):
++    """Raised when all retry attempts are exhausted."""
++
++    def __init__(self, provider: str, attempts: int, last_error: str):
++        self.provider = provider
++        self.attempts = attempts
++        self.last_error = last_error
++        super().__init__(
++            f"Retry exhausted for {provider} after {attempts} attempts: {last_error}"
++        )
++
++    def to_dict(self) -> Dict[str, Any]:
++        return {
++            "status": "terminal_failure",
++            "provider": self.provider,
++            "attempts": self.attempts,
++            "last_error": self.last_error,
++        }
++
++
++@dataclass
++class RetryConfig:
++    """Configuration for retry behavior."""
++
++    max_retries: int = 3
++    base_delay_seconds: float = 1.0
++    jitter: bool = False
++    jitter_factor: float = 0.5
++
++    def __post_init__(self):
++        if not (1 <= self.max_retries <= 10):
++            raise ValueError("max_retries must be between 1 and 10")
++        if self.base_delay_seconds < 0.5:
++            raise ValueError("base_delay_seconds must be >= 0.5")
++        if self.base_delay_seconds > 60.0:
++            raise ValueError("base_delay_seconds must be <= 60.0")
++
++
++class ExponentialBackoffRetry:
++    """Retry wrapper with exponential backoff."""
++
++    def __init__(self, config: Optional[RetryConfig] = None):
++        self.config = config or RetryConfig()
++
++    def _calculate_delay(self, attempt: int) -> float:
++        """Calculate delay for the given attempt (0-indexed)."""
++        delay = self.config.base_delay_seconds * (2 ** attempt)
++        if self.config.jitter:
++            jitter_range = delay * self.config.jitter_factor
++            delay = random.uniform(delay - jitter_range, delay + jitter_range)
++            delay = max(0.1, delay)  # minimum 0.1s
++        return delay
++
++    def execute(
++        self, fn: Callable[[], Any], provider: str = "unknown"
++    ) -> Dict[str, Any]:
++        """
++        Execute fn with retry logic.
++
++        Returns:
++            On success: {"status": "success", "result": ..., "attempts": N}
++            On terminal failure: raises RetryExhaustedError
++        """
++        last_error = ""
++
++        for attempt in range(self.config.max_retries + 1):
++            try:
++                result = fn()
++                return {
++                    "status": "success",
++                    "result": result,
++                    "attempts": attempt + 1,
++                    "provider": provider,
++                }
++            except Exception as e:
++                last_error = str(e)
++                logger.warning(
++                    f"{provider} attempt {attempt + 1}/{self.config.max_retries + 1} failed: {last_error}"
++                )
++
++                if attempt < self.config.max_retries:
++                    delay = self._calculate_delay(attempt)
++                    logger.info(f"Retrying {provider} in {delay:.2f}s...")
++                    time.sleep(delay)
++                else:
++                    break
++
++        # All retries exhausted
++        logger.error(f"{provider} retry exhausted after {self.config.max_retries + 1} attempts")
++        raise RetryExhaustedError(
++            provider=provider,
++            attempts=self.config.max_retries + 1,
++            last_error=last_error,
++        )
++
++    def execute_safe(
++        self, fn: Callable[[], Any], provider: str = "unknown"
++    ) -> Dict[str, Any]:
++        """
++        Execute fn with retry logic, returning terminal failure dict instead of raising.
++
++        Returns:
++            On success: {"status": "success", ...}
++            On terminal failure: {"status": "terminal_failure", ...}
++        """
++        try:
++            return self.execute(fn, provider)
++        except RetryExhaustedError as e:
++            return e.to_dict()
+diff --git a/automation/runtime/test_slice2.py b/automation/runtime/test_slice2.py
+new file mode 100644
+index 0000000..b1e9772
+--- /dev/null
++++ b/automation/runtime/test_slice2.py
+@@ -0,0 +1,319 @@
++"""
++C3 Slice 2 Test: Retry with Exponential Backoff
++
++Tests:
++A. OpenAI mock fail 2x then success (cumulative backoff >= 3s)
++B. Telegram mock fail 2x then success (cumulative backoff >= 3s)
++C. OpenAI mock fail 3x then terminal failure result
++D. Telegram mock fail 3x then terminal failure result
++E. max_retries configurable
++F. base_delay_seconds configurable
++G. optional jitter policy
++H. No real API calls
++I. No durable queue / DLQ / idempotency / audit trail
++"""
++
++import sys
++import time
++from pathlib import Path
++
++# Add repo root to path
++sys.path.insert(0, str(Path(__file__).parent.parent.parent))
++
++from automation.runtime.retry import (
++    ExponentialBackoffRetry,
++    RetryConfig,
++    RetryExhaustedError,
++)
++
++
++def test_1_openai_mock_fail_twice_then_success():
++    """Test A: OpenAI mock fails 2x, succeeds on 3rd. Cumulative backoff >= 3s."""
++    print("\n[Test 1] OpenAI mock fail 2x then success")
++    call_count = [0]
++
++    def mock_openai():
++        call_count[0] += 1
++        if call_count[0] <= 2:
++            raise Exception(f"OpenAI mock error #{call_count[0]}")
++        return "openai_success"
++
++    config = RetryConfig(max_retries=3, base_delay_seconds=1.0, jitter=False)
++    retry = ExponentialBackoffRetry(config)
++
++    start = time.time()
++    result = retry.execute(mock_openai, provider="openai")
++    elapsed = time.time() - start
++
++    assert result["status"] == "success", f"Expected success, got {result}"
++    assert result["result"] == "openai_success"
++    assert result["attempts"] == 3, f"Expected 3 attempts, got {result['attempts']}"
++    assert call_count[0] == 3
++
++    # Backoff: attempt 0 delay = 1s, attempt 1 delay = 2s, total >= 3s
++    assert elapsed >= 3.0, f"Expected >= 3s backoff, got {elapsed:.2f}s"
++
++    print(f"  PASS: Success after 3 attempts, backoff = {elapsed:.2f}s")
++    return True
++
++
++def test_2_telegram_mock_fail_twice_then_success():
++    """Test B: Telegram mock fails 2x, succeeds on 3rd. Cumulative backoff >= 3s."""
++    print("\n[Test 2] Telegram mock fail 2x then success")
++    call_count = [0]
++
++    def mock_telegram():
++        call_count[0] += 1
++        if call_count[0] <= 2:
++            raise Exception(f"Telegram mock error #{call_count[0]}")
++        return "telegram_success"
++
++    config = RetryConfig(max_retries=3, base_delay_seconds=1.0, jitter=False)
++    retry = ExponentialBackoffRetry(config)
++
++    start = time.time()
++    result = retry.execute(mock_telegram, provider="telegram")
++    elapsed = time.time() - start
++
++    assert result["status"] == "success"
++    assert result["result"] == "telegram_success"
++    assert result["attempts"] == 3
++    assert elapsed >= 3.0, f"Expected >= 3s backoff, got {elapsed:.2f}s"
++
++    print(f"  PASS: Success after 3 attempts, backoff = {elapsed:.2f}s")
++    return True
++
++
++def test_3_openai_terminal_failure():
++    """Test C: OpenAI mock fails 3x, returns terminal failure result."""
++    print("\n[Test 3] OpenAI terminal failure after 3 failures")
++    call_count = [0]
++
++    def mock_openai():
++        call_count[0] += 1
++        raise Exception(f"OpenAI terminal error #{call_count[0]}")
++
++    config = RetryConfig(max_retries=3, base_delay_seconds=0.5, jitter=False)
++    retry = ExponentialBackoffRetry(config)
++
++    try:
++        retry.execute(mock_openai, provider="openai")
++        print("  FAIL: Should have raised RetryExhaustedError")
++        return False
++    except RetryExhaustedError as e:
++        assert e.provider == "openai"
++        assert e.attempts == 4  # initial + 3 retries
++        error_dict = e.to_dict()
++        assert error_dict["status"] == "terminal_failure"
++        assert error_dict["provider"] == "openai"
++        assert error_dict["attempts"] == 4
++        assert "OpenAI terminal error #4" in error_dict["last_error"]
++        print(f"  PASS: Terminal failure raised correctly: {error_dict}")
++        return True
++
++
++def test_4_telegram_terminal_failure():
++    """Test D: Telegram mock fails 3x, returns terminal failure result."""
++    print("\n[Test 4] Telegram terminal failure after 3 failures")
++    call_count = [0]
++
++    def mock_telegram():
++        call_count[0] += 1
++        raise Exception(f"Telegram terminal error #{call_count[0]}")
++
++    config = RetryConfig(max_retries=3, base_delay_seconds=0.5, jitter=False)
++    retry = ExponentialBackoffRetry(config)
++
++    # Test execute_safe which returns dict instead of raising
++    result = retry.execute_safe(mock_telegram, provider="telegram")
++
++    assert result["status"] == "terminal_failure"
++    assert result["provider"] == "telegram"
++    assert result["attempts"] == 4
++    assert "Telegram terminal error #4" in result["last_error"]
++    print(f"  PASS: Terminal failure dict returned correctly: {result}")
++    return True
++
++
++def test_5_configurable_max_retries():
++    """Test E: max_retries configurable (default 3, min 1, max 10)."""
++    print("\n[Test 5] Configurable max_retries")
++
++    # Default
++    config = RetryConfig()
++    assert config.max_retries == 3
++
++    # Custom
++    config = RetryConfig(max_retries=1)
++    assert config.max_retries == 1
++
++    config = RetryConfig(max_retries=10)
++    assert config.max_retries == 10
++
++    # Boundary
++    try:
++        RetryConfig(max_retries=0)
++        print("  FAIL: Should have raised ValueError for max_retries=0")
++        return False
++    except ValueError:
++        pass
++
++    try:
++        RetryConfig(max_retries=11)
++        print("  FAIL: Should have raised ValueError for max_retries=11")
++        return False
++    except ValueError:
++        pass
++
++    print("  PASS: max_retries configurable and validated")
++    return True
++
++
++def test_6_configurable_base_delay():
++    """Test F: base_delay_seconds configurable (default 1.0)."""
++    print("\n[Test 6] Configurable base_delay_seconds")
++
++    config = RetryConfig()
++    assert config.base_delay_seconds == 1.0
++
++    config = RetryConfig(base_delay_seconds=2.0)
++    assert config.base_delay_seconds == 2.0
++
++    try:
++        RetryConfig(base_delay_seconds=0.1)
++        print("  FAIL: Should have raised ValueError for base_delay=0.1")
++        return False
++    except ValueError:
++        pass
++
++    try:
++        RetryConfig(base_delay_seconds=61.0)
++        print("  FAIL: Should have raised ValueError for base_delay=61.0")
++        return False
++    except ValueError:
++        pass
++
++    print("  PASS: base_delay_seconds configurable and validated")
++    return True
++
++
++def test_7_jitter_policy():
++    """Test G: Optional jitter policy."""
++    print("\n[Test 7] Optional jitter policy")
++
++    config = RetryConfig(jitter=True, jitter_factor=0.5)
++    retry = ExponentialBackoffRetry(config)
++
++    # Measure multiple delays to show variance
++    delays = []
++    for attempt in range(5):
++        delay = retry._calculate_delay(attempt)
++        delays.append(delay)
++
++    base_delay = 1.0 * (2 ** 0)  # For attempt 0, base = 1.0
++    # With jitter_factor 0.5, delay should be in [0.5, 1.5]
++    assert 0.5 <= delays[0] <= 1.5, f"Jittered delay out of range: {delays[0]}"
++
++    print(f"  PASS: Jitter delays: {[f'{d:.2f}' for d in delays[:3]]}...")
++    return True
++
++
++def test_8_no_real_api_calls():
++    """Test H: No real API call patterns in retry.py source."""
++    print("\n[Test 8] No real API call patterns in source")
++
++    import os
++
++    source_path = Path(__file__).parent / "retry.py"
++    source = source_path.read_text(encoding="utf-8")
++
++    forbidden = ["openai.com", "api.openai.com", "telegram.org", "api.telegram.org", "sendMessage", "chat.completions"]
++    found = [f for f in forbidden if f in source]
++
++    if found:
++        print(f"  FAIL: Found forbidden patterns: {found}")
++        return False
++
++    print("  PASS: No real API call patterns found")
++    return True
++
++
++def test_9_no_durable_queue():
++    """Test I: No durable queue / DLQ / idempotency / audit trail implementation."""
++    print("\n[Test 9] No durable queue / DLQ / idempotency / audit trail")
++
++    source_path = Path(__file__).parent / "retry.py"
++    source_lines = source_path.read_text(encoding="utf-8").splitlines()
++
++    # Only check code lines (not comments/docstrings)
++    import re
++    code_lines = []
++    for line in source_lines:
++        stripped = line.strip()
++        if stripped and not stripped.startswith('#') and not stripped.startswith('"""') and not stripped.startswith("'''"):
++            code_lines.append(stripped)
++
++    # Check for actual implementation patterns (not docstring mentions)
++    forbidden_implementations = [
++        "import sqlite3", "import redis", "sqlite3.connect", "redis.Redis",
++        "class DLQ", "def dlq", "dead_letter_queue", "idempotency_key",
++        "dedupe", "audit_log_file", "queue.put", "queue.get"
++    ]
++
++    found = []
++    for pattern in forbidden_implementations:
++        for line in code_lines:
++            if pattern.lower() in line.lower():
++                found.append(pattern)
++                break
++
++    if found:
++        print(f"  FAIL: Found forbidden implementation patterns: {found}")
++        return False
++
++    print("  PASS: No durable queue / DLQ / idempotency / audit trail implementation")
++    return True
++
++
++def main():
++    print("=" * 60)
++    print("C3 SLICE 2 TEST: Retry with Exponential Backoff")
++    print("=" * 60)
++
++    tests = [
++        ("test_1_openai_mock_fail_twice_then_success", test_1_openai_mock_fail_twice_then_success),
++        ("test_2_telegram_mock_fail_twice_then_success", test_2_telegram_mock_fail_twice_then_success),
++        ("test_3_openai_terminal_failure", test_3_openai_terminal_failure),
++        ("test_4_telegram_terminal_failure", test_4_telegram_terminal_failure),
++        ("test_5_configurable_max_retries", test_5_configurable_max_retries),
++        ("test_6_configurable_base_delay", test_6_configurable_base_delay),
++        ("test_7_jitter_policy", test_7_jitter_policy),
++        ("test_8_no_real_api_calls", test_8_no_real_api_calls),
++        ("test_9_no_durable_queue", test_9_no_durable_queue),
++    ]
++
++    results = {}
++    for name, test_fn in tests:
++        try:
++            results[name] = test_fn()
++        except Exception as e:
++            print(f"  FAIL: Exception: {e}")
++            results[name] = False
++
++    print("\n" + "=" * 60)
++    print("TEST SUMMARY")
++    print("=" * 60)
++    for name, result in results.items():
++        status = "PASS" if result else "FAIL"
++        print(f"  {name}: {status}")
++
++    all_pass = all(results.values())
++    print("=" * 60)
++    print(f"OVERALL: {'ALL PASS' if all_pass else 'SOME FAILED'}")
++    print("=" * 60)
++
++    return 0 if all_pass else 1
++
++
++if __name__ == "__main__":
++    sys.exit(main())
+diff --git a/manifests/phase2_api_automode_c3_slice2_retry_backoff.yaml b/manifests/phase2_api_automode_c3_slice2_retry_backoff.yaml
+new file mode 100644
+index 0000000..c6185e8
+--- /dev/null
++++ b/manifests/phase2_api_automode_c3_slice2_retry_backoff.yaml
+@@ -0,0 +1,70 @@
++---
++round_id: PHASE2-API-AUTOMODE-C3-SLICE2-RETRY-BACKOFF
++phase: Phase 2
++task_type: c3_slice2_retry_backoff_candidate
++status: candidate
++
++primary_file: automation/runtime/retry.py
++exact_related_files:
++  - automation/runtime/retry.py
++  - automation/runtime/test_slice2.py
++  - manifests/phase2_api_automode_c3_slice2_retry_backoff.yaml
++  - automation/control/AUTO_MODE_ACTIVATION_LOCK
++
++parent_laws:
++  - docs/phase2_batch_review_law.md
++  - docs/phase2_api_automode_governance_chain.md
++  - docs/phase2_api_automode_external_dependency_verification_contract.md
++  - docs/phase2_api_automode_live_credential_verification_result_contract.md
++
++governance_preconditions:
++  phase2_batch_review_law: "on_remote"
++  phase2_api_governance_chain: "on_remote"
++  external_dependency_verification_contract: "on_remote"
++  live_credential_verification_result_contract: "on_remote"
++  c3_slice1_runtime_loop_skeleton: "on_remote"
++  activation_authorized: true
++  execution_authorized: true
++  unlock_state: "UNLOCKED"
++
++scope: c3_slice2_retry_backoff_only
++
++files_created:
++  - automation/runtime/retry.py
++  - automation/runtime/test_slice2.py
++  - manifests/phase2_api_automode_c3_slice2_retry_backoff.yaml
++
++files_not_modified:
++  - automation/control/AUTO_MODE_ACTIVATION_LOCK
++  - server.py
++  - tests/*
++  - index.js
++  - config.json
++  - run_opencode_loop.ps1
++  - .githooks/*
++  - _governance/*
++  - master
++
++blockers:
++  r017_not_authorized: true
++  phase2_entry_not_authorized: true
++  env001_present: true
++
++non_authorization:
++  - Slice 3/4 NOT INCLUDED
++  - OpenAI API runtime calls NOT AUTHORIZED
++  - Telegram bot runtime execution NOT AUTHORIZED
++  - R017 separate
++  - Phase 2 entry separate
++
++validation:
++  validate_evidence: required
++  check_forbidden_changes: required
++  check_required_evidence: required
++  check_branch_workflow: required
++
++status_codes:
++  candidate: "candidate_ready_awaiting_manual_review"
++  merge_authorized: false
++  push_authorized: false
++  execution_authorized: false

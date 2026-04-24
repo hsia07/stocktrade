@@ -1,0 +1,19 @@
+Task: PHASE2-API-AUTOMODE-C3-SLICE2-RETRY-BACKOFF
+Date: 2026-04-25
+Scope: C3 Slice 2 only - Retry with exponential backoff
+Constraints: No real API calls, no durable queue, no DLQ, no idempotency, no audit trail
+Files Created:
+  - automation/runtime/retry.py
+  - automation/runtime/test_slice2.py
+  - manifests/phase2_api_automode_c3_slice2_retry_backoff.yaml
+Test Results:
+  - OpenAI mock fail 2x then success: PASS (backoff >= 3s)
+  - Telegram mock fail 2x then success: PASS (backoff >= 3s)
+  - OpenAI terminal failure: PASS
+  - Telegram terminal failure: PASS
+  - Configurable max_retries: PASS
+  - Configurable base_delay: PASS
+  - Jitter policy: PASS
+  - No real API calls: PASS
+  - No durable queue: PASS
+Acceptance Criteria: All met

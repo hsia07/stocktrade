@@ -1,0 +1,32 @@
+{
+  "task": "PHASE2-API-AUTOMODE-C3-SLICE2-RETRY-BACKOFF",
+  "status": "completed",
+  "formal_status_code": "candidate_ready_awaiting_manual_review",
+  "timestamp": "2026-04-25T04:00:00Z",
+  "executed_by": "OpenCode",
+  "slice": 2,
+  "slice_objective": "retry_with_exponential_backoff_and_terminal_failure_contract",
+  "test_results": {
+    "test_1_openai_mock_fail_twice_success": "PASS",
+    "test_2_telegram_mock_fail_twice_success": "PASS",
+    "test_3_openai_terminal_failure": "PASS",
+    "test_4_telegram_terminal_failure": "PASS",
+    "test_5_configurable_max_retries": "PASS",
+    "test_6_configurable_base_delay": "PASS",
+    "test_7_jitter_policy": "PASS",
+    "test_8_no_api_calls": "PASS",
+    "test_9_no_durable_queue": "PASS"
+  },
+  "files_created": [
+    "automation/runtime/retry.py",
+    "automation/runtime/test_slice2.py",
+    "manifests/phase2_api_automode_c3_slice2_retry_backoff.yaml"
+  ],
+  "activation_lock_modified": false,
+  "openai_calls_made": false,
+  "telegram_calls_made": false,
+  "durable_queue_implemented": false,
+  "dlq_persistence_implemented": false,
+  "idempotency_implemented": false,
+  "audit_trail_implemented": false
+}
