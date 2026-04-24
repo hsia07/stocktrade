@@ -1,0 +1,27 @@
+{
+  "round_id": "PHASE2-API-AUTOMODE-ACTIVATION-CONTRACT",
+  "task_type": "api_automode_activation_contract_creation",
+  "status": "completed",
+  "formal_status_code": "candidate_ready_awaiting_manual_review",
+  "phase": "Phase 2",
+  "timestamp": "2026-04-24T00:00:00Z",
+  "files_created": [
+    "docs/phase2_api_automode_activation_contract.md",
+    "manifests/phase2_api_automode_activation.yaml",
+    "automation/control/AUTO_MODE_ACTIVATION_LOCK",
+    "docs/phase2_api_automode_message_contract_fixture.md"
+  ],
+  "blockers": [
+    "auto_mode_not_authorized",
+    "phase2_entry_not_authorized",
+    "env001"
+  ],
+  "validation": {
+    "validate_evidence": "required",
+    "check_forbidden_changes": "required",
+    "check_required_evidence": "required",
+    "check_branch_workflow": "required"
+  },
+  "ready_for_candidate": true,
+  "next_action": "await_merge_authorization"
+}

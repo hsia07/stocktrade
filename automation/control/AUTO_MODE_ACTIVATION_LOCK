@@ -1,0 +1,40 @@
+{
+  "lock_id": "AUTO_MODE_ACTIVATION_LOCK",
+  "status": "LOCKED",
+  "created_at": "2026-04-24T00:00:00Z",
+  "created_by": "PHASE2-API-AUTOMODE-ACTIVATION-CONTRACT-candidate",
+  "authorized_by": "human_authority_required",
+  "activation_authorized": false,
+  "valid_until": null,
+  "reason": "activation_contract_establishment",
+  "dependencies": {
+    "phase2_batch_review_law": "on_remote",
+    "governance_chain": "on_remote",
+    "evidence_reconciliation": "complete"
+  },
+  "blockers": {
+    "r017_not_authorized": true,
+    "phase2_entry_not_authorized": true,
+    "env001_present": true
+  },
+  "allowed_transitions": [
+    "LOCKED -> UNLOCKED (human authorization)",
+    "LOCKED -> INVALIDATED (human authorization)",
+    "UNLOCKED -> INVALIDATED (human authorization)",
+    "UNLOCKED -> LOCKED (human authorization or expiration)"
+  ],
+  "not_allowed": [
+    "UNLOCKED without explicit human authorization",
+    "Automatic state transitions",
+    "Any execution without UNLOCKED state"
+  ],
+  "scope": {
+    "auto_mode_execution": false,
+    "contract_framework": true,
+    "message_fixture": true,
+    "lock_file": true
+  },
+  "governance_chain_version": "1.0",
+  "governance_chain_source": "docs/phase2_api_automode_governance_chain.md",
+  "parent_law_source": "docs/phase2_batch_review_law.md"
+}
