@@ -1,0 +1,31 @@
+{
+  "evidence_type": "c3_slice2_retry_backoff",
+  "timestamp": "2026-04-25T04:30:00Z",
+  "evidence_files": [
+    "automation/runtime/retry.py",
+    "automation/runtime/test_slice2.py",
+    "manifests/phase2_api_automode_c3_slice2_retry_backoff.yaml"
+  ],
+  "preflight_passed": true,
+  "postcheck_passed": true,
+  "tests_executed": true,
+  "test_results": {
+    "openai_mock_fail_twice_success": true,
+    "telegram_mock_fail_twice_success": true,
+    "openai_terminal_failure": true,
+    "telegram_terminal_failure": true,
+    "configurable_max_retries": true,
+    "configurable_base_delay": true,
+    "jitter_policy": true,
+    "no_api_calls": true,
+    "no_durable_queue": true
+  },
+  "retry_attempts_semantics_ruling": "max_retries represents TOTAL maximum number of attempts (including initial). Example: max_retries=3 means up to 3 calls total.",
+  "terminal_failure_attempts_semantics_ruling": "The 'attempts' field in terminal failure result represents the total number of calls made. With max_retries=3 and all failures, attempts=3.",
+  "lock_unchanged": true,
+  "heads_unchanged": true,
+  "check_branch_workflow_passed": true,
+  "slice_boundary_honored": true,
+  "candidate_commit": "114200f0a12b0b134ecbac848183d85eb1c0b097",
+  "candidate_branch": "work/candidate-c3-slice2-retry-backoff"
+}

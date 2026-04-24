@@ -1,0 +1,31 @@
+Task: PHASE2-API-AUTOMODE-C3-SLICE2-RETRY-BACKOFF
+Date: 2026-04-25
+Round: Semantic reconciliation + acceptance reproof
+Scope: C3 Slice 2 only - Retry with exponential backoff
+Constraints: No real API calls, no durable queue, no DLQ, no idempotency, no audit trail
+
+Semantic Rulings:
+  - max_retries = TOTAL maximum number of attempts (including initial attempt)
+  - Example: max_retries=3 means up to 3 calls total
+  - terminal_failure.attempts = total number of calls made before exhaustion
+
+Files Modified:
+  - automation/runtime/retry.py (semantics fixed: max_retries now = total attempts)
+  - automation/runtime/test_slice2.py (assertions updated to match new semantics)
+  - automation/control/candidates/PHASE2-API-AUTOMODE-C3-SLICE2-RETRY-BACKOFF/report.json
+  - automation/control/candidates/PHASE2-API-AUTOMODE-C3-SLICE2-RETRY-BACKOFF/evidence.json
+  - automation/control/candidates/PHASE2-API-AUTOMODE-C3-SLICE2-RETRY-BACKOFF/task.txt
+
+Test Results:
+  - OpenAI mock fail 2x then success: PASS (attempts=3, backoff >= 3s)
+  - Telegram mock fail 2x then success: PASS (attempts=3, backoff >= 3s)
+  - OpenAI terminal failure after 3 failures: PASS (attempts=3)
+  - Telegram terminal failure after 3 failures: PASS (attempts=3)
+  - Configurable max_retries: PASS
+  - Configurable base_delay: PASS
+  - Jitter policy: PASS
+  - No real API calls: PASS
+  - No durable queue: PASS
+
+Acceptance Criteria: All met
+Blockers: None
