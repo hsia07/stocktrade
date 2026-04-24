@@ -1,0 +1,80 @@
+---
+round_id: PHASE2-API-AUTOMODE-C3-SLICE3-QUEUE-DLQ
+phase: Phase 2
+task_type: c3_slice3_queue_dlq_candidate
+status: candidate
+
+primary_file: automation/runtime/queue.py
+exact_related_files:
+  - automation/runtime/queue.py
+  - automation/runtime/dlq.py
+  - automation/runtime/dlq_adapter.py
+  - automation/runtime/test_slice3.py
+  - automation/runtime/api_automode_loop.py
+  - manifests/phase2_api_automode_c3_slice3_queue_dlq.yaml
+  - automation/control/AUTO_MODE_ACTIVATION_LOCK
+
+parent_laws:
+  - docs/phase2_batch_review_law.md
+  - docs/phase2_api_automode_governance_chain.md
+  - docs/phase2_api_automode_external_dependency_verification_contract.md
+  - docs/phase2_api_automode_live_credential_verification_result_contract.md
+  - manifests/phase2_api_automode_c3_slice2_retry_backoff.yaml
+
+governance_preconditions:
+  phase2_batch_review_law: "on_remote"
+  phase2_api_governance_chain: "on_remote"
+  external_dependency_verification_contract: "on_remote"
+  live_credential_verification_result_contract: "on_remote"
+  c3_slice1_runtime_loop_skeleton: "on_remote"
+  c3_slice2_retry_backoff: "on_remote"
+  activation_authorized: true
+  execution_authorized: true
+  unlock_state: "UNLOCKED"
+
+scope: c3_slice3_queue_dlq_only
+
+files_created:
+  - automation/runtime/queue.py
+  - automation/runtime/dlq.py
+  - automation/runtime/dlq_adapter.py
+  - automation/runtime/test_slice3.py
+  - manifests/phase2_api_automode_c3_slice3_queue_dlq.yaml
+
+files_modified:
+  - automation/runtime/api_automode_loop.py
+
+files_not_modified:
+  - automation/control/AUTO_MODE_ACTIVATION_LOCK
+  - server.py
+  - tests/*
+  - index.js
+  - config.json
+  - run_opencode_loop.ps1
+  - .githooks/*
+  - _governance/*
+  - master
+
+blockers:
+  r017_not_authorized: true
+  phase2_entry_not_authorized: true
+  env001_present: true
+
+non_authorization:
+  - Slice 4 NOT INCLUDED
+  - OpenAI API runtime calls NOT AUTHORIZED
+  - Telegram bot runtime execution NOT AUTHORIZED
+  - R017 separate
+  - Phase 2 entry separate
+
+validation:
+  validate_evidence: required
+  check_forbidden_changes: required
+  check_required_evidence: required
+  check_branch_workflow: required
+
+status_codes:
+  candidate: "candidate_ready_awaiting_manual_review"
+  merge_authorized: false
+  push_authorized: false
+  execution_authorized: false
