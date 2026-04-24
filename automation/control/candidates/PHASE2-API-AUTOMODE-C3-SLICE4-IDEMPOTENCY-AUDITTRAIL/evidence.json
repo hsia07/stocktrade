@@ -1,0 +1,32 @@
+{
+  "evidence_type": "c3_slice4_idempotency_audit_trail",
+  "timestamp": "2026-04-25T05:25:00Z",
+  "evidence_files": [
+    "automation/runtime/idempotency.py",
+    "automation/runtime/audit_trail.py",
+    "automation/runtime/test_slice4.py",
+    "automation/runtime/api_automode_loop.py",
+    "manifests/phase2_api_automode_c3_slice4_idempotency_audit_trail.yaml"
+  ],
+  "preflight_passed": true,
+  "postcheck_passed": true,
+  "tests_executed": true,
+  "test_results": {
+    "duplicate_key_rejected": true,
+    "idempotency_survives_restart": true,
+    "processing_restart_recovery": true,
+    "audit_event_schema": true,
+    "get_lineage_ordered": true,
+    "queue_checks_idempotency": true,
+    "nack_dlq_writes_audit_event": true,
+    "no_dashboard_compliance": true,
+    "no_real_api_calls": true,
+    "full_lineage_integration": true
+  },
+  "lock_unchanged": true,
+  "heads_unchanged": true,
+  "check_branch_workflow_passed": true,
+  "slice_boundary_honored": true,
+  "candidate_commit": "622f081b79a5ace7d9ae69c398afd4ae7c9acc38",
+  "candidate_branch": "work/candidate-c3-slice4-idempotency-audittrail"
+}

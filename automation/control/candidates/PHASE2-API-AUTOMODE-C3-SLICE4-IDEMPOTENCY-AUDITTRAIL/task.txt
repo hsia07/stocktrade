@@ -1,0 +1,28 @@
+Task: PHASE2-API-AUTOMODE-C3-SLICE4-IDEMPOTENCY-AUDITTRAIL
+Date: 2026-04-25
+Scope: C3 Slice 4 only - Idempotency + Audit Trail + Lineage Query
+Constraints: No real API calls, no dashboard UI, no compliance reporting
+
+Files Created:
+  - automation/runtime/idempotency.py (SQLite-backed idempotency key manager)
+  - automation/runtime/audit_trail.py (Audit event manager with lineage query)
+  - automation/runtime/test_slice4.py (test suite)
+  - manifests/phase2_api_automode_c3_slice4_idempotency_audit_trail.yaml
+
+Files Modified:
+  - automation/runtime/api_automode_loop.py (minimal idempotency/audit integration)
+
+Test Results:
+  - Duplicate key rejected (already_processed): PASS
+  - Idempotency state survives restart: PASS
+  - Processing state restart recovery: PASS
+  - Audit event schema (timestamp/provider/correlation_key/idempotency_key/stage/outcome): PASS
+  - get_lineage ordered events: PASS
+  - Queue enqueue checks idempotency: PASS
+  - nack/DLQ writes audit event: PASS
+  - No dashboard / compliance reporting: PASS
+  - No real API calls: PASS
+  - Full lineage integration (enqueue → nack → DLQ): PASS
+
+Acceptance Criteria: All met
+Blockers: None

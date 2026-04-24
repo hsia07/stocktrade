@@ -29,6 +29,15 @@ except ImportError:
     MessageQueue = None
     DLQManager = None
 
+# Slice 4 integration: idempotency and audit trail available for exactly-once
+# semantics and message lineage (not activated in mock loop)
+try:
+    from automation.runtime.idempotency import IdempotencyManager
+    from automation.runtime.audit_trail import AuditTrailManager
+except ImportError:
+    IdempotencyManager = None
+    AuditTrailManager = None
+
 # Configuration
 REPO_ROOT = Path(__file__).parent.parent.parent
 STOP_NOW_FLAG = REPO_ROOT / "automation" / "control" / "STOP_NOW.flag"
@@ -61,6 +70,9 @@ class AutomodeRuntimeLoop:
         # Slice 3: queue and DLQ available for integration in later slices
         self._queue = MessageQueue() if MessageQueue else None
         self._dlq = DLQManager() if DLQManager else None
+        # Slice 4: idempotency and audit trail available for exactly-once semantics
+        self._idempotency = IdempotencyManager() if IdempotencyManager else None
+        self._audit_trail = AuditTrailManager() if AuditTrailManager else None
         self._setup_signal_handlers()
 
     def _setup_signal_handlers(self):
