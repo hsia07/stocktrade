@@ -1,0 +1,34 @@
+{
+  "round_id": "PHASE2-API-AUTOMODE-LIVE-CREDENTIAL-VERIFICATION-RESULT-CONTRACT",
+  "task_type": "live_credential_verification_result_contract_creation",
+  "phase": "Phase 2",
+  "status": "candidate_ready_awaiting_manual_review",
+  "files_created": [
+    "docs/phase2_api_automode_live_credential_verification_result_contract.md",
+    "manifests/phase2_api_automode_live_credential_verification_result.yaml",
+    "docs/phase2_api_automode_live_verification_result_fixture.md"
+  ],
+  "files_not_modified": [
+    "automation/control/AUTO_MODE_ACTIVATION_LOCK",
+    "server.py",
+    "tests/*",
+    "index.js",
+    "config.json",
+    "run_opencode_loop.ps1"
+  ],
+  "blockers": [
+    "execution_authorized",
+    "r017_separate_round",
+    "phase2_entry_separate_track"
+  ],
+  "non_authorization": [
+    "Live credential verification execution NOT AUTHORIZED",
+    "OpenAI API calls NOT AUTHORIZED",
+    "Telegram bot execution NOT AUTHORIZED",
+    "Execution authorization NOT YET",
+    "R017 secrets separate"
+  ],
+  "timestamp": "2026-04-24T15:00:00Z",
+  "evidence_type": "candidate_creation",
+  "contract_scope": "live_verification_result_only_no_execution"
+}
