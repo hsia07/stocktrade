@@ -1,0 +1,28 @@
+PHASE2-API-AUTOMODE-BACKLOG-SNAPSHOT-NORMALIZATION
+Task: Backlog Snapshot Normalization Candidate
+
+Objective:
+  Sync backlog snapshot with actual canonical/remote state after all
+  backlog items have been merged and pushed.
+
+Changes:
+  - manifests/current_round.yaml:
+    * backlog.r018.merge_review_status: pending -> merged
+    * backlog.r019.merge_review_status: pending -> merged
+    * Added merge_commit and pushed_to_remote fields for R018/R019
+    * Added telegram_send_path_completion backlog entry
+
+  - automation/control/AUTO_MODE_ACTIVATION_LOCK:
+    * chain_control.backlog.r018.merge_review_status: pending -> merged
+    * chain_control.backlog.r019.merge_review_status: pending -> merged
+    * Added merge_commit and pushed_to_remote fields for R018/R019
+    * Added telegram_send_path_completion backlog entry
+    * Updated resume_condition to reflect backlog clearance
+
+Constraints honored:
+  - All other fields preserved (last_completed_round=R019, current_round=NONE,
+    next_round_to_dispatch=R020, auto_run=false, chain_status=frozen, etc.)
+  - No source code modified
+  - No merge/push/runtime/dispatch
+  - No OpenAI/Telegram business calls
+  - No forbidden paths touched
