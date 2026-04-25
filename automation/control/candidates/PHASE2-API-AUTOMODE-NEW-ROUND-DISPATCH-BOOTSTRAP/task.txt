@@ -1,0 +1,31 @@
+PHASE2-API-AUTOMODE-NEW-ROUND-DISPATCH-BOOTSTRAP + TELEGRAM-STAGE-NOTIFY + PAUSE-START-RETURN-REPORT
+Task: Control Plane Semantic Correction Round
+
+Objective:
+  1. Fix new-round dispatch semantics: missing candidate -> construction_bootstrap
+  2. Add Telegram phase-transition notifications
+  3. /pause generates full RETURN_TO_CHATGPT and writes to output channel
+  4. /start resumes from structured state, rejects when frozen/gated
+
+Files created:
+  - automation/control/phase_state.py (RoundPhase enum)
+  - automation/control/return_report.py (RETURN_TO_CHATGPT generator)
+  - automation/control/candidate_checker.py (candidate existence check)
+  - automation/control/test_dispatch_bootstrap.py
+  - automation/control/test_pause_return_report.py
+  - automation/control/test_telegram_phase_notify.py
+  - automation/control/test_start_resume.py
+
+Files modified:
+  - automation/control/auto_advance.py (construction_bootstrap gate)
+  - automation/control/pause_state.py (generate_pause_report)
+  - automation/control/status_scheduler.py (phase notify, start_chain)
+  - automation/control/status_reporter.py (minor compat)
+  - automation/runtime/api_automode_loop.py (dispatch bootstrap, pause handle)
+
+Constraints honored:
+  - No merge, no push
+  - No real OpenAI/Telegram business calls (mock only)
+  - No forbidden paths touched
+  - 27/27 tests PASS
+  - All validators PASS

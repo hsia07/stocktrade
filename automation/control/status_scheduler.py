@@ -16,6 +16,9 @@ import yaml
 from automation.control.status_reporter import StatusReporter
 from automation.control.pause_state import PauseStateManager
 from automation.telegram.sender import TelegramSender
+from automation.control.phase_state import RoundPhase
+from automation.control.candidate_checker import CandidateChecker
+from automation.control.return_report import ReturnReportGenerator
 
 logger = logging.getLogger("status_scheduler")
 
@@ -72,18 +75,28 @@ class StatusScheduler:
             if isinstance(item, dict)
         )
 
+        current_round = manifest.get("current_round", "NONE")
+        next_round = manifest.get("next_round_to_dispatch", "unknown")
+        phase = manifest.get("phase_state", RoundPhase.NONE)
+
+        # Check if candidate exists for current round
+        candidate_checker = CandidateChecker(self.repo_root)
+        candidate_info = candidate_checker.check_candidate_exists(current_round) if current_round != "NONE" else {"exists": False}
+
         state = {
-            "current_round": manifest.get("current_round", "NONE"),
+            "current_round": current_round,
             "last_completed_round": manifest.get("last_completed_round", "unknown"),
-            "next_round": manifest.get("next_round_to_dispatch", "unknown"),
+            "next_round": next_round,
             "auto_run": manifest.get("auto_run", False),
             "chain_status": manifest.get("chain_status", "unknown"),
+            "phase": phase,
             "auto_advanced": False,
             "stop_reason": "",
             "stop_gate_type": "",
             "evidence_complete": False,
-            "candidate_branch": "",
+            "candidate_branch": candidate_info.get("branch", ""),
             "candidate_commit": "",
+            "candidate_exists": candidate_info.get("exists", False),
             "awaiting_review": False,
             "lane_frozen": False,
             "paused": self.pause_manager.is_paused(),
@@ -103,6 +116,10 @@ class StatusScheduler:
         elif state["chain_status"] == "frozen_pending_backlog_merge" and not backlog_pending:
             state["stop_reason"] = "backlog_cleared_awaiting_unfreeze_authorization"
             state["stop_gate_type"] = "unfreeze_authorization_gate"
+        elif current_round != "NONE" and not candidate_info.get("exists", False) and phase not in {RoundPhase.CONSTRUCTION_BOOTSTRAP.value, RoundPhase.CONSTRUCTION_IN_PROGRESS.value, RoundPhase.CANDIDATE_MATERIALIZING.value}:
+            # Candidate missing but not in construction phase -> should enter bootstrap
+            state["stop_reason"] = "candidate_missing_entering_construction_bootstrap"
+            state["stop_gate_type"] = "construction_bootstrap_gate"
 
         return state
 
@@ -174,6 +191,66 @@ class StatusScheduler:
             "can_start": True,
             "reason": "",
             "resume_from_round": resume_from,
+        }
+
+    def notify_phase_transition(self, phase: str, round_id: str, extra: str = "") -> Dict[str, Any]:
+        """
+        Send a Telegram notification for a phase transition.
+
+        Returns send result dict.
+        """
+        emoji_map = {
+            RoundPhase.ROUND_ENTERED.value: "🚀",
+            RoundPhase.CONSTRUCTION_BOOTSTRAP.value: "🔧",
+            RoundPhase.CONSTRUCTION_IN_PROGRESS.value: "🏗️",
+            RoundPhase.CANDIDATE_MATERIALIZING.value: "📦",
+            RoundPhase.CANDIDATE_READY.value: "✅",
+            RoundPhase.VALIDATION_IN_PROGRESS.value: "🧪",
+            RoundPhase.STOPPED.value: "🛑",
+            RoundPhase.COMPLETED.value: "🎉",
+        }
+        emoji = emoji_map.get(phase, "📋")
+        text = f"{emoji} *{round_id}* → `{phase}`"
+        if extra:
+            text += f"\n{extra}"
+        return self.sender.send_message(text)
+
+    def start_chain(self) -> Dict[str, Any]:
+        """
+        /start semantics: resume chain from structured state.
+
+        Returns dict with:
+        - started: bool
+        - reason: str
+        - resume_from_round: str
+        """
+        can_start = self.check_can_start()
+        if not can_start["can_start"]:
+            # Send rejection notice via Telegram
+            self.sender.send_message(
+                f"🚫 */start rejected*\nReason: {can_start['reason']}"
+            )
+            return {"started": False, "reason": can_start["reason"], "resume_from_round": can_start["resume_from_round"]}
+
+        manifest = self._load_manifest()
+        current_round = manifest.get("current_round", "NONE")
+        next_round = manifest.get("next_round_to_dispatch", "unknown")
+
+        # If paused, clear pause
+        if self.pause_manager.is_paused():
+            self.pause_manager.clear_pause()
+
+        # If current_round is NONE and next_round exists, dispatch it
+        resume_target = current_round if current_round != "NONE" else next_round
+
+        self.sender.send_message(
+            f"▶️ *Chain resumed*\nTarget: `{resume_target}`"
+        )
+
+        return {
+            "started": True,
+            "reason": "",
+            "resume_from_round": resume_target,
         }
 
     def check_can_pause(self) -> Dict[str, Any]:

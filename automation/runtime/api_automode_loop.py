@@ -1,13 +1,17 @@
 """
-PHASE2 API Automode - C3 Slice 1: Unified Runtime Loop Skeleton
+PHASE2 API Automode - C3 Slice 1+: Unified Runtime Loop with
+Construction Bootstrap, Telegram Phase Notify, and Pause/Start Semantics
 
-This is a MOCK runtime loop skeleton for the OpenAI + Telegram dual-provider
-orchestration system. It contains NO real OpenAI or Telegram API calls.
+This is a MOCK runtime loop for the OpenAI + Telegram dual-provider
+orchestration system. It contains NO real OpenAI or Telegram API calls
+except for minimal authorized status notifications.
 
-Slice 1 Acceptance Criteria:
-1. Loop runs for >= 60s without crash
-2. STOP_NOW.flag causes clean exit within <= 5s
-3. No OpenAI/Telegram calls in this slice (mock only)
+Acceptance Criteria:
+1. New round dispatch enters construction bootstrap when no candidate exists
+2. Telegram notifications sent on phase transitions
+3. /pause generates full RETURN_TO_CHATGPT and writes to output channel
+4. /start resumes from structured state, rejects when frozen/gated
+5. STOP_NOW.flag causes clean exit within <= 5s
 """
 
 import os
@@ -21,7 +25,6 @@ from pathlib import Path
 from typing import Optional, Dict, Any
 
 # Slice 3 integration: queue available for future message-driven processing
-# (imported but not activated in Slice 1/2 loop to preserve core semantics)
 try:
     from automation.runtime.queue import MessageQueue
     from automation.runtime.dlq import DLQManager
@@ -29,8 +32,7 @@ except ImportError:
     MessageQueue = None
     DLQManager = None
 
-# Slice 4 integration: idempotency and audit trail available for exactly-once
-# semantics and message lineage (not activated in mock loop)
+# Slice 4 integration: idempotency and audit trail available
 try:
     from automation.runtime.idempotency import IdempotencyManager
     from automation.runtime.audit_trail import AuditTrailManager
@@ -38,31 +40,38 @@ except ImportError:
     IdempotencyManager = None
     AuditTrailManager = None
 
-# Candidate-pass auto-advance control integration (minimal)
-# Available for round orchestration; not activated in idle mock loop
+# Control plane integration
 try:
     from automation.control.pause_state import PauseStateManager
     from automation.control.auto_advance import AutoAdvanceController
     from automation.control.status_reporter import StatusReporter
+    from automation.control.status_scheduler import StatusScheduler
+    from automation.control.phase_state import RoundPhase
+    from automation.control.candidate_checker import CandidateChecker
+    from automation.control.return_report import ReturnReportGenerator
 except ImportError:
     PauseStateManager = None
     AutoAdvanceController = None
     StatusReporter = None
+    StatusScheduler = None
+    RoundPhase = None
+    CandidateChecker = None
+    ReturnReportGenerator = None
 
 # Configuration
 REPO_ROOT = Path(__file__).parent.parent.parent
 STOP_NOW_FLAG = REPO_ROOT / "automation" / "control" / "STOP_NOW.flag"
+MANIFEST_PATH = REPO_ROOT / "manifests" / "current_round.yaml"
 LOG_FORMAT = "%(asctime)s [%(levelname)s] %(name)s: %(message)s"
-TICK_INTERVAL = 2.0  # seconds between loop ticks
-STOP_CHECK_INTERVAL = 0.5  # seconds between STOP_NOW checks during shutdown
+TICK_INTERVAL = 2.0
+STOP_CHECK_INTERVAL = 0.5
 
-# Setup logging
 logging.basicConfig(level=logging.INFO, format=LOG_FORMAT)
 logger = logging.getLogger("api_automode_loop")
 
 
 class AutomodeRuntimeLoop:
-    """Mock unified runtime loop skeleton for dual-provider orchestration."""
+    """Mock unified runtime loop with construction bootstrap and phase tracking."""
 
     def __init__(self):
         self._running = False
@@ -70,6 +79,8 @@ class AutomodeRuntimeLoop:
         self._tick_count = 0
         self._start_time: Optional[float] = None
         self._stop_time: Optional[float] = None
+        self._current_phase = RoundPhase.NONE if RoundPhase else "none"
+        self._current_round = "NONE"
         self._metrics: Dict[str, Any] = {
             "ticks": 0,
             "mock_work_items": 0,
@@ -77,59 +88,201 @@ class AutomodeRuntimeLoop:
             "errors": 0,
             "start_time": None,
             "stop_time": None,
+            "phase_transitions": [],
         }
-        # Slice 3: queue and DLQ available for integration in later slices
         self._queue = MessageQueue() if MessageQueue else None
         self._dlq = DLQManager() if DLQManager else None
-        # Slice 4: idempotency and audit trail available for exactly-once semantics
         self._idempotency = IdempotencyManager() if IdempotencyManager else None
         self._audit_trail = AuditTrailManager() if AuditTrailManager else None
+        self._pause_manager = PauseStateManager(REPO_ROOT) if PauseStateManager else None
+        self._scheduler = StatusScheduler(REPO_ROOT) if StatusScheduler else None
         self._setup_signal_handlers()
 
     def _setup_signal_handlers(self):
-        """Register SIGINT and SIGTERM for graceful shutdown."""
         signal.signal(signal.SIGINT, self._signal_handler)
         signal.signal(signal.SIGTERM, self._signal_handler)
         logger.info("Signal handlers registered for SIGINT and SIGTERM")
 
     def _signal_handler(self, signum, frame):
-        """Handle shutdown signals gracefully."""
         sig_name = "SIGINT" if signum == signal.SIGINT else "SIGTERM"
         logger.info(f"Received {sig_name}, requesting graceful shutdown...")
         self._shutdown_requested = True
 
     def _check_stop_now(self) -> bool:
-        """Check if STOP_NOW.flag exists."""
         return STOP_NOW_FLAG.exists()
 
     def _check_pause(self) -> bool:
-        """Check if PAUSE.flag exists (candidate-pass auto-advance control)."""
-        if PauseStateManager:
-            paused = PauseStateManager(REPO_ROOT).is_paused()
-            if paused:
-                logger.info("PAUSE.flag detected (auto-advance control)")
-            return paused
+        if self._pause_manager:
+            return self._pause_manager.is_paused()
         return False
 
+    def _transition_phase(self, new_phase: str, round_id: str = "", extra: str = ""):
+        """Transition to a new phase and log/notify."""
+        old_phase = self._current_phase
+        if old_phase == new_phase:
+            return
+        self._current_phase = new_phase
+        self._metrics["phase_transitions"].append({
+            "from": old_phase,
+            "to": new_phase,
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+        })
+        logger.info(f"Phase transition: {old_phase} -> {new_phase} (round={round_id})")
+
+        # Send Telegram notification for key phases
+        if self._scheduler and RoundPhase:
+            if new_phase in {
+                RoundPhase.ROUND_ENTERED.value,
+                RoundPhase.CONSTRUCTION_BOOTSTRAP.value,
+                RoundPhase.CONSTRUCTION_IN_PROGRESS.value,
+                RoundPhase.CANDIDATE_MATERIALIZING.value,
+                RoundPhase.STOPPED.value,
+            }:
+                try:
+                    result = self._scheduler.notify_phase_transition(new_phase, round_id or self._current_round, extra)
+                    if not result.get("success"):
+                        logger.warning(f"Telegram phase notify failed: {result.get('error')}")
+                except Exception as e:
+                    logger.warning(f"Phase notify exception: {e}")
+
+    def _load_manifest_state(self) -> Dict[str, Any]:
+        """Load minimal state from current_round.yaml."""
+        try:
+            import yaml
+            if MANIFEST_PATH.exists():
+                with MANIFEST_PATH.open("r", encoding="utf-8") as f:
+                    return yaml.safe_load(f) or {}
+        except Exception as e:
+            logger.warning(f"Failed to load manifest: {e}")
+        return {}
+
+    def _save_manifest_state(self, updates: Dict[str, Any]):
+        """Save updates to current_round.yaml (minimal safe write)."""
+        try:
+            import yaml
+            state = self._load_manifest_state()
+            state.update(updates)
+            with MANIFEST_PATH.open("w", encoding="utf-8") as f:
+                yaml.safe_dump(state, f, default_flow_style=False, allow_unicode=True, sort_keys=False)
+        except Exception as e:
+            logger.error(f"Failed to save manifest: {e}")
+
+    def _dispatch_next_round(self) -> Dict[str, Any]:
+        """
+        Dispatch the next round if current_round is NONE.
+
+        Returns dispatch result dict.
+        """
+        manifest = self._load_manifest_state()
+        current_round = manifest.get("current_round", "NONE")
+        next_round = manifest.get("next_round_to_dispatch", "")
+
+        if current_round != "NONE" or not next_round:
+            return {"dispatched": False, "reason": "no_dispatch_needed"}
+
+        # Update manifest: dispatch next round
+        self._save_manifest_state({
+            "current_round": next_round,
+            "phase_state": RoundPhase.ROUND_ENTERED.value if RoundPhase else "round_entered",
+        })
+        self._current_round = next_round
+        self._transition_phase(
+            RoundPhase.ROUND_ENTERED.value if RoundPhase else "round_entered",
+            next_round,
+            "Round dispatched from structured state",
+        )
+        logger.info(f"Dispatched round {next_round}")
+
+        # Check if candidate exists
+        if CandidateChecker:
+            checker = CandidateChecker(REPO_ROOT)
+            candidate_info = checker.check_candidate_exists(next_round)
+            if candidate_info.get("exists"):
+                logger.info(f"Candidate found for {next_round}: {candidate_info['branch']}")
+                self._transition_phase(
+                    RoundPhase.CANDIDATE_READY.value if RoundPhase else "candidate_ready",
+                    next_round,
+                )
+                return {"dispatched": True, "round": next_round, "candidate_exists": True}
+            else:
+                logger.info(f"No candidate for {next_round}; entering construction bootstrap")
+                self._save_manifest_state({
+                    "phase_state": RoundPhase.CONSTRUCTION_BOOTSTRAP.value if RoundPhase else "construction_bootstrap",
+                })
+                self._transition_phase(
+                    RoundPhase.CONSTRUCTION_BOOTSTRAP.value if RoundPhase else "construction_bootstrap",
+                    next_round,
+                    "No materialized candidate; entering construction",
+                )
+                return {"dispatched": True, "round": next_round, "candidate_exists": False}
+
+        return {"dispatched": True, "round": next_round, "candidate_exists": False}
+
+    def _handle_pause(self) -> Dict[str, Any]:
+        """
+        Handle PAUSE.flag: safe stop, generate full RETURN_TO_CHATGPT.
+
+        Returns pause result dict.
+        """
+        if not self._pause_manager:
+            return {"paused": False, "reason": "pause_manager_not_available"}
+
+        if not self._pause_manager.is_paused():
+            return {"paused": False, "reason": "not_paused"}
+
+        logger.info("PAUSE.flag detected - initiating safe stop")
+
+        # Build structured state
+        state = {}
+        if self._scheduler:
+            state = self._scheduler.build_state()
+
+        # Generate full RETURN_TO_CHATGPT
+        report = ""
+        if ReturnReportGenerator:
+            generator = ReturnReportGenerator(REPO_ROOT)
+            report = generator.generate_pause_report(state, pause_reason="pause_flag_active")
+            generator.write_report(report, filename="LATEST_PAUSE_RETURN_TO_CHATGPT.txt")
+            logger.info("Full RETURN_TO_CHATGPT pause report generated")
+
+        # Send Telegram pause notification
+        if self._scheduler:
+            try:
+                self._scheduler.notify_phase_transition(
+                    RoundPhase.STOPPED.value if RoundPhase else "stopped",
+                    self._current_round,
+                    f"Paused: {state.get('stop_reason', 'manual_pause_requested')}",
+                )
+            except Exception as e:
+                logger.warning(f"Telegram pause notify failed: {e}")
+
+        self._transition_phase(
+            RoundPhase.STOPPED.value if RoundPhase else "stopped",
+            self._current_round,
+        )
+
+        return {
+            "paused": True,
+            "reason": state.get("stop_reason", "pause_flag_active"),
+            "report_written": bool(report),
+            "report_path": str(REPO_ROOT / "automation" / "control" / "LATEST_PAUSE_RETURN_TO_CHATGPT.txt"),
+        }
+
     def _log_control_state(self):
-        """Log auto-advance control layer status."""
         if PauseStateManager and AutoAdvanceController and StatusReporter:
             logger.info("Auto-advance control layer: ACTIVE")
             logger.info("Pause state: %s", "PAUSED" if self._check_pause() else "RUNNING")
-            # Actually call StatusReporter to generate and format summary
             self._report_status()
         else:
             logger.debug("Auto-advance control layer: not loaded")
 
     def _report_status(self):
-        """Generate and log status summary using StatusReporter."""
         if not StatusReporter:
             return
         try:
             reporter = StatusReporter(REPO_ROOT)
-            # Build minimal state from structured fields (mock for loop skeleton)
             state = {
-                "current_round": "mock_loop_active",
+                "current_round": self._current_round,
                 "next_round": "awaiting_dispatch",
                 "auto_advanced": False,
                 "stop_reason": "",
@@ -147,40 +300,49 @@ class AutomodeRuntimeLoop:
             logger.warning("Status report generation failed: %s", e)
 
     def _mock_generate_work_item(self) -> Optional[Dict[str, Any]]:
-        """Mock: Generate a work item (NO OpenAI call)."""
         self._tick_count += 1
-        work_item = {
+        return {
             "tick": self._tick_count,
             "timestamp": datetime.now(timezone.utc).isoformat(),
             "provider": "mock_openai",
             "status": "mock_generated",
             "content_hash": f"mock_hash_{self._tick_count}",
         }
-        logger.debug(f"Mock work item generated: tick={self._tick_count}")
-        return work_item
 
     def _mock_dispatch(self, work_item: Dict[str, Any]) -> bool:
-        """Mock: Dispatch work item (NO Telegram call)."""
-        logger.debug(
-            f"Mock dispatch: tick={work_item['tick']}, provider=mock_telegram"
-        )
+        logger.debug(f"Mock dispatch: tick={work_item['tick']}, provider=mock_telegram")
         return True
 
     def _process_tick(self):
-        """Process one loop tick."""
         try:
-            # Check STOP_NOW before processing
             if self._check_stop_now():
                 logger.info("STOP_NOW.flag detected, initiating clean shutdown")
                 self._shutdown_requested = True
                 return
 
-            # Mock work generation
+            # 1. Handle pause
+            pause_result = self._handle_pause()
+            if pause_result.get("paused"):
+                logger.info("Loop paused by PAUSE.flag; entering idle ticks")
+                # In paused mode we still tick but do no work
+                self._metrics["ticks"] = self._tick_count
+                return
+
+            # 2. Dispatch next round if needed
+            manifest = self._load_manifest_state()
+            if manifest.get("current_round", "NONE") == "NONE" and manifest.get("next_round_to_dispatch"):
+                dispatch_result = self._dispatch_next_round()
+                if dispatch_result.get("dispatched") and not dispatch_result.get("candidate_exists", True):
+                    # In construction bootstrap: we continue ticking but do no mock work
+                    # until construction completes (which would be signaled externally)
+                    logger.info("In construction bootstrap; waiting for candidate materialization")
+                    self._metrics["ticks"] = self._tick_count
+                    return
+
+            # 3. Normal mock work
             work_item = self._mock_generate_work_item()
             if work_item:
                 self._metrics["mock_work_items"] += 1
-
-                # Mock dispatch
                 success = self._mock_dispatch(work_item)
                 if success:
                     self._metrics["mock_dispatches"] += 1
@@ -192,17 +354,16 @@ class AutomodeRuntimeLoop:
             logger.error(f"Error in tick {self._tick_count}: {e}")
 
     def start(self):
-        """Start the runtime loop."""
         self._start_time = time.time()
         self._running = True
         self._metrics["start_time"] = datetime.now(timezone.utc).isoformat()
 
         logger.info("=" * 60)
-        logger.info("API AUTOMODE RUNTIME LOOP - SLICE 1 (MOCK)")
+        logger.info("API AUTOMODE RUNTIME LOOP - WITH CONSTRUCTION BOOTSTRAP")
         logger.info("=" * 60)
         logger.info(f"STOP_NOW flag path: {STOP_NOW_FLAG}")
         logger.info(f"Tick interval: {TICK_INTERVAL}s")
-        logger.info("NO REAL OpenAI/Telegram calls in this slice")
+        logger.info("NO REAL OpenAI/Telegram business calls in this loop")
         logger.info("=" * 60)
         self._log_control_state()
         logger.info("=" * 60)
@@ -215,7 +376,6 @@ class AutomodeRuntimeLoop:
                 if self._shutdown_requested:
                     break
 
-                # Sleep with periodic STOP_NOW checks
                 slept = 0.0
                 while slept < TICK_INTERVAL and not self._shutdown_requested:
                     time.sleep(STOP_CHECK_INTERVAL)
@@ -233,7 +393,6 @@ class AutomodeRuntimeLoop:
             self._shutdown()
 
     def _shutdown(self):
-        """Perform graceful shutdown."""
         self._running = False
         self._stop_time = time.time()
         self._metrics["stop_time"] = datetime.now(timezone.utc).isoformat()
@@ -252,7 +411,6 @@ class AutomodeRuntimeLoop:
         logger.info(f"Errors: {self._metrics['errors']}")
         logger.info("=" * 60)
 
-        # Write metrics to file for test verification
         metrics_file = REPO_ROOT / "automation" / "runtime" / "slice1_metrics.json"
         try:
             with open(metrics_file, "w", encoding="utf-8") as f:
@@ -262,12 +420,10 @@ class AutomodeRuntimeLoop:
             logger.error(f"Failed to write metrics: {e}")
 
     def get_metrics(self) -> Dict[str, Any]:
-        """Return current metrics."""
         return self._metrics.copy()
 
 
 def main():
-    """Entry point for the runtime loop."""
     loop = AutomodeRuntimeLoop()
     loop.start()
     return 0
