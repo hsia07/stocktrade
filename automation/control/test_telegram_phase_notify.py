@@ -96,6 +96,34 @@ class TestTelegramPhaseNotify(unittest.TestCase):
         self.assertTrue(result.get("success"))
         self.assertTrue(any(RoundPhase.STOPPED.value in m for m in mock_sender.messages))
 
+    def test_telegram_runtime_invoked_on_phase_transition(self):
+        """
+        Simulate runtime _transition_phase calling notify_phase_transition
+        for all key phases and verify Telegram messages are sent.
+        """
+        from automation.control.status_scheduler import StatusScheduler
+        scheduler = StatusScheduler(self.tmpdir)
+        mock_sender = MockTelegramSender()
+        scheduler.sender = mock_sender
+
+        phases = [
+            RoundPhase.ROUND_ENTERED.value,
+            RoundPhase.CONSTRUCTION_BOOTSTRAP.value,
+            RoundPhase.CONSTRUCTION_IN_PROGRESS.value,
+            RoundPhase.STOPPED.value,
+        ]
+
+        for phase in phases:
+            result = scheduler.notify_phase_transition(phase, "R020", f"Runtime {phase}")
+            self.assertTrue(result.get("success"), f"Phase {phase} notify failed")
+
+        # Verify all phase messages were sent
+        for phase in phases:
+            self.assertTrue(
+                any(phase in m for m in mock_sender.messages),
+                f"No Telegram message for phase {phase}"
+            )
+
 
 if __name__ == "__main__":
     unittest.main()
