@@ -69,20 +69,34 @@
       "r018": {
         "branch": "work/candidate-r018-schema-migration",
         "commit": "8c75cb0e89406e1585bdfd1064e7473f54f65daa",
+        "merged_at_commit": "f928db636d1cdd948a88f4cd33082a9286f73371",
         "evidence_complete": true,
         "tests_pass": true,
         "validators_pass": true,
-        "merge_review_status": "pending"
+        "merge_review_status": "merged",
+        "pushed_to_remote": true
       },
       "r019": {
         "branch": "work/candidate-r019-slo-latency-stability",
         "commit": "092e38ccfd12181cd07684c57a0f8fcdd836872b",
+        "merged_at_commit": "13e1a1d91cae5a845135299dd01975fe18a064b5",
         "evidence_complete": true,
         "tests_pass": true,
         "validators_pass": true,
-        "merge_review_status": "pending"
+        "merge_review_status": "merged",
+        "pushed_to_remote": true
+      },
+      "telegram_send_path_completion": {
+        "branch": "work/candidate-telegram-send-path-completion",
+        "commit": "c827917b865bba7250068f3ff491a3de64ffd493",
+        "merged_at_commit": "fc6e71a2f65749398c41d55e0768247a1f44cc96",
+        "evidence_complete": true,
+        "tests_pass": true,
+        "validators_pass": true,
+        "merge_review_status": "merged",
+        "pushed_to_remote": true
       }
     },
-    "resume_condition": "R018 and R019 candidates merged to canonical and pushed to remote"
+    "resume_condition": "Backlog cleared. Ready for chain unfreeze authorization."
   }
 }

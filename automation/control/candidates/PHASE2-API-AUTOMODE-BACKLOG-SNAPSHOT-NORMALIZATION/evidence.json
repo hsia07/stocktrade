@@ -1,0 +1,38 @@
+{
+  "evidence_type": "backlog_snapshot_normalization_execution",
+  "round_id": "PHASE2-API-AUTOMODE-BACKLOG-SNAPSHOT-NORMALIZATION",
+  "timestamp": "2026-04-25T11:00:00+08:00",
+  "work_done": [
+    "Updated manifests/current_round.yaml backlog snapshot: r018 merge_review_status pending -> merged, added merge_commit and pushed_to_remote",
+    "Updated manifests/current_round.yaml backlog snapshot: r019 merge_review_status pending -> merged, added merge_commit and pushed_to_remote",
+    "Added telegram_send_path_completion backlog entry to manifests/current_round.yaml with merge_commit and pushed_to_remote",
+    "Updated automation/control/AUTO_MODE_ACTIVATION_LOCK chain_control.backlog: r018 merge_review_status pending -> merged",
+    "Updated automation/control/AUTO_MODE_ACTIVATION_LOCK chain_control.backlog: r019 merge_review_status pending -> merged",
+    "Added telegram_send_path_completion to chain_control.backlog in AUTO_MODE_ACTIVATION_LOCK",
+    "Updated resume_condition in AUTO_MODE_ACTIVATION_LOCK to reflect backlog clearance",
+    "Preserved all other governance state fields unchanged"
+  ],
+  "validator_results": {
+    "check_branch_workflow.py": "PASS",
+    "check_forbidden_changes.py": "PASS",
+    "check_required_evidence.py": "PASS"
+  },
+  "files_modified": [
+    "manifests/current_round.yaml",
+    "automation/control/AUTO_MODE_ACTIVATION_LOCK"
+  ],
+  "canonical_head_unchanged": true,
+  "remote_head_unchanged": true,
+  "master_head_unchanged": true,
+  "no_merge": true,
+  "no_push": true,
+  "no_runtime": true,
+  "no_dispatch": true,
+  "no_external_calls": true,
+  "chain_frozen": true,
+  "preflight_state": {
+    "local_canonical_head": "fc6e71a2f65749398c41d55e0768247a1f44cc96",
+    "remote_canonical_head": "fc6e71a2f65749398c41d55e0768247a1f44cc96",
+    "master_head": "1fd96c2e433b998978cb39f1db64043542c26c75"
+  }
+}
