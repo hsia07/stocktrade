@@ -59,6 +59,30 @@ class TestDispatchBootstrap(unittest.TestCase):
         # Phase should transition to construction_bootstrap
         # This is documented by the test intent
 
+    def test_dispatch_without_candidate_enters_construction_in_progress(self):
+        """
+        When dispatched with no candidate, system must enter
+        construction_in_progress (not stop at bootstrap gate).
+        """
+        manifest = {
+            "current_round": "R020",
+            "next_round_to_dispatch": "R020",
+            "auto_run": True,
+            "chain_status": "running",
+            "phase_state": RoundPhase.CONSTRUCTION_IN_PROGRESS.value,
+        }
+        self._write_manifest(manifest)
+
+        from automation.control.status_scheduler import StatusScheduler
+        scheduler = StatusScheduler(self.tmpdir)
+        state = scheduler.build_state()
+
+        # construction_in_progress must NOT have a stop_reason
+        self.assertEqual(state["stop_reason"], "")
+        self.assertEqual(state["stop_gate_type"], "")
+        self.assertEqual(state["current_round"], "R020")
+        self.assertEqual(state["phase"], RoundPhase.CONSTRUCTION_IN_PROGRESS.value)
+
     def test_candidate_gate_no_longer_triggers_immediate_stop_on_new_round(self):
         """
         can_auto_advance with is_new_round_dispatch=True and candidate_exists=False

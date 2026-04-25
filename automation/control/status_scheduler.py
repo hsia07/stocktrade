@@ -120,6 +120,14 @@ class StatusScheduler:
             # Candidate missing but not in construction phase -> should enter bootstrap
             state["stop_reason"] = "candidate_missing_entering_construction_bootstrap"
             state["stop_gate_type"] = "construction_bootstrap_gate"
+        elif phase == RoundPhase.CONSTRUCTION_IN_PROGRESS.value:
+            # Construction in progress is NOT a stop; it's active work
+            state["stop_reason"] = ""
+            state["stop_gate_type"] = ""
+        elif phase == RoundPhase.CONSTRUCTION_BOOTSTRAP.value:
+            # Bootstrap is transitional, not terminal
+            state["stop_reason"] = "entering_construction"
+            state["stop_gate_type"] = "construction_transition_gate"
 
         return state
 

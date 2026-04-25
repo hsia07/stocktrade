@@ -1,0 +1,37 @@
+PHASE2-API-AUTOMODE-R020-BOOTSTRAP-CONTINUATION + TELEGRAM-EVENT-RUNTIME-INTEGRATION-REPAIR
+Task: Control Plane Bootstrap Continuation and Telegram Runtime Integration Repair
+
+Objective:
+  1. Fix bootstrap continuation: when no candidate exists, system must enter
+     construction_in_progress (active work state) instead of stopping at
+     construction_bootstrap_gate.
+  2. Fix Telegram runtime integration: ensure _transition_phase in runtime
+     actually invokes notify_phase_transition for round_entered,
+     construction_bootstrap, construction_in_progress, stopped events.
+
+Changes:
+  - automation/runtime/api_automode_loop.py:
+    * _dispatch_next_round() now calls _enter_construction_in_progress()
+      immediately after construction_bootstrap
+    * Added _enter_construction_in_progress() method
+    * Added _mock_construction_work() for active construction phase
+    * _process_tick() now handles construction_in_progress as active work
+      instead of returning immediately
+
+  - automation/control/status_scheduler.py:
+    * build_state() now treats construction_in_progress as active (no stop)
+    * construction_bootstrap is transitional (not terminal stop)
+
+  - automation/control/test_dispatch_bootstrap.py:
+    * Added test_dispatch_without_candidate_enters_construction_in_progress
+
+  - automation/control/test_telegram_phase_notify.py:
+    * Added test_telegram_runtime_invoked_on_phase_transition
+
+Constraints honored:
+  - No merge, no push
+  - No real OpenAI/Telegram business calls
+  - No forbidden paths touched
+  - 29/29 tests PASS
+  - All validators PASS
+  - manifests/current_round.yaml and AUTO_MODE_ACTIVATION_LOCK unchanged

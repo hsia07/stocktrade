@@ -205,18 +205,36 @@ class AutomodeRuntimeLoop:
                 )
                 return {"dispatched": True, "round": next_round, "candidate_exists": True}
             else:
-                logger.info(f"No candidate for {next_round}; entering construction bootstrap")
+                logger.info(f"No candidate for {next_round}; entering construction")
+                # Enter construction bootstrap, then immediately progress to in-progress
                 self._save_manifest_state({
                     "phase_state": RoundPhase.CONSTRUCTION_BOOTSTRAP.value if RoundPhase else "construction_bootstrap",
                 })
                 self._transition_phase(
                     RoundPhase.CONSTRUCTION_BOOTSTRAP.value if RoundPhase else "construction_bootstrap",
                     next_round,
-                    "No materialized candidate; entering construction",
+                    "No materialized candidate; entering construction bootstrap",
                 )
-                return {"dispatched": True, "round": next_round, "candidate_exists": False}
+                # Progress to construction_in_progress immediately
+                self._enter_construction_in_progress(next_round)
+                return {"dispatched": True, "round": next_round, "candidate_exists": False, "construction_in_progress": True}
 
         return {"dispatched": True, "round": next_round, "candidate_exists": False}
+
+    def _enter_construction_in_progress(self, round_id: str):
+        """
+        Enter construction_in_progress phase. This is the active working state
+        where the agent builds the candidate. Not a terminal stop.
+        """
+        self._save_manifest_state({
+            "phase_state": RoundPhase.CONSTRUCTION_IN_PROGRESS.value if RoundPhase else "construction_in_progress",
+        })
+        self._transition_phase(
+            RoundPhase.CONSTRUCTION_IN_PROGRESS.value if RoundPhase else "construction_in_progress",
+            round_id,
+            "Candidate construction in progress; agent may begin implementation",
+        )
+        logger.info(f"Round {round_id} now in construction_in_progress; bootstrap context active")
 
     def _handle_pause(self) -> Dict[str, Any]:
         """
@@ -299,6 +317,14 @@ class AutomodeRuntimeLoop:
         except Exception as e:
             logger.warning("Status report generation failed: %s", e)
 
+    def _mock_construction_work(self):
+        """Mock construction work during bootstrap phase."""
+        self._tick_count += 1
+        logger.info(
+            f"Construction work: tick={self._tick_count}, "
+            f"round={self._current_round}, phase=construction_in_progress"
+        )
+
     def _mock_generate_work_item(self) -> Optional[Dict[str, Any]]:
         self._tick_count += 1
         return {
@@ -332,14 +358,25 @@ class AutomodeRuntimeLoop:
             manifest = self._load_manifest_state()
             if manifest.get("current_round", "NONE") == "NONE" and manifest.get("next_round_to_dispatch"):
                 dispatch_result = self._dispatch_next_round()
-                if dispatch_result.get("dispatched") and not dispatch_result.get("candidate_exists", True):
-                    # In construction bootstrap: we continue ticking but do no mock work
-                    # until construction completes (which would be signaled externally)
+                if dispatch_result.get("dispatched") and dispatch_result.get("construction_in_progress"):
+                    # In construction_in_progress: we continue to construction work below
+                    logger.info("In construction_in_progress; continuing with bootstrap work")
+                elif dispatch_result.get("dispatched") and not dispatch_result.get("candidate_exists", True):
+                    # Fallback for old bootstrap path (should not happen with new logic)
                     logger.info("In construction bootstrap; waiting for candidate materialization")
                     self._metrics["ticks"] = self._tick_count
                     return
 
-            # 3. Normal mock work
+            # 3. Check if we are in construction_in_progress and should do bootstrap work
+            manifest = self._load_manifest_state()
+            current_phase = manifest.get("phase_state", "")
+            if current_phase == (RoundPhase.CONSTRUCTION_IN_PROGRESS.value if RoundPhase else "construction_in_progress"):
+                # In construction phase: perform mock construction work instead of normal work
+                self._mock_construction_work()
+                self._metrics["ticks"] = self._tick_count
+                return
+
+            # 4. Normal mock work
             work_item = self._mock_generate_work_item()
             if work_item:
                 self._metrics["mock_work_items"] += 1
