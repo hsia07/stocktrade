@@ -116,8 +116,35 @@ class AutomodeRuntimeLoop:
         if PauseStateManager and AutoAdvanceController and StatusReporter:
             logger.info("Auto-advance control layer: ACTIVE")
             logger.info("Pause state: %s", "PAUSED" if self._check_pause() else "RUNNING")
+            # Actually call StatusReporter to generate and format summary
+            self._report_status()
         else:
             logger.debug("Auto-advance control layer: not loaded")
+
+    def _report_status(self):
+        """Generate and log status summary using StatusReporter."""
+        if not StatusReporter:
+            return
+        try:
+            reporter = StatusReporter(REPO_ROOT)
+            # Build minimal state from structured fields (mock for loop skeleton)
+            state = {
+                "current_round": "mock_loop_active",
+                "next_round": "awaiting_dispatch",
+                "auto_advanced": False,
+                "stop_reason": "",
+                "stop_gate_type": "",
+                "evidence_complete": False,
+                "candidate_branch": "",
+                "candidate_commit": "",
+                "awaiting_review": False,
+                "lane_frozen": False,
+            }
+            summary = reporter.generate_summary(state)
+            formatted = reporter.format_for_telegram(summary)
+            logger.info("Status report:\n%s", formatted)
+        except Exception as e:
+            logger.warning("Status report generation failed: %s", e)
 
     def _mock_generate_work_item(self) -> Optional[Dict[str, Any]]:
         """Mock: Generate a work item (NO OpenAI call)."""

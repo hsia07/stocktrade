@@ -1,0 +1,36 @@
+PHASE2-API-AUTOMODE-TELEGRAM-SEND-PATH-COMPLETION-AND-PAUSE-START-RESUME
+Task: Complete Telegram status send path, implement /pause and /start semantics,
+and add anti-regression tests.
+
+Deliverables:
+- automation/telegram/sender.py: Telegram API sender with error handling
+- automation/control/status_scheduler.py: Reads structured state, generates summary,
+  sends via Telegram, implements /pause and /start check semantics
+- automation/control/test_telegram_status.py: 13 anti-regression tests
+- automation/runtime/api_automode_loop.py: Updated to actually call StatusReporter
+
+Anti-regression coverage:
+- StatusScheduler reads ONLY structured fields (not notes)
+- StatusScheduler detects stale last_completed_round
+- StatusReporter does not read notes directly
+- /pause stops safely after current round
+- /start rejects when chain frozen
+- /start rejects when backlog pending
+- /start rejects when paused
+- /start rejects when state inconsistent
+- /start accepts only when all clear
+- TelegramSender returns not_configured when no credentials
+- TelegramSender requires formatted_text key
+
+Pause semantics:
+- Safe stop after current round completes
+- Before next dispatch
+- Never interrupts atomic steps
+- Reports current round and reason
+
+Start semantics:
+- Reads structured state only
+- Rejects if chain frozen / backlog pending / paused / state inconsistent
+- Resumes from next_round_to_dispatch only when all gates clear
+
+No merge/push. No chain unfreeze. No R020 dispatch. No OpenAI calls.
