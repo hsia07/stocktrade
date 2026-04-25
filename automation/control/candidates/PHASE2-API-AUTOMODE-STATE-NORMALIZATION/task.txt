@@ -1,0 +1,27 @@
+PHASE2-API-AUTOMODE-STATE-NORMALIZATION
+Task: Auto-Mode State Normalization Candidate
+
+Objective:
+  Sync the machine-dispatch state with the actual execution progress through
+  R019. Freeze the auto-advance chain until the R018/R019 backlog is merged
+  and pushed.
+
+Changes:
+  - manifests/current_round.yaml:
+    * round_id: R017/pending -> STATE-NORMALIZATION/candidate_ready
+    * Added last_completed_round: R019
+    * Added current_round: NONE
+    * Added next_round_to_dispatch: R020
+    * auto_run: true -> false (chain frozen)
+    * Added chain_status: frozen_pending_backlog_merge
+    * Added backlog snapshot for R018 and R019
+  - automation/control/AUTO_MODE_ACTIVATION_LOCK:
+    * Added chain_control field with frozen status and backlog snapshot
+    * Preserved activation_authorized, execution_authorized, lock_state
+
+Constraints honored:
+  - No source code modified
+  - No R018/R019 candidate content changed
+  - No merge / push / runtime activation
+  - No OpenAI / Telegram business calls
+  - No forbidden paths touched

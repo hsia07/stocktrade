@@ -1,0 +1,59 @@
+{
+  "report_type": "state_normalization_report",
+  "round_id": "PHASE2-API-AUTOMODE-STATE-NORMALIZATION",
+  "timestamp": "2026-04-25T09:00:00+08:00",
+  "pre_execution_state": {
+    "local_canonical_head": "394f7efdcd875b5a8ec44ba7342ba7b389d37707",
+    "remote_canonical_head": "394f7efdcd875b5a8ec44ba7342ba7b389d37707",
+    "master_head": "1fd96c2e433b998978cb39f1db64043542c26c75",
+    "stale_round_id": "R017",
+    "stale_status": "pending",
+    "stale_auto_run": false,
+    "working_tree_drift": true,
+    "dispatch_state_consistent": false
+  },
+  "post_execution_state": {
+    "round_id": "STATE-NORMALIZATION",
+    "status": "candidate_pass",
+    "last_completed_round": "R019",
+    "current_round": "NONE",
+    "next_round_to_dispatch": "R020",
+    "auto_run": false,
+    "chain_status": "frozen_pending_backlog_merge",
+    "dispatch_state_consistent": true,
+    "current_round_state_normalized": true
+  },
+  "backlog_snapshot": {
+    "r018": {
+      "branch": "work/candidate-r018-schema-migration",
+      "commit": "8c75cb0e89406e1585bdfd1064e7473f54f65daa",
+      "merge_base": "394f7efdcd875b5a8ec44ba7342ba7b389d37707",
+      "evidence_complete": true,
+      "tests_pass": true,
+      "tests_count": "23/23",
+      "validators_pass": true,
+      "merge_review_status": "pending"
+    },
+    "r019": {
+      "branch": "work/candidate-r019-slo-latency-stability",
+      "commit": "092e38ccfd12181cd07684c57a0f8fcdd836872b",
+      "merge_base": "394f7efdcd875b5a8ec44ba7342ba7b389d37707",
+      "evidence_complete": true,
+      "tests_pass": true,
+      "tests_count": "16/16",
+      "validators_pass": true,
+      "merge_review_status": "pending"
+    }
+  },
+  "chain_control": {
+    "status": "frozen",
+    "reason": "backlog_merge_review_pending",
+    "resume_condition": "R018 and R019 candidates merged to canonical and pushed to remote"
+  },
+  "lock_state_preserved": {
+    "status": "UNLOCKED",
+    "activation_authorized": true,
+    "execution_authorized": true,
+    "scope.auto_mode_execution": "candidate_only"
+  }
+}

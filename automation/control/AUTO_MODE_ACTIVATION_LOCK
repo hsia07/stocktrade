@@ -1,40 +1,88 @@
 {
   "lock_id": "AUTO_MODE_ACTIVATION_LOCK",
-  "status": "LOCKED",
+  "status": "UNLOCKED",
+  "unlocked_at": "2026-04-24T14:30:00Z",
+  "unlock_authorized_by": "human_authority",
+  "activation_authorized": true,
+  "activation_authorized_at": "2026-04-24T14:35:00Z",
+  "activation_authorized_by": "human_authority",
   "created_at": "2026-04-24T00:00:00Z",
   "created_by": "PHASE2-API-AUTOMODE-ACTIVATION-CONTRACT-candidate",
   "authorized_by": "human_authority_required",
-  "activation_authorized": false,
+  "dry_run_noop_authorized": true,
+  "dry_run_noop_authorized_at": "2026-04-24T14:40:00Z",
+  "dry_run_noop_authorized_by": "human_authority",
+  "execution_authorized": true,
+  "execution_authorized_at": "2026-04-25T02:45:00Z",
+  "execution_authorized_by": "human_authority",
   "valid_until": null,
-  "reason": "activation_contract_establishment",
+  "reason": "phase2_automode_execution_authorization",
   "dependencies": {
     "phase2_batch_review_law": "on_remote",
     "governance_chain": "on_remote",
-    "evidence_reconciliation": "complete"
+    "evidence_reconciliation": "complete",
+    "external_dependency_verification_contract": "on_remote",
+    "unlock_executed": true
   },
   "blockers": {
-    "r017_not_authorized": true,
-    "phase2_entry_not_authorized": true,
+    "activation_authorized": true,
+    "dry_run_noop_authorized": true,
+    "execution_authorized": true,
+    "r017_not_authorized": false,
+    "phase2_entry_not_authorized": false,
     "env001_present": true
   },
   "allowed_transitions": [
     "LOCKED -> UNLOCKED (human authorization)",
     "LOCKED -> INVALIDATED (human authorization)",
     "UNLOCKED -> INVALIDATED (human authorization)",
-    "UNLOCKED -> LOCKED (human authorization or expiration)"
+    "UNLOCKED -> LOCKED (human authorization or expiration)",
+    "UNLOCKED -> ACTIVATION_AUTHORIZED (human authorization)",
+    "ACTIVATION_AUTHORIZED -> EXECUTION_AUTHORIZED (human authorization)"
   ],
   "not_allowed": [
     "UNLOCKED without explicit human authorization",
     "Automatic state transitions",
-    "Any execution without UNLOCKED state"
+    "Any execution without UNLOCKED state",
+    "Automatic activation authorization",
+    "Automatic execution authorization"
   ],
   "scope": {
-    "auto_mode_execution": false,
+    "auto_mode_execution": "candidate_only",
     "contract_framework": true,
     "message_fixture": true,
-    "lock_file": true
+    "lock_file": true,
+    "unlock": true,
+    "activation": true,
+    "dry_run_noop": true,
+    "execution": true
   },
   "governance_chain_version": "1.0",
   "governance_chain_source": "docs/phase2_api_automode_governance_chain.md",
-  "parent_law_source": "docs/phase2_batch_review_law.md"
+  "parent_law_source": "docs/phase2_batch_review_law.md",
+  "chain_control": {
+    "status": "frozen",
+    "reason": "backlog_merge_review_pending",
+    "frozen_at": "2026-04-25T09:00:00+08:00",
+    "frozen_by": "STATE-NORMALIZATION-candidate",
+    "backlog": {
+      "r018": {
+        "branch": "work/candidate-r018-schema-migration",
+        "commit": "8c75cb0e89406e1585bdfd1064e7473f54f65daa",
+        "evidence_complete": true,
+        "tests_pass": true,
+        "validators_pass": true,
+        "merge_review_status": "pending"
+      },
+      "r019": {
+        "branch": "work/candidate-r019-slo-latency-stability",
+        "commit": "092e38ccfd12181cd07684c57a0f8fcdd836872b",
+        "evidence_complete": true,
+        "tests_pass": true,
+        "validators_pass": true,
+        "merge_review_status": "pending"
+      }
+    },
+    "resume_condition": "R018 and R019 candidates merged to canonical and pushed to remote"
+  }
 }
