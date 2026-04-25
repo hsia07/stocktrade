@@ -1,0 +1,52 @@
+{
+  "evidence_type": "candidate_checker_hardening_stale_cleanup",
+  "round_id": "PHASE2-API-AUTOMODE-CANDIDATE-CHECKER-HARDENING-STALE-CLEANUP",
+  "timestamp": "2026-04-26T01:55:00+08:00",
+  "work_done": [
+    "Identified root cause: CandidateChecker.check_candidate_exists() matched any directory name containing round ID",
+    "Identified 3 stale R020 evidence directories interfering with dispatch: DISPATCH-EXECUTION, DISPATCH-EXECUTION-CONSTRUCTION-BOOTSTRAP, BOOTSTRAP-CONTINUATION-TELEGRAM-EVENT-RUNTIME-INTEGRATION-REPAIR",
+    "Moved 3 stale directories to automation/control/candidates_stale/",
+    "Hardened CandidateChecker with materialization proof requirements:",
+    "  - evidence.json must contain candidate_commit OR materialized_candidate=true",
+    "  - evidence.json with evidence_type ending in _execution or _dispatch is rejected",
+    "  - Only scans automation/control/candidates/ (not candidates_stale/)",
+    "  - Branch search narrowed to work/candidate-* branches",
+    "Added 7 new anti-regression tests in test_candidate_checker.py",
+    "Added 1 new anti-regression test in test_dispatch_bootstrap.py for stale archives",
+    "37/37 tests PASS",
+    "Validators PASS: check_branch_workflow.py, check_forbidden_changes.py, check_required_evidence.py"
+  ],
+  "test_results": {
+    "test_candidate_checker.py": "7/7 PASS",
+    "test_dispatch_bootstrap.py": "5/5 PASS",
+    "test_pause_return_report.py": "3/3 PASS",
+    "test_telegram_phase_notify.py": "5/5 PASS",
+    "test_start_resume.py": "4/4 PASS",
+    "test_telegram_status.py": "13/13 PASS"
+  },
+  "validator_results": {
+    "check_branch_workflow.py": "PASS",
+    "check_forbidden_changes.py": "PASS",
+    "check_required_evidence.py": "PASS"
+  },
+  "files_modified": [
+    "automation/control/candidate_checker.py",
+    "automation/control/test_dispatch_bootstrap.py"
+  ],
+  "files_created": [
+    "automation/control/test_candidate_checker.py",
+    "automation/control/candidates_stale/"
+  ],
+  "files_moved": [
+    "automation/control/candidates/PHASE2-API-AUTOMODE-R020-DISPATCH-EXECUTION -> candidates_stale/",
+    "automation/control/candidates/PHASE2-API-AUTOMODE-R020-DISPATCH-EXECUTION-CONSTRUCTION-BOOTSTRAP -> candidates_stale/",
+    "automation/control/candidates/PHASE2-API-AUTOMODE-R020-BOOTSTRAP-CONTINUATION-TELEGRAM-EVENT-RUNTIME-INTEGRATION-REPAIR -> candidates_stale/"
+  ],
+  "canonical_head_unchanged": true,
+  "remote_head_unchanged": true,
+  "master_head_unchanged": true,
+  "no_merge": true,
+  "no_push": true,
+  "no_runtime": true,
+  "materialized_candidate": true
+}

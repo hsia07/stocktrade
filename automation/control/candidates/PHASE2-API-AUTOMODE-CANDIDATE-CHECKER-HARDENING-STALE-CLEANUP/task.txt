@@ -1,0 +1,25 @@
+PHASE2-API-AUTOMODE-CANDIDATE-CHECKER-HARDENING-STALE-CLEANUP
+
+Objective:
+Fix CandidateChecker to reject stale evidence directories and archive old R020 dispatch logs.
+
+Scope:
+- automation/control/candidate_checker.py
+- automation/control/test_candidate_checker.py (new)
+- automation/control/test_dispatch_bootstrap.py
+- automation/control/candidates_stale/ (new archival location)
+
+Changes:
+1. Hardened check_candidate_exists() to require materialization proof
+2. Moved 3 stale R020 directories to candidates_stale/
+3. Added 8 new anti-regression tests
+
+Anti-Regression Guarantees:
+- Stale evidence without candidate_commit or materialized_candidate flag -> rejected
+- Execution log evidence types (_execution, _dispatch) -> rejected
+- Valid candidates with candidate_commit or materialized_candidate=true -> accepted
+- Stale archives in candidates_stale/ do not interfere with dispatch
+- construction_bootstrap -> construction_in_progress semantics preserved
+
+Tests: 37/37 PASS
+Validators: 3/3 PASS

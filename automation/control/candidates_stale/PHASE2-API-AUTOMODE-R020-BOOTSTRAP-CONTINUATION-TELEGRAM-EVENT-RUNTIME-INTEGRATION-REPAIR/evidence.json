@@ -1,0 +1,41 @@
+{
+  "evidence_type": "bootstrap_continuation_telegram_runtime_repair",
+  "round_id": "PHASE2-API-AUTOMODE-R020-BOOTSTRAP-CONTINUATION-TELEGRAM-EVENT-RUNTIME-INTEGRATION-REPAIR",
+  "timestamp": "2026-04-26T01:23:00+08:00",
+  "work_done": [
+    "Modified api_automode_loop.py: _dispatch_next_round now enters construction_in_progress after bootstrap",
+    "Added _enter_construction_in_progress() method to api_automode_loop.py",
+    "Added _mock_construction_work() for active construction phase",
+    "Modified _process_tick() to handle construction_in_progress as active work",
+    "Modified status_scheduler.py build_state(): construction_in_progress = active (no stop)",
+    "Modified status_scheduler.py build_state(): construction_bootstrap = transitional",
+    "Added test_dispatch_without_candidate_enters_construction_in_progress",
+    "Added test_telegram_runtime_invoked_on_phase_transition",
+    "29/29 tests PASS",
+    "Validators PASS: check_branch_workflow.py, check_forbidden_changes.py, check_required_evidence.py"
+  ],
+  "test_results": {
+    "test_dispatch_bootstrap.py": "4/4 PASS",
+    "test_pause_return_report.py": "3/3 PASS",
+    "test_telegram_phase_notify.py": "5/5 PASS",
+    "test_start_resume.py": "4/4 PASS",
+    "test_telegram_status.py": "13/13 PASS"
+  },
+  "validator_results": {
+    "check_branch_workflow.py": "PASS",
+    "check_forbidden_changes.py": "PASS",
+    "check_required_evidence.py": "PASS"
+  },
+  "files_modified": [
+    "automation/runtime/api_automode_loop.py",
+    "automation/control/status_scheduler.py",
+    "automation/control/test_dispatch_bootstrap.py",
+    "automation/control/test_telegram_phase_notify.py"
+  ],
+  "canonical_head_unchanged": true,
+  "remote_head_unchanged": true,
+  "master_head_unchanged": true,
+  "no_commit_yet": true,
+  "no_push": true,
+  "no_runtime": true
+}
