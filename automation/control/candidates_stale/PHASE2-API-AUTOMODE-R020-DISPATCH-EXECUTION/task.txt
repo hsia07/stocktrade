@@ -1,0 +1,22 @@
+PHASE2-API-AUTOMODE-R020-DISPATCH-EXECUTION
+Task: R020 Dispatch Execution
+
+Objective:
+  Dispatch R020 as the next round in the candidate-only auto-advance chain.
+
+Execution:
+  - Preflight verified: auto_run=true, chain_status=running, next_round=R020,
+    no STOP_NOW.flag, no PAUSE.flag, no lingering runtime.
+  - R020 candidate materialization check: NO candidate branch, NO candidate
+    directory, NO task definition, NO evidence package found.
+  - Dispatch state updated: current_round NONE -> R020.
+  - Stop encountered immediately: r020_not_materialized (candidate_gate).
+  - No merge, no push, no runtime, no external calls.
+
+Blocker:
+  - R020 has no materialized candidate. The auto-advance chain cannot proceed
+    without a defined task, candidate branch, and evidence package.
+
+Next action:
+  Materialize R020 candidate (define task, create branch, build implementation,
+  run tests, collect evidence) before re-dispatch.

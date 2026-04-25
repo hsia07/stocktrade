@@ -7,6 +7,7 @@ Tests that validate:
 - Phase transitions are tracked correctly
 """
 
+import json
 import unittest
 import tempfile
 from pathlib import Path
@@ -118,6 +119,25 @@ class TestDispatchBootstrap(unittest.TestCase):
         # The exact behavior depends on whether status is "completed"
         # For a new dispatch, the special case returns True
         self.assertTrue(can_advance)
+
+    def test_stale_archives_do_not_block_construction_bootstrap(self):
+        """
+        Stale candidate evidence directories (without materialization proof)
+        must NOT cause candidate_exists=True, allowing construction bootstrap.
+        """
+        # Create stale evidence in candidates/ (simulating pre-cleanup state)
+        candidates_dir = self.tmpdir / "automation" / "control" / "candidates"
+        candidates_dir.mkdir(parents=True)
+        stale_dir = candidates_dir / "PHASE2-API-AUTOMODE-R020-OLD-DISPATCH"
+        stale_dir.mkdir(parents=True)
+        with (stale_dir / "evidence.json").open("w", encoding="utf-8") as f:
+            json.dump({"evidence_type": "r020_dispatch_execution", "round_id": "R020"}, f)
+        with (stale_dir / "task.txt").open("w", encoding="utf-8") as f:
+            f.write("old dispatch log\n")
+
+        checker = CandidateChecker(self.tmpdir)
+        candidate_info = checker.check_candidate_exists("R020")
+        self.assertFalse(candidate_info["exists"])
 
 
 if __name__ == "__main__":

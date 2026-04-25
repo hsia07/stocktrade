@@ -1,0 +1,25 @@
+PHASE2-API-AUTOMODE-R020-DISPATCH-EXECUTION
+Task: R020 Dispatch with Construction Bootstrap
+
+Objective:
+  Dispatch R020 using the new bootstrap semantics. Since no materialized
+  candidate exists, enter construction_bootstrap phase instead of stopping
+  at candidate_gate.
+
+Execution:
+  - Preflight verified: auto_run=true, chain_status=running,
+    next_round_to_dispatch=R020, no STOP_NOW.flag, no PAUSE.flag,
+    no lingering runtime.
+  - R020 candidate materialization check: NO candidate branch found.
+    Only prior evidence package directory exists (not a materialized candidate).
+  - Dispatch state updated:
+    * current_round: NONE -> R020
+    * phase_state: construction_bootstrap (new field)
+  - Stop encountered: construction_bootstrap_gate (by design)
+    Reason: awaiting candidate materialization for R020
+  - No merge, no push, no runtime started, no external calls.
+
+Next action:
+  Materialize R020 candidate: define task, create branch, implement,
+  run tests, collect evidence, then proceed through candidate_ready
+  -> merge_pre_review -> local merge -> remote push.
