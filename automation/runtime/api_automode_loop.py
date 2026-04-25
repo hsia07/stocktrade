@@ -38,6 +38,17 @@ except ImportError:
     IdempotencyManager = None
     AuditTrailManager = None
 
+# Candidate-pass auto-advance control integration (minimal)
+# Available for round orchestration; not activated in idle mock loop
+try:
+    from automation.control.pause_state import PauseStateManager
+    from automation.control.auto_advance import AutoAdvanceController
+    from automation.control.status_reporter import StatusReporter
+except ImportError:
+    PauseStateManager = None
+    AutoAdvanceController = None
+    StatusReporter = None
+
 # Configuration
 REPO_ROOT = Path(__file__).parent.parent.parent
 STOP_NOW_FLAG = REPO_ROOT / "automation" / "control" / "STOP_NOW.flag"
@@ -90,6 +101,23 @@ class AutomodeRuntimeLoop:
     def _check_stop_now(self) -> bool:
         """Check if STOP_NOW.flag exists."""
         return STOP_NOW_FLAG.exists()
+
+    def _check_pause(self) -> bool:
+        """Check if PAUSE.flag exists (candidate-pass auto-advance control)."""
+        if PauseStateManager:
+            paused = PauseStateManager(REPO_ROOT).is_paused()
+            if paused:
+                logger.info("PAUSE.flag detected (auto-advance control)")
+            return paused
+        return False
+
+    def _log_control_state(self):
+        """Log auto-advance control layer status."""
+        if PauseStateManager and AutoAdvanceController and StatusReporter:
+            logger.info("Auto-advance control layer: ACTIVE")
+            logger.info("Pause state: %s", "PAUSED" if self._check_pause() else "RUNNING")
+        else:
+            logger.debug("Auto-advance control layer: not loaded")
 
     def _mock_generate_work_item(self) -> Optional[Dict[str, Any]]:
         """Mock: Generate a work item (NO OpenAI call)."""
@@ -148,6 +176,8 @@ class AutomodeRuntimeLoop:
         logger.info(f"STOP_NOW flag path: {STOP_NOW_FLAG}")
         logger.info(f"Tick interval: {TICK_INTERVAL}s")
         logger.info("NO REAL OpenAI/Telegram calls in this slice")
+        logger.info("=" * 60)
+        self._log_control_state()
         logger.info("=" * 60)
         logger.info("Loop started")
 
