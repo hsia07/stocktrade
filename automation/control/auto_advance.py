@@ -47,10 +47,22 @@ class AutoAdvanceController:
         """
         Return (can_advance, reason, gate_type).
 
-        Gate types: merge_gate, push_gate, activation_gate, authorization_gate,
-                    blocker_gate, pause_gate, evidence_gate, review_gate,
-                    round_status_gate, none
+        For a NEW round dispatch (round_result has no candidate yet),
+        this returns True with gate_type="construction_bootstrap" so the
+        caller knows to enter construction phase instead of stopping.
         """
+        # Special case: new round with no materialized candidate
+        # should enter construction bootstrap, NOT stop at candidate_gate
+        if round_result.get("is_new_round_dispatch", False):
+            if not round_result.get("candidate_exists", False):
+                return True, "entering_construction_bootstrap", "construction_bootstrap_gate"
+            # If candidate exists for new dispatch, allow to proceed
+            return True, "candidate_exists_proceed", "none"
+
+        # Standard advance checks for completed rounds
+        # Gate types: merge_gate, push_gate, activation_gate, authorization_gate,
+        #             blocker_gate, pause_gate, evidence_gate, review_gate,
+        #             round_status_gate, none
         # 1. Round must be completed
         if round_result.get("status") != "completed":
             return False, "status_not_completed", "round_status_gate"

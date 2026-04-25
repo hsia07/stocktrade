@@ -50,6 +50,28 @@ class PauseStateManager:
             logger.error(f"Failed to remove PAUSE.flag: {e}")
             return False
 
+    def generate_pause_report(self, state: dict = None) -> str:
+        """
+        Generate a full RETURN_TO_CHATGPT body when pause is triggered.
+
+        Args:
+            state: Optional structured state dict. If None, reads from manifest.
+
+        Returns:
+            Full formatted RETURN_TO_CHATGPT string.
+        """
+        from automation.control.return_report import ReturnReportGenerator
+        from automation.control.status_scheduler import StatusScheduler
+
+        scheduler = StatusScheduler(self.repo_root)
+        if state is None:
+            state = scheduler.build_state()
+
+        generator = ReturnReportGenerator(self.repo_root)
+        report = generator.generate_pause_report(state, pause_reason="manual_pause_requested")
+        generator.write_report(report, filename="LATEST_PAUSE_RETURN_TO_CHATGPT.txt")
+        return report
+
     def get_pause_info(self) -> Optional[dict]:
         """Return pause info if paused, else None."""
         if not self.is_paused():
