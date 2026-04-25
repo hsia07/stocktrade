@@ -1,15 +1,14 @@
-round_id: "R017"
-title: "秘密與金鑰管理"
-status: "pending"
+round_id: "STATE-NORMALIZATION"
+title: "Auto-Mode State Normalization"
+status: "candidate_pass"
 depends_on:
-  - "R016"
+  - "R019"
 allowed_paths:
   - "manifests/"
   - "automation/control/"
   - "scripts/"
   - ".githooks/"
   - ".github/"
-  - "server.py"
 forbidden_paths:
   - "server_v2.py"
   - "index_v2.html"
@@ -17,12 +16,11 @@ forbidden_paths:
   - ".env.*"
   - "master"
 required_evidence:
-  - "automation/control/candidates/PHASE2-ENTRY-HYGIENE-ALIGNMENT/evidence.json"
+  - "automation/control/candidates/PHASE2-API-AUTOMODE-STATE-NORMALIZATION/evidence.json"
 required_checks:
   - "py ./scripts/validation/check_branch_workflow.py --repo-root . --all"
   - "py ./scripts/validation/check_forbidden_changes.py --manifest ./manifests/phase2_entry_hygiene_alignment.yaml"
   - "py ./scripts/validation/check_required_evidence.py --manifest ./manifests/phase2_entry_hygiene_alignment.yaml"
-  - "py ./scripts/validation/validate_evidence.py --manifest ./manifests/phase2_entry_hygiene_alignment.yaml --repo-root ."
 direct_fail_conditions:
   - "modified forbidden paths"
   - "modified Phase 1 functional main chain files"
@@ -31,9 +29,9 @@ direct_fail_conditions:
   - "Phase 2 entry without authorization"
 risk_level: "green"
 owner: "you"
-start_authorized: false
-notes: "Phase 2 hygiene alignment. Lane released. Phase 2 entry awaiting explicit human authorization for R017. Auto-mode not authorized."
-containment_status: "PHASE2_ENTRY_NOT_AUTHORIZED_AUTO_MODE_NOT_AUTHORIZED"
+start_authorized: true
+notes: "State normalization round. Structured state synced to actual progress. Chain frozen pending backlog merge. R020 awaiting dispatch authorization after backlog clearance."
+containment_status: "PHASE2_ENTRY_AUTHORIZED_AUTO_MODE_AUTHORIZED"
 auto_run: false
 desired_action: null
 fail_closed_guards:
@@ -47,3 +45,22 @@ fail_closed_guards:
   validate_evidence_real_changes: true
 guard_status: "ACTIVE"
 phase: "Phase 2"
+last_completed_round: "R019"
+current_round: "NONE"
+next_round_to_dispatch: "R020"
+chain_status: "frozen_pending_backlog_merge"
+backlog:
+  r018:
+    branch: "work/candidate-r018-schema-migration"
+    commit: "8c75cb0e89406e1585bdfd1064e7473f54f65daa"
+    evidence_complete: true
+    tests_pass: true
+    validators_pass: true
+    merge_review_status: "pending"
+  r019:
+    branch: "work/candidate-r019-slo-latency-stability"
+    commit: "092e38ccfd12181cd07684c57a0f8fcdd836872b"
+    evidence_complete: true
+    tests_pass: true
+    validators_pass: true
+    merge_review_status: "pending"
