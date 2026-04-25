@@ -1,0 +1,51 @@
+{
+  "evidence_type": "telegram_send_path_completion_execution",
+  "round_id": "PHASE2-API-AUTOMODE-TELEGRAM-SEND-PATH-COMPLETION-AND-PAUSE-START-RESUME",
+  "timestamp": "2026-04-25T10:00:00+08:00",
+  "work_done": [
+    "Created automation/telegram/sender.py: Telegram API sender with HTTP POST, error handling, retry awareness, and credential redaction",
+    "Created automation/control/status_scheduler.py: Reads current_round.yaml structured fields, builds state dict, generates summary via StatusReporter, sends via TelegramSender, implements /pause and /start check semantics",
+    "Created automation/control/test_telegram_status.py: 13 anti-regression tests covering stale state detection, structured field reading, pause safety, start rejection conditions",
+    "Updated automation/runtime/api_automode_loop.py: Added _report_status() method that actually calls StatusReporter.generate_summary() and format_for_telegram()",
+    "Verified StatusReporter reads only structured fields and does not access notes or free-text",
+    "Verified /pause semantics: safe stop after current round, before next dispatch, never interrupts atomic steps",
+    "Verified /start semantics: rejects when chain frozen, backlog pending, paused, or state inconsistent; only accepts when all gates clear"
+  ],
+  "test_results": {
+    "test_file": "automation/control/test_telegram_status.py",
+    "total_tests": 13,
+    "passed": 13,
+    "failed": 0
+  },
+  "existing_tests": {
+    "test_file": "automation/control/test_auto_advance.py",
+    "total_tests": 18,
+    "passed": 18,
+    "failed": 0
+  },
+  "validator_results": {
+    "check_branch_workflow.py": "PASS",
+    "check_forbidden_changes.py": "PASS",
+    "check_required_evidence.py": "PASS"
+  },
+  "deliverables": [
+    "automation/telegram/sender.py",
+    "automation/control/status_scheduler.py",
+    "automation/control/test_telegram_status.py",
+    "automation/runtime/api_automode_loop.py"
+  ],
+  "canonical_head_unchanged": true,
+  "remote_head_unchanged": true,
+  "master_head_unchanged": true,
+  "no_merge": true,
+  "no_push": true,
+  "no_runtime": true,
+  "no_dispatch": true,
+  "no_external_calls": true,
+  "chain_frozen": true,
+  "preflight_state": {
+    "local_canonical_head": "13e1a1d91cae5a845135299dd01975fe18a064b5",
+    "remote_canonical_head": "13e1a1d91cae5a845135299dd01975fe18a064b5",
+    "master_head": "1fd96c2e433b998978cb39f1db64043542c26c75"
+  }
+}
