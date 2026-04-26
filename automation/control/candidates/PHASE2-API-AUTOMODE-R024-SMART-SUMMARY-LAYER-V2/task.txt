@@ -1,0 +1,17 @@
+R024: Smart Summary Layer Implementation V2
+
+Topic: 智慧摘要層 (from v2)
+Candidate branch: work/candidate-r024-smart-summary-layer-v2-001
+Implementation: automation/control/smart_summary_layer.py
+
+Features:
+- SmartSummaryLayer class with 4 summary categories
+- SummarySource for source traceability
+- SummaryValidator for output validation
+- Categories: market, system, risk, next_steps
+- Each summary has fixed structure: summary, category, source, metadata, generated_at
+- Source is traceable: market_data_feed, system_status, risk_assessment_engine, workflow_coordinator
+
+Tests: 14 tests PASS
+Validators: All PASS
+Status: Candidate ready for merge review
