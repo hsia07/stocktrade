@@ -1,0 +1,50 @@
+{
+  "candidate_name": "PHASE2-API-AUTOMODE-R020-RUNTIME-INTEGRATION",
+  "candidate_topic": "使用者誤操作保護",
+  "round_id": "R020",
+  "phase": 2,
+  "candidate_branch": "work/candidate-r020-runtime-integration-002",
+  "source_of_truth": "automation/control/AUTO_MODE_ACTIVATION_LOCK",
+  "lock_state": "UNLOCKED",
+  "parent_candidate": "PHASE2-API-AUTOMODE-R020-FEATURE-CONSTRUCTION",
+  "parent_candidate_commit": "a81485539e16ad1a30df58467208af8a8d20ec23",
+  "integration_scope": [
+    "automation/runtime/api_automode_loop.py",
+    "automation/control/user_error_protection.py",
+    "automation/control/test_runtime_integration_user_error_protection.py"
+  ],
+  "validators_passed": [
+    "check_branch_workflow.py",
+    "check_forbidden_changes.py",
+    "check_required_evidence.py"
+  ],
+  "tests_passed": 64,
+  "test_files": [
+    "test_user_error_protection.py",
+    "test_runtime_integration_user_error_protection.py",
+    "test_candidate_checker.py",
+    "test_dispatch_bootstrap.py",
+    "test_pause_return_report.py",
+    "test_telegram_phase_notify.py",
+    "test_start_resume.py",
+    "test_telegram_status.py"
+  ],
+  "r020_topic_from_v2": "使用者誤操作保護",
+  "r020_topic_match": true,
+  "runtime_integration_completed": true,
+  "action_confirmation_guard_integrated": true,
+  "conflict_detector_integrated": true,
+  "action_cooldown_integrated": true,
+  "critical_action_audit_integrated": true,
+  "critical_actions_protected": [
+    "dispatch",
+    "pause",
+    "start",
+    "stop"
+  ],
+  "merge_review_status": "pending_manual_review",
+  "merge_authorization": "pending",
+  "forbidden_paths_modified": false,
+  "governance_state_files_modified": false,
+  "materialized_candidate": true
+}
