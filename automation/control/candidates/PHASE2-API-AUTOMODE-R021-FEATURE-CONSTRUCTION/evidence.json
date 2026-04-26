@@ -1,0 +1,28 @@
+{
+  "candidate_name": "PHASE2-API-AUTOMODE-R021-FEATURE-CONSTRUCTION",
+  "candidate_topic": "重要設定鎖定",
+  "round_id": "R021",
+  "phase": 2,
+  "candidate_branch": "work/candidate-r021-feature-construction-001",
+  "materialized_at": "2026-04-26T05:35:00Z",
+  "source_of_truth": "automation/control/AUTO_MODE_ACTIVATION_LOCK",
+  "r021_topic_from_v2": "重要設定鎖定",
+  "implementation_scope": [
+    "automation/control/settings_lock.py",
+    "automation/control/test_settings_lock.py"
+  ],
+  "validators_passed": [
+    "check_branch_workflow.py",
+    "check_forbidden_changes.py",
+    "check_required_evidence.py"
+  ],
+  "tests_passed": 7,
+  "important_settings_lock_present": true,
+  "unauthorized_setting_change_blocked": true,
+  "authorized_unlock_flow_present": true,
+  "settings_audit_present": true,
+  "merge_review_status": "pending_manual_review",
+  "forbidden_paths_modified": false,
+  "governance_state_files_modified": false,
+  "materialized_candidate": true
+}

@@ -1,0 +1,61 @@
+PHASE2-API-AUTOMODE-R021-FEATURE-CONSTRUCTION
+===============================================
+
+Task: Implement R021 Important Settings Lock
+
+Topic: 重要設定鎖定 (Important Settings Lock)
+
+Background
+----------
+R021 topic from v2 law: 重要設定鎖定
+
+Implementation
+-------------
+Created settings_lock.py with:
+
+1. SettingsLock class:
+   - Protects important settings from unauthorized modification
+   - lock_setting(): Lock/unlock specific settings
+   - is_locked(): Check if setting is locked
+   - request_unlock(): Request authorization token to unlock
+   - confirm_unlock(): Confirm token to unlock a setting
+   - validate_modification(): Check if modification is allowed
+
+2. Default protected settings:
+   - chain_status
+   - current_round
+   - last_completed_round
+   - auto_run
+   - chain_control.status
+   - phase_state
+
+3. Audit trail:
+   - All modification attempts logged to settings_lock_audit.jsonl
+
+Files Created
+------------
+- automation/control/settings_lock.py (main implementation)
+- automation/control/test_settings_lock.py (7 tests, all PASS)
+- candidates/PHASE2-API-AUTOMODE-R021-FEATURE-CONSTRUCTION/evidence.json
+- candidates/PHASE2-API-AUTOMODE-R021-FEATURE-CONSTRUCTION/task.txt
+
+Tests
+-----
+- test_lock_setting: Lock/unlock settings
+- test_locked_setting_blocks_modification: Blocked when locked
+- test_unlocked_setting_allows_modification: Allowed when unlocked
+- test_unlock_request_requires_authorization: Token required
+- test_unlock_confirm_flow: Confirm token works
+- test_audit_log_records_attempts: Audit logging
+- test_double_unlock_rejected: Token one-time use
+
+Validation
+----------
+- check_branch_workflow.py: PASS
+- check_forbidden_changes.py: PASS
+- check_required_evidence.py: PASS
+
+Status
+------
+- Materialized as candidate branch: work/candidate-r021-feature-construction-001
+- Awaiting merge-pre rereview → local merge → remote push
