@@ -58,6 +58,20 @@ except ImportError:
     CandidateChecker = None
     ReturnReportGenerator = None
 
+# R020 User Error Protection integration
+try:
+    from automation.control.user_error_protection import (
+        ActionConfirmationGuard,
+        ConflictDetector,
+        ActionCooldown,
+        CriticalActionAudit,
+    )
+except ImportError:
+    ActionConfirmationGuard = None
+    ConflictDetector = None
+    ActionCooldown = None
+    CriticalActionAudit = None
+
 # Configuration
 REPO_ROOT = Path(__file__).parent.parent.parent
 STOP_NOW_FLAG = REPO_ROOT / "automation" / "control" / "STOP_NOW.flag"
@@ -96,6 +110,11 @@ class AutomodeRuntimeLoop:
         self._audit_trail = AuditTrailManager() if AuditTrailManager else None
         self._pause_manager = PauseStateManager(REPO_ROOT) if PauseStateManager else None
         self._scheduler = StatusScheduler(REPO_ROOT) if StatusScheduler else None
+        # R020 User Error Protection guards
+        self._confirmation_guard = ActionConfirmationGuard(REPO_ROOT) if ActionConfirmationGuard else None
+        self._conflict_detector = ConflictDetector(REPO_ROOT) if ConflictDetector else None
+        self._action_cooldown = ActionCooldown(REPO_ROOT) if ActionCooldown else None
+        self._critical_audit = CriticalActionAudit(REPO_ROOT) if CriticalActionAudit else None
         self._setup_signal_handlers()
 
     def _setup_signal_handlers(self):
@@ -107,6 +126,84 @@ class AutomodeRuntimeLoop:
         sig_name = "SIGINT" if signum == signal.SIGINT else "SIGTERM"
         logger.info(f"Received {sig_name}, requesting graceful shutdown...")
         self._shutdown_requested = True
+
+    def _protect_critical_action(self, action: str, confirmation_token: str = "", context: str = "") -> Dict[str, Any]:
+        """
+        R020 User Error Protection: Validate critical action before execution.
+        
+        Checks (in order):
+        1. ActionCooldown - has enough time elapsed since last execution?
+        2. ConflictDetector - does this action conflict with recent history?
+        3. ActionConfirmationGuard - is confirmation provided for critical actions?
+        4. CriticalActionAudit - log the action attempt
+        
+        Returns dict with:
+        - allowed: bool
+        - reason: str
+        - confirmation_required: bool
+        - confirmation_token: str
+        """
+        if not any([self._confirmation_guard, self._conflict_detector, self._action_cooldown, self._critical_audit]):
+            # Guards not available - allow (fail-open for missing module, but log)
+            return {"allowed": True, "reason": "", "confirmation_required": False, "confirmation_token": ""}
+
+        # 1. Cooldown check
+        if self._action_cooldown:
+            cooldown_result = self._action_cooldown.can_execute(action)
+            if not cooldown_result["can_execute"]:
+                self._audit_action(action, "blocked_cooldown", {"remaining_cooldown": cooldown_result["remaining_cooldown"]})
+                return {
+                    "allowed": False,
+                    "reason": f"Action '{action}' on cooldown: {cooldown_result['remaining_cooldown']:.1f}s remaining",
+                    "confirmation_required": False,
+                    "confirmation_token": "",
+                }
+
+        # 2. Conflict detection
+        if self._conflict_detector:
+            conflict_result = self._conflict_detector.detect_conflict(action)
+            if conflict_result["conflict_detected"]:
+                self._audit_action(action, "blocked_conflict", {"conflict_type": conflict_result["conflict_type"]})
+                return {
+                    "allowed": False,
+                    "reason": conflict_result["reason"],
+                    "confirmation_required": False,
+                    "confirmation_token": "",
+                }
+
+        # 3. Confirmation check for critical actions
+        if self._confirmation_guard and self._confirmation_guard.is_critical(action):
+            if not confirmation_token:
+                req = self._confirmation_guard.request_confirmation(action, context)
+                self._audit_action(action, "blocked_missing_confirmation", {"context": context})
+                return {
+                    "allowed": False,
+                    "reason": req["warning_message"],
+                    "confirmation_required": True,
+                    "confirmation_token": req["confirmation_token"],
+                }
+            if not self._confirmation_guard.check_confirmed(confirmation_token):
+                self._audit_action(action, "blocked_invalid_token", {"token": confirmation_token})
+                return {
+                    "allowed": False,
+                    "reason": f"Confirmation token '{confirmation_token}' not confirmed or invalid",
+                    "confirmation_required": True,
+                    "confirmation_token": confirmation_token,
+                }
+
+        # Action is allowed - record execution and audit
+        if self._action_cooldown:
+            self._action_cooldown.record_execution(action)
+        if self._conflict_detector:
+            self._conflict_detector.record_action(action, "allowed")
+        self._audit_action(action, "allowed", {"context": context})
+
+        return {"allowed": True, "reason": "", "confirmation_required": False, "confirmation_token": ""}
+
+    def _audit_action(self, action: str, result: str, details: Dict[str, Any] = None):
+        """R020: Log critical action to audit trail."""
+        if self._critical_audit:
+            self._critical_audit.log(action, "api_automode_loop", result, details or {})
 
     def _check_stop_now(self) -> bool:
         return STOP_NOW_FLAG.exists()
@@ -167,12 +264,18 @@ class AutomodeRuntimeLoop:
         except Exception as e:
             logger.error(f"Failed to save manifest: {e}")
 
-    def _dispatch_next_round(self) -> Dict[str, Any]:
+    def _dispatch_next_round(self, confirmation_token: str = "") -> Dict[str, Any]:
         """
         Dispatch the next round if current_round is NONE.
 
         Returns dispatch result dict.
         """
+        # R020 protection: validate dispatch action
+        protection = self._protect_critical_action("dispatch", confirmation_token, "Round dispatch from runtime loop")
+        if not protection["allowed"]:
+            logger.warning(f"Dispatch blocked by user error protection: {protection['reason']}")
+            return {"dispatched": False, "reason": protection["reason"], "confirmation_required": protection["confirmation_required"], "confirmation_token": protection["confirmation_token"]}
+
         manifest = self._load_manifest_state()
         current_round = manifest.get("current_round", "NONE")
         next_round = manifest.get("next_round_to_dispatch", "")
@@ -236,7 +339,7 @@ class AutomodeRuntimeLoop:
         )
         logger.info(f"Round {round_id} now in construction_in_progress; bootstrap context active")
 
-    def _handle_pause(self) -> Dict[str, Any]:
+    def _handle_pause(self, confirmation_token: str = "") -> Dict[str, Any]:
         """
         Handle PAUSE.flag: safe stop, generate full RETURN_TO_CHATGPT.
 
@@ -247,6 +350,12 @@ class AutomodeRuntimeLoop:
 
         if not self._pause_manager.is_paused():
             return {"paused": False, "reason": "not_paused"}
+
+        # R020 protection: validate pause action
+        protection = self._protect_critical_action("pause", confirmation_token, "Pause from PAUSE.flag")
+        if not protection["allowed"]:
+            logger.warning(f"Pause blocked by user error protection: {protection['reason']}")
+            return {"paused": False, "reason": protection["reason"], "blocked": True, "confirmation_required": protection["confirmation_required"], "confirmation_token": protection["confirmation_token"]}
 
         logger.info("PAUSE.flag detected - initiating safe stop")
 
@@ -342,6 +451,13 @@ class AutomodeRuntimeLoop:
     def _process_tick(self):
         try:
             if self._check_stop_now():
+                # R020 protection: validate stop action
+                protection = self._protect_critical_action("stop", "", "STOP_NOW.flag triggered")
+                if not protection["allowed"]:
+                    logger.warning(f"Stop blocked by user error protection: {protection['reason']}")
+                    # Do not shutdown; continue ticking
+                    self._metrics["ticks"] = self._tick_count
+                    return
                 logger.info("STOP_NOW.flag detected, initiating clean shutdown")
                 self._shutdown_requested = True
                 return
@@ -353,11 +469,19 @@ class AutomodeRuntimeLoop:
                 # In paused mode we still tick but do no work
                 self._metrics["ticks"] = self._tick_count
                 return
+            if pause_result.get("blocked"):
+                # R020: pause was blocked by protection; continue normal operation
+                logger.warning(f"Pause blocked: {pause_result.get('reason')}")
 
             # 2. Dispatch next round if needed
             manifest = self._load_manifest_state()
             if manifest.get("current_round", "NONE") == "NONE" and manifest.get("next_round_to_dispatch"):
                 dispatch_result = self._dispatch_next_round()
+                if dispatch_result.get("confirmation_required"):
+                    # R020: dispatch needs confirmation; skip this tick
+                    logger.warning(f"Dispatch requires confirmation: {dispatch_result.get('confirmation_token')}")
+                    self._metrics["ticks"] = self._tick_count
+                    return
                 if dispatch_result.get("dispatched") and dispatch_result.get("construction_in_progress"):
                     # In construction_in_progress: we continue to construction work below
                     logger.info("In construction_in_progress; continuing with bootstrap work")
@@ -390,10 +514,17 @@ class AutomodeRuntimeLoop:
             self._metrics["errors"] += 1
             logger.error(f"Error in tick {self._tick_count}: {e}")
 
-    def start(self):
+    def start(self, confirmation_token: str = ""):
         self._start_time = time.time()
         self._running = True
         self._metrics["start_time"] = datetime.now(timezone.utc).isoformat()
+
+        # R020 protection: validate start action
+        protection = self._protect_critical_action("start", confirmation_token, "Runtime loop start")
+        if not protection["allowed"]:
+            logger.error(f"Start blocked by user error protection: {protection['reason']}")
+            self._running = False
+            return {"started": False, "reason": protection["reason"], "confirmation_required": protection["confirmation_required"], "confirmation_token": protection["confirmation_token"]}
 
         logger.info("=" * 60)
         logger.info("API AUTOMODE RUNTIME LOOP - WITH CONSTRUCTION BOOTSTRAP")
@@ -401,6 +532,7 @@ class AutomodeRuntimeLoop:
         logger.info(f"STOP_NOW flag path: {STOP_NOW_FLAG}")
         logger.info(f"Tick interval: {TICK_INTERVAL}s")
         logger.info("NO REAL OpenAI/Telegram business calls in this loop")
+        logger.info("R020 User Error Protection: ACTIVE")
         logger.info("=" * 60)
         self._log_control_state()
         logger.info("=" * 60)

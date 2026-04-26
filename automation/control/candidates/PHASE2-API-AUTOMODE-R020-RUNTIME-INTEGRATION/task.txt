@@ -1,0 +1,73 @@
+PHASE2-API-AUTOMODE-R020-RUNTIME-INTEGRATION
+============================================
+
+Task: Integrate R020 User Error Protection guards into the runtime control path.
+
+Scope
+-----
+- automation/runtime/api_automode_loop.py
+- automation/control/user_error_protection.py (minimal fix)
+- automation/control/test_runtime_integration_user_error_protection.py (new)
+
+Changes
+-------
+1. runtime/api_automode_loop.py:
+   - Imported ActionConfirmationGuard, ConflictDetector, ActionCooldown, CriticalActionAudit
+   - Initialized all 4 guards in __init__
+   - Added _protect_critical_action() method that enforces:
+     a) ActionCooldown check (blocks if on cooldown)
+     b) ConflictDetector check (blocks pause→start race, stop→dispatch race)
+     c) ActionConfirmationGuard check (blocks critical actions without confirmed token)
+     d) CriticalActionAudit logging (records all attempts: allowed, blocked_cooldown, blocked_conflict, blocked_missing_confirmation, blocked_invalid_token)
+   - Integrated protection into:
+     - _dispatch_next_round(): requires confirmation token for dispatch
+     - _handle_pause(): requires confirmation token for pause
+     - start(): requires confirmation token for start
+     - _process_tick() STOP_NOW handling: requires confirmation for stop
+   - Added audit calls for blocked confirmation attempts
+
+2. control/user_error_protection.py:
+   - Fixed ConflictDetector._save_history() to create parent directory before writing
+
+3. control/test_runtime_integration_user_error_protection.py (NEW, 11 tests):
+   - test_dispatch_without_confirmation_blocked
+   - test_dispatch_with_valid_confirmation_allowed
+   - test_start_without_confirmation_blocked
+   - test_dispatch_cooldown_blocks_second_attempt
+   - test_stop_blocked_by_cooldown_or_confirmation
+   - test_conflict_pause_start_race_detected
+   - test_audit_records_critical_actions
+   - test_existing_functionality_preserved
+   - test_confirmation_guard_returns_token_for_critical
+   - test_non_critical_action_no_confirmation_needed
+   - test_conflict_stop_dispatch_race
+
+Integration Verification
+------------------------
+- All 64 tests PASS (53 existing + 11 new)
+- Validators PASS: check_branch_workflow.py, check_forbidden_changes.py, check_required_evidence.py
+- No forbidden paths modified
+- No governance state files modified
+- No remote state modified
+
+Anti-Regression Guarantees
+--------------------------
+- Dispatch bootstrap / continuation: preserved (test_dispatch_bootstrap.py 5/5 PASS)
+- Telegram phase notify: preserved (test_telegram_phase_notify.py 5/5 PASS)
+- Pause/start semantics: preserved (test_start_resume.py 4/4 PASS, test_pause_return_report.py 3/3 PASS)
+- CandidateChecker hardening: preserved (test_candidate_checker.py 7/7 PASS)
+- Telegram status: preserved (test_telegram_status.py 13/13 PASS)
+
+Critical Actions Protected
+--------------------------
+- dispatch: confirmation + cooldown + conflict detection + audit
+- pause: confirmation + cooldown + conflict detection + audit
+- start: confirmation + cooldown + conflict detection + audit
+- stop: confirmation + cooldown + conflict detection + audit
+
+Runtime Integration Status
+--------------------------
+- ActionConfirmationGuard: INTEGRATED into runtime loop
+- ConflictDetector: INTEGRATED into runtime loop
+- ActionCooldown: INTEGRATED into runtime loop
+- CriticalActionAudit: INTEGRATED into runtime loop

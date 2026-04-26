@@ -114,6 +114,7 @@ class ConflictDetector:
 
     def _save_history(self):
         try:
+            self.history_file.parent.mkdir(parents=True, exist_ok=True)
             with self.history_file.open("w", encoding="utf-8") as f:
                 json.dump(self.history[-100:], f, indent=2)  # Keep last 100
         except Exception as e:
