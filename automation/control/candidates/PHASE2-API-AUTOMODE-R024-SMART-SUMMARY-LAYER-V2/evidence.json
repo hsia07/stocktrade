@@ -1,0 +1,30 @@
+{
+  "round": "R024",
+  "topic": "智慧摘要層",
+  "candidate_branch": "work/candidate-r024-smart-summary-layer-v2-001",
+  "implementation_files": [
+    "automation/control/smart_summary_layer.py",
+    "automation/control/test_smart_summary_layer.py"
+  ],
+  "tests": {
+    "total": 14,
+    "passed": 14,
+    "failed": 0
+  },
+  "features": {
+    "smart_summary_layer_class": true,
+    "summary_source_class": true,
+    "summary_validator_class": true,
+    "summary_categories": ["market", "system", "risk", "next_steps"],
+    "source_traceable": true,
+    "output_structure_fixed": true
+  },
+  "summary_categories_detail": {
+    "market": {"source": "market_data_feed", "fields": ["price", "change", "change_pct", "volatility"]},
+    "system": {"source": "system_status", "fields": ["status", "uptime", "messages_processed"]},
+    "risk": {"source": "risk_assessment_engine", "fields": ["level", "factors"]},
+    "next_steps": {"source": "workflow_coordinator", "fields": ["actions"]}
+  },
+  "status": "candidate_ready_for_merge_review",
+  "created_at": "2026-04-27T01:54:00Z"
+}
