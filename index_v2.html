@@ -2022,21 +2022,24 @@ async function loadSettings() {
 // ── 離線展示 ──
 function offlineDemo() {
   const base = {
-    daily_pnl:0, daily_trades:0, is_halted:false, trading_active:false,
-    ticks: Object.fromEntries(DEFAULT_SYMS.map(s=>[s,{price:100,volume:1000,bid:99.5,ask:100.5,bid_vol:120,ask_vol:90}])),
-    positions:{}, trades_log:[], backtest:{}, signal_history:[], anomalies:[],
+    schema_version: "1.0.0",
+    mode: "paper",
+    daily_pnl:0, daily_trades:0, is_halted:false, trading_active:true, auto_trade:true, paper_trade:true,
+    ticks: Object.fromEntries(DEFAULT_SYMS.map(s=>[s,{price:100,volume:1000,bid:99.5,ask:100.5,bid_vol:120,ask_vol:90,available:true,stale:false,source:'mock'}])),
+    positions:{}, trades_log:[], execution_orders:[], backtest:{}, signal_history:[], anomalies:[],
+    sources: {}, source_info: {},
     agents: {
-      risk:      {icon:'🛡️',status:'idle',summary:'等待後端連線',details:['啟動 server_v2.py 後自動連線'],timestamp:'--'},
-      execution: {icon:'⚙️',status:'idle',summary:'等待後端連線',details:['啟動 server_v2.py 後自動連線'],timestamp:'--'},
+      risk:      {icon:'🛡️',status:'ok',summary:'風控正常',details:['離線展示模式'],timestamp:'--'},
+      execution: {icon:'⚙️',status:'ok',summary:'執行正常',details:['離線展示模式'],timestamp:'--'},
     },
     timestamp:'--:--:--',
   };
   DEFAULT_SYMS.forEach(s => {
     ['quant','back','signal','market'].forEach(k => {
-      base.agents[`${k}_${s}`] = {icon:{quant:'🔬',back:'📊',signal:'⚡',market:'🔭'}[k],status:'idle',summary:`等待連線…`,details:['啟動後端後自動分析'],timestamp:'--'};
+      base.agents[`${k}_${s}`] = {icon:{quant:'🔬',back:'📊',signal:'⚡',market:'🔭'}[k],status:'ok',summary:`離線分析`,details:[`symbol:${s}`],timestamp:'--'};
     });
   });
-render(base);
+  render(base);
 }
 
 // ══ Theme ══
