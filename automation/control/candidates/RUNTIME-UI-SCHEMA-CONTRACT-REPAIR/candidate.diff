@@ -1,0 +1,81 @@
+diff --git a/stocktrade_launch_test/server_v2.py b/stocktrade_launch_test/server_v2.py
+--- a/stocktrade_launch_test/server_v2.py
++++ b/stocktrade_launch_test/server_v2.py
+@@ -1765,22 +1765,22 @@ class TradingEngine:
+         return board
+ 
+     def sync_mode_with_state(self):
+-        if self._mode == MODE_SIM:
++        if self._mode == self.MODE_SIM:
+             return
+-        if self.risk.is_halted and self._mode != MODE_RECOVERY:
+-            self.set_mode(MODE_RECOVERY)
++        if self.risk.is_halted and self._mode != self.MODE_RECOVERY:
++            self.set_mode(self.MODE_RECOVERY)
+             return
+-        if self._mode == MODE_RECOVERY and not self.risk.is_halted:
+-            self.set_mode(MODE_PAUSE)
++        if self._mode == self.MODE_RECOVERY and not self.risk.is_halted:
++            self.set_mode(self.MODE_PAUSE)
+             return
+         target = None
+         if not AUTO_TRADE:
+-            target = MODE_PAUSE
++            target = self.MODE_PAUSE
+         elif not self._trading_active:
+-            target = MODE_OBSERVE
++            target = self.MODE_OBSERVE
+         elif PAPER_TRADE:
+-            target = MODE_PAPER
++            target = self.MODE_PAPER
+         else:
+-            target = MODE_LIVE
++            target = self.MODE_LIVE
+         if target and target != self._mode:
+             self.set_mode(target)
+ 
+@@ -2247,10 +2247,10 @@ class TradingEngine:
+         return False
+ 
+     def enter_sim_mode(self):
+-        return self.set_mode(MODE_SIM)
++        return self.set_mode(self.MODE_SIM)
+ 
+     def exit_sim_mode(self):
+-        return self.set_mode(MODE_PAUSE)
++        return self.set_mode(self.MODE_PAUSE)
+ 
+     def can_transition(self, from_mode: str, to_mode: str) -> bool:
+         key = (from_mode, to_mode)
+diff --git a/stocktrade_launch_test/index_v2.html b/stocktrade_launch_test/index_v2.html
+--- a/stocktrade_launch_test/index_v2.html
++++ b/stocktrade_launch_test/index_v2.html
+@@ -730,8 +730,24 @@
+     addLog('WebSocket 連線成功', 'ok');
+   };
+   ws.onmessage = e => {
+-    try { S.last = JSON.parse(e.data); render(S.last); document.getElementById('sb-ts').textContent = S.last.timestamp; }
+-    catch { addLog('資料解析錯誤', 'warn'); }
++    try { 
++      const data = JSON.parse(e.data); 
++      //分流：只有含 schema_version 的完整 state 才走主 render
++      if (data.schema_version && data.ticks) {
++        S.last = data; 
++        render(data);
++        document.getElementById('sb-ts').textContent = data.timestamp;
++      } else {
++        // partial payload：只更新局部 state，不走 full render
++        if (data.mode !== undefined) {
++          document.getElementById('sb-mode').textContent = data.mode;
++        }
++        if (data.trading_active !== undefined) {
++          document.getElementById('sb-eng').textContent = data.trading_active ? '🟢 運行' : '🟡 待機';
++        }
++        if (data.timestamp) {
++          document.getElementById('sb-ts').textContent = data.timestamp;
++        }
++      }
++    }
++    catch { addLog('資料解析錯誤', 'warn'); }
+   };
+   ws.onclose = () => {

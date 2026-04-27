@@ -1,0 +1,44 @@
+{
+  "task_id": "RUNTIME-UI-SCHEMA-CONTRACT-REPAIR",
+  "branch": "work/candidate-runtime-ui-schema-contract-repair-001",
+  "canonical_base": "work/canonical-mainline-repair-001",
+  "canonical_head": "382ccefcc5112bf1ca0aa24f3e0f2f36f6316de3",
+  "timestamp": "2026-04-27T11:55:00Z",
+  "changes": [
+    {
+      "file": "server_v2.py",
+      "type": "fix_bare_mode_constants",
+      "lines_fixed": [1768, 1770, 1771, 1773, 1774, 1778, 1780, 1782, 1784, 2250, 2253, 2468, 2506, 2322],
+      "description": "Changed bare MODE_* constants to self.MODE_* in instance methods"
+    },
+    {
+      "file": "index_v2.html",
+      "type": "frontend_payload_routing",
+      "lines_fixed": [733-756],
+      "description": "Added WebSocket message分流 - only full state with schema_version calls render()"
+    },
+    {
+      "file": "tests/test_runtime_ui_schema_contract_regression.py",
+      "type": "anti_regression_tests",
+      "description": "Added 19 anti-regression tests covering MODE_*, API state, frontend payload"
+    }
+  ],
+  "anti_regression_tests": {
+    "file": "tests/test_runtime_ui_schema_contract_regression.py",
+    "tests_total": 19,
+    "tests_passed": 19,
+    "coverage": {
+      "mode_constant_guard": "4 tests",
+      "api_state_schema_guard": "11 tests",
+      "frontend_partial_payload_guard": "4 tests"
+    }
+  },
+  "verification": {
+    "py_compile": "success",
+    "syntax_errors": "none",
+    "governance_diff": "none",
+    "manifests_diff": "none",
+    "r016_api_tests_passed": 25,
+    "regression_tests_passed": 19
+  }
+}

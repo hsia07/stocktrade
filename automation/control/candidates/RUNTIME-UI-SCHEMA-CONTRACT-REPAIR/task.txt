@@ -1,0 +1,26 @@
+# RUNTIME-UI-SCHEMA-CONTRACT-REPAIR Task
+
+## Objective
+Fix runtime/UI schema contract blockers in stocktrade_launch_test:
+1. Fix bare MODE_* constant references in server_v2.py that cause NameError at runtime
+2. Fix frontend WebSocket onmessage to not directly call render() on partial payloads
+3. Ensure schema_version contract is preserved for full state payloads
+
+## Changes Made
+
+### server_v2.py Fixes
+- Line 1768-1786: sync_mode_with_state() - Changed bare MODE_SIM/MODE_PAUSE/MODE_RECOVERY/MODE_OBSERVE/MODE_PAPER/MODE_LIVE to self.MODE_*
+- Line 2250: enter_sim_mode() - Changed MODE_SIM to self.MODE_SIM
+- Line 2253: exit_sim_mode() - Changed MODE_PAUSE to self.MODE_PAUSE
+
+### index_v2.html Fixes
+- Line 733-750: WebSocket onmessage handler - Added payload分流 logic:
+  - Only full state payload (with schema_version AND ticks) calls render()
+  - Partial payload (mode-only, status-only) updates only relevant DOM elements
+  - Prevents "schema_version 缺失" full-page error from partial updates
+
+## Branch
+- work/candidate-runtime-ui-schema-contract-repair-001
+
+## Canonical Base
+- work/canonical-mainline-repair-001 at 382ccefcc5112bf1ca0aa24f3e0f2f36f6316de3
