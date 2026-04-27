@@ -731,7 +731,27 @@ function wsConnect() {
     addLog('WebSocket 連線成功', 'ok');
   };
   ws.onmessage = e => {
-    try { S.last = JSON.parse(e.data); render(S.last); document.getElementById('sb-ts').textContent = S.last.timestamp; }
+    try { 
+      const data = JSON.parse(e.data); 
+      //分流：只有含 schema_version 的完整 state 才走主 render
+      if (data.schema_version && data.ticks) {
+        S.last = data; 
+        render(data);
+        document.getElementById('sb-ts').textContent = data.timestamp;
+      } else {
+        // partial payload：只更新局部 state，不走 full render
+        if (data.mode !== undefined) {
+          document.getElementById('sb-mode').textContent = data.mode;
+        }
+        if (data.trading_active !== undefined) {
+          document.getElementById('sb-eng').textContent = data.trading_active ? '🟢 運行' : '🟡 待機';
+        }
+        if (data.timestamp) {
+          document.getElementById('sb-ts').textContent = data.timestamp;
+        }
+        // 不呼叫 render()，避免 partial payload 觸發整頁 schema error
+      }
+    }
     catch { addLog('資料解析錯誤', 'warn'); }
   };
   ws.onclose = () => {

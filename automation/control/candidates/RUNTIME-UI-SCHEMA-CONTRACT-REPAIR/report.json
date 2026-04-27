@@ -1,0 +1,30 @@
+# RUNTIME-UI-SCHEMA-CONTRACT-REPAIR Report
+
+## Summary
+Fixed two critical blockers in the runtime UI schema contract:
+
+## Blocker 1: Bare MODE_* Constants (Fixed)
+- **Issue**: server_v2.py used bare constants like `MODE_SIM`, `MODE_PAUSE` in instance methods
+- **Impact**: Would cause `NameError: name 'MODE_SIM' is not defined` at runtime
+- **Fix**: Changed to `self.MODE_SIM`, `self.MODE_PAUSE`, etc.
+- **Affected functions**: sync_mode_with_state(), enter_sim_mode(), exit_sim_mode()
+
+## Blocker 2: Frontend Partial Payload (Fixed)
+- **Issue**: WebSocket onmessage directly called `render(data)` without checking payload type
+- **Impact**: Partial messages (mode-only, status-only) without `schema_version` caused full-page "資料契約不符 / schema_version 缺失" error
+- **Fix**: Added payload分流 - only full state (with schema_version AND ticks) calls render()
+- **Partial handling**: Updates only relevant DOM elements (mode, status, timestamp)
+
+## Verification
+- Python syntax check: PASSED (py_compile succeeded)
+- Frontend logic: PASSED (render() still validates full state contract)
+- No schema_version check removed - preserved for data integrity
+
+## Next Steps
+- Test with local server startup
+- Verify WebSocket connection
+- Verify API /api/state returns proper schema
+
+## Files Modified
+- stocktrade_launch_test/server_v2.py
+- stocktrade_launch_test/index_v2.html

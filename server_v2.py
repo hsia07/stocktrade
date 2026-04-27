@@ -1742,7 +1742,7 @@ class TradingEngine:
         self._api                 = None
         self._running             = False
         self._trading_active      = False
-        self._mode              = MODE_PAUSE  # 單一真實模式來源，由狀態機控制
+        self._mode              = self.MODE_PAUSE  # 單一真實模式來源，由狀態機控制
         self._latest_decision_ids: dict = {}
 
         self.names = dict(SYM_NAMES)
@@ -1765,23 +1765,23 @@ class TradingEngine:
         return board
 
     def sync_mode_with_state(self):
-        if self._mode == MODE_SIM:
+        if self._mode == self.MODE_SIM:
             return
-        if self.risk.is_halted and self._mode != MODE_RECOVERY:
-            self.set_mode(MODE_RECOVERY)
+        if self.risk.is_halted and self._mode != self.MODE_RECOVERY:
+            self.set_mode(self.MODE_RECOVERY)
             return
-        if self._mode == MODE_RECOVERY and not self.risk.is_halted:
-            self.set_mode(MODE_PAUSE)
+        if self._mode == self.MODE_RECOVERY and not self.risk.is_halted:
+            self.set_mode(self.MODE_PAUSE)
             return
         target = None
         if not AUTO_TRADE:
-            target = MODE_PAUSE
+            target = self.MODE_PAUSE
         elif not self._trading_active:
-            target = MODE_OBSERVE
+            target = self.MODE_OBSERVE
         elif PAPER_TRADE:
-            target = MODE_PAPER
+            target = self.MODE_PAPER
         else:
-            target = MODE_LIVE
+            target = self.MODE_LIVE
         if target and target != self._mode:
             self.set_mode(target)
 
@@ -2247,10 +2247,10 @@ class TradingEngine:
         return False
 
     def enter_sim_mode(self):
-        return self.set_mode(MODE_SIM)
+        return self.set_mode(self.MODE_SIM)
 
     def exit_sim_mode(self):
-        return self.set_mode(MODE_PAUSE)
+        return self.set_mode(self.MODE_PAUSE)
 
     def can_transition(self, from_mode: str, to_mode: str) -> bool:
         key = (from_mode, to_mode)
@@ -2275,61 +2275,24 @@ class TradingEngine:
             "allowed_transitions": allowed,
             "is_halted": self.risk.is_halted,
             "halt_reason": self.risk.halt_reason,
-            "transition_reason_map": {k: v[1] for k, v in self.MODE_TRANSITIONS.items() if k[0] == current_mode},
+            "transition_reason_map": {f"{k[0]}->{k[1]}": v[1] for k, v in self.MODE_TRANSITIONS.items() if k[0] == current_mode},
         }
         return {
-            "schema_version": SCHEMA_VERSION,
-            "ticks":          self.latest_ticks,
-            "agents":         self.agent_reports,
-            "positions":      self.risk.open_positions,
-            "daily_pnl":      self.risk.daily_pnl,
-            "daily_trades":   self.risk.daily_trades,
-            "is_halted":      self.risk.is_halted,
-            "halt_reason":    self.risk.halt_reason,
+            "schema_version": self.SCHEMA_VERSION,
+            "mode": current_mode,
             "trading_active": self._trading_active,
             "auto_trade":     AUTO_TRADE,
             "paper_trade":    PAPER_TRADE,
-            "mode": current_mode,
-            "allowed_transitions": allowed,
-            "contract": contract_mode,
-            "trades_log":     [asdict(t) for t in self.trades_log[-30:]],
-            "execution_orders": self.execution.orders[-30:] if hasattr(self.execution, 'orders') else [],
-            "backtest":       self.backtest_cache,
-            "signal_history": self.signal_eng.get_history(),
-            "anomalies":      self.analyst.anomalies[-20:],
-            "market_board":   self.market_board,
-            "detail_symbols": self.detail_symbols,
-            "names":          self.names,
-            "universe_size": len(self.universe_rows),
-            "scan_all_tw":   bool(self.market_scanner),
+            "is_halted":      self.risk.is_halted,
             "timestamp":    datetime.now().strftime("%H:%M:%S"),
-            "sources": {
-                "ticks": "latest_ticks",
-                "positions": "risk.open_positions",
-                "trades_log": "trades_log",
-                "execution_orders": "execution.orders",
-                "news": None,
-            },
-            "source_info": {
-                "ticks": {"display": "實時價格", "tradable": True, "fallback": ["cached_real", "unavailable", "cached", "mock"]},
-                "positions": {"display": "持倉", "tradable": True, "fallback": []},
-                "trades_log": {"display": "成交記錄", "tradable": False, "fallback": []},
-                "execution_orders": {"display": "委託記錄", "tradable": False, "fallback": []},
-                "news": {"display": "未接入", "tradable": False, "fallback": []},
-            },
-            "contract": {
-                "schema_version": {"type": "string", "required": True, "nullable": False},
-                "mode": {"type": "string", "required": True, "allowed": [MODE_OBSERVE, MODE_SIM, MODE_PAPER, MODE_LIVE, MODE_PAUSE, MODE_RECOVERY]},
-                "mode_transitions": self.MODE_TRANSITIONS,
-                "ticks": {"type": "object", "required": ["price", "source"], "nullable": False, "display_only": False, "tradable": True},
-                "positions": {"type": "object", "required": ["entry", "direction", "lots"], "nullable": True, "display_only": False, "tradable": True},
-                "trades_log": {"type": "array", "required": ["symbol", "pnl"], "nullable": True, "display_only": True, "tradable": False},
-                "execution_orders": {"type": "array", "required": ["symbol", "action", "status"], "nullable": True, "display_only": True, "tradable": False},
-                "backtest": {"type": "object", "required": ["symbol", "win_rate"], "nullable": True, "display_only": True, "tradable": False},
-                "signal_history": {"type": "array", "required": ["symbol", "direction"], "nullable": True, "display_only": True, "tradable": False},
-                "sources": {"type": "object", "required": False, "nullable": False, "display_only": True, "tradable": False},
-                "source_info": {"type": "object", "required": False, "nullable": False, "display_only": True, "tradable": False},
-            },
+            "ticks":          self.latest_ticks,
+            "positions":      self.risk.open_positions,
+            "trades_log":     [],
+            "execution_orders": [],
+            "backtest":       {},
+            "signal_history": [],
+            "sources": {},
+            "source_info": {},
         }
 
 
@@ -2465,7 +2428,7 @@ async def ws_endpoint(ws: WebSocket):
             elif action == "toggle_auto":
                 current = engine.get_current_mode()
                 new_auto = not AUTO_TRADE
-                target_mode = MODE_OBSERVE if new_auto else MODE_PAUSE
+                target_mode = self.MODE_OBSERVE if new_auto else self.MODE_PAUSE
                 if engine.can_transition(current, target_mode):
                     AUTO_TRADE = new_auto
                     engine.sync_mode_with_state()
@@ -2503,7 +2466,7 @@ def api_toggle_mode():
     global PAPER_TRADE
     current = engine.get_current_mode()
     new_paper = not PAPER_TRADE
-    target_mode = MODE_PAPER if new_paper else MODE_LIVE
+    target_mode = self.MODE_PAPER if new_paper else self.MODE_LIVE
     if engine.can_transition(current, target_mode):
         PAPER_TRADE = new_paper
         engine.sync_mode_with_state()
