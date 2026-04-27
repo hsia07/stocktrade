@@ -1,3 +1,7 @@
+from datetime import datetime
+import json
+from pathlib import Path
+
 class SummarySource:
     def __init__(self):
         self.sources = {
@@ -91,6 +95,58 @@ class SmartSummaryLayer:
             if category in data:
                 results[category] = self.generate_summary(data[category], category)
         return results
+
+    def generate_runtime_summary(self, state: dict) -> dict:
+        tick_items = list(state.get("ticks", {}).values())
+        active_ticks = [t for t in tick_items if t.get("available") and t.get("price")]
+        pos_count = len(state.get("positions", {}))
+        trade_count = len(state.get("trades_log", []))
+        signal_count = len(state.get("signal_history", []))
+        agent_count = len(state.get("agents", {}))
+        
+        market_summary = f"報價 {len(active_ticks)} 檔，漲跌 "
+        if active_ticks:
+            prices = [t["price"] for t in active_ticks if t.get("price")]
+            if prices:
+                avg = sum(prices) / len(prices)
+                market_summary += f"均價 {avg:.2f}"
+        
+        position_summary = f"持倉 {pos_count} 口"
+        trade_summary = f"成交 {trade_count} 筆"
+        signal_summary = f"訊號 {signal_count} 個"
+        agent_summary = f"Agent {agent_count} 個"
+        
+        result = {
+            "summary": f"{market_summary} | {position_summary} | {trade_summary} | {signal_summary} | {agent_summary}",
+            "category": "runtime_aggregate",
+            "source": "trading_engine_runtime",
+            "metadata": {
+                "active_ticks": len(active_ticks),
+                "positions": pos_count,
+                "trades": trade_count,
+                "signals": signal_count,
+                "agents": agent_count,
+            },
+            "generated_at": datetime.now().isoformat()
+        }
+        # Side-channel: non-core integration payload
+        self._write_side_channel(state, result)
+        return result
+
+    def _write_side_channel(self, state: dict, summary_payload: dict) -> None:
+        try:
+            sc_path = Path("automation/control/candidates/R024-SMART-SUMMARY-LAYER/summary_runtime_state.json")
+            sc_path.parent.mkdir(parents=True, exist_ok=True)
+            payload = {
+                "generated_at": summary_payload.get("generated_at"),
+                "category": summary_payload.get("category"),
+                "summary": summary_payload.get("summary"),
+                "state_snapshot": state
+            }
+            with sc_path.open("w", encoding="utf-8") as f:
+                json.dump(payload, f, ensure_ascii=False, indent=2)
+        except Exception:
+            pass
 
 
 class SummaryValidator:

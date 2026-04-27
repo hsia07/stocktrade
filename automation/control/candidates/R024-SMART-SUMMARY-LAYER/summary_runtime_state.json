@@ -1,0 +1,12 @@
+{
+  "generated_at": "2026-04-27T13:29:07.918063",
+  "category": "runtime_aggregate",
+  "summary": "報價 0 檔，漲跌  | 持倉 0 口 | 成交 0 筆 | 訊號 0 個 | Agent 0 個",
+  "state_snapshot": {
+    "ticks": {},
+    "positions": {},
+    "trades_log": [],
+    "signal_history": [],
+    "agents": {}
+  }
+}

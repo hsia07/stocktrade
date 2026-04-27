@@ -1,0 +1,12 @@
+{
+  "round_id": "R024-SMART-SUMMARY-LAYER",
+  "authorized_changes": [
+    "manifests/current_round.yaml",
+    "automation/control/candidates/R024-SMART-SUMMARY-LAYER/summary_runtime_state.json"
+  ],
+  "evidence_for_changes": [
+    "Authorize non-core side-channel changes for R024 runtime integration"
+  ],
+  "version": "0.1.0",
+  "created_at": "2026-04-27T13:00:00Z"
+}
