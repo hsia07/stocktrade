@@ -164,5 +164,29 @@ class TestFrontendPartialPayloadGuard:
                 pytest.fail(f"render() called without full payload guard: {m[:50]}")
 
 
+class TestOfflineDemoGuard:
+    """Guard against offline demo base regression"""
+
+    @pytest.fixture
+    def frontend_source(self):
+        with open("index_v2.html", encoding="utf-8") as f:
+            return f.read()
+
+    def test_offlinedemo_exists(self, frontend_source):
+        """Verify offlineDemo function exists"""
+        assert 'function offlineDemo()' in frontend_source, "offlineDemo must exist"
+
+    def test_offlinedemo_base_has_schema_version(self, frontend_source):
+        """Verify offlineDemo base includes schema_version"""
+        pattern = r'function offlineDemo\(\)[^}]*schema_version\s*:\s*["\']1\.0\.0["\']'
+        assert re.search(pattern, frontend_source), "offlineDemo base must include schema_version"
+
+    def test_offlinedemo_base_has_required_core(self, frontend_source):
+        """Verify offlineDemo base includes all REQUIRED_CORE fields"""
+        required = ['ticks', 'positions', 'trades_log', 'execution_orders', 'sources', 'source_info', 'backtest', 'signal_history', 'mode']
+        for field in required:
+            assert field in frontend_source.split('function offlineDemo()')[1].split('render(base)')[0], f"offlineDemo must include {field}"
+
+
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])
