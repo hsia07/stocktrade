@@ -1,0 +1,2 @@
+智慧摘要層 R024 - Evidence patch
+這份 task.txt 描述此 Evidence Patch 的目的與內容摘要。

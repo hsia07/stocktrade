@@ -1,0 +1,5 @@
+{
+  "round_id": "R024-SMART-SUMMARY-LAYER",
+  "evidence_status": "partial",
+  "notes": "Non-core integration via side-channel; runtime state file generated as needed for tests only."
+}
