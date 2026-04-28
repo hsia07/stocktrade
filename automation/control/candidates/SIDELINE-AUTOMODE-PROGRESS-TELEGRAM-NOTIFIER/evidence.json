@@ -1,0 +1,28 @@
+{
+  "round_id": "SIDELINE-AUTOMODE-PROGRESS-TELEGRAM-NOTIFIER",
+  "task": "Sideline Telegram Progress Notifier (Mock)",
+  "topic": "Non-core mock Telegram progress notifier",
+  "commit_hash": "",
+  "evidence_package": "automation/control/candidates/SIDELINE-AUTOMODE-PROGRESS-TELEGRAM-NOTIFIER/",
+  "files": [
+    "automation/control/telegram_progress_notifier.py",
+    "automation/control/test_telegram_progress_notifier.py",
+    "automation/control/candidates/SIDELINE-AUTOMODE-PROGRESS-TELEGRAM-NOTIFIER/task.txt",
+    "automation/control/candidates/SIDELINE-AUTOMODE-PROGRESS-TELEGRAM-NOTIFIER/evidence.json",
+    "automation/control/candidates/SIDELINE-AUTOMODE-PROGRESS-TELEGRAM-NOTIFIER/report.json"
+  ],
+  "test_results": {
+    "telegram_progress_notifier_tests": "13/13 PASSED"
+  },
+  "forbidden_checks": {
+    "server_v2_not_modified": true,
+    "index_v2_not_modified": true,
+    "manifests_not_modified": true,
+    "governance_not_modified": true,
+    "automode_activation_lock_not_modified": true,
+    "r025_files_not_modified": true,
+    "telegram_sender_not_modified": true
+  },
+  "mock_mode": true,
+  "no_actual_telegram_api_call": true
+}
