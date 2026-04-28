@@ -81,6 +81,46 @@ class TestProgressSequence(unittest.TestCase):
         self.assertIn("COMPLETE", log[3])
 
 
+class TestEventLabelMapping(unittest.TestCase):
+    """Test that event labels are correctly mapped."""
+
+    def setUp(self):
+        self.notifier = TelegramProgressNotifier(enabled=True, mock_mode=True)
+
+    def test_send_start_label(self):
+        """START event must show as START, not PROGRESS."""
+        self.notifier.send_start("R025")
+        log = self.notifier.get_log()
+        self.assertEqual(len(log), 1)
+        self.assertIn("[AUTO-RUN][START] R025", log[0])
+        self.assertNotIn("PROGRESS", log[0])
+
+    def test_send_progress_label(self):
+        """PROGRESS event must show as PROGRESS."""
+        self.notifier.send_progress("R025", step="build", status="ok")
+        log = self.notifier.get_log()
+        self.assertEqual(len(log), 1)
+        self.assertIn("[AUTO-RUN][PROGRESS]", log[0])
+        self.assertIn("step=build", log[0])
+        self.assertIn("status=ok", log[0])
+
+    def test_send_complete_label(self):
+        """COMPLETE event must show as COMPLETE."""
+        self.notifier.send_complete("R025")
+        log = self.notifier.get_log()
+        self.assertEqual(len(log), 1)
+        self.assertIn("[AUTO-RUN][COMPLETE] R025", log[0])
+        self.assertNotIn("PROGRESS", log[0])
+
+    def test_send_error_label(self):
+        """ERROR event must show as ERROR."""
+        self.notifier.send_error("R025", error="something broke")
+        log = self.notifier.get_log()
+        self.assertEqual(len(log), 1)
+        self.assertIn("[AUTO-RUN][ERROR]", log[0])
+        self.assertIn("error=something broke", log[0])
+
+
 class TestDisabledNoOp(unittest.TestCase):
     def setUp(self):
         self.sender = DummySender()

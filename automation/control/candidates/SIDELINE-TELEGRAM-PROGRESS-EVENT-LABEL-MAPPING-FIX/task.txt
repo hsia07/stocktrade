@@ -1,0 +1,40 @@
+SIDELINE-TELEGRAM-PROGRESS-EVENT-LABEL-MAPPING-FIX
+
+## Task Description
+Fix event label mapping in Telegram Progress Notifier/Sidecar to ensure:
+- START events display as START (not PROGRESS)
+- PROGRESS events display as PROGRESS
+- COMPLETE events display as COMPLETE
+- ERROR events display as ERROR
+
+## Problem
+The sidecar was mapping all non-completed/failed/paused/stopped statuses to `send_progress()`, 
+causing START events to be incorrectly displayed as in progress.
+
+## Solution
+Modified `telegram_progress_sidecar.py` to check `formal_status_code` for START keywords 
+(start/begin/init/commence) and explicitly call `send_start()` instead of `send_progress()`.
+
+## Files Modified
+- automation/control/telegram_progress_sidecar.py
+- automation/control/test_telegram_progress_notifier.py
+- automation/control/test_telegram_progress_sidecar.py
+
+## Tests Added
+- TestEventLabelMapping.test_send_start_label
+- TestEventLabelMapping.test_send_progress_label
+- TestEventLabelMapping.test_send_complete_label
+- TestEventLabelMapping.test_send_error_label
+- TestEventLabelMapping.test_start_event_calls_send_start
+- TestEventLabelMapping.test_progress_event_calls_send_progress
+- TestEventLabelMapping.test_complete_event_calls_send_complete
+- TestEventLabelMapping.test_error_event_calls_send_error
+- TestEventLabelMapping.test_dedupe_does_not_affect_event_label
+
+## Test Results
+- test_telegram_progress_notifier.py: 17 passed
+- test_telegram_progress_sidecar.py: 20 passed
+- Total: 37 passed (0 failed)
+
+## Real API Call Check
+No real Telegram API calls during tests (mock_mode=True used in all tests).

@@ -1,0 +1,16 @@
+{
+  "task_id": "SIDELINE-TELEGRAM-PROGRESS-EVENT-LABEL-MAPPING-FIX",
+  "reply_id": "sideline-telegram-progress-event-label-mapping-fix-2026-04-27-001",
+  "status": "completed",
+  "formal_status_code": "candidate_ready_awaiting_manual_review",
+  "files_modified": [
+    "automation/control/telegram_progress_sidecar.py",
+    "automation/control/test_telegram_progress_notifier.py",
+    "automation/control/test_telegram_progress_sidecar.py"
+  ],
+  "tests_passed": 37,
+  "tests_failed": 0,
+  "real_telegram_api_called": false,
+  "forbidden_files_modified": false,
+  "commit_hash": ""
+}

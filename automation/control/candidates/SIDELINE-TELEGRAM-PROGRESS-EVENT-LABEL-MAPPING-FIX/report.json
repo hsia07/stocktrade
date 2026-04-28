@@ -1,0 +1,33 @@
+{
+  "reply_id": "sideline-telegram-progress-event-label-mapping-fix-2026-04-27-001",
+  "status": "completed",
+  "formal_status_code": "candidate_ready_awaiting_manual_review",
+  "task": "SIDELINE-TELEGRAM-PROGRESS-EVENT-LABEL-MAPPING-FIX",
+  "summary": {
+    "start_label_fixed": true,
+    "progress_label_fixed": true,
+    "complete_label_fixed": true,
+    "error_label_fixed": true,
+    "sidecar_mapping_fixed": true
+  },
+  "test_results": {
+    "notifier_tests": {
+      "passed": 17,
+      "failed": 0,
+      "total": 17
+    ),
+    "sidecar_tests": {
+      "passed": 20,
+      "failed": 0,
+      "total": 20
+    },
+    "total_passed": 37,
+    "total_failed": 0
+  },
+  "real_telegram_api_called_during_tests": false,
+  "contains_forbidden_files": false,
+  "push_executed": false,
+  "merge_executed": false,
+  "dispatch_r026_attempted": false,
+  "next_action": "Awaiting manual review for candidate commit"
+}

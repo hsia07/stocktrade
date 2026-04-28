@@ -215,13 +215,24 @@ class TelegramProgressSidecar:
         status = state.get("status", "unknown")
         formal_code = state.get("formal_status_code", "unknown")
 
+        # Event type mapping based on formal_status_code and status
+        # START: formal_status_code contains 'start'/'begin'/'init'
+        # PROGRESS: formal_status_code contains 'progress'/'running' or status is 'in_progress'
+        # COMPLETE: status == 'completed'
+        # ERROR: status == 'failed'/'paused'/'stopped'
+        formal_lower = formal_code.lower()
+
         if status == "completed":
             result = self.notifier.send_complete(round_id)
         elif status == "failed":
             result = self.notifier.send_error(round_id, error=f"status={status}, formal={formal_code}")
         elif status in ("paused", "stopped"):
             result = self.notifier.send_error(round_id, error=f"status={status}, formal={formal_code}")
+        elif any(kw in formal_lower for kw in ["start", "begin", "init", "commence"]):
+            # START event: explicitly use send_start
+            result = self.notifier.send_start(round_id)
         else:
+            # PROGRESS event: use send_progress with step info
             result = self.notifier.send_progress(round_id, step="report_update", status=status)
 
         return {
