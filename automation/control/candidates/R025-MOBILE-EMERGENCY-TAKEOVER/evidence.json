@@ -2,7 +2,7 @@
   "round_id": "R025-MOBILE-EMERGENCY-TAKEOVER",
   "task": "R025 Mobile Emergency Takeover Interface",
   "topic": "手機友善/行動版/緊急接管介面",
-  "commit_hash": "",
+  "commit_hash": "b6940c42bc12902db57b88986c99f76d7653516e",
   "evidence_package": "automation/control/candidates/R025-MOBILE-EMERGENCY-TAKEOVER/",
   "files": [
     "automation/control/mobile_emergency_takeover.py",

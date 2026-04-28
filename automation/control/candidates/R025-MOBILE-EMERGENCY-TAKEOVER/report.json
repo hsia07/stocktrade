@@ -8,13 +8,14 @@
   "auto_run_rounds_executed": 1,
   "auto_run_stop_reason": "all_tests_passed",
   "branch": "work/candidate-r025-mobile-emergency-takeover-001",
-  "commit_hash": "",
+  "commit_hash": "b6940c42bc12902db57b88986c99f76d7653516e",
   "files_modified": [
     "automation/control/mobile_emergency_takeover.py",
     "automation/control/test_mobile_emergency_takeover.py",
     "automation/control/candidates/R025-MOBILE-EMERGENCY-TAKEOVER/task.txt",
     "automation/control/candidates/R025-MOBILE-EMERGENCY-TAKEOVER/evidence.json",
-    "automation/control/candidates/R025-MOBILE-EMERGENCY-TAKEOVER/report.json"
+    "automation/control/candidates/R025-MOBILE-EMERGENCY-TAKEOVER/report.json",
+    "automation/control/candidates/R025-MOBILE-EMERGENCY-TAKEOVER/candidate.diff"
   ],
   "contains_server_v2": false,
   "contains_index_v2": false,
@@ -41,5 +42,10 @@
   "merge_executed": false,
   "promote_executed": false,
   "pr_created": false,
-  "dispatch_r026_attempted": false
+  "dispatch_r026_attempted": false,
+  "telegram_progress_notify_available_true_or_false": false,
+  "telegram_progress_notify_enabled_true_or_false": false,
+  "telegram_progress_messages_sent_count": 0,
+  "telegram_progress_last_message": null,
+  "telegram_progress_failure_reason": "no dedicated progress notify interface found in repo"
 }
