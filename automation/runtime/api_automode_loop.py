@@ -95,6 +95,8 @@ class AutomodeRuntimeLoop:
         self._stop_time: Optional[float] = None
         self._current_phase = RoundPhase.NONE if RoundPhase else "none"
         self._current_round = "NONE"
+        self._connection_failures = 0
+        self._max_failures = 3
         self._metrics: Dict[str, Any] = {
             "ticks": 0,
             "mock_work_items": 0,
@@ -460,6 +462,23 @@ class AutomodeRuntimeLoop:
                     return
                 logger.info("STOP_NOW.flag detected, initiating clean shutdown")
                 self._shutdown_requested = True
+                return
+
+            # 0. Check connection failures (Phase A)
+            if self._connection_failures >= self._max_failures:
+                logger.warning(f"Connection failures reached {self._max_failures}, entering paused_after_failure")
+                if self._pause_manager:
+                    checkpoint_data = {
+                        "checkpoint_version": "1.0",
+                        "timestamp": datetime.now(timezone.utc).isoformat(),
+                        "round_id": self._current_round,
+                        "current_step": "paused_after_failure",
+                        "phase": self._current_phase if isinstance(self._current_phase, str) else str(self._current_phase),
+                        "pause_reason": "paused_after_failure",
+                        "connection_failures": self._connection_failures,
+                        "recoverable": False
+                    }
+                    self._pause_manager.set_pause(reason="paused_after_failure", checkpoint_data=checkpoint_data)
                 return
 
             # 1. Handle pause
