@@ -1,0 +1,27 @@
+{
+  "round_id": "R025-MOBILE-EMERGENCY-TAKEOVER",
+  "task": "R025 Mobile Emergency Takeover Interface",
+  "topic": "手機友善/行動版/緊急接管介面",
+  "commit_hash": "",
+  "evidence_package": "automation/control/candidates/R025-MOBILE-EMERGENCY-TAKEOVER/",
+  "files": [
+    "automation/control/mobile_emergency_takeover.py",
+    "automation/control/test_mobile_emergency_takeover.py",
+    "automation/control/candidates/R025-MOBILE-EMERGENCY-TAKEOVER/task.txt",
+    "automation/control/candidates/R025-MOBILE-EMERGENCY-TAKEOVER/evidence.json",
+    "automation/control/candidates/R025-MOBILE-EMERGENCY-TAKEOVER/report.json"
+  ],
+  "test_results": {
+    "mobile_emergency_takeover_tests": "12/12 PASSED",
+    "r016_api_contract_tests": "25/25 PASSED",
+    "runtime_ui_schema_regression_tests": "22/22 PASSED"
+  },
+  "forbidden_checks": {
+    "server_v2_not_modified": true,
+    "index_v2_not_modified": true,
+    "manifests_not_modified": true,
+    "governance_not_modified": true,
+    "automode_activation_lock_not_modified": true,
+    "r024_files_not_modified": true
+  }
+}

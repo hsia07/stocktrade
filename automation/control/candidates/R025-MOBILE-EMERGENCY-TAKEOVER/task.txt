@@ -1,0 +1,18 @@
+R025-MOBILE-EMERGENCY-TAKEOVER
+
+Task: R025 Mobile Emergency Takeover Interface
+Topic: 手機友善/行動版/緊急接管介面
+
+Non-core module implementing mobile emergency takeover functionality including:
+- Mobile friendly layout metadata
+- Emergency takeover entry state
+- Emergency pause action descriptor
+- Takeover status card payload
+- Touch target/accessibility metadata
+- Narrow screen safe layout metadata
+- Operator confirmation required flag
+- Audit log descriptor
+- Safe mode banner payload
+
+Scope: automation/control/mobile_emergency_takeover.py (non-core)
+Evidence: automation/control/candidates/R025-MOBILE-EMERGENCY-TAKEOVER/
