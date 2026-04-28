@@ -1,0 +1,21 @@
+SIDELINE-TELEGRAM-PROGRESS-AUTORUN-ACTIVATION
+
+Task: SIDELINE-TELEGRAM-PROGRESS-AUTORUN-ACTIVATION
+Topic: Autorun activation for Telegram Progress Sidecar
+
+This is a sideline task that creates startup script for
+Telegram Progress Sidecar to be run in parallel with auto-run loop.
+
+Created files:
+- automation/control/start_telegram_progress_sidecar.ps1
+- automation/control/andidates/SIDELINE-TELEGRAM-PROGRESS-AUTORUN-ACTIVATION/task.txt
+- automation/control/candidates/SIDELINE-TELEGRAM-PROGRESS-AUTORUN-ACTIVATION/evidence.json
+- automation/control/candidates/SIDELINE-TELEGRAM-PROGRESS-AUTORUN-ACTIVATION/report.json
+
+Features:
+- PowerShell startup script (start_telegram_progress_sidecar.ps1)
+- Reads TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID from environment
+- Real mode if credentials exist, mock/log mode if not
+- Does NOT print tokens to log
+- Sidecar supports graceful stop via STOP_NOW.flag
+- Does NOT modify core auto-run loop (api_automode_loop.py)

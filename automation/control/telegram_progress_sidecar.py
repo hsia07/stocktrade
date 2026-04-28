@@ -1,15 +1,22 @@
 """
-Telegram Progress Sidecar Adapter (Mock Version)
+Telegram Progress Sidecar Adapter
 
 Monitors latest_return_to_chatgpt.txt for changes and converts
-changes into TelegramProgressNotifier mock messages.
+changes into TelegramProgressNotifier messages.
 
 This is a sidecar adapter - it does NOT modify the core loop.
+
+Supports:
+- Real mode (if TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID are set)
+- Mock mode (default if credentials not found)
+- Graceful stop via STOP_NOW.flag
 """
 
 import os
 import hashlib
 import logging
+import signal
+import time
 from pathlib import Path
 from typing import Dict, Any, Optional
 
@@ -18,11 +25,19 @@ from automation.control.telegram_progress_notifier import TelegramProgressNotifi
 
 logger = logging.getLogger("telegram_progress_sidecar")
 
+# Stop flag path (same as api_automode_loop.py)
+STOP_NOW_FLAG = Path(__file__).parent.parent.parent / "automation" / "control" / "STOP_NOW.flag"
+
 
 class TelegramProgressSidecar:
     """
     Sidecar adapter that monitors RETURN_TO_CHATGPT report file changes
-    and sends mock progress notifications.
+    and sends progress notifications.
+
+    Supports:
+    - Real mode (if TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID are set)
+    - Mock mode (default if credentials not found)
+    - Graceful stop via STOP_NOW.flag
     """
 
     def __init__(
@@ -39,6 +54,92 @@ class TelegramProgressSidecar:
         self._last_hash: Optional[str] = None
         self._notified_reply_ids: set = set()
         self._last_state: Dict[str, Any] = {}
+        self._running = False
+        self._stop_requested = False
+
+        # Setup signal handlers for graceful stop
+        try:
+            signal.signal(signal.SIGINT, self._signal_handler)
+            signal.signal(signal.SIGTERM, self._signal_handler)
+            logger.info("Signal handlers registered for SIGINT and SIGTERM")
+        except Exception as e:
+            logger.warning(f"Failed to register signal handlers: {e}")
+
+    def _signal_handler(self, signum, frame):
+        """Handle shutdown signals gracefully."""
+        sig_name = "SIGINT" if signum == signal.SIGINT else "SIGTERM"
+        logger.info(f"Received {sig_name}, requesting graceful shutdown...")
+        self._stop_requested = True
+
+    def _check_stop_now(self) -> bool:
+        """Check if STOP_NOW.flag exists."""
+        return STOP_NOW_FLAG.exists()
+
+    def _detect_mode(self) -> dict:
+        """
+        Detect Telegram credentials and return config.
+        Returns dict with:
+        - mode: 'real' or 'mock'
+        - bot_token_present: bool
+        - chat_id_present: bool
+        """
+        bot_token = os.environ.get("TELEGRAM_BOT_TOKEN", "")
+        chat_id = os.environ.get("TELEGRAM_CHAT_ID", "")
+        
+        config = {
+            "mode": "mock",
+            "bot_token_present": bool(bot_token),
+            "chat_id_present": bool(chat_id),
+        }
+        
+        if bot_token and chat_id:
+            config["mode"] = "real"
+            logger.info("Telegram credentials found - entering REAL mode")
+            logger.info(f"BotToken present: YES (length: {len(bot_token)})")
+            logger.info(f"ChatId present: YES")
+            # IMPORTANT: Never print actual token to log!
+        else:
+            logger.info("Telegram credentials NOT found - entering MOCK/LOG mode")
+        
+        return config
+
+    def run(self, check_interval: float = 2.0):
+        """
+        Main monitoring loop. Checks for report changes periodically.
+        Exits gracefully when stop requested or STOP_NOW.flag is set.
+        """
+        self._running = True
+        self._stop_requested = False
+        logger.info(f"Telegram Progress Sidecar started (mode={self.mock_mode})")
+        logger.info(f"Monitoring: {self.report_path}")
+        logger.info(f"Check interval: {check_interval}s")
+
+        while self._running and not self._stop_requested:
+            # Check STOP_NOW.flag
+            if self._check_stop_now():
+                logger.info("STOP_NOW.flag detected, stopping...")
+                break
+
+            try:
+                result = self.check_and_notify()
+                if result.get("checked"):
+                    if result.get("changed"):
+                        logger.info(f"Change detected: {result.get('reason', '')}")
+                        if result.get("notified"):
+                            logger.info(f"Notification sent for round_id={result.get('round_id', '')}")
+                else:
+                    logger.warning(f"Check failed: {result.get('reason', '')}")
+            except Exception as e:
+                logger.error(f"Error in monitoring loop: {e}")
+
+            # Sleep with periodic stop checks
+            for _ in range(int(check_interval / 0.5)):
+                if self._stop_requested or self._check_stop_now():
+                    break
+                time.sleep(0.5)
+
+        logger.info("Telegram Progress Sidecar stopped")
+        self._running = False
 
     def _compute_hash(self, content: str) -> str:
         """Compute hash of file content for change detection."""
