@@ -1,0 +1,28 @@
+{
+  "round_id": "SIDELINE-TELEGRAM-PROGRESS-SIDECAR-WIRING",
+  "task": "Sidecar adapter for RETURN_TO_CHATGPT monitoring",
+  "topic": "Non-core sidecar wiring for progress notifications",
+  "status": "completed",
+  "formal_status_code": "candidate_ready_awaiting_manual_review",
+  "auto_run_enabled": false,
+  "sideline_task": true,
+  "mainline_round_affected": false,
+  "commit_hash": "b56e289",
+  "files_created": [
+    "automation/control/telegram_progress_sidecar.py",
+    "automation/control/test_telegram_progress_sidecar.py",
+    "automation/control/candidates/SIDELINE-TELEGRAM-PROGRESS-SIDECAR-WIRING/task.txt",
+    "automation/control/candidates/SIDELINE-TELEGRAM-PROGRESS-SIDECAR-WIRING/evidence.json",
+    "automation/control/candidates/SIDELINE-TELEGRAM-PROGRESS-SIDECAR-WIRING/report.json"
+  ],
+  "files_modified": [],
+  "core_loop_modified": false,
+  "sidecar_adapter_created": true,
+  "latest_return_to_chatgpt_monitoring": true,
+  "mock_mode_supported": true,
+  "deduplication_supported": true,
+  "tests_passed": "27/27 PASSED",
+  "push_executed": false,
+  "merge_executed": false,
+  "dispatch_r026_attempted": false
+}
