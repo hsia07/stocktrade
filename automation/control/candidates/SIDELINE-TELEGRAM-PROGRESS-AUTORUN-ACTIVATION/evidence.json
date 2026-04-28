@@ -1,0 +1,37 @@
+{
+  "round_id": "SIDELINE-TELEGRAM-PROGRESS-AUTORUN-ACTIVATION",
+  "task": "Autorun activation for Telegram Progress Sidecar",
+  "topic": "Startup script for sidecar parallel execution",
+  "commit_hash": "c113e39",
+  "evidence_package": "automation/control/candidates/SIDELINE-TELEGRAM-PROGRESS-AUTORUN-ACTIVATION/",
+  "files": [
+    "automation/control/start_telegram_progress_sidecar.ps1",
+    "automation/control/telegram_progress_sidecar.py",
+    "automation/control/telegram_progress_notifier.py",
+    "automation/control/test_telegram_progress_sidecar.py",
+    "automation/control/test_telegram_progress_notifier.py",
+    "automation/control/candidates/SIDELINE-TELEGRAM-PROGRESS-AUTORUN-ACTIVATION/task.txt",
+    "automation/control/candidates/SIDELINE-TELEGRAM-PROGRESS-AUTORUN-ACTIVATION/evidence.json",
+    "automation/control/candidates/SIDELINE-TELEGRAM-PROGRESS-AUTORUN-ACTIVATION/report.json"
+  ],
+  "test_results": {
+    "telegram_progress_notifier_tests": "13/13 PASSED",
+    "telegram_progress_sidecar_tests": "14/14 PASSED"
+  },
+  "forbidden_checks": {
+    "server_v2_not_modified": true,
+    "index_v2_not_modified": true,
+    "manifests_not_modified": true,
+    "governance_not_modified": true,
+    "automode_activation_lock_not_modified": true,
+    "api_automode_loop_not_modified": true,
+    "core_loop_not_modified": true
+  },
+  "autorun_activation": true,
+  "real_mode_supported": true,
+  "mock_fallback_supported": true,
+  "token_hardcoded": false,
+  "chat_id_hardcoded": false,
+  "no_token_in_log": true,
+  "graceful_stop_supported": true
+}
