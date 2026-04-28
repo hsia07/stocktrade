@@ -1,0 +1,19 @@
+R025-MOBILE-EMERGENCY-TAKEOVER
+
+Task: SIDELINE-AUTOMODE-PROGRESS-TELEGRAM-NOTIFIER
+Topic: Non-core mock Telegram progress notifier for auto-run construction
+
+This is a sideline task that creates a mock-based Telegram progress notifier
+abstraction layer using existing TelegramSender as base.
+
+Created files:
+- automation/control/telegram_progress_notifier.py
+- automation/control/test_telegram_progress_notifier.py
+- automation/control/candidates/SIDELINE-AUTOMODE-PROGRESS-TELEGRAM-NOTIFIER/
+
+Features:
+- TelegramProgressNotifier class with mock_mode support
+- Methods: send_start, send_progress, send_error, send_complete
+- Mock mode records to internal log without calling Telegram API
+- Disabled mode performs no-ops
+- Unified message format: [AUTO-RUN][TAG] round_id ...
