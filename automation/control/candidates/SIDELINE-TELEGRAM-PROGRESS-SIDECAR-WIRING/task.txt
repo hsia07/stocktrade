@@ -1,0 +1,21 @@
+SIDELINE-TELEGRAM-PROGRESS-SIDECAR-WIRING
+
+Task: SIDELINE-TELEGRAM-PROGRESS-SIDECAR-WIRING
+Topic: Sidecar adapter for monitoring RETURN_TO_CHATGPT reports
+
+This is a sideline task that creates a sidecar adapter
+which monitors latest_return_to_chatgpt.txt file changes
+and converts them to TelegramProgressNotifier mock messages.
+
+Created files:
+- automation/control/telegram_progress_sidecar.py
+- automation/control/test_telegram_progress_sidecar.py
+- automation/control/candidates/SIDELINE-TELEGRAM-PROGRESS-SIDECAR-WIRING/
+
+Features:
+- Monitors report file for changes (hash-based detection)
+- Parses RETURN_TO_CHATGPT format (round_id, status, formal_status_code, reply_id)
+- Calls TelegramProgressNotifier in mock mode
+- Supports deduplication (same reply_id not notified twice)
+- No-op when file missing or disabled
+- Does NOT modify core loop files
