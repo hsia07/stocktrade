@@ -2,7 +2,7 @@
   "round_id": "SIDELINE-AUTOMODE-PROGRESS-TELEGRAM-NOTIFIER",
   "task": "Sideline Telegram Progress Notifier (Mock)",
   "topic": "Non-core mock Telegram progress notifier",
-  "commit_hash": "",
+  "commit_hash": "7b14b4be93acffd392c4a73dba9e24754946bd40",
   "evidence_package": "automation/control/candidates/SIDELINE-AUTOMODE-PROGRESS-TELEGRAM-NOTIFIER/",
   "files": [
     "automation/control/telegram_progress_notifier.py",
