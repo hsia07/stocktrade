@@ -1,0 +1,65 @@
+{
+  "task": "SIDELINE-AUTOMODE-NON-USAGE-STALL-MONITORING",
+  "status": "COMPLETED",
+  "summary": "Successfully implemented non-usage stall monitoring with 3-signal detection, debounce thresholds, safe-boundary auto-pause, and manual-only resume. All 10 tests pass. Phase B usage features remain blocked.",
+  "implementation": {
+    "signals": [
+      "Signal A: No phase transition (track phase_transitions count)",
+      "Signal B: No state.runtime.json or checkpoint modification (track mtime)",
+      "Signal C: N ticks with same round/phase (track last_checked_round/phase)"
+    ],
+    "thresholds": {
+      "normal": 10,
+      "construction": 30
+    },
+    "state_machine": "running → stall_suspected → auto_paused_by_stall → awaiting_manual_start",
+    "auto_pause": "At safe boundary only, sets pause_reason=auto_paused_by_stall, saves checkpoint",
+    "telegram_alert": "Sent once per stall event (mock mode, no real API calls)",
+    "resume": "NO auto-resume under any circumstance. Only manual /start can resume."
+  },
+  "code_changes": {
+    "api_automode_loop.py": [
+      "_stall_tick_count attribute",
+      "_stall_threshold_normal = 10",
+      "_stall_threshold_construction = 30",
+      "_check_stall() method with 3-signal detection",
+      "_trigger_stall_pause() method with safe-boundary pause",
+      "Integration into _execute_tick() loop"
+    ],
+    "pause_state.py": [
+      "REASON_STALL = 'auto_paused_by_stall'",
+      "Updated get_pause_info() to return checkpoint data"
+    ],
+    "status_scheduler.py": [
+      "Updated start_chain() to handle auto_paused_by_stall recovery",
+      "Checks pause_reason before proceeding"
+    ]
+  },
+  "tests": {
+    "total": 10,
+    "passed": 10,
+    "failed": 0,
+    "coverage": [
+      "TestStallDetectionMultiSignal: 3-signal confirmation, debounce reset",
+      "TestStallThresholds: normal=10, construction=30",
+      "TestSafeBoundaryAutoPause: checkpoint save, pause_reason set",
+      "TestTelegramAlertOnce: alert sent once per stall",
+      "TestManualStartOnlyResume: no auto-resume, manual /start only",
+      "TestNoAutoResume: Phase B features blocked"
+    ]
+  },
+  "phase_b_status": {
+    "usage_source_available": false,
+    "blocked_features": [
+      "usage exhausted auto-save checkpoint",
+      "usage exhausted auto-pause",
+      "waiting_for_usage_reset",
+      "periodic usage check",
+      "usage recovery auto-resume"
+    ],
+    "reason": "No OpenCode API quota/reset source available"
+  },
+  "commit": "52328a5",
+  "branch": "work/canonical-mainline-repair-001",
+  "tests_pass": true
+}

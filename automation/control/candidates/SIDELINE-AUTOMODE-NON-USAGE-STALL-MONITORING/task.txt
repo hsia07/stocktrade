@@ -1,0 +1,32 @@
+SIDELINE-AUTOMODE-NON-USAGE-STALL-MONITORING
+
+Task: Implement non-usage stall monitoring for automode runtime loop
+Type: construction (Phase A enhancement)
+Status: COMPLETED
+
+Scope:
+- Add stall detection using 3-signal confirmation (no phase transition + no state file change + N ticks no round/phase change)
+- Implement debounce mechanism with configurable thresholds (N=10 normal, N=30 construction phase)
+- Add safe-boundary auto-pause with pause_reason="auto_paused_by_stall"
+- Implement Telegram alert (once per stall event)
+- Ensure NO auto-resume under any circumstance (manual /start only)
+- Block all Phase B usage-related features (usage_source_available=FALSE)
+
+Modified files:
+- automation/runtime/api_automode_loop.py: _check_stall(), _trigger_stall_pause(), stall state machine
+- automation/control/pause_state.py: REASON_STALL constant, updated get_pause_info()
+- automation/control/status_scheduler.py: stall recovery handling in start_chain()
+
+New files:
+- automation/control/test_non_usage_stall_monitoring.py: 10 tests (all pass)
+- non_usage_stall_state_machine.txt: state machine documentation
+
+Constraints:
+- Cannot modify server_v2.py, server.py, index_v2.html, manifests/*, _governance/*
+- No real Telegram API calls (mock mode)
+- No tokens hardcoded (read from environment variables only)
+- checkpoint.json as sole recovery truth
+- Phase B blocked: usage_source_available = FALSE
+
+Candidate commit: 52328a5
+Tests: 10/10 PASSED

@@ -97,6 +97,14 @@ class AutomodeRuntimeLoop:
         self._current_round = "NONE"
         self._connection_failures = 0
         self._max_failures = 3
+        # Stall monitoring (non-usage type)
+        self._stall_tick_count = 0
+        self._stall_threshold_normal = 10  # 10 ticks = 20 seconds
+        self._stall_threshold_construction = 30  # 30 ticks = 60 seconds for construction
+        self._last_phase_transition_tick = 0
+        self._last_last_action = ""
+        self._last_checkpoint_mtime = 0.0
+        self._stall_detected = False
         self._metrics: Dict[str, Any] = {
             "ticks": 0,
             "mock_work_items": 0,
@@ -105,6 +113,8 @@ class AutomodeRuntimeLoop:
             "start_time": None,
             "stop_time": None,
             "phase_transitions": [],
+            "stall_tick_count": 0,
+            "stall_detected": False,
         }
         self._queue = MessageQueue() if MessageQueue else None
         self._dlq = DLQManager() if DLQManager else None
@@ -481,6 +491,9 @@ class AutomodeRuntimeLoop:
                     self._pause_manager.set_pause(reason="paused_after_failure", checkpoint_data=checkpoint_data)
                 return
 
+            # 0.5. Check stall (non-usage monitoring, Phase A+)
+            self._check_stall()
+
             # 1. Handle pause
             pause_result = self._handle_pause()
             if pause_result.get("paused"):
@@ -610,6 +623,91 @@ class AutomodeRuntimeLoop:
     def get_metrics(self) -> Dict[str, Any]:
         return self._metrics.copy()
 
+    def _check_stall(self):
+        """Check for stall conditions using multi-signal confirmation (non-usage type)."""
+        if self._stall_detected:
+            return  # Already detected stall
+
+        # Signal A: No new phase transition
+        current_phase_transition_count = len(self._metrics.get("phase_transitions", []))
+        phase_stall = (current_phase_transition_count == self._last_phase_transition_tick)
+
+        # Signal B: No new last_action / no new checkpoint
+        state_file = REPO_ROOT / "automation" / "control" / "state.runtime.json"
+        checkpoint_file = REPO_ROOT / "automation" / "control" / "checkpoint.json"
+        
+        try:
+            import os
+            state_mtime = os.path.getmtime(state_file) if state_file.exists() else 0
+            checkpoint_mtime = os.path.getmtime(checkpoint_file) if checkpoint_file.exists() else 0
+            
+            last_action_stall = (state_mtime <= self._last_state_mtime and 
+                                   checkpoint_mtime <= self._last_checkpoint_mtime)
+            
+            # Update last known times
+            self._last_state_mtime = max(self._last_state_mtime, state_mtime)
+            self._last_checkpoint_mtime = max(self._last_checkpoint_mtime, checkpoint_mtime)
+        except Exception:
+            last_action_stall = True  # Assume stall if can't read
+
+        # Signal C: N consecutive ticks with no state change
+        manifest = self._load_manifest_state()
+        current_round = manifest.get("current_round", "NONE")
+        current_phase = manifest.get("phase_state", "")
+        
+        state_unchanged = (current_round == self._last_checked_round and 
+                            current_phase == self._last_checked_phase)
+        
+        self._last_checked_round = current_round
+        self._last_checked_phase = current_phase
+        
+        # All 3 signals must agree for stall_suspected
+        if phase_stall and last_action_stall and state_unchanged:
+            self._stall_tick_count += 1
+        else:
+            # Reset debounce on ANY activity signal
+            self._stall_tick_count = 0
+            self._last_phase_transition_tick = current_phase_transition_count
+            return
+        
+        # Determine threshold based on phase
+        threshold = self._stall_threshold_construction if current_phase == "construction_in_progress" else self._stall_threshold_normal
+        
+        if self._stall_tick_count >= threshold:
+            logger.warning(f"Stall detected: {self._stall_tick_count} ticks without progress")
+            self._stall_detected = True
+            self._trigger_stall_pause()
+
+    def _trigger_stall_pause(self):
+        """Trigger auto-pause due to stall (safe boundary only)."""
+        if self._pause_manager and not self._pause_manager.is_paused():
+            stall_duration = self._stall_tick_count * TICK_INTERVAL
+            checkpoint_data = {
+                "checkpoint_version": "1.0",
+                "timestamp": datetime.now(timezone.utc).isoformat(),
+                "round_id": self._current_round,
+                "current_step": "auto_paused_by_stall",
+                "phase": self._current_phase if isinstance(self._current_phase, str) else str(self._current_phase),
+                "pause_reason": "auto_paused_by_stall",
+                "stall_tick_count": self._stall_tick_count,
+                "stall_duration_seconds": stall_duration,
+                "recoverable": True
+            }
+            result = self._pause_manager.set_pause(
+                reason="auto_paused_by_stall",
+                checkpoint_data=checkpoint_data
+            )
+            if result:
+                logger.info(f"Auto-paused by stall monitor after {stall_duration}s")
+                # Send Telegram alert
+                if self._scheduler:
+                    try:
+                        self._scheduler.notify_phase_transition(
+                            "paused", self._current_round,
+                            f"Stall alert: no progress for {stall_duration:.1f}s. Use /start to resume manually."
+                        )
+                    except Exception as e:
+                        logger.warning(f"Stall Telegram alert failed: {e}")
 
 def main():
     loop = AutomodeRuntimeLoop()

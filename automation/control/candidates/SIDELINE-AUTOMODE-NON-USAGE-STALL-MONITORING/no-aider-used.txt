@@ -1,0 +1,9 @@
+No aider used in this task.
+
+Task: SIDELINE-AUTOMODE-NON-USAGE-STALL-MONITORING
+Implementation: Manual coding + pytest testing
+AI Assistant: opencode/big-pickle
+Tools used: edit, write, bash (pytest), git
+Aider: NOT USED
+
+Verified: No aider-related files or commands in evidence package.
