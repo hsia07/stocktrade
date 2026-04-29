@@ -1,0 +1,56 @@
+Task: SIDELINE-AUTOMODE-CHECKPOINT-PAUSE-RESUME-PHASE-A
+
+## 本轮目标
+完成 Phase A checkpoint/pause/resume 功能整合，确保：
+1. /start 会读 checkpoint 并从指定 step 继续
+2. pause_reason 会明确进入 report 输出链
+3. test_phase_a.py 可在工作树存在并可重跑
+4. connection_failures >= 3 触发 paused_after_failure
+5. 只有人工 /start 可解锁
+
+## Phase A / Phase B 边界
+- Phase A (本任务):
+  - checkpoint save/load in pause_state.py
+  - failure counting in api_automode_loop.py
+  - /start integration in status_scheduler.py
+  - pause_reason flow to return_report
+  - Test coverage in test_phase_a.py
+
+- Phase B (阻塞，不得实施):
+  - usage exhausted 自动保存 checkpoint
+  - usage exhausted 自动 pause
+  - waiting_for_usage_reset
+  - 定期检査 usage
+  - usage 恢复后 auto resume
+  - 阻塞原因: usage_source_available = FALSE
+
+## 禁改范围
+- server_v2.py
+- server.py
+- index_v2.html
+- manifests/*
+- _governance/*
+- AUTO_MODE_ACTIVATION_LOCK
+- 除 api_automode_loop.py 外的 automation/runtime/*.py
+- state.runtime.json schema
+- state.template.json
+
+## 允许修改/新增
+- automation/control/pause_state.py
+- automation/runtime/api_automode_loop.py
+- automation/control/status_scheduler.py
+- automation/control/return_report.py
+- automation/control/test_phase_a.py
+- automation/control/candidates/SIDELINE-AUTOMODE-CHECKPOINT-PAUSE-RESUME-PHASE-A/*
+
+## checkpoint.json 规范
+- checkpoint.json 为 runtime mutable file
+- 实例不得 commit 进 repo
+- 作为 sole recovery truth，优先于 state.runtime.json
+
+## Evidence Package (Added in this round)
+- no-aider-used.txt: formal explanation for no aider.log
+- test-results.txt: 15/15 tests passed (rerunnable)
+- state-api-evidence.json: state schema and API integration evidence
+- event-log.txt: complete event log for Phase A construction
+- All evidence files created: 2026-04-27

@@ -1,0 +1,68 @@
+{
+    "task": "SIDELINE-AUTOMODE-CHECKPOINT-PAUSE-RESUME-PHASE-A",
+    "state_evidence": {
+        "checkpoint_json": {
+            "description": "Runtime mutable file, sole recovery truth",
+            "path": "automation/control/checkpoint.json",
+            "tracked_in_git": false,
+            "schema": {
+                "checkpoint_version": "1.0",
+                "timestamp": "ISO8601 UTC",
+                "round_id": "string",
+                "current_step": "string",
+                "last_completed_action": "string",
+                "pause_reason": "string",
+                "phase": "string",
+                "connection_failures": "int",
+                "recoverable": "boolean"
+            }
+        },
+        "state_runtime_json": {
+            "description": "Display snapshot, fallback for /start when checkpoint missing",
+            "path": "automation/control/state.runtime.json",
+            "schema_version": "2.0",
+            "relevant_fields": [
+                "current_round",
+                "last_completed_action",
+                "pause_reason",
+                "run_state"
+            ]
+        }
+    },
+    "api_evidence": {
+        "pause_state_manager": {
+            "methods": [
+                "set_pause(reason, checkpoint_data)",
+                "clear_pause()",
+                "load_checkpoint()",
+                "clear_checkpoint()",
+                "_save_checkpoint(data)",
+                "_read_pause_reason_from_source()",
+                "generate_pause_report(state)"
+            ],
+            "integration_point": "status_scheduler.py start_chain() calls load_checkpoint()"
+        },
+        "status_scheduler": {
+            "methods": [
+                "start_chain() -> Dict[str, Any]",
+                "check_can_start() -> Dict[str, Any]"
+            ],
+            "integration": "Calls pause_manager.load_checkpoint() and returns resume_from_step, last_completed_action, pause_reason"
+        },
+        "api_automode_loop": {
+            "attributes": [
+                "_connection_failures: int",
+                "_max_failures: int = 3"
+            ],
+            "integration": "When _connection_failures >= _max_failures, calls _pause_manager.set_pause(reason='paused_after_failure', checkpoint_data=...)"
+        },
+        "return_report": {
+            "methods": [
+                "generate_pause_report(state, pause_reason) -> str"
+            ],
+            "integration": "Accepts pause_reason parameter, outputs in ### pause_reason section and summary text"
+        }
+    },
+    "verification_date": "2026-04-27",
+    "verified_by": "automation/control/test_phase_a.py (15/15 tests passed)"
+}

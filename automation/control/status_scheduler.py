@@ -225,16 +225,54 @@ class StatusScheduler:
 
     def start_chain(self) -> Dict[str, Any]:
         """
-        /start semantics: resume chain from structured state.
+        /start semantics: resume chain from checkpoint first, fallback to state.runtime.json.
 
         Returns dict with:
         - started: bool
         - reason: str
         - resume_from_round: str
+        - resume_from_step: str or None
+        - last_completed_action: str or None
+        - pause_reason: str or None
         """
+        # 1. Load checkpoint FIRST (before clearing pause, to read recovery data)
+        checkpoint = self.pause_manager.load_checkpoint()
+        resume_from_step = None
+        last_completed_action = None
+        pause_reason = None
+        checkpoint_round = None
+
+        if checkpoint:
+            resume_from_step = checkpoint.get("current_step")
+            last_completed_action = checkpoint.get("last_completed_action")
+            pause_reason = checkpoint.get("pause_reason")
+            checkpoint_round = checkpoint.get("round_id")
+            logger.info(f"Loaded checkpoint: round={checkpoint_round}, step={resume_from_step}")
+        else:
+            # 2. Fallback to state.runtime.json if checkpoint missing
+            runtime_path = self.repo_root / "automation" / "control" / "state.runtime.json"
+            if runtime_path.exists():
+                try:
+                    import json
+                    with runtime_path.open("r", encoding="utf-8") as f:
+                        runtime = json.load(f)
+                        resume_from_step = runtime.get("last_completed_action")
+                        last_completed_action = runtime.get("last_completed_action")
+                        pause_reason = runtime.get("pause_reason")
+                        checkpoint_round = runtime.get("current_round")
+                        logger.info(f"Fallback to state.runtime.json: round={checkpoint_round}")
+                except Exception as e:
+                    logger.error(f"Failed to load state.runtime.json: {e}")
+
+        # 3. Clear pause and checkpoint AFTER loading data
+        if self.pause_manager.is_paused():
+            self.pause_manager.clear_pause()
+        if checkpoint:
+            self.pause_manager.clear_checkpoint()
+
+        # 4. NOW check if we can start (after clearing pause)
         can_start = self.check_can_start()
         if not can_start["can_start"]:
-            # Send rejection notice via Telegram
             self.sender.send_message(
                 f"🚫 */start rejected*\nReason: {can_start['reason']}"
             )
@@ -244,21 +282,22 @@ class StatusScheduler:
         current_round = manifest.get("current_round", "NONE")
         next_round = manifest.get("next_round_to_dispatch", "unknown")
 
-        # If paused, clear pause
-        if self.pause_manager.is_paused():
-            self.pause_manager.clear_pause()
+        # 5. Determine resume target
+        resume_target = checkpoint_round if checkpoint_round else (current_round if current_round != "NONE" else next_round)
 
-        # If current_round is NONE and next_round exists, dispatch it
-        resume_target = current_round if current_round != "NONE" else next_round
-
-        self.sender.send_message(
-            f"▶️ *Chain resumed*\nTarget: `{resume_target}`"
-        )
+        # 6. Send resume message with step info
+        msg = f"▶️ *Chain resumed*\nTarget: `{resume_target}`"
+        if resume_from_step:
+            msg += f"\nResuming from step: `{resume_from_step}`"
+        self.sender.send_message(msg)
 
         return {
             "started": True,
             "reason": "",
             "resume_from_round": resume_target,
+            "resume_from_step": resume_from_step,
+            "last_completed_action": last_completed_action,
+            "pause_reason": pause_reason,
         }
 
     def check_can_pause(self) -> Dict[str, Any]:

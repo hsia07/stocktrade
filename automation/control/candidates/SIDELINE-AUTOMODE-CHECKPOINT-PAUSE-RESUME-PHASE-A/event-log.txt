@@ -1,0 +1,77 @@
+EVENT LOG: SIDELINE-AUTOMODE-CHECKPOINT-PAUSE-RESUME-PHASE-A
+
+## Phase A Construction Events
+
+1. [2026-04-27] Phase A preflight analysis completed
+   - Designed checkpoint, pause/resume, failure counting mechanisms
+   - Confirmed usage_source_available = FALSE
+   - Split Phase A (constructable) and Phase B (blocked)
+
+2. [2026-04-27] Phase A construction completed
+   - Modified pause_state.py: added checkpoint save/load, pause reasons
+   - Modified api_automode_loop.py: added _connection_failures counter, failure check
+   - Created test_phase_a.py: 10 tests (initial)
+
+3. [2026-04-27] Phase A integration fix
+   - Modified status_scheduler.py: start_chain() now reads checkpoint first
+   - Modified pause_state.py: generate_pause_report() reads pause_reason from source
+   - Updated test_phase_a.py: 15 tests (enhanced with integration tests)
+
+4. [2026-04-27] Phase A candidate commits created
+   - Initial commit: ac92bed745205966490679440145d4f9959c9019
+   - Integration fix commit: 0b3a584bd0a57ae8ac40dcd30805c0c042f0da86
+   - Evidence package commit: 2f3daf9c47944220e7d8d9e0ed2942b7d7cb23af
+
+5. [2026-04-27] Evidence package created
+   - task.txt: objectives, Phase A/B boundary, constraints
+   - evidence.json: verification results
+   - report.json: summary, call chains, branch diff
+   - candidate.diff: branch-level diff vs canonical
+   - no-aider-used.txt: formal explanation for no aider.log
+   - test-results.txt: 15/15 tests passed
+   - state-api-evidence.json: state schema and API integration evidence
+   - event-log.txt: this file
+
+## Integration Verification Events
+
+6. [2026-04-27] Start/resume integration verified
+   - status_scheduler.py:239 loads checkpoint via load_checkpoint()
+   - Extracts: resume_from_step, last_completed_action, pause_reason
+   - Fallback to state.runtime.json if checkpoint missing
+   - Test: test_start_chain_reads_checkpoint PASSED
+
+7. [2026-04-27] Pause reason report integration verified
+   - pause_state.py:119 reads pause_reason from source
+   - pause_state.py:122 passes to generate_pause_report()
+   - return_report.py:74 outputs in ### pause_reason
+   - Test: test_pause_reason_in_return_report PASSED
+
+8. [2026-04-27] Repeated failure block integration verified
+   - api_automode_loop.py:98 _connection_failures = 0
+   - api_automode_loop.py:99 _max_failures = 3
+   - api_automode_loop.py:468 triggers paused_after_failure
+   - Test: test_failure_triggers_pause_after_failure PASSED
+
+## Test Execution Events
+
+9. [2026-04-27] All 15 tests passed
+   - TestPauseBoundary: 3 tests
+   - TestStartFromCheckpoint: 3 tests
+   - TestStartChainIntegration: 2 tests
+   - TestConnectionFailureBlocking: 2 tests
+   - TestPauseReasonReported: 5 tests
+   - TestManualUnlockOnly: 1 test
+
+## Merge-Pre Review Events
+
+10. [2026-04-27] Merge-pre rereview completed
+    - Branch diff contains only Phase A allowed files
+    - No forbidden files modified
+    - No Phase B usage features touched
+    - checkpoint.json instance not committed
+    - merge_decision_ready = TRUE
+
+## Notes
+- No Aider used: all changes made via native tools
+- No push/merge/dispatch executed (read-only mode for review)
+- Evidence package complete per governance requirements
