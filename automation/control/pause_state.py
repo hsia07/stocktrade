@@ -27,6 +27,7 @@ class PauseStateManager:
     # Pause reasons
     REASON_MANUAL = "manual_pause_requested"
     REASON_FAILURE = "paused_after_failure"
+    REASON_STALL = "auto_paused_by_stall"  # Phase A+ non-usage stall monitoring
     REASON_USAGE = "paused_by_usage"  # Phase B only, blocked
     
     def __init__(self, repo_root: Path = None):
@@ -151,6 +152,10 @@ class PauseStateManager:
                 if "=" in line:
                     k, v = line.split("=", 1)
                     info[k] = v
+            # Also load checkpoint for stall info
+            checkpoint = self.load_checkpoint()
+            if checkpoint:
+                info["checkpoint"] = checkpoint
             return info
         except Exception:
             return {"paused": True, "reason": "unknown"}

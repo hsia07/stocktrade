@@ -265,7 +265,11 @@ class StatusScheduler:
                     logger.error(f"Failed to load state.runtime.json: {e}")
 
         # 3. Clear pause and checkpoint AFTER loading data
+        # Handle auto_paused_by_stall: only manual /start can clear
         if self.pause_manager.is_paused():
+            current_pause = self.pause_manager.get_pause_info()
+            if current_pause and current_pause.get("reason") == "auto_paused_by_stall":
+                logger.info("Manual /start received for auto_paused_by_stall - clearing")
             self.pause_manager.clear_pause()
         if checkpoint:
             self.pause_manager.clear_checkpoint()
@@ -289,6 +293,8 @@ class StatusScheduler:
         msg = f"▶️ *Chain resumed*\nTarget: `{resume_target}`"
         if resume_from_step:
             msg += f"\nResuming from step: `{resume_from_step}`"
+        if pause_reason == "auto_paused_by_stall":
+            msg += f"\nRecovered from stall after {checkpoint.get('stall_duration_seconds', 0):.1f}s"
         self.sender.send_message(msg)
 
         return {
