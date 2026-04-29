@@ -1,0 +1,54 @@
+{
+  "task": "GOVERNANCE-P0-PLUS-TRADING-LOGIC-RISK-REGIME-PATCHES",
+  "status": "COMPLETED",
+  "commit": "PENDING",
+  "timestamp": "2026-04-29T11:30:00+08:00",
+  "scope": {
+    "type": "governance candidate freeze",
+    "focus": "P0+ trading logic, risk control, regime patches"
+  },
+  "components": {
+    "canonical_guard": {
+      "pre_commit": ".githooks/pre-commit (blocks single-parent commits to canonical)",
+      "pre_push": ".githooks/pre-push (blocks unauthorized pushes to canonical)",
+      "exceptions": "merge commit, signed rollback, force-with-lease with authorization"
+    },
+    "evidence_gate": {
+      "validator": "automation/control/evidence_checker.py",
+      "required_files": ["task.txt", "evidence.json", "report.json", "candidate.diff", "test-results.txt"],
+      "optional_files": ["no-aider-used.txt", "event-log.txt"]
+    },
+    "global_fail_rules": {
+      "count": 7,
+      "rules": [
+        "Rule 1: future leak / decision_ts < tradable_ts => FAIL",
+        "Rule 2: uncalibrated confidence => BLOCK trading approval",
+        "Rule 3: survivor-only universe / PRI-TRI mix => NO upgrade",
+        "Rule 4: stale borrow/margin/shortable => NO trade",
+        "Rule 5: expected vs actual fill/slippage deviation => MUST downgrade",
+        "Rule 6: regime uncertainty too high => reduce-size/wait/no-trade only",
+        "Rule 7: island-type parameters without plateau => mark overfit, NO upgrade"
+      ]
+    },
+    "round_patch_mapping": {
+      "groups": 14,
+      "covered_rounds": ["R031", "R041", "R043-R046", "R047-R050", "R051", "R053", "R057", "R064", "R068", "R070", "R074", "R077", "R078", "R083", "R091", "R110", "R117", "R153"],
+      "formula_patches": ["net_edge", "qty", "regime_uncertainty", "release_conditions"]
+    },
+    "legal_priority": "02 > 03 > 04 > 01 (corrected)",
+    "r070_mapping": "portfolio risk, combination exposure, single target limit, continuous idle auto-shutdown (auxiliary), borrow/margin matrix",
+    "phase_b_status": "blocked (usage_source_available=FALSE)"
+  },
+  "tests": {
+    "validator_smoke_test": "PASSED (evidence_checker.py syntax valid)",
+    "hook_syntax": "PASSED (pre-commit/pre-push scripts valid)"
+  },
+  "constraints_verified": {
+    "no_trading_core_modification": true,
+    "no_server_modification": true,
+    "no_r026_dispatch": true,
+    "phase_b_blocked": true,
+    "no_push_merge_promote": true,
+    "legal_priority_corrected": true
+  }
+}

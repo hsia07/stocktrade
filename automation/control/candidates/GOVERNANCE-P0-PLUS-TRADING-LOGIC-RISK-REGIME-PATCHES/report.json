@@ -1,0 +1,64 @@
+{
+  "task": "GOVERNANCE-P0-PLUS-TRADING-LOGIC-RISK-REGIME-PATCHES",
+  "status": "COMPLETED",
+  "summary": "Successfully froze governance P0+ patches: canonical guards, evidence gate, global FAIL/BLOCK rules, round patch mapping (14 groups), formula governance, legal priority correction, R070 mapping correction.",
+  "implementation": {
+    "canonical_guards": {
+      "pre_commit": "Blocks single-parent commits to canonical (main, work/canonical-*). Allows merge commits. Exceptions: signed merge, signed rollback, force-with-lease with authorization.",
+      "pre_push": "Blocks unauthorized pushes to canonical. Allows merge commits (2+ parents). Exceptions: signed merge, signed rollback, force-with-lease with authorization."
+    },
+    "evidence_gate": {
+      "validator": "automation/control/evidence_checker.py",
+      "checks": "task.txt, evidence.json, report.json, candidate.diff, test-results.txt, no-aider-used.txt (if no aider.log)"
+    },
+    "global_fail_rules": {
+      "count": 7,
+      "rules": [
+        "Rule 1: future leak (decision_ts < tradable_ts) => FAIL",
+        "Rule 2: uncalibrated confidence => BLOCK trading approval",
+        "Rule 3: survivor-only universe / PRI-TRI mix / inconsistency => NO upgrade",
+        "Rule 4: stale borrow/margin/shortable => NO trade",
+        "Rule 5: expected vs actual fill/slippage deviation => MUST downgrade or recalibrate",
+        "Rule 6: regime uncertainty too high => reduce-size / wait-confirmation / no-trade only",
+        "Rule 7: island-type optimal parameters without plateau/stability => mark overfit, NO upgrade"
+      ],
+      "mapping": "Rules mapped to affected rounds in round_patch_mapping.md"
+    },
+    "round_patch_mapping": {
+      "groups": 14,
+      "newly_added": ["R031", "R041/R074/R091", "R043-R046/R064", "R047-R050/R078/R117", "R047/R053/R070/R153", "R051", "R057/R064/R077/R110", "R068", "R074/R083/R117"],
+      "formula_patches": [
+        "net_edge = p̂ * Ŵ - (1-p̂) * L̂ - C - S - B - T",
+        "qty = min(trade_budget/risk_unit, adv_cap, exposure_cap, margin_cap, regime_cap)",
+        "regime uncertainty: entropy or equivalent metric <= threshold",
+        "release conditions: net_edge>0, fill_prob>=threshold, regime_uncertainty<=threshold, no veto, market reality pass, risk final gate pass"
+      ]
+    },
+    "legal_priority": {
+      "corrected": "02 > 03 > 04 > 01",
+      "notes": "Law 04 is enhancement, not replacement for 02/03. 0416 integration gap acknowledged."
+    },
+    "r070_mapping": {
+      "corrected": true,
+      "core_requirements": ["portfolio risk", "combination total exposure", "single target position limits", "continuous idle auto-shutdown (auxiliary monitoring)", "borrow/margin matrix"],
+      "removed": "idle auto-shutdown as core substitute for portfolio risk"
+    },
+    "phase_b_status": {
+      "blocked": true,
+      "reason": "usage_source_available=FALSE",
+      "blocked_features": ["usage auto-save checkpoint", "usage auto-pause", "waiting for usage reset", "periodic usage check", "usage auto-resume"]
+    }
+  },
+  "evidence_package": {
+    "task.txt": "present",
+    "evidence.json": "present",
+    "report.json": "present",
+    "candidate.diff": "present",
+    "no-aider-used.txt": "present",
+    "test-results.txt": "present (validator smoke test)"
+  },
+  "commit": "PENDING (will be created after staging)",
+  "branch": "work/candidate-governance-p0-plus-trading-logic-risk-regime-patches-001",
+  "canonical_head": "a511c24c74fe25cb0a6c1ad4a16d1a3fb5b1499e",
+  "tests_pass": true
+}

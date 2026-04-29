@@ -1,0 +1,14 @@
+Validator Smoke Test Results
+============================
+
+1. evidence_checker.py syntax check: PASSED
+2. pre-commit hook syntax: PASSED
+3. pre-push hook syntax: PASSED
+4. global_fail_rules.md structure: PASSED (7 rules)
+5. round_patch_mapping.md structure: PASSED (14 groups)
+6. Legal priority check: PASSED (02 > 03 > 04 > 01)
+7. R070 mapping check: PASSED (portfolio risk corrected)
+8. Phase B blocked check: PASSED (usage_source_available=FALSE)
+
+All governance patches frozen successfully.
+Ready for immutable candidate commit.

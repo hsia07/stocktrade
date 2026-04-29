@@ -1,0 +1,36 @@
+GOVERNANCE-P0-PLUS-TRADING-LOGIC-RISK-REGIME-PATCHES
+
+Task: Governance P0+ trading logic, risk control, regime patches freeze
+Type: governance candidate freeze
+Status: COMPLETED
+
+Scope:
+- Canonical guard (pre-commit: direct commit block, pre-push: direct push block)
+- Merge-pre evidence completeness gate (evidence_checker.py)
+- Global FAIL/BLOCK rules (7 rules for trading logic)
+- Round patch mapping (14 groups, R031-R153)
+- Formula governance patches (net_edge, qty, regime uncertainty, release conditions)
+- Legal priority: 02 > 03 > 04 > 01 (corrected)
+- R070 mapping corrected (portfolio risk, not idle shutdown substitute)
+- Phase B usage chain remains blocked (usage_source_available=FALSE)
+
+Modified files:
+- .githooks/pre-commit (canonical direct commit guard)
+- .githooks/pre-push (canonical direct push guard)
+- automation/control/evidence_checker.py (evidence validator)
+- _governance/audit/canonical_guard_specification.md (spec)
+- _governance/audit/merge_pre_evidence_gate.md (spec)
+- _governance/audit/global_fail_rules.md (7 FAIL/BLOCK rules)
+- _governance/audit/round_patch_mapping.md (14 groups, formula patches)
+
+Constraints:
+- No trading core modification
+- No server_v2.py/server.py/index_v2.html modification
+- No R026 dispatch
+- Phase B usage chain remains blocked
+- No push/merge/promote/PR
+- Legal priority: 02 > 03 > 04 > 01
+
+Canonical HEAD: a511c24c74fe25cb0a6c1ad4a16d1a3fb5b1499e
+Candidate branch: work/candidate-governance-p0-plus-trading-logic-risk-regime-patches-001
+Task completed: All governance patches frozen in immutable candidate.
