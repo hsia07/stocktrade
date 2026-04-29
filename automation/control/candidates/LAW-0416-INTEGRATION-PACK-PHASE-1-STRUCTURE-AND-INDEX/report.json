@@ -1,0 +1,59 @@
+{
+  "task_id": "LAW-0416-INTEGRATION-PACK-PHASE-1-CANDIDATE-CONTAMINATION-CLEANUP-REBUILD",
+  "reply_id": "law-0416-integration-pack-phase-1-candidate-contamination-cleanup-rebuild-2026-04-29-001",
+  "task_type": "LAW-0416-INTEGRATION-PACK-PHASE-1-CANDIDATE-CONTAMINATION-CLEANUP-REBUILD",
+  "status": "completed",
+  "formal_status_code": "candidate_ready_awaiting_manual_review",
+  "branch": "work/candidate-law-0416-phase-1-structure-index",
+  "files_modified": [
+    "_governance/law/README.md",
+    "_governance/law/00_入口與使用規則/01_法典優先順序.md",
+    "_governance/law/00_入口與使用規則/02_OpenCode讀取順序.md",
+    "_governance/law/CURRENT_GOVERNANCE_BASELINE.md"
+  ],
+  "files_added": [
+    "automation/control/candidates/LAW-0416-INTEGRATION-PACK-PHASE-1-STRUCTURE-AND-INDEX/task.txt",
+    "automation/control/candidates/LAW-0416-INTEGRATION-PACK-PHASE-1-STRUCTURE-AND-INDEX/evidence.json",
+    "automation/control/candidates/LAW-0416-INTEGRATION-PACK-PHASE-1-STRUCTURE-AND-INDEX/report.json",
+    "automation/control/candidates/LAW-0416-INTEGRATION-PACK-PHASE-1-STRUCTURE-AND-INDEX/candidate.diff",
+    "automation/control/candidates/LAW-0416-INTEGRATION-PACK-PHASE-1-STRUCTURE-AND-INDEX/no-aider-used.txt"
+  ],
+  "removed_out_of_scope_files": [
+    "_governance/audit/hooks/pre-commit",
+    "_governance/audit/hooks/pre-push",
+    "automation/runtime/queue.db"
+  ],
+  "legal_priority": "02 > 03 > 04 > 01",
+  "legal_priority_written": true,
+  "law_04_not_full_replacement_written": true,
+  "readable_not_source_of_truth_written": true,
+  "current_governance_baseline_written": true,
+  "phase_2_phase_3_followup_noted": true,
+  "test_results": {
+    "total_tests": 0,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 0,
+    "note": "Phase 1 structure work only - no code tests required"
+  },
+  "validator_results": {
+    "legal_priority_check": "PASS",
+    "law_04_position_check": "PASS - explicitly written that 04 is NOT full replacement of 02/03",
+    "readable_position_check": "PASS - explicitly written that readable/ cannot override formal sources",
+    "baseline_created": "PASS - CURRENT_GOVERNANCE_BASELINE.md created with priority, patches, gaps, follow-up",
+    "no_forbidden_files": "PASS - removed _governance/audit/hooks/* and automation/runtime/queue.db",
+    "no_core_modifications": "PASS",
+    "no_trading_core_touched": "PASS",
+    "no_r026_dispatched": "PASS"
+  },
+  "evidence_package_complete": true,
+  "law_compliance": "04",
+  "timestamp": "2026-04-29T03:05:00+08:00",
+  "summary": "Phase 1 candidate contamination cleanup and rebuild completed successfully. Removed out-of-scope files (_governance/audit/hooks/pre-commit, _governance/audit/hooks/pre-push, automation/runtime/queue.db) from candidate. Rebuilt clean Phase 1 structure with only allowed files: README.md, 01_法典優先順序.md, 02_OpenCode讀取順序.md, CURRENT_GOVERNANCE_BASELINE.md. All documents explicitly state: (1) legal priority = 02 > 03 > 04 > 01, (2) Law 04 is NOT full replacement of 02/03, (3) readable/ cannot override formal sources. Evidence package complete with all 5 required files. New immutable candidate commit created.",
+  "implementation_details": {
+    "cleanup": "Removed 3 out-of-scope files from candidate branch",
+    "rebuild": "Recreated Phase 1 structure documents from scratch",
+    "files_in_branch_diff": "Only allowed files present in branch diff vs canonical",
+    "evidence_package": "Complete with task.txt, evidence.json, report.json, candidate.diff, no-aider-used.txt"
+  }
+}

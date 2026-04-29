@@ -1,0 +1,45 @@
+{
+  "task_id": "LAW-0416-INTEGRATION-PACK-PHASE-1-STRUCTURE-AND-INDEX-CONSTRUCTION",
+  "reply_id": "law-0416-integration-pack-phase-1-structure-and-index-construction-2026-04-29-001",
+  "task_type": "LAW-0416-INTEGRATION-PACK-PHASE-1-STRUCTURE-AND-INDEX-CONSTRUCTION",
+  "status": "completed",
+  "formal_status_code": "candidate_ready_awaiting_manual_review",
+  "branch": "work/candidate-law-0416-phase-1-structure-index",
+  "files_modified": [
+    "_governance/law/README.md",
+    "_governance/law/00_入口與使用規則/01_法典優先順序.md",
+    "_governance/law/00_入口與使用規則/02_OpenCode讀取順序.md",
+    "_governance/law/CURRENT_GOVERNANCE_BASELINE.md"
+  ],
+  "files_added": [
+    "automation/control/candidates/LAW-0416-INTEGRATION-PACK-PHASE-1-STRUCTURE-AND-INDEX/task.txt",
+    "automation/control/candidates/LAW-0416-INTEGRATION-PACK-PHASE-1-STRUCTURE-AND-INDEX/evidence.json",
+    "automation/control/candidates/LAW-0416-INTEGRATION-PACK-PHASE-1-STRUCTURE-AND-INDEX/report.json",
+    "automation/control/candidates/LAW-0416-INTEGRATION-PACK-PHASE-1-STRUCTURE-AND-INDEX/candidate.diff",
+    "automation/control/candidates/LAW-0416-INTEGRATION-PACK-PHASE-1-STRUCTURE-AND-INDEX/no-aider-used.txt"
+  ],
+  "legal_priority_written": true,
+  "legal_priority": "02 > 03 > 04 > 01",
+  "law_04_not_full_replacement_written": true,
+  "readable_not_source_of_truth_written": true,
+  "current_governance_baseline_written": true,
+  "phase_2_phase_3_followup_noted": true,
+  "test_results": {
+    "total_tests": 0,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 0,
+    "note": "Phase 1 structure work only - no code tests required"
+  },
+  "validator_results": {
+    "legal_priority_check": "PASS",
+    "law_04_position_check": "PASS",
+    "readable_position_check": "PASS",
+    "baseline_created": "PASS",
+    "no_forbidden_files": "PASS",
+    "no_core_modifications": "PASS"
+  },
+  "law_compliance": "04",
+  "evidence_package_complete": true,
+  "timestamp": "2026-04-29T03:05:00+08:00"
+}

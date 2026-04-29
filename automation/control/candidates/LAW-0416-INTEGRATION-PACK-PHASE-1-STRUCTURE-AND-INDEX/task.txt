@@ -1,0 +1,62 @@
+任務：LAW-0416-INTEGRATION-PACK-PHASE-1-STRUCTURE-AND-INDEX-CONSTRUCTION
+
+目標：
+依照已完成的 gap audit，先做 0416 整合法典補正的 Phase 1「結構與索引施工」。
+本輪只建立入口、優先序、讀取順序與 baseline 文件；不得假裝已完成 02/03/04 逐段整合。
+
+約束：
+- 只允許修改 _governance/law/ 結構與入口文件
+- 不得修改 trading core
+- 不得修改 server_v2.py / server.py / index_v2.html
+- 不得修改 manifests/*
+- 不得修改 AUTO_MODE_ACTIVATION_LOCK
+- 不得 dispatch R026
+- 不得修改 02/03/04 正文實質內容
+- 不得把 04 寫成完整取代 02/03
+- 本輪不做 hooks / validator 實作，只做 law pack Phase 1 結構施工
+
+允許修改/新增：
+- _governance/law/README.md
+- _governance/law/00_入口與使用規則/01_法典優先順序.md
+- _governance/law/00_入口與使用規則/02_OpenCode讀取順序.md
+- _governance/law/CURRENT_GOVERNANCE_BASELINE.md
+- automation/control/candidates/LAW-0416-INTEGRATION-PACK-PHASE-1-STRUCTURE-AND-INDEX/* evidence package
+
+必做：
+1. 建立/更新主索引 README.md，至少明列：
+   - 01 白話總覽定位
+   - 02 母表第一順位
+   - 03 逐輪施行細則第二順位
+   - 04 補強版第三順位
+   - readable/ 與 archive/ 定位
+2. 建立 01_法典優先順序.md，明寫：
+   - 02 > 03 > 04 > 01
+   - 04 不得解釋為完整取代 02/03
+   - 衝突時採較嚴格、較不可繞過、較可驗收、較可追責之解釋
+3. 建立 02_OpenCode讀取順序.md，明寫：
+   - candidate 前整輪重檢應先讀哪些法源
+   - merge 前 repo 全量重審應先讀哪些法源
+   - readable/ 只能輔助閱讀，不得凌駕正式法源
+4. 建立 CURRENT_GOVERNANCE_BASELINE.md，至少包含：
+   - 當前正式法源優先序
+   - 現存治理補丁已落地項
+   - 0416 整合法典仍未完成之缺口摘要
+   - 後續 Phase 2 / Phase 3 施工方向摘要
+5. 建立 evidence package：
+   - task.txt
+   - evidence.json
+   - report.json
+   - candidate.diff
+   - no-aider-used.txt
+
+驗收條件：
+- legal_priority = 02 > 03 > 04 > 01
+- 明確寫出 04 不是完整取代 02/03
+- 明確寫出 readable/ 不得凌駕正式法源
+- 明確寫出 CURRENT_GOVERNANCE_BASELINE
+- 不改 02/03/04 正文內容
+- 不碰 trading core
+- 不 dispatch R026
+- evidence package 完整
+
+REPLY_ID: law-0416-integration-pack-phase-1-structure-and-index-construction-2026-04-29-001
