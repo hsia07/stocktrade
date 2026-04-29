@@ -1,6 +1,6 @@
 {
     "task": "SIDELINE-AUTOMODE-CHECKPOINT-PAUSE-RESUME-PHASE-A",
-    "candidate_commit": "0b3a584bd0a57ae8ac40dcd30805c0c042f0da86",
+    "candidate_commit": "2f3daf9c47944220e7d8d9e0ed2942b7d7cb23af",
     "branch_current": "work/candidate-sideline-automode-checkpoint-pause-resume-phase-a-001",
     "candidate_branch": "work/candidate-sideline-automode-checkpoint-pause-resume-phase-a-001",
     "canonical_head": "6b6cbe41a516e73dedd7017cd4c1ce7719025014",
@@ -16,6 +16,21 @@
     "dispatch_r026_attempted": false,
     "merge_decision_ready": true,
     "evidence_package_created": true,
+    "evidence_files": [
+        "task.txt",
+        "evidence.json",
+        "report.json",
+        "candidate.diff",
+        "no-aider-used.txt",
+        "test-results.txt",
+        "state-api-evidence.json",
+        "event-log.txt"
+    ],
+    "aider_log_present": false,
+    "no_aider_used_explanation_present": true,
+    "rerunnable_test_result_present": true,
+    "state_api_evidence_present": true,
+    "event_log_present": true,
     "verification_date": "2026-04-27",
-    "notes": "Phase A integration complete. All features verified via 15 tests. Evidence package added for merge-pre rereview."
+    "notes": "Phase A integration complete. All features verified via 15 tests. Evidence package completed with all required files (no-aider-used.txt, test-results.txt, state-api-evidence.json, event-log.txt)."
 }

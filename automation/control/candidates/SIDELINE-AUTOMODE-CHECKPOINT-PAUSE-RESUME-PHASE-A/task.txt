@@ -47,3 +47,10 @@ Task: SIDELINE-AUTOMODE-CHECKPOINT-PAUSE-RESUME-PHASE-A
 - checkpoint.json 为 runtime mutable file
 - 实例不得 commit 进 repo
 - 作为 sole recovery truth，优先于 state.runtime.json
+
+## Evidence Package (Added in this round)
+- no-aider-used.txt: formal explanation for no aider.log
+- test-results.txt: 15/15 tests passed (rerunnable)
+- state-api-evidence.json: state schema and API integration evidence
+- event-log.txt: complete event log for Phase A construction
+- All evidence files created: 2026-04-27

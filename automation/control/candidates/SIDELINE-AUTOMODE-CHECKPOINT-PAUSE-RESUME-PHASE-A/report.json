@@ -3,10 +3,10 @@
     "formal_status_code": "candidate_ready_awaiting_manual_review",
     "status": "completed",
     "branch_current": "work/candidate-sideline-automode-checkpoint-pause-resume-phase-a-001",
-    "candidate_commit": "0b3a584bd0a57ae8ac40dcd30805c0c042f0da86",
+    "candidate_commit": "2f3daf9c47944220e7d8d9e0ed2942b7d7cb23af",
     "canonical_head": "6b6cbe41a516e73dedd7017cd4c1ce7719025014",
     "tests_passed": "15/15",
-    "summary": "Phase A checkpoint/pause/resume integration completed. All features verified.",
+    "summary": "Phase A checkpoint/pause/resume integration completed. All features verified. Evidence package fully completed.",
     "main_call_chain": {
         "start_resume": {
             "description": "/start reads checkpoint and resumes from step",
@@ -44,6 +44,14 @@
     },
     "branch_diff": {
         "files": [
+            "A\tautomation/control/candidates/SIDELINE-AUTOMODE-CHECKPOINT-PAUSE-RESUME-PHASE-A/candidate.diff",
+            "A\tautomation/control/candidates/SIDELINE-AUTOMODE-CHECKPOINT-PAUSE-RESUME-PHASE-A/evidence.json",
+            "A\tautomation/control/candidates/SIDELINE-AUTOMODE-CHECKPOINT-PAUSE-RESUME-PHASE-A/report.json",
+            "A\tautomation/control/candidates/SIDELINE-AUTOMODE-CHECKPOINT-PAUSE-RESUME-PHASE-A/task.txt",
+            "A\tautomation/control/candidates/SIDELINE-AUTOMODE-CHECKPOINT-PAUSE-RESUME-PHASE-A/no-aider-used.txt",
+            "A\tautomation/control/candidates/SIDELINE-AUTOMODE-CHECKPOINT-PAUSE-RESUME-PHASE-A/test-results.txt",
+            "A\tautomation/control/candidates/SIDELINE-AUTOMODE-CHECKPOINT-PAUSE-RESUME-PHASE-A/state-api-evidence.json",
+            "A\tautomation/control/candidates/SIDELINE-AUTOMODE-CHECKPOINT-PAUSE-RESUME-PHASE-A/event-log.txt",
             "M\tautomation/control/pause_state.py",
             "M\tautomation/control/status_scheduler.py",
             "A\tautomation/control/test_phase_a.py",
@@ -52,12 +60,31 @@
         "allowed_files_only": true,
         "forbidden_files_present": false
     },
+    "evidence_package": {
+        "present": true,
+        "files": [
+            "task.txt",
+            "evidence.json",
+            "report.json",
+            "candidate.diff",
+            "no-aider-used.txt",
+            "test-results.txt",
+            "state-api-evidence.json",
+            "event-log.txt"
+        ],
+        "aider_log_present": false,
+        "no_aider_used_explanation_present": true,
+        "rerunnable_test_result_present": true,
+        "state_api_evidence_present": true,
+        "event_log_present": true
+    },
     "verification": {
         "start_resume_integration_proven": true,
         "pause_reason_report_integration_proven": true,
         "repeated_failure_block_integration_proven": true,
         "phase_b_usage_features_touched": false,
         "checkpoint_instance_committed": false,
-        "tests_passed": "15/15"
+        "tests_passed": "15/15",
+        "merge_decision_ready": true
     }
 }

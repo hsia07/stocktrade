@@ -1,0 +1,22 @@
+NO-AIDER-USED: Formal Explanation
+
+## Fact
+This round (SIDELINE-AUTOMODE-CHECKPOINT-PAUSE-RESUME-PHASE-A) did NOT use Aider for any code modifications, testing, or evidence generation.
+
+## Reason
+1. The task was executed in a local Windows environment using direct file editing (via write/edit tools) and PowerShell/bash commands.
+2. No Aider session was initiated during the entire Phase A construction, testing, or evidence packaging process.
+3. All code changes were made manually via the available tools (write, edit, bash) without Aider assistance.
+
+## Consequence
+- No aider.log is produced for this round.
+- This is a valid operational mode per project governance: Aider is optional, not mandatory.
+- All evidence files are generated via native tools and committed directly.
+
+## Verification
+- Check commit history: no Aider-related commits or logs.
+- Check working tree: no aider.log file exists.
+- Check evidence package: no aider.log included.
+
+Date: 2026-04-27
+Task: SIDELINE-AUTOMODE-CHECKPOINT-PAUSE-RESUME-PHASE-A-MISSING-EVIDENCE-CLOSURE-AND-REREVIEW
