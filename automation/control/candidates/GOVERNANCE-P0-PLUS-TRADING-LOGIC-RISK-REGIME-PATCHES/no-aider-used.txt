@@ -1,0 +1,9 @@
+No aider used in this task.
+
+Task: GOVERNANCE-P0-PLUS-TRADING-LOGIC-RISK-REGIME-PATCHES
+Implementation: Manual coding + git commands
+AI Assistant: opencode/big-pickle
+Tools used: write, bash (git), git
+Aider: NOT USED
+
+Verified: No aider-related files in evidence package.
