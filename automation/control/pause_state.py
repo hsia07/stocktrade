@@ -115,10 +115,30 @@ class PauseStateManager:
         if state is None:
             state = scheduler.build_state()
 
+        # Read pause_reason from PAUSE.flag or checkpoint
+        pause_reason = self._read_pause_reason_from_source()
+
         generator = ReturnReportGenerator(self.repo_root)
-        report = generator.generate_pause_report(state, pause_reason="manual_pause_requested")
+        report = generator.generate_pause_report(state, pause_reason=pause_reason)
         generator.write_report(report, filename="LATEST_PAUSE_RETURN_TO_CHATGPT.txt")
         return report
+
+    def _read_pause_reason_from_source(self) -> str:
+        """Read pause_reason from PAUSE.flag or checkpoint."""
+        # Try PAUSE.flag first
+        if self.is_paused():
+            try:
+                text = self.pause_flag.read_text(encoding="utf-8")
+                for line in text.strip().split("\n"):
+                    if line.startswith("reason="):
+                        return line.split("=", 1)[1]
+            except Exception:
+                pass
+        # Try checkpoint
+        checkpoint = self.load_checkpoint()
+        if checkpoint:
+            return checkpoint.get("pause_reason", "manual_pause_requested")
+        return "manual_pause_requested"
 
     def get_pause_info(self) -> Optional[dict]:
         """Return pause info if paused, else None."""
