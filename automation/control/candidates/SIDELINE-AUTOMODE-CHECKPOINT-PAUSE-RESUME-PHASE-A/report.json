@@ -1,0 +1,63 @@
+{
+    "task": "SIDELINE-AUTOMODE-CHECKPOINT-PAUSE-RESUME-PHASE-A",
+    "formal_status_code": "candidate_ready_awaiting_manual_review",
+    "status": "completed",
+    "branch_current": "work/candidate-sideline-automode-checkpoint-pause-resume-phase-a-001",
+    "candidate_commit": "0b3a584bd0a57ae8ac40dcd30805c0c042f0da86",
+    "canonical_head": "6b6cbe41a516e73dedd7017cd4c1ce7719025014",
+    "tests_passed": "15/15",
+    "summary": "Phase A checkpoint/pause/resume integration completed. All features verified.",
+    "main_call_chain": {
+        "start_resume": {
+            "description": "/start reads checkpoint and resumes from step",
+            "call_chain": [
+                "status_scheduler.py:239 - checkpoint = self.pause_manager.load_checkpoint()",
+                "status_scheduler.py:242-248 - extracts resume_from_step, last_completed_action, pause_reason, checkpoint_round",
+                "status_scheduler.py:256-263 - fallback to state.runtime.json if checkpoint missing",
+                "status_scheduler.py:269 - clears pause after loading data",
+                "status_scheduler.py:300 - returns resume_from_step, last_completed_action, pause_reason"
+            ],
+            "proven": true
+        },
+        "pause_reason_report": {
+            "description": "pause_reason flows into return_report",
+            "call_chain": [
+                "pause_state.py:118-119 - pause_reason = self._read_pause_reason_from_source()",
+                "pause_state.py:122 - report = generator.generate_pause_report(state, pause_reason=pause_reason)",
+                "return_report.py:29 - accepts pause_reason parameter",
+                "return_report.py:74 - outputs pause_reason in report",
+                "return_report.py:102 - includes pause_reason in summary text"
+            ],
+            "proven": true
+        },
+        "repeated_failure_block": {
+            "description": "connection_failures >= 3 triggers paused_after_failure",
+            "call_chain": [
+                "api_automode_loop.py:98 - self._connection_failures = 0",
+                "api_automode_loop.py:99 - self._max_failures = 3",
+                "api_automode_loop.py:468 - if self._connection_failures >= self._max_failures:",
+                "api_automode_loop.py:477 - \"pause_reason\": \"paused_after_failure\"",
+                "api_automode_loop.py:481 - self._pause_manager.set_pause(reason=\"paused_after_failure\", checkpoint_data=...)"
+            ],
+            "proven": true
+        }
+    },
+    "branch_diff": {
+        "files": [
+            "M\tautomation/control/pause_state.py",
+            "M\tautomation/control/status_scheduler.py",
+            "A\tautomation/control/test_phase_a.py",
+            "M\tautomation/runtime/api_automode_loop.py"
+        ],
+        "allowed_files_only": true,
+        "forbidden_files_present": false
+    },
+    "verification": {
+        "start_resume_integration_proven": true,
+        "pause_reason_report_integration_proven": true,
+        "repeated_failure_block_integration_proven": true,
+        "phase_b_usage_features_touched": false,
+        "checkpoint_instance_committed": false,
+        "tests_passed": "15/15"
+    }
+}

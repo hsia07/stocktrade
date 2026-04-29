@@ -1,0 +1,21 @@
+{
+    "task": "SIDELINE-AUTOMODE-CHECKPOINT-PAUSE-RESUME-PHASE-A",
+    "candidate_commit": "0b3a584bd0a57ae8ac40dcd30805c0c042f0da86",
+    "branch_current": "work/candidate-sideline-automode-checkpoint-pause-resume-phase-a-001",
+    "candidate_branch": "work/candidate-sideline-automode-checkpoint-pause-resume-phase-a-001",
+    "canonical_head": "6b6cbe41a516e73dedd7017cd4c1ce7719025014",
+    "tests_passed": "15/15",
+    "start_resume_integration_proven": true,
+    "pause_reason_report_integration_proven": true,
+    "repeated_failure_block_integration_proven": true,
+    "phase_b_usage_features_touched": false,
+    "checkpoint_instance_committed": false,
+    "contains_forbidden_files": false,
+    "push_executed": false,
+    "merge_executed": false,
+    "dispatch_r026_attempted": false,
+    "merge_decision_ready": true,
+    "evidence_package_created": true,
+    "verification_date": "2026-04-27",
+    "notes": "Phase A integration complete. All features verified via 15 tests. Evidence package added for merge-pre rereview."
+}
