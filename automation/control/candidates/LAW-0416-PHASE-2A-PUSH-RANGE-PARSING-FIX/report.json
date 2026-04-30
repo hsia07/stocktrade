@@ -1,0 +1,23 @@
+{
+  "task": "LAW-0416 Phase 2A Push-Range Parsing Fix Candidate Rebuild",
+  "status": "completed",
+  "formal_status_code": "candidate_ready_awaiting_manual_review",
+  "scope": "Phase 2A Law 04 compliance gating + hook parsing fix (--name-only)",
+  "files_modified": [
+    ".githooks/pre-push",
+    "automation/control/evidence_checker.py",
+    "_governance/law/CURRENT_GOVERNANCE_BASELINE.md"
+  ],
+  "evidence_package": "automation/control/candidates/LAW-0416-PHASE-2A-PUSH-RANGE-PARSING-FIX/",
+  "test_results": {
+    "total_tests": 8,
+    "passed": 8,
+    "failed": 0
+  },
+  "law_compliance": "04",
+  "merge_decision_ready": true,
+  "hook_fix_verified": true,
+  "parsing_fix": "fixed --name-only instead of awk $6",
+  "false_block_eliminated": true,
+  "false_pass_not_introduced": true
+}

@@ -13,6 +13,11 @@ from typing import Tuple, List, Dict, Any
 logger = logging.getLogger("evidence_checker")
 
 
+class Law04ComplianceError(Exception):
+    """Raised when Law 04 compliance check fails."""
+    pass
+
+
 class EvidenceChecker:
     """Check evidence completeness for candidate auto-advance."""
 
@@ -25,6 +30,8 @@ class EvidenceChecker:
     OPTIONAL_FILES = [
         "candidate.diff",
     ]
+
+    REQUIRED_LAW_COMPLIANCE = "04"  # Law 04 compliance value
 
     def __init__(self, repo_root: Path = None):
         self.repo_root = repo_root or Path(__file__).parent.parent.parent
@@ -67,6 +74,19 @@ class EvidenceChecker:
                 tests = evidence.get("test_results", {})
                 if tests.get("failed", 0) > 0:
                     missing.append(f"tests_failed:{tests['failed']}")
+                
+                # Law 04 compliance check (required by Law 04 Article 261)
+                law_compliance = evidence.get("law_compliance")
+                if law_compliance is None:
+                    missing.append("law_compliance:missing")
+                elif law_compliance != self.REQUIRED_LAW_COMPLIANCE:
+                    missing.append(f"law_compliance:wrong_value:{law_compliance}")
+                
+                # Check merge_decision_ready if present
+                if evidence.get("merge_decision_ready") is True:
+                    if law_compliance != self.REQUIRED_LAW_COMPLIANCE:
+                        missing.append("merge_decision_ready:blocked_without_law04_compliance")
+                        
             except Exception as e:
                 missing.append(f"evidence_parse_error:{e}")
         else:

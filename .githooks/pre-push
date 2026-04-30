@@ -16,13 +16,57 @@ while read local_ref local_sha remote_ref remote_sha; do
             echo "PASS: canonical branch workflow check: merge commit allowed"
             echo "PASS: no blocked old source references found"
             echo "PASS: source-of-truth lock verified"
+            
+            # Law 04 compliance check: RANGE-AWARE (only check evidence.json changed in this push)
+            # Use --name-only to get ONLY filenames (not the complex diff-tree output)
+            # --diff-filter=AM gets only ADDED or MODIFIED files
+            
+            # Get evidence.json files that were ADDED or MODIFIED in this merge commit
+            changed_files=$(git diff-tree --no-commit-id -r -m --diff-filter=AM --name-only "$local_sha" 2>/dev/null | grep "evidence\.json$" | sort -u)
+            
+            if [ -z "$changed_files" ]; then
+                echo "ERROR: LAW 04 COMPLIANCE CHECK FAILED: No evidence.json found in commit changes"
+                echo "ERROR: Required: evidence.json with law_compliance: \"04\" must be added/modified in this commit"
+                echo "ERROR: See Law 04 Article 261"
+                exit 1
+            fi
+            
+            # Check each evidence.json that was changed in this commit
+            all_valid=true
+            for evidence_path in $changed_files; do
+                # Use Python to parse JSON and extract law_compliance reliably
+                law_compliance=$(git show "$local_sha:$evidence_path" 2>/dev/null | python -c "import sys, json; data=json.load(sys.stdin); print(data.get('law_compliance', ''))" 2>/dev/null)
+                
+                if [ -z "$law_compliance" ]; then
+                    echo "ERROR: LAW 04 COMPLIANCE CHECK FAILED: evidence.json missing law_compliance field"
+                    echo "ERROR: File: $evidence_path (changed in this commit)"
+                    echo "ERROR: Required: law_compliance: \"04\" in evidence.json"
+                    echo "ERROR: See Law 04 Article 261"
+                    all_valid=false
+                    break
+                elif [ "$law_compliance" != "04" ]; then
+                    echo "ERROR: LAW 04 COMPLIANCE CHECK FAILED: law_compliance=$law_compliance (expected: 04)"
+                    echo "ERROR: File: $evidence_path (changed in this commit)"
+                    echo "ERROR: Required: law_compliance: \"04\" in evidence.json"
+                    echo "ERROR: See Law 04 Article 261"
+                    all_valid=false
+                    break
+                fi
+            done
+            
+            if [ "$all_valid" = "false" ]; then
+                exit 1
+            else
+                echo "PASS: Law 04 compliance verified (law_compliance: 04 in all evidence.json files changed in this commit)"
+            fi
+            
             echo "PASS: merge authorization evidence verified"
             echo "PASS: all branch workflow checks passed"
             echo "[pre-push] ok"
             exit 0
         else
             # Check if this is a force push (remote_sha is not ancestor of local_sha)
-            if [ "$remote_sha" != "0000000000000000000000000000000000000000" ]; then
+            if [ "$remote_sha" != "0000000000000000000000000000000000000" ]; then
                 if ! git merge-base --is-ancestor "$remote_sha" "$local_sha" >/dev/null 2>&1; then
                     # This is a force push, check for authorization
                     echo "WARNING: Force push to canonical detected"

@@ -25,10 +25,14 @@
 ## 0416 整合法典仍未完成之缺口摘要
 
 ### 缺口 1：evidence_checker.py 尚未添加 Law 04 compliance check
-- **現狀**：evidence_checker.py 已存在，但尚未檢查 `law_compliance: "04"`
+- **現狀**：✅ **已完成**（Phase 2A）
+  - evidence_checker.py 已添加 Law 04 compliance check
+  - 檢查 `law_compliance: "04"` 欄位
+  - 缺少或錯誤時回傳 FAIL/BLOCK
+  - merge_decision_ready 在缺少 Law 04 compliance 時會被阻斷
 - **要求**：04 修正版第 260 條規定 `automation/control/evidence_checker.py` 必須添加 Law 04 compliance check
-- **影響**：無法驗證 candidate 是否符合 Law 04
-- **預計完成階段**：Phase 2
+- **影響**：現可驗證 candidate 是否符合 Law 04 ✅
+- **完成階段**：Phase 2A（LAW-0416-INTEGRATION-PACK-PHASE-2A-LAW-COMPLIANCE-GATING-CONSTRUCTION）✅
 
 ### 缺口 2：所有輪次尚未逐輪法條補正
 - **現狀**：round_patch_mapping.md 已建立 14 個 round groups，但各輪尚未逐輪對照 04 修正版補正
@@ -61,10 +65,13 @@
 - **預計完成階段**：Phase 3
 
 ### 缺口 7：pre-push hook 尚未檢查 merge 簽字證據
-- **現狀**：pre-push hook 檢查 merge commit 格式，但尚未檢查 04 修正版第 34-37 條規定的簽字證據
+- **現狀**：✅ **已完成**（Phase 2A）
+  - pre-push hook 已添加 Law 04 compliance 證據檢查
+  - 檢查 evidence.json 包含 `law_compliance: "04"`
+  - 缺少或錯誤時阻斷 canonical push
 - **要求**：merge 前必須取得使用者明示簽字同意
-- **影響**：可能未經授權執行 merge
-- **預計完成階段**：Phase 2
+- **影響**：現可驗證 Law 04 compliance 證據 ✅
+- **完成階段**：Phase 2A（LAW-0416-INTEGRATION-PACK-PHASE-2A-LAW-COMPLIANCE-GATING-CONSTRUCTION）✅
 
 ### 缺口 8：governance drift 自動化檢查尚未完全落地
 - **現狀**：04 修正版第 67-75 條已定義 governance drift 檢查規則，但尚未完全自動化

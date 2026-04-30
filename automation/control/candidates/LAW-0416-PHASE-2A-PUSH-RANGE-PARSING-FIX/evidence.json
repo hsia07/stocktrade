@@ -1,0 +1,25 @@
+{
+  "task": "LAW-0416 Phase 2A Push-Range Parsing Fix Candidate Rebuild",
+  "law_compliance": "04",
+  "merge_decision_ready": true,
+  "test_results": {
+    "total_tests": 8,
+    "passed": 8,
+    "failed": 0,
+    "scenarios": [
+      "A. missing law_compliance in CHANGED evidence.json -> BLOCK",
+      "B. wrong law_compliance != 04 in CHANGED -> BLOCK",
+      "C. correct law_compliance = 04 in CHANGED -> PASS",
+      "D. historical evidence.json NOT changed -> NOT checked (no false block)",
+      "E. multiple CHANGED evidence.json, all valid -> PASS",
+      "F. multiple CHANGED evidence.json, any invalid -> BLOCK",
+      "G. no false pass introduced -> PASS",
+      "H. no false block for historical noise (--name-only parsing fixed) -> PASS"
+    ]
+  },
+  "validator_results": {
+    "hook_parsing_fix": "PASS",
+    "evidence_checker_compliance": "PASS",
+    "scope_check": "PASS"
+  }
+}
