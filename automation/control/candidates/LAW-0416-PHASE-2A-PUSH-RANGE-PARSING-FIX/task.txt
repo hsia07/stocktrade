@@ -1,0 +1,31 @@
+Task: LAW-0416 Phase 2A Push-Range Parsing Fix Candidate Rebuild
+
+Objective:
+Fix pre-push hook's git diff-tree output parsing issue:
+- Replace broken `awk '{print $6}'` with `--name-only` flag
+- Hook now correctly gets only ADDED/MODIFIED evidence.json files
+- No longer falsely captures historical evidence.json files
+
+Scope:
+- .githooks/pre-push: Fixed parsing (--name-only instead of awk $6)
+- automation/control/evidence_checker.py: Law04ComplianceError, REQUIRED_LAW_COMPLIANCE = "04"
+- _governance/law/CURRENT_GOVERNANCE_BASELINE.md: Update Phase 2A status
+- Single parsing-fix evidence package (not four separate packages)
+
+Constraints:
+- No modification to _governance/law/02_*/03_*/04_*
+- No modification to server_v2.py/server.py/index_v2.html/manifests/AUTO_MODE_ACTIVATION_LOCK
+- Pre-push hook must use --name-only for safe filename extraction
+- Hook must only check evidence.json files changed in this push/merge
+- No false block from historical evidence.json files
+- No false pass when invalid evidence.json exists in changed files
+
+Testing Requirements:
+A. Missing law_compliance in CHANGED evidence.json -> BLOCK
+B. law_compliance != "04" in CHANGED -> BLOCK
+C. law_compliance = "04" in CHANGED -> PASS
+D. Historical evidence.json NOT changed -> NOT checked (no false block)
+E. Multiple CHANGED evidence.json, all valid -> PASS
+F. Multiple CHANGED evidence.json, any invalid -> BLOCK
+G. No false pass introduced
+H. No false block for historical noise (--name-only parsing fixed)

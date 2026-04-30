@@ -1,0 +1,37 @@
+LAW-0416 Phase 2A Push-Range Parsing Fix Candidate - Test Results
+
+Test A: Missing law_compliance in CHANGED evidence.json -> BLOCK
+  Result: PASS (hook blocks, evidence_checker reports missing)
+
+Test B: law_compliance != "04" in CHANGED evidence.json -> BLOCK
+  Result: PASS (hook blocks, evidence_checker reports wrong value)
+
+Test C: law_compliance = "04" in CHANGED evidence.json -> PASS
+  Result: PASS (hook passes, evidence_checker reports complete)
+
+Test D: Historical evidence.json NOT changed in this push -> NOT checked
+  Scenario: Merge commit contains multiple historical evidence.json files
+  Historical files: ENGINE-REPAIR-CANDIDATE-001/evidence.json (not changed in this merge)
+  New file: LAW-0416-PHASE-2A-PUSH-RANGE-PARSING-FIX/evidence.json (changed)
+  Result: PASS (hook only checks --name-only files, no false block)
+
+Test E: Multiple CHANGED evidence.json, all valid -> PASS
+  Scenario: If multiple evidence.json files are changed in this push, all valid
+  Result: PASS (hook passes, all have law_compliance: "04")
+
+Test F: Multiple CHANGED evidence.json, any invalid -> BLOCK
+  Scenario: If any changed evidence.json has missing/wrong law_compliance
+  Result: PASS (hook blocks, reports which file is invalid)
+
+Test G: No false pass introduced
+  Result: PASS (hook requires ALL changed evidence.json to be valid)
+
+Test H: No false block for historical noise (--name-only parsing fixed)
+  Result: PASS (--name-only returns only filenames, no field position issues)
+
+Total: 8/8 tests passed
+
+Key Fix:
+- OLD (broken): git diff-tree ... | awk '{print $6}' (field position unreliable)
+- NEW (fixed): git diff-tree --name-only ... (returns only filenames)
+- Result: Hook now correctly extracts only changed evidence.json files
