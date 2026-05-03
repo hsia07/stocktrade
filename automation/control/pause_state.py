@@ -6,7 +6,7 @@ Implements Telegram /pause semantics:
 - Safe stop happens AFTER current round completes, BEFORE next dispatch
 - Never interrupts atomic steps
 - Readable from truth source / control state
-- Supports multiple pause reasons: manual, usage_exhausted, connection_failure
+- Supports multiple pause reasons: manual, usage_exhausted, connection_failure, stall, no_new_commit_rtc
 - Saves checkpoint on pause for recovery
 """
 
@@ -17,18 +17,19 @@ from typing import Optional, Dict, Any
 
 logger = logging.getLogger("pause_state")
 
-
 class PauseStateManager:
     """Manage pause state via PAUSE.flag."""
     
     PAUSE_FLAG_NAME = "PAUSE.flag"
     CHECKPOINT_PATH = "automation/control/checkpoint.json"
     
-    # Pause reasons
+    # Pause reasons - Phase 2B governance chain
     REASON_MANUAL = "manual_pause_requested"
-    REASON_FAILURE = "paused_after_failure"
-    REASON_STALL = "auto_paused_by_stall"  # Phase A+ non-usage stall monitoring
-    REASON_USAGE = "paused_by_usage"  # Phase B only, blocked
+    REASON_FAILURE = "paused_after_failure"  # consecutive_failure_count >= 3
+    REASON_STALL = "auto_paused_by_stall"  # stuck_duration >= 30min
+    REASON_NO_NEW_COMMIT_RTC = "auto_paused_by_no_new_commit_rtc"  # no_new_commit>=60min + no_new_rtc>=45min
+    REASON_NO_PHASE_TRANSITION = "auto_paused_by_no_phase_transition"  # no_new_phase_transition>=90min (auxiliary only)
+    REASON_USAGE = "paused_by_usage"  # Phase B, OpenCode usage exhausted/unavailable
     
     def __init__(self, repo_root: Path = None):
         self.repo_root = repo_root or Path(__file__).parent.parent.parent
@@ -159,3 +160,81 @@ class PauseStateManager:
             return info
         except Exception:
             return {"paused": True, "reason": "unknown"}
+
+    def pre_resume_checks(self, authorized_scope: list = None) -> Dict[str, Any]:
+        """
+        Pre-resume checks before allowing /start to actually resume.
+        Must check: health / blocker / state consistency / authorized scope.
+        Returns dict with: can_resume, reason, failed_checks
+        """
+        failed_checks = []
+        
+        # 1. Health check - basic system health
+        try:
+            import os
+            # Check if critical files exist
+            critical_files = [
+                self.repo_root / "automation" / "control" / "status_scheduler.py",
+                self.repo_root / "automation" / "control" / "pause_state.py"
+            ]
+            for f in critical_files:
+                if not f.exists():
+                    failed_checks.append(f"health_check: missing critical file {f.name}")
+        except Exception as e:
+            failed_checks.append(f"health_check: exception {e}")
+        
+        # 2. Blocker status check
+        try:
+            lock_path = self.repo_root / "automation" / "control" / "AUTO_MODE_ACTIVATION_LOCK"
+            if lock_path.exists():
+                import json
+                with lock_path.open("r", encoding="utf-8") as f:
+                    lock = json.load(f)
+                    if lock.get("blocked"):
+                        failed_checks.append(f"blocker_check: system is blocked - {lock.get('reason', 'unknown')}")
+        except Exception as e:
+            failed_checks.append(f"blocker_check: exception {e}")
+        
+        # 3. State consistency check (before/after pause)
+        try:
+            checkpoint = self.load_checkpoint()
+            if checkpoint:
+                # Verify checkpoint has required fields
+                required_fields = ["round_id", "pause_reason"]
+                for field in required_fields:
+                    if field not in checkpoint:
+                        failed_checks.append(f"state_consistency: checkpoint missing {field}")
+        except Exception as e:
+            failed_checks.append(f"state_consistency: exception {e}")
+        
+        # 4. Authorized scope check
+        if authorized_scope:
+            try:
+                current_scope = self._read_pause_reason_from_source()
+                if current_scope and current_scope not in authorized_scope:
+                    failed_checks.append(f"authorized_scope: pause reason {current_scope} not in authorized scope {authorized_scope}")
+            except Exception as e:
+                failed_checks.append(f"authorized_scope: exception {e}")
+        
+        can_resume = len(failed_checks) == 0
+        reason = "; ".join(failed_checks) if failed_checks else ""
+        
+        return {
+            "can_resume": can_resume,
+            "reason": reason,
+            "failed_checks": failed_checks
+        }
+    
+    def update_pause_reason(self, reason: str, extra_data: Dict[str, Any] = None) -> bool:
+        """Update pause reason in PAUSE.flag with additional data."""
+        try:
+            content = f"paused_at=auto\nreason={reason}\n"
+            if extra_data:
+                for k, v in extra_data.items():
+                    content += f"{k}={v}\n"
+            self.pause_flag.write_text(content, encoding="utf-8")
+            logger.info(f"PAUSE.flag updated: {reason}")
+            return True
+        except Exception as e:
+            logger.error(f"Failed to update PAUSE.flag: {e}")
+            return False
