@@ -1,0 +1,32 @@
+Task: LAW-0416-PHASE-2B-RUNTIME-IMPLEMENTATION
+Phase: Law-0416 Phase 2B
+Date: 2026-05-04
+Branch: work/candidate-law-0416-phase-2-b-runtime-implementation-rebuild-001
+Commit: 2b9634a28479e411c541188a5c57880d7b20ec9a
+
+Objective:
+Implement Law-0416 Phase 2B runtime minimum governance chain:
+- consecutive_failure_count >= 3 can trigger auto pause (standalone)
+- stuck_duration >= 30min can trigger auto pause (standalone)
+- no_new_commit >= 60min AND no_new_RETURN_TO_CHATGPT >= 45min can trigger auto pause (combination only)
+- no_new_phase_transition >= 90min only as auxiliary signal (cannot trigger alone)
+- Telegram only notifies, does not grant recovery authorization
+- /start only as manual recovery request entry point, must run pre-resume checks before resume
+- pre-resume checks include: health/blocker/state consistency/authorized scope
+
+Authorized files modified:
+1. automation/control/pause_state.py (added Phase 2B trigger reasons, pre_resume_checks)
+2. automation/control/telegram_notifier.py (created, Telegram notification for pause events)
+3. automation/control/api_automode_loop.py (created, Phase 2B trigger logic)
+4. automation/control/status_scheduler.py (updated start_chain() to manual recovery request only)
+
+Forbidden files NOT modified:
+- automation/control/auto_advance.py (NOT modified, not in authorization list)
+- api_automode_loop.py was created as new file (authorized)
+
+Evidence package:
+- candidate.diff: diff from canonical b2e6047 to candidate HEAD
+- evidence.json: contains law_compliance: "04"
+- report.json: validation summary
+- no-aider-used.txt: confirmed not using Aider
+- test-results.txt: manual verification results
