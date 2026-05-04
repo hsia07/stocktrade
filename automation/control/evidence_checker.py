@@ -3,10 +3,12 @@ Evidence Completeness Checker
 
 Mechanical validation that a candidate evidence package is complete.
 Checks for required files and passes/failures from tests/validators.
+Includes 40hex hash validation for Law-0416 Phase 3.
 """
 
 import json
 import logging
+import re
 from pathlib import Path
 from typing import Tuple, List, Dict, Any
 
@@ -82,6 +84,20 @@ class EvidenceChecker:
                 elif law_compliance != self.REQUIRED_LAW_COMPLIANCE:
                     missing.append(f"law_compliance:wrong_value:{law_compliance}")
                 
+                # 40hex validation: candidate_commit must be valid 40hex
+                candidate_commit = evidence.get("candidate_commit") or evidence.get("commit_hash")
+                if candidate_commit:
+                    is_valid, reason = self.validate_40hex_hash(candidate_commit)
+                    if not is_valid:
+                        missing.append("candidate_commit:" + reason)
+                
+                # 40hex validation: baseline_sync_commit if present
+                baseline_commit = evidence.get("baseline_sync_commit")
+                if baseline_commit:
+                    is_valid, reason = self.validate_40hex_hash(baseline_commit)
+                    if not is_valid:
+                        missing.append("baseline_sync_commit:" + reason)
+                
                 # Check merge_decision_ready if present
                 if evidence.get("merge_decision_ready") is True:
                     if law_compliance != self.REQUIRED_LAW_COMPLIANCE:
@@ -116,4 +132,71 @@ class EvidenceChecker:
                 if result != "PASS":
                     issues.append(f"validator_fail:{name}={result}")
 
+        return len(issues) == 0, issues
+
+    def validate_40hex_hash(self, hash_str: str) -> Tuple[bool, str]:
+        """
+        Validate that a string is a valid 40hex git commit hash.
+        Returns (is_valid, reason_code).
+        
+        Checks:
+        1. Must be exactly 40 characters
+        2. Must contain only hex characters (0-9, a-f, A-F)
+        3. Must correspond to a real git object in the repository
+        """
+        if not hash_str or not isinstance(hash_str, str):
+            return False, "hash_empty_or_not_string"
+        
+        # Check length (must be exactly 40)
+        if len(hash_str) != 40:
+            return False, f"hash_length_not_40:actual_len={len(hash_str)}"
+        
+        # Check hex-only (only 0-9, a-f, A-F)
+        if not re.match(r'^[0-9a-fA-F]{40}$', hash_str):
+            return False, "hash_not_40hex:contains_non_hex_chars"
+        
+        # Check if hash corresponds to a real git object
+        try:
+            import subprocess
+            result = subprocess.run(
+                ["git", "cat-file", "-t", hash_str],
+                capture_output=True,
+                text=True,
+                cwd=self.repo_root,
+                timeout=5
+            )
+            if result.returncode == 0:
+                return True, "hash_valid_40hex_git_object_exists"
+            else:
+                return False, "hash_not_found:not_a_valid_git_object"
+        except Exception as e:
+            return False, f"hash_validation_error:{str(e)}"
+
+    def validate_evidence_hashes(self, evidence: Dict[str, Any]) -> Tuple[bool, List[str]]:
+        """
+        Validate all commit hashes in evidence.json are valid 40hex.
+        Checks: candidate_commit, baseline_sync_commit, commit_hash, etc.
+        """
+        issues = []
+        
+        # List of hash fields to validate
+        hash_fields = [
+            ("candidate_commit", "candidate_commit"),
+            ("baseline_sync_commit", "baseline_sync_commit"),
+            ("commit_hash", "commit_hash"),
+            ("source_head_before", "source_head_before"),
+            ("target_head_before", "target_head_before"),
+            ("target_head_after", "target_head_after"),
+            ("local_head_before", "local_head_before"),
+            ("remote_head_before", "remote_head_before"),
+            ("remote_head_after", "remote_head_after"),
+        ]
+        
+        for field_name, display_name in hash_fields:
+            hash_value = evidence.get(field_name)
+            if hash_value:
+                is_valid, reason = self.validate_40hex_hash(hash_value)
+                if not is_valid:
+                    issues.append(f"{display_name}:{reason}")
+        
         return len(issues) == 0, issues

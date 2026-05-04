@@ -1,0 +1,25 @@
+No Aider Used Declaration
+
+This candidate was created WITHOUT using Aider.
+
+## Manual Edits Performed
+1. automation/control/evidence_checker.py - Added 40hex hash validation:
+   - validate_40hex_hash(hash_str) -> (is_valid, reason_code)
+   - validate_evidence_hashes(evidence) -> (is_valid, issues_list)
+   - Integrated into check_completeness()
+
+## Evidence Package Files
+- task.txt
+- evidence.json
+- report.json
+- candidate.diff
+- no-aider-used.txt
+- test-results.txt
+
+## Scope
+Only one topic: 40hex hash truth verification automation.
+No other Phase 3 items included.
+
+## Authorization
+User explicit sign-off received for 40hex validation only.
+No Aider involved in this candidate creation.

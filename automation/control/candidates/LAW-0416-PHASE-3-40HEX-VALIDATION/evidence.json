@@ -1,0 +1,39 @@
+{
+  "task_id": "LAW-0416-PHASE-3-40HEX-VALIDATION",
+  "law_compliance": "04",
+  "evidence_checker_version": "1.1",
+  "candidate_branch": "work/candidate-law-0416-phase-3-40hex-validation-001",
+  "feature": "40hex_hash_validation",
+  "hash_validation_methods_added": [
+    "validate_40hex_hash()",
+    "validate_evidence_hashes()"
+  ],
+  "hash_fields_validated": [
+    "candidate_commit",
+    "baseline_sync_commit",
+    "commit_hash",
+    "source_head_before",
+    "target_head_before",
+    "target_head_after",
+    "local_head_before",
+    "remote_head_before",
+    "remote_head_after"
+  ],
+  "validation_checks": {
+    "length": "must be exactly 40 characters",
+    "format": "must contain only hex characters (0-9, a-f, A-F)",
+    "existence": "must correspond to real git object via git cat-file -t"
+  },
+  "reason_codes": [
+    "hash_empty_or_not_string",
+    "hash_length_not_40",
+    "hash_not_40hex:contains_non_hex_chars",
+    "hash_not_found:not_a_valid_git_object",
+    "hash_validation_error"
+  ],
+  "files_modified": [
+    "automation/control/evidence_checker.py"
+  ],
+  "runtime_or_hook_files_touched": false,
+  "validation_timestamp": "2026-05-04T11:00:00+08:00"
+}
