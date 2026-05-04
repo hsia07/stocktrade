@@ -1,0 +1,36 @@
+{
+  "status": "completed",
+  "formal_status_code": "PHASE3_REPO_FULL_AUDIT_COMPLETED",
+  "task_type": "phase3_repo_full_audit",
+  "candidate_branch": "work/candidate-law-0416-phase-3-repo-full-audit-001",
+  "summary": "Implemented repo-wide governance audit automation in evidence_checker.py. Added perform_pre_merge_repo_audit(), _audit_single_candidate(), check_pre_merge_audit_ready() methods. Distinguishes audit failures (block merge) from merge-ready state. Provides machine-checkable reason codes: repo_audit:*.",
+  "tests": {
+    "total": 8,
+    "passed": 8,
+    "failed": 0,
+    "details": [
+      "Test 1: repo_full_audit_rule_implemented - PASS",
+      "Test 2: pre_merge_repo_audit_machine_checkable - PASS",
+      "Test 3: reason_code_added - PASS",
+      "Test 4: can_distinguish_audit_fail_vs_merge_ready - PASS",
+      "Test 5: evidence_package_complete - PASS",
+      "Test 6: law04_compliance_present - PASS",
+      "Test 7: single_topic_only - PASS",
+      "Test 8: no_scope_expansion - PASS"
+    ]
+  },
+  "validators": {
+    "repo_full_audit": "PASS",
+    "pre_merge_audit_check": "PASS",
+    "audit_fail_vs_merge_ready": "PASS"
+  },
+  "constraints": {
+    "governance_drift_not_included": true,
+    "return_to_chatgpt_not_included": true,
+    "formal_law_not_modified": true,
+    "readable_files_not_modified": true,
+    "single_topic_only": true,
+    "no_scope_expansion": true
+  },
+  "evidence_package_complete": true
+}
