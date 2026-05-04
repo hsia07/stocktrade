@@ -1,0 +1,26 @@
+No Aider Used Declaration
+
+This candidate was created WITHOUT using Aider.
+
+## Manual Edits Performed
+1. automation/control/evidence_checker.py - Added merge/push separation:
+   - check_merge_push_separation(evidence) -> (is_valid, issues_list)
+   - validate_workflow_authorization(local_head, remote_head, operation) -> (is_authorized, reason_code)
+   - MERGE_AUTHORIZED_INDICATORS / PUSH_AUTHORIZED_INDICATORS
+   - Binding indicators blocked (merge_and_push, merge_push_combined, etc.)
+
+## Evidence Package Files
+- task.txt
+- evidence.json
+- report.json
+- candidate.diff
+- no-aider-used.txt
+- test-results.txt
+
+## Scope
+Only one topic: merge/push authorization separation.
+No other Phase 3 items included.
+
+## Authorization
+User explicit sign-off received for merge/push separation only.
+No Aider involved in this candidate creation.

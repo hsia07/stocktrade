@@ -1,0 +1,21 @@
+Law-0416 Phase 3: Merge/Push Separation Enforcement
+
+## Task Description
+Implement merge and push separation enforcement in evidence_checker.py.
+Only one topic: merge/push authorization separation.
+
+## Scope
+1. Block merge+push binding (must be separately authorized)
+2. Require explicit authorization for merge operations
+3. Require explicit authorization for push operations
+4. Provide clear reason codes for violations
+
+## Out of Scope (this round)
+- auto_advance.py forbidden check (defer to next Phase 3 item)
+- usage feature / runtime feature / main project round logic
+- server_v2.py / server.py / index_v2.html modifications
+- main project phase / R026 / R031-R153 content
+
+## Authorization
+User explicit sign-off received for merge/push separation only.
+No merge/push/promote/PR authorized this round.
