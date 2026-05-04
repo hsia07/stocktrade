@@ -1,0 +1,17 @@
+{
+  "event_type": "unauthorized_merge_violation",
+  "constraint_violated": "constraint_4_source_head_mismatch",
+  "canonical_head_before_rollback": "e15f0803f9b850818c0816125cde00b1089cc10e",
+  "canonical_head_after_rollback": "9404bd135a033eb1345cd0b682df53c3a58a98bf",
+  "rollback_target_matches_expected": true,
+  "unauthorized_merge_commit_hash": "e15f0803f9b850818c0816125cde00b1089cc10e",
+  "unauthorized_source_actual_head": "438693430813b0ff89755d1af8bc0cc20114b82a",
+  "user_authorized_source_head": "4386934ca8596f886c41fecd5a59a7d3fd705ab",
+  "source_head_mismatch_confirmed": true,
+  "constraint_4_violation_confirmed": true,
+  "local_canonical_rollback_completed": true,
+  "remote_unchanged": true,
+  "evidence_preserved": true,
+  "task_type": "phase3_readable_sync_unauthorized_merge_rollback",
+  "law_compliance": "04"
+}
