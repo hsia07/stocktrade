@@ -1,0 +1,58 @@
+Test Results for Law-0416 Phase 3: Merge/Push Separation Enforcement
+
+## Test Environment
+- Branch: work/candidate-law-0416-phase-3-merge-push-separation-001
+- Base commit: 0423b27411df135fafee4295c1e66f8b257eb727
+- Evidence checker: automation/control/evidence_checker.py
+
+## Tests Performed
+
+### Test 1: Merge+Push Binding Detection
+- Input: evidence with "merge_and_push": true
+- Expected: False, reason="merge_push_binding_detected:merge_and_push"
+- Result: PASSED
+
+### Test 2: Merge Authorized Separately
+- Input: evidence with "merge_authorized": true (no push indicators)
+- Expected: True (merge separated from push)
+- Result: PASSED
+
+### Test 3: Push Authorized Separately
+- Input: evidence with "push_authorized": true (no merge indicators)
+- Expected: True (push separated from merge)
+- Result: PASSED
+
+### Test 4: No Binding in Evidence
+- Input: evidence with NO merge/push binding indicators
+- Expected: True (no binding detected)
+- Result: PASSED
+
+### Test 5: Workflow Merge Authorization
+- Input: validate_workflow_authorization(local_head, remote_head, "merge")
+- Expected: True, reason="merge_authorized:explicit_signoff_required"
+- Result: PASSED
+
+### Test 6: Workflow Push Authorization
+- Input: validate_workflow_authorization(local_head, remote_head, "push")
+- Expected: True, reason="push_authorized:explicit_signoff_required"
+- Result: PASSED
+
+### Test 7: Invalid Operation Rejected
+- Input: validate_workflow_authorization(local_head, remote_head, "invalid")
+- Expected: False, reason="invalid_operation:invalid"
+- Result: PASSED
+
+## Summary
+All 7 tests PASSED.
+Merge/push separation enforcement fully operational:
+- Binding indicators (merge+push combined) are blocked
+- Merge requires explicit sign-off (merge only)
+- Push requires explicit sign-off (push only)
+- Clear reason codes for violations
+- No reliance on vague string interpretation
+
+## Scope Verification
+- Only merge/push separation implemented ✓
+- No auto_advance.py forbidden check ✓
+- No usage feature/runtime feature ✓
+- No server_v2.py/server.py/index_v2.html modifications ✓

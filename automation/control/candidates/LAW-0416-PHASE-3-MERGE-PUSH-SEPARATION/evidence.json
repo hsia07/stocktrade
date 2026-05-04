@@ -1,0 +1,33 @@
+{
+  "task_id": "LAW-0416-PHASE-3-MERGE-PUSH-SEPARATION",
+  "law_compliance": "04",
+  "evidence_checker_version": "1.2",
+  "candidate_branch": "work/candidate-law-0416-phase-3-merge-push-separation-001",
+  "feature": "merge_push_separation_enforcement",
+  "methods_added": [
+    "check_merge_push_separation(evidence)",
+    "validate_workflow_authorization(local_head, remote_head, operation)"
+  ],
+  "binding_indicators_blocked": [
+    "merge_and_push",
+    "merge_push_combined",
+    "auto_merge_push",
+    "merge_then_push"
+  ],
+  "authorization_fields": {
+    "merge": ["merge_decision_ready", "merge_authorized", "user_signoff_merge"],
+    "push": ["push_authorized", "user_signoff_push", "push_ready"]
+  },
+  "reason_codes": [
+    "merge_push_binding_detected:{indicator}",
+    "merge_push_both_authorized_same_evidence:possible_binding",
+    "merge_authorized:explicit_signoff_required",
+    "push_authorized:explicit_signoff_required",
+    "invalid_operation:{operation}"
+  ],
+  "files_modified": [
+    "automation/control/evidence_checker.py"
+  ],
+  "runtime_or_hook_files_touched": false,
+  "validation_timestamp": "2026-05-04T11:30:00+08:00"
+}

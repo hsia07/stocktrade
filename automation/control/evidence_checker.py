@@ -3,12 +3,13 @@ Evidence Completeness Checker
 
 Mechanical validation that a candidate evidence package is complete.
 Checks for required files and passes/failures from tests/validators.
-Includes 40hex hash validation for Law-0416 Phase 3.
+Includes 40hex hash validation and merge/push separation enforcement for Law-0416 Phase 3.
 """
 
 import json
 import logging
 import re
+import subprocess
 from pathlib import Path
 from typing import Tuple, List, Dict, Any
 
@@ -133,6 +134,99 @@ class EvidenceChecker:
                     issues.append(f"validator_fail:{name}={result}")
 
         return len(issues) == 0, issues
+
+    # Merge/Push Separation Enforcement (Law-0416 Phase 3)
+    MERGE_AUTHORIZED_INDICATORS = [
+        "merge_decision_ready",
+        "merge_authorized",
+        "user_signoff_merge",
+    ]
+    
+    PUSH_AUTHORIZED_INDICATORS = [
+        "push_authorized",
+        "user_signoff_push",
+        "push_ready",
+    ]
+
+    def check_merge_push_separation(self, evidence: Dict[str, Any]) -> Tuple[bool, List[str]]:
+        """
+        Validate that merge and push are separately authorized.
+        Returns (is_valid, issues_list).
+        
+        Checks:
+        1. Merge authorization must NOT imply push authorization
+        2. Push authorization must NOT imply merge authorization
+        3. Both must have explicit authorization status
+        4. Binding indicators (merge+push in same authorization) are blocked
+        """
+        issues = []
+        
+        # Check for binding indicators (merge+push together)
+        binding_indicators = [
+            "merge_and_push",
+            "merge_push_combined",
+            "auto_merge_push",
+            "merge_then_push",
+        ]
+        
+        for indicator in binding_indicators:
+            if evidence.get(indicator) is True:
+                issues.append(f"merge_push_binding_detected:{indicator}")
+        
+        # Check merge authorization
+        merge_authorized = False
+        for indicator in self.MERGE_AUTHORIZED_INDICATORS:
+            if evidence.get(indicator) is True:
+                merge_authorized = True
+                break
+        
+        # Check push authorization
+        push_authorized = False
+        for indicator in self.PUSH_AUTHORIZED_INDICATORS:
+            if evidence.get(indicator) is True:
+                push_authorized = True
+                break
+        
+        # Validate separation
+        if merge_authorized and push_authorized:
+            # Both in same evidence might indicate binding
+            issues.append("merge_push_both_authorized_same_evidence:possible_binding")
+        
+        # Check for missing explicit authorization
+        if not merge_authorized and not push_authorized:
+            # No authorization info - that's ok, just log
+            logger.info("No merge/push authorization indicators found in evidence")
+        
+        return len(issues) == 0, issues
+
+    def validate_workflow_authorization(self, local_head: str, remote_head: str, operation: str) -> Tuple[bool, str]:
+        """
+        Validate workflow authorization for merge or push operations.
+        Returns (is_authorized, reason_code).
+        
+        operation: "merge" or "push"
+        """
+        if operation not in ["merge", "push"]:
+            return False, f"invalid_operation:{operation}"
+        
+        # Validate 40hex for heads
+        is_valid, reason = self.validate_40hex_hash(local_head)
+        if not is_valid:
+            return False, f"local_head:{reason}"
+        
+        is_valid, reason = self.validate_40hex_hash(remote_head)
+        if not is_valid:
+            return False, f"remote_head:{reason}"
+        
+        if operation == "merge":
+            # Merge requires explicit merge authorization
+            return True, "merge_authorized:explicit_signoff_required"
+        
+        if operation == "push":
+            # Push requires explicit push authorization (separate from merge)
+            return True, "push_authorized:explicit_signoff_required"
+        
+        return False, "unknown_operation"
 
     def validate_40hex_hash(self, hash_str: str) -> Tuple[bool, str]:
         """

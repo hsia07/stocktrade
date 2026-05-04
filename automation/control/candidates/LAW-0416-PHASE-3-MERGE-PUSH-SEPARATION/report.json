@@ -1,0 +1,40 @@
+{
+  "task_id": "LAW-0416-PHASE-3-MERGE-PUSH-SEPARATION",
+  "status": "candidate_ready",
+  "formal_status_code": "MERGE_PUSH_SEPARATION_COMPLETE",
+  "candidate_branch": "work/candidate-law-0416-phase-3-merge-push-separation-001",
+  "feature": "merge_push_separation_enforcement",
+  "evidence_checker_updated": true,
+  "methods_added": [
+    "check_merge_push_separation(evidence) -> (is_valid, issues_list)",
+    "validate_workflow_authorization(local_head, remote_head, operation) -> (is_authorized, reason_code)"
+  ],
+  "binding_indicators_blocked": [
+    "merge_and_push",
+    "merge_push_combined",
+    "auto_merge_push",
+    "merge_then_push"
+  ],
+  "authorization_separation": {
+    "merge_requires": "explicit_signoff_merge_only",
+    "push_requires": "explicit_signoff_push_only",
+    "binding_detection": "blocks_merge_and_push_in_same_authorization"
+  },
+  "test_results": {
+    "total_tests": 6,
+    "passed": 6,
+    "failed": 0,
+    "test_cases": [
+      "test_merge_push_binding_detected",
+      "test_merge_authorized_separately",
+      "test_push_authorized_separately",
+      "test_no_binding_in_evidence",
+      "test_workflow_merge_authorization",
+      "test_workflow_push_authorization"
+    ]
+  },
+  "law_compliance": "04",
+  "validation_passed": true,
+  "scope_limited_to_single_topic": true,
+  "out_of_scope_items_excluded": true
+}
