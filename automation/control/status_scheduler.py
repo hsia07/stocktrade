@@ -225,23 +225,28 @@ class StatusScheduler:
 
     def start_chain(self) -> Dict[str, Any]:
         """
-        /start semantics: resume chain from checkpoint first, fallback to state.runtime.json.
-
+        /start semantics: ONLY a manual recovery request entry point.
+        Does NOT directly resume. Must run pre-resume checks first.
+        
         Returns dict with:
-        - started: bool
+        - can_resume: bool (after pre-resume checks)
         - reason: str
         - resume_from_round: str
         - resume_from_step: str or None
         - last_completed_action: str or None
         - pause_reason: str or None
+        - requires_manual_authorization: bool (always True for /start)
         """
+        # /start is ONLY a manual recovery request, not direct resume
+        logger.info("/start received - this is a manual recovery REQUEST only, not direct resume")
+        
         # 1. Load checkpoint FIRST (before clearing pause, to read recovery data)
         checkpoint = self.pause_manager.load_checkpoint()
         resume_from_step = None
         last_completed_action = None
         pause_reason = None
         checkpoint_round = None
-
+        
         if checkpoint:
             resume_from_step = checkpoint.get("current_step")
             last_completed_action = checkpoint.get("last_completed_action")
@@ -263,47 +268,69 @@ class StatusScheduler:
                         logger.info(f"Fallback to state.runtime.json: round={checkpoint_round}")
                 except Exception as e:
                     logger.error(f"Failed to load state.runtime.json: {e}")
-
-        # 3. Clear pause and checkpoint AFTER loading data
-        # Handle auto_paused_by_stall: only manual /start can clear
+        
+        # 3. Run pre-resume checks (health/blocker/state consistency/authorized scope)
+        pre_resume = self.pause_manager.pre_resume_checks(
+            authorized_scope=[
+                self.pause_manager.REASON_FAILURE,
+                self.pause_manager.REASON_STALL,
+                self.pause_manager.REASON_NO_NEW_COMMIT_RTC,
+                self.pause_manager.REASON_NO_PHASE_TRANSITION,
+                self.pause_manager.REASON_MANUAL
+            ]
+        )
+        
+        if not pre_resume["can_resume"]:
+            # Pre-resume checks failed - stay paused
+            self.sender.send_message(
+                f"🚫 */start pre-resume checks failed*\n"
+                f"Reason: {pre_resume['reason']}\n"
+                f"\nPlease resolve issues before requesting /start again."
+            )
+            return {
+                "can_resume": False,
+                "reason": f"pre-resume checks failed: {pre_resume['reason']}",
+                "resume_from_round": checkpoint_round or "unknown",
+                "resume_from_step": resume_from_step,
+                "last_completed_action": last_completed_action,
+                "pause_reason": pause_reason,
+                "requires_manual_authorization": True,
+                "failed_checks": pre_resume["failed_checks"]
+            }
+        
+        # 4. Pre-resume checks passed - clear pause AFTER checks
         if self.pause_manager.is_paused():
-            current_pause = self.pause_manager.get_pause_info()
-            if current_pause and current_pause.get("reason") == "auto_paused_by_stall":
-                logger.info("Manual /start received for auto_paused_by_stall - clearing")
             self.pause_manager.clear_pause()
+            logger.info("Pause cleared after pre-resume checks passed")
+        
         if checkpoint:
             self.pause_manager.clear_checkpoint()
-
-        # 4. NOW check if we can start (after clearing pause)
-        can_start = self.check_can_start()
-        if not can_start["can_start"]:
-            self.sender.send_message(
-                f"🚫 */start rejected*\nReason: {can_start['reason']}"
-            )
-            return {"started": False, "reason": can_start["reason"], "resume_from_round": can_start["resume_from_round"]}
-
+        
         manifest = self._load_manifest()
         current_round = manifest.get("current_round", "NONE")
         next_round = manifest.get("next_round_to_dispatch", "unknown")
-
+        
         # 5. Determine resume target
         resume_target = checkpoint_round if checkpoint_round else (current_round if current_round != "NONE" else next_round)
-
+        
         # 6. Send resume message with step info
-        msg = f"▶️ *Chain resumed*\nTarget: `{resume_target}`"
+        msg = f"✅ */start authorized*\nTarget: `{resume_target}`"
         if resume_from_step:
             msg += f"\nResuming from step: `{resume_from_step}`"
-        if pause_reason == "auto_paused_by_stall":
-            msg += f"\nRecovered from stall after {checkpoint.get('stall_duration_seconds', 0):.1f}s"
+        if pause_reason:
+            msg += f"\nRecovered from: `{pause_reason.replace('_', ' ').title()}`"
+        msg += f"\n\n⚠️ *Manual authorization required to fully resume.*"
         self.sender.send_message(msg)
-
+        
         return {
-            "started": True,
-            "reason": "",
+            "can_resume": True,
+            "reason": "Pre-resume checks passed. Manual authorization required to fully resume.",
             "resume_from_round": resume_target,
             "resume_from_step": resume_from_step,
             "last_completed_action": last_completed_action,
             "pause_reason": pause_reason,
+            "requires_manual_authorization": True,
+            "pre_resume_result": pre_resume
         }
 
     def check_can_pause(self) -> Dict[str, Any]:

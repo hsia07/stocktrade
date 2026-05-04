@@ -1,0 +1,3 @@
+NOT用的是 Aider 进行实现。
+Implementation was done manually without Aider.
+No Aider used in this candidate implementation.
