@@ -1,0 +1,38 @@
+{
+  "candidate_name": "LAW-0416-PHASE-3-GOVERNANCE-DRIFT",
+  "task_type": "law0416_phase3_governance_drift_automation",
+  "phase": "Phase 3 - Sixth Candidate (6/7)",
+  "implementation_summary": "Added governance drift detection and blocking automation to evidence_checker.py",
+  "methods_added": [
+    "check_governance_drift() - detects 5 types of governance drift",
+    "validate_governance_drift_in_evidence() - validates drift check results in evidence"
+  ],
+  "drift_types_detected": [
+    "source_target_head_mismatch - source/target HEAD vs authorized objects",
+    "formal_truth_contradiction - formal truth vs baseline/readable contradictions",
+    "candidate_scope_mismatch - candidate scope vs authorized topic",
+    "canonical_phase_state_drift - canonical/remote/candidate phase state drift",
+    "baseline_readable_conflict - baseline readable conflicts"
+  ],
+  "scope_compliance": "single_topic_governance_drift_only",
+  "excluded_items": [
+    "RETURN_TO_CHATGPT_verification",
+    "server_v2.py",
+    "server.py",
+    "index_v2.html",
+    "manifests",
+    "_governance/law/02_*",
+    "_governance/law/03_*",
+    "_governance/law/04_*",
+    "auto_advance.py"
+  ],
+  "files_modified": [
+    "automation/control/evidence_checker.py"
+  ],
+  "evidence_package_complete": true,
+  "evidence_json_present": true,
+  "candidate_diff_present": true,
+  "law_compliance": "04",
+  "phase3_progress": "6/7 completed",
+  "next_candidate": "RETURN_TO_CHATGPT output verification (7/7)"
+}

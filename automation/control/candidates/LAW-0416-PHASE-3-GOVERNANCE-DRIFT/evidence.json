@@ -1,0 +1,41 @@
+{
+  "task_type": "law0416_phase3_governance_drift_automation",
+  "law_compliance": "04",
+  "candidate_branch": "work/candidate-law-0416-phase-3-governance-drift-001",
+  "implementation_commit": "f8ad85b5ed7655735cde0cd08830efcc3bacb98e",
+  "candidate_commit": "f8ad85b5ed7655735cde0cd08830efcc3bacb98e",
+  "files_modified": [
+    "automation/control/evidence_checker.py"
+  ],
+  "changes_summary": "Added governance drift detection methods: check_governance_drift() and validate_governance_drift_in_evidence() to detect and block governance drift",
+  "scope": "governance_drift_automation_only",
+  "excluded_from_scope": [
+    "RETURN_TO_CHATGPT_verification",
+    "server_v2.py",
+    "server.py",
+    "index_v2.html",
+    "manifests/*",
+    "_governance/law/02_*",
+    "_governance/law/03_*",
+    "_governance/law/04_*",
+    "auto_advance.py"
+  ],
+  "phase3_candidate_number": 6,
+  "phase3_total_candidates": 7,
+  "phase3_progress": "6/7",
+  "governance_drift_check": {
+    "drift_detected": false,
+    "reason_codes": [],
+    "drift_types_checked": [
+      "source_target_head_mismatch",
+      "formal_truth_contradiction",
+      "candidate_scope_mismatch",
+      "canonical_phase_state_drift",
+      "baseline_readable_conflict"
+    ]
+  },
+  "local_head_before": "3f118bb62d54741288b9ce90819010124b47d817",
+  "remote_head_before": "3f118bb62d54741288b9ce90819010124b47d817",
+  "baseline_version": "Phase 2B/3 partial implementation (5/7 Phase 3 complete)",
+  "evidence_package_complete": true
+}
