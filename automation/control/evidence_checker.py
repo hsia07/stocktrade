@@ -340,3 +340,166 @@ class EvidenceChecker:
                         issues.append(f"auto_advance_forbidden:law_0416_phase_blocks:{file}")
         
         return len(issues) == 0, issues
+
+    # Readable/Mirror auto-sync verification (Law-0416 Phase 3)
+    READABLE_MIRROR_PATHS = [
+        "_governance/law/README.md",
+        "opencode_readable_laws/",
+    ]
+    
+    FORMAL_SOURCES_PRIORITY = ["02", "03", "04", "01"]
+    
+    # Patterns that indicate readable claims to override formal
+    OVERRIDE_CLAIM_PATTERNS = [
+        r"readable.*override.*formal",
+        r"可覆寫.*正式法源",
+        r"覆寫.*正式",
+        r"替代.*法典",
+        r"取代.*法源",
+    ]
+    
+    # Required sync markers in readable files
+    REQUIRED_SYNC_MARKERS = [
+        r"同步時間[：:]\s*.+",
+        r"sync.*time[：:]\s*.+",
+        r"来源[：:]\s*(02|03|04|01)",
+        r"source[：:]\s*(02|03|04|01)",
+        r"版本[：:]\s*.+",
+        r"version[：:]\s*.+",
+    ]
+    
+    def check_readable_mirror_sync(self, evidence: Dict[str, Any] = None) -> Tuple[bool, List[str]]:
+        """
+        Verify readable/mirror files do not drift from or contradict formal sources.
+        Returns (is_valid, issues_list).
+        
+        Checks:
+        1. Readable files must NOT claim to override formal sources
+        2. Readable files must have sync markers linking to formal sources
+        3. Readable content must not contradict formal source priority (02 > 03 > 04 > 01)
+        4. Formal source priority must be preserved in readable content
+        """
+        issues = []
+        
+        repo_root = Path(self.repo_root)
+        
+        # Check readable/mirror paths exist
+        for readable_path in self.READABLE_MIRROR_PATHS:
+            full_path = repo_root / readable_path
+            
+            if not full_path.exists():
+                logger.warning(f"Readable/mirror path not found: {readable_path}")
+                continue
+            
+            # Handle directory (opencode_readable_laws/)
+            if full_path.is_dir():
+                for md_file in full_path.glob("**/*.md"):
+                    file_issues = self._check_single_readable_file(md_file, readable_path)
+                    issues.extend(file_issues)
+            else:
+                # Handle single file (README.md)
+                file_issues = self._check_single_readable_file(full_path, readable_path)
+                issues.extend(file_issues)
+        
+        # Check evidence for readable-related claims if provided
+        if evidence:
+            readable_docs = evidence.get("readable_docs", [])
+            for doc in readable_docs:
+                doc_path = repo_root / doc
+                if doc_path.exists():
+                    file_issues = self._check_single_readable_file(doc_path, doc)
+                    issues.extend(file_issues)
+        
+        return len(issues) == 0, issues
+    
+    def _check_single_readable_file(self, file_path: Path, relative_path: str) -> List[str]:
+        """Check a single readable/mirror file for sync and contradiction issues."""
+        issues = []
+        
+        try:
+            with open(file_path, "r", encoding="utf-8") as f:
+                content = f.read()
+            
+            # Check 1: No override claims
+            for pattern in self.OVERRIDE_CLAIM_PATTERNS:
+                if re.search(pattern, content, re.IGNORECASE):
+                    issues.append(f"readable:override_claim_detected:{relative_path}:pattern={pattern[:30]}")
+            
+            # Check 2: Required sync markers present
+            markers_found = 0
+            for pattern in self.REQUIRED_SYNC_MARKERS:
+                if re.search(pattern, content, re.IGNORECASE):
+                    markers_found += 1
+            
+            if markers_found == 0:
+                issues.append(f"readable:missing_sync_markers:{relative_path}")
+            elif markers_found < 2:
+                issues.append(f"readable:insufficient_sync_markers:{relative_path}:found={markers_found}")
+            
+            # Check 3: Formal source priority not contradicted
+            # Look for priority claims in content
+            priority_patterns = [
+                r"(02|03|04|01)\s*>\s*(02|03|04|01)",
+                r"優先.*(02|03|04|01).*(02|03|04|01)",
+                r"優先順序.*(02|03|04|01).*(02|03|04|01)",
+            ]
+            
+            for pattern in priority_patterns:
+                matches = re.findall(pattern, content)
+                for match in matches:
+                    if isinstance(match, tuple):
+                        # Check if priority is wrong (should be 02 > 03 > 04 > 01)
+                        if len(match) >= 2:
+                            higher, lower = match[0], match[1]
+                            expected_order = ["02", "03", "04", "01"]
+                            if higher in expected_order and lower in expected_order:
+                                if expected_order.index(higher) > expected_order.index(lower):
+                                    issues.append(f"readable:priority_contradiction:{relative_path}:{higher}>{lower}_should_be_reversed")
+            
+            # Check 4: Verify "formal source priority" statement if present
+            if "法源優先" in content or "formal source" in content.lower():
+                # Should mention 02 > 03 > 04 > 01
+                if "02" in content and "03" in content:
+                    # Check for correct order mention
+                    if not re.search(r"02.*03.*04.*01", content.replace(" ", "")):
+                        issues.append(f"readable:priority_order_unclear:{relative_path}")
+            
+        except Exception as e:
+            issues.append(f"readable:file_read_error:{relative_path}:{str(e)}")
+        
+        return issues
+    
+    def validate_readable_sync_in_evidence(self, evidence: Dict[str, Any]) -> Tuple[bool, List[str]]:
+        """
+        Validate readable sync verification results stored in evidence.
+        Returns (is_valid, issues_list).
+        
+        Checks that evidence contains readable sync check results
+        and that they passed (no drift/contradiction detected).
+        """
+        issues = []
+        
+        readable_sync = evidence.get("readable_sync_check", {})
+        if not readable_sync:
+            # No readable sync check performed - that's ok for non-readable candidates
+            logger.info("No readable sync check results in evidence")
+            return True, []
+        
+        # Check if sync check passed
+        if readable_sync.get("drift_detected") is True:
+            issues.append("readable_sync:drift_detected:check_failed")
+        
+        if readable_sync.get("contradiction_found") is True:
+            issues.append("readable_sync:contradiction_found:formal_source_contradicted")
+        
+        # Check reason codes
+        reason_codes = readable_sync.get("reason_codes", [])
+        for code in reason_codes:
+            if "override_claim" in code:
+                issues.append(f"readable_sync:{code}")
+            if "missing_sync_marker" in code:
+                issues.append(f"readable_sync:{code}")
+            if "priority_contradiction" in code:
+                issues.append(f"readable_sync:{code}")
+        
+        return len(issues) == 0, issues
