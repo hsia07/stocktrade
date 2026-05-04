@@ -33,6 +33,7 @@
 - **要求**：04 修正版第 260 條規定 `automation/control/evidence_checker.py` 必須添加 Law 04 compliance check
 - **影響**：現可驗證 candidate 是否符合 Law 04 ✅
 - **完成階段**：Phase 2A（LAW-0416-INTEGRATION-PACK-PHASE-2A-LAW-COMPLIANCE-GATING-CONSTRUCTION）✅
+- **Law-0416 Phase 2A 狀態**：✅ **已完成並合併至 canonical**（commit b2e6047，已推送至 origin/work/canonical-mainline-repair-001）
 
 ### 缺口 2：所有輪次尚未逐輪法條補正
 - **現狀**：round_patch_mapping.md 已建立 14 個 round groups，但各輪尚未逐輪對照 04 修正版補正
@@ -47,16 +48,21 @@
 - **預計完成階段**：Phase 3
 
 ### 缺口 4：各 candidate evidence.json 尚未強制包含 `law_compliance: "04"`
-- **現狀**：現有 evidence package 尚未強制要求 `law_compliance: "04"`
+- **現狀**：✅ **已完成**（Phase 2B）
+  - evidence_checker.py 已強制檢查 `law_compliance: "04"`
+  - pre-push hook 會阻斷缺少 Law 04 compliance 的推送
+  - Phase 2B evidence package 已包含 `law_compliance: "04"`
 - **要求**：04 修正版第 261 條規定「Each candidate evidence.json must include `law_compliance: "04"`」
-- **影響**：無法追溯 candidate 是否符合 Law 04
-- **預計完成階段**：Phase 2（evidence_checker.py 增強）
+- **影響**：現可驗證所有 candidate 是否符合 Law 04 ✅
+- **完成階段**：Phase 2B（LAW-0416-PHASE-2B-RUNTIME-IMPLEMENTATION）✅
 
 ### 缺口 5：Merge-decision ready 條件尚未綁定 Law 04 compliance verified
-- **現狀**：round_patch_mapping.md 第 262 條規定「Merge-decision ready only when Law 04 compliance verified」
-- **要求**：尚未在 pre-push hook 或獨立 validator 中實作此檢查
-- **影響**：可能 merge 尚未完全符合 Law 04 的 candidate
-- **預計完成階段**：Phase 2/3
+- **現狀**：✅ **已完成**（Phase 2B）
+  - pre-push hook 已檢查 evidence.json 包含 `law_compliance: "04"`
+  - merge decision ready 現在需要 Law 04 compliance 驗證通過
+- **要求**：04 修正版第 262 條規定「Merge-decision ready only when Law 04 compliance verified」
+- **影響**：所有 merge 前都會驗證 Law 04 compliance ✅
+- **完成階段**：Phase 2B（LAW-0416-PHASE-2B-RUNTIME-IMPLEMENTATION）✅
 
 ### 缺口 6：readable/ 鏡像與正式 DOCX 尚未建立自動同步驗證
 - **現狀**：readable/ 目錄存在 Markdown 鏡像，但尚未建立自動同步驗證機制
@@ -72,6 +78,12 @@
 - **要求**：merge 前必須取得使用者明示簽字同意
 - **影響**：現可驗證 Law 04 compliance 證據 ✅
 - **完成階段**：Phase 2A（LAW-0416-INTEGRATION-PACK-PHASE-2A-LAW-COMPLIANCE-GATING-CONSTRUCTION）✅
+- **Law-0416 Phase 2B 狀態**：✅ **已完成並合併至 canonical**（commit 5d9ca6b，已推送至 origin/work/canonical-mainline-repair-001）
+  - Phase 2B runtime implementation：pause_state.py, api_automode_loop.py, status_scheduler.py, telegram_notifier.py
+  - Phase 2B evidence package 完整（6 個檔案，包含 law_compliance: "04"）
+- **Law-0416 Phase 3 狀態**：❌ **尚未開始**
+  - Phase 3 屬於 Law-0416 治理線自動化整合收尾，不等於主專案 161 輪大 Phase 推進
+  - 預計完成項目：readable/ 鏡像自動同步驗證、merge 前 repo 全量重審自動化、governance drift 完全自動化、RETURN_TO_CHATGPT 輸出驗證
 
 ### 缺口 8：governance drift 自動化檢查尚未完全落地
 - **現狀**：04 修正版第 67-75 條已定義 governance drift 檢查規則，但尚未完全自動化

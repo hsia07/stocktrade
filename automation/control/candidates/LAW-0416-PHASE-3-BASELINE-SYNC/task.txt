@@ -1,0 +1,23 @@
+Law-0416 Phase 3 Baseline Sync Task
+
+## Task Description
+Sync Law-0416 governance baseline files to reflect:
+- Phase 2A completed (merged to canonical at b2e6047)
+- Phase 2B completed (merged to canonical at 5d9ca6b)
+- Phase 3 not started
+- Law-0416 sub-phases ≠ main project 161-round Phase advancement
+
+## Scope
+Only 3 governance baseline files modified:
+1. _governance/law/CURRENT_GOVERNANCE_BASELINE.md
+2. _governance/law/04_交易系統法典補強版_20260416_修正版.md
+3. _governance/law/README.md
+
+## Out of Scope
+- No runtime/hook files touched
+- No main project phase advancement
+- No Phase 3 implementation
+
+## Authorization
+User explicit sign-off received for baseline sync only.
+No merge/push/promote/PR authorized this round.
