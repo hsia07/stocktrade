@@ -1,0 +1,28 @@
+{
+  "task_id": "LAW-0416-PHASE-3-AUTO-ADVANCE-FORBIDDEN",
+  "law_compliance": "04",
+  "evidence_checker_version": "1.3",
+  "candidate_branch": "work/candidate-law-0416-phase-3-auto-advance-forbidden-001",
+  "feature": "auto_advance_forbidden_check",
+  "methods_added": [
+    "check_auto_advance_forbidden(evidence, files_modified)"
+  ],
+  "forbidden_files": [
+    "automation/control/auto_advance.py"
+  ],
+  "forbidden_indicators": [
+    "auto_advance_used",
+    "auto_advance_modified",
+    "using_auto_advance"
+  ],
+  "reason_codes": [
+    "auto_advance_forbidden:file_touched:{file}",
+    "auto_advance_forbidden:indicator_found:{indicator}",
+    "auto_advance_forbidden:law_0416_phase_blocks:{file}"
+  ],
+  "files_modified": [
+    "automation/control/evidence_checker.py"
+  ],
+  "runtime_or_hook_files_touched": false,
+  "validation_timestamp": "2026-05-04T12:00:00+08:00"
+}

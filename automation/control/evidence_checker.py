@@ -294,3 +294,49 @@ class EvidenceChecker:
                     issues.append(f"{display_name}:{reason}")
         
         return len(issues) == 0, issues
+
+    # auto_advance.py forbidden check for Law-0416 phases (Phase 3)
+    FORBIDDEN_FILES = [
+        "automation/control/auto_advance.py",
+        "automation/control/auto_advance.py",
+    ]
+    
+    FORBIDDEN_INDICATORS = [
+        "auto_advance_used",
+        "auto_advance_modified",
+        "using_auto_advance",
+    ]
+    
+    def check_auto_advance_forbidden(self, evidence: Dict[str, Any], files_modified: List[str]) -> Tuple[bool, List[str]]:
+        """
+        Check that auto_advance.py is NOT used/modified in Law-0416 phase implementations.
+        Returns (is_valid, issues_list).
+        
+        Forbidden for Law-0416 phases:
+        - auto_advance.py must NOT be in files_modified
+        - evidence must NOT indicate auto_advance usage
+        - Any reference to auto_advance in Law-0416 phases is blocked
+        """
+        issues = []
+        
+        # Check files_modified list
+        if files_modified:
+            for file in files_modified:
+                if any(forbidden in file for forbidden in self.FORBIDDEN_FILES):
+                    issues.append(f"auto_advance_forbidden:file_touched:{file}")
+        
+        # Check evidence indicators
+        for indicator in self.FORBIDDEN_INDICATORS:
+            if evidence.get(indicator) is True:
+                issues.append(f"auto_advance_forbidden:indicator_found:{indicator}")
+        
+        # Check candidate_branch name for Law-0416 context
+        candidate_branch = evidence.get("candidate_branch", "")
+        if "law-0416" in candidate_branch.lower() or "0416" in candidate_branch:
+            # In Law-0416 phases, auto_advance.py is strictly forbidden
+            if files_modified:
+                for file in files_modified:
+                    if "auto_advance" in file.lower():
+                        issues.append(f"auto_advance_forbidden:law_0416_phase_blocks:{file}")
+        
+        return len(issues) == 0, issues
