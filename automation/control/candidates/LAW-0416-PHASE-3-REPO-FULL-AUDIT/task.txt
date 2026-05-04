@@ -1,0 +1,44 @@
+Task: Law-0416 Phase 3 - Repo Full Audit Automation Before Merge
+Phase: 3 (governance automation integration wrap-up)
+Topic: merge 前 repo 全量重審自動化 (repo full audit automation)
+
+Objective:
+Implement mechanical repo-wide governance audit before merge. After Phase 3 candidates complete, 
+automatically audit all candidates for evidence completeness, Law 04 compliance, 
+40hex validation, and governance consistency.
+
+Scope:
+- Perform repo-wide audit before allowing merge to canonical
+- Mechanically check canonical / candidate / evidence / baseline / Law-0416 phase consistency
+- Provide clear, machine-checkable reason codes for audit failures
+- Distinguish "audit failed" vs "ready for merge signoff"
+
+Allowed modifications:
+- automation/control/evidence_checker.py (add repo audit methods)
+- .git/hooks/pre-commit (call repo audit before commit)
+- .git/hooks/pre-push (call repo audit before push)
+
+Forbidden:
+- Include governance drift full automation in same candidate
+- Include RETURN_TO_CHATGPT output verification in same candidate
+- Modify any formal law content (02/03/04/README/CURRENT_GOVERNANCE_BASELINE)
+- Modify readable/mirror file content
+- Modify server_v2.py, server.py, index_v2.html
+- Modify main project phase / R026 / R031-R153
+- Modify trading core, execution, strategy, risk core
+
+Implementation:
+1. Added perform_pre_merge_repo_audit() to evidence_checker.py
+2. Added _audit_single_candidate() helper for per-candidate audit
+3. Added check_pre_merge_audit_ready() to distinguish audit fail vs merge ready
+4. Checks: evidence complete, Law 04 compliance, 40hex valid, single topic, no scope expansion
+5. Provides machine-checkable reason codes: repo_audit:*
+
+Verification:
+- repo_full_audit_rule_implemented: TRUE
+- pre_merge_repo_audit_machine_checkable: TRUE
+- reason_code_added: TRUE
+- can_distinguish_audit_fail_vs_merge_ready: TRUE
+
+Law compliance: 04 (Law 04 Article 261)
+Candidate branch: work/candidate-law-0416-phase-3-repo-full-audit-001
