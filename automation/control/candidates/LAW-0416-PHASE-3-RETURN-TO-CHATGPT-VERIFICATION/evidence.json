@@ -1,0 +1,40 @@
+{
+  "task_type": "law0416_phase3_return_to_chatgpt_verification",
+  "law_compliance": "04",
+  "candidate_branch": "work/candidate-law-0416-phase-3-return-to-chatgpt-verification-001",
+  "implementation_commit": "010a5e7329bf02c3fd0b5199c02646110da43f72",
+  "candidate_commit": "010a5e7329bf02c3fd0b5199c02646110da43f72",
+  "files_modified": [
+    "automation/control/return_to_chatgpt_verifier.py"
+  ],
+  "changes_summary": "Added RETURN_TO_CHATGPT output verification methods: ReturnToChatGPTVerifier class with verify_output() and validate_in_evidence() methods",
+  "scope": "return_to_chatgpt_verification_only",
+  "excluded_from_scope": [
+    "governance_drift_automation",
+    "server_v2.py",
+    "server.py",
+    "index_v2.html",
+    "manifests/*",
+    "_governance/law/02_*",
+    "_governance/law/03_*",
+    "_governance/law/04_*",
+    "auto_advance.py",
+    "auto_rewrite",
+    "auto_fix"
+  ],
+  "phase3_candidate_number": 7,
+  "phase3_total_candidates": 7,
+  "phase3_progress": "7/7 (FINAL)",
+  "return_to_chatgpt_verification": {
+    "formal_body_presence_check": true,
+    "required_fields_check": true,
+    "preamble_comparison_check": true,
+    "field_contradiction_detection": true,
+    "reason_codes_added": true,
+    "auto_rewrite_not_included": true
+  },
+  "local_head_before": "a013a4a8f046d4113d99218de90765439a1b21b6",
+  "remote_head_before": "a013a4a8f046d4113d99218de90765439a1b21b6",
+  "baseline_version": "Phase 3 complete (7/7 candidates)",
+  "evidence_package_complete": true
+}

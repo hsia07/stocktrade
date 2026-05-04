@@ -804,3 +804,15 @@ class EvidenceChecker:
             return False, issues
         
         return True, []
+
+from .return_to_chatgpt_verifier import ReturnToChatGPTVerifier
+
+    def verify_return_to_chatgpt(self, output_text):
+        '''Verify RETURN_TO_CHATGPT output using ReturnToChatGPTVerifier.'''
+        verifier = ReturnToChatGPTVerifier()
+        return verifier.verify_output(output_text)
+    
+    def validate_return_to_chatgpt_in_evidence(self, evidence):
+        '''Validate RETURN_TO_CHATGPT verification in evidence.'''
+        verifier = ReturnToChatGPTVerifier()
+        return verifier.validate_in_evidence(evidence)
