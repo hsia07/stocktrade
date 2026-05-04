@@ -1,6 +1,6 @@
 {
   "implementation_commit": "891d980e05e82393fcc9b42f5efabc69eaf9cf9e",
-  "evidence_head_commit": "891d980e05e82393fcc9b42f5efabc69eaf9cf9e",
+  "evidence_head_commit": "795dd9dd0657ca62c1ad3baf793500fd80d0784a",
   "candidate_branch": "work/candidate-law-0416-phase-3-readable-sync-verification-repair-001",
   "law_compliance": "04",
   "task_type": "phase3_readable_sync_verification",
