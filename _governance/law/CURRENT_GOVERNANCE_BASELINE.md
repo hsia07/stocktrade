@@ -1,7 +1,7 @@
 # CURRENT_GOVERNANCE_BASELINE（當前治理基準）
 
 ## 更新日期
-2026-04-29
+2026-05-04
 
 ## 當前正式法源優先序（嚴密封閉，不得逆轉）
 
@@ -65,10 +65,10 @@
 - **完成階段**：Phase 2B（LAW-0416-PHASE-2B-RUNTIME-IMPLEMENTATION）✅
 
 ### 缺口 6：readable/ 鏡像與正式 DOCX 尚未建立自動同步驗證
-- **現狀**：readable/ 目錄存在 Markdown 鏡像，但尚未建立自動同步驗證機制
-- **要求**：確保 readable/ 與正式 DOCX/MD 內容一致
-- **影響**：若 readable/ 與正式版有衝突，可能導致錯誤解釋
-- **預計完成階段**：Phase 3
+   - **現狀**：✅ **已完成**（Phase 3 - 第4个 candidate）
+   - **要求**：04 修正版第 250 條要求 readable/ 與正式版同步驗證
+   - **影響**：現可驗證 readable/ 是否與正式法源一致 ✅
+   - **完成階段**：Phase 3（LAW-0416-PHASE-3-READABLE-SYNC-VERIFICATION）✅
 
 ### 缺口 7：pre-push hook 尚未檢查 merge 簽字證據
 - **現狀**：✅ **已完成**（Phase 2A）
@@ -81,15 +81,24 @@
 - **Law-0416 Phase 2B 狀態**：✅ **已完成並合併至 canonical**（commit 5d9ca6b，已推送至 origin/work/canonical-mainline-repair-001）
   - Phase 2B runtime implementation：pause_state.py, api_automode_loop.py, status_scheduler.py, telegram_notifier.py
   - Phase 2B evidence package 完整（6 個檔案，包含 law_compliance: "04"）
-- **Law-0416 Phase 3 狀態**：❌ **尚未開始**
-  - Phase 3 屬於 Law-0416 治理線自動化整合收尾，不等於主專案 161 輪大 Phase 推進
-  - 預計完成項目：readable/ 鏡像自動同步驗證、merge 前 repo 全量重審自動化、governance drift 完全自動化、RETURN_TO_CHATGPT 輸出驗證
+   - **Law-0416 Phase 3 狀態**：✅ **已完成**（7/7 candidates 全部 merged + pushed）
+   - Phase 3 屬於 Law-0416 治理線自動化整合收尾，不等於主專案 161 輪大 Phase 推進
+   - **完成項目**（7/7 ✅）：
+     1. ✅ 40hex hash validation（LAW-0416-PHASE-3-40HEX-VALIDATION）
+     2. ✅ Merge/push separation（LAW-0416-PHASE-3-MERGE-PUSH-SEPARATION）
+     3. ✅ auto_advance forbidden（LAW-0416-PHASE-3-AUTO-ADVANCE-FORBIDDEN）
+     4. ✅ Readable sync verification（LAW-0416-PHASE-3-READABLE-SYNC-VERIFICATION）
+     5. ✅ Repo full audit（LAW-0416-PHASE-3-REPO-FULL-AUDIT）
+     6. ✅ Governance drift automation（LAW-0416-PHASE-3-GOVERNANCE-DRIFT）
+     7. ✅ RETURN_TO_CHATGPT verification（LAW-0416-PHASE-3-RETURN-TO-CHATGPT-VERIFICATION）
+   - **Law-0416 Phase 3 正式收口**：✅ 2026-05-04（commit 97d499ae8e2cf0c3c3feaedc1e6857a02ac6985d）
+   - **重要區分**：Phase 3 完成 ≠ 主專案 phase advancement
 
 ### 缺口 8：governance drift 自動化檢查尚未完全落地
-- **現狀**：04 修正版第 67-75 條已定義 governance drift 檢查規則，但尚未完全自動化
-- **要求**：必須以可重跑之 hook 或驗證腳本落地
-- **影響**：單輪 branch 可能污染治理檔
-- **預計完成階段**：Phase 2/3
+   - **現狀**：✅ **已完成**（Phase 3 - 第6个 candidate）
+   - **要求**：04 修正版第 67-75 條定義 governance drift 檢查規則
+   - **影響**：現可自動檢測並阻斷治理漂移 ✅
+   - **完成階段**：Phase 3（LAW-0416-PHASE-3-GOVERNANCE-DRIFT）✅
 
 ## 後續 Phase 2 / Phase 3 施工方向摘要
 
