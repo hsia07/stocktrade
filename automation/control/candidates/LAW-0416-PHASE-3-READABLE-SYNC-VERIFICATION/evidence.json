@@ -1,5 +1,5 @@
 {
-  "candidate_commit": "PLACEHOLDER_COMMIT_HASH",
+  "candidate_commit": "5ec52c5da857482847dbe59fa4a91fdde7e3796e",
   "candidate_branch": "work/candidate-law-0416-phase-3-readable-sync-verification-001",
   "law_compliance": "04",
   "task_type": "phase3_readable_sync_verification",
