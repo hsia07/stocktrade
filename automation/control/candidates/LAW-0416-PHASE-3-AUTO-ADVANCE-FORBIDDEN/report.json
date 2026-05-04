@@ -1,0 +1,31 @@
+{
+  "task_id": "LAW-0416-PHASE-3-AUTO-ADVANCE-FORBIDDEN",
+  "status": "candidate_ready",
+  "formal_status_code": "AUTO_ADVANCE_FORBIDDEN_COMPLETE",
+  "candidate_branch": "work/candidate-law-0416-phase-3-auto-advance-forbidden-001",
+  "feature": "auto_advance_forbidden_check_enforcement",
+  "evidence_checker_updated": true,
+  "methods_added": [
+    "check_auto_advance_forbidden(evidence, files_modified) -> (is_valid, issues_list)"
+  ],
+  "forbidden_check_integrated": true,
+  "evidence_checker_methods_updated": [
+    "check_completeness() - now calls check_auto_advance_forbidden()"
+  ],
+  "test_results": {
+    "total_tests": 5,
+    "passed": 5,
+    "failed": 0,
+    "test_cases": [
+      "test_auto_advance_file_modified_blocked",
+      "test_auto_advance_indicator_blocked",
+      "test_law_0416_phase_blocks_auto_advance",
+      "test_no_auto_advance_in_evidence",
+      "test_valid_auto_advance_free_evidence"
+    ]
+  },
+  "law_compliance": "04",
+  "validation_passed": true,
+  "scope_limited_to_single_topic": true,
+  "out_of_scope_items_excluded": true
+}

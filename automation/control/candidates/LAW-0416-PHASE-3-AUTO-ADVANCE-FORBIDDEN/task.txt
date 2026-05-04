@@ -1,0 +1,25 @@
+Law-0416 Phase 3: auto_advance.py Forbidden Check
+
+## Task Description
+Implement auto_advance.py forbidden check for Law-0416 phases.
+Only one topic: auto_advance.py forbidden check enforcement.
+
+## Scope
+1. Block auto_advance.py from being used in Law-0416 phase implementations
+2. Check files_modified list for auto_advance.py references
+3. Check evidence indicators for auto_advance usage
+4. Provide clear reason codes for violations
+
+## Out of Scope (this round)
+- merge/push separation enforcement (already completed in previous candidate)
+- 40hex hash validation (already completed in previous candidate)
+- readable/镜像同步验证 (defer to later Phase 3 item)
+- repo 全量重审自动化 (defer to later Phase 3 item)
+- RETURN_TO_CHATGPT 输出验证 (defer to later Phase 3 item)
+- usage feature / runtime feature / main project round logic
+- server_v2.py / server.py / index_v2.html modifications
+- main project phase / R026 / R031-R153 content
+
+## Authorization
+User explicit sign-off received for auto_advance forbidden check only.
+No merge/push/promote/PR authorized this round.
