@@ -1,0 +1,19 @@
+No Aider Used Declaration
+
+This candidate was created WITHOUT using Aider.
+
+## Manual Edits Performed
+1. _governance/law/CURRENT_GOVERNANCE_BASELINE.md - updated Phase 2A/2B status to completed, added Phase 3 not started
+2. _governance/law/04_交易系統法典補強版_20260416_修正版.md - added Section 十七 (Law-0416 governance line Phase status)
+3. _governance/law/README.md - added Law-0416 Phase status section
+
+## Evidence Package Files
+- task.txt
+- evidence.json
+- report.json
+- candidate.diff
+- test-results.txt
+
+## Authorization
+User explicit sign-off received for baseline sync only.
+No Aider involved in this candidate creation.
