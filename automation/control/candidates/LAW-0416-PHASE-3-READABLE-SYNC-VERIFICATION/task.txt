@@ -1,0 +1,45 @@
+Task: Law-0416 Phase 3 - Readable/Mirror Auto-Sync Verification
+Phase: 3 (governance automation integration wrap-up)
+Topic: readable / 鏡像自動同步驗證 (single topic, no scope expansion)
+
+Objective:
+Implement mechanical verification that readable/mirror files do not drift from or contradict formal sources.
+Formal source priority: 02 > 03 整合法條增補版 > 04 修正版 > 01 (must be preserved).
+
+Scope:
+- readable/mirror files must NOT claim to override formal sources
+- readable/mirror files must have sync markers linking to formal sources
+- readable/mirror content must not contradict formal source priority
+- readable files must NOT be modified (verification only, no content rewrite)
+- Only verification/drift detection, no file auto-rewrite
+
+Allowed modifications:
+- automation/control/evidence_checker.py (add readable sync verification methods)
+
+Forbidden:
+- Modify any formal law content (02/03/04/README/CURRENT_GOVERNANCE_BASELINE)
+- Modify readable/mirror file content
+- Include repo full audit automation in same candidate
+- Include governance drift full automation in same candidate
+- Include RETURN_TO_CHATGPT output verification in same candidate
+- Modify server_v2.py, server.py, index_v2.html
+- Modify main project phase / R026 / R031-R153
+- Modify trading core, execution, strategy, risk core
+
+Implementation:
+1. Added check_readable_mirror_sync() to evidence_checker.py
+2. Added _check_single_readable_file() helper for drift detection
+3. Added validate_readable_sync_in_evidence() for evidence validation
+4. Checks: override claims, sync markers, priority contradictions
+5. Provides machine-checkable reason codes for drift/contradiction
+
+Verification:
+- readable:override_claim_detected (if readable claims to override formal)
+- readable:missing_sync_markers (if no sync markers found)
+- readable:insufficient_sync_markers (if < 2 markers found)
+- readable:priority_contradiction (if formal priority 02>03>04>01 contradicted)
+- readable:priority_order_unclear (if "法源優先" mentioned but order unclear)
+- readable:file_read_error (if file cannot be read)
+
+Law compliance: 04 (Law 04 Article 261)
+Candidate branch: work/candidate-law-0416-phase-3-readable-sync-verification-001
