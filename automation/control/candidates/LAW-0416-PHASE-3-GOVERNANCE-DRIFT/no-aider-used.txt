@@ -1,0 +1,15 @@
+No AI Coding Assistant Used Certification
+
+Candidate: LAW-0416-PHASE-3-GOVERNANCE-DRIFT
+Branch: work/candidate-law-0416-phase-3-governance-drift-001
+Commit: 043813b2ec2f2aa12c0a88df429b62c6a0927f58
+
+Certification:
+- This candidate was implemented WITHOUT using any AI coding assistant (Aider, Cursor, Copilot, etc.)
+- All code was written manually following Law-0416 Phase 3 requirements
+- Evidence package created manually with proper 40hex hash verification
+- No automated code generation tools were used in this implementation
+
+Verified by: Manual implementation check
+Date: 2026-05-04
+Evidence: Commit tree contains only human-written code in evidence_checker.py
