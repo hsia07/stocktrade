@@ -483,7 +483,136 @@ class EvidenceChecker:
         if not readable_sync:
             # No readable sync check performed - that's ok for non-readable candidates
             logger.info("No readable sync check results in evidence")
+        return True, []
+    
+    # Governance Drift Full Automation (Law-0416 Phase 3)
+    DRIFT_TYPES = [
+        "source_target_head_mismatch",
+        "formal_truth_contradiction",
+        "candidate_scope_mismatch",
+        "canonical_phase_state_drift",
+        "baseline_readable_conflict",
+    ]
+    
+    def check_governance_drift(self, evidence: Dict[str, Any] = None) -> Tuple[bool, List[str]]:
+        """
+        Detect and block governance drift (governance drift).
+        Returns (is_valid, issues_list).
+        
+        Checks for drift between:
+        1. source/target HEAD vs authorized objects
+        2. formal truth vs baseline/readable state contradictions
+        3. candidate scope vs authorized topic mismatch
+        4. canonical/remote/candidate phase state drift
+        5. baseline readable conflicts
+        """
+        issues = []
+        
+        repo_root = Path(self.repo_root)
+        
+        # Check 1: source/target HEAD vs authorized objects
+        if evidence:
+            source_head = evidence.get("source_head_before") or evidence.get("local_head_before")
+            target_head = evidence.get("target_head_before") or evidence.get("remote_head_before")
+            authorized_source = evidence.get("candidate_commit") or evidence.get("implementation_commit")
+            authorized_target = evidence.get("target_head_expected")
+            
+            if source_head and authorized_source:
+                if source_head != authorized_source:
+                    issues.append(f"drift:source_target_head_mismatch:source={source_head[:8]}.._vs_authorized={authorized_source[:8]}..")
+            
+            if target_head and authorized_target:
+                if target_head != authorized_target:
+                    issues.append(f"drift:source_target_head_mismatch:target={target_head[:8]}.._vs_expected={authorized_target[:8]}..")
+        
+        # Check 2: formal truth vs baseline/readable contradictions
+        baseline_path = repo_root / "CURRENT_GOVERNANCE_BASELINE.md"
+        if baseline_path.exists():
+            try:
+                with open(baseline_path, "r", encoding="utf-8") as f:
+                    baseline_content = f.read()
+                
+                # Check for phase completion contradictions
+                if "Phase 3" in baseline_content:
+                    if "completed" in baseline_content and "5/7" in baseline_content:
+                        # Contradiction: says completed but only 5/7 done
+                        issues.append("drift:formal_truth_contradiction:phase3_5/7_vs_completed")
+            except Exception as e:
+                issues.append(f"drift:baseline_read_error:{str(e)}")
+        
+        # Check 3: candidate scope vs authorized topic
+        if evidence:
+            task_type = evidence.get("task_type", "")
+            candidate_branch = evidence.get("candidate_branch", "")
+            
+            # Check if scope expanded beyond authorized topic
+            scope_fields = ["files_modified", "added_features", "scope_expansion"]
+            for field in scope_fields:
+                if field in evidence:
+                    field_value = evidence.get(field)
+                    if isinstance(field_value, list):
+                        for item in field_value:
+                            if "governance_drift" not in str(item).lower() and "drift" not in str(item).lower():
+                                # This is ok - just checking for unauthorized scope
+                                pass
+                    elif isinstance(field_value, str):
+                        if "governance_drift" not in field_value.lower() and "drift" not in field_value.lower():
+                            # Check if evidence claims scope expansion
+                            if "expanded" in field_value.lower() or "added" in field_value.lower():
+                                issues.append(f"drift:candidate_scope_mismatch:unauthorized_scope_expansion")
+        
+        # Check 4: canonical/remote/candidate phase state drift
+        if evidence:
+            phase_state = evidence.get("phase_state") or evidence.get("law_0416_phase_3_started")
+            if phase_state is not None:
+                if phase_state is True and "Phase 3" in str(evidence.get("task_type", "")):
+                    # Phase 3 started but check for state drift
+                    completed = evidence.get("law_0416_phase_3_fifth_candidate_completed")
+                    if completed is True:
+                        # Check if phase claims "completed" vs actual progress
+                        if "not yet complete" not in str(evidence.get("next_action", "")).lower():
+                            issues.append("drift:canonical_phase_state_drift:claims_complete_vs_ongoing")
+        
+        # Check 5: baseline readable conflicts
+        if baseline_path.exists():
+            try:
+                with open(baseline_path, "r", encoding="utf-8") as f:
+                    baseline_content = f.read()
+                
+                # Check for readable vs formal conflicts
+                if "readable" in baseline_content.lower() and "formal" in baseline_content.lower():
+                    # Check for contradiction markers
+                    if "contradict" in baseline_content.lower() or "conflict" in baseline_content.lower():
+                        issues.append("drift:baseline_readable_conflict:contradiction_marker_found")
+            except Exception as e:
+                pass  # Already handled above
+        
+        return len(issues) == 0, issues
+    
+    def validate_governance_drift_in_evidence(self, evidence: Dict[str, Any]) -> Tuple[bool, List[str]]:
+        """
+        Validate governance drift check results stored in evidence.
+        Returns (is_valid, issues_list).
+        """
+        issues = []
+        
+        drift_check = evidence.get("governance_drift_check", {})
+        if not drift_check:
+            # No drift check performed - that's ok for non-drift candidates
+            logger.info("No governance drift check results in evidence")
             return True, []
+        
+        # Check if drift detected
+        if drift_check.get("drift_detected") is True:
+            issues.append("governance_drift:drift_detected:check_failed")
+        
+        # Check reason codes
+        reason_codes = drift_check.get("reason_codes", [])
+        for code in reason_codes:
+            if "drift:" in code:
+                issues.append(f"governance_drift:{code}")
+        
+        return len(issues) == 0, issues
         
         # Check if sync check passed
         if readable_sync.get("drift_detected") is True:

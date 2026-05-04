@@ -1,0 +1,32 @@
+LAW-0416 Phase 3: Governance Drift Automation (Sixth Candidate)
+
+Task: Implement governance drift detection and blocking automation in evidence_checker.py
+
+Scope (SINGLE TOPIC ONLY):
+- Add check_governance_drift() method to detect governance drift
+- Add validate_governance_drift_in_evidence() method to validate drift check results
+- Detect drift between source/target HEAD vs authorized objects
+- Detect formal truth vs baseline/readable contradictions
+- Detect candidate scope vs authorized topic mismatch
+- Detect canonical/remote/candidate phase state drift
+- Detect baseline readable conflicts
+
+Constraints:
+- Must NOT implement RETURN_TO_CHATGPT verification (that's the next candidate)
+- Must NOT modify server_v2.py, server.py, index_v2.html, manifests/*
+- Must NOT modify _governance/law/02_*, _governance/law/03_*, _governance/law/04_*
+- Must NOT use auto_advance.py (forbidden for Law-0416 phases)
+- Evidence package must include evidence.json with law_compliance: "04"
+- candidate.diff must be in commit tree (git ls-tree)
+
+Files modified:
+- automation/control/evidence_checker.py (add governance drift methods only)
+
+Phase 3 progress: 6/7 (this candidate)
+- 40hex hash validation ✓
+- Merge/push separation ✓
+- auto_advance forbidden ✓
+- Readable sync verification ✓
+- Repo full audit ✓
+- Governance drift automation (THIS)
+- RETURN_TO_CHATGPT verification (next)
