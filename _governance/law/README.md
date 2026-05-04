@@ -74,7 +74,6 @@ _governance/law/
 凡發生衝突，一律採『**較嚴格、較不可繞過、較可驗收、較可追責、較不利於自動化擴權**』之解釋。
 
 ## 現行治理補丁（已落地）
-
 - [x] `.githooks/pre-commit` - canonical direct commit guard
 - [x] `.githooks/pre-push` - canonical direct push guard
 - [x] `automation/control/evidence_checker.py` - evidence validator
@@ -82,6 +81,13 @@ _governance/law/
 - [x] `_governance/audit/merge_pre_evidence_gate.md`
 - [x] `_governance/audit/global_fail_rules.md`
 - [x] `_governance/audit/round_patch_mapping.md`
+
+## Law-0416 治理線 Phase 狀態
+- **Law-0416 Phase 1**（結構與索引建設）：✅ **已完成並合併至 canonical**（commit 1f8fd60）
+- **Law-0416 Phase 2A**（Law 04 合規閘門建設）：✅ **已完成並合併至 canonical**（commit b2e6047）
+- **Law-0416 Phase 2B**（runtime 實作與觸發邏輯）：✅ **已完成並合併至 canonical**（commit 5d9ca6b）
+- **Law-0416 Phase 3**（治理自動化整合收尾）：❌ **尚未開始**
+- **重要**：Law-0416 子階段為治理法典整合專案，不等於主專案 161 輪 Phase 1–4，二者嚴格區分
 
 ## 0416 整合法典整合缺口（尚未完成）
 
