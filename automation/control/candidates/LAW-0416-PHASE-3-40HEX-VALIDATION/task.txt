@@ -1,0 +1,22 @@
+Law-0416 Phase 3: 40hex Hash Validation Automation
+
+## Task Description
+Implement automated 40hex commit hash validation in evidence_checker.py.
+Only one topic: 40hex hash truth verification automation.
+
+## Scope
+1. Validate commit hashes are exactly 40 characters
+2. Validate hashes contain only hex characters (0-9, a-f, A-F)
+3. Validate hashes correspond to real git objects in repository
+4. Provide clear reason codes for validation failures
+
+## Out of Scope (this round)
+- merge/push separation enforcement (defer to next Phase 3 item)
+- auto_advance.py forbidden check (defer to next Phase 3 item)
+- usage feature / runtime feature / main project round logic
+- server_v2.py / server.py / index_v2.html modifications
+- main project phase / R026 / R031-R153 content
+
+## Authorization
+User explicit sign-off received for 40hex validation only.
+No merge/push/promote/PR authorized this round.

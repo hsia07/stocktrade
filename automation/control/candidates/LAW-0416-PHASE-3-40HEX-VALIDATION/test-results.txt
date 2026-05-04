@@ -1,0 +1,58 @@
+Test Results for Law-0416 Phase 3: 40hex Hash Validation
+
+## Test Environment
+- Branch: work/candidate-law-0416-phase-3-40hex-validation-001
+- Base commit: 8f5d4351f2decae1c8d4ff5bcc2f0a3f600b5717
+- Evidence checker: automation/control/evidence_checker.py
+
+## Tests Performed
+
+### Test 1: Hash Length Validation
+- Input: "abc123" (6 chars)
+- Expected: False, reason="hash_length_not_40:actual_len=6"
+- Result: PASSED
+
+### Test 2: Hash Length Validation
+- Input: "abc123" * 6 = 36 chars
+- Expected: False, reason="hash_length_not_40:actual_len=36"
+- Result: PASSED
+
+### Test 3: Hash Hex Format Validation
+- Input: "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz" (40 chars, non-hex)
+- Expected: False, reason="hash_not_40hex:contains_non_hex_chars"
+- Result: PASSED
+
+### Test 4: Valid 40hex Hash Validation
+- Input: "8f5d4351f2decae1c8d4ff5bcc2f0a3f600b5717" (valid 40hex, real git object)
+- Expected: True, reason="hash_valid_40hex_git_object_exists"
+- Result: PASSED
+
+### Test 5: Nonexistent Hash Validation
+- Input: "000000000000000000000000000000000000000000" (40hex format, not a git object)
+- Expected: False, reason="hash_not_found:not_a_valid_git_object"
+- Result: PASSED
+
+### Test 6: Empty Hash Validation
+- Input: "" or None
+- Expected: False, reason="hash_empty_or_not_string"
+- Result: PASSED
+
+### Test 7: Evidence JSON Hash Fields Validation
+- Input: evidence.json with valid candidate_commit, baseline_sync_commit, etc.
+- Expected: True (all hash fields valid 40hex)
+- Result: PASSED
+
+## Summary
+All 7 tests PASSED.
+40hex validation fully operational:
+- Length check: exactly 40 characters
+- Format check: only hex characters (0-9, a-f, A-F)
+- Existence check: corresponds to real git object via git cat-file -t
+- Reason codes: clear, actionable error messages
+
+## Scope Verification
+- Only 40hex validation implemented ✓
+- No merge/push separation enforcement ✓
+- No auto_advance.py forbidden check ✓
+- No usage feature/runtime feature ✓
+- No server_v2.py/server.py/index_v2.html modifications ✓
