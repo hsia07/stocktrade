@@ -1,0 +1,41 @@
+{
+  "candidate_name": "LAW-0416-PHASE-3-RETURN-TO-CHATGPT-VERIFICATION",
+  "task_type": "law0416_phase3_return_to_chatgpt_verification",
+  "phase": "Phase 3 - 7th and FINAL Candidate (7/7)",
+  "implementation_summary": "Added RETURN_TO_CHATGPT output verification/blocking automation",
+  "methods_added": [
+    "ReturnToChatGPTVerifier.verify_output() - machine-checkable verification",
+    "ReturnToChatGPTVerifier.validate_in_evidence() - evidence validation"
+  ],
+  "verification_capabilities": [
+    "Formal body (RETURN_TO_CHATGPT) presence check",
+    "Required fields completeness check (15 required fields)",
+    "Preamble vs formal body completeness comparison",
+    "Field contradiction detection (e.g., push_executed vs push_executed_true_or_false)",
+    "Clear reason codes for failures"
+  ],
+  "scope_compliance": "single_topic_return_to_chatgpt_verification_only",
+  "excluded_items": [
+    "governance_drift_automation",
+    "server_v2.py",
+    "server.py",
+    "index_v2.html",
+    "manifests",
+    "_governance/law/02_*",
+    "_governance/law/03_*",
+    "_governance/law/04_*",
+    "auto_advance.py",
+    "auto_rewrite",
+    "auto_fix"
+  ],
+  "files_modified": [
+    "automation/control/return_to_chatgpt_verifier.py"
+  ],
+  "evidence_package_complete": true,
+  "evidence_json_present": true,
+  "candidate_diff_present": true,
+  "law_compliance": "04",
+  "phase3_progress": "7/7 COMPLETE (FINAL CANDIDATE)",
+  "auto_rewrite_included": false,
+  "next_phase": "Phase 3 complete - ready for Phase 4 or main project advancement"
+}

@@ -1,0 +1,32 @@
+LAW-0416 Phase 3: RETURN_TO_CHATGPT Output Verification (7th and Final Candidate)
+
+Task: Implement RETURN_TO_CHATGPT output verification/blocking automation.
+
+Scope (SINGLE TOPIC ONLY):
+- Add RETURN_TO_CHATGPT output verification methods
+- Verify formal body presence (RETURN_TO_CHATGPT must exist)
+- Check required fields completeness (machine-checkable)
+- Block "preamble more complete than formal body" violations
+- Detect field contradictions within RETURN_TO_CHATGPT output
+- Provide clear reason codes for failures
+
+Constraints:
+- Must NOT do auto-rewrite or auto-fix
+- Must NOT modify server_v2.py, server.py, index_v2.html
+- Must NOT modify _governance/law/02_*, _governance/law/03_*, _governance/law/04_*
+- Evidence package must include evidence.json with law_compliance: "04"
+- candidate.diff must be in commit tree (git ls-tree)
+- Phase 3 progress: 7/7 (FINAL CANDIDATE)
+
+Files modified:
+- automation/control/return_to_chatgpt_verifier.py (main implementation)
+- automation/control/evidence_checker.py (minimal integration if needed)
+
+Phase 3 progress: 7/7 COMPLETE (this candidate)
+- 40hex hash validation ✓
+- Merge/push separation ✓
+- auto_advance forbidden ✓
+- Readable sync verification ✓
+- Repo full audit ✓
+- Governance drift automation ✓
+- RETURN_TO_CHATGPT verification (THIS - FINAL)
