@@ -1,0 +1,26 @@
+No Aider Used Declaration
+
+This candidate was created WITHOUT using Aider.
+
+## Manual Edits Performed
+1. automation/control/evidence_checker.py - Added auto_advance.py forbidden check:
+   - check_auto_advance_forbidden(evidence, files_modified) -> (is_valid, issues_list)
+   - FORBIDDEN_FILES = ["automation/control/auto_advance.py"]
+   - FORBIDDEN_INDICATORS = ["auto_advance_used", "auto_advance_modified", "using_auto_advance"]
+   - Integrated into check_completeness()
+
+## Evidence Package Files
+- task.txt
+- evidence.json
+- report.json
+- candidate.diff
+- no-aider-used.txt
+- test-results.txt
+
+## Scope
+Only one topic: auto_advance.py forbidden check for Law-0416 phases.
+No other Phase 3 items included.
+
+## Authorization
+User explicit sign-off received for auto_advance forbidden check only.
+No Aider involved in this candidate creation.

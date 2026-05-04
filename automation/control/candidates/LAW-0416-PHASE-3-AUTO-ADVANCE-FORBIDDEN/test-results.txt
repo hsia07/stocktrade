@@ -1,0 +1,48 @@
+Test Results for Law-0416 Phase 3: auto_advance.py Forbidden Check
+
+## Test Environment
+- Branch: work/candidate-law-0416-phase-3-auto-advance-forbidden-001
+- Base commit: 696e43cae1b8e857d80764e09a93d3506c516186
+- Evidence checker: automation/control/evidence_checker.py/
+
+## Tests Performed
+
+### Test 1: auto_advance.py File Modified Blocked
+- Input: evidence with files_modified containing "automation/control/auto_advance.py"
+- Expected: False, issues contain "auto_advance_forbidden:file_touched:automation/control/auto_advance.py"
+- Result: PASSED
+
+### Test 2: auto_advance.py Indicator Blocked
+- Input: evidence with "auto_advance_used": true
+- Expected: False, issues contain "auto_advance_forbidden:indicator_found:auto_advance_used"
+- Result: PASSED
+
+### Test 3: Law-0416 Phase Blocks auto_advance
+- Input: candidate_branch="work/candidate-law-0416-phase-3-xxx", files_modified contains "auto_advance.py"
+- Expected: False, issues contain "auto_advance_forbidden:law_0416_phase_blocks:auto_advance.py"
+- Result: PASSED
+
+### Test 4: No auto_advance in Evidence
+- Input: evidence with NO auto_advance references
+- Expected: True (no forbidden indicators found)
+- Result: PASSED
+
+### Test 5: Valid auto_advance-free Evidence
+- Input: evidence with auto_advance.py NOT in files_modified, no auto_advance indicators
+- Expected: True (auto_advance forbidden check passes)
+- Result: PASSED
+
+## Summary
+All 5 tests PASSED.
+auto_advance.py forbidden check fully operational:
+- Blocks auto_advance.py in files_modified for Law-0416 phases
+- Blocks auto_advance usage indicators (auto_advance_used, etc.)
+- Enforces governance drift prevention for Law-0416 phases
+- Clear reason codes for violations
+
+## Scope Verification
+- Only auto_advance forbidden check implemented ✓
+- No merge/push separation (already completed) ✓
+- No 40hex validation (already completed) ✓
+- No usage feature/runtime feature ✓
+- No server_v2.py/server.py/index_v2.html modifications ✓
