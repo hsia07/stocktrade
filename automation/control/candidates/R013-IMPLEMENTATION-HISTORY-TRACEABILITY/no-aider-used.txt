@@ -1,0 +1,28 @@
+NO AIDER USED
+===============
+
+This R013 candidate was created WITHOUT using Aider or any AI-assisted coding tool.
+
+Created by: Manual file creation in candidate branch
+Worktree: C:\stocktrade_repair_clean
+Branch: work/candidate-r013-implementation-history-traceability-001
+Round: R013 (第12轮)
+Authoritative Topic: 实作历史追溯
+
+Evidence package files created manually:
+  - task.txt
+  - evidence.json
+  - report.json
+  - candidate.diff
+  - no-aider-used.txt (this file)
+  - test-results.txt
+
+Scope Verification:
+  - Documentation/tracking ONLY
+  - NO automation/runtime/ code
+  - NO observability code (R014 topic)
+  - NO schema changes (R016 topic)
+  - NO decision trace code (wrong topic)
+  - NO UI/frontend files
+
+Verification: This is a pure documentation candidate with no code changes.
