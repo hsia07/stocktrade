@@ -1,0 +1,26 @@
+{
+  "candidate": "LAW-0416-PHASE-3-COMPLETION-BASELINE-SYNC-EVIDENCE-REPAIR",
+  "phase": "3",
+  "law": "0416",
+  "source_commit": "170b676428c98794449ab4daeb9d1020da31bb22",
+  "evidence_package": {
+    "task.txt": "present",
+    "evidence.json": "present",
+    "report.json": "present",
+    "candidate.diff": "present",
+    "no-aider-used.txt": "present",
+    "test-results.txt": "present"
+  },
+  "evidence_package_complete": true,
+  "evidence_package_count": 6,
+  "law_compliance": "04",
+  "repair_reason": "Original merge commit ef8083 failed pre-push hook 'No evidence.json found in commit changes'",
+  "baseline_sync_unchanged": true,
+  "runtime_hook_files_untouched": true,
+  "phase3_completion_status": "7/7 candidates completed",
+  "validation": {
+    "candidate_diff_nonempty": true,
+    "candidate_diff_in_commit_tree": true,
+    "evidence_json_law04": true
+  }
+}
