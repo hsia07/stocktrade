@@ -1,0 +1,19 @@
+NO AIDER USED
+===============
+
+This evidence repair candidate was created WITHOUT using Aider or any AI-assisted coding tool.
+
+Created by: Manual file creation in isolated worktree
+Worktree: C:\stocktrade_evidence_repair_002
+Branch: work/candidate-law-0416-phase-3-completion-baseline-sync-evidence-repair-002
+Source Base: 170b676428c98794449ab4daeb9d1020da31bb22
+
+Evidence package files created manually:
+  - task.txt
+  - evidence.json
+  - report.json
+  - candidate.diff
+  - no-aider-used.txt (this file)
+  - test-results.txt
+
+Verification: This is a pure evidence repair with no code changes.

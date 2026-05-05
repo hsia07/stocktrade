@@ -1,0 +1,16 @@
+Task: Law-0416 Phase 3 Completion Baseline Sync Evidence Repair
+Candidate: LAW-0416-PHASE-3-COMPLETION-BASELINE-SYNC-EVIDENCE-REPAIR
+Phase: 3
+Law: 0416
+Source Commit: 170b676428c98794449ab4daeb9d1020da31bb22
+Purpose: Repair evidence package to satisfy LAW 04 Article 261 requirement for merge signoff
+Evidence Package Required:
+  - task.txt (this file)
+  - evidence.json
+  - report.json
+  - candidate.diff
+  - no-aider-used.txt
+  - test-results.txt
+Repair Reason: Original merge commit ef8083 failed pre-push hook 'No evidence.json found in commit changes'
+Scope: Evidence package only, no baseline sync content modification
+Status: PENDING
