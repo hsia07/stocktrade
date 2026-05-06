@@ -1,0 +1,53 @@
+Task: NEA Long-Term Patch Registry Implementation
+Branch: work/candidate-nea-registry-001
+Commit: PENDING_COMMIT
+Law Compliance: 04
+
+Based on: NEA long-term patch registry structuring audit (read-only)
+Source: automation/control/patch_registry/nea_long_term.yaml
+
+Key Corrections from Audit:
+1. FIXED: patch_scope changed from "global (R028-R100)" to ROUND-SCOPED injection
+   - Injection only to specified rounds (R028-R033 for v0.1)
+   - Phase-gated: v0.1 mandatory, v0.2/v1.0 roadmap only
+   
+2. FIXED: File-name hard-lock avoided
+   - Registry uses capability/constraint/acceptance based naming
+   - NOT tied to specific implementation file names
+   
+3. PRESERVED: v0.1 mandatory vs v0.2/v1.0 reference-only separation
+   - v0.1: R028-R033 (auto-inject)
+   - v0.2: R034-R070 (reference only, NO injection to v0.1)
+   - v1.0: R071-R100 (reference only, NO injection to v0.1/v0.2)
+
+Registry Structure:
+- patch_namespace: NEA_LONG_TERM
+- global_guardrails: 6 items (apply to ALL rounds)
+- round_patch_map: R028-R100 (round-scoped, phase-gated)
+- phased_delivery_plan: v0.1 (mandatory), v0.2/v1.0 (roadmap)
+- acceptance_overrides: v0.1 mandatory, v0.2/v1.0 blocker rules
+- blocker_rules: 7 items (apply to ALL rounds)
+- evidence_requirements: trace_id, replay_log, append_only, law_04
+
+Auto-Injection Targets (v0.1 mandatory):
+- R028: Market Reality Layer (cost/slippage/fill)
+- R029: Cost/Slippage/Fill Probability modeling
+- R030: Latency/Tail Risk/Uncertainty variables
+- R031: Trace/Replay/Evidence Package
+- R032: Append-only audit log
+- R033: Library layering (Pydantic/scikit-learn)
+
+Roadmap Only (NO injection to v0.1/v0.2):
+- R034-R050: v0.2 features (latency optimization, tail risk)
+- R051-R070: Advanced risk models (DuckDB, PyArrow, SQLAlchemy)
+- R071-R100: v1.0 full stack (OTel, backtrader, Riskfolio, CVXPY)
+
+Files Modified:
+- automation/control/patch_registry/nea_long_term.yaml (new - registry)
+- automation/control/patch_registry/README_nea_long_term.md (new - human-readable doc)
+- automation/control/candidates/NEA-REGISTRY-001/ (6/6 evidence package)
+
+Next Action:
+- Registry ready for automated injection into R028+ candidates
+- DO NOT start R028 implementation in this round
+- User signoff required before R028 start

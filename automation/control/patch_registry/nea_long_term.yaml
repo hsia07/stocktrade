@@ -1,0 +1,269 @@
+# NEA Long-Term Patch Registry (stocktrade)
+# Law Compliance: 04
+# Source: NEA long-term patch registry structuring audit
+# Registry Type: capability/constraint/acceptance based (NOT file-name hard-lock)
+
+patch_namespace: NEA_LONG_TERM
+
+# ============================================
+# 1. GLOBAL GUARDRAILS (apply to ALL rounds R028-R100)
+# ============================================
+global_guardrails:
+  - id: NEA_GLOBAL_001
+    rule: "NEA deterministic gate = FINAL decision authority"
+    enforcement: mandatory_all_rounds
+    
+  - id: NEA_GLOBAL_002
+    rule: "No LLM/AI override for risk decisions"
+    enforcement: mandatory_all_rounds
+    
+  - id: NEA_GLOBAL_003
+    rule: "Taiwan market constraints MANDATORY (±10%, T+2, 集合竞价, 零股/整股)"
+    enforcement: mandatory_all_rounds
+    
+  - id: NEA_GLOBAL_004
+    rule: "Market Reality Layer MUST be integrated (cost/slippage/fill)"
+    enforcement: mandatory_relevant_rounds
+    
+  - id: NEA_GLOBAL_005
+    rule: "Trace/Replay evidence package REQUIRED for all releases"
+    enforcement: mandatory_all_rounds
+    
+  - id: NEA_GLOBAL_006
+    rule: "Append-only audit log (no deletion/modification of history)"
+    enforcement: mandatory_all_rounds
+
+# ============================================
+# 2. ROUND-SCOPED PATCH MAP (phase-gated injection)
+# ============================================
+# NOTE: patch_scope is ROUND-SCOPED (NOT global R028-R100)
+# Injection only to specified rounds, phase-gated by v0.1/v0.2/v1.0
+round_patch_map:
+  # --- v0.1 MANDATORY (auto-inject to these rounds) ---
+  - round: R028
+    phase: v0.1
+    injection_type: mandatory
+    capabilities:
+      - "Market Reality Layer base integration"
+      - "Cost/slippage/fill probability models"
+      - "Taiwan market constraints (±10%, T+2)"
+    forbidden_scope:
+      - "No execution/broker/order placement"
+      - "No v0.2/v1.0 features"
+    machine_checkable:
+      - "market_reality_module_exists"
+      - "taiwan_constraints_enforced"
+      - "cost_slippage_fill_models_present"
+      
+  - round: R029
+    phase: v0.1
+    injection_type: mandatory
+    capabilities:
+      - "Cost tracking (transaction tax, fees, slippage)"
+      - "Slippage monitoring (expected vs actual)"
+      - "Fill probability modeling"
+    forbidden_scope:
+      - "No latency optimization (v0.2)"
+      - "No tail risk models (v0.2)"
+    machine_checkable:
+      - "cost_tracking_implemented"
+      - "slippage_monitoring_active"
+      - "fill_probability_model_exists"
+      
+  - round: R030
+    phase: v0.1
+    injection_type: mandatory
+    capabilities:
+      - "Latency measurement (order-to-execution time)"
+      - "Tail risk assessment (extreme market events)"
+      - "Uncertainty variables (regime uncertainty, confidence calibration)"
+    forbidden_scope:
+      - "No advanced library layering (v0.2)"
+    machine_checkable:
+      - "latency_tracking_implemented"
+      - "tail_risk_model_exists"
+      - "uncertainty_variables_tracked"
+      
+  - round: R031
+    phase: v0.1
+    injection_type: mandatory
+    capabilities:
+      - "Trace/Replay framework (trace_id, replay_log)"
+      - "Evidence package contract (6/6 with law_compliance: 04)"
+      - "Append-only audit log (no modification of history)"
+    forbidden_scope:
+      - "No OTel/backtrader integration (v1.0)"
+    machine_checkable:
+      - "trace_replay_framework_exists"
+      - "evidence_package_contract_enforced"
+      - "append_only_audit_log_active"
+      
+  - round: R032
+    phase: v0.1
+    injection_type: mandatory
+    capabilities:
+      - "Append-only decision record (timestamp, decision, rationale, actor)"
+      - "ctx.trace_id for decision tracing"
+      - "Decision chain linking related decisions"
+    forbidden_scope:
+      - "No DuckDB/PyArrow/SQLAlchemy (v0.2)"
+    machine_checkable:
+      - "append_only_decision_record_exists"
+      - "trace_id_implemented"
+      - "decision_chain_linking_active"
+      
+  - round: R033
+    phase: v0.1
+    injection_type: mandatory
+    capabilities:
+      - "Library layering: Pydantic (data validation)"
+      - "Library layering: scikit-learn (calibration, metrics)"
+      - "requirements.txt / setup.py updates"
+    forbidden_scope:
+      - "No CVXPY/Riskfolio/backtrader/OTel (v1.0)"
+    machine_checkable:
+      - "pydantic_integration"
+      - "scikit_learn_integration"
+      - "library_requirements_documented"
+
+  # --- v0.2 ROADMAP (reference ONLY, NO injection to v0.1 rounds) ---
+  - round: R034-R050
+    phase: v0.2
+    injection_type: roadmap_only
+    reference_capabilities:
+      - "Advanced latency optimization"
+      - "Tail risk modeling (CVaR, extreme value theory)"
+      - "Library layering: DuckDB (analytics), PyArrow (data interchange)"
+    note: "NOT for v0.1 injection; v0.2 rounds only"
+    
+  - round: R051-R070
+    phase: v0.2
+    injection_type: roadmap_only
+    reference_capabilities:
+      - "Library layering: SQLAlchemy (ORM), Alembic (migrations)"
+      - "Advanced uncertainty variables"
+      - "Portfolio-level risk aggregation"
+    note: "NOT for v0.1/v0.2 injection; v1.0 rounds only"
+
+  # --- v1.0 ROADMAP (reference ONLY, NO injection to v0.1/v0.2) ---
+  - round: R071-R100
+    phase: v1.0
+    injection_type: roadmap_only
+    reference_capabilities:
+      - "Full NEA integration (cost + slippage + fill + latency + tail risk)"
+      - "Library stack: OTel (observability), backtrader (backtest), Riskfolio (portfolio)"
+      - "Advanced regime switching (entropy, hysteresis)"
+      - "Portfolio-level optimization (correlation-aware, VaR/CVaR)"
+    note: "NOT for v0.1/v0.2; v1.0 only"
+
+# ============================================
+# 3. PHASED DELIVERY PLAN
+# ============================================
+phased_delivery_plan:
+  v0.1:
+    description: "Base integration (mandatory for R028-R033)"
+    mandatory_for: [R028, R029, R030, R031, R032, R033]
+    deliverables:
+      - "Market Reality Layer base integration"
+      - "Cost/slippage/fill models"
+      - "Trace/Replay framework"
+      - "Append-only audit log"
+      - "Evidence package contract (law_compliance: 04)"
+      - "Pydantic + scikit-learn integration"
+    blocker_rules:
+      - "NO v0.2 features in v0.1 rounds"
+      - "NO v1.0 features in v0.1 rounds"
+      
+  v0.2:
+    description: "Enhanced models + library layering (roadmap)"
+    roadmap_for: [R034-R050, R051-R070]
+    deliverables:
+      - "Latency optimization"
+      - "Tail risk modeling"
+      - "Library layering: DuckDB, PyArrow, SQLAlchemy, Alembic"
+      - "Advanced uncertainty variables"
+    note: "NO injection to v0.1 rounds"
+    
+  v1.0:
+    description: "Full stack integration (roadmap)"
+    roadmap_for: [R071-R100]
+    deliverables:
+      - "Full NEA integration"
+      - "Complete library stack: OTel, backtrader, Riskfolio, CVXPY"
+      - "Advanced regime switching"
+      - "Portfolio-level optimization"
+    note: "NO injection to v0.1/v0.2 rounds"
+
+# ============================================
+# 4. ACCEPTANCE OVERRIDES (v0.1 mandatory, v0.2/v1.0 blocked)
+# ============================================
+acceptance_overrides:
+  v0.1:
+    mandatory:
+      - "MUST have Market Reality Layer integration"
+      - "MUST have Trace/Replay evidence package"
+      - "MUST have append-only audit log"
+      - "MUST have evidence.json with law_compliance: 04"
+    blocker:
+      - "v0.2 features in v0.1 = BLOCK"
+      - "v1.0 features in v0.1 = BLOCK"
+      
+  v0.2:
+    mandatory:
+      - "MUST have latency optimization"
+      - "MUST have tail risk modeling"
+    blocker:
+      - "v1.0 features in v0.2 = BLOCK"
+      
+  v1.0:
+    mandatory:
+      - "Full library stack integrated"
+      - "NO bypass of deterministic gate"
+
+# ============================================
+# 5. BLOCKER RULES (apply to ALL rounds)
+# ============================================
+blocker_rules:
+  - id: BLOCK_001
+    rule: "Any round trying to use LLM/AI for risk decisions"
+    action: BLOCK
+    
+  - id: BLOCK_002
+    rule: "Any round missing Market Reality Layer integration (if applicable)"
+    action: BLOCK
+    
+  - id: BLOCK_003
+    rule: "Any round without proper evidence package (6/6, law_compliance: 04)"
+    action: BLOCK
+    
+  - id: BLOCK_004
+    rule: "Any round trying to modify append-only audit log"
+    action: BLOCK
+    
+  - id: BLOCK_005
+    rule: "Any round injecting v1.0 features into v0.1"
+    action: BLOCK
+    
+  - id: BLOCK_006
+    rule: "Any round bypassing Taiwan market constraints (±10%, T+2)"
+    action: BLOCK
+    
+  - id: BLOCK_007
+    rule: "Any round trying to use file-name hard-lock instead of capability/constraint"
+    action: BLOCK
+
+# ============================================
+# 6. EVIDENCE REQUIREMENTS (for all rounds with NEA patches)
+# ============================================
+evidence_requirements:
+  mandatory_fields:
+    - "trace_id"
+    - "replay_log"
+    - "append_only_audit: true"
+    - "law_compliance: 04"
+    - "market_reality_integration: true"
+    - "taiwan_constraints_enforced: true"
+  machine_checkable:
+    - "evidence.patched_with: NEA_LONG_TERM"
+    - "evidence.ne_a_capabilities_present: true"
+    - "evidence.ne_a_constraints_present: true"

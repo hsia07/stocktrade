@@ -1,0 +1,35 @@
+No aider used in this implementation task.
+Tool: opencode (CLI tool)
+Registry implementation: Created from scratch based on audit
+Implementation: NEA long-term patch registry (YAML + README)
+Human-readable doc: README_nea_long_term.md created
+
+Key Corrections Applied:
+1. FIXED: patch_scope changed from "global (R028-R100)" to ROUND-SCOPED
+   - Injection only to specified rounds (R028-R033 for v0.1)
+   - Phase-gated: v0.1 mandatory, v0.2/v1.0 roadmap only
+   
+2. FIXED: File-name hard-lock avoided
+   - Registry uses capability/constraint/acceptance based naming
+   - NOT tied to specific implementation file names
+   
+3. PRESERVED: v0.1 mandatory vs v0.2/v1.0 reference-only separation
+   - v0.1: R028-R033 (auto-inject)
+   - v0.2: R034-R070 (reference only, NO injection to v0.1)
+   - v1.0: R071-R100 (reference only, NO injection to v0.1/v0.2)
+
+Single commit structure: YES
+User signoff required: YES (before R028 start)
+
+Registry Structure:
+- patch_namespace: NEA_LONG_TERM
+- global_guardrails: 6 items (apply to ALL rounds)
+- round_patch_map: R028-R100 (round-scoped, phase-gated)
+- phased_delivery_plan: v0.1 (mandatory), v0.2/v1.0 (roadmap)
+- acceptance_overrides: v0.1 mandatory, v0.2/v1.0 blocker rules
+- blocker_rules: 7 items (apply to ALL rounds)
+- evidence_requirements: trace_id, replay_log, append_only, law_04
+
+Next Action:
+- Registry ready for automated injection into R028+ candidates
+- DO NOT start R028 implementation in this round
