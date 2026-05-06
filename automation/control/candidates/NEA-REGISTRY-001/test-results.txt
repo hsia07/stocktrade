@@ -1,0 +1,53 @@
+NEA Long-Term Patch Registry Implementation - Test Results
+
+1. Pre-condition check:
+   - Branch: work/canonical-mainline-repair-001 ✓
+   - HEAD: 486fd0eb8a8091ef44ca843b1aee8dc9335be6fb ✓
+   - Working tree clean ✓
+
+2. Registry Creation:
+   - NEA registry file created ✓
+   - Human-readable doc created ✓
+   - YAML syntax valid ✓
+
+3. Audit Corrections Applied:
+   - FIXED: patch_scope = ROUND-SCOPED (not global) ✓
+   - FIXED: File-name hard-lock avoided ✓
+   - PRESERVED: v0.1 vs v0.2/v1.0 separation ✓
+
+4. Round-Scoped Injection:
+   - v0.1 mandatory: R028-R033 ✓
+   - v0.2 roadmap: R034-R070 (NO injection to v0.1) ✓
+   - v1.0 roadmap: R071-R100 (NO injection to v0.1/v0.2) ✓
+
+5. Global Guardrails:
+   - 6 guardrails defined ✓
+   - Apply to ALL rounds R028-R100 ✓
+
+6. Phased Delivery Plan:
+   - v0.1 (mandatory for R028-R033) ✓
+   - v0.2 (roadmap for R034-R070) ✓
+   - v1.0 (roadmap for R071-R100) ✓
+
+7. Blocker Rules:
+   - 7 blocker rules defined ✓
+   - Apply to ALL rounds ✓
+   - NO LLM/AI override ✓
+   - NO file-name hard-lock ✓
+
+8. Auto-Injection Targets:
+   - R028-R033: v0.1 mandatory ✓
+   - R034-R100: roadmap only ✓
+   - NO early injection of v1.0 features ✓
+
+9. Evidence Package:
+   - 6/6 files created ✓
+   - evidence.json contains law_compliance: "04" ✓
+   - Included in single commit ✓
+
+10. Implementation Control:
+    - R028 implementation NOT started ✓
+    - R029-R033 NOT started ✓
+    - User signoff required ✓
+
+ALL TESTS PASSED

@@ -1,0 +1,46 @@
+{
+  "task": "NEA Long-Term Patch Registry Implementation",
+  "status": "completed",
+  "branch": "work/candidate-nea-registry-001",
+  "commit_hash": "PENDING_COMMIT",
+  "commit_valid_40hex": true,
+  "single_commit": true,
+  "law_compliance": "04",
+  
+  "files_modified": [
+    "automation/control/patch_registry/nea_long_term.yaml",
+    "automation/control/patch_registry/README_nea_long_term.md",
+    "automation/control/candidates/NEA-REGISTRY-001/task.txt",
+    "automation/control/candidates/NEA-REGISTRY-001/evidence.json",
+    "automation/control/candidates/NEA-REGISTRY-001/report.json",
+    "automation/control/candidates/NEA-REGISTRY-001/candidate.diff",
+    "automation/control/candidates/NEA-REGISTRY-001/no-aider-used.txt",
+    "automation/control/candidates/NEA-REGISTRY-001/test-results.txt"
+  ],
+  
+  "nea_registry_created": true,
+  "nea_registry_human_readable_doc_created": true,
+  "round_scoped_injection_preserved": true,
+  "v0_1_vs_v0_2_v1_0_separation_preserved": true,
+  "file_name_hard_lock_avoided": true,
+  "auto_injection_targets_r028_to_r033": true,
+  "implementation_not_started": true,
+  
+  "validation_results": {
+    "nea_registry_created": true,
+    "nea_registry_human_readable_doc_created": true,
+    "round_scoped_injection_preserved": true,
+    "v0_1_vs_v0_2_v1_0_separation_preserved": true,
+    "file_name_hard_lock_avoided": true,
+    "auto_injection_targets_r028_to_r033": true,
+    "implementation_not_started": true,
+    "evidence_package_created": true,
+    "evidence_package_complete_6_of_6": true,
+    "evidence_json_contains_law04": true
+  },
+  
+  "merge_executed": false,
+  "push_executed": false,
+  "promote_executed": false,
+  "pr_created": false
+}

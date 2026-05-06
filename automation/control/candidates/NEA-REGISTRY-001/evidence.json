@@ -1,0 +1,95 @@
+{
+  "task": "NEA Long-Term Patch Registry Implementation",
+  "branch": "work/candidate-nea-registry-001",
+  "commit_hash": "PENDING_COMMIT",
+  "law_compliance": "04",
+  "source": "NEA long-term patch registry structuring audit",
+  "registry_file": "automation/control/patch_registry/nea_long_term.yaml",
+  "readme_file": "automation/control/patch_registry/README_nea_long_term.md",
+  
+  "corrections_from_audit": {
+    "patch_scope_fixed": "Changed from 'global (R028-R100)' to ROUND-SCOPED injection",
+    "file_name_hard_lock_avoided": true,
+    "v0_1_vs_v0_2_v1_0_separation_preserved": true
+  },
+  
+  "global_guardrails": [
+    {"id": "NEA_GLOBAL_001", "rule": "NEA deterministic gate = FINAL decision authority"},
+    {"id": "NEA_GLOBAL_002", "rule": "No LLM/AI override for risk decisions"},
+    {"id": "NEA_GLOBAL_003", "rule": "Taiwan market constraints MANDATORY (±10%, T+2)"},
+    {"id": "NEA_GLOBAL_004", "rule": "Market Reality Layer MUST be integrated"},
+    {"id": "NEA_GLOBAL_005", "rule": "Trace/Replay evidence package REQUIRED"},
+    {"id": "NEA_GLOBAL_006", "rule": "Append-only audit log (no deletion/modification)"}
+  ],
+  
+  "round_patch_map": {
+    "v0_1_mandatory": ["R028", "R029", "R030", "R031", "R032", "R033"],
+    "v0_2_roadmap": ["R034-R050", "R051-R070"],
+    "v1_0_roadmap": ["R071-R100"]
+  },
+  
+  "phased_delivery_plan": {
+    "v0_1": {
+      "description": "Base integration (mandatory for R028-R033)",
+      "deliverables": ["Market Reality Layer", "Cost/Slippage/Fill", "Trace/Replay", "Append-only audit", "Evidence package (law_04)", "Pydantic/scikit-learn"]
+    },
+    "v0_2": {
+      "description": "Enhanced models + library layering (roadmap)",
+      "deliverables": ["Latency optimization", "Tail risk modeling", "DuckDB/PyArrow/SQLAlchemy"]
+    },
+    "v1_0": {
+      "description": "Full stack integration (roadmap)",
+      "deliverables": ["Full NEA integration", "OTel/backtrader/Riskfolio/CVXPY", "Portfolio optimization"]
+    }
+  },
+  
+  "acceptance_overrides": {
+    "v0_1": {
+      "mandatory": ["Market Reality Layer", "Trace/Replay", "Append-only audit", "law_compliance: 04"],
+      "blocker": ["NO v0.2 features in v0.1", "NO v1.0 features in v0.1"]
+    },
+    "v0_2": {
+      "mandatory": ["Latency optimization", "Tail risk modeling"],
+      "blocker": ["NO v1.0 features in v0.2"]
+    },
+    "v1_0": {
+      "mandatory": ["Full library stack integrated"],
+      "blocker": ["NO bypass of deterministic gate"]
+    }
+  },
+  
+  "blocker_rules": [
+    {"id": "BLOCK_001", "rule": "Any round trying to use LLM/AI for risk decisions"},
+    {"id": "BLOCK_002", "rule": "Any round missing Market Reality Layer integration"},
+    {"id": "BLOCK_003", "rule": "Any round without proper evidence package (6/6, law_04)"},
+    {"id": "BLOCK_004", "rule": "Any round trying to modify append-only audit log"},
+    {"id": "BLOCK_005", "rule": "Any round injecting v1.0 features into v0.1"},
+    {"id": "BLOCK_006", "rule": "Any round bypassing Taiwan market constraints (±10%, T+2)"},
+    {"id": "BLOCK_007", "rule": "Any round using file-name hard-lock instead of capability/constraint"}
+  ],
+  
+  "evidence_requirements": {
+    "mandatory_fields": ["trace_id", "replay_log", "append_only_audit: true", "law_compliance: 04"],
+    "machine_checkable": ["evidence.patched_with: NEA_LONG_TERM", "evidence.ne_a_capabilities_present: true"]
+  },
+  
+  "auto_injection_targets": {
+    "v0_1_mandatory": {
+      "R028": ["Market Reality Layer (cost/slippage/fill)"],
+      "R029": ["Cost/Slippage/Fill Probability modeling"],
+      "R030": ["Latency/Tail Risk/Uncertainty variables"],
+      "R031": ["Trace/Replay/Evidence Package"],
+      "R032": ["Append-only audit log"],
+      "R033": ["Library layering (Pydantic/scikit-learn)"]
+    },
+    "roadmap_only": {
+      "R034-R050": "v0.2 features (NO injection to v0.1)",
+      "R051-R070": "Advanced risk models (NO injection to v0.1/v0.2)",
+      "R071-R100": "v1.0 full stack (NO injection to v0.1/v0.2)"
+    }
+  },
+  
+  "implementation_not_started": true,
+  "next_task_type": "R028 Market Reality Layer implementation",
+  "user_signoff_required": true
+}
