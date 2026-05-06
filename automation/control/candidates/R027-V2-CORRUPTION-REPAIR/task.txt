@@ -1,0 +1,14 @@
+Task: R027 v2 Corruption Repair (Hard-Rebuild)
+Branch: work/candidate-r027-v2-corruption-repair-004
+Target File: _governance/law/161轮正式重编主题总表_唯一基准版_v2.md
+Target Line: 58
+Corruption: | R027 | 原第26轮 | 套利 / 收盘保护机制 |
+Correct Content: | R027 | 原第26轮 | 套利 / 套利保护机制 |
+Authority: _governance/audit/161_round_law_source_normalization_matrix.md Line 44
+Law Compliance: 04
+Topic A Applied: YES
+Topic B Rejected: YES (no repo-internal evidence)
+Scope: Single entry in single file (v2 table only)
+Repair Method: Byte-safe Python script (do_repair.py), deleted after use
+Validation: File readback verified correct Topic A applied
+Single Commit: YES (repair + evidence package in one commit)

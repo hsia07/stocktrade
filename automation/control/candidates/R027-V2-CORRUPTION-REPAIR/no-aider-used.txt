@@ -1,0 +1,6 @@
+No aider used in this repair task.
+Tool: opencode (CLI tool)
+Repair method: Python script (do_repair.py)
+Human authorization: NOT required (automated byte-safe repair)
+Script deleted after use: YES
+Single commit structure: YES

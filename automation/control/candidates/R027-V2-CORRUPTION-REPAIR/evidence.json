@@ -1,0 +1,27 @@
+{
+  "task": "R027 v2 corruption repair (hard-rebuild)",
+  "branch": "work/candidate-r027-v2-corruption-repair-004",
+  "commit_hash": "PENDING_COMMIT",
+  "target_file": "_governance/law/161轮正式重编主题总表_唯一基准版_v2.md",
+  "target_line": 58,
+  "corrupted_entry": "| R027 | 原第26轮 | 套利 / 收盘保护机制 |",
+  "correct_entry": "| R027 | 原第26轮 | 套利 / 套利保护机制 |",
+  "authority_source": "_governance/audit/161_round_law_source_normalization_matrix.md",
+  "authority_line": 44,
+  "topic_a": "套利 / 套利保护机制",
+  "topic_b": "开盘 / 收盘保护机制",
+  "topic_a_applied": true,
+  "topic_b_applied": false,
+  "topic_b_evidence_count": 0,
+  "law_compliance": "04",
+  "repair_method": "byte-safe Python script",
+  "scope": "single entry, single file",
+  "validation_passed": true,
+  "single_commit": true,
+  "machine_checkable": {
+    "r027_line_unique": true,
+    "correct_content": true,
+    "no_corrupted_entry": true,
+    "single_file_modified": true
+  }
+}

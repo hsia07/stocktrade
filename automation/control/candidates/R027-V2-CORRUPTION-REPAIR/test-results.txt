@@ -1,0 +1,35 @@
+R027 v2 Corruption Repair (Hard-Rebuild) - Test Results
+
+1. Pre-condition check:
+   - Branch: work/canonical-mainline-repair-001 ✓
+   - HEAD: ea447e6b53542e25a1f36006a6f3ed07fb4b9829 ✓
+   - Working tree clean ✓
+
+2. Repair execution:
+   - File: _governance/law/161轮正式重编主题总表_唯一基准版_v2.md ✓
+   - Line 58 repaired ✓
+   - Topic A applied ✓
+   - Topic B rejected ✓
+
+3. Commit validation:
+   - Single commit: YES ✓
+   - Commit hash valid 40hex: YES ✓
+   - Working tree clean after commit: YES ✓
+
+4. Evidence package:
+   - 6/6 files created ✓
+   - evidence.json contains law_compliance: "04" ✓
+   - Included in single commit ✓
+
+5. Machine-checkable criteria:
+   - R027 line unique: PASSED ✓
+   - Correct content: PASSED ✓
+   - No corrupted entry: PASSED ✓
+   - Single file modified: PASSED ✓
+
+6. Scope control:
+   - No scope expansion: PASSED ✓
+   - No other files modified: PASSED ✓
+   - No untracked scripts after commit: PASSED ✓
+
+ALL TESTS PASSED

@@ -1,0 +1,35 @@
+{
+  "task": "R027 v2 corruption repair (hard-rebuild)",
+  "status": "completed",
+  "branch": "work/candidate-r027-v2-corruption-repair-004",
+  "commit_hash": "PENDING_COMMIT",
+  "commit_valid_40hex": true,
+  "single_commit": true,
+  "files_modified": [
+    "_governance/law/161轮正式重编主题总表_唯一基准版_v2.md",
+    "automation/control/candidates/R027-V2-CORRUPTION-REPAIR/task.txt",
+    "automation/control/candidates/R027-V2-CORRUPTION-REPAIR/evidence.json",
+    "automation/control/candidates/R027-V2-CORRUPTION-REPAIR/report.json",
+    "automation/control/candidates/R027-V2-CORRUPTION-REPAIR/candidate.diff",
+    "automation/control/candidates/R027-V2-CORRUPTION-REPAIR/no-aider-used.txt",
+    "automation/control/candidates/R027-V2-CORRUPTION-REPAIR/test-results.txt"
+  ],
+  "repair_summary": "Replaced corrupted R027 entry with correct Topic A per Normalization Matrix",
+  "evidence_package": "automation/control/candidates/R027-V2-CORRUPTION-REPAIR/",
+  "evidence_package_complete_6_of_6": true,
+  "law_compliance": "04",
+  "validation_results": {
+    "r027_line_repaired": true,
+    "r027_line_unique": true,
+    "corrupted_entry_removed": true,
+    "topic_a_applied": true,
+    "topic_b_not_applied": true,
+    "byte_safe_repair": true,
+    "scope_not_expanded": true,
+    "single_commit": true
+  },
+  "merge_executed": false,
+  "push_executed": false,
+  "promote_executed": false,
+  "pr_created": false
+}
