@@ -1,0 +1,71 @@
+{
+  "task": "R027 Arbitrage Protection Mechanism Implementation",
+  "branch": "work/candidate-r027-arbitrage-protection-001",
+  "commit_hash": "44ec0a29705dab867cd24954b281f7c33f6ebe31",
+  "authoritative_topic": "套利 / 套利保护机制",
+  "law_compliance": "04",
+  "source": "161轮正式重编主题总表_唯一基准版_v2.md",
+  "topic_a": "套利 / 套利保护机制",
+  "topic_b": "开盘 / 收盘保护机制",
+  "topic_a_applied": true,
+  "topic_b_applied": false,
+  "topic_b_evidence_count": 0,
+  "taiwan_market_constraints": {
+    "price_limit": "±10%",
+    "settlement": "T+2",
+    "trading_sessions": [
+      "集合竞价 08:30-09:00",
+      "盘中交易 09:00-13:30",
+      "零股交易 13:40-14:30"
+    ],
+    "liquidity_veto": true,
+    "odd_lot_difference": true
+  },
+  "market_reality_constraints": {
+    "cost_model": "transaction tax (0.1425%) + fees + slippage",
+    "slippage_model": "volume and liquidity based",
+    "fill_rate_model": "90%-100% (may not fill 100%)",
+    "partial_fill_handling": true,
+    "non_fill_scenario": "gracefully abort"
+  },
+  "risk_layer_constraints": {
+    "deterministic_gate": true,
+    "final_gate_bypassable": false,
+    "position_limit_check": true,
+    "exposure_limit_check": true,
+    "loss_limit_check": true,
+    "t_plus_2_settlement_risk": true,
+    "portfolio_risk_integration": true,
+    "no_us_stock_crypto_assumptions": true
+  },
+  "protection_mechanism": {
+    "execution_included": false,
+    "broker_integration": false,
+    "order_placement": false,
+    "runtime_modifications": false
+  },
+  "files_modified": [
+    "modules/strategy/arbitrage_protection.py",
+    "modules/risk/arbitrage_risk_gate.py",
+    "modules/market_reality/arbitrage_slippage_model.py",
+    "tests/test_arbitrage_protection.py",
+    "docs/arbitrage_strategy.md"
+  ],
+  "evidence_package": "automation/control/candidates/R027-ARBITRAGE-PROTECTION/",
+  "evidence_package_complete_6_of_6": true,
+  "single_commit": true,
+  "protection_first": true,
+  "execution_not_included": true,
+  "machine_checkable_checks": {
+    "arbitrage_protection_module_exists": true,
+    "risk_gate_module_exists": true,
+    "market_reality_module_exists": true,
+    "no_arbitrage_execution_module": true,
+    "no_broker_order_core_modifications": true,
+    "taiwan_market_constraints_enforced": true,
+    "liquidity_veto_path_exists": true,
+    "cost_slippage_fill_rate_logic": true,
+    "deterministic_risk_layer_veto_path": true,
+    "evidence_package_6_of_6_complete": true
+  }
+}

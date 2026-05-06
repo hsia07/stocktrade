@@ -1,0 +1,53 @@
+Task: R027 Arbitrage Protection Mechanism Implementation
+Branch: work/candidate-r027-arbitrage-protection-001
+Commit: PENDING_COMMIT
+Authoritative Topic: 套利 / 套利保护机制 (from 161轮正式重编主题总表_唯一基准版_v2.md)
+Law Compliance: 04
+
+Required Capabilities (Protection Only):
+- Arbitrage opportunity safety check (no execution)
+- Gross-to-net arbitrage viability after fees/tax/slippage
+- Liquidity veto / no-trade decision
+- Market reality unfavorable → veto / reduce / abort
+- Risk gate integration (position / exposure / loss / limit checks)
+- Pre-trade arbitrage protection report with reason codes
+
+Taiwan Market Constraints Enforced:
+- 涨跌幅限制: ±10% (price limit check in code)
+- T+2 交割 (settlement_date field in ArbitrageOpportunity)
+- 集合竞价/盘中/零股交易时段 (trading session checks)
+- 流动性不足 veto (liquidity check in Market Reality model)
+
+Market Reality Integration:
+- 成本模型: transaction tax (0.1425%) + fees + slippage
+- 滑价模型: slippage estimate based on volume and liquidity
+- 成交率模型: fill rate 90%-100% (may not fill 100%)
+- Partial fill 处理: net profit adjusted by fill rate
+- 不可成交场景: gracefully abort with reason code
+
+Risk Layer / Final Gate Integration:
+- Deterministic Risk Layer / Final Gate must NOT be bypassed
+- Position limit, exposure limit, loss limit checks
+- T+2 settlement risk check
+- Portfolio risk: arbitrage must not increase overall risk exposure
+
+Files Modified:
+- modules/strategy/arbitrage_protection.py (new - protection mechanism)
+- modules/risk/arbitrage_risk_gate.py (new - Risk Layer integration)
+- modules/market_reality/arbitrage_slippage_model.py (new - Market Reality integration)
+- tests/test_arbitrage_protection.py (new - test cases)
+- docs/arbitrage_strategy.md (new - documentation)
+- automation/control/candidates/R027-ARBITRAGE-PROTECTION/ (6/6 evidence package)
+
+Not Included (Forbidden):
+- modules/strategy/arbitrage_execution.py (no execution)
+- tests/test_arbitrage_execution.py (no execution tests)
+- modules/execution/broker_*.py (no broker changes)
+- modules/execution/order_*.py (no order placement changes)
+- services/runtime/*.py (no runtime modifications)
+- Any stocktrade_connected features
+- Any R028+ planning extensions
+- Any LINE / line-personal-butler / VM files
+
+Single Commit: YES (all files in one commit)
+User Signoff Required: YES (before merge)
