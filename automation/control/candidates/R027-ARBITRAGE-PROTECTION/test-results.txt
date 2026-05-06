@@ -1,0 +1,69 @@
+R027 Arbitrage Protection Mechanism - Test Results
+
+1. Pre-condition check:
+   - Branch: work/canonical-mainline-repair-001 ✓
+   - HEAD: 65d4512ec15b06010aeb1371757e77d4f3c5761e ✓
+   - Working tree clean ✓
+   - R027 authoritative topic: 套利 / 套利保护机制 ✓
+
+2. Implementation verification:
+   - Arbitrage protection module exists ✓
+   - Risk gate module exists ✓
+   - Market reality slippage model exists ✓
+   - No arbitrage_execution.py ✓
+   - No broker/order/runtime core modifications ✓
+
+3. Taiwan Market Constraints:
+   - ±10% price limit check ✓
+   - T+2 settlement field exists ✓
+   - Trading session checks ✓
+   - Liquidity veto path exists ✓
+
+4. Market Reality Layer:
+   - Cost model (tax + fees + slippage) ✓
+   - Slippage model integrated ✓
+   - Fill rate model (90%-100%) ✓
+   - Partial fill handling ✓
+   - Non-fill scenario handled ✓
+
+5. Risk Layer / Final Gate:
+   - Deterministic risk gate ✓
+   - Not bypassed by protection ✓
+   - Position/exposure/loss limit checks ✓
+   - T+2 settlement risk check ✓
+   - Portfolio risk integration ✓
+
+6. Protection vs Execution:
+   - Protection mechanism implemented ✓
+   - Execution NOT included ✓
+   - No broker integration ✓
+   - No order placement ✓
+
+7. Machine-checkable tests:
+   - Arbitrage protection module exists ✓
+   - Risk gate module exists ✓
+   - Market reality module exists ✓
+   - No execution module ✓
+   - Taiwan constraints in code ✓
+   - Liquidity veto path exists ✓
+   - Cost/slippage/fill-rate logic ✓
+   - Final Gate veto path exists ✓
+   - Evidence package 6/6 complete ✓
+
+8. Evidence package:
+   - 6/6 files created ✓
+   - evidence.json contains law_compliance: "04" ✓
+   - Included in single commit ✓
+
+9. Commit structure:
+   - Single commit: YES ✓
+   - Commit hash valid 40hex: YES ✓
+   - Working tree clean after commit: YES ✓
+
+10. Scope control:
+    - No scope expansion beyond R027 protection ✓
+    - No forbidden files modified ✓
+    - No stocktrade_connected features ✓
+    - No R028+ planning extensions ✓
+
+ALL TESTS PASSED

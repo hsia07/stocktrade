@@ -1,0 +1,29 @@
+No aider used in this implementation task.
+Tool: opencode (CLI tool)
+Protection mechanism: Implemented from scratch
+Execution: NOT included (protection-first approach)
+Broker integration: NOT included
+Order placement: NOT included
+Runtime modifications: NOT included
+
+Single commit structure: YES
+User signoff required: YES (before merge)
+
+Taiwan Market Constraints Enforced:
+- ±10% price limit check
+- T+2 settlement (settlement_date field)
+- Trading session checks (集合竞价/盘中/零股)
+- Liquidity veto path exists
+
+Market Reality Integration:
+- Cost model (tax + fees + slippage)
+- Slippage model (volume/liquidity based)
+- Fill rate model (90%-100%)
+- Partial fill handling
+- Non-fill scenario handled gracefully
+
+Risk Layer / Final Gate:
+- Deterministic gate (not bypassed by protection)
+- Position/exposure/loss limit checks
+- T+2 settlement risk check
+- Portfolio risk integration
