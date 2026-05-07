@@ -1,0 +1,68 @@
+{
+  "round_id": "R028",
+  "commit_hash": "f769e41640c2ffecbccedd35389a040d95933a18",
+  "commit_message": "R028: Market Reality Layer base integration with Taiwan constraints",
+  "implementation_summary": {
+    "module": "modules/market_reality/layer.py",
+    "lines_added": 178,
+    "key_features": [
+      "Market Reality Layer base integration",
+      "Taiwan market constraints (±10%, T+2, 集合竞价, 零股/整股)",
+      "Cost model (transaction tax, broker fees)",
+      "Slippage estimation (volume-based, odd lot penalty)",
+      "Fill rate probability modeling",
+      "Liquidity checks (volume thresholds)",
+      "Trading session validation (pre-market, continuous, odd lot)",
+      "T+2 settlement calculation"
+    ]
+  },
+  "nea_patch_injection": {
+    "registry": "automation/control/patch_registry/nea_long_term.yaml",
+    "round": "R028",
+    "phase": "v0.1",
+    "injection_type": "mandatory",
+    "capabilities_injected": [
+      "Market Reality Layer base integration",
+      "Cost/slippage/fill probability models",
+      "Taiwan market constraints (±10%, T+2)"
+    ],
+    "forbidden_scope_respected": true,
+    "no_v0.2_v1.0_features": true
+  },
+  "taiwan_market_constraints": {
+    "price_limit": {
+      "value": "±10%",
+      "implementation": "validate_price_limit() method",
+      "reference": "Self.price_limit_percent = 0.10"
+    },
+    "settlement_cycle": {
+      "value": "T+2",
+      "implementation": "calculate_settlement_date() method",
+      "reference": "Self.settlement_days = 2"
+    },
+    "trading_sessions": {
+      "集合竞价": "08:30-09:00 (pre_market_auction)",
+      "盘中交易": "09:00-13:30 (continuous_trading)",
+      "零股交易": "13:40-14:30 (odd_lot_trading)"
+    },
+    "lot_sizes": {
+      "整股": "1000股 (round_lot_size = 1000)",
+      "零股": "<1000股 (odd_lot_max_size = 999)"
+    }
+  },
+  "law_compliance": "04",
+  "machine_checkable_verification": {
+    "market_reality_module_exists": true,
+    "taiwan_constraints_enforced": true,
+    "cost_slippage_fill_models_present": true
+  },
+  "files_in_commit": [
+    "modules/market_reality/layer.py",
+    "automation/control/candidates/R028-MARKET-REALITY-LAYER/task.txt",
+    "automation/control/candidates/R028-MARKET-REALITY-LAYER/evidence.json",
+    "automation/control/candidates/R028-MARKET-REALITY-LAYER/report.json",
+    "automation/control/candidates/R028-MARKET-REALITY-LAYER/candidate.diff",
+    "automation/control/candidates/R028-MARKET-REALITY-LAYER/no-aider-used.txt",
+    "automation/control/candidates/R028-MARKET-REALITY-LAYER/test-results.txt"
+  ]
+}
