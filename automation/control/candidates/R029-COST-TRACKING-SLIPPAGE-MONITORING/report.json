@@ -1,0 +1,70 @@
+{
+  "round_id": "R029",
+  "commit_hash": "079ef87eb13e78d257eb72f75b1af4c3319cfd2f",
+  "commit_message": "R029: Cost tracking, Slippage monitoring, Fill probability modeling (v0.1 mandatory)",
+  "implementation_summary": {
+    "modules": [
+      "modules/market_reality/cost_tracking.py",
+      "modules/market_reality/slippage_monitor.py",
+      "modules/market_reality/fill_probability.py",
+      "modules/market_reality/integration.py",
+      "modules/market_reality/test_r029.py"
+    ],
+    "total_lines": 600,
+    "key_features": [
+      "Cost tracking (transaction tax 0.1425%, broker fees, expected vs actual)",
+      "Slippage monitoring (expected vs actual, monitoring-ready schema)",
+      "Fill probability modeling (structured outputs for deterministic gate)",
+      "Integration with R028 Market Reality Layer",
+      "Taiwan market constraints preserved (±10%, T+2)",
+      "Append-only audit requirement",
+      "Pydantic + scikit-learn minimum support"
+    ]
+  },
+  "nea_patch_injection": {
+    "registry": "automation/control/patch_registry/nea_long_term.yaml",
+    "round": "R029",
+    "phase": "v0.1",
+    "injection_type": "mandatory",
+    "capabilities_injected": [
+      "Cost tracking (transaction tax, fees, expected cost breakdown)",
+      "Slippage monitoring (expected vs actual schema / monitoring-ready fields)",
+      "Fill probability modeling",
+      "Integration with R028 Market Reality Layer"
+    ],
+    "forbidden_scope_respected": true,
+    "no_v0.2_v1.0_features": true
+  },
+  "taiwan_market_constraints": {
+    "preserved_from_r028": true,
+    "price_limit": "±10% (enforced by R028 MarketRealityLayer)",
+    "settlement_cycle": "T+2 (enforced by R028 MarketRealityLayer)",
+    "trading_sessions": ["集合竞价", "盘中交易", "零股交易"],
+    "lot_types": ["整股 (>=1000)", "零股 (<1000)"],
+    "fail_closed_veto": "Preserved from R028"
+  },
+  "law_compliance": "04",
+  "machine_checkable_verification": {
+    "cost_tracking_implemented": true,
+    "slippage_monitoring_active": true,
+    "fill_probability_model_exists": true,
+    "expected_vs_actual_slippage_schema": true,
+    "r028_integration_present": true,
+    "no_broker_order_runtime_modifications": true,
+    "no_v0.2_v1.0_features": true,
+    "evidence_package_6_of_6": true
+  },
+  "files_in_commit": [
+    "modules/market_reality/cost_tracking.py",
+    "modules/market_reality/slippage_monitor.py",
+    "modules/market_reality/fill_probability.py",
+    "modules/market_reality/integration.py",
+    "modules/market_reality/test_r029.py",
+    "automation/control/candidates/R029-COST-TRACKING-SLIPPAGE-MONITORING/task.txt",
+    "automation/control/candidates/R029-COST-TRACKING-SLIPPAGE-MONITORING/evidence.json",
+    "automation/control/candidates/R029-COST-TRACKING-SLIPPAGE-MONITORING/report.json",
+    "automation/control/candidates/R029-COST-TRACKING-SLIPPAGE-MONITORING/candidate.diff",
+    "automation/control/candidates/R029-COST-TRACKING-SLIPPAGE-MONITORING/no-aider-used.txt",
+    "automation/control/candidates/R029-COST-TRACKING-SLIPPAGE-MONITORING/test-results.txt"
+  ]
+}

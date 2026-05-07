@@ -1,0 +1,112 @@
+{
+  "round_id": "R029",
+  "task_type": "cost_tracking_slippage_monitoring_fill_modeling",
+  "reply_id": "R029-COST-TRACKING-SLIPPAGE-MONITORING",
+  "status": "completed",
+  "formal_status_code": "candidate_ready_awaiting_manual_review",
+  "current_head_before": "0c5c1be443db92e6375e7dbab84655c4b43af411",
+  "candidate_branch": "work/candidate-r029-cost-tracking-slippage-monitoring-001",
+  "candidate_commit": "079ef87eb13e78d257eb72f75b1af4c3319cfd2f",
+  "law_compliance": "04",
+  "trace_id": "R029-COST-TRACKING-SLIPPAGE-MONITORING-20260507",
+  "replay_log": "R029 features implemented with NEA v0.1 mandatory patches",
+  "append_only_audit": true,
+  "cost_tracking_enabled": true,
+  "slippage_monitoring_enabled": true,
+  "fill_probability_modeling_enabled": true,
+  "taiwan_market_compatibility": true,
+  "patched_with": "NEA_LONG_TERM",
+  "ne_a_capabilities_present": true,
+  "ne_a_constraints_present": true,
+  "files_modified": [
+    {
+      "file_path": "modules/market_reality/cost_tracking.py",
+      "change_type": "new_file",
+      "lines_added": 95,
+      "purpose": "R029: Cost tracking with transaction tax, fees, expected vs actual"
+    },
+    {
+      "file_path": "modules/market_reality/slippage_monitor.py",
+      "change_type": "new_file",
+      "lines_added": 120,
+      "purpose": "R029: Slippage monitoring with expected vs actual schema"
+    },
+    {
+      "file_path": "modules/market_reality/fill_probability.py",
+      "change_type": "new_file",
+      "lines_added": 110,
+      "purpose": "R029: Fill probability modeling with structured outputs"
+    },
+    {
+      "file_path": "modules/market_reality/integration.py",
+      "change_type": "new_file",
+      "lines_added": 145,
+      "purpose": "R029: Integration with R028 Market Reality Layer"
+    },
+    {
+      "file_path": "modules/market_reality/test_r029.py",
+      "change_type": "new_file",
+      "lines_added": 130,
+      "purpose": "R029: Tests for cost tracking, slippage monitoring, fill modeling"
+    }
+  ],
+  "nea_compliance": {
+    "patch_namespace": "NEA_LONG_TERM",
+    "round": "R029",
+    "phase": "v0.1",
+    "injection_type": "mandatory",
+    "capabilities_verified": [
+      "Cost tracking (transaction tax, fees, expected cost breakdown)",
+      "Slippage monitoring (expected vs actual schema / monitoring-ready fields)",
+      "Fill probability modeling",
+      "Integration with R028 Market Reality Layer"
+    ],
+    "forbidden_scope_verified": [
+      "No R030+ scope expansion",
+      "No latency optimization (v0.2)",
+      "No DuckDB/PyArrow/SQLAlchemy/Alembic (v0.2)",
+      "No OTel/backtrader/Riskfolio/CVXPY (v1.0)"
+    ],
+    "machine_checkable": [
+      "cost_tracking_implemented: true",
+      "slippage_monitoring_active: true",
+      "fill_probability_model_exists: true",
+      "expected_vs_actual_slippage_schema: true"
+    ]
+  },
+  "taiwan_market_compliance": {
+    "price_limit": "±10% (preserved from R028)",
+    "settlement": "T+2 (preserved from R028)",
+    "trading_sessions": ["集合竞价", "盘中交易", "零股交易"],
+    "lot_types": ["整股 (>=1000)", "零股 (<1000)"],
+    "r028_integration": "TRUE - Market Reality Layer preserved"
+  },
+  "test_results": {
+    "total_tests": 15,
+    "passed": 15,
+    "failed": 0,
+    "pass_rate": "100%",
+    "test_files": "modules/market_reality/test_r029.py"
+  },
+  "validate_evidence_executed": true,
+  "validate_evidence_result": "PASS",
+  "evidence_package_files": [
+    "task.txt: Task description",
+    "evidence.json: This file with law_compliance: 04",
+    "report.json: Implementation details",
+    "candidate.diff: Git diff showing R029 implementation",
+    "no-aider-used.txt: Certification",
+    "test-results.txt: 15 passing tests"
+  ],
+  "blockers_found": [],
+  "next_action": "AWAITING_USER_SIGNOFF_FOR_MERGE",
+  "hard_constraints_observed": [
+    "cost_tracking_implemented: CONFIRMED",
+    "slippage_monitoring_implemented: CONFIRMED",
+    "fill_probability_modeling: CONFIRMED",
+    "taiwan_market_compatibility: CONFIRMED",
+    "r028_integration: CONFIRMED",
+    "evidence_package_6_of_6: CONFIRMED",
+    "law_compliance_04: CONFIRMED"
+  ]
+}
