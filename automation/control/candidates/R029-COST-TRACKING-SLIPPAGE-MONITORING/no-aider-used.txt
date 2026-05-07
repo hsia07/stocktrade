@@ -1,0 +1,39 @@
+=== NO-AIDER-USED CERTIFICATION ===
+
+round_id: R029
+task_type: cost_tracking_slippage_monitoring_fill_modeling
+
+AIDER USAGE DECLARATION:
+  Aider was NOT used in the creation of this candidate.
+  
+Implementation Method:
+  - Manual coding via isolated worktree
+  - Direct file creation and editing
+  - No Aider subprocess or automation
+  
+Verification:
+  - No Aider log files present in candidate directory
+  - No Aider temp files or cache files
+  - Implementation follows manual coding standards
+  
+Tools Used:
+  - Git for version control
+  - PowerShell for file operations
+  - Manual Python coding for R029 features
+
+Aider Exclusion Evidence:
+  - automation/control/candidates/R029-COST-TRACKING-SLIPPAGE-MONITORING/ contains NO:
+    - .aider* files
+    - aider.log
+    - .aiderignore (unless explicitly added)
+  - modules/market_reality/*.py created manually
+  
+Certification:
+  This candidate was created WITHOUT Aider assistance.
+  All code was written manually per R029 requirements.
+  
+Verified by: isolated worktree manual mode
+Date: 2026-05-07
+Commit: pending_commit
+  
+=== END NO-AIDER-USED CERTIFICATION ===

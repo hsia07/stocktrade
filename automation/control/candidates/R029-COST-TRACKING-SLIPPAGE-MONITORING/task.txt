@@ -1,0 +1,52 @@
+=== R029 TASK DESCRIPTION ===
+
+round_id: R029
+task_type: cost_tracking_slippage_monitoring_fill_modeling
+topic: Cost Tracking / Slippage Monitoring / Fill Probability Modeling (v0.1 mandatory)
+
+Objective:
+  Implement R029 features with NEA v0.1 mandatory patches.
+  Build upon R028 Market Reality Layer base integration.
+
+Mandatory Requirements (NEA v0.1 for R029):
+  1. Cost tracking (transaction tax, fees, expected cost breakdown)
+  2. Slippage monitoring (expected vs actual schema / monitoring-ready fields)
+  3. Fill probability modeling
+  4. Integration with R028 Market Reality Layer
+  5. Minimum trace/evidence infrastructure
+  6. Append-only audit requirement
+  7. Pydantic + scikit-learn minimum support (v0.1)
+
+Forbidden Scope (NEA v0.1 for R029):
+  - NO R030 / R031 / R032 / R033 scope expansion
+  - NO latency optimization (v0.2)
+  - NO tail risk models (v0.2)
+  - NO DuckDB / PyArrow / SQLAlchemy / Alembic (v0.2)
+  - NO OTel / backtrader / Riskfolio / CVXPY (v1.0)
+
+Deliverables:
+  - modules/market_reality/cost_tracking.py (new file)
+  - modules/market_reality/slippage_monitor.py (new file)
+  - modules/market_reality/fill_probability.py (new file)
+  - modules/market_reality/integration.py (new file - R028+R029 integration)
+  - modules/market_reality/test_r029.py (tests)
+  - 6/6 evidence package with law_compliance: "04"
+  - Single commit to work/candidate-r029-cost-tracking-slippage-monitoring-001
+  - No merge to canonical until user signoff
+
+Acceptance Criteria:
+  - cost_tracking_implemented: TRUE
+  - slippage_monitoring_implemented: TRUE
+  - fill_probability_modeling_implemented: TRUE
+  - expected_vs_actual_slippage_schema_present: TRUE
+  - taiwan_market_compatibility_preserved: TRUE (±10%, T+2)
+  - r028_market_reality_layer_integration: TRUE
+  - evidence_package_complete_6_of_6: TRUE
+  - evidence_json_contains_law04: TRUE
+  - single_commit_requirement_satisfied: TRUE
+  - working_tree_clean_after_commit: TRUE
+
+Law Compliance: 04
+NEA Registry: automation/control/patch_registry/nea_long_term.yaml
+Round-Scoped Injection: R029 only (v0.1 mandatory)
+Patch Namespace: NEA_LONG_TERM
