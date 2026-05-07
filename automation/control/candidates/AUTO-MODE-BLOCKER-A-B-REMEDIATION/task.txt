@@ -1,0 +1,58 @@
+=== TASK DESCRIPTION ===
+
+task_id: AUTO-MODE-BLOCKER-A-B-REMEDIATION
+task_type: auto_mode_blocker_remediation
+phase: governance_infrastructure
+law_compliance: 04
+severity: HIGH
+
+=== PROBLEM STATEMENT ===
+
+Auto mode readiness audit identified 5 blockers (A-E). This round remediates
+the two highest-priority blockers:
+
+BLOCKER_A: RETURN_TO_CHATGPT hash transcription errors
+- Two incidents recorded: R028 candidate-001 signoff invalidation (hash drift after amend),
+  R029 RETURN_TO_CHATGPT wrong full 40hex requiring user re-confirmation.
+- Root cause: manual 40hex transcription is error-prone.
+- Fix: auto-extract commit hash from git truth via git rev-parse HEAD.
+- Machine-checkable: hash reported = git HEAD hash, verified programmatically.
+
+BLOCKER_B: Main working tree pollution / isolated worktree dependency
+- 30+ untracked files in main working tree force isolated worktree usage.
+- R028 and R029 both required separate worktrees (C:/r028_clean_worktree, C:/r029_worktree).
+- Strategy selected: Plan B (worktree-native auto-mode).
+- Fix: WorktreeManager module with standardized naming, lifecycle tracking,
+  canonical baseline hard-compare, cleanup rules.
+
+=== SCOPE ===
+
+Strictly BLOCKER_A + BLOCKER_B only. NO BLOCKER_C/D/E remediation.
+NO R030+ round implementation.
+NO merge, push, promote, PR.
+
+=== FILES ===
+
+BLOCKER_A:
+- automation/control/git_hash_verifier.py (NEW)
+- automation/control/return_to_chatgpt_verifier.py (MODIFIED)
+
+BLOCKER_B:
+- automation/control/worktree_manager.py (NEW)
+- automation/control/worktree_registry.json (CREATED at runtime)
+
+=== VERIFICATION CRITERIA ===
+
+BLOCKER_A:
+- GitHashVerifier.get_head_hash() must return git rev-parse HEAD (not manual input)
+- GitHashVerifier.verify_hash(hash) must return True only if hash matches HEAD
+- GitHashVerifier.assert_hash_matches(hash) must raise ValueError on mismatch
+- ReturnToChatGPTVerifier.verify_hash_in_output() must detect hash mismatches
+- Machine-checkable: verification script can confirm hash = git truth
+
+BLOCKER_B:
+- WorktreeManager.create_worktree() creates isolated worktree from canonical baseline
+- Standardized naming: C:/stocktrade-<ROUND>-<PURPOSE>
+- WorktreeManager.assert_clean_baseline() detects stale worktrees
+- WorktreeManager.remove_worktree() cleans up with --force if dirty
+- Registry persists lifecycle metadata for audit

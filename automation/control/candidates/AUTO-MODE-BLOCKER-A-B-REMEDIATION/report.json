@@ -1,0 +1,53 @@
+{
+    "report_title": "Auto Mode BLOCKER_A + BLOCKER_B Remediation Report",
+    "report_type": "governance_infrastructure",
+    "law_compliance": "04",
+    "candidate_branch": "work/candidate-auto-mode-blocker-ab-remediation-001",
+    "commit_hash": "31dba36afffea1c6c2b7f4314d39ccec06221353",
+    "commit_hash_source": "auto_extracted_via_GitHashVerifier",
+    "canonical_head_before": "8fb9393353a25d084ae016d711eb09edcfc09daa",
+    "blocker_a_remediation": {
+        "problem": "RETURN_TO_CHATGPT hash transcription errors (R028, R029 incidents)",
+        "solution": "GitHashVerifier auto-extracts commit hash from git rev-parse HEAD",
+        "mechanism": {
+            "auto_extraction": "GitHashVerifier.get_head_hash() calls git rev-parse HEAD",
+            "verification": "GitHashVerifier.verify_hash() compares reported vs actual",
+            "assertion": "GitHashVerifier.assert_hash_matches() raises ValueError on mismatch",
+            "integration": "ReturnToChatGPTVerifier.verify_hash_in_output() checks all hashes in output"
+        },
+        "machine_checkable": true,
+        "manual_transcription_eliminated": true,
+        "file": "automation/control/git_hash_verifier.py",
+        "modified_file": "automation/control/return_to_chatgpt_verifier.py"
+    },
+    "blocker_b_remediation": {
+        "problem": "Main working tree pollution (30+ untracked files), isolated worktree dependency",
+        "solution": "WorktreeManager provides worktree-native auto-mode (Plan B)",
+        "strategy_selected": "Plan B (worktree-native auto-mode)",
+        "strategy_a_rejected_reason": "Cleaning main worktree risks data loss; proven worktree pattern exists",
+        "mechanism": {
+            "create": "WorktreeManager.create_worktree() creates C:/stocktrade-<ROUND>-<PURPOSE> from canonical",
+            "naming": "C:/stocktrade-<ROUND>-<PURPOSE> (e.g. C:/stocktrade-R030-candidate)",
+            "baseline": "WorktreeManager.assert_clean_baseline() hard-compares against canonical HEAD",
+            "cleanup": "WorktreeManager.remove_worktree() with --force if dirty",
+            "registry": "worktree_registry.json tracks lifecycle metadata for audit"
+        },
+        "file": "automation/control/worktree_manager.py",
+        "lifecycle_documented": true
+    },
+    "blockers_cde_not_touched": {
+        "blocker_c": "NEA auto-injection framework incomplete — NOT touched",
+        "blocker_d": "Pre-push hook bash on Windows — NOT touched",
+        "blocker_e": "Conversational signoff — NOT touched"
+    },
+    "validation": {
+        "single_commit": true,
+        "evidence_6_of_6": true,
+        "no_merge": true,
+        "no_push": true,
+        "no_promote": true,
+        "no_pr": true,
+        "no_r030_plus": true,
+        "read_only_audit": false
+    }
+}

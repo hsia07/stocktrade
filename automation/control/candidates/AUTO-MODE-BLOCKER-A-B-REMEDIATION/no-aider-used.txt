@@ -1,0 +1,13 @@
+AIDER NOT USED
+==============
+
+This candidate was created entirely by conversation with the AI assistant
+(opencode / big-pickle), NOT by aider or any automated code generation tool.
+
+All code was written by the AI assistant based on the user's task description,
+using the available tool calls (read, write, edit, bash).
+
+No aider, no codegen, no automated patch application was used.
+
+Date: 2026-05-08
+Round: AUTO-MODE-BLOCKER-A-B-REMEDIATION

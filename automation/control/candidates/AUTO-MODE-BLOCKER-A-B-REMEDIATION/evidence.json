@@ -1,0 +1,39 @@
+{
+    "trace_id": "auto-mode-blocker-ab-remediation-001",
+    "replay_log": [
+        "2026-05-08T03:30: auto_mode_readiness_audit completed: 5 blockers identified (A-E)",
+        "2026-05-08T03:32: candidate branch created (work/candidate-auto-mode-blocker-ab-remediation-001)",
+        "2026-05-08T03:32: BLOCKER_A: git_hash_verifier.py implemented (hash auto-extraction + verification)",
+        "2026-05-08T03:32: BLOCKER_A: return_to_chatgpt_verifier.py updated (hash verification in output)",
+        "2026-05-08T03:32: BLOCKER_B: worktree_manager.py implemented (Plan B: worktree-native auto-mode)",
+        "2026-05-08T03:32: evidence package created (6/6)"
+    ],
+    "append_only_audit": true,
+    "law_compliance": "04",
+    "law_compliance_authority": "Law 04 Article 261 (evidence.json must contain law_compliance: 04)",
+    "market_reality_integration": false,
+    "taiwan_constraints_enforced": false,
+    "candidate_commit": "31dba36afffea1c6c2b7f4314d39ccec06221353",
+    "candidate_commit_source": "auto_extracted_via_GitHashVerifier",
+    "manual_hash_transcription": false,
+    "patched_with": "NEA_LONG_TERM",
+    "nea_capabilities_present": true,
+    "nea_constraints_present": true,
+    "nea_blocker_rules": [
+        "BLOCKER_A: hash mismatch detected = BLOCK merge/push",
+        "BLOCKER_B: stale worktree baseline = BLOCK operations"
+    ],
+    "evidence_type": "governance_infrastructure_remediation",
+    "round": "AUTO-MODE-BLOCKER-A-B",
+    "phase": "governance",
+    "severity": "HIGH",
+    "blockers_resolved": [
+        "BLOCKER_A",
+        "BLOCKER_B"
+    ],
+    "blockers_not_touched": [
+        "BLOCKER_C (NEA auto-injection incomplete)",
+        "BLOCKER_D (pre-push hook bash on Windows)",
+        "BLOCKER_E (conversational signoff)"
+    ]
+}
