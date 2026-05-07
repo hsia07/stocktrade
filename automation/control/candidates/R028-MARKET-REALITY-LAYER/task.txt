@@ -1,0 +1,46 @@
+=== R028 TASK DESCRIPTION ===
+
+round_id: R028
+task_type: market_reality_layer_base_integration
+topic: Market Reality Layer (市场现实层)
+
+Objective:
+  Implement Market Reality Layer base integration with Taiwan market constraints.
+  This is a mandatory v0.1 capability per NEA Long-Term Patch Registry.
+
+Mandatory Requirements (NEA v0.1):
+  1. Market Reality Layer base integration
+  2. Cost/slippage/fill probability models
+  3. Taiwan market constraints (±10% price limit, T+2 settlement)
+  4. Trading session validation (集合竞价/盘中/零股)
+  5. Lot size differentiation (整股/零股)
+  6. Liquidity checks and veto mechanism
+
+Forbidden Scope (NEA v0.1):
+  - NO execution/broker/order placement
+  - NO v0.2 features (latency optimization, tail risk models)
+  - NO v1.0 features (DuckDB/PyArrow/SQLAlchemy/OTel/backtrader/Riskfolio/CVXPY)
+
+Deliverables:
+  - modules/market_reality/layer.py (new file, ~178 lines)
+  - 6/6 evidence package with law_compliance: "04"
+  - Single commit to work/candidate-r028-market-reality-layer-002
+  - No merge to canonical until user signoff
+
+Acceptance Criteria:
+  - market_reality_layer_implemented: TRUE
+  - cost_model_implemented: TRUE
+  - slippage_model_implemented: TRUE
+  - fill_probability_logic_implemented: TRUE
+  - taiwan_market_constraints_enforced: TRUE
+  - liquidity_veto_implemented: TRUE
+  - unfavorable_market_fail_closed: TRUE
+  - evidence_package_complete_6_of_6: TRUE
+  - evidence_json_contains_law04: TRUE
+  - single_commit_requirement_satisfied: TRUE
+  - working_tree_clean_after_commit: TRUE
+
+Law Compliance: 04
+NEA Registry: automation/control/patch_registry/nea_long_term.yaml
+Round-Scoped Injection: R028 only (v0.1 mandatory)
+Patch Namespace: NEA_LONG_TERM
