@@ -1,0 +1,28 @@
+{
+    "round_id": "FIX-EVIDENCE-GATE-CONTRACT",
+    "candidate_branch": "work/candidate-fix-evidence-gate-contract-001",
+    "canonical_branch": "work/canonical-mainline-repair-001",
+    "canonical_head": "163366b284d48a34270490c45a2b7db909889fad",
+    "status": "completed",
+    "round_name": "fix_evidence_gate_contract",
+    "files_modified": [
+        "automation/control/evidence_checker.py"
+    ],
+    "files_created": [
+        "automation/control/tests/test_evidence_gate_contract.py"
+    ],
+    "total_lines_added": 260,
+    "total_lines_removed": 2,
+    "test_count": 13,
+    "tests_passed": 13,
+    "tests_failed": 0,
+    "bounded_auto_mode_impact": "EVIDENCE_GATE_CONTRACT_FIXED (ready_for_merge_signoff accepted with canonical proof)",
+    "auto_advance_mode_impact": "NONE (evidence gate contract only)",
+    "blocker_c_touched": false,
+    "blocker_d_touched": false,
+    "blocker_h_touched": false,
+    "blocker_i_touched": false,
+    "option_a_implemented": true,
+    "option_b_not_added": true,
+    "retroactive_mutation_no_longer_required": true
+}

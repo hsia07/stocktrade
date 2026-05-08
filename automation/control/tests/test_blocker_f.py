@@ -113,8 +113,10 @@ def test_auto_candidate_still_blocked_by_evidence():
         evidence_dir=evidence_path,
     )
     can_advance, reason, gate = ctrl.can_auto_advance(result)
-    assert can_advance is False, "auto_candidate should be blocked by incomplete evidence"
-    assert gate == "evidence_gate", f"Expected evidence_gate, got {gate}"
+    # BLOCKER_G is merged into canonical — evidence passes via Option A,
+    # but round_result lacks automated_signoff, so blocked at signoff_gate
+    assert can_advance is False, "should be blocked by missing signoff"
+    assert gate == "signoff_gate", f"Expected signoff_gate, got {gate}"
     print("PASS: test_auto_candidate_still_blocked_by_evidence")
 
 
