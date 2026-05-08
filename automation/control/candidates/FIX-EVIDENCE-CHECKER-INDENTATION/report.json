@@ -1,0 +1,17 @@
+{
+    "round_id": "FIX-EVIDENCE-CHECKER-INDENTATION",
+    "candidate_branch": "work/candidate-fix-evidence-checker-indentation-001",
+    "canonical_branch": "work/canonical-mainline-repair-001",
+    "canonical_head": "6f0582aa6bc5667d7f59c5feeee263846de79354",
+    "status": "ready_for_merge_signoff",
+    "files_changed": ["automation/control/evidence_checker.py"],
+    "files_created": ["automation/control/tests/test_evidence_checker_fix.py"],
+    "total_lines_added": 4,
+    "total_lines_removed": 4,
+    "test_count": 5,
+    "tests_passed": 5,
+    "tests_failed": 0,
+    "auto_advance_import_before": false,
+    "auto_advance_import_after": true,
+    "blocker_f_unblocked": true
+}

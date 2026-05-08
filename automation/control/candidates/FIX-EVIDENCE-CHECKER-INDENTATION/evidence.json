@@ -1,0 +1,26 @@
+{
+    "trace_id": "fix-evidence-checker-indentation-001",
+    "replay_log": [
+        "2026-05-08T12:01: BLOCKER_F adjudication identified evidence_checker.py:810 as hard blocker",
+        "2026-05-08T12:01: This round authorized: fix evidence_checker.py indentation defect",
+        "2026-05-08T12:01: import moved from line 808 to top of file (after logger)",
+        "2026-05-08T12:01: orphaned methods restored to EvidenceChecker class indent",
+        "2026-05-08T12:01: 5 tests created, all passing",
+        "2026-05-08T12:01: AutoAdvanceController import confirmed working"
+    ],
+    "append_only_audit": true,
+    "law_compliance": "04",
+    "law_compliance_authority": "Law 04 Article 261 (evidence.json must contain law_compliance: 04)",
+    "market_reality_integration": false,
+    "taiwan_constraints_enforced": false,
+    "evidence_type": "infrastructure_defect_fix",
+    "round": "FIX-EVIDENCE-CHECKER-INDENTATION",
+    "phase": "governance_infrastructure",
+    "severity": "HIGH",
+    "defect_fixed": "evidence_checker.py:810 IndentationError — orphaned methods outside class",
+    "downstream_unblocked": [
+        "AutoAdvanceController import",
+        "BLOCKER_F runtime test execution",
+        "BLOCKER_G runtime test execution"
+    ]
+}

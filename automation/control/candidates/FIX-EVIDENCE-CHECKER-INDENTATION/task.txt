@@ -1,0 +1,34 @@
+=== TASK DESCRIPTION ===
+
+task_id: FIX-EVIDENCE-CHECKER-INDENTATION
+task_type: infrastructure_defect_fix
+phase: governance_infrastructure
+law_compliance: 04
+severity: HIGH
+depends_on: BLOCKER_G (already closed)
+enables: BLOCKER_F runtime test execution
+
+=== PROBLEM STATEMENT ===
+
+automation/control/evidence_checker.py:810 has an IndentationError:
+- Line 808: `from .return_to_chatgpt_verifier import ReturnToChatGPTVerifier`
+  placed at module level between class methods
+- Lines 810-818: verify_return_to_chatgpt() and
+  validate_return_to_chatgpt_in_evidence() at 4-space indent
+  OUTSIDE any class (orphaned, unparseable)
+
+Effect: Python cannot import EvidenceChecker, which blocks the
+auto_advance.py import chain (auto_advance → evidence_checker → crash).
+This prevents runtime testing of AutoAdvanceController for BLOCKER_G
+and BLOCKER_F.
+
+=== FIX ===
+
+1. Move import to top of file (after logger, before class definitions)
+2. Remove orphaned copy at line 808
+3. Methods remain at same indent, now correctly inside EvidenceChecker class
+
+=== FILES ===
+
+- automation/control/evidence_checker.py (MODIFIED: +2, -2, 1 whitespace fix)
+- automation/control/tests/test_evidence_checker_fix.py (NEW: 5 tests)
