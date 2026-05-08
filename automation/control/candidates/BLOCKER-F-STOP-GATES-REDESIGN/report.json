@@ -1,0 +1,25 @@
+{
+    "round_id": "BLOCKER-F-STOP-GATES-REDESIGN",
+    "candidate_branch": "work/candidate-blocker-f-stop-gates-redesign-001",
+    "canonical_branch": "work/canonical-mainline-repair-001",
+    "canonical_head": "280a2381bbea4abc0c3eca2ce06f0f3211fab121",
+    "status": "ready_for_merge_signoff",
+    "blocker": "F",
+    "blocker_name": "STOP_GATES_redesign",
+    "files_changed": ["automation/control/auto_advance.py"],
+    "files_created": ["automation/control/tests/test_blocker_f.py"],
+    "total_lines_added": 35,
+    "total_lines_removed": 11,
+    "test_count": 15,
+    "tests_passed": 15,
+    "tests_failed": 0,
+    "bounded_auto_mode_impact": "NONE",
+    "auto_advance_mode_impact": "ENABLED (auto-candidate path available)",
+    "blockers_not_touched": [
+        "BLOCKER_E (automated signoff, needs F first)",
+        "BLOCKER_C (auto-injection, independent)",
+        "BLOCKER_D (bash→PowerShell, independent)",
+        "BLOCKER_H (Telegram handler, needs I first)",
+        "BLOCKER_I (dispatch script, needs F+E first)"
+    ]
+}
