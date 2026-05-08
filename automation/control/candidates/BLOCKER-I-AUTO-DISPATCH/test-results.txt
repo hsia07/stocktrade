@@ -1,0 +1,55 @@
+BLOCKER_I TEST RESULTS
+======================
+Date: 2026-05-08T14:14
+Branch: work/candidate-blocker-i-auto-dispatch-001
+Canonical HEAD: 161a05a5e9ce210df0b4027fe72a64e28e5641d1
+
+TestDetermineNextRound (9 tests)
+-------
+PASS: test_next_after_blocker_e → BLOCKER_H
+PASS: test_next_after_blocker_i → BLOCKER_H
+PASS: test_next_after_blocker_h → BLOCKER_C
+PASS: test_next_after_blocker_c → BLOCKER_D
+PASS: test_next_after_blocker_d → AUTO_ADVANCE_OPERATIONAL
+PASS: test_next_after_last → None
+PASS: test_next_unknown_round → None
+PASS: test_case_insensitive
+PASS: test_sequence_order_preserved
+
+TestCanDispatchNextRound (8 tests)
+-------
+PASS: test_dispatch_all_signoff_pass
+PASS: test_dispatch_blocked_by_signoff
+PASS: test_dispatch_blocked_by_blockers
+PASS: test_dispatch_blocked_by_no_next_round
+PASS: test_dispatch_blocked_last_in_sequence
+PASS: test_dispatch_blocked_unknown_round
+PASS: test_dispatch_bounded_auto_mode_preserved
+PASS: test_dispatch_manual_review_preserved
+
+TestDispatchNextRound (6 tests)
+-------
+PASS: test_dispatch_creates_scaffold
+PASS: test_dispatch_evidence_content
+PASS: test_dispatch_not_executed_when_blocked
+PASS: test_dispatch_not_executed_when_no_next_round
+PASS: test_dispatch_scaffold_path_under_candidates
+PASS: test_dispatch_does_not_merge_push_promote
+
+16 passed, 0 failed, 16 total
+
+VERIFICATION
+------------
+ROUND_SEQUENCE order correct (9 rounds) ✓
+determine_next_round: BLOCKER_E → BLOCKER_I ✓
+determine_next_round: last → None ✓
+can_dispatch: signoff pass → can dispatch ✓
+can_dispatch: signoff fail → blocked ✓
+can_dispatch: blockers → blocked ✓
+can_dispatch: no next round → blocked ✓
+can_dispatch: bounded auto mode → merge_gate ✓
+can_dispatch: manual review → review_gate ✓
+dispatch_next_round: creates scaffold ✓
+dispatch_next_round: evidence.json law_compliance=04 ✓
+dispatch_next_round: merge/push/promote/pr all False ✓
+dispatch_next_round: blocked when can_dispatch fails ✓
