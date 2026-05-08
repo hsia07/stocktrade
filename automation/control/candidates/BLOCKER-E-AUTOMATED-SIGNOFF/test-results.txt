@@ -1,0 +1,29 @@
+BLOCKER_E TEST RESULTS
+======================
+Date: 2026-05-08T12:37
+Branch: work/candidate-blocker-e-automated-signoff-001
+Canonical HEAD: a32fbbb22dc25c62b394251da98a7f3f070e1740
+
+RESULTS
+-------
+PASS: test_auto_candidate_full_signoff
+PASS: test_auto_candidate_missing_signoff
+PASS: test_auto_candidate_no_signoff_data
+PASS: test_auto_candidate_partial_signoff
+PASS: test_manual_review_path_preserved
+PASS: test_bounded_auto_mode_merge_gate_blocks
+PASS: test_stop_gates_includes_signoff
+PASS: test_sigoff_requirements_defined
+
+8 passed, 0 failed, 8 total
+
+VERIFICATION
+------------
+auto_candidate_ready + full signoff → auto_candidate_path_clear ✓
+auto_candidate_ready + missing signoff → signoff_gate ✓
+auto_candidate_ready + no signoff data → signoff_gate ✓
+auto_candidate_ready + partial signoff → signoff_gate (lists missing) ✓
+candidate_ready_awaiting_manual_review → review_gate (not signoff_gate) ✓
+bounded_auto_mode + merge_gate → merge_gate ✓
+STOP_GATES includes signoff_gate (10 total) ✓
+SIGNOFF_REQUIREMENTS defined (3 fields) ✓
