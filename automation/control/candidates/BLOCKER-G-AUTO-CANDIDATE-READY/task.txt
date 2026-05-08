@@ -1,0 +1,39 @@
+=== TASK DESCRIPTION ===
+
+task_id: BLOCKER-G-AUTO-CANDIDATE-READY
+task_type: auto_advance_blocker_remediation
+phase: governance_infrastructure
+law_compliance: 04
+severity: HIGH
+depends_on: none (zero-dependency first blocker)
+enables: BLOCKER_F (STOP_GATES redesign)
+
+=== PROBLEM STATEMENT ===
+
+AutoAdvanceController recognizes only:
+- "completed" — passes through (no special handling)
+- "candidate_ready_awaiting_manual_review" — blocks via BLOCKED_STATUS_CODES
+
+No third option exists for "auto-pass candidate". BLOCKER_F needs this status code.
+
+=== SCOPE ===
+
+Strictly BLOCKER_G only. Files modified:
+- automation/control/auto_advance.py (add constant + method)
+- automation/control/tests/test_blocker_g.py (new, static analysis tests)
+- evidence package only
+
+EXPLICITLY NOT MODIFIED:
+- automation/control/evidence_checker.py (pre-existing infra bug, NOT this round)
+- BLOCKER_F/E/H/I/C/D files
+- Telegram/API/dispatch/hook/auto-injection
+
+=== PRE-EXISTING INFRASTRUCTURE DEFECT ===
+
+automation/control/evidence_checker.py:810 has an IndentationError
+(def verify_return_to_chatgpt at 4-space indent outside any class).
+This blocks runtime import of AutoAdvanceController (which imports
+EvidenceChecker). Tests use static source analysis as workaround.
+
+This defect must be resolved in a separate authorized round before
+BLOCKER_G or BLOCKER_F tests can execute against live AutoAdvanceController.

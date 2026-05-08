@@ -1,0 +1,31 @@
+{
+    "trace_id": "blocker-g-auto-candidate-ready-002",
+    "replay_log": [
+        "2026-05-08T04:27: auto_advance readiness audit: 7 blockers (F-I), BLOCKER_G sequenced first",
+        "2026-05-08T04:27: candidate-001 created but failed scope adjudication (evidence_checker.py out-of-scope edit)",
+        "2026-05-08T05:06: candidate-002 hard-rebuild from canonical HEAD 60c50787824e827a6aa70c92591e8b150399c2a5",
+        "2026-05-08T05:06: AUTO_CANDIDATE_READY constant + is_auto_candidate_status() added to auto_advance.py",
+        "2026-05-08T05:06: test_blocker_g.py created (static analysis, 7 tests all pass)",
+        "2026-05-08T05:06: evidence package created (6/6)"
+    ],
+    "append_only_audit": true,
+    "law_compliance": "04",
+    "law_compliance_authority": "Law 04 Article 261 (evidence.json must contain law_compliance: 04)",
+    "market_reality_integration": false,
+    "taiwan_constraints_enforced": false,
+    "evidence_type": "governance_infrastructure_blocker_remediation",
+    "round": "BLOCKER-G-AUTO-CANDIDATE-READY",
+    "phase": "governance",
+    "severity": "HIGH",
+    "blockers_resolved": ["BLOCKER_G"],
+    "blockers_not_touched": [
+        "BLOCKER_F (STOP_GATES)",
+        "BLOCKER_E (automated signoff)",
+        "BLOCKER_C (NEA auto-injection)",
+        "BLOCKER_D (bash hook on Windows)",
+        "BLOCKER_H (Telegram dispatch handler)",
+        "BLOCKER_I (auto dispatch script)"
+    ],
+    "evidence_checker_not_modified": true,
+    "pre_existing_defect": "evidence_checker.py:810 IndentationError blocks runtime import of AutoAdvanceController. Defect pre-dates BLOCKER_G. Tests use static source analysis."
+}

@@ -38,10 +38,15 @@ class AutoAdvanceController:
         "candidate_ready_awaiting_manual_review",
     ]
 
+    AUTO_CANDIDATE_READY = "auto_candidate_ready"
+
     def __init__(self, repo_root: Path = None):
         self.repo_root = repo_root or Path(__file__).parent.parent.parent
         self.pause_manager = PauseStateManager(self.repo_root)
         self.evidence_checker = EvidenceChecker(self.repo_root)
+
+    def is_auto_candidate_status(self, formal_code: str) -> bool:
+        return formal_code == self.AUTO_CANDIDATE_READY
 
     def can_auto_advance(self, round_result: Dict[str, Any]) -> Tuple[bool, str, str]:
         """

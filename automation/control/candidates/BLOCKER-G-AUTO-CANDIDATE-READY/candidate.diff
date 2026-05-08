@@ -1,0 +1,21 @@
+diff --git a/automation/control/auto_advance.py b/automation/control/auto_advance.py
+index c51becf..d606337 100644
+--- a/automation/control/auto_advance.py
++++ b/automation/control/auto_advance.py
+@@ -38,11 +38,16 @@ class AutoAdvanceController:
+         "candidate_ready_awaiting_manual_review",
+     ]
+ 
++    AUTO_CANDIDATE_READY = "auto_candidate_ready"
++
+     def __init__(self, repo_root: Path = None):
+         self.repo_root = repo_root or Path(__file__).parent.parent.parent
+         self.pause_manager = PauseStateManager(self.repo_root)
+         self.evidence_checker = EvidenceChecker(self.repo_root)
+ 
++    def is_auto_candidate_status(self, formal_code: str) -> bool:
++        return formal_code == self.AUTO_CANDIDATE_READY
++
+     def can_auto_advance(self, round_result: Dict[str, Any]) -> Tuple[bool, str, str]:
+         """
+         Return (can_advance, reason, gate_type).

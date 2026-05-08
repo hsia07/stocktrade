@@ -1,0 +1,33 @@
+BLOCKER_G CANDIDATE-002 TEST RESULTS
+====================================
+Date: 2026-05-08T05:06
+Branch: work/candidate-blocker-g-auto-candidate-ready-002
+Canonical HEAD: 60c50787824e827a6aa70c92591e8b150399c2a5
+
+NOTE: Runtime tests against AutoAdvanceController are BLOCKED by
+pre-existing infrastructure defect in evidence_checker.py:810
+(IndentationError: orphaned methods outside class).
+Tests use static source analysis instead.
+
+RESULTS
+-------
+PASS: test_auto_candidate_ready_constant_exists
+PASS: test_is_auto_candidate_status_method_exists
+PASS: test_candidate_ready_awaiting_manual_review_preserved
+PASS: test_blocked_in_blocked_status_codes
+PASS: test_logic_is_auto_candidate_ready
+PASS: test_no_evidence_checker_modification
+PASS: test_can_auto_advance_not_modified
+
+7 passed, 0 failed, 7 total
+
+VERIFICATION
+------------
+AUTO_CANDIDATE_READY = "auto_candidate_ready" ✓ (source verification)
+is_auto_candidate_status() method present ✓ (source verification)
+candidate_ready_awaiting_manual_review in BLOCKED_STATUS_CODES ✓ (source)
+"blocked" in BLOCKED_STATUS_CODES ✓ (source)
+Logic: auto_candidate_ready → True ✓ (replicated)
+Logic: other codes → False ✓ (replicated)
+can_auto_advance() logic unmodified ✓ (source verification)
+No evidence_checker.py modifications ✓

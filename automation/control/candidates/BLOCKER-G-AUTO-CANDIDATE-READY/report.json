@@ -1,0 +1,29 @@
+{
+    "round_id": "BLOCKER-G-AUTO-CANDIDATE-READY",
+    "candidate_branch": "work/candidate-blocker-g-auto-candidate-ready-002",
+    "superseded_branch": "work/candidate-blocker-g-auto-candidate-ready-001",
+    "canonical_branch": "work/canonical-mainline-repair-001",
+    "canonical_head": "60c50787824e827a6aa70c92591e8b150399c2a5",
+    "status": "ready_for_merge_signoff",
+    "blocker": "G",
+    "blocker_name": "auto_candidate_ready_status_code",
+    "files_changed": ["automation/control/auto_advance.py"],
+    "files_created": ["automation/control/tests/test_blocker_g.py"],
+    "total_lines_added": 6,
+    "total_lines_removed": 0,
+    "test_count": 7,
+    "tests_passed": 7,
+    "tests_failed": 0,
+    "test_note": "Static analysis tests only — runtime import blocked by pre-existing evidence_checker.py:810 indentation error",
+    "evidence_checker_modified": false,
+    "bounded_auto_mode_impact": "NONE",
+    "auto_advance_mode_impact": "NONE (pure additive, no can_auto_advance() changes)",
+    "blockers_not_touched": [
+        "BLOCKER_F (STOP_GATES, needs G first)",
+        "BLOCKER_E (automated signoff)",
+        "BLOCKER_C (auto-injection)",
+        "BLOCKER_D (bash→PowerShell)",
+        "BLOCKER_H (Telegram handler)",
+        "BLOCKER_I (dispatch script)"
+    ]
+}
