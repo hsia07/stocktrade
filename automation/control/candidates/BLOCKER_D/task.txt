@@ -1,0 +1,35 @@
+=== TASK DESCRIPTION ===
+
+task_id: BLOCKER_D
+task_type: auto_advance_blocker_remediation
+phase: governance_infrastructure
+law_compliance: 04
+severity: HIGH
+depends_on: BLOCKER_G + FIX-EVIDENCE-CHECKER + BLOCKER_F + BLOCKER_E + BLOCKER_I + BLOCKER_H + BLOCKER_C + FIX-GATE
+enables: auto_advance_operational
+
+=== PROBLEM STATEMENT ===
+
+The pre-push hook at .githooks/pre-push is a bash script that implements the
+Canonical Direct Push Guard (P0). On Windows, it depends on Git Bash being
+available. For unattended Windows auto-advance, the pre-push hook must work
+without bash dependency. The existing .githooks/pre-push.ps1 was outdated and
+lacked the canonical governance checks (Law 04 compliance, merge commit
+detection, force push blocking, single-parent blocking).
+
+=== SOLUTION ===
+
+- .githooks/pre-push.ps1 fully rewritten with all governance checks from bash version:
+  - Canonical branch detection (refs/heads/main or work/canonical-*)
+  - Merge commit detection (2+ parents via git cat-file -p)
+  - Law 04 compliance (evidence.json with law_compliance: "04")
+  - Force push detection and blocking
+  - Single-parent push to canonical blocking
+- .githooks/pre-push.bat unchanged (entry point calling .ps1)
+- .githooks/pre-push (bash) preserved for backward compatibility
+- No --no-verify bypass allowed in any path
+
+=== FILES ===
+
+- .githooks/pre-push.ps1 (MODIFIED, rewritten with full governance checks)
+- automation/control/tests/test_blocker_d.py (NEW, 15 runtime tests)

@@ -1,0 +1,22 @@
+Modified: .githooks/pre-push.ps1 (rewritten)
+New file: automation/control/tests/test_blocker_d.py (15 tests)
+
+pre-push.ps1 changes:
+- Complete rewrite from 40-line Python validation runner to 137-line PowerShell
+  implementation matching bash .githooks/pre-push functionality.
+- Added: Check-CanonicialBranch() - detects refs/heads/main and work/canonical-*
+- Added: Get-ParentCount() - counts parents via git cat-file -p (zero-SHA safe)
+- Added: Get-ChangedEvidenceFiles() - finds evidence.json changed in merge commit
+- Added: Check-Law04Compliance() - verifies law_compliance: "04" in evidence.json
+- Added: Assert-MergeCommitAllowed() - merge commit governance + Law 04 check
+- Added: Assert-SingleParentBlocked() - blocks single-parent pushes to canonical
+- Added: Assert-ForcePushBlocked() - blocks force pushes to canonical
+- No bash dependency required for any check
+- All governance semantics preserved exactly from bash version
+
+test_blocker_d.py (15 tests):
+- TestPowerShellHookExists (4 tests): file existence, bat entry, bash preserved
+- TestPowerShellHookContent (6 tests): canonical detection, merge detection,
+  Law 04, single-parent block, force push block, evidence scan
+- TestPowerShellHookExecution (5 tests): non-canonical pass, single-parent block,
+  merge commit pass, no-stdin pass, force push block
