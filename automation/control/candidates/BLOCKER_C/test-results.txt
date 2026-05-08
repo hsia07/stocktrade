@@ -1,0 +1,64 @@
+BLOCKER_C TEST RESULTS
+======================
+Date: 2026-05-08T15:13
+Branch: work/candidate-blocker-c-auto-injection-001
+Canonical HEAD: 46dea3bf6fff09b7b1e04fda2b48403345f9bcfc
+
+TestInjectionMap (8 tests)
+-------
+PASS: test_blocker_c_has_injection
+PASS: test_blocker_d_has_injection
+PASS: test_auto_advance_operational_has_injection
+PASS: test_unknown_round_returns_none
+PASS: test_case_insensitive
+PASS: test_roadmap_only_not_in_active_map
+PASS: test_roadmap_only_detected
+PASS: test_active_rounds_non_empty
+
+TestScopedInjection (3 tests)
+-------
+PASS: test_blocker_c_and_d_have_different_sections
+PASS: test_blocker_c_and_auto_advance_have_different_sections
+PASS: test_roadmap_and_active_sections_disjoint
+
+TestInjectIntoscaffold (7 tests)
+-------
+PASS: test_inject_blocker_c
+PASS: test_inject_creates_files
+PASS: test_inject_evidence_content
+PASS: test_roadmap_only_skipped
+PASS: test_unknown_round_skipped
+PASS: test_inject_enriches_existing_scaffold
+PASS: test_inject_blocker_d_different_from_c
+
+TestVerifyInjection (6 tests)
+-------
+PASS: test_verify_valid_injection
+PASS: test_verify_valid_blocker_d
+PASS: test_verify_missing_scaffold_fails
+PASS: test_verify_no_cross_contamination
+PASS: test_verify_no_cross_contamination_blocker_d
+PASS: test_verify_blocker_d_not_contaminated_by_c
+
+24 passed, 0 failed, 24 total
+
+VERIFICATION
+------------
+ROUND_INJECTION_MAP: 3 active rounds, 0 roadmap_only ✓
+ROADMAP_ONLY_INJECTIONS: 2 roadmap rounds, never in active map ✓
+get_round_injection: returns dict for known rounds, None for unknown ✓
+get_round_injection: case-insensitive matching ✓
+is_roadmap_only: v0.2/v1.0 detected, active rounds rejected ✓
+get_all_active_round_ids: 3 rounds, BLOCKER_C/BLOCKER_D/AUTO_ADVANCE_OPERATIONAL ✓
+inject_into_scaffold: creates task.txt + evidence.json ✓
+inject_into_scaffold: enrichment of existing scaffold files ✓
+inject_into_scaffold: merges not executed, pushes not executed ✓
+inject_into_scaffold: promotes not executed, PRs not created ✓
+inject_into_scaffold: roadmap_only skipped ✓
+inject_into_scaffold: unknown round skipped ✓
+inject_into_scaffold: BLOCKER_C and BLOCKER_D get different sections ✓
+verify_injection: valid injection passes all checks ✓
+verify_injection: missing scaffold fails ✓
+verify_no_cross_round_contamination: no contamination in BLOCKER_C ✓
+verify_no_cross_round_contamination: no contamination in BLOCKER_D ✓
+verify_no_cross_round_contamination: BLOCKER_C sections absent from BLOCKER_D ✓

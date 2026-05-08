@@ -1,0 +1,25 @@
+{
+    "trace_id": "blocker-c-auto-injection-001",
+    "replay_log": [
+        "2026-05-08T15:13: BLOCKER_H post-push audit passed, BLOCKER_C candidate started (auto-dispatch from clean pilot replay)",
+        "2026-05-08T15:13: Branch created: work/candidate-blocker-c-auto-injection-001 at 46dea3b",
+        "2026-05-08T15:13: round_injection_registry.py created with ROUND_INJECTION_MAP (3 active, 2 roadmap)",
+        "2026-05-08T15:13: inject_into_scaffold() enriches task.txt + evidence.json with round-scoped sections",
+        "2026-05-08T15:13: No global injection, no roadmap_only injection, no cross-round contamination",
+        "2026-05-08T15:13: verify_injection() + verify_no_cross_round_contamination() are machine-checkable",
+        "2026-05-08T15:13: 24 runtime tests, all passing"
+    ],
+    "append_only_audit": true,
+    "law_compliance": "04",
+    "law_compliance_authority": "Law 04 Article 261 (evidence.json must contain law_compliance: 04)",
+    "market_reality_integration": false,
+    "taiwan_constraints_enforced": false,
+    "evidence_type": "governance_infrastructure_blocker_remediation",
+    "round": "BLOCKER_C",
+    "phase": "governance",
+    "severity": "HIGH",
+    "blockers_resolved": ["BLOCKER_C"],
+    "blockers_not_touched": [
+        "BLOCKER_D (bash hook on Windows)"
+    ]
+}

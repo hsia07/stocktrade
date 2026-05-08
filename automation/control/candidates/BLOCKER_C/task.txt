@@ -1,0 +1,35 @@
+=== TASK DESCRIPTION ===
+
+task_id: BLOCKER_C
+task_type: auto_advance_blocker_remediation
+phase: governance_infrastructure
+law_compliance: 04
+severity: HIGH
+depends_on: BLOCKER_G + FIX-EVIDENCE-CHECKER + BLOCKER_F + BLOCKER_E + BLOCKER_I + BLOCKER_H + FIX-GATE
+enables: BLOCKER_D (bash->PowerShell), auto_advance_operational
+
+=== PROBLEM STATEMENT ===
+
+After BLOCKER_H (Telegram handler) and BLOCKER_I (dispatch scaffold), the
+system can dispatch next-round scaffolds, but there is no mechanism to
+auto-inject round-specific mandatory sections into the scaffold. Each
+blocker round has its own unique requirements that must be documented in
+the candidate scaffold's task.txt and evidence.json at creation time, not
+manually added later.
+
+=== SOLUTION ===
+
+- ROUND_INJECTION_MAP: Dict[str, Dict] mapping round_id to mandatory_sections
+- Three active rounds: BLOCKER_C, BLOCKER_D, AUTO_ADVANCE_OPERATIONAL
+- Two roadmap-only rounds: AUTO_ADVANCE_V0_2, AUTO_ADVANCE_V1_0 (never injected)
+- inject_into_scaffold(): enriches task.txt with round-specific requirements,
+  enriches evidence.json with round-scoped metadata
+- Never injects roadmap_only sections (v0.2/v1.0 are blocked)
+- Never injects sections from other rounds (no cross-round contamination)
+- verify_injection(): machine-checkable scope, roadmap, contamination checks
+- verify_no_cross_round_contamination(): exhaustive check against all rounds
+
+=== FILES ===
+
+- automation/control/round_injection_registry.py (NEW)
+- automation/control/tests/test_blocker_c.py (NEW, 24 tests)

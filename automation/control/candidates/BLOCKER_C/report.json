@@ -1,0 +1,28 @@
+{
+    "round_id": "BLOCKER_C",
+    "candidate_branch": "work/candidate-blocker-c-auto-injection-001",
+    "canonical_branch": "work/canonical-mainline-repair-001",
+    "canonical_head": "46dea3bf6fff09b7b1e04fda2b48403345f9bcfc",
+    "status": "ready_for_merge_signoff",
+    "blocker": "C",
+    "blocker_name": "nea_round_scoped_auto_injection_registry",
+    "files_changed": [],
+    "files_created": [
+        "automation/control/round_injection_registry.py",
+        "automation/control/tests/test_blocker_c.py",
+        "automation/control/candidates/BLOCKER_C/report.json",
+        "automation/control/candidates/BLOCKER_C/candidate.diff",
+        "automation/control/candidates/BLOCKER_C/no-aider-used.txt",
+        "automation/control/candidates/BLOCKER_C/test-results.txt"
+    ],
+    "total_lines_added": 284,
+    "total_lines_removed": 0,
+    "test_count": 24,
+    "tests_passed": 24,
+    "tests_failed": 0,
+    "bounded_auto_mode_impact": "NONE",
+    "auto_advance_mode_impact": "INJECTION_REGISTRY_ADDED (round-scoped injection, machine-checkable, roadmap exclusion)",
+    "blockers_not_touched": [
+        "BLOCKER_D (bash->PowerShell)"
+    ]
+}

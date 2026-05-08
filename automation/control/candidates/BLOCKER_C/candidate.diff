@@ -1,0 +1,18 @@
+New file: automation/control/round_injection_registry.py
+New file: automation/control/tests/test_blocker_c.py
+
+round_injection_registry.py:
+- ROUND_INJECTION_MAP: round-scoped patch/injection mapping (3 active rounds)
+- ROADMAP_ONLY_INJECTIONS: v0.2/v1.0 (2 rounds, never injected in v0.1)
+- get_round_injection(round_id): returns mandatory sections or None
+- is_roadmap_only(round_id): detects roadmap-only rounds
+- get_all_active_round_ids(): lists non-roadmap rounds
+- inject_into_scaffold(): enriches task.txt + evidence.json with round-scoped injection
+- verify_injection(): machine-checkable scope, roadmap, contamination checks
+- verify_no_cross_round_contamination(): exhaustive cross-round section check
+
+test_blocker_c.py (24 tests):
+- TestInjectionMap (8 tests): map integrity, case-insensitive, roadmap detection
+- TestScopedInjection (3 tests): sections disjoint between rounds
+- TestInjectIntoscaffold (7 tests): injection creates files, enriches, skips roadmap/unknown
+- TestVerifyInjection (6 tests): machine-checkable verification, contamination checks
