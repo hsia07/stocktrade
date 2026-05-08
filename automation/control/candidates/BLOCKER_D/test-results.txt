@@ -1,0 +1,48 @@
+BLOCKER_D TEST RESULTS
+======================
+Date: 2026-05-09T12:04
+Branch: work/candidate-blocker-d-powershell-pre-push-001
+Canonical HEAD: 72bbfb1f94f0ee2fe6fe9e2f82fc2d933ba47765
+
+TestPowerShellHookExists (4 tests)
+-------
+PASS: test_ps1_hook_exists
+PASS: test_ps1_hook_not_empty
+PASS: test_bat_entry_point_exists
+PASS: test_bash_hook_preserved
+
+TestPowerShellHookContent (6 tests)
+-------
+PASS: test_contains_canonical_branch_detection
+PASS: test_contains_merge_commit_detection
+PASS: test_contains_law04_compliance
+PASS: test_contains_single_parent_block
+PASS: test_contains_force_push_block
+PASS: test_contains_evidence_json_scan
+
+TestPowerShellHookExecution (5 tests)
+-------
+PASS: test_non_canonical_branch_passes
+PASS: test_single_parent_canonical_blocked
+PASS: test_merge_commit_canonical_passes
+PASS: test_no_stdin_exits_ok
+PASS: test_force_push_detected_blocked
+
+15 passed, 0 failed, 15 total
+
+VERIFICATION
+------------
+pre-push.ps1 exists and non-empty ✓
+pre-push.bat entry point references pre-push.ps1 ✓
+pre-push (bash) preserved (not deleted) ✓
+Canonical branch detection (main|work/canonical-*) ✓
+Merge commit detection (Get-ParentCount ≥ 2) ✓
+Law 04 compliance check (evidence.json law_compliance: "04") ✓
+Single-parent canonical push blocked ✓
+Force push to canonical blocked ✓
+Evidence.json scan via git diff-tree --diff-filter=AM ✓
+Non-canonical branch pushes pass ✓
+Merge commit with valid evidence passes ✓
+No stdin = no push data = exit 0 ✓
+No --no-verify bypass in hook ✓
+No bash dependency in PowerShell path ✓

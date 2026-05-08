@@ -1,0 +1,32 @@
+{
+    "round_id": "BLOCKER_D",
+    "candidate_branch": "work/candidate-blocker-d-powershell-pre-push-001",
+    "canonical_branch": "work/canonical-mainline-repair-001",
+    "canonical_head": "72bbfb1f94f0ee2fe6fe9e2f82fc2d933ba47765",
+    "status": "ready_for_merge_signoff",
+    "blocker": "D",
+    "blocker_name": "powerhell_pre_push_hook_rewrite",
+    "files_changed": [
+        ".githooks/pre-push.ps1"
+    ],
+    "files_created": [
+        "automation/control/tests/test_blocker_d.py",
+        "automation/control/candidates/BLOCKER_D/report.json",
+        "automation/control/candidates/BLOCKER_D/candidate.diff",
+        "automation/control/candidates/BLOCKER_D/no-aider-used.txt",
+        "automation/control/candidates/BLOCKER_D/test-results.txt"
+    ],
+    "total_lines_added": 265,
+    "total_lines_removed": 40,
+    "test_count": 15,
+    "tests_passed": 15,
+    "tests_failed": 0,
+    "bounded_auto_mode_impact": "NONE",
+    "auto_advance_mode_impact": "PRE_PUSH_HOOK_POWERSHELL_COMPATIBLE (Windows unattended no longer requires bash for governance checks)",
+    "blockers_not_touched": [
+        "BLOCKER_C (NEA auto-injection)",
+        "BLOCKER_H (Telegram handler)",
+        "BLOCKER_I (dispatch scaffold)",
+        "BLOCKER_E (automated signoff)"
+    ]
+}

@@ -1,0 +1,29 @@
+{
+    "trace_id": "blocker-d-powershell-pre-push-001",
+    "replay_log": [
+        "2026-05-09T12:04: Branch created: work/candidate-blocker-d-powershell-pre-push-001 at 72bbfb1",
+        "2026-05-09T12:04: .githooks/pre-push.ps1 rewritten with full Canonical Direct Push Guard (P0)",
+        "2026-05-09T12:04: PowerShell hook now has: canonical branch detection, merge commit check, Law 04 compliance, force push block, single-parent block",
+        "2026-05-09T12:04: .githooks/pre-push.bat entry point preserved (calls .ps1)",
+        "2026-05-09T12:04: .githooks/pre-push (bash) preserved for backward compat",
+        "2026-05-09T12:04: All governance checks from bash version ported to PowerShell",
+        "2026-05-09T12:04: Windows unattended auto-advance no longer requires bash for pre-push governance",
+        "2026-05-09T12:04: 15 runtime tests, all passing"
+    ],
+    "append_only_audit": true,
+    "law_compliance": "04",
+    "law_compliance_authority": "Law 04 Article 261 (evidence.json must contain law_compliance: 04)",
+    "market_reality_integration": false,
+    "taiwan_constraints_enforced": false,
+    "evidence_type": "governance_infrastructure_blocker_remediation",
+    "round": "BLOCKER_D",
+    "phase": "governance",
+    "severity": "HIGH",
+    "blockers_resolved": ["BLOCKER_D"],
+    "blockers_not_touched": [
+        "BLOCKER_C (NEA auto-injection registry)",
+        "BLOCKER_H (Telegram handler)",
+        "BLOCKER_I (dispatch scaffold)",
+        "BLOCKER_E (automated signoff)"
+    ]
+}
