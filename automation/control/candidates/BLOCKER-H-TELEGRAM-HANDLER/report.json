@@ -1,0 +1,25 @@
+{
+    "round_id": "BLOCKER-H-TELEGRAM-HANDLER",
+    "candidate_branch": "work/candidate-blocker-h-telegram-handler-001",
+    "canonical_branch": "work/canonical-mainline-repair-001",
+    "canonical_head": "fee567be3eb1eae93775a00f38661cb4387e3491",
+    "status": "ready_for_merge_signoff",
+    "blocker": "H",
+    "blocker_name": "telegram_api_handler_for_auto_advance",
+    "files_changed": [],
+    "files_created": [
+        "automation/control/auto_advance_handler.py",
+        "automation/control/tests/test_blocker_h.py"
+    ],
+    "total_lines_added": 215,
+    "total_lines_removed": 0,
+    "test_count": 17,
+    "tests_passed": 17,
+    "tests_failed": 0,
+    "bounded_auto_mode_impact": "NONE",
+    "auto_advance_mode_impact": "HANDLER_ADDED (Telegram/API entry point can trigger dispatch scaffold when all gates pass)",
+    "blockers_not_touched": [
+        "BLOCKER_C (auto-injection)",
+        "BLOCKER_D (bash->PowerShell)"
+    ]
+}

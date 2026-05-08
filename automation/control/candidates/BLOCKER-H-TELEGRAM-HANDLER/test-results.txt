@@ -1,0 +1,56 @@
+BLOCKER_H TEST RESULTS
+======================
+Date: 2026-05-08T15:52
+Branch: work/candidate-blocker-h-telegram-handler-001
+Canonical HEAD: fee567be3eb1eae93775a00f38661cb4387e3491
+
+TestHandlerAcceptsTrigger (6 tests)
+-------
+PASS: test_handler_full_pass
+PASS: test_handler_blocked_by_signoff
+PASS: test_handler_blocked_by_blockers
+PASS: test_handler_blocked_by_no_next_round
+PASS: test_handler_blocked_by_unknown_round
+PASS: test_handler_blocked_by_not_completed
+
+TestHandlerPreservesModes (3 tests)
+-------
+PASS: test_handler_bounded_auto_mode
+PASS: test_handler_manual_review_preserved
+PASS: test_handler_bounded_push_gate
+
+TestHandlerScaffold (3 tests)
+-------
+PASS: test_handler_creates_scaffold
+PASS: test_handler_scaffold_evidence_law04
+PASS: test_handler_no_scaffold_when_blocked
+
+TestHandlerNoAutoExec (4 tests)
+-------
+PASS: test_handler_no_merge
+PASS: test_handler_no_push
+PASS: test_handler_no_promote
+PASS: test_handler_no_pr
+
+TestHandlerFreshController (1 test)
+-------
+PASS: test_handler_no_controller_arg
+
+17 passed, 0 failed, 17 total
+
+VERIFICATION
+------------
+Handler full pass -> dispatch + scaffold ✓
+Handler blocked by signoff -> rejected ✓
+Handler blocked by blockers -> rejected ✓
+Handler blocked by no next round -> rejected ✓
+Handler blocked by unknown round -> rejected ✓
+Handler blocked by not completed -> rejected ✓
+Bounded auto mode preserved (merge_gate) ✓
+Manual review preserved (review_gate) ✓
+Bounded auto mode preserved (push_gate) ✓
+Scaffold created with evidence.json (law_compliance=04) ✓
+No scaffold when blocked ✓
+merge_executed=False, push_executed=False ✓
+promote_executed=False, pr_created=False ✓
+Works without explicit controller arg ✓

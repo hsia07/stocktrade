@@ -1,0 +1,15 @@
+New file: automation/control/auto_advance_handler.py
+New file: automation/control/tests/test_blocker_h.py
+
+auto_advance_handler.py:
+- handle_auto_advance_trigger(round_result, *, controller=None)
+- Checks can_dispatch_next_round before dispatching
+- Never merges, pushes, promotes, or creates PR
+- Returns structured dict with safety flags
+
+test_blocker_h.py:
+- TestHandlerAcceptsTrigger (6 tests)
+- TestHandlerPreservesModes (3 tests)
+- TestHandlerScaffold (3 tests)
+- TestHandlerNoAutoExec (4 tests)
+- TestHandlerFreshController (1 test)

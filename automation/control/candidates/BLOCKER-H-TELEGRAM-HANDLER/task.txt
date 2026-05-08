@@ -1,0 +1,32 @@
+=== TASK DESCRIPTION ===
+
+task_id: BLOCKER-H-TELEGRAM-HANDLER
+task_type: auto_advance_blocker_remediation
+phase: governance_infrastructure
+law_compliance: 04
+severity: HIGH
+depends_on: BLOCKER_G + FIX-EVIDENCE-CHECKER + BLOCKER_F + BLOCKER_E + BLOCKER_I
+enables: auto_advance_operational
+
+=== PROBLEM STATEMENT ===
+
+After BLOCKER_I (dispatch scaffold), the system has the ability to
+determine next round and create scaffold, but there is no entry point
+for Telegram/API/cron to trigger the dispatch. A handler is needed
+that wraps the full gating chain and only dispatches when safe.
+
+=== SOLUTION ===
+
+- auto_advance_handler.py: handle_auto_advance_trigger()
+- Accepts round_result, checks can_dispatch_next_round (which internally
+  gates on auto-candidate status, signoff, blockers, evidence, pause,
+  sequence end)
+- If dispatchable, calls dispatch_next_round to create scaffold
+- Always returns merge/push/promote/pr_created = False
+- Bounded auto-mode and manual-review path preserved via delegation to
+  can_auto_advance / can_dispatch_next_round
+
+=== FILES ===
+
+- automation/control/auto_advance_handler.py (NEW)
+- automation/control/tests/test_blocker_h.py (NEW, 17 tests)

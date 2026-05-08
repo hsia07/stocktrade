@@ -1,0 +1,25 @@
+{
+    "trace_id": "blocker-h-telegram-handler-001",
+    "replay_log": [
+        "2026-05-08T15:52: BLOCKER_I post-push audit passed, BLOCKER_H candidate started",
+        "2026-05-08T15:52: Branch created: work/candidate-blocker-h-telegram-handler-001 at fee567b",
+        "2026-05-08T15:52: auto_advance_handler.py created with handle_auto_advance_trigger()",
+        "2026-05-08T15:52: Handler checks: can_dispatch_next_round + auto-candidate + signoff",
+        "2026-05-08T15:52: Handler never directly merges/pushes/promotes/PRs",
+        "2026-05-08T15:52: 17 runtime tests, all passing"
+    ],
+    "append_only_audit": true,
+    "law_compliance": "04",
+    "law_compliance_authority": "Law 04 Article 261 (evidence.json must contain law_compliance: 04)",
+    "market_reality_integration": false,
+    "taiwan_constraints_enforced": false,
+    "evidence_type": "governance_infrastructure_blocker_remediation",
+    "round": "BLOCKER-H-TELEGRAM-HANDLER",
+    "phase": "governance",
+    "severity": "HIGH",
+    "blockers_resolved": ["BLOCKER_H"],
+    "blockers_not_touched": [
+        "BLOCKER_C (NEA auto-injection)",
+        "BLOCKER_D (bash hook on Windows)"
+    ]
+}
