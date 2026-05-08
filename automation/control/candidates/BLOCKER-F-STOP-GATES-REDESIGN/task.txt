@@ -1,0 +1,47 @@
+=== TASK DESCRIPTION ===
+
+task_id: BLOCKER-F-STOP-GATES-REDESIGN
+task_type: auto_advance_blocker_remediation
+phase: governance_infrastructure
+law_compliance: 04
+severity: HIGH
+depends_on: BLOCKER_G (auto_candidate_ready) + FIX-EVIDENCE-CHECKER-INDENTATION
+enables: BLOCKER_E (automated signoff mechanism)
+
+=== PROBLEM STATEMENT ===
+
+can_auto_advance() had no distinction between auto-candidate rounds and
+bounded auto-mode rounds. All rounds were subject to the same STOP_GATES
+(merge/push/activation/authorization), making auto-advance impossible.
+
+=== SOLUTION ===
+
+Redesigned can_auto_advance() with two paths:
+
+Auto-candidate path (formal_status_code == auto_candidate_ready):
+- Bypasses manual STOP_GATES (merge/push/activation/authorization)
+- Still blocked by safety gates: blockers, evidence, pause
+- Returns "auto_candidate_path_clear" on success
+
+Bounded auto-mode path (all other status codes):
+- Original behavior fully preserved
+- All STOP_GATES enforced
+- candidate_ready_awaiting_manual_review still blocked by review_gate
+- Returns "all_conditions_met" on success
+
+=== FILES ===
+
+- automation/control/auto_advance.py (MODIFIED: can_auto_advance() logic + docstring)
+- automation/control/tests/test_blocker_f.py (NEW: 15 runtime tests)
+
+=== VERIFICATION CRITERIA ===
+
+Runtime behavioral tests covering:
+- auto_candidate_ready all clear → passes
+- auto_candidate_ready bypasses merge/push/auth/activation gates
+- auto_candidate_ready still blocked by blockers/evidence/pause
+- candidate_ready_awaiting_manual_review still blocked by review_gate
+- blocked status still blocked by review_gate
+- bounded_auto_mode: merge/push/auth gates still block
+- round_status_gate still blocks non-completed rounds
+- new round dispatch unchanged

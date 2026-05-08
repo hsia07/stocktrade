@@ -1,0 +1,28 @@
+{
+    "trace_id": "blocker-f-stop-gates-redesign-001",
+    "replay_log": [
+        "2026-05-08T12:20: BLOCKER_G + FIX-EVIDENCE-CHECKER-INDENTATION formally closed",
+        "2026-05-08T12:20: BLOCKER_F candidate branch created",
+        "2026-05-08T12:20: can_auto_advance() redesigned: auto-candidate path bypasses manual STOP_GATES",
+        "2026-05-08T12:20: safety gates (blockers, evidence, pause) enforced on both paths",
+        "2026-05-08T12:20: bounded_auto_mode fully preserved in non-auto-candidate path",
+        "2026-05-08T12:20: 15 runtime behavioral tests, all passing"
+    ],
+    "append_only_audit": true,
+    "law_compliance": "04",
+    "law_compliance_authority": "Law 04 Article 261 (evidence.json must contain law_compliance: 04)",
+    "market_reality_integration": false,
+    "taiwan_constraints_enforced": false,
+    "evidence_type": "governance_infrastructure_blocker_remediation",
+    "round": "BLOCKER-F-STOP-GATES-REDESIGN",
+    "phase": "governance",
+    "severity": "HIGH",
+    "blockers_resolved": ["BLOCKER_F"],
+    "blockers_not_touched": [
+        "BLOCKER_E (automated signoff)",
+        "BLOCKER_C (NEA auto-injection)",
+        "BLOCKER_D (bash hook on Windows)",
+        "BLOCKER_H (Telegram dispatch handler)",
+        "BLOCKER_I (auto dispatch script)"
+    ]
+}

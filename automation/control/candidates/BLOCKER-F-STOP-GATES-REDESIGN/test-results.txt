@@ -1,0 +1,43 @@
+BLOCKER_F TEST RESULTS
+======================
+Date: 2026-05-08T12:20
+Branch: work/candidate-blocker-f-stop-gates-redesign-001
+Canonical HEAD: 280a2381bbea4abc0c3eca2ce06f0f3211fab121
+
+RESULTS
+-------
+PASS: test_auto_candidate_all_clear
+PASS: test_auto_candidate_bypasses_merge_gate
+PASS: test_auto_candidate_bypasses_push_gate
+PASS: test_auto_candidate_bypasses_authorization_gate
+PASS: test_auto_candidate_bypasses_activation_gate
+PASS: test_auto_candidate_still_blocked_by_blockers
+PASS: test_auto_candidate_still_blocked_by_evidence
+PASS: test_auto_candidate_still_blocked_by_pause
+PASS: test_candidate_ready_awaiting_manual_review_still_blocked
+PASS: test_blocked_status_still_blocked
+PASS: test_bounded_auto_mode_merge_gate_blocks
+PASS: test_bounded_auto_mode_push_gate_blocks
+PASS: test_bounded_auto_mode_auth_gate_blocks
+PASS: test_round_status_gate_still_blocks
+PASS: test_new_round_dispatch_unchanged
+
+15 passed, 0 failed, 15 total
+
+VERIFICATION
+------------
+auto_candidate_ready path: all clear → auto_candidate_path_clear ✓
+auto_candidate_ready + merge_gate → bypasses ✓
+auto_candidate_ready + push_gate → bypasses ✓
+auto_candidate_ready + auth_gate → bypasses ✓
+auto_candidate_ready + activation_gate → bypasses ✓
+auto_candidate_ready + blockers → still blocked by blocker_gate ✓
+auto_candidate_ready + incomplete evidence → still blocked by evidence_gate ✓
+auto_candidate_ready + pause → still blocked by pause_gate ✓
+candidate_ready_awaiting_manual_review → review_gate ✓
+blocked status → review_gate ✓
+bounded_auto_mode + merge_gate → merge_gate ✓
+bounded_auto_mode + push_gate → push_gate ✓
+bounded_auto_mode + auth_gate → authorization_gate ✓
+non-completed status → round_status_gate ✓
+new round dispatch → construction_bootstrap_gate ✓
