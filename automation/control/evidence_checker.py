@@ -15,6 +15,8 @@ from typing import Tuple, List, Dict, Any
 
 logger = logging.getLogger("evidence_checker")
 
+from .return_to_chatgpt_verifier import ReturnToChatGPTVerifier
+
 
 class Law04ComplianceError(Exception):
     """Raised when Law 04 compliance check fails."""
@@ -805,13 +807,11 @@ class EvidenceChecker:
         
         return True, []
 
-from .return_to_chatgpt_verifier import ReturnToChatGPTVerifier
-
     def verify_return_to_chatgpt(self, output_text):
         '''Verify RETURN_TO_CHATGPT output using ReturnToChatGPTVerifier.'''
         verifier = ReturnToChatGPTVerifier()
         return verifier.verify_output(output_text)
-    
+
     def validate_return_to_chatgpt_in_evidence(self, evidence):
         '''Validate RETURN_TO_CHATGPT verification in evidence.'''
         verifier = ReturnToChatGPTVerifier()

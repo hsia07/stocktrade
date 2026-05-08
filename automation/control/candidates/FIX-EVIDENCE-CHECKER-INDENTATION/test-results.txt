@@ -1,0 +1,25 @@
+FIX-EVIDENCE-CHECKER-INDENTATION TEST RESULTS
+==============================================
+Date: 2026-05-08T12:01
+Branch: work/candidate-fix-evidence-checker-indentation-001
+Canonical HEAD: 6f0582aa6bc5667d7f59c5feeee263846de79354
+
+RESULTS
+-------
+PASS: test_evidence_checker_parses
+PASS: test_evidence_checker_imports
+PASS: test_orphaned_methods_restored
+PASS: test_no_orphaned_code_outside_class
+PASS: test_auto_advance_imports
+
+5 passed, 0 failed, 5 total
+
+VERIFICATION
+------------
+evidence_checker.py parses successfully ✓
+Import at top of file (before class definition) ✓
+verify_return_to_chatgpt is class method (4-space indent) ✓
+validate_return_to_chatgpt_in_evidence is class method ✓
+No orphaned code outside class ✓
+AutoAdvanceController imports successfully ✓
+is_auto_candidate_status("auto_candidate_ready") → True ✓
