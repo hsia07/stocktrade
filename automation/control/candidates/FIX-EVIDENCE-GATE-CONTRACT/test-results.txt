@@ -1,0 +1,34 @@
+=== FIX-EVIDENCE-GATE-CONTRACT Test Results ===
+Date: 2026-05-08
+Branch: work/candidate-fix-evidence-gate-contract-001
+Canonical: 163366b284d48a34270490c45a2b7db909889fad
+
+Test Suite: test_evidence_gate_contract.py (13 tests)
+  TestCompletedStatusPreserved (3/3):
+    ✓ test_completed_passes
+    ✓ test_completed_passes_with_real_hash
+    ✓ test_completed_with_no_candidate_branch
+  TestReadyForMergeSignoffWithProof (2/2):
+    ✓ test_blocker_h_with_canonical_proof
+    ✓ test_blocker_e_with_canonical_proof
+  TestReadyForMergeSignoffWithoutProof (3/3):
+    ✓ test_no_candidate_commit_and_no_branch
+    ✓ test_branch_not_ancestor_of_canonical
+    ✓ test_branch_exists_but_not_merged
+  TestRetroactiveMutationNoLongerRequired (2/2):
+    ✓ test_blocker_h_original_report_unchanged
+    ✓ test_blocker_h_passes_without_mutation
+  TestUnknownStatusStillBlocked (3/3):
+    ✓ test_in_progress_blocked
+    ✓ test_failed_blocked
+    ✓ test_empty_status_blocked
+
+Total: 13 passed, 0 failed — 100% pass
+
+Regression Check: test_blocker_f.py (15 tests):
+  10 passed, 5 pre-existing failures (missing automated_signoff data — pre-BLOCKER_E)
+  Zero new regressions from this round.
+
+Other suites: test_blocker_e (8/8), test_blocker_g (7/7),
+  test_blocker_h (17/17), test_blocker_i (23/23),
+  test_evidence_checker_fix (5/5) — all pass.

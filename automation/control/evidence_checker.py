@@ -60,7 +60,14 @@ class EvidenceChecker:
             try:
                 with open(report_path, "r", encoding="utf-8") as f:
                     report = json.load(f)
-                if report.get("status") != "completed":
+                if report.get("status") == "completed":
+                    pass  # Full completed status — always accepted
+                elif report.get("status") == "ready_for_merge_signoff":
+                    # Option A strict: accept if canonical proof shows round was merged
+                    merge_ok, merge_reason = self._check_round_merged_to_canonical(candidate_dir)
+                    if not merge_ok:
+                        missing.append(f"report_status_not_completed:ready_for_merge_signoff:merge_not_confirmed:{merge_reason}")
+                else:
                     missing.append("report_status_not_completed")
                 if report.get("formal_status_code") == "blocked":
                     missing.append("report_formal_status_blocked")
@@ -115,6 +122,117 @@ class EvidenceChecker:
         if not complete:
             logger.warning(f"Evidence incomplete: {missing}")
         return complete, missing
+
+    def _check_round_merged_to_canonical(self, candidate_dir: Path) -> Tuple[bool, str]:
+        """
+        Option A strict: Check if the candidate round has been merged into canonical HEAD.
+
+        Accepts ready_for_merge_signoff ONLY when ALL conditions hold:
+        1. Candidate commit is determinable (from evidence.json or candidate branch name)
+        2. Candidate commit is valid 40hex and exists as a git object
+        3. Candidate commit is an ancestor of canonical branch HEAD
+        4. Canonical local HEAD matches canonical remote HEAD (reconciliation proof)
+
+        The canonical branch is determined from report.json's 'canonical_branch' field.
+        This method is designed to be callable from any candidate branch — it never
+        assumes the current HEAD is the canonical branch.
+
+        Returns (is_merged, reason).
+        """
+        report_path = candidate_dir / "report.json"
+        evidence_path = candidate_dir / "evidence.json"
+
+        # Determine canonical branch name from report.json
+        canonical_branch = "work/canonical-mainline-repair-001"  # default
+        if report_path.exists():
+            try:
+                with open(report_path, "r", encoding="utf-8") as f:
+                    report = json.load(f)
+                canonical_branch = report.get("canonical_branch", canonical_branch)
+            except Exception:
+                pass
+
+        # Step 1: Determine candidate commit
+        candidate_commit = None
+
+        if evidence_path.exists():
+            try:
+                with open(evidence_path, "r", encoding="utf-8") as f:
+                    evidence = json.load(f)
+                candidate_commit = evidence.get("candidate_commit") or evidence.get(
+                    "commit_hash"
+                )
+            except Exception:
+                pass
+
+        # Fallback: use candidate_branch from report.json if evidence lacks commit
+        if not candidate_commit and report_path.exists():
+            try:
+                with open(report_path, "r", encoding="utf-8") as f:
+                    report = json.load(f)
+                candidate_branch = report.get("candidate_branch")
+                if candidate_branch:
+                    result = subprocess.run(
+                        ["git", "rev-parse", candidate_branch],
+                        capture_output=True,
+                        text=True,
+                        cwd=self.repo_root,
+                        timeout=5,
+                    )
+                    if result.returncode == 0:
+                        candidate_commit = result.stdout.strip()
+            except Exception:
+                pass
+
+        if not candidate_commit:
+            return False, "candidate_commit_not_determinable"
+
+        # Step 2: Validate 40hex
+        is_valid, reason = self.validate_40hex_hash(candidate_commit)
+        if not is_valid:
+            return False, f"invalid_candidate_commit:{reason}"
+
+        # Step 3: Check ancestry — candidate must be ancestor of canonical branch HEAD
+        try:
+            result = subprocess.run(
+                ["git", "merge-base", "--is-ancestor", candidate_commit, canonical_branch],
+                capture_output=True,
+                text=True,
+                cwd=self.repo_root,
+                timeout=10,
+            )
+            if result.returncode != 0:
+                return False, "candidate_not_ancestor_of_canonical"
+        except Exception as e:
+            return False, f"ancestry_check_error:{str(e)}"
+
+        # Step 4: Check canonical local/remote HEAD alignment (reconciliation proof)
+        try:
+            canonical_local = subprocess.run(
+                ["git", "rev-parse", canonical_branch],
+                capture_output=True,
+                text=True,
+                cwd=self.repo_root,
+                timeout=5,
+            ).stdout.strip()
+
+            remote_result = subprocess.run(
+                ["git", "ls-remote", "origin", canonical_branch],
+                capture_output=True,
+                text=True,
+                cwd=self.repo_root,
+                timeout=15,
+            )
+            if remote_result.returncode == 0 and remote_result.stdout.strip():
+                remote_head = remote_result.stdout.strip().split()[0]
+                if canonical_local != remote_head:
+                    return False, "canonical_local_remote_head_mismatch"
+            else:
+                return False, "canonical_branch_not_on_remote_or_remote_unreachable"
+        except Exception as e:
+            return False, f"canonical_head_match_error:{str(e)}"
+
+        return True, "canonical_merged_and_reconciled"
 
     def check_tests_and_validators(self, evidence: Dict[str, Any]) -> Tuple[bool, List[str]]:
         """Check test/validator pass summary from evidence dict."""

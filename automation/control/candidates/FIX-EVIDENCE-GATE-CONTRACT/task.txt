@@ -1,0 +1,27 @@
+=== FIX-EVIDENCE-GATE-CONTRACT ===
+round_id: FIX-EVIDENCE-GATE-CONTRACT
+candidate_branch: work/candidate-fix-evidence-gate-contract-001
+canonical_branch: work/canonical-mainline-repair-001
+
+Objective:
+Fix the EvidenceGate contract mismatch between ready_for_merge_signoff
+and the EvidenceChecker. Previously, candidate evidence packages created
+pre-merge with status "ready_for_merge_signoff" would fail the evidence
+gate even after the round was fully merged, pushed, and reconciled.
+
+Option A implemented:
+- EvidenceChecker.check_completeness() now accepts "ready_for_merge_signoff"
+  when strict machine-checkable canonical proof is provided:
+  1. Candidate commit is determinable (from evidence.json or candidate branch)
+  2. Candidate commit is valid 40hex and exists as git object
+  3. Candidate commit is ancestor of canonical branch HEAD
+  4. Canonical local HEAD matches canonical remote HEAD (reconciliation proof)
+- Without canonical proof, ready_for_merge_signoff still blocks (conservative)
+- All unknown/in-progress/failed statuses still block
+- No retroactive evidence mutation required (BLOCKER_H report.json reverted)
+
+Risk:
+- Low. Only affects the evidence gate, expanding accepted status values.
+- All existing "completed" behavior preserved.
+- All safety gates (blockers, pause, signoff, review) unchanged.
+- Pre-existing BLOCKER_F test failures (5) unrelated.

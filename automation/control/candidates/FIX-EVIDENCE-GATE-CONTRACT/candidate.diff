@@ -1,0 +1,46 @@
+diff --git a/automation/control/evidence_checker.py b/automation/control/evidence_checker.py
+--- a/automation/control/evidence_checker.py
++++ b/automation/control/evidence_checker.py
+@@ -59,8 +59,14 @@ class EvidenceChecker:
+                 with open(report_path, "r", encoding="utf-8") as f:
+                     report = json.load(f)
+-                if report.get("status") != "completed":
+-                    missing.append("report_status_not_completed")
++                if report.get("status") == "completed":
++                    pass  # Full completed status — always accepted
++                elif report.get("status") == "ready_for_merge_signoff":
++                    merge_ok, merge_reason = self._check_round_merged_to_canonical(candidate_dir)
++                    if not merge_ok:
++                        missing.append(f"report_status_not_completed:ready_for_merge_signoff:merge_not_confirmed:{merge_reason}")
++                else:
++                    missing.append("report_status_not_completed")
+                 if report.get("formal_status_code") == "blocked":
+                     missing.append("report_formal_status_blocked")
+
++    def _check_round_merged_to_canonical(self, candidate_dir: Path) -> Tuple[bool, str]:
++        """
++        Option A strict: Check if the candidate round has been merged into canonical HEAD.
++        Accepts ready_for_merge_signoff ONLY when ALL conditions hold:
++        1. Candidate commit is determinable
++        2. Candidate commit is valid 40hex and exists as a git object
++        3. Candidate commit is ancestor of canonical branch HEAD
++        4. Canonical local HEAD matches canonical remote HEAD (reconciliation proof)
++        """
++        (see full implementation in evidence_checker.py)
+
+diff --git a/automation/control/tests/test_evidence_gate_contract.py b/automation/control/tests/test_evidence_gate_contract.py
+new file mode 100644
+--- /dev/null
++++ b/automation/control/tests/test_evidence_gate_contract.py
+@@ -0,0 +1,192 @@
++"""FIX-EVIDENCE-GATE-CONTRACT runtime tests.
++Verifies Option A strict acceptance of ready_for_merge_signoff."""
++(see full content in test file — 13 tests covering:
++ completed preserved, Option A pass/fail, mutation no longer needed, unknown status blocked)
+
+diff --git a/automation/control/tests/test_blocker_f.py b/automation/control/tests/test_blocker_f.py
+--- a/automation/control/tests/test_blocker_f.py
++++ b/automation/control/tests/test_blocker_f.py
+@@ -107,7 +108,7 @@ def test_auto_candidate_still_blocked_by_evidence():
+-    assert gate == "evidence_gate", f"Expected evidence_gate, got {gate}"
++    assert gate == "signoff_gate", f"Expected signoff_gate, got {gate}"
