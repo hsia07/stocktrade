@@ -1,0 +1,31 @@
+=== TASK DESCRIPTION ===
+
+task_id: BLOCKER-I-AUTO-DISPATCH
+task_type: auto_advance_blocker_remediation
+phase: governance_infrastructure
+law_compliance: 04
+severity: HIGH
+depends_on: BLOCKER_G + FIX-EVIDENCE-CHECKER + BLOCKER_F + BLOCKER_E
+enables: BLOCKER_H (Telegram handler), auto_advance_operational
+
+=== PROBLEM STATEMENT ===
+
+After BLOCKER_E (automated signoff), the system can determine that
+auto-advance IS allowed, but there is no mechanism to dispatch the
+next round. A human must manually create the next candidate branch.
+
+=== SOLUTION ===
+
+- ROUND_SEQUENCE: explicit ordered list of blocker IDs
+- determine_next_round(current_round_id): returns next round from sequence
+- can_dispatch_next_round(round_result): checks auto-clear + next exists
+- dispatch_next_round(round_result): creates candidate scaffold directory
+  with evidence.json and task.txt skeleton
+- All dispatch results explicitly set merge/push/promote/pr_created = False
+- Bounded auto-mode and manual-review path preserved (delegates to
+  can_auto_advance which already enforces those)
+
+=== FILES ===
+
+- automation/control/auto_advance.py (MODIFIED)
+- automation/control/tests/test_blocker_i.py (NEW, 16 tests)

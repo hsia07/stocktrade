@@ -1,0 +1,60 @@
+diff --git a/automation/control/auto_advance.py b/automation/control/auto_advance.py
+index e043173..7e395ac 100644
+--- a/automation/control/auto_advance.py
++++ b/automation/control/auto_advance.py
+@@ -1,4 +1,6 @@
+ """
++BLOCKER_I-related additions:
++
+ Auto-Advance Controller
+
+ Two-mode governance for candidate-pass auto-advancement:
+@@ -17,10 +19,30 @@ Bounded auto-mode (all other status codes):
+ - /pause gate always STOP
+ - Evidence incompleteness always STOP
++
++BLOCKER_I: Next-round dispatch scaffold.
++- After auto-candidate signoff passes, can_dispatch_next_round checks if the
++  next round is defined. dispatch_next_round creates the candidate scaffold
++  (branch name, evidence skeleton) but does NOT merge, push, promote, or PR.
++- merge / push / promote remain blocked at the caller level.
+ """
+
++import json
+ import logging
++from datetime import datetime, timezone
+ from typing import Dict, Any, Tuple, List
++from typing import Optional
+ from pathlib import Path
+
+ from automation.control.pause_state import PauseStateManager
+ from automation.control.evidence_checker import EvidenceChecker
+
+ logger = logging.getLogger("auto_advance")
+
++ROUND_SEQUENCE: list[str] = [
++    "BLOCKER_G",
++    "FIX-EVIDENCE-CHECKER-INDENTATION",
++    "BLOCKER_F",
++    "BLOCKER_E",
++    "BLOCKER_I",
++    "BLOCKER_H",
++    "BLOCKER_C",
++    "BLOCKER_D",
++    "AUTO_ADVANCE_OPERATIONAL",
++]
++
+
+@@ -145,3 +167,97 @@ class AutoAdvanceController:
+     def get_stop_gates(self) -> List[str]:
+         """Return list of gates that will block auto-advance."""
+         return self.STOP_GATES.copy()
++
++    def determine_next_round(self, current_round_id: str) -> Optional[str]:
++        ...
++
++    def can_dispatch_next_round(self, round_result: Dict[str, Any]) -> Tuple[bool, str, str]:
++        ...
++
++    def dispatch_next_round(self, round_result: Dict[str, Any]) -> Dict[str, Any]:
++        ...

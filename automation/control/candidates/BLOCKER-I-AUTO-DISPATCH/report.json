@@ -1,0 +1,23 @@
+{
+    "round_id": "BLOCKER-I-AUTO-DISPATCH",
+    "candidate_branch": "work/candidate-blocker-i-auto-dispatch-001",
+    "canonical_branch": "work/canonical-mainline-repair-001",
+    "canonical_head": "161a05a5e9ce210df0b4027fe72a64e28e5641d1",
+    "status": "ready_for_merge_signoff",
+    "blocker": "I",
+    "blocker_name": "automated_next_round_dispatch_script",
+    "files_changed": ["automation/control/auto_advance.py"],
+    "files_created": ["automation/control/tests/test_blocker_i.py"],
+    "total_lines_added": 185,
+    "total_lines_removed": 0,
+    "test_count": 16,
+    "tests_passed": 16,
+    "tests_failed": 0,
+    "bounded_auto_mode_impact": "NONE",
+    "auto_advance_mode_impact": "DISPATCH_ENABLED (auto-candidate path can now create next-round scaffold)",
+    "blockers_not_touched": [
+        "BLOCKER_H (Telegram handler)",
+        "BLOCKER_C (auto-injection)",
+        "BLOCKER_D (bash→PowerShell)",
+    ]
+}
