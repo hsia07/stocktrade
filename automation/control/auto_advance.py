@@ -6,7 +6,8 @@ Two-mode governance for candidate-pass auto-advancement:
 Auto-candidate mode (formal_status_code == auto_candidate_ready):
 - Bypasses manual STOP_GATES (merge/push/activation/authorization)
 - Still blocked by safety gates: blockers, evidence, pause
-- Designed for BLOCKER_F auto-advance path
+- Requires machine-checkable automated signoff (hash, law, evidence)
+- Designed for BLOCKER_E + BLOCKER_F auto-advance path
 
 Bounded auto-mode (all other status codes):
 - Original behavior preserved: STOP_GATES fully enforced
@@ -33,11 +34,18 @@ class AutoAdvanceController:
         "push_gate",
         "activation_gate",
         "authorization_gate",
+        "signoff_gate",
         "blocker_gate",
         "pause_gate",
         "evidence_gate",
         "review_gate",
         "round_status_gate",
+    ]
+
+    SIGNOFF_REQUIREMENTS = [
+        "hash_verified",
+        "law_compliance_verified",
+        "evidence_validated",
     ]
 
     BLOCKED_STATUS_CODES = [
@@ -55,6 +63,18 @@ class AutoAdvanceController:
     def is_auto_candidate_status(self, formal_code: str) -> bool:
         return formal_code == self.AUTO_CANDIDATE_READY
 
+    def verify_automated_signoff(self, round_result: Dict[str, Any]) -> List[str]:
+        """
+        Check machine-verifiable signoff conditions for auto-candidate path.
+        Returns list of missing/unverified requirements (empty = all passed).
+        """
+        signoff = round_result.get("automated_signoff", {})
+        missing = []
+        for req in self.SIGNOFF_REQUIREMENTS:
+            if not signoff.get(req, False):
+                missing.append(req)
+        return missing
+
     def can_auto_advance(self, round_result: Dict[str, Any]) -> Tuple[bool, str, str]:
         """
         Return (can_advance, reason, gate_type).
@@ -62,7 +82,8 @@ class AutoAdvanceController:
         Two paths:
         - Auto-candidate path (formal_status_code == auto_candidate_ready):
           bypasses manual STOP_GATES (merge/push/activation/authorization),
-          still blocked by safety gates (blockers, evidence, pause).
+          still blocked by safety gates (blockers, evidence, pause),
+          requires automated signoff verification.
         - Bounded auto-mode path (all other status codes): full STOP_GATES
           enforcement, unchanged from pre-BLOCKER_F behavior.
 
@@ -106,6 +127,10 @@ class AutoAdvanceController:
 
         # 7. Path selection
         if is_auto:
+            # Auto-candidate path: require machine-checkable signoff
+            missing_signoff = self.verify_automated_signoff(round_result)
+            if missing_signoff:
+                return False, f"signoff_incomplete: {missing_signoff}", "signoff_gate"
             return True, "auto_candidate_path_clear", "none"
 
         # Bounded auto-mode: check manual STOP_GATES

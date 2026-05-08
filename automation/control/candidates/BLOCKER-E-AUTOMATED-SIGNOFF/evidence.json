@@ -1,0 +1,27 @@
+{
+    "trace_id": "blocker-e-automated-signoff-001",
+    "replay_log": [
+        "2026-05-08T12:37: BLOCKER_G/FIX/F formally closed, BLOCKER_E candidate created",
+        "2026-05-08T12:37: SIGNOFF_REQUIREMENTS defined (hash, law_compliance, evidence)",
+        "2026-05-08T12:37: verify_automated_signoff() method added",
+        "2026-05-08T12:37: auto-candidate path now requires machine-checkable signoff",
+        "2026-05-08T12:37: signoff_gate added to STOP_GATES (10 gates total)",
+        "2026-05-08T12:37: 8 runtime behavioral tests, all passing"
+    ],
+    "append_only_audit": true,
+    "law_compliance": "04",
+    "law_compliance_authority": "Law 04 Article 261 (evidence.json must contain law_compliance: 04)",
+    "market_reality_integration": false,
+    "taiwan_constraints_enforced": false,
+    "evidence_type": "governance_infrastructure_blocker_remediation",
+    "round": "BLOCKER-E-AUTOMATED-SIGNOFF",
+    "phase": "governance",
+    "severity": "HIGH",
+    "blockers_resolved": ["BLOCKER_E"],
+    "blockers_not_touched": [
+        "BLOCKER_C (NEA auto-injection)",
+        "BLOCKER_D (bash hook on Windows)",
+        "BLOCKER_H (Telegram dispatch handler)",
+        "BLOCKER_I (auto dispatch script)"
+    ]
+}

@@ -1,0 +1,30 @@
+=== TASK DESCRIPTION ===
+
+task_id: BLOCKER-E-AUTOMATED-SIGNOFF
+task_type: auto_advance_blocker_remediation
+phase: governance_infrastructure
+law_compliance: 04
+severity: HIGH
+depends_on: BLOCKER_G + FIX-EVIDENCE-CHECKER + BLOCKER_F
+enables: BLOCKER_I (auto dispatch script)
+
+=== PROBLEM STATEMENT ===
+
+After BLOCKER_F, the auto-candidate path exists but has no authorization
+mechanism. Auto-advance still implicitly requires conversational human
+signoff. BLOCKER_E defines machine-checkable signoff conditions.
+
+=== SOLUTION ===
+
+- SIGNOFF_REQUIREMENTS: ["hash_verified", "law_compliance_verified",
+  "evidence_validated"]
+- verify_automated_signoff(): checks round_result["automated_signoff"] dict
+  for all required fields; returns list of missing/unverified items
+- signoff_gate: added to STOP_GATES (10 gates total)
+- Auto-candidate path: checks signoff before allowing pass
+- Manual review path and bounded auto-mode: unchanged, signoff not checked
+
+=== FILES ===
+
+- automation/control/auto_advance.py (MODIFIED)
+- automation/control/tests/test_blocker_e.py (NEW, 8 tests)
