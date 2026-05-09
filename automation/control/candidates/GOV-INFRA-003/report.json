@@ -1,0 +1,29 @@
+{
+    "round_id": "GOV-INFRA-003",
+    "candidate_branch": "work/candidate-gov-infra-003",
+    "canonical_branch": "work/canonical-mainline-repair-001",
+    "canonical_head": "329c5d2c2f3af3022fdf66b483d9dd23506125a9",
+    "status": "ready_for_merge_signoff",
+    "primary_objective": "Enforce 6/6 evidence package completeness in evidence_checker.py",
+    "files_changed": [
+        "automation/control/evidence_checker.py"
+    ],
+    "files_created": [
+        "automation/control/tests/test_gov_infra_003.py",
+        "automation/control/candidates/GOV-INFRA-003/evidence.json",
+        "automation/control/candidates/GOV-INFRA-003/report.json",
+        "automation/control/candidates/GOV-INFRA-003/task.txt",
+        "automation/control/candidates/GOV-INFRA-003/candidate.diff",
+        "automation/control/candidates/GOV-INFRA-003/no-aider-used.txt",
+        "automation/control/candidates/GOV-INFRA-003/test-results.txt"
+    ],
+    "test_count": 11,
+    "tests_passed": 11,
+    "tests_failed": 0,
+    "bounded_auto_mode_impact": "POSITIVE — incomplete evidence packages (missing any of 6 required files) are now blocked",
+    "auto_advance_mode_impact": "NONE — auto-advance path is not modified",
+    "blockers_not_touched": [
+        "BLOCKER_G", "BLOCKER_F", "BLOCKER_E", "BLOCKER_I",
+        "BLOCKER_H", "BLOCKER_C", "BLOCKER_D"
+    ]
+}

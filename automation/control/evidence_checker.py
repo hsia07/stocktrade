@@ -31,10 +31,9 @@ class EvidenceChecker:
         "task.txt",
         "report.json",
         "evidence.json",
-    ]
-
-    OPTIONAL_FILES = [
         "candidate.diff",
+        "no-aider-used.txt",
+        "test-results.txt",
     ]
 
     REQUIRED_LAW_COMPLIANCE = "04"  # Law 04 compliance value
@@ -848,8 +847,7 @@ class EvidenceChecker:
         issues = []
         
         # Check 1: Evidence package complete
-        required_files = ["task.txt", "evidence.json", "report.json"]
-        for req_file in required_files:
+        for req_file in self.REQUIRED_FILES:
             if not (candidate_dir / req_file).exists():
                 issues.append(f"evidence_package:missing:{req_file}")
                 result["checks"]["candidate_evidence_complete"] = False

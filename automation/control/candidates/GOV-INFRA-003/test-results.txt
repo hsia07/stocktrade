@@ -1,0 +1,33 @@
+GOV-INFRA-003 TEST RESULTS
+===========================
+Date: 2026-05-09
+Branch: work/candidate-gov-infra-003
+Canonical HEAD: 329c5d2c2f3af3022fdf66b483d9dd23506125a9
+
+GOV-INFRA-003 tests (11):
+  TestComplete6of6Package:
+    test_all_6_files_present_passes                    PASS
+  TestMissingFileBlocked:
+    test_missing_task_txt_blocked                      PASS
+    test_missing_report_json_blocked                   PASS
+    test_missing_evidence_json_blocked                 PASS
+    test_missing_candidate_diff_blocked                PASS
+    test_missing_no_aider_blocked                      PASS
+    test_missing_test_results_blocked                  PASS
+  TestCanonicalExistingPackages:
+    test_fix_blocker_f_tests_preserved                 PASS
+    test_gov_infra_001_preserved                       PASS
+    test_gov_infra_002_preserved                       PASS
+  TestRequiredFilesConstant:
+    test_required_files_has_all_6                      PASS
+
+Total: 11 passed, 0 failed
+
+VERIFICATION
+------------
+REQUIRED_FILES = 6 items (task.txt, report.json, evidence.json, candidate.diff, no-aider-used.txt, test-results.txt) ✓
+OPTIONAL_FILES removed ✓
+_audit_single_candidate loops over self.REQUIRED_FILES ✓
+Each missing file → evidence_package:missing:{filename} ✓
+Historical canonical packages preserved (3/3) ✓
+All 11 GOV-INFRA-003 tests pass ✓
