@@ -1,0 +1,41 @@
+TEST RESULTS
+============
+
+Test Suite: test_gov_infra_006.py (13 tests)
+
+  TestAllGatesPass
+    ✓ test_consistent_package_returns_pass
+    ✓ test_gate_report_contains_all_required_fields
+
+  TestCompletenessFailFast
+    ✓ test_completeness_fail_skips_schema_and_integrity
+
+  TestSchemaFailFast
+    ✓ test_schema_fail_skips_integrity
+
+  TestIntegrityFailFast
+    ✓ test_integrity_fail_blocks
+
+  TestRoundMapping
+    ✓ test_mapping_has_correct_gov_infra_rounds
+    ✓ test_per_check_results_mapping_consistent
+
+  TestGateReportWrite
+    ✓ test_gate_report_json_writable
+
+  TestExistingRoundsPreserved
+    ✓ test_gov_infra_001_still_valid
+    ✓ test_gov_infra_002_still_valid
+    ✓ test_gov_infra_003_still_valid
+    ✓ test_gov_infra_004_still_valid
+    ✓ test_gov_infra_005_still_valid
+
+Totals: 13 passed, 0 failed, 0 skipped — 100% pass rate
+
+Verification:
+  - fail-fast short-circuit: completeness fail -> schema+integrity skipped ✓
+  - fail-fast short-circuit: schema fail -> integrity skipped ✓
+  - fail-fast short-circuit: integrity fail -> BLOCKED at integrity ✓
+  - gate report JSON field completeness ✓
+  - round mapping correctness: completeness=002+003, schema=004, integrity=005 ✓
+  - all existing canonical rounds (001-005) preserved ✓
