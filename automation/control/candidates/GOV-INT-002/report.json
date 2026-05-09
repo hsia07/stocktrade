@@ -1,11 +1,12 @@
 {
   "round_id": "GOV-INT-002",
-  "task_type": "candidate_creation",
+  "task_type": "candidate_evidence_rework",
   "status": "completed",
-  "formal_status_code": "CANDIDATE_READY_AWAITING_MANUAL_REVIEW",
+  "formal_status_code": "EVIDENCE_REWORK_PASS",
   "canonical_branch": "work/canonical-mainline-repair-001",
   "canonical_base_head": "42efcb5d07506312fdcfe48026cfeed493f3e6e5",
   "candidate_branch": "candidate/gov-int-002-gate-report-persister",
+  "candidate_commit_before_rework": "700e5766f39fdba46fb65b0902b79d927b8dc68c",
   "files_created": [
     "automation/control/gate_report_persister.py",
     "automation/control/tests/test_gov_int_002.py",
@@ -14,6 +15,12 @@
     "automation/control/candidates/GOV-INT-002/report.json",
     "automation/control/candidates/GOV-INT-002/candidate.diff",
     "automation/control/candidates/GOV-INT-002/no-aider-used.txt",
+    "automation/control/candidates/GOV-INT-002/test-results.txt"
+  ],
+  "files_modified_during_rework": [
+    "automation/control/candidates/GOV-INT-002/candidate.diff",
+    "automation/control/candidates/GOV-INT-002/evidence.json",
+    "automation/control/candidates/GOV-INT-002/report.json",
     "automation/control/candidates/GOV-INT-002/test-results.txt"
   ],
   "files_modified": "NONE",
@@ -26,10 +33,13 @@
     "test_gov_int_001": {"passed": 4, "failed": 0, "status": "PASS"}
   },
   "evidence_package_6_of_6": true,
-  "commit_created": false,
+  "candidate_diff_regenerated": true,
+  "candidate_diff_contains_all_8_files": true,
+  "candidate_diff_matches_actual_commit_diff": true,
+  "commit_created_or_amended": true,
   "merge_executed": false,
   "push_executed": false,
   "promote_executed": false,
   "pr_created": false,
-  "final_recommendation": "GOV-INT-002_CANDIDATE_READY_AWAITING_MANUAL_REVIEW"
+  "final_recommendation": "GOV-INT-002_READY_FOR_MANUAL_REVIEW_RECHECK"
 }

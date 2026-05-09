@@ -16,7 +16,17 @@
     "2026-05-09T08:27: 4/4 test_gov_int_001.py PASS (preserved)",
     "2026-05-09T08:27: diff verified: 0 modified files, 2 new source files only",
     "2026-05-09T08:27: no GOV-INT-003 or later content detected",
-    "2026-05-09T08:27: evidence package created"
+    "2026-05-09T08:27: evidence package created",
+    "2026-05-09T08:55: candidate evidence rework started (candidate.diff mismatch fix)",
+    "2026-05-09T08:55: candidate.diff regenerated — now includes all 8 authorized files",
+    "2026-05-09T08:56: evidence.json updated with rework replay_log",
+    "2026-05-09T08:56: report.json updated with rework metadata",
+    "2026-05-09T08:56: test-results.txt refreshed",
+    "2026-05-09T08:56: 8/8 test_gov_int_002.py PASS (re-verified)",
+    "2026-05-09T08:56: 13/13 test_gov_infra_006.py PASS (preserved)",
+    "2026-05-09T08:56: 4/4 test_gov_int_001.py PASS (preserved)",
+    "2026-05-09T08:56: diff re-verified: 8 new files, 0 modified, scope valid",
+    "2026-05-09T08:56: candidate.diff matches actual commit diff — MISMATCH RESOLVED"
   ],
   "test_results": {
     "passed": 25,
