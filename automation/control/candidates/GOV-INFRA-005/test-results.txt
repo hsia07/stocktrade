@@ -1,0 +1,46 @@
+GOV-INFRA-005 TEST RESULTS
+===========================
+Date: 2026-05-09
+Branch: work/candidate-gov-infra-005
+Canonical HEAD: e3b29539d4d7c7eed307317753eef8353812f836
+
+GOV-INFRA-005 tests (15):
+  TestConsistentPackage:
+    test_consistent_package_passes                    PASS
+  TestRoundIdIdentity:
+    test_round_id_mismatch_report_vs_evidence         PASS
+    test_round_id_mismatch_report_vs_task             PASS
+    test_all_three_mismatch                           PASS
+  TestLawComplianceConsistency:
+    test_law_compliance_mismatch                      PASS
+  TestTestCountCoherence:
+    test_tests_passed_exceeds_count                   PASS
+    test_tests_passed_plus_failed_exceeds_count       PASS
+  TestStatusCoherence:
+    test_completed_without_append_only_audit          PASS
+  TestTypeCategoryCoherence:
+    test_type_category_mismatch                       PASS
+  TestReplayLogOrdering:
+    test_replay_log_out_of_order                      PASS
+  TestCanonicalExistingPackages:
+    test_fix_blocker_f_tests_preserved                PASS
+    test_gov_infra_001_preserved                      PASS
+    test_gov_infra_002_preserved                      PASS
+    test_gov_infra_003_preserved                      PASS
+    test_gov_infra_004_preserved                      PASS
+
+Total: 15 passed, 0 failed
+
+VERIFICATION
+------------
+validate_evidence_cross_file_integrity() added  ✓
+6 cross-file rule groups defined                   ✓
+round_id identity rule                             ✓
+law_compliance consistency rule                    ✓
+test count coherence rule                          ✓
+status coherence rule                              ✓
+type category coherence rule                       ✓
+replay_log ordering rule                           ✓
+All error codes machine-checkable                  ✓
+Historical canonical packages preserved (5/5)      ✓
+All 15 tests pass                                  ✓

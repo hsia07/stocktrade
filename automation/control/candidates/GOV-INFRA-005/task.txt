@@ -1,0 +1,32 @@
+=== TASK DESCRIPTION ===
+
+task_id: GOV-INFRA-005
+task_type: governance_infrastructure_hardening
+phase: governance_infrastructure
+law_compliance: 04
+severity: MEDIUM
+
+=== PROBLEM STATEMENT ===
+
+Evidence packages pass individual file checks (GOV-INFRA-003: 6/6 completeness,
+GOV-INFRA-004: content schema) but there is no cross-file integrity validation.
+Files can contain contradictory information — mismatched round IDs, inconsistent
+law_compliance values, contradictory status indicators — and still pass because
+each file is validated in isolation.
+
+=== SOLUTION ===
+
+- Add validate_evidence_cross_file_integrity(candidate_dir) to evidence_checker.py
+- 6 cross-file integrity rules:
+  1. round_id identity (report.json · evidence.json · task.txt)
+  2. law_compliance consistency (evidence.json · task.txt)
+  3. test count coherence (report.json internal)
+  4. status coherence (report.json · evidence.json)
+  5. evidence_type / task_type category coherence
+  6. replay_log timestamp ordering (when replay_log present)
+- Each violation produces machine-checkable error code: integrity:{rule}:{detail}
+
+=== FILES ===
+
+- automation/control/evidence_checker.py (MODIFIED: added validate_evidence_cross_file_integrity())
+- automation/control/tests/test_gov_infra_005.py (NEW: 15 machine-checkable tests)

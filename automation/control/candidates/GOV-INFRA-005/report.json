@@ -1,0 +1,29 @@
+{
+    "round_id": "GOV-INFRA-005",
+    "candidate_branch": "work/candidate-gov-infra-005",
+    "canonical_branch": "work/canonical-mainline-repair-001",
+    "canonical_head": "e3b29539d4d7c7eed307317753eef8353812f836",
+    "status": "ready_for_merge_signoff",
+    "primary_objective": "Add evidence cross-file integrity validation to evidence_checker.py",
+    "files_changed": [
+        "automation/control/evidence_checker.py"
+    ],
+    "files_created": [
+        "automation/control/tests/test_gov_infra_005.py",
+        "automation/control/candidates/GOV-INFRA-005/evidence.json",
+        "automation/control/candidates/GOV-INFRA-005/report.json",
+        "automation/control/candidates/GOV-INFRA-005/task.txt",
+        "automation/control/candidates/GOV-INFRA-005/candidate.diff",
+        "automation/control/candidates/GOV-INFRA-005/no-aider-used.txt",
+        "automation/control/candidates/GOV-INFRA-005/test-results.txt"
+    ],
+    "test_count": 15,
+    "tests_passed": 15,
+    "tests_failed": 0,
+    "bounded_auto_mode_impact": "POSITIVE — cross-file inconsistencies are now detected and blocked",
+    "auto_advance_mode_impact": "NONE — auto-advance path is not modified",
+    "blockers_not_touched": [
+        "BLOCKER_G", "BLOCKER_F", "BLOCKER_E", "BLOCKER_I",
+        "BLOCKER_H", "BLOCKER_C", "BLOCKER_D"
+    ]
+}
