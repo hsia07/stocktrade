@@ -1,0 +1,36 @@
+{
+    "round_id": "FIX-BLOCKER-F-TESTS",
+    "candidate_branch": "work/candidate-fix-blocker-f-tests-001",
+    "canonical_branch": "work/canonical-mainline-repair-001",
+    "canonical_head": "a94f3d944de28f58c8eb559c57ea215ca3913a92",
+    "status": "ready_for_merge_signoff",
+    "blocker": "FIX-BLOCKER-F-TESTS",
+    "blocker_name": "fix_outdated_blocker_f_tests",
+    "files_changed": [
+        "automation/control/tests/test_blocker_f.py"
+    ],
+    "files_created": [
+        "automation/control/candidates/FIX-BLOCKER-F-TESTS/evidence.json",
+        "automation/control/candidates/FIX-BLOCKER-F-TESTS/report.json",
+        "automation/control/candidates/FIX-BLOCKER-F-TESTS/task.txt",
+        "automation/control/candidates/FIX-BLOCKER-F-TESTS/candidate.diff",
+        "automation/control/candidates/FIX-BLOCKER-F-TESTS/no-aider-used.txt",
+        "automation/control/candidates/FIX-BLOCKER-F-TESTS/test-results.txt"
+    ],
+    "total_lines_added": 12,
+    "total_lines_removed": 0,
+    "test_count": 15,
+    "tests_passed": 15,
+    "tests_failed": 0,
+    "bounded_auto_mode_impact": "NONE",
+    "auto_advance_mode_impact": "NONE - only test code, no product change",
+    "blockers_not_touched": [
+        "BLOCKER_G",
+        "BLOCKER_F",
+        "BLOCKER_E",
+        "BLOCKER_I",
+        "BLOCKER_H",
+        "BLOCKER_C",
+        "BLOCKER_D"
+    ]
+}

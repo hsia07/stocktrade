@@ -1,0 +1,32 @@
+=== TASK DESCRIPTION ===
+
+task_id: FIX-BLOCKER-F-TESTS
+task_type: governance_infrastructure_fix
+phase: governance
+law_compliance: 04
+severity: MEDIUM
+
+=== PROBLEM STATEMENT ===
+
+The 5 failing tests in test_blocker_f.py were written before BLOCKER_E added
+the automated_signoff requirement to the auto-candidate path in can_auto_advance().
+The root cause adjudication classified these as "outdated tests" - not product bugs.
+
+The tests expect can_auto_advance() to return True with gate=none for
+auto_candidate_ready status, but they don't provide the required automated_signoff
+dict that verify_automated_signoff() needs.
+
+=== SOLUTION ===
+
+- Add automated_signoff parameter to make_round_result() function
+- Add automated_signoff={"hash_verified": True, "law_compliance_verified": True, "evidence_validated": True}
+  to the 5 test functions that were failing:
+  - test_auto_candidate_all_clear
+  - test_auto_candidate_bypasses_merge_gate
+  - test_auto_candidate_bypasses_push_gate
+  - test_auto_candidate_bypasses_authorization_gate
+  - test_auto_candidate_bypasses_activation_gate
+
+=== FILES ===
+
+- automation/control/tests/test_blocker_f.py (MODIFIED: added automated_signoff to make_round_result and 5 test functions)

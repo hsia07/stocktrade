@@ -1,0 +1,23 @@
+{
+    "trace_id": "fix-blocker-f-tests-001",
+    "replay_log": [
+        "2026-05-09T08:00: Branch created: work/candidate-fix-blocker-f-tests-001 at a94f3d94",
+        "2026-05-09T08:00: FIX-BLOCKER-F-TESTS: Fix 5 outdated tests in test_blocker_f.py",
+        "2026-05-09T08:00: Added automated_signoff parameter to make_round_result()",
+        "2026-05-09T08:00: Added automated_signoff={hash_verified:true, law_compliance_verified:true, evidence_validated:true} to 5 test functions",
+        "2026-05-09T08:00: All 15 BLOCKER_F tests now pass (previously 5 failures were outdated test assumptions)",
+        "2026-05-09T08:00: No product code changed - only test code fixed to match BLOCKER_E contract",
+        "2026-05-09T08:00: Root cause: tests written before BLOCKER_E added signoff_gate to auto-candidate path"
+    ],
+    "append_only_audit": true,
+    "law_compliance": "04",
+    "law_compliance_authority": "Law 04 Article 261 (evidence.json must contain law_compliance: 04)",
+    "market_reality_integration": false,
+    "taiwan_constraints_enforced": false,
+    "evidence_type": "governance_infrastructure_fix",
+    "round": "FIX-BLOCKER-F-TESTS",
+    "phase": "governance",
+    "severity": "MEDIUM",
+    "blockers_resolved": [],
+    "blockers_not_touched": ["BLOCKER_G", "BLOCKER_F", "BLOCKER_E", "BLOCKER_I", "BLOCKER_H", "BLOCKER_C", "BLOCKER_D"]
+}
