@@ -1,0 +1,14 @@
+NO-AIDER-USED CERTIFICATION
+============================
+
+Round: GOV-INFRA-002
+Date: 2026-05-09T15:23
+Coder: opencode (big-pickle agent)
+Aider used: NO
+
+This candidate round was implemented entirely through direct opencode
+agent interaction without the involvement of aider, claude-code, or any
+other autonomous coding agent. All code was written using opencode's
+native write/edit tools under human supervision.
+
+Signed: opencode big-pickle agent

@@ -6,6 +6,7 @@ Checks for required files and passes/failures from tests/validators.
 Includes 40hex hash validation and merge/push separation enforcement for Law-0416 Phase 3.
 """
 
+import datetime
 import json
 import logging
 import re
@@ -117,6 +118,16 @@ class EvidenceChecker:
                 missing.append(f"evidence_parse_error:{e}")
         else:
             missing.append("missing:evidence.json")
+
+        # Evidence freshness check (GOV-INFRA-002)
+        current_complete = len(missing) == 0
+        if current_complete:
+            is_fresh, freshness_reason = self.check_evidence_freshness(candidate_dir)
+            if not is_fresh and "evidence_stale" in freshness_reason:
+                missing.append(f"evidence_stale:{freshness_reason}")
+                logger.warning(f"Evidence stale: {freshness_reason}")
+            elif not is_fresh:
+                logger.info(f"Evidence freshness unavailable: {freshness_reason}")
 
         complete = len(missing) == 0
         if not complete:
@@ -924,6 +935,87 @@ class EvidenceChecker:
             return False, issues
         
         return True, []
+
+    FRESHNESS_SECONDS = 7 * 24 * 60 * 60  # 7 days in seconds
+
+    def get_evidence_latest_commit_timestamp(self, candidate_dir: Path) -> Tuple[bool, int]:
+        """
+        Get the Unix timestamp of the latest commit that touched the candidate directory.
+
+        Returns (success, timestamp_or_error_code).
+        On success: (True, unix_timestamp)
+        On failure: (False, error_code)
+        """
+        if not candidate_dir.exists():
+            return False, -1
+
+        try:
+            result = subprocess.run(
+                ["git", "log", "-1", "--format=%ct", "--", str(candidate_dir)],
+                capture_output=True,
+                text=True,
+                cwd=self.repo_root,
+                timeout=10,
+            )
+            if result.returncode != 0:
+                return False, -2
+            output = result.stdout.strip()
+            if not output:
+                return False, -3
+            timestamp = int(output)
+            return True, timestamp
+        except Exception:
+            return False, -4
+
+    def is_historical_canonical_round(self, candidate_dir: Path) -> Tuple[bool, str]:
+        """
+        Check if a candidate round is a historical canonical round (already merged,
+        pushed, and reconciled). Such rounds are exempt from freshness checking.
+
+        Uses _check_round_merged_to_canonical which checks:
+        1. Candidate commit is determinable
+        2. Candidate commit is valid 40hex and exists as git object
+        3. Candidate commit is ancestor of canonical branch HEAD
+        4. Canonical local HEAD matches canonical remote HEAD
+
+        Returns (is_exempt, reason).
+        """
+        is_merged, reason = self._check_round_merged_to_canonical(candidate_dir)
+        if is_merged:
+            return True, "historical_canonical_round:merged_and_reconciled"
+        return False, f"not_historical_canonical:{reason}"
+
+    def check_evidence_freshness(self, candidate_dir: Path) -> Tuple[bool, str]:
+        """
+        Check if the evidence package for a candidate round is fresh.
+
+        Freshness rule:
+        - Determined by latest git commit timestamp of the evidence package files
+        - If latest evidence commit > 7 days old, candidate is stale
+        - Historical canonical rounds (already merged + reconciled) are EXEMPT
+
+        Returns (is_fresh, reason).
+        """
+        # Step 1: Check if this is a historical canonical round (exempt)
+        is_exempt, exempt_reason = self.is_historical_canonical_round(candidate_dir)
+        if is_exempt:
+            return True, exempt_reason
+
+        # Step 2: Get latest commit timestamp for evidence package
+        success, timestamp_or_error = self.get_evidence_latest_commit_timestamp(candidate_dir)
+        if not success:
+            if timestamp_or_error == -3:
+                return False, f"evidence_timestamp_unavailable:error_code=-3"
+            return True, f"evidence_timestamp_unavailable:error_code={timestamp_or_error}"
+
+        # Step 3: Compare with current time
+        now = datetime.datetime.now().timestamp()
+        age_seconds = now - timestamp_or_error
+        age_days = age_seconds / (24 * 60 * 60)
+
+        if age_seconds > self.FRESHNESS_SECONDS:
+            return False, f"evidence_stale:age_days={age_days:.1f}>7"
+        return True, f"evidence_fresh:age_days={age_days:.1f}<=7"
 
     def verify_return_to_chatgpt(self, output_text):
         '''Verify RETURN_TO_CHATGPT output using ReturnToChatGPTVerifier.'''

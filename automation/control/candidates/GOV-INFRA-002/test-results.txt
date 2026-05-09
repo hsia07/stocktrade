@@ -1,0 +1,41 @@
+GOV-INFRA-002 TEST RESULTS
+===========================
+Date: 2026-05-09T15:23
+Branch: work/candidate-gov-infra-002
+Canonical HEAD: 2e1772b1c5389312e221e2b9564512f828cbd6d0
+
+GOV-INFRA-002 tests (6):
+  test_fresh_candidate_passes                        PASS
+  test_8day_old_candidate_blocked                    PASS
+  test_historical_round_exempt                       PASS
+  test_nonexistent_dir_fails                         PASS
+  test_untracked_evidence_fails                      PASS
+  test_check_completeness_integrates_freshness        PASS
+
+GOV-INFRA-001 tests (7):
+  7/7 passed
+
+BLOCKER_D tests (15):
+  15/15 passed
+
+Evidence gate contract tests (9):
+  9/9 passed
+
+Evidence checker fix tests (5):
+  5/5 passed
+
+Additional tests (4):
+  4/4 passed
+
+Total: 46 passed, 0 failed
+
+VERIFICATION
+------------
+check_evidence_freshness() added to evidence_checker.py ✓
+Freshness uses git commit timestamp (%ct) — machine-checkable ✓
+Stale candidate (>7 days) → FAIL / blocked ✓
+Historical canonical round → EXEMPT / PASS ✓
+Missing git timestamp → FAIL (error_code=-3) ✓
+Freshness integrated into check_completeness() ✓
+Historical rounds preserved without retroactive invalidation ✓
+All 46 tests pass ✓
