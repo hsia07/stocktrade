@@ -1,0 +1,25 @@
+{
+  "round_id": "GOV-INFRA-006",
+  "candidate_branch": "work/candidate-gov-infra-006",
+  "canonical_branch": "work/canonical-mainline-repair-001",
+  "canonical_head": "2308f89d3a259957012add4cf2280f14ef378009",
+  "status": "completed",
+  "primary_objective": "Create EvidenceGateOrchestrator that runs 3 gates (completeness->schema->integrity) with fail-fast and standardized gate report JSON output",
+  "files_changed": [],
+  "files_created": [
+    "automation/control/evidence_gate_orchestrator.py",
+    "automation/control/tests/test_gov_infra_006.py"
+  ],
+  "test_count": 13,
+  "tests_passed": 13,
+  "tests_failed": 0,
+  "bounded_auto_mode_impact": "no_change",
+  "auto_advance_mode_impact": "no_change",
+  "blockers_not_touched": [
+    "BLOCKER_C",
+    "BLOCKER_D",
+    "BLOCKER_E",
+    "BLOCKER_H",
+    "BLOCKER_I"
+  ]
+}

@@ -1,0 +1,39 @@
+=== TASK DESCRIPTION ===
+
+task_id: GOV-INFRA-006
+task_type: governance_infrastructure_hardening
+phase: governance_infrastructure
+law_compliance: 04
+severity: MEDIUM
+
+=== PROBLEM STATEMENT ===
+
+Evidence packages pass individual gate validations (GOV-INFRA-001 naming in
+pre-push, GOV-INFRA-002 freshness, GOV-INFRA-003 6/6 completeness,
+GOV-INFRA-004 content schema, GOV-INFRA-005 cross-file integrity) but there
+is no unified orchestrator that runs all evidence-layer gates in sequence
+with fail-fast short-circuit and produces a standardized machine-readable
+gate report. Consumers must invoke each check manually and interpret
+separate return types, creating integration friction and increasing the
+risk of partial validation.
+
+=== SOLUTION ===
+
+- Add EvidenceGateOrchestrator class in evidence_gate_orchestrator.py
+- run_evidence_gate(candidate_dir) runs 3 gates sequentially:
+  1. Completeness gate -> evidence_checker.check_completeness()
+     (covers GOV-INFRA-002 freshness + GOV-INFRA-003 6/6 completeness)
+  2. Schema gate -> evidence_checker.validate_evidence_content_schema()
+     (covers GOV-INFRA-004 content schema)
+  3. Integrity gate -> evidence_checker.validate_evidence_cross_file_integrity()
+     (covers GOV-INFRA-005 cross-file integrity)
+- Fail-fast: first gate failure skips remaining gates
+- Outputs standardized machine-readable gate report JSON with verdict,
+  blocked_at_gate, and per_check_results
+- GOV-INFRA-001 (pre-push naming) is outside orchestrator scope — enforced
+  by .githooks/pre-push.ps1 at push layer
+
+=== FILES ===
+
+- automation/control/evidence_gate_orchestrator.py (NEW)
+- automation/control/tests/test_gov_infra_006.py (NEW)

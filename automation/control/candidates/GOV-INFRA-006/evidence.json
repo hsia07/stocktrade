@@ -1,0 +1,23 @@
+{
+  "trace_id": "trace_GOV-INFRA-006",
+  "replay_log": [
+    "2026-05-09T06:30: candidate creation start: evidence_gate_orchestrator.py + tests + evidence package"
+  ],
+  "append_only_audit": true,
+  "law_compliance": "04",
+  "law_compliance_authority": "Law 04 Article 261",
+  "market_reality_integration": true,
+  "taiwan_constraints_enforced": true,
+  "evidence_type": "governance_infrastructure_hardening",
+  "round": "GOV-INFRA-006",
+  "phase": "governance_infrastructure",
+  "severity": "MEDIUM",
+  "blockers_resolved": [],
+  "blockers_not_touched": [
+    "BLOCKER_C",
+    "BLOCKER_D",
+    "BLOCKER_E",
+    "BLOCKER_H",
+    "BLOCKER_I"
+  ]
+}
