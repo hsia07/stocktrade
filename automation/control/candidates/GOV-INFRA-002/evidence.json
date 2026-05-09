@@ -1,0 +1,22 @@
+{
+    "trace_id": "gov-infra-002-001",
+    "replay_log": [
+        "2026-05-09T15:23: Branch created: work/candidate-gov-infra-002 at 2e1772b",
+        "2026-05-09T15:23: Added evidence freshness check to evidence_checker.py",
+        "2026-05-09T15:23: Freshness uses git commit timestamp (machine-checkable, deterministic)",
+        "2026-05-09T15:23: Stale candidate evidence (>7 days) blocked in evidence gate",
+        "2026-05-09T15:23: Historical canonical rounds exempt from freshness check",
+        "2026-05-09T15:23: 6 GOV-INFRA-002 tests all passing + 40 existing tests preserved"
+    ],
+    "append_only_audit": true,
+    "law_compliance": "04",
+    "law_compliance_authority": "Law 04 Article 261",
+    "market_reality_integration": false,
+    "taiwan_constraints_enforced": false,
+    "evidence_type": "governance_infrastructure_hardening",
+    "round": "GOV-INFRA-002",
+    "phase": "governance_infrastructure",
+    "severity": "MEDIUM",
+    "blockers_resolved": [],
+    "blockers_not_touched": ["BLOCKER_G", "BLOCKER_F", "BLOCKER_E", "BLOCKER_I", "BLOCKER_H", "BLOCKER_C", "BLOCKER_D"]
+}

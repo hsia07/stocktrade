@@ -1,0 +1,28 @@
+=== TASK DESCRIPTION ===
+
+task_id: GOV-INFRA-002
+task_type: governance_infrastructure_hardening
+phase: governance_infrastructure
+law_compliance: 04
+severity: MEDIUM
+
+=== PROBLEM STATEMENT ===
+
+Bounded auto-construction relies on evidence package freshness to ensure
+current candidate rounds are not evaluated against stale evidence. Without
+a machine-checkable freshness validator, an auto-candidate with outdated
+evidence (>7 days old) could proceed to merge/push review using obsolete
+test results or approval artifacts.
+
+=== SOLUTION ===
+
+- Add check_evidence_freshness() to evidence_checker.py
+- Uses git commit timestamp (--format=%ct) for deterministic, machine-checkable age
+- Stale candidate evidence (>7 days since latest commit) blocked in evidence gate
+- Historical canonical rounds (already merged + reconciled) explicitly exempt
+- Freshness integrated into check_completeness() as an additional gate
+
+=== FILES ===
+
+- automation/control/evidence_checker.py (MODIFIED: added evidence freshness check)
+- automation/control/tests/test_gov_infra_002.py (NEW: 6 machine-checkable tests)
