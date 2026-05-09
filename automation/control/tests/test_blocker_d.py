@@ -113,8 +113,8 @@ class TestPowerShellHookExecution:
 
     def test_non_canonical_branch_passes(self) -> None:
         stdin = (
-            f"refs/heads/feature/test {ZERO_SHA} "
-            f"refs/heads/feature/other {ZERO_SHA}\n"
+            f"refs/heads/work/candidate-some-round-001 {ZERO_SHA} "
+            f"refs/heads/work/candidate-other-round-001 {ZERO_SHA}\n"
         )
         result = run_ps1(stdin)
         assert result.returncode == 0, (

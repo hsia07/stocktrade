@@ -1,0 +1,30 @@
+{
+    "round_id": "GOV-INFRA-001",
+    "candidate_branch": "work/candidate-gov-infra-001",
+    "canonical_branch": "work/canonical-mainline-repair-001",
+    "canonical_head": "9a6dcc0d14d770d6b8a3e6b87d694220892d9900",
+    "status": "ready_for_merge_signoff",
+    "primary_objective": "Add candidate branch naming convention validator to pre-push.ps1 (work/candidate-* pattern)",
+    "files_changed": [
+        ".githooks/pre-push.ps1",
+        "automation/control/tests/test_blocker_d.py"
+    ],
+    "files_created": [
+        "automation/control/tests/test_gov_infra_001.py",
+        "automation/control/candidates/GOV-INFRA-001/evidence.json",
+        "automation/control/candidates/GOV-INFRA-001/report.json",
+        "automation/control/candidates/GOV-INFRA-001/task.txt",
+        "automation/control/candidates/GOV-INFRA-001/candidate.diff",
+        "automation/control/candidates/GOV-INFRA-001/no-aider-used.txt",
+        "automation/control/candidates/GOV-INFRA-001/test-results.txt"
+    ],
+    "test_count": 22,
+    "tests_passed": 22,
+    "tests_failed": 0,
+    "bounded_auto_mode_impact": "POSITIVE — enforces candidate branch naming convention",
+    "auto_advance_mode_impact": "NONE — auto-advance path uses correct naming",
+    "blockers_not_touched": [
+        "BLOCKER_G", "BLOCKER_F", "BLOCKER_E", "BLOCKER_I",
+        "BLOCKER_H", "BLOCKER_C", "BLOCKER_D"
+    ]
+}

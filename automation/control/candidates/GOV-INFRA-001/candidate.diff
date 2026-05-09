@@ -1,0 +1,17 @@
+Modified: .githooks/pre-push.ps1
+- Added Assert-CandidateBranchNaming function
+- Non-canonical pushes now validated against work/candidate-* pattern
+- Canonical branches (main, work/canonical-*) exempt
+- Main loop calls Assert-CandidateBranchNaming for non-canonical branches
+
+New file: automation/control/tests/test_gov_infra_001.py (7 tests)
+- test_hook_exists
+- test_hook_contains_naming_function
+- test_naming_blocks_non_candidate
+- test_naming_allows_candidate
+- test_canonical_branches_not_affected
+- test_naming_check_called_in_main_loop
+- test_naming_allows_canonical_ref_exemption
+
+Modified: automation/control/tests/test_blocker_d.py
+- test_non_canonical_branch_passes updated to use work/candidate-* branch names

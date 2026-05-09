@@ -1,0 +1,28 @@
+GOV-INFRA-001 TEST RESULTS
+===========================
+Date: 2026-05-09T14:27
+Branch: work/candidate-gov-infra-001
+Canonical HEAD: 9a6dcc0d14d770d6b8a3e6b87d694220892d9900
+
+GOV-INFRA-001 tests (7):
+  test_hook_exists                                PASS
+  test_hook_contains_naming_function              PASS
+  test_naming_blocks_non_candidate                PASS
+  test_naming_allows_candidate                    PASS
+  test_canonical_branches_not_affected            PASS
+  test_naming_check_called_in_main_loop           PASS
+  test_naming_allows_canonical_ref_exemption      PASS
+
+BLOCKER_D tests (15):
+  15/15 passed
+
+Total: 22 passed, 0 failed
+
+VERIFICATION
+------------
+Assert-CandidateBranchNaming function added to pre-push.ps1 ✓
+Non-canonical pushes validated against work/candidate-* naming pattern ✓
+Canonical branches exempt from naming check ✓
+7 machine-checkable tests created ✓
+BLOCKER_D test updated for new naming convention ✓
+All 22 tests pass ✓
