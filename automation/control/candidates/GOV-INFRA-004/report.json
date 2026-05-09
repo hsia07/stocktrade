@@ -1,0 +1,29 @@
+{
+    "round_id": "GOV-INFRA-004",
+    "candidate_branch": "work/candidate-gov-infra-004",
+    "canonical_branch": "work/canonical-mainline-repair-001",
+    "canonical_head": "8727f2399b4b74d9a4d06fd3fe95d677027531a5",
+    "status": "ready_for_merge_signoff",
+    "primary_objective": "Add evidence content schema validation to evidence_checker.py",
+    "files_changed": [
+        "automation/control/evidence_checker.py"
+    ],
+    "files_created": [
+        "automation/control/tests/test_gov_infra_004.py",
+        "automation/control/candidates/GOV-INFRA-004/evidence.json",
+        "automation/control/candidates/GOV-INFRA-004/report.json",
+        "automation/control/candidates/GOV-INFRA-004/task.txt",
+        "automation/control/candidates/GOV-INFRA-004/candidate.diff",
+        "automation/control/candidates/GOV-INFRA-004/no-aider-used.txt",
+        "automation/control/candidates/GOV-INFRA-004/test-results.txt"
+    ],
+    "test_count": 14,
+    "tests_passed": 14,
+    "tests_failed": 0,
+    "bounded_auto_mode_impact": "POSITIVE — evidence content is now validated against schema; missing keys, wrong types, empty files blocked",
+    "auto_advance_mode_impact": "NONE — auto-advance path is not modified",
+    "blockers_not_touched": [
+        "BLOCKER_G", "BLOCKER_F", "BLOCKER_E", "BLOCKER_I",
+        "BLOCKER_H", "BLOCKER_C", "BLOCKER_D"
+    ]
+}

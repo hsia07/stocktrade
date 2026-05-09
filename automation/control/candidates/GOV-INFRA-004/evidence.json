@@ -1,0 +1,22 @@
+{
+    "trace_id": "gov-infra-004-001",
+    "replay_log": [
+        "2026-05-09: Branch created: work/candidate-gov-infra-004 at 8727f23",
+        "2026-05-09: Added CONTENT_SCHEMA with 6 file definitions",
+        "2026-05-09: Added validate_evidence_content_schema() method",
+        "2026-05-09: Schema covers: task.txt sections, report.json keys/types, evidence.json keys/law04, candidate.diff non-empty, no-aider-used.txt certification, test-results.txt headers/counts",
+        "2026-05-09: 14 GOV-INFRA-004 tests all passing",
+        "2026-05-09: 4 canonical packages (FIX-BLOCKER-F-TESTS, GOV-INFRA-001/002/003) verified preserved"
+    ],
+    "append_only_audit": true,
+    "law_compliance": "04",
+    "law_compliance_authority": "Law 04 Article 261",
+    "market_reality_integration": false,
+    "taiwan_constraints_enforced": false,
+    "evidence_type": "governance_infrastructure_hardening",
+    "round": "GOV-INFRA-004",
+    "phase": "governance_infrastructure",
+    "severity": "MEDIUM",
+    "blockers_resolved": [],
+    "blockers_not_touched": ["BLOCKER_G", "BLOCKER_F", "BLOCKER_E", "BLOCKER_I", "BLOCKER_H", "BLOCKER_C", "BLOCKER_D"]
+}

@@ -38,6 +38,63 @@ class EvidenceChecker:
 
     REQUIRED_LAW_COMPLIANCE = "04"  # Law 04 compliance value
 
+    CONTENT_SCHEMA = {
+        "task.txt": {
+            "type": "text_sections",
+            "required_lines": [
+                "=== TASK DESCRIPTION ===",
+                "=== PROBLEM STATEMENT ===",
+                "=== SOLUTION ===",
+                "=== FILES ===",
+            ],
+            "required_fields": ["task_id:", "task_type:", "phase:", "law_compliance:", "severity:"],
+        },
+        "report.json": {
+            "type": "json_object",
+            "required_keys": {
+                "round_id": str,
+                "status": str,
+                "canonical_branch": str,
+                "canonical_head": str,
+                "test_count": int,
+                "tests_passed": int,
+            },
+            "valid_status_values": ["completed", "ready_for_merge_signoff", "blocked"],
+        },
+        "evidence.json": {
+            "type": "json_object",
+            "required_keys": {
+                "trace_id": str,
+                "law_compliance": str,
+                "evidence_type": str,
+                "round": str,
+                "phase": str,
+                "append_only_audit": bool,
+            },
+            "field_validations": {
+                "law_compliance": {"expected_value": "04"},
+            },
+        },
+        "candidate.diff": {
+            "type": "non_empty_file",
+        },
+        "no-aider-used.txt": {
+            "type": "text_contains",
+            "required_patterns": [
+                r"(?i)no[\s-]*aider",
+                r"(?i)aider\s*used",
+            ],
+        },
+        "test-results.txt": {
+            "type": "text_contains",
+            "required_substrings": [
+                "TEST RESULTS",
+                "passed",
+                "failed",
+            ],
+        },
+    }
+
     def __init__(self, repo_root: Path = None):
         self.repo_root = repo_root or Path(__file__).parent.parent.parent
 
@@ -1014,6 +1071,115 @@ class EvidenceChecker:
         if age_seconds > self.FRESHNESS_SECONDS:
             return False, f"evidence_stale:age_days={age_days:.1f}>7"
         return True, f"evidence_fresh:age_days={age_days:.1f}<=7"
+
+    def validate_evidence_content_schema(self, candidate_dir: Path) -> Tuple[bool, List[str]]:
+        """
+        Validate content schema of all 6 evidence package files.
+        Returns (is_valid, issues_list).
+
+        Uses self.CONTENT_SCHEMA to define acceptable structure, keys, and types
+        for each file. Produces machine-checkable error codes on failure.
+        """
+        issues = []
+        schema = self.CONTENT_SCHEMA
+
+        for filename, rules in schema.items():
+            file_path = candidate_dir / filename
+
+            if not file_path.exists():
+                issues.append(f"schema:{filename}:file_not_found")
+                continue
+
+            check_type = rules.get("type")
+
+            if check_type == "json_object":
+                try:
+                    with open(file_path, "r", encoding="utf-8") as f:
+                        data = json.load(f)
+                except Exception as e:
+                    issues.append(f"schema:{filename}:parse_error:{e}")
+                    continue
+
+                # Check required keys with types
+                for key, expected_type in rules.get("required_keys", {}).items():
+                    if key not in data:
+                        issues.append(f"schema:{filename}:missing_key:{key}")
+                        continue
+                    value = data[key]
+                    if not isinstance(value, expected_type):
+                        issues.append(
+                            f"schema:{filename}:wrong_type:{key}:"
+                            f"expected={expected_type.__name__},got={type(value).__name__}"
+                        )
+
+                # Check field validations (e.g. law_compliance == "04")
+                for field, validation in rules.get("field_validations", {}).items():
+                    if "expected_value" in validation:
+                        actual = data.get(field)
+                        expected = validation["expected_value"]
+                        if actual != expected:
+                            issues.append(
+                                f"schema:{filename}:wrong_value:{field}:"
+                                f"expected={expected},got={actual}"
+                            )
+
+                # Check valid status values
+                valid_statuses = rules.get("valid_status_values", [])
+                if valid_statuses:
+                    actual_status = data.get("status")
+                    if actual_status and actual_status not in valid_statuses:
+                        issues.append(
+                            f"schema:{filename}:invalid_status:{actual_status}:"
+                            f"valid={valid_statuses}"
+                        )
+
+            elif check_type == "text_sections":
+                try:
+                    content = file_path.read_text(encoding="utf-8")
+                except Exception as e:
+                    issues.append(f"schema:{filename}:read_error:{e}")
+                    continue
+
+                # Check required section headers
+                for section in rules.get("required_lines", []):
+                    if section not in content:
+                        issues.append(f"schema:{filename}:missing_section:{section}")
+
+                # Check required fields in TASK DESCRIPTION section
+                for field in rules.get("required_fields", []):
+                    found = False
+                    for line in content.splitlines():
+                        if line.startswith(field):
+                            found = True
+                            break
+                    if not found:
+                        issues.append(f"schema:{filename}:missing_field:{field}")
+
+            elif check_type == "non_empty_file":
+                try:
+                    size = file_path.stat().st_size
+                    if size == 0:
+                        issues.append(f"schema:{filename}:empty")
+                except Exception as e:
+                    issues.append(f"schema:{filename}:read_error:{e}")
+
+            elif check_type == "text_contains":
+                try:
+                    content = file_path.read_text(encoding="utf-8")
+                except Exception as e:
+                    issues.append(f"schema:{filename}:read_error:{e}")
+                    continue
+
+                for substring in rules.get("required_substrings", []):
+                    if substring not in content:
+                        issues.append(f"schema:{filename}:missing_content:{substring}")
+
+                import re
+                for pattern in rules.get("required_patterns", []):
+                    if not re.search(pattern, content):
+                        issues.append(f"schema:{filename}:missing_pattern:{pattern}")
+
+        return len(issues) == 0, issues
 
     def verify_return_to_chatgpt(self, output_text):
         '''Verify RETURN_TO_CHATGPT output using ReturnToChatGPTVerifier.'''
