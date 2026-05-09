@@ -1,0 +1,17 @@
+TEST RESULTS
+============
+test_gov_int_002.py: 8 passed, 0 failed — ALL PASS
+  ✓ test_report_file_created_in_reports_dir
+  ✓ test_pass_verdict_writes_pass_with_report
+  ✓ test_blocked_verdict_writes_report_and_raises
+  ✓ test_blocked_at_gate_preserved_in_report
+  ✓ test_per_check_results_in_report
+  ✓ test_invalid_candidate_dir_raises
+  ✓ test_pass_returns_report_dict
+  ✓ test_blocked_raises_gate_blocked
+
+test_gov_infra_006.py: 13 passed, 0 failed — ALL PASS (preserved)
+test_gov_int_001.py: 4 passed, 0 failed — ALL PASS (preserved)
+
+TOTAL: 25 passed, 0 failed
+STATUS: ALL PASS

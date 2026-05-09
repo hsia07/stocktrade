@@ -1,0 +1,29 @@
+=== TASK DESCRIPTION ===
+task_id: GOV-INT-002
+task_type: integration_round
+phase: governance_infrastructure_integration
+law_compliance: 04
+severity: HIGH
+
+=== PROBLEM STATEMENT ===
+The governance-infrastructure integration pipeline has two existing links:
+  1. GOV-INFRA-006: EvidenceGateOrchestrator (creates in-memory gate report)
+  2. GOV-INT-001: Orchestrator verdict wired into auto_advance.py decision
+Missing third link: the gate report is never persisted to disk. The reports/
+directory exists but is empty. No downstream consumer (operator, script, CI,
+monitoring) can access the detailed gate report without importing the
+orchestrator Python module at runtime.
+
+=== SOLUTION ===
+Create a standalone gate report persister (gate_report_persister.py) that:
+  1. Imports EvidenceGateOrchestrator (no modification)
+  2. Accepts a candidate directory path
+  3. Calls EvidenceGateOrchestrator.run_evidence_gate(candidate_dir)
+  4. Writes gate report JSON to reports/{round_id}_gate_report.json
+  5. PASS → return report dict, exit code 0
+  6. BLOCKED → still write full report, raise GateBlocked (exit non-zero)
+  7. Invalid candidate_dir → NotADirectoryError
+
+=== FILES ===
+- automation/control/gate_report_persister.py (NEW)
+- automation/control/tests/test_gov_int_002.py (NEW)

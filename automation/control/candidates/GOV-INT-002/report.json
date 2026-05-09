@@ -1,0 +1,35 @@
+{
+  "round_id": "GOV-INT-002",
+  "task_type": "candidate_creation",
+  "status": "completed",
+  "formal_status_code": "CANDIDATE_READY_AWAITING_MANUAL_REVIEW",
+  "canonical_branch": "work/canonical-mainline-repair-001",
+  "canonical_base_head": "42efcb5d07506312fdcfe48026cfeed493f3e6e5",
+  "candidate_branch": "candidate/gov-int-002-gate-report-persister",
+  "files_created": [
+    "automation/control/gate_report_persister.py",
+    "automation/control/tests/test_gov_int_002.py",
+    "automation/control/candidates/GOV-INT-002/task.txt",
+    "automation/control/candidates/GOV-INT-002/evidence.json",
+    "automation/control/candidates/GOV-INT-002/report.json",
+    "automation/control/candidates/GOV-INT-002/candidate.diff",
+    "automation/control/candidates/GOV-INT-002/no-aider-used.txt",
+    "automation/control/candidates/GOV-INT-002/test-results.txt"
+  ],
+  "files_modified": "NONE",
+  "existing_files_modified": false,
+  "authorized_scope_only": true,
+  "gov_int_003_or_later_content_present": false,
+  "test_results": {
+    "test_gov_int_002": {"passed": 8, "failed": 0, "status": "PASS"},
+    "test_gov_infra_006": {"passed": 13, "failed": 0, "status": "PASS"},
+    "test_gov_int_001": {"passed": 4, "failed": 0, "status": "PASS"}
+  },
+  "evidence_package_6_of_6": true,
+  "commit_created": false,
+  "merge_executed": false,
+  "push_executed": false,
+  "promote_executed": false,
+  "pr_created": false,
+  "final_recommendation": "GOV-INT-002_CANDIDATE_READY_AWAITING_MANUAL_REVIEW"
+}
