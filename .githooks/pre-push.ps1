@@ -93,6 +93,19 @@ function Assert-ForcePushBlocked {
     exit 1
 }
 
+function Assert-CandidateBranchNaming {
+    param([string]$LocalRef)
+    if ($LocalRef -notmatch '^refs/heads/work/candidate-.*$' -and $LocalRef -notmatch '^refs/heads/work/canonical-.*$') {
+        Write-Host "WARNING: Branch naming convention check"
+        Write-Host "ERROR: CANDIDATE BRANCH NAMING VIOLATION"
+        Write-Host "ERROR: Bounded auto-construction requires candidate branches to follow:"
+        Write-Host "ERROR:   work/candidate-<round-id>-<purpose>"
+        Write-Host "ERROR: Got: $LocalRef"
+        Write-Host "ERROR: Pushes to non-canonical branches must use the 'work/candidate-*' naming pattern."
+        exit 1
+    }
+}
+
 # --- Main ---
 $stdinLines = @($input)
 if ($stdinLines.Count -eq 0) {
@@ -109,7 +122,10 @@ foreach ($line in $stdinLines) {
     $remoteRef = $parts[2]
     $remoteSha = $parts[3]
 
-    if (-not (Check-CanonicialBranch -RemoteRef $remoteRef)) { continue }
+    if (-not (Check-CanonicialBranch -RemoteRef $remoteRef)) {
+        Assert-CandidateBranchNaming -LocalRef $localRef
+        continue
+    }
 
     $parentCount = Get-ParentCount -Sha $localSha
 

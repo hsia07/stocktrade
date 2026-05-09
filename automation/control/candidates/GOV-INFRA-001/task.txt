@@ -1,0 +1,28 @@
+=== TASK DESCRIPTION ===
+
+task_id: GOV-INFRA-001
+task_type: governance_infrastructure_hardening
+phase: governance_infrastructure
+law_compliance: 04
+severity: MEDIUM
+
+=== PROBLEM STATEMENT ===
+
+Bounded auto-construction relies on the `work/candidate-*` branch naming
+convention to distinguish candidate branches from other non-canonical work.
+Without a machine-checkable validator, non-conformant branch names could be
+pushed to the remote, creating organizational drift and bypassing governance
+expectations.
+
+=== SOLUTION ===
+
+- Add Assert-CandidateBranchNaming function to .githooks/pre-push.ps1
+- Non-canonical branch pushes must match pattern: refs/heads/work/candidate-*
+- Canonical branches (main, work/canonical-*) are exempt
+- Push blocked with descriptive error message if naming violated
+
+=== FILES ===
+
+- .githooks/pre-push.ps1 (MODIFIED: added Assert-CandidateBranchNaming)
+- automation/control/tests/test_gov_infra_001.py (NEW: 7 machine-checkable tests)
+- automation/control/tests/test_blocker_d.py (MODIFIED: update test_non_canonical_branch_passes for new convention)

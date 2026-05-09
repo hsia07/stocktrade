@@ -1,0 +1,22 @@
+{
+    "trace_id": "gov-infra-001-001",
+    "replay_log": [
+        "2026-05-09T14:27: Branch created: work/candidate-gov-infra-001 at 9a6dcc0",
+        "2026-05-09T14:27: Added Assert-CandidateBranchNaming to .githooks/pre-push.ps1",
+        "2026-05-09T14:27: Non-canonical pushes must use work/candidate-* naming pattern",
+        "2026-05-09T14:27: Canonical branches (main, work/canonical-*) exempt from naming check",
+        "2026-05-09T14:27: 7 GOV-INFRA-001 tests + 15 BLOCKER_D tests all passing",
+        "2026-05-09T14:27: Existing BLOCKER_D test updated for new naming convention"
+    ],
+    "append_only_audit": true,
+    "law_compliance": "04",
+    "law_compliance_authority": "Law 04 Article 261",
+    "market_reality_integration": false,
+    "taiwan_constraints_enforced": false,
+    "evidence_type": "governance_infrastructure_hardening",
+    "round": "GOV-INFRA-001",
+    "phase": "governance_infrastructure",
+    "severity": "MEDIUM",
+    "blockers_resolved": [],
+    "blockers_not_touched": ["BLOCKER_G", "BLOCKER_F", "BLOCKER_E", "BLOCKER_I", "BLOCKER_H", "BLOCKER_C", "BLOCKER_D"]
+}
