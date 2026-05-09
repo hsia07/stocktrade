@@ -1,0 +1,6 @@
+NO-AIDER-USED CERTIFICATION
+======================
+Aider used: NO
+Tools used: OpenCode (direct file write/edit)
+Human operator: richa
+Date: 2026-05-09

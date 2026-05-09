@@ -1,0 +1,48 @@
+{
+  "round": "GOV-INT-002",
+  "evidence_type": "governance_infrastructure_integration",
+  "law_compliance": "04",
+  "law_compliance_authority": "Law 04 Article 261",
+  "phase": "governance",
+  "append_only_audit": true,
+  "trace_id": "trace_gov_int_002",
+  "replay_log": [
+    "2026-05-09T08:22: definition_lock completed (DEFINITION_LOCK_PASS)",
+    "2026-05-09T08:25: candidate branch created from 42efcb5",
+    "2026-05-09T08:26: gate_report_persister.py written",
+    "2026-05-09T08:26: test_gov_int_002.py written (8 tests)",
+    "2026-05-09T08:27: 8/8 test_gov_int_002.py PASS",
+    "2026-05-09T08:27: 13/13 test_gov_infra_006.py PASS (preserved)",
+    "2026-05-09T08:27: 4/4 test_gov_int_001.py PASS (preserved)",
+    "2026-05-09T08:27: diff verified: 0 modified files, 2 new source files only",
+    "2026-05-09T08:27: no GOV-INT-003 or later content detected",
+    "2026-05-09T08:27: evidence package created",
+    "2026-05-09T08:55: candidate evidence rework started (candidate.diff mismatch fix)",
+    "2026-05-09T08:55: candidate.diff regenerated — now includes all 8 authorized files",
+    "2026-05-09T08:56: evidence.json updated with rework replay_log",
+    "2026-05-09T08:56: report.json updated with rework metadata",
+    "2026-05-09T08:56: test-results.txt refreshed",
+    "2026-05-09T08:56: 8/8 test_gov_int_002.py PASS (re-verified)",
+    "2026-05-09T08:56: 13/13 test_gov_infra_006.py PASS (preserved)",
+    "2026-05-09T08:56: 4/4 test_gov_int_001.py PASS (preserved)",
+    "2026-05-09T08:56: diff re-verified: 8 new files, 0 modified, scope valid",
+    "2026-05-09T08:56: candidate.diff matches actual commit diff — MISMATCH RESOLVED"
+  ],
+  "test_results": {
+    "passed": 25,
+    "failed": 0,
+    "suites": {
+      "test_gov_int_002": {"passed": 8, "failed": 0},
+      "test_gov_infra_006": {"passed": 13, "failed": 0},
+      "test_gov_int_001": {"passed": 4, "failed": 0}
+    }
+  },
+  "pre_push_checks": {
+    "naming_convention": "PASS",
+    "freshness_check": "PASS",
+    "evidence_completeness": "PASS",
+    "evidence_schema": "PASS",
+    "evidence_integrity": "PASS",
+    "law_04_compliance": "PASS"
+  }
+}
