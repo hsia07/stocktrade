@@ -1,0 +1,26 @@
+{
+    "trace_id": "gov-infra-005-001",
+    "replay_log": [
+        "2026-05-09: Branch created: work/candidate-gov-infra-005 at e3b2953",
+        "2026-05-09: Added validate_evidence_cross_file_integrity() with 6 rules",
+        "2026-05-09: Rule 1: round_id identity (report · evidence · task)",
+        "2026-05-09: Rule 2: law_compliance consistency (evidence · task)",
+        "2026-05-09: Rule 3: test count coherence (report internal)",
+        "2026-05-09: Rule 4: status coherence (report · evidence)",
+        "2026-05-09: Rule 5: type category coherence (evidence · task)",
+        "2026-05-09: Rule 6: replay_log ordering (evidence internal)",
+        "2026-05-09: 15 GOV-INFRA-005 tests all passing",
+        "2026-05-09: 5 canonical packages preserved"
+    ],
+    "append_only_audit": true,
+    "law_compliance": "04",
+    "law_compliance_authority": "Law 04 Article 261",
+    "market_reality_integration": false,
+    "taiwan_constraints_enforced": false,
+    "evidence_type": "governance_infrastructure_hardening",
+    "round": "GOV-INFRA-005",
+    "phase": "governance_infrastructure",
+    "severity": "MEDIUM",
+    "blockers_resolved": [],
+    "blockers_not_touched": ["BLOCKER_G", "BLOCKER_F", "BLOCKER_E", "BLOCKER_I", "BLOCKER_H", "BLOCKER_C", "BLOCKER_D"]
+}

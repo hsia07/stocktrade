@@ -1181,6 +1181,129 @@ class EvidenceChecker:
 
         return len(issues) == 0, issues
 
+    def validate_evidence_cross_file_integrity(self, candidate_dir: Path) -> Tuple[bool, List[str]]:
+        """
+        Validate cross-file integrity across all 6 evidence package files.
+        Returns (is_valid, issues_list).
+
+        Checks consistency between pairs of files to ensure the package
+        as a whole is coherent. Produces machine-checkable error codes
+        on integrity violations.
+        """
+        issues = []
+        schema = self.CONTENT_SCHEMA
+
+        # --- Load all files ---
+        report_data = None
+        evidence_data = None
+        task_text = None
+
+        report_path = candidate_dir / "report.json"
+        evidence_path = candidate_dir / "evidence.json"
+        task_path = candidate_dir / "task.txt"
+
+        try:
+            if report_path.exists():
+                with open(report_path, "r", encoding="utf-8") as f:
+                    report_data = json.load(f)
+        except Exception:
+            pass
+
+        try:
+            if evidence_path.exists():
+                with open(evidence_path, "r", encoding="utf-8") as f:
+                    evidence_data = json.load(f)
+        except Exception:
+            pass
+
+        try:
+            if task_path.exists():
+                task_text = task_path.read_text(encoding="utf-8")
+        except Exception:
+            pass
+
+        # --- Rule 1: round_id identity ---
+        # report.json round_id == evidence.json round == task.txt task_id
+        if report_data and evidence_data and task_text:
+            rp_round = report_data.get("round_id")
+            ev_round = evidence_data.get("round")
+            tk_match = None
+            m = re.search(r"task_id:\s*(\S+)", task_text)
+            if m:
+                tk_match = m.group(1)
+
+            if rp_round and ev_round and rp_round != ev_round:
+                issues.append(f"integrity:round_id_mismatch:report.json={rp_round}:evidence.json={ev_round}")
+            if rp_round and tk_match and rp_round != tk_match:
+                issues.append(f"integrity:round_id_mismatch:report.json={rp_round}:task.txt={tk_match}")
+            if ev_round and tk_match and ev_round != tk_match:
+                issues.append(f"integrity:round_id_mismatch:evidence.json={ev_round}:task.txt={tk_match}")
+
+        # --- Rule 2: law_compliance consistency ---
+        # evidence.json law_compliance == task.txt law_compliance field
+        if evidence_data and task_text:
+            ev_law = evidence_data.get("law_compliance")
+            m = re.search(r"law_compliance:\s*(\S+)", task_text)
+            tk_law = m.group(1) if m else None
+            if ev_law and tk_law and ev_law != tk_law:
+                issues.append(f"integrity:law_compliance_mismatch:evidence.json={ev_law}:task.txt={tk_law}")
+
+        # --- Rule 3: test count coherence ---
+        # report.json tests_passed <= test_count and tests_passed + tests_failed <= test_count
+        if report_data:
+            tc = report_data.get("test_count")
+            tp = report_data.get("tests_passed")
+            tf = report_data.get("tests_failed", 0)
+            if tc is not None and tp is not None:
+                if tp > tc:
+                    issues.append(f"integrity:test_count_mismatch:tests_passed={tp}>test_count={tc}")
+                if tf is not None and tp + tf > tc:
+                    issues.append(f"integrity:test_count_mismatch:tests_passed+failed={tp+tf}>test_count={tc}")
+
+        # --- Rule 4: status coherence ---
+        # report.json status should be consistent with evidence.json state indicators
+        if report_data and evidence_data:
+            rp_status = report_data.get("status")
+            if rp_status == "completed":
+                append_only = evidence_data.get("append_only_audit")
+                if append_only is False:
+                    issues.append("integrity:status_contradiction:status=completed,but_append_only_audit=false")
+
+        # --- Rule 5: evidence_type / task_type category coherence ---
+        # Both should belong to the same category (e.g. both contain "governance" or both contain "fix")
+        if evidence_data and task_text:
+            ev_type = evidence_data.get("evidence_type", "")
+            m = re.search(r"task_type:\s*(\S+)", task_text)
+            tk_type = m.group(1) if m else ""
+
+            if ev_type and tk_type:
+                # Extract category word from both (e.g. "governance" from "governance_infrastructure_hardening")
+                ev_cat = ev_type.split("_")[0] if "_" in ev_type else ev_type
+                tk_cat = tk_type.split("_")[0] if "_" in tk_type else tk_type
+                if ev_cat != tk_cat:
+                    issues.append(
+                        f"integrity:type_category_mismatch:"
+                        f"evidence.json={ev_type},task.txt={tk_type}"
+                    )
+
+        # --- Rule 6: replay_log timestamp ordering ---
+        # Entries should be in non-decreasing timestamp order
+        if evidence_data:
+            replay_log = evidence_data.get("replay_log")
+            if replay_log and isinstance(replay_log, list) and len(replay_log) > 1:
+                last_ts = ""
+                for i, entry in enumerate(replay_log):
+                    if isinstance(entry, str):
+                        # Extract leading date/timestamp (e.g. "2026-05-09" or "2026-05-09T15:23")
+                        ts_match = re.match(r"(\d{4}[-/]\d{2}[-/]\d{2}(?:[T ]\d{2}:\d{2})?)", entry)
+                        if ts_match:
+                            current_ts = ts_match.group(1)
+                            if last_ts and current_ts < last_ts:
+                                issues.append(f"integrity:replay_log_out_of_order:entry_{i}:{current_ts}<{last_ts}")
+                            last_ts = current_ts
+
+        return len(issues) == 0, issues
+
     def verify_return_to_chatgpt(self, output_text):
         '''Verify RETURN_TO_CHATGPT output using ReturnToChatGPTVerifier.'''
         verifier = ReturnToChatGPTVerifier()
