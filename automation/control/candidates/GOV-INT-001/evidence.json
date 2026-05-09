@@ -1,0 +1,23 @@
+{
+  "trace_id": "trace_GOV-INT-001",
+  "replay_log": [
+    "2026-05-09T06:30: candidate creation start: wire orchestrator into auto_advance.py"
+  ],
+  "append_only_audit": true,
+  "law_compliance": "04",
+  "law_compliance_authority": "Law 04 Article 261",
+  "market_reality_integration": true,
+  "taiwan_constraints_enforced": true,
+  "evidence_type": "governance_integration",
+  "round": "GOV-INT-001",
+  "phase": "governance_integration",
+  "severity": "MEDIUM",
+  "blockers_resolved": [],
+  "blockers_not_touched": [
+    "BLOCKER_C",
+    "BLOCKER_D",
+    "BLOCKER_E",
+    "BLOCKER_H",
+    "BLOCKER_I"
+  ]
+}

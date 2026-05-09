@@ -1,0 +1,32 @@
+=== TASK DESCRIPTION ===
+
+task_id: GOV-INT-001
+task_type: governance_integration
+phase: governance_integration
+law_compliance: 04
+severity: MEDIUM
+
+=== PROBLEM STATEMENT ===
+
+EvidenceGateOrchestrator (GOV-INFRA-006) provides a unified 3-stage gate
+verdict (completeness -> schema -> integrity) with fail-fast short-circuit,
+but AutoAdvancer.can_auto_advance() still calls EvidenceChecker.
+check_completeness() directly for the evidence gate decision. This means
+the schema and integrity gates are never consulted during auto-advance,
+defeating the purpose of the orchestrator.
+
+=== SOLUTION ===
+
+- Replace direct EvidenceChecker.check_completeness() call in
+  AutoAdvancer.can_auto_advance() with EvidenceGateOrchestrator.
+  run_evidence_gate()
+- verdict="PASS" -> can_auto_advance returns True
+- verdict="BLOCKED" -> can_auto_advance returns False with
+  gate="evidence_gate" and blocked_at_gate detail in reason
+- No changes to evidence_checker.py, evidence_gate_orchestrator.py,
+  control_bridge.py, status_reporter.py, or any pre-push hook
+
+=== FILES ===
+
+- automation/control/auto_advance.py (MODIFIED)
+- automation/control/tests/test_gov_int_001.py (NEW)

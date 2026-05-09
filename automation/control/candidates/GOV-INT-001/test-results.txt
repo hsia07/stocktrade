@@ -1,0 +1,25 @@
+TEST RESULTS
+============
+
+Test Suite: test_gov_int_001.py (4 tests)
+
+  TestOrchestratorPass
+    ✓ test_orchestrator_pass_allows_advance
+
+  TestCompletenessBlocked
+    ✓ test_incomplete_evidence_blocks_with_completeness_detail
+
+  TestSchemaBlocked
+    ✓ test_schema_fail_blocks_with_schema_detail
+
+  TestIntegrityBlocked
+    ✓ test_integrity_fail_blocks_with_integrity_detail
+
+Totals: 4 passed, 0 failed, 0 skipped — 100% pass rate
+
+Verification:
+  - orchestrator PASS -> auto_advance returns True ✓
+  - completeness blocked -> gate=evidence_gate + detail=gate=completeness ✓
+  - schema blocked -> gate=evidence_gate + detail=gate=schema ✓
+  - integrity blocked -> gate=evidence_gate + detail=gate=integrity ✓
+  - blocked_at_gate detail propagated in reason string ✓

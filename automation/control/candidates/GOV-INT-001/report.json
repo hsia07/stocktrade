@@ -1,0 +1,26 @@
+{
+  "round_id": "GOV-INT-001",
+  "candidate_branch": "work/candidate-gov-int-001",
+  "canonical_branch": "work/canonical-mainline-repair-001",
+  "canonical_head": "9929b5b5795c745a493d241d10af6ba8bd7343da",
+  "status": "completed",
+  "primary_objective": "Wire EvidenceGateOrchestrator unified verdict into AutoAdvancer.can_auto_advance() replacing direct check_completeness() call",
+  "files_changed": [
+    "automation/control/auto_advance.py"
+  ],
+  "files_created": [
+    "automation/control/tests/test_gov_int_001.py"
+  ],
+  "test_count": 4,
+  "tests_passed": 4,
+  "tests_failed": 0,
+  "bounded_auto_mode_impact": "evidence gate now uses orchestrator (schema + integrity gates also checked)",
+  "auto_advance_mode_impact": "evidence gate now uses orchestrator (schema + integrity gates also checked)",
+  "blockers_not_touched": [
+    "BLOCKER_C",
+    "BLOCKER_D",
+    "BLOCKER_E",
+    "BLOCKER_H",
+    "BLOCKER_I"
+  ]
+}
