@@ -17,7 +17,7 @@ def make_round_result(status="completed", formal_status_code="", blockers=None,
                       evidence_dir=None, is_new=False, candidate_exists=False,
                       merge_encountered=False, push_encountered=False,
                       auth_encountered=False, activation_encountered=False,
-                      paused=False):
+                      paused=False, automated_signoff=None):
     result = {
         "status": status,
         "formal_status_code": formal_status_code or "unknown",
@@ -31,12 +31,15 @@ def make_round_result(status="completed", formal_status_code="", blockers=None,
     }
     if evidence_dir:
         result["evidence_directory"] = str(evidence_dir)
+    if automated_signoff is not None:
+        result["automated_signoff"] = automated_signoff
     return result
 
 
 def test_auto_candidate_all_clear():
     ctrl = AutoAdvanceController(REPO_ROOT)
-    result = make_round_result(status="completed", formal_status_code="auto_candidate_ready")
+    result = make_round_result(status="completed", formal_status_code="auto_candidate_ready",
+                               automated_signoff={"hash_verified": True, "law_compliance_verified": True, "evidence_validated": True})
     can_advance, reason, gate = ctrl.can_auto_advance(result)
     assert can_advance is True, f"Expected True, got {can_advance}"
     assert gate == "none", f"Expected none, got {gate}"
@@ -49,6 +52,7 @@ def test_auto_candidate_bypasses_merge_gate():
     result = make_round_result(
         status="completed", formal_status_code="auto_candidate_ready",
         merge_encountered=True,
+        automated_signoff={"hash_verified": True, "law_compliance_verified": True, "evidence_validated": True},
     )
     can_advance, reason, gate = ctrl.can_auto_advance(result)
     assert can_advance is True, "auto_candidate should bypass merge_gate"
@@ -61,6 +65,7 @@ def test_auto_candidate_bypasses_push_gate():
     result = make_round_result(
         status="completed", formal_status_code="auto_candidate_ready",
         push_encountered=True,
+        automated_signoff={"hash_verified": True, "law_compliance_verified": True, "evidence_validated": True},
     )
     can_advance, reason, gate = ctrl.can_auto_advance(result)
     assert can_advance is True
@@ -73,6 +78,7 @@ def test_auto_candidate_bypasses_authorization_gate():
     result = make_round_result(
         status="completed", formal_status_code="auto_candidate_ready",
         auth_encountered=True,
+        automated_signoff={"hash_verified": True, "law_compliance_verified": True, "evidence_validated": True},
     )
     can_advance, reason, gate = ctrl.can_auto_advance(result)
     assert can_advance is True
@@ -85,6 +91,7 @@ def test_auto_candidate_bypasses_activation_gate():
     result = make_round_result(
         status="completed", formal_status_code="auto_candidate_ready",
         activation_encountered=True,
+        automated_signoff={"hash_verified": True, "law_compliance_verified": True, "evidence_validated": True},
     )
     can_advance, reason, gate = ctrl.can_auto_advance(result)
     assert can_advance is True

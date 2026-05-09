@@ -1,0 +1,31 @@
+FIX-BLOCKER-F-TESTS TEST RESULTS
+================================
+Date: 2026-05-09T08:00
+Branch: work/candidate-fix-blocker-f-tests-001
+Canonical HEAD: a94f3d944de28f58c8eb559c57ea215ca3913a92
+
+test_auto_candidate_all_clear                 PASS
+test_auto_candidate_bypasses_merge_gate        PASS
+test_auto_candidate_bypasses_push_gate         PASS
+test_auto_candidate_bypasses_authorization_gate PASS
+test_auto_candidate_bypasses_activation_gate   PASS
+test_auto_candidate_still_blocked_by_blockers  PASS
+test_auto_candidate_still_blocked_by_evidence  PASS
+test_auto_candidate_still_blocked_by_pause     PASS
+test_candidate_ready_awaiting_manual_review    PASS
+test_blocked_status_still_blocked              PASS
+test_bounded_auto_mode_merge_gate_blocks       PASS
+test_bounded_auto_mode_push_gate_blocks        PASS
+test_bounded_auto_mode_auth_gate_blocks        PASS
+test_round_status_gate_still_blocks           PASS
+test_new_round_dispatch_unchanged              PASS
+
+15 passed, 0 failed, 15 total
+
+VERIFICATION
+------------
+5 outdated tests fixed with automated_signoff param ✓
+make_round_result() now accepts automated_signoff parameter ✓
+Product code unchanged (auto_advance.py, evidence_checker.py) ✓
+No BLOCKER_C/D/E/H/I touched ✓
+All 15 tests pass ✓

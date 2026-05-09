@@ -1,0 +1,18 @@
+Modified: automation/control/tests/test_blocker_f.py
+
+Changes:
+1. Added automated_signoff parameter to make_round_result() function signature
+2. Added conditional assignment of automated_signoff to result dict
+3. Added automated_signoff={hash_verified:True, law_compliance_verified:True, evidence_validated:True}
+   to 5 test functions that were failing due to outdated test assumptions
+
+Functions modified:
+- make_round_result() - added automated_signoff=None parameter
+- test_auto_candidate_all_clear() - added automated_signoff param
+- test_auto_candidate_bypasses_merge_gate() - added automated_signoff param
+- test_auto_candidate_bypasses_push_gate() - added automated_signoff param
+- test_auto_candidate_bypasses_authorization_gate() - added automated_signoff param
+- test_auto_candidate_bypasses_activation_gate() - added automated_signoff param
+
+Root cause: These tests were written before BLOCKER_E added signoff_gate requirement
+to can_auto_advance() for auto-candidate path. Product code is correct; tests needed updating.
