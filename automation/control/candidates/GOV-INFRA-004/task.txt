@@ -1,0 +1,32 @@
+=== TASK DESCRIPTION ===
+
+task_id: GOV-INFRA-004
+task_type: governance_infrastructure_hardening
+phase: governance_infrastructure
+law_compliance: 04
+severity: MEDIUM
+
+=== PROBLEM STATEMENT ===
+
+Bounded auto-construction evidence packages have 6/6 file-existence
+enforcement (GOV-INFRA-003) but no content schema validation. Files can
+exist with missing required keys, wrong field types, empty diffs, or
+missing certification headers, and still pass the evidence gate.
+
+=== SOLUTION ===
+
+- Add CONTENT_SCHEMA class variable defining expected structure for all 6 files
+- Add validate_evidence_content_schema(candidate_dir) method
+- Schema validates:
+  - task.txt: required sections (TASK DESCRIPTION, PROBLEM STATEMENT, SOLUTION, FILES) and fields (task_id, task_type, phase, law_compliance, severity)
+  - report.json: required keys with type checking, valid status values
+  - evidence.json: required keys with type checking, law_compliance must be "04"
+  - candidate.diff: must be non-empty
+  - no-aider-used.txt: must contain "no aider" certification
+  - test-results.txt: must contain "TEST RESULTS", "passed", "failed"
+- Schema violations produce specific error codes: schema:{file}:{issue}:{detail}
+
+=== FILES ===
+
+- automation/control/evidence_checker.py (MODIFIED: added CONTENT_SCHEMA, validate_evidence_content_schema())
+- automation/control/tests/test_gov_infra_004.py (NEW: 14 machine-checkable tests)

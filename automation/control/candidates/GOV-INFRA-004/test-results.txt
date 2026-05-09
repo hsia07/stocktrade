@@ -1,0 +1,46 @@
+GOV-INFRA-004 TEST RESULTS
+===========================
+Date: 2026-05-09
+Branch: work/candidate-gov-infra-004
+Canonical HEAD: 8727f2399b4b74d9a4d06fd3fe95d677027531a5
+
+GOV-INFRA-004 tests (14):
+  TestValidContentPackage:
+    test_all_files_valid_passes                        PASS
+  TestTaskTxtSchema:
+    test_missing_task_description_section              PASS
+  TestReportJsonSchema:
+    test_missing_required_key                          PASS
+    test_wrong_field_type                              PASS
+  TestEvidenceJsonSchema:
+    test_wrong_law_compliance_value                    PASS
+  TestCandidateDiffSchema:
+    test_empty_diff_fails                              PASS
+  TestNoAiderUsedSchema:
+    test_missing_certification_header                  PASS
+  TestTestResultsSchema:
+    test_missing_test_results_header                   PASS
+    test_missing_passed_failed_counts                  PASS
+  TestCanonicalExistingPackages:
+    test_fix_blocker_f_tests_preserved                 PASS
+    test_gov_infra_001_preserved                       PASS
+    test_gov_infra_002_preserved                       PASS
+    test_gov_infra_003_preserved                       PASS
+  TestContentSchemaConstant:
+    test_schema_has_all_6_files                        PASS
+
+Total: 14 passed, 0 failed
+
+VERIFICATION
+------------
+CONTENT_SCHEMA defined for all 6 files     ✓
+validate_evidence_content_schema() added   ✓
+task.txt sections/fields validated         ✓
+report.json keys/types validated           ✓
+evidence.json keys/law04 validated         ✓
+candidate.diff non-empty required          ✓
+no-aider-used.txt certification required   ✓
+test-results.txt header/counts required    ✓
+Schema error codes are machine-checkable   ✓
+Historical canonical packages preserved    ✓ (4/4)
+All 14 tests pass                          ✓
