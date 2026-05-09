@@ -1,0 +1,28 @@
+=== TASK DESCRIPTION ===
+
+task_id: GOV-INFRA-003
+task_type: governance_infrastructure_hardening
+phase: governance_infrastructure
+law_compliance: 04
+severity: MEDIUM
+
+=== PROBLEM STATEMENT ===
+
+Bounded auto-construction evidence packages previously required only 3 files
+(task.txt, report.json, evidence.json). This allowed incomplete packages
+(lacking candidate.diff, no-aider-used.txt, test-results.txt) to pass the
+evidence gate, undermining auditability and machine-checkable verification.
+
+=== SOLUTION ===
+
+- Expand REQUIRED_FILES from 3 to 6 in evidence_checker.py
+- Remove OPTIONAL_FILES list (candidate.diff is now required)
+- Refactor _audit_single_candidate to use self.REQUIRED_FILES (no hardcoded list)
+- All 6 files: task.txt, report.json, evidence.json, candidate.diff, no-aider-used.txt, test-results.txt
+- Each missing file is separately reported as evidence_package:missing:{filename}
+- Historical canonical packages already have all 6 files — no regression
+
+=== FILES ===
+
+- automation/control/evidence_checker.py (MODIFIED: REQUIRED_FILES = 6 items, removed OPTIONAL_FILES, refactored loop)
+- automation/control/tests/test_gov_infra_003.py (NEW: 11 machine-checkable tests)

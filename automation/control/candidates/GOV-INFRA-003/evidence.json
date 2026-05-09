@@ -1,0 +1,24 @@
+{
+    "trace_id": "gov-infra-003-001",
+    "replay_log": [
+        "2026-05-09: Branch created: work/candidate-gov-infra-003 at 329c5d2",
+        "2026-05-09: REQUIRED_FILES expanded from 3 to 6 in evidence_checker.py",
+        "2026-05-09: OPTIONAL_FILES removed (candidate.diff now required)",
+        "2026-05-09: _audit_single_candidate refactored to self.REQUIRED_FILES loop",
+        "2026-05-09: 6 missing-file blocked tests each validate separate error message",
+        "2026-05-09: 3 canonical packages (FIX-BLOCKER-F-TESTS, GOV-INFRA-001, GOV-INFRA-002) verified preserved",
+        "2026-05-09: 1 test verifies REQUIRED_FILES constant contains all 6 files",
+        "2026-05-09: 1 test verifies 6/6 package passes"
+    ],
+    "append_only_audit": true,
+    "law_compliance": "04",
+    "law_compliance_authority": "Law 04 Article 261",
+    "market_reality_integration": false,
+    "taiwan_constraints_enforced": false,
+    "evidence_type": "governance_infrastructure_hardening",
+    "round": "GOV-INFRA-003",
+    "phase": "governance_infrastructure",
+    "severity": "MEDIUM",
+    "blockers_resolved": [],
+    "blockers_not_touched": ["BLOCKER_G", "BLOCKER_F", "BLOCKER_E", "BLOCKER_I", "BLOCKER_H", "BLOCKER_C", "BLOCKER_D"]
+}
