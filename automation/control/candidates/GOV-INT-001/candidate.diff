@@ -1,0 +1,23 @@
+diff --git a/automation/control/auto_advance.py b/automation/control/auto_advance.py
+index abc..def 100644
+--- a/automation/control/auto_advance.py
++++ b/automation/control/auto_advance.py
+@@ -29,6 +29,7 @@
+ from automation.control.pause_state import PauseStateManager
+ from automation.control.evidence_checker import EvidenceChecker
++from automation.control.evidence_gate_orchestrator import EvidenceGateOrchestrator
+@@ -81,6 +82,7 @@
+         self.evidence_checker = EvidenceChecker(self.repo_root)
++        self.evidence_gate_orchestrator = EvidenceGateOrchestrator(self.repo_root)
+@@ -137,9 +139,10 @@
+-        # 5. Evidence completeness — required always (both paths)
++        # 5. Evidence gate — unified orchestrator verdict (both paths)
+         evidence_dir = round_result.get("evidence_directory")
+         if evidence_dir:
+-            complete, missing = self.evidence_checker.check_completeness(Path(evidence_dir))
+-            if not complete:
+-                return False, f"evidence_incomplete: {missing}", "evidence_gate"
++            gate_report = self.evidence_gate_orchestrator.run_evidence_gate(Path(evidence_dir))
++            if gate_report["verdict"] == "BLOCKED":
++                blocked_at = gate_report.get("blocked_at_gate", "unknown")
++                return False, f"evidence_blocked:gate={blocked_at}", "evidence_gate"

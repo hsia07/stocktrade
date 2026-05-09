@@ -30,6 +30,7 @@ from pathlib import Path
 
 from automation.control.pause_state import PauseStateManager
 from automation.control.evidence_checker import EvidenceChecker
+from automation.control.evidence_gate_orchestrator import EvidenceGateOrchestrator
 
 logger = logging.getLogger("auto_advance")
 
@@ -79,6 +80,7 @@ class AutoAdvanceController:
         self.repo_root = repo_root or Path(__file__).parent.parent.parent
         self.pause_manager = PauseStateManager(self.repo_root)
         self.evidence_checker = EvidenceChecker(self.repo_root)
+        self.evidence_gate_orchestrator = EvidenceGateOrchestrator(self.repo_root)
 
     def is_auto_candidate_status(self, formal_code: str) -> bool:
         return formal_code == self.AUTO_CANDIDATE_READY
@@ -134,12 +136,13 @@ class AutoAdvanceController:
         if blockers:
             return False, f"blockers_present: {blockers}", "blocker_gate"
 
-        # 5. Evidence completeness — required always (both paths)
+        # 5. Evidence gate — unified orchestrator verdict (both paths)
         evidence_dir = round_result.get("evidence_directory")
         if evidence_dir:
-            complete, missing = self.evidence_checker.check_completeness(Path(evidence_dir))
-            if not complete:
-                return False, f"evidence_incomplete: {missing}", "evidence_gate"
+            gate_report = self.evidence_gate_orchestrator.run_evidence_gate(Path(evidence_dir))
+            if gate_report["verdict"] == "BLOCKED":
+                blocked_at = gate_report.get("blocked_at_gate", "unknown")
+                return False, f"evidence_blocked:gate={blocked_at}", "evidence_gate"
 
         # 6. Pause — blocks always (both paths)
         if self.pause_manager.is_paused():
