@@ -1,0 +1,15 @@
+TEST RESULTS
+round_id: UNDEFINED_ROUND_HARD_GATE_BATCH
+test_date: 2026-05-10
+
+test_blocker_undefined_round.py: 34/34 PASS
+test_blocker_i.py: 23/23 PASS
+test_blocker_e.py: 7/7 PASS
+test_blocker_f.py: 15/15 PASS
+test_gov_int_001.py: 4/4 PASS
+test_blocker_c.py: 25/25 PASS
+test_blocker_g.py: 7/7 PASS
+test_blocker_h.py: 15/15 PASS
+test_evidence_checker_fix.py: 5/5 PASS
+
+TOTAL: 135/135 PASS

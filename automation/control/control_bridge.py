@@ -22,6 +22,15 @@ APPROVED_CANDIDATE_FILE = os.path.join(PROMOTION_DIR, "approved_candidate.runtim
 PROMOTION_PLAN_FILE = os.path.join(PROMOTION_DIR, "promotion_plan.runtime.json")
 PROMOTION_RESULT_FILE = os.path.join(PROMOTION_DIR, "promotion_result.runtime.json")
 
+# Undefined round values — construction/dispatch is blocked for these
+UNDEFINED_ROUND_VALUES = {"", "none", "undefined", "law_undefined"}
+
+def is_round_defined(round_id: str) -> bool:
+    """Check whether a round_id is defined (not None/empty/NONE/undefined/law_undefined)."""
+    if not round_id:
+        return False
+    return round_id.strip().lower() not in UNDEFINED_ROUND_VALUES
+
 # Directory setup for artifacts and logs
 ARTIFACTS_DIR = os.path.join(CONTROL_DIR, "artifacts")
 LOGS_DIR = os.path.join(CONTROL_DIR, "logs")
@@ -129,6 +138,15 @@ def check_can_approve():
     mode = state.get('mode')
     candidate_id = state.get('latest_candidate_id')
     escalation = state.get('escalation_required')
+    round_id = state.get('round_id')
+
+    # UNDEFINED ROUND GATE: Block if round is None, empty, NONE, undefined, law_undefined
+    if not is_round_defined(round_id):
+        return {
+            'can_approve': False,
+            'reason': f'undefined_round_gate: round_id is undefined ({round_id})',
+            'round_id': round_id
+        }
     signoff_granted = state.get('signoff_granted', False)
     merge_gate = state.get('merge_gate', {})
 
@@ -145,7 +163,7 @@ def check_can_approve():
     
     if mode != 'paused_for_acceptance':
         reasons.append(f"mode is '{mode}', not 'paused_for_acceptance'")
-    if not candidate_id or candidate_id == 'none':
+    if not candidate_id or not is_round_defined(candidate_id):
         reasons.append('latest_candidate_id is missing')
     if escalation:
         reasons.append('escalation_required is true')
@@ -165,7 +183,7 @@ def check_can_approve():
         'can_approve': True,
         'mode': mode,
         'candidate_id': candidate_id,
-        'round_id': state.get('round_id'),
+        'round_id': round_id,
         'branch': state.get('branch'),
         'merge_gate': {
             'signoff_granted': signoff_granted,
@@ -453,6 +471,17 @@ def do_ready_for_signoff():
     """
     state = get_state()
     
+    # UNDEFINED ROUND GATE: Block if round is undefined
+    current_round = state.get('current_round', '')
+    if not is_round_defined(current_round):
+        result = {
+            'status': 'blocked',
+            'reason': f'undefined_round_gate: round_id is undefined ({current_round})',
+            'action': 'none'
+        }
+        save_json(LAST_ACTION_FILE, result)
+        return result
+    
     # Check if phase is completed
     if state.get('phase_completion_state') != 'completed':
         result = {
@@ -636,6 +665,17 @@ def do_explicit_merge_request():
     """
     state = get_state()
     
+    # UNDEFINED ROUND GATE: Block if target round is undefined
+    target_round = state.get('current_round') or state.get('latest_candidate_id')
+    if not is_round_defined(target_round):
+        result = {
+            'status': 'blocked',
+            'reason': f'undefined_round_gate: target round is undefined ({target_round})',
+            'action': 'none'
+        }
+        save_json(LAST_ACTION_FILE, result)
+        return result
+    
     # Check preconditions
     if not state.get('ready_for_signoff'):
         result = {
@@ -654,9 +694,6 @@ def do_explicit_merge_request():
         }
         save_json(LAST_ACTION_FILE, result)
         return result
-    
-    # Get target round from request (in production, parse POST body)
-    target_round = state.get('current_round') or state.get('latest_candidate_id')
     
     # Verify target round is in ready_for_signoff_rounds
     ready_rounds = state.get('ready_for_signoff_rounds', [])
@@ -738,10 +775,13 @@ class BridgeHandler(BaseHTTPRequestHandler):
         elif path == '/loop-status':
             last_action = get_last_action()
             state = get_state()
+            current_round = state.get('current_round', 'none')
+            round_defined = is_round_defined(current_round)
             self.send_json(200, {
                 'loop_active': state.get('run_state') == 'running',
                 'run_state': state.get('run_state', 'unknown'),
-                'current_round': state.get('current_round', 'none'),
+                'current_round': current_round,
+                'round_defined': round_defined,
                 'last_action_status': last_action.get('status', 'none'),
                 'last_action_action': last_action.get('action', 'none')
             })

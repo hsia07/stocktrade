@@ -1,0 +1,4 @@
+NO AIDER USED
+This candidate was produced by direct OpenCode governance session,
+not via aider or any automated pair-programming tool.
+All file modifications were made through OpenCode's edit/write tools.

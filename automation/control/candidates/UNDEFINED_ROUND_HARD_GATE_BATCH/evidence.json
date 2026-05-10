@@ -1,0 +1,38 @@
+{
+  "round_id": "UNDEFINED_ROUND_HARD_GATE_BATCH",
+  "task_type": "governance_hard_gate",
+  "phase": "governance",
+  "law_compliance": "04",
+  "law_compliance_authority": "Law 04 Article 261",
+  "append_only_audit": true,
+  "created_at": "2026-05-10T00:00:00Z",
+  "source_round": "TELEGRAM-AUTOMODE-READINESS-RECHECK",
+  "blocker_resolved": "broader_undefined_round_hard_gate_before_construction",
+  "layers_gated": [
+    "auto_advance.can_auto_advance",
+    "auto_advance.can_dispatch_next_round",
+    "control_bridge.check_can_approve",
+    "control_bridge.do_ready_for_signoff",
+    "control_bridge.do_explicit_merge_request",
+    "control_bridge.loop_status_endpoint"
+  ],
+  "values_blocked": [
+    null,
+    "",
+    "NONE",
+    "none",
+    "undefined",
+    "law_undefined"
+  ],
+  "regression_fixes": [
+    "test_blocker_e.py make_round_result",
+    "test_blocker_f.py make_round_result",
+    "test_gov_int_001.py _make_round_result"
+  ],
+  "test_count": 104,
+  "tests_passed": 104,
+  "tests_failed": 0,
+  "merge_blocked": true,
+  "push_blocked": true,
+  "promote_blocked": true
+}

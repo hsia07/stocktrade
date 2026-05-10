@@ -79,6 +79,7 @@ def _make_consistent_package(tmp_path: Path, round_id: str) -> Path:
 
 def _make_round_result(evidence_dir: Path, **overrides) -> dict:
     defaults = {
+        "round_id": "GOV-INT-001",
         "status": "completed",
         "formal_status_code": "manual_review_completed",
         "blockers_found": [],

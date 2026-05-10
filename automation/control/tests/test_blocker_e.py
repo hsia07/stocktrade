@@ -17,8 +17,9 @@ def make_round_result(status="completed", formal_status_code="", blockers=None,
                       evidence_dir=None, is_new=False, candidate_exists=False,
                       merge_encountered=False, push_encountered=False,
                       auth_encountered=False, activation_encountered=False,
-                      paused=False, automated_signoff=None):
+                      paused=False, automated_signoff=None, round_id="BLOCKER_E"):
     result = {
+        "round_id": round_id,
         "status": status,
         "formal_status_code": formal_status_code or "unknown",
         "blockers_found": blockers or [],

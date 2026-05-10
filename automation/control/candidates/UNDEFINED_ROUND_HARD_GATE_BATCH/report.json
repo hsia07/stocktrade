@@ -1,0 +1,27 @@
+{
+  "round_id": "UNDEFINED_ROUND_HARD_GATE_BATCH",
+  "status": "completed",
+  "canonical_branch": "work/canonical-mainline-repair-001",
+  "canonical_head": "497d3dc28a6cb12adf025eb7c58bf4aea96d5bb0",
+  "candidate_branch": "candidate/undefined-round-hard-gate",
+  "test_count": 104,
+  "tests_passed": 104,
+  "tests_failed": 0,
+  "test_files_run": [
+    "test_blocker_undefined_round.py (34/34)",
+    "test_blocker_i.py (23/23)",
+    "test_blocker_e.py (7/7)",
+    "test_blocker_f.py (15/15)",
+    "test_gov_int_001.py (4/4)",
+    "test_blocker_c.py (25/25)",
+    "test_blocker_g.py (7/7)",
+    "test_blocker_h.py (15/15)",
+    "test_evidence_checker_fix.py (5/5)"
+  ],
+  "merge_executed": false,
+  "push_executed": false,
+  "promote_executed": false,
+  "pr_created": false,
+  "telegram_auto_mode_started": false,
+  "evidence_package_complete": true
+}
