@@ -3,7 +3,7 @@
   "task_type": "candidate_creation",
   "phase": "governance",
   "law_compliance": "04",
-  "candidate_commit": "bebe715955eb7c9970a79be3aad5822ae897a264",
+  "candidate_commit": "f36fc7db01b68a4fd66974c94cf6730c3a7c6ce5",
   "scope_summary": "DryRunReadinessChecker: read-only,mock-only readiness validation for Telegram auto-mode pre-start checks",
   "tests_summary": "22 tests: git state,batches,inbound,undefined-round gate,usage exhaustion,notification coverage,kill switch,mock mode,dry-run invariants,JSON report,ChatGPT summary",
   "no_secret_exposure": true,
@@ -16,5 +16,9 @@
   "files_modified": [],
   "forbidden_paths_touched": [],
   "retained_untracked_paths_touched": false,
-  "telegram_auto_mode_started": false
+  "telegram_auto_mode_started": false,
+  "metadata_rework_commits": [
+    "bebe715955eb7c9970a79be3aad5822ae897a264",
+    "f36fc7db01b68a4fd66974c94cf6730c3a7c6ce5"
+  ]
 }
