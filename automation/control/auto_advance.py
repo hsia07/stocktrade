@@ -31,6 +31,7 @@ from pathlib import Path
 from automation.control.pause_state import PauseStateManager
 from automation.control.evidence_checker import EvidenceChecker
 from automation.control.evidence_gate_orchestrator import EvidenceGateOrchestrator
+from automation.control.telegram_notifier import TelegramNotifier
 
 logger = logging.getLogger("auto_advance")
 
@@ -78,11 +79,14 @@ class AutoAdvanceController:
 
     UNDEFINED_ROUND_VALUES = ["", "none", "undefined", "law_undefined"]
 
-    def __init__(self, repo_root: Path = None):
+    USAGE_SENTINEL_PATH = ".usage_exhausted"
+
+    def __init__(self, repo_root: Path = None, notifier: TelegramNotifier = None):
         self.repo_root = repo_root or Path(__file__).parent.parent.parent
         self.pause_manager = PauseStateManager(self.repo_root)
         self.evidence_checker = EvidenceChecker(self.repo_root)
         self.evidence_gate_orchestrator = EvidenceGateOrchestrator(self.repo_root)
+        self.notifier = notifier or TelegramNotifier(mock_mode=True)
 
     def is_auto_candidate_status(self, formal_code: str) -> bool:
         return formal_code == self.AUTO_CANDIDATE_READY
@@ -114,6 +118,40 @@ class AutoAdvanceController:
                 missing.append(req)
         return missing
 
+    def check_usage_exhaustion(self) -> bool:
+        """
+        Check whether usage has been exhausted by testing for the sentinel file.
+
+        Returns True if the sentinel file exists (usage exhausted).
+        The sentinel path is relative to repo_root.
+        """
+        sentinel = self.repo_root / self.USAGE_SENTINEL_PATH
+        return sentinel.exists()
+
+    def exhaust_usage(self) -> None:
+        """
+        Create the usage sentinel file (for testing / simulation).
+        """
+        sentinel = self.repo_root / self.USAGE_SENTINEL_PATH
+        sentinel.write_text("exhausted", encoding="utf-8")
+
+    def clear_usage_exhaustion(self) -> None:
+        """
+        Remove the usage sentinel file (for testing / recovery).
+        """
+        sentinel = self.repo_root / self.USAGE_SENTINEL_PATH
+        if sentinel.exists():
+            sentinel.unlink()
+
+    def notify_undefined_round_blocked(self) -> None:
+        """Send undefined-round-blocked notification via TelegramNotifier."""
+        self.notifier.send_undefined_round_blocked_notification()
+
+    def notify_usage_exhausted(self) -> None:
+        """Send usage-exhausted notification via TelegramNotifier and set pause."""
+        self.pause_manager.set_pause(reason=PauseStateManager.REASON_USAGE, checkpoint_data={"trigger": "usage_exhaustion_detector"})
+        self.notifier.send_usage_exhausted_notification()
+
     def can_auto_advance(self, round_result: Dict[str, Any]) -> Tuple[bool, str, str]:
         """
         Return (can_advance, reason, gate_type).
@@ -140,6 +178,7 @@ class AutoAdvanceController:
         round_id = round_result.get("round_id", "")
         is_defined, undefined_reason = self._is_round_defined(round_id)
         if not is_defined:
+            self.notify_undefined_round_blocked()
             return False, f"undefined_round: {undefined_reason}", "undefined_round_gate"
 
         # 2. Round must be completed
@@ -218,6 +257,7 @@ class AutoAdvanceController:
         current_round = round_result.get("round_id", "")
         is_defined, undefined_reason = self._is_round_defined(current_round)
         if not is_defined:
+            self.notify_undefined_round_blocked()
             return False, f"undefined_round: {undefined_reason}", "undefined_round_gate"
 
         can_advance, reason, gate = self.can_auto_advance(round_result)

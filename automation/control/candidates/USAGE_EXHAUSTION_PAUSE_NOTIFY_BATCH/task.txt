@@ -1,0 +1,53 @@
+=== TASK DESCRIPTION ===
+task_id: USAGE_EXHAUSTION_PAUSE_NOTIFY_BATCH
+task_type: governance_hard_gate
+phase: governance
+law_compliance: 04
+severity: HIGH
+
+=== PROBLEM STATEMENT ===
+Telegram auto-mode readiness recheck identified 6 blockers. This batch resolves:
+1. USAGE EXHAUSTION TRIGGER: No detection mechanism for task budget / API usage
+   exhaustion. No sentinel file, no gate, no pause trigger.
+2. OUTBOUND NOTIFIER GAP: TelegramNotifier missing 4 notification methods:
+   send_usage_exhausted_notification, send_blocked_notification,
+   send_awaiting_instruction_notification, send_undefined_round_blocked_notification.
+3. NOTIFICATION COVERAGE GAPS: Only pause, stall, and failure warnings existed.
+   Missing: usage_exhausted, blocked, awaiting_instruction, undefined_round_blocked.
+4. UNDEFINED_ROUND_BLOCKED NOTIFICATION: No outbound notification when the
+   undefined round gate fires in auto_advance.py or control_bridge.py.
+
+=== SOLUTION ===
+1. Added 4 notification methods to TelegramNotifier (mock-mode compatible):
+   - send_usage_exhausted_notification
+   - send_blocked_notification(reason="")
+   - send_awaiting_instruction_notification
+   - send_undefined_round_blocked_notification
+2. Added usage exhaustion detection to AutoAdvanceController:
+   - USAGE_SENTINEL_PATH = ".usage_exhausted"
+   - check_usage_exhaustion(), exhaust_usage(), clear_usage_exhaustion()
+   - notify_usage_exhausted() — sets pause + sends notification
+   - notify_undefined_round_blocked() — sends notification via notifier
+3. Wired undefined_round_blocked notification triggers in auto_advance.py:
+   - can_auto_advance() sends when undefined_round_gate fires
+   - can_dispatch_next_round() sends when undefined_round_gate fires
+4. Wired notification triggers in control_bridge.py:
+   - undefined_round_blocked at 3 gate points
+   - awaiting_instruction at signoff/can-start gates
+   - blocked at approve-and-promote gate
+5. Added usage exhaustion detection in APIAutoModeLoop:
+   - check_usage_exhaustion() — checks sentinel, triggers pause + notification
+6. Created test_usage_exhaustion_pause_notify.py: 29 tests covering:
+   - TelegramNotifier mock-mode notification coverage (11 tests)
+   - Usage exhaustion detection lifecycle (7 tests)
+   - Auto-advance notify methods (3 tests)
+   - APIAutoModeLoop usage exhaustion integration (4 tests)
+   - Undefined round gate notification triggers (3 tests)
+   - Edge cases (no sender, log clear) (1 test)
+
+=== FILES ===
+- automation/control/telegram_notifier.py (modified)
+- automation/control/auto_advance.py (modified)
+- automation/control/control_bridge.py (modified)
+- automation/control/api_automode_loop.py (modified)
+- automation/control/tests/test_usage_exhaustion_pause_notify.py (new)
