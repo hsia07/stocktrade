@@ -13,6 +13,7 @@ from typing import Dict, Any, Optional
 import time
 
 from automation.control.pause_state import PauseStateManager
+from automation.control.auto_advance import AutoAdvanceController
 
 logger = logging.getLogger("api_automode_loop")
 
@@ -30,6 +31,7 @@ class APIAutoModeLoop:
     def __init__(self, repo_root: Path = None):
         self.repo_root = repo_root or Path(__file__).parent.parent.parent
         self.pause_manager = PauseStateManager(self.repo_root)
+        self.auto_advance = AutoAdvanceController(self.repo_root)
         
         # Phase 2B state tracking
         self._consecutive_failure_count = 0
@@ -148,6 +150,24 @@ class APIAutoModeLoop:
                     self._no_new_phase_transition_start_time = current_time
                     logger.info(f"No new phase transition for {no_new_phase_duration/60:.1f} minutes (auxiliary signal only)")
     
+    def check_usage_exhaustion(self) -> None:
+        """
+        Check if usage is exhausted (via sentinel file).
+        If exhausted, trigger auto-pause and send usage_exhausted notification.
+        """
+        if self.auto_advance.check_usage_exhaustion():
+            logger.warning("Usage exhausted detected — triggering pause")
+            try:
+                from automation.control.telegram_notifier import TelegramNotifier
+                notifier = TelegramNotifier(mock_mode=True)
+                notifier.send_usage_exhausted_notification()
+            except Exception as e:
+                logger.error(f"Failed to send usage exhausted notification: {e}")
+            self._trigger_auto_pause(
+                reason=PauseStateManager.REASON_USAGE,
+                extra_data={"trigger": "usage_exhaustion_sentinel"}
+            )
+
     def manual_start_request(self) -> Dict[str, Any]:
         """
         /start semantics: only a request for manual recovery.

@@ -1,0 +1,38 @@
+{
+  "round_id": "USAGE_EXHAUSTION_PAUSE_NOTIFY_BATCH",
+  "task_type": "governance_hard_gate",
+  "phase": "governance",
+  "law_compliance": "04",
+  "law_compliance_authority": "Law 04 Article 261",
+  "append_only_audit": true,
+  "created_at": "2026-05-10T00:00:00Z",
+  "source_round": "TELEGRAM-AUTOMODE-READINESS-RECHECK",
+  "blocker_resolved": "usage_exhaustion_pause_notify",
+  "layers_gated": [
+    "telegram_notifier.send_usage_exhausted_notification",
+    "telegram_notifier.send_blocked_notification",
+    "telegram_notifier.send_awaiting_instruction_notification",
+    "telegram_notifier.send_undefined_round_blocked_notification",
+    "auto_advance.check_usage_exhaustion",
+    "auto_advance.notify_usage_exhausted",
+    "auto_advance.notify_undefined_round_blocked",
+    "api_automode_loop.check_usage_exhaustion",
+    "control_bridge.undefined_round_notification",
+    "control_bridge.blocked_notification",
+    "control_bridge.awaiting_instruction_notification"
+  ],
+  "notification_coverage": [
+    "paused",
+    "awaiting_instruction",
+    "usage_exhausted",
+    "blocked",
+    "repeated_failure",
+    "undefined_round_blocked"
+  ],
+  "test_count": 29,
+  "tests_passed": 29,
+  "tests_failed": 0,
+  "merge_blocked": true,
+  "push_blocked": true,
+  "promote_blocked": true
+}

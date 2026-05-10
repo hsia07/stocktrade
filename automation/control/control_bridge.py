@@ -10,6 +10,7 @@ from http.server import HTTPServer, BaseHTTPRequestHandler
 from urllib.parse import urlparse
 import sys
 from datetime import datetime
+from automation.control.telegram_notifier import TelegramNotifier
 
 REPO_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 CONTROL_DIR = os.path.join(REPO_ROOT, "automation", "control")
@@ -24,6 +25,9 @@ PROMOTION_RESULT_FILE = os.path.join(PROMOTION_DIR, "promotion_result.runtime.js
 
 # Undefined round values — construction/dispatch is blocked for these
 UNDEFINED_ROUND_VALUES = {"", "none", "undefined", "law_undefined"}
+
+# Module-level Telegram notifier (mock mode by default)
+_notifier = TelegramNotifier(mock_mode=True)
 
 def is_round_defined(round_id: str) -> bool:
     """Check whether a round_id is defined (not None/empty/NONE/undefined/law_undefined)."""
@@ -142,6 +146,7 @@ def check_can_approve():
 
     # UNDEFINED ROUND GATE: Block if round is None, empty, NONE, undefined, law_undefined
     if not is_round_defined(round_id):
+        _notifier.send_undefined_round_blocked_notification()
         return {
             'can_approve': False,
             'reason': f'undefined_round_gate: round_id is undefined ({round_id})',
@@ -155,6 +160,7 @@ def check_can_approve():
     # MERGE GATE: Check if signoff granted
     if not signoff_granted:
         reasons.append('signoff not granted - call ready-for-signoff and grant-signoff first')
+        _notifier.send_awaiting_instruction_notification()
     
     # MERGE GATE: Check if waiting for explicit user ok
     if merge_gate.get('must_wait_for_explicit_user_ok', True):
@@ -195,6 +201,7 @@ def check_can_approve():
 def do_approve_and_promote():
     check = check_can_approve()
     if not check['can_approve']:
+        _notifier.send_blocked_notification(reason=check.get('reason', ''))
         result = {
             'status': 'blocked',
             'reason': check['reason'],
@@ -330,6 +337,7 @@ def check_can_start():
     
     # Can't start if phase is completed and waiting for signoff
     if phase_completion == 'completed' and signoff_required:
+        _notifier.send_awaiting_instruction_notification()
         return {'can_start': False, 'reason': 'Phase completed, waiting for signoff. Use Ready for Signoff first.'}
     
     # Can't start if already running
@@ -474,6 +482,7 @@ def do_ready_for_signoff():
     # UNDEFINED ROUND GATE: Block if round is undefined
     current_round = state.get('current_round', '')
     if not is_round_defined(current_round):
+        _notifier.send_undefined_round_blocked_notification()
         result = {
             'status': 'blocked',
             'reason': f'undefined_round_gate: round_id is undefined ({current_round})',
@@ -668,6 +677,7 @@ def do_explicit_merge_request():
     # UNDEFINED ROUND GATE: Block if target round is undefined
     target_round = state.get('current_round') or state.get('latest_candidate_id')
     if not is_round_defined(target_round):
+        _notifier.send_undefined_round_blocked_notification()
         result = {
             'status': 'blocked',
             'reason': f'undefined_round_gate: target round is undefined ({target_round})',

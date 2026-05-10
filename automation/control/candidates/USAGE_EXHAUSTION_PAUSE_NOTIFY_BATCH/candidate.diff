@@ -1,0 +1,263 @@
+diff --git a/automation/control/api_automode_loop.py b/automation/control/api_automode_loop.py
+index c913379..f12908b 100644
+--- a/automation/control/api_automode_loop.py
++++ b/automation/control/api_automode_loop.py
+@@ -13,6 +13,7 @@ from typing import Dict, Any, Optional
+ import time
+ 
+ from automation.control.pause_state import PauseStateManager
++from automation.control.auto_advance import AutoAdvanceController
+ 
+ logger = logging.getLogger("api_automode_loop")
+ 
+@@ -30,6 +31,7 @@ class APIAutoModeLoop:
+     def __init__(self, repo_root: Path = None):
+         self.repo_root = repo_root or Path(__file__).parent.parent.parent
+         self.pause_manager = PauseStateManager(self.repo_root)
++        self.auto_advance = AutoAdvanceController(self.repo_root)
+         
+         # Phase 2B state tracking
+         self._consecutive_failure_count = 0
+@@ -148,6 +150,24 @@ class APIAutoModeLoop:
+                     self._no_new_phase_transition_start_time = current_time
+                     logger.info(f"No new phase transition for {no_new_phase_duration/60:.1f} minutes (auxiliary signal only)")
+     
++    def check_usage_exhaustion(self) -> None:
++        """
++        Check if usage is exhausted (via sentinel file).
++        If exhausted, trigger auto-pause and send usage_exhausted notification.
++        """
++        if self.auto_advance.check_usage_exhaustion():
++            logger.warning("Usage exhausted detected — triggering pause")
++            try:
++                from automation.control.telegram_notifier import TelegramNotifier
++                notifier = TelegramNotifier(mock_mode=True)
++                notifier.send_usage_exhausted_notification()
++            except Exception as e:
++                logger.error(f"Failed to send usage exhausted notification: {e}")
++            self._trigger_auto_pause(
++                reason=PauseStateManager.REASON_USAGE,
++                extra_data={"trigger": "usage_exhaustion_sentinel"}
++            )
++
+     def manual_start_request(self) -> Dict[str, Any]:
+         """
+         /start semantics: only a request for manual recovery.
+diff --git a/automation/control/auto_advance.py b/automation/control/auto_advance.py
+index 95050e5..25b6f17 100644
+--- a/automation/control/auto_advance.py
++++ b/automation/control/auto_advance.py
+@@ -31,6 +31,7 @@ from pathlib import Path
+ from automation.control.pause_state import PauseStateManager
+ from automation.control.evidence_checker import EvidenceChecker
+ from automation.control.evidence_gate_orchestrator import EvidenceGateOrchestrator
++from automation.control.telegram_notifier import TelegramNotifier
+ 
+ logger = logging.getLogger("auto_advance")
+ 
+@@ -78,11 +79,14 @@ class AutoAdvanceController:
+ 
+     UNDEFINED_ROUND_VALUES = ["", "none", "undefined", "law_undefined"]
+ 
+-    def __init__(self, repo_root: Path = None):
++    USAGE_SENTINEL_PATH = ".usage_exhausted"
++
++    def __init__(self, repo_root: Path = None, notifier: TelegramNotifier = None):
+         self.repo_root = repo_root or Path(__file__).parent.parent.parent
+         self.pause_manager = PauseStateManager(self.repo_root)
+         self.evidence_checker = EvidenceChecker(self.repo_root)
+         self.evidence_gate_orchestrator = EvidenceGateOrchestrator(self.repo_root)
++        self.notifier = notifier or TelegramNotifier(mock_mode=True)
+ 
+     def is_auto_candidate_status(self, formal_code: str) -> bool:
+         return formal_code == self.AUTO_CANDIDATE_READY
+@@ -114,6 +118,40 @@ class AutoAdvanceController:
+                 missing.append(req)
+         return missing
+ 
++    def check_usage_exhaustion(self) -> bool:
++        """
++        Check whether usage has been exhausted by testing for the sentinel file.
++
++        Returns True if the sentinel file exists (usage exhausted).
++        The sentinel path is relative to repo_root.
++        """
++        sentinel = self.repo_root / self.USAGE_SENTINEL_PATH
++        return sentinel.exists()
++
++    def exhaust_usage(self) -> None:
++        """
++        Create the usage sentinel file (for testing / simulation).
++        """
++        sentinel = self.repo_root / self.USAGE_SENTINEL_PATH
++        sentinel.write_text("exhausted", encoding="utf-8")
++
++    def clear_usage_exhaustion(self) -> None:
++        """
++        Remove the usage sentinel file (for testing / recovery).
++        """
++        sentinel = self.repo_root / self.USAGE_SENTINEL_PATH
++        if sentinel.exists():
++            sentinel.unlink()
++
++    def notify_undefined_round_blocked(self) -> None:
++        """Send undefined-round-blocked notification via TelegramNotifier."""
++        self.notifier.send_undefined_round_blocked_notification()
++
++    def notify_usage_exhausted(self) -> None:
++        """Send usage-exhausted notification via TelegramNotifier and set pause."""
++        self.pause_manager.set_pause(reason=PauseStateManager.REASON_USAGE, checkpoint_data={"trigger": "usage_exhaustion_detector"})
++        self.notifier.send_usage_exhausted_notification()
++
+     def can_auto_advance(self, round_result: Dict[str, Any]) -> Tuple[bool, str, str]:
+         """
+         Return (can_advance, reason, gate_type).
+@@ -140,6 +178,7 @@ class AutoAdvanceController:
+         round_id = round_result.get("round_id", "")
+         is_defined, undefined_reason = self._is_round_defined(round_id)
+         if not is_defined:
++            self.notify_undefined_round_blocked()
+             return False, f"undefined_round: {undefined_reason}", "undefined_round_gate"
+ 
+         # 2. Round must be completed
+@@ -218,6 +257,7 @@ class AutoAdvanceController:
+         current_round = round_result.get("round_id", "")
+         is_defined, undefined_reason = self._is_round_defined(current_round)
+         if not is_defined:
++            self.notify_undefined_round_blocked()
+             return False, f"undefined_round: {undefined_reason}", "undefined_round_gate"
+ 
+         can_advance, reason, gate = self.can_auto_advance(round_result)
+diff --git a/automation/control/control_bridge.py b/automation/control/control_bridge.py
+index c8ce96a..a73c291 100644
+--- a/automation/control/control_bridge.py
++++ b/automation/control/control_bridge.py
+@@ -10,6 +10,7 @@ from http.server import HTTPServer, BaseHTTPRequestHandler
+ from urllib.parse import urlparse
+ import sys
+ from datetime import datetime
++from automation.control.telegram_notifier import TelegramNotifier
+ 
+ REPO_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+ CONTROL_DIR = os.path.join(REPO_ROOT, "automation", "control")
+@@ -25,6 +26,9 @@ PROMOTION_RESULT_FILE = os.path.join(PROMOTION_DIR, "promotion_result.runtime.js
+ # Undefined round values — construction/dispatch is blocked for these
+ UNDEFINED_ROUND_VALUES = {"", "none", "undefined", "law_undefined"}
+ 
++# Module-level Telegram notifier (mock mode by default)
++_notifier = TelegramNotifier(mock_mode=True)
++
+ def is_round_defined(round_id: str) -> bool:
+     """Check whether a round_id is defined (not None/empty/NONE/undefined/law_undefined)."""
+     if not round_id:
+@@ -142,6 +146,7 @@ def check_can_approve():
+ 
+     # UNDEFINED ROUND GATE: Block if round is None, empty, NONE, undefined, law_undefined
+     if not is_round_defined(round_id):
++        _notifier.send_undefined_round_blocked_notification()
+         return {
+             'can_approve': False,
+             'reason': f'undefined_round_gate: round_id is undefined ({round_id})',
+@@ -155,6 +160,7 @@ def check_can_approve():
+     # MERGE GATE: Check if signoff granted
+     if not signoff_granted:
+         reasons.append('signoff not granted - call ready-for-signoff and grant-signoff first')
++        _notifier.send_awaiting_instruction_notification()
+     
+     # MERGE GATE: Check if waiting for explicit user ok
+     if merge_gate.get('must_wait_for_explicit_user_ok', True):
+@@ -195,6 +201,7 @@ def check_can_approve():
+ def do_approve_and_promote():
+     check = check_can_approve()
+     if not check['can_approve']:
++        _notifier.send_blocked_notification(reason=check.get('reason', ''))
+         result = {
+             'status': 'blocked',
+             'reason': check['reason'],
+@@ -330,6 +337,7 @@ def check_can_start():
+     
+     # Can't start if phase is completed and waiting for signoff
+     if phase_completion == 'completed' and signoff_required:
++        _notifier.send_awaiting_instruction_notification()
+         return {'can_start': False, 'reason': 'Phase completed, waiting for signoff. Use Ready for Signoff first.'}
+     
+     # Can't start if already running
+@@ -474,6 +482,7 @@ def do_ready_for_signoff():
+     # UNDEFINED ROUND GATE: Block if round is undefined
+     current_round = state.get('current_round', '')
+     if not is_round_defined(current_round):
++        _notifier.send_undefined_round_blocked_notification()
+         result = {
+             'status': 'blocked',
+             'reason': f'undefined_round_gate: round_id is undefined ({current_round})',
+@@ -668,6 +677,7 @@ def do_explicit_merge_request():
+     # UNDEFINED ROUND GATE: Block if target round is undefined
+     target_round = state.get('current_round') or state.get('latest_candidate_id')
+     if not is_round_defined(target_round):
++        _notifier.send_undefined_round_blocked_notification()
+         result = {
+             'status': 'blocked',
+             'reason': f'undefined_round_gate: target round is undefined ({target_round})',
+diff --git a/automation/control/telegram_notifier.py b/automation/control/telegram_notifier.py
+index 99361b5..81975c1 100644
+--- a/automation/control/telegram_notifier.py
++++ b/automation/control/telegram_notifier.py
+@@ -98,6 +98,58 @@ class TelegramNotifier:
+         
+         return self._dispatch(msg)
+     
++    def send_usage_exhausted_notification(self) -> Dict[str, Any]:
++        """
++        Send notification when task budget / API usage is exhausted.
++        """
++        if not self.enabled:
++            return {"success": True, "skipped": True, "message": "notifier disabled"}
++        msg = (
++            "\u26a0\ufe0f *Usage Exhausted*\n"
++            "\n"
++            "Task budget or API usage limit reached.\n"
++            "Auto-advance is paused until the budget resets or override is granted."
++        )
++        return self._dispatch(msg)
++
++    def send_blocked_notification(self, reason: str = "") -> Dict[str, Any]:
++        """
++        Send notification when auto-advance is blocked.
++        """
++        if not self.enabled:
++            return {"success": True, "skipped": True, "message": "notifier disabled"}
++        msg = "\u26d4 *Blocked*\n\nAuto-advance cannot proceed."
++        if reason:
++            msg += f"\nReason: {reason}"
++        return self._dispatch(msg)
++
++    def send_awaiting_instruction_notification(self) -> Dict[str, Any]:
++        """
++        Send notification when system awaits a manual instruction.
++        """
++        if not self.enabled:
++            return {"success": True, "skipped": True, "message": "notifier disabled"}
++        msg = (
++            "\u23f3 *Awaiting Instruction*\n"
++            "\n"
++            "The system is waiting for a manual decision before it can proceed."
++        )
++        return self._dispatch(msg)
++
++    def send_undefined_round_blocked_notification(self) -> Dict[str, Any]:
++        """
++        Send notification when an undefined round blocks auto-advance.
++        """
++        if not self.enabled:
++            return {"success": True, "skipped": True, "message": "notifier disabled"}
++        msg = (
++            "\U0001f6ab *Undefined Round Blocked*\n"
++            "\n"
++            "An undefined-round condition has blocked auto-advance.\n"
++            "Manual review and resolution required before proceeding."
++        )
++        return self._dispatch(msg)
++
+     def _dispatch(self, text: str) -> Dict[str, Any]:
+         """Send message via sender or mock mode."""
+         if self.mock_mode:

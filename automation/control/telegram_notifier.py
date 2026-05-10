@@ -98,6 +98,58 @@ class TelegramNotifier:
         
         return self._dispatch(msg)
     
+    def send_usage_exhausted_notification(self) -> Dict[str, Any]:
+        """
+        Send notification when task budget / API usage is exhausted.
+        """
+        if not self.enabled:
+            return {"success": True, "skipped": True, "message": "notifier disabled"}
+        msg = (
+            "\u26a0\ufe0f *Usage Exhausted*\n"
+            "\n"
+            "Task budget or API usage limit reached.\n"
+            "Auto-advance is paused until the budget resets or override is granted."
+        )
+        return self._dispatch(msg)
+
+    def send_blocked_notification(self, reason: str = "") -> Dict[str, Any]:
+        """
+        Send notification when auto-advance is blocked.
+        """
+        if not self.enabled:
+            return {"success": True, "skipped": True, "message": "notifier disabled"}
+        msg = "\u26d4 *Blocked*\n\nAuto-advance cannot proceed."
+        if reason:
+            msg += f"\nReason: {reason}"
+        return self._dispatch(msg)
+
+    def send_awaiting_instruction_notification(self) -> Dict[str, Any]:
+        """
+        Send notification when system awaits a manual instruction.
+        """
+        if not self.enabled:
+            return {"success": True, "skipped": True, "message": "notifier disabled"}
+        msg = (
+            "\u23f3 *Awaiting Instruction*\n"
+            "\n"
+            "The system is waiting for a manual decision before it can proceed."
+        )
+        return self._dispatch(msg)
+
+    def send_undefined_round_blocked_notification(self) -> Dict[str, Any]:
+        """
+        Send notification when an undefined round blocks auto-advance.
+        """
+        if not self.enabled:
+            return {"success": True, "skipped": True, "message": "notifier disabled"}
+        msg = (
+            "\U0001f6ab *Undefined Round Blocked*\n"
+            "\n"
+            "An undefined-round condition has blocked auto-advance.\n"
+            "Manual review and resolution required before proceeding."
+        )
+        return self._dispatch(msg)
+
     def _dispatch(self, text: str) -> Dict[str, Any]:
         """Send message via sender or mock mode."""
         if self.mock_mode:

@@ -1,0 +1,22 @@
+{
+  "round_id": "USAGE_EXHAUSTION_PAUSE_NOTIFY_BATCH",
+  "status": "completed",
+  "canonical_branch": "work/canonical-mainline-repair-001",
+  "canonical_head": "da3e900950b9184ab9af058fb0a303f15ce83ab1",
+  "candidate_branch": "candidate/usage-exhaustion-pause-notify",
+  "test_count": 101,
+  "tests_passed": 101,
+  "tests_failed": 0,
+  "test_files_run": [
+    "test_usage_exhaustion_pause_notify.py (29/29)",
+    "test_blocker_undefined_round.py (34/34)",
+    "test_blocker_i.py (23/23)",
+    "test_inbound_receiver_wiring_fix.py (15/15)"
+  ],
+  "merge_executed": false,
+  "push_executed": false,
+  "promote_executed": false,
+  "pr_created": false,
+  "telegram_auto_mode_started": false,
+  "evidence_package_complete": true
+}
