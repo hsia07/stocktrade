@@ -17,6 +17,6 @@
   ],
   "evidence_rework": {
     "reason": "pre-push hook required law_compliance field per Law 04 Article 261",
-    "rework_commit": null
+    "rework_commit": "924f3c8"
   }
 }
