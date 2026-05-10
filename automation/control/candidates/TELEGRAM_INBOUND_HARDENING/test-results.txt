@@ -1,0 +1,25 @@
+﻿============================= test session starts =============================
+platform win32 -- Python 3.14.4, pytest-9.0.3, pluggy-1.6.0 -- C:\Python314\python.exe
+cachedir: .pytest_cache
+rootdir: C:\Users\richa\OneDrive\桌面\stocktrade
+plugins: anyio-4.13.0
+collecting ... collected 15 items
+
+automation/control/tests/test_inbound_receiver_wiring_fix.py::test_status_command_returns_state PASSED [  6%]
+automation/control/tests/test_inbound_receiver_wiring_fix.py::test_unauthorized_chat_rejected PASSED [ 13%]
+automation/control/tests/test_inbound_receiver_wiring_fix.py::test_authorized_chat_pause_accepted PASSED [ 20%]
+automation/control/tests/test_inbound_receiver_wiring_fix.py::test_authorized_chat_status_accepted PASSED [ 26%]
+automation/control/tests/test_inbound_receiver_wiring_fix.py::test_undefined_round_start_blocked PASSED [ 33%]
+automation/control/tests/test_inbound_receiver_wiring_fix.py::test_mock_mode_no_real_api_calls PASSED [ 40%]
+automation/control/tests/test_inbound_receiver_wiring_fix.py::test_unknown_command_ignored PASSED [ 46%]
+automation/control/tests/test_inbound_receiver_wiring_fix.py::test_random_text_ignored PASSED [ 53%]
+automation/control/tests/test_inbound_receiver_wiring_fix.py::test_no_hardcoded_secrets_in_source PASSED [ 60%]
+automation/control/tests/test_inbound_receiver_wiring_fix.py::test_authorized_commands_parametrized[/pause-/pause] PASSED [ 66%]
+automation/control/tests/test_inbound_receiver_wiring_fix.py::test_authorized_commands_parametrized[/status-/status] PASSED [ 73%]
+automation/control/tests/test_inbound_receiver_wiring_fix.py::test_authorized_commands_parametrized[/unknown-None] PASSED [ 80%]
+automation/control/tests/test_inbound_receiver_wiring_fix.py::test_command_with_trailing_args PASSED [ 86%]
+automation/control/tests/test_inbound_receiver_wiring_fix.py::test_status_with_trailing_args PASSED [ 93%]
+automation/control/tests/test_inbound_receiver_wiring_fix.py::test_commands_case_insensitive_lower PASSED [100%]
+
+============================= 15 passed in 0.34s ==============================
+
