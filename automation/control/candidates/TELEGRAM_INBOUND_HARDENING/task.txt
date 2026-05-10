@@ -1,0 +1,3 @@
+Telegram Inbound Hardening candidate: add /status, chat identity verification,
+unauthorized rejection with audit trail, and undefined-round hard gate for /start.
+Base commit: acab7495a5caa2924af9c159df406ee4330ba37a (canonical HEAD)

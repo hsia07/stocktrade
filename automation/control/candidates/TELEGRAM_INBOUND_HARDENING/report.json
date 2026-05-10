@@ -1,0 +1,6 @@
+{
+  "status": "candidate_ready",
+  "tests_pass": null,
+  "notes": "Candidate complete. Tests must pass before review.",
+  "gaps_addressed": "4/4 hardening gaps implemented"
+}

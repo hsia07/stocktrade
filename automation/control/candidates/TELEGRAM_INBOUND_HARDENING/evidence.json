@@ -1,0 +1,17 @@
+{
+  "task": "Telegram Inbound Hardening",
+  "base_commit": "acab7495a5caa2924af9c159df406ee4330ba37a",
+  "base_branch": "work/canonical-mainline-repair-001",
+  "candidate_branch": "candidate/telegram-inbound-hardening",
+  "files_affected": [
+    "automation/inbound/telegram_inbound.py",
+    "automation/control/tests/test_inbound_receiver_wiring_fix.py",
+    "automation/control/candidates/TELEGRAM-INBOUND-HARDENING/candidate.py"
+  ],
+  "gaps_addressed": [
+    "added /status command",
+    "added chat identity verification (TELEGRAM_CHAT_ID)",
+    "added unauthorized chat rejection with audit trail",
+    "added undefined-round hard gate on /start"
+  ]
+}
