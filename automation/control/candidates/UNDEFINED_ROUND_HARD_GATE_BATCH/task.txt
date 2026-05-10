@@ -1,0 +1,34 @@
+=== TASK DESCRIPTION ===
+task_id: UNDEFINED_ROUND_HARD_GATE_BATCH
+task_type: governance_hard_gate
+phase: governance
+law_compliance: 04
+severity: HIGH
+
+=== PROBLEM STATEMENT ===
+broader_undefined_round_hard_gate_before_construction_true_or_false was FALSE.
+The governance pipeline (auto_advance.py, control_bridge.py) did not contain an explicit
+hard gate preventing construction/dispatch when current_round is NONE, undefined, or
+law_undefined. The Telegram inbound receiver had a local gate (_has_defined_round())
+but the broader governance layer lacked one.
+
+=== SOLUTION ===
+Added undefined round hard gate at three levels:
+1. auto_advance.py: _is_round_defined() checker + undefined_round_gate in
+   can_auto_advance() and can_dispatch_next_round()
+2. control_bridge.py: is_round_defined() helper + gate in check_can_approve(),
+   do_ready_for_signoff(), do_explicit_merge_request(), and /loop-status endpoint
+3. test_blocker_undefined_round.py: 34 new tests covering all gate behaviors
+
+Also fixed regression in existing tests:
+- test_blocker_e.py: make_round_result() now includes round_id
+- test_blocker_f.py: make_round_result() now includes round_id
+- test_gov_int_001.py: _make_round_result() now includes round_id
+
+=== FILES ===
+- automation/control/auto_advance.py (modified)
+- automation/control/control_bridge.py (modified)
+- automation/control/tests/test_blocker_undefined_round.py (new)
+- automation/control/tests/test_blocker_e.py (regression fix)
+- automation/control/tests/test_blocker_f.py (regression fix)
+- automation/control/tests/test_gov_int_001.py (regression fix)

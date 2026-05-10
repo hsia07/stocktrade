@@ -76,6 +76,8 @@ class AutoAdvanceController:
 
     AUTO_CANDIDATE_READY = "auto_candidate_ready"
 
+    UNDEFINED_ROUND_VALUES = ["", "none", "undefined", "law_undefined"]
+
     def __init__(self, repo_root: Path = None):
         self.repo_root = repo_root or Path(__file__).parent.parent.parent
         self.pause_manager = PauseStateManager(self.repo_root)
@@ -84,6 +86,21 @@ class AutoAdvanceController:
 
     def is_auto_candidate_status(self, formal_code: str) -> bool:
         return formal_code == self.AUTO_CANDIDATE_READY
+
+    def _is_round_defined(self, round_id: str) -> Tuple[bool, str]:
+        """
+        Check whether a round_id is defined (not None, empty, NONE, undefined, law_undefined).
+
+        Returns:
+            (True, "") if defined,
+            (False, "reason") if undefined.
+        """
+        if round_id is None:
+            return False, "round_id_is_None"
+        normalized = round_id.strip().lower()
+        if normalized in self.UNDEFINED_ROUND_VALUES:
+            return False, f"round_id_is_undefined: '{round_id}'"
+        return True, ""
 
     def verify_automated_signoff(self, round_result: Dict[str, Any]) -> List[str]:
         """
@@ -119,7 +136,13 @@ class AutoAdvanceController:
                 return True, "entering_construction_bootstrap", "construction_bootstrap_gate"
             return True, "candidate_exists_proceed", "none"
 
-        # 1. Round must be completed
+        # 1. Current round must be defined (blocks construction/dispatch for NONE/undefined)
+        round_id = round_result.get("round_id", "")
+        is_defined, undefined_reason = self._is_round_defined(round_id)
+        if not is_defined:
+            return False, f"undefined_round: {undefined_reason}", "undefined_round_gate"
+
+        # 2. Round must be completed
         if round_result.get("status") != "completed":
             return False, "status_not_completed", "round_status_gate"
 
@@ -191,11 +214,15 @@ class AutoAdvanceController:
 
         The round_result must contain a "round_id" key for sequence lookup.
         """
+        # 0. Current round must be defined (defense-in-depth, checked before auto-advance)
+        current_round = round_result.get("round_id", "")
+        is_defined, undefined_reason = self._is_round_defined(current_round)
+        if not is_defined:
+            return False, f"undefined_round: {undefined_reason}", "undefined_round_gate"
+
         can_advance, reason, gate = self.can_auto_advance(round_result)
         if not can_advance:
             return False, f"auto_advance_blocked: {reason}", gate
-
-        current_round = round_result.get("round_id", "")
         next_round = self.determine_next_round(current_round)
         if not next_round:
             return False, f"no_next_round_defined: {current_round}", "sequence_end_gate"
