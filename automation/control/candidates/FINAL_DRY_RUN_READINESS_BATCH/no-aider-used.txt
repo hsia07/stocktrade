@@ -1,0 +1,2 @@
+No aider was used in this candidate.
+All code was written by the OpenCode agent (big-pickle) under governance supervision.

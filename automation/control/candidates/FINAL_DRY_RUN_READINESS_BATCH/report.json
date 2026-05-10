@@ -1,0 +1,12 @@
+{
+  "formal_status_code": "FINAL_DRY_RUN_READINESS_CANDIDATE_READY_AWAITING_MANUAL_REVIEW",
+  "candidate_branch": "candidate/final-dry-run-readiness",
+  "base_head": "ac1715e9cdcf74555219600326e1f3c22077d19c",
+  "candidate_commit": "ac1715e9cdcf74555219600326e1f3c22077d19c",
+  "tests_passed": 100,
+  "tests_failed": 0,
+  "new_tests": 22,
+  "new_tests_passed": 22,
+  "regression_tests_passed": 78,
+  "dry_run_readiness_report": null
+}
