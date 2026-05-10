@@ -1,0 +1,20 @@
+=== FINAL_DRY_RUN_READINESS_BATCH ===
+task_type: candidate_creation
+status: ready_for_manual_review
+
+Created DryRunReadinessChecker:
+  - automation/control/dry_run_readiness.py
+  - automation/control/tests/test_final_dry_run_readiness.py
+
+Checks performed:
+  A. Git state (HEAD match, local/remote match, tracked clean, untracked count)
+  B. Prior batches (TELEGRAM_INBOUND_HARDENING, UNDEFINED_ROUND_HARD_GATE_BATCH, USAGE_EXHAUSTION_PAUSE_NOTIFY_BATCH)
+  C. Telegram inbound readiness (identity, unauthorized rejection, status, undefined round gate, mock mode)
+  D. Undefined-round hard gate (auto_advance, control_bridge)
+  E. Usage exhaustion / pause / notify (sentinel, REASON_USAGE, chain)
+  F. Notification coverage (6 types: pause, stall, failure, usage_exhausted, blocked, awaiting_instruction, undefined_round_blocked)
+  G. Kill switch (/pause command)
+  H. Dry-run safety invariants (no construction, no dispatch, no commit/merge/push, no real Telegram HTTP)
+
+Test results: 22/22 passed
+Total regression: 100/100 passed (22 new + 78 existing)

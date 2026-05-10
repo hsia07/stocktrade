@@ -1,0 +1,21 @@
+{
+  "formal_status_code": "FINAL_DRY_RUN_READINESS_CANDIDATE_READY_AWAITING_MANUAL_REVIEW",
+  "candidate_branch": "candidate/final-dry-run-readiness",
+  "base_head": "ac1715e9cdcf74555219600326e1f3c22077d19c",
+  "candidate_commit": "f36fc7db01b68a4fd66974c94cf6730c3a7c6ce5",
+  "tests_passed": 100,
+  "tests_failed": 0,
+  "new_tests": 22,
+  "new_tests_passed": 22,
+  "regression_tests_passed": 78,
+  "dry_run_readiness_report": null,
+  "metadata_rework": {
+    "applied": true,
+    "reason": "candidate_commit corrected from bebe715 to f36fc7d to reflect actual HEAD",
+    "previous_candidate_commit": "bebe715955eb7c9970a79be3aad5822ae897a264",
+    "corrected_candidate_commit": "f36fc7db01b68a4fd66974c94cf6730c3a7c6ce5",
+    "law_compliance": "04",
+    "source_code_unchanged": true,
+    "test_code_unchanged": true
+  }
+}

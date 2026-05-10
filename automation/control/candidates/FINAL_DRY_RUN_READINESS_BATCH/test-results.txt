@@ -1,0 +1,31 @@
+============================= test session starts =============================
+platform win32 -- Python 3.14.4, pytest-9.0.3, pluggy-1.6.0 -- C:\Python314\python.exe
+cachedir: .pytest_cache
+rootdir: C:\Users\richa\OneDrive\桌面\stocktrade
+plugins: anyio-4.13.0
+collecting ... collected 22 items
+
+automation/control/tests/test_final_dry_run_readiness.py::test_dry_run_returns_not_ready_when_untracked_paths_exist PASSED [  4%]
+automation/control/tests/test_final_dry_run_readiness.py::test_dry_run_checks_local_remote_head PASSED [  9%]
+automation/control/tests/test_final_dry_run_readiness.py::test_dry_run_detects_head_mismatch PASSED [ 13%]
+automation/control/tests/test_final_dry_run_readiness.py::test_dry_run_checks_tracked_clean PASSED [ 18%]
+automation/control/tests/test_final_dry_run_readiness.py::test_dry_run_verifies_telegram_inbound_readiness PASSED [ 22%]
+automation/control/tests/test_final_dry_run_readiness.py::test_dry_run_verifies_undefined_round_gate PASSED [ 27%]
+automation/control/tests/test_final_dry_run_readiness.py::test_dry_run_verifies_usage_exhaustion_notify PASSED [ 31%]
+automation/control/tests/test_final_dry_run_readiness.py::test_dry_run_verifies_all_6_notification_types PASSED [ 36%]
+automation/control/tests/test_final_dry_run_readiness.py::test_dry_run_verifies_kill_switch PASSED [ 40%]
+automation/control/tests/test_final_dry_run_readiness.py::test_dry_run_does_not_dispatch_construction PASSED [ 45%]
+automation/control/tests/test_final_dry_run_readiness.py::test_dry_run_does_not_create_candidate PASSED [ 50%]
+automation/control/tests/test_final_dry_run_readiness.py::test_dry_run_does_not_commit_merge_push PASSED [ 54%]
+automation/control/tests/test_final_dry_run_readiness.py::test_dry_run_does_not_send_real_telegram_http PASSED [ 59%]
+automation/control/tests/test_final_dry_run_readiness.py::test_dry_run_emits_machine_readable_json_report PASSED [ 63%]
+automation/control/tests/test_final_dry_run_readiness.py::test_dry_run_emits_chatgpt_readable_summary PASSED [ 68%]
+automation/control/tests/test_final_dry_run_readiness.py::test_dry_run_report_contains_all_required_fields PASSED [ 72%]
+automation/control/tests/test_final_dry_run_readiness.py::test_dry_run_checks_prior_batches PASSED [ 77%]
+automation/control/tests/test_final_dry_run_readiness.py::test_dry_run_secrets_not_exposed PASSED [ 81%]
+automation/control/tests/test_final_dry_run_readiness.py::test_dry_run_returns_not_ready_when_blockers PASSED [ 86%]
+automation/control/tests/test_final_dry_run_readiness.py::test_mock_mode_no_real_api_calls PASSED [ 90%]
+automation/control/tests/test_final_dry_run_readiness.py::test_dry_run_does_not_touch_forbidden_paths PASSED [ 95%]
+automation/control/tests/test_final_dry_run_readiness.py::test_dry_run_round_trip_json PASSED [100%]
+
+============================= 22 passed in 16.25s =============================
