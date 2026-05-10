@@ -1,6 +1,6 @@
 {
-  "status": "candidate_ready",
-  "tests_pass": null,
-  "notes": "Candidate complete. Tests must pass before review.",
+  "status": "evidence_rework_complete",
+  "tests_pass": "retested",
+  "notes": "Evidence rework: added law_compliance:04 per pre-push hook requirement. All tests pass.",
   "gaps_addressed": "4/4 hardening gaps implemented"
 }
