@@ -1,0 +1,24 @@
+{
+  "round_id": "GOVERNANCE_MANIFEST_05_PHASE_MAPPING_CORRECTION",
+  "task_type": "candidate_creation",
+  "status": "completed",
+  "formal_status_code": "GOVERNANCE_MANIFEST_05_PHASE_MAPPING_CORRECTION_CANDIDATE_READY_AWAITING_MANUAL_REVIEW",
+  "files_created": [
+    "opencode_readable_laws/05_每輪詳細主題補充法典_機器可執行補充版.md (modified)",
+    "automation/control/candidates/GOVERNANCE_MANIFEST_05_PHASE_MAPPING_CORRECTION/task.txt",
+    "automation/control/candidates/GOVERNANCE_MANIFEST_05_PHASE_MAPPING_CORRECTION/evidence.json",
+    "automation/control/candidates/GOVERNANCE_MANIFEST_05_PHASE_MAPPING_CORRECTION/report.json",
+    "automation/control/candidates/GOVERNANCE_MANIFEST_05_PHASE_MAPPING_CORRECTION/candidate.diff",
+    "automation/control/candidates/GOVERNANCE_MANIFEST_05_PHASE_MAPPING_CORRECTION/no-aider-used.txt",
+    "automation/control/candidates/GOVERNANCE_MANIFEST_05_PHASE_MAPPING_CORRECTION/test-results.txt"
+  ],
+  "files_modified": [
+    "opencode_readable_laws/05_每輪詳細主題補充法典_機器可執行補充版.md"
+  ],
+  "old_phase_mapping_removed": true,
+  "current_phase_mapping_present": true,
+  "formal_law_priority_preserved": true,
+  "gov_int_003_present": false,
+  "telegram_auto_mode_started": false,
+  "commit_created": false
+}
