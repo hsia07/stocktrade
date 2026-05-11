@@ -1,0 +1,13 @@
+round_id: "GOV-MANIFEST-MODEL-FIX"
+title: "governance round manifest model fix for multiple GOV rounds"
+status: "pending"
+depends_on: []
+allowed_paths:
+  - "scripts/validation/"
+forbidden_paths: []
+required_evidence:
+  - "automation/control/candidates/GOV-MANIFEST-MODEL-FIX/evidence.json"
+required_checks: []
+risk_level: "yellow"
+owner: "governance"
+start_authorized: true

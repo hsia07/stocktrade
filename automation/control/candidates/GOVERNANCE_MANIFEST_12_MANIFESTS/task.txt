@@ -1,0 +1,23 @@
+GOVERNANCE_MANIFEST_12_MANIFESTS_CANDIDATE_CREATION
+
+Task: Track 12 governance manifests that passed definition lock
+
+Allowed files to track:
+- manifests/gov_hook_regex_fix.yaml
+- manifests/gov_manifest_model_fix.yaml
+- manifests/phase1_functional_realization_master_audit.yaml
+- manifests/phase1_site_readiness_truth_audit.yaml
+- manifests/phase2_preflight_remote_sync_push_execution.yaml
+- manifests/phase2_preflight_remote_sync_push_package.yaml
+- manifests/phase2_r006_r011_main_chain_integration_plan_audit.yaml
+- manifests/phase2_readiness_final_adjudication.yaml
+- manifests/phase2_readiness_preflight_audit.yaml
+- manifests/phase2_start_declaration_and_entry_lock.yaml
+- manifests/r007_silence_protection_integration.yaml
+- manifests/r007_unauthorized_merge_incident_audit.yaml
+
+Forbidden:
+- opencode_readable_laws/05_每輪詳細主題補充法典_機器可執行補充版.md
+- _governance/law/02* / 03* / 04* / 01*
+- .gitignore / .opencode/ / automation/secrets/ / automation/runtime/ / runtime/
+- panel/launcher/fix_*/generate_*/stocktrade_launch_test/

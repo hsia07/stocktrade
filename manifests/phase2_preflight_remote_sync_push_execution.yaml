@@ -1,0 +1,47 @@
+round_id: PHASE2-PREFLIGHT-REMOTE-SYNC-PUSH-EXECUTION
+task_type: phase2_preflight_remote_sync_push_execution
+reply_id: phase2-preflight-remote-sync-push-execution-001
+status: completed
+formal_status_code: manual_review_completed
+timestamp: "2026-04-23T10:04:00+08:00"
+
+evidence_package:
+  base_dir: automation/control/candidates/PHASE2-PREFLIGHT-REMOTE-SYNC-PUSH-EXECUTION
+  required_files:
+    - task.txt
+    - report.json
+    - evidence.json
+
+validators:
+  - script: scripts/validation/validate_evidence.py
+    args:
+      manifest: manifests/phase2_preflight_remote_sync_push_execution.yaml
+  - script: scripts/validation/check_forbidden_changes.py
+    args:
+      manifest: manifests/phase2_preflight_remote_sync_push_execution.yaml
+  - script: scripts/validation/check_required_evidence.py
+    args:
+      manifest: manifests/phase2_preflight_remote_sync_push_execution.yaml
+
+constraints:
+  allowed_branches:
+    - work/canonical-mainline-repair-001
+  forbidden_branches:
+    - master
+    - work/r016-decision-trace
+  allowed_paths:
+    - _governance/**
+    - docs/**
+    - templates/**
+    - scripts/validation/**
+    - .githooks/**
+    - manifests/**
+    - automation/control/**
+  forbidden_actions:
+    - lane_release
+    - promotion
+    - phase2_startup
+    - delete_branch
+    - modify_master
+    - modify_r016
+    - remove_stop_now_flag

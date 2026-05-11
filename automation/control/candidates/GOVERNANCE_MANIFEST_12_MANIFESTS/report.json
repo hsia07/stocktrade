@@ -1,0 +1,20 @@
+{
+  "candidate_id": "GOVERNANCE_MANIFEST_12_MANIFESTS",
+  "audit_type": "definition_lock_candidate_creation",
+  "audit_result": "PASS",
+  "manifests_audited": 12,
+  "manifests_passed": 12,
+  "manifests_failed": 0,
+  "phase_mapping_status": "current_only",
+  "old_phase_mapping_found": false,
+  "law_conflicts_found": false,
+  "secret_risk_found": false,
+  "gov_int_003_scope_found": false,
+  "r016_r017_topic_drift_found": false,
+  "forbidden_paths_touched": false,
+  "files_modified": "NONE",
+  "opencode_05_modified": false,
+  "formal_laws_modified": false,
+  "gitignore_modified": false,
+  "audit_timestamp": "2026-05-11T03:00:00Z"
+}

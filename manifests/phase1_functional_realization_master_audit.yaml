@@ -1,0 +1,5 @@
+round_id: PHASE1-FUNCTIONAL-REALIZATION-MASTER-AUDIT
+round_name: "Phase 1 Functional Realization Master Audit"
+topic: "Read-only audit of R001-R016 functional landing in canonical/remote"
+task_type: phase1_functional_realization_master_audit
+manifest_version: "1.0"

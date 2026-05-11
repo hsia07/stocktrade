@@ -1,0 +1,27 @@
+round_id: "PHASE2-READINESS-PREFLIGHT-AUDIT"
+title: "Phase 2 啟動前置條件與 blocker 重審"
+status: "pending"
+depends_on:
+  - "GOV-MECHANICAL-GATE-FOR-DIRECT-CANONICAL-BLOCK"
+allowed_paths:
+  - "automation/control/candidates/PHASE2-READINESS-PREFLIGHT-AUDIT/"
+forbidden_paths:
+  - "server.py"
+  - "index.js"
+  - "config.json"
+  - "run_opencode_loop.ps1"
+  - ".githooks/"
+required_evidence:
+  - "automation/control/candidates/PHASE2-READINESS-PREFLIGHT-AUDIT/evidence.json"
+  - "automation/control/candidates/PHASE2-READINESS-PREFLIGHT-AUDIT/report.json"
+  - "automation/control/candidates/PHASE2-READINESS-PREFLIGHT-AUDIT/candidate.diff"
+  - "automation/control/candidates/PHASE2-READINESS-PREFLIGHT-AUDIT/task.txt"
+required_checks:
+  - "scripts/validation/validate_evidence.py"
+risk_level: "green"
+owner: "governance"
+start_authorized: true
+notes: |
+  本候選為唯讀審計，不涉及任何檔案修改。
+  STOP_NOW.flag 仍生效，lane 維持凍結。
+  不得 merge / push / lane release / Phase 2 啟動。

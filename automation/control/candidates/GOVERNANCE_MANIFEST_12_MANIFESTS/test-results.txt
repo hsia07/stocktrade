@@ -1,0 +1,19 @@
+GOVERNANCE_MANIFEST_12_MANIFESTS_CANDIDATE_TESTS
+
+Test Results:
+- canonical_base_head = efb18e1f8bb495b41196188203548df1c40e4c39: PASS
+- candidate_branch = candidate/governance-manifest-12-manifests: PASS
+- 12 manifests staged: PASS
+- no old phase mapping (R001-R015, R016-R045A, R046-R128, R129-R161): PASS
+- current phase mapping preserved (R001-R016, R017-R048, R049-R132, R133-R161): PASS
+- A-round mapping preserved (11A→R012, 36A→R039, 45A→R048, 90A→R094): PASS
+- no R016/R017 topic drift: PASS
+- no GOV-INT-003 invented scope: PASS
+- no secret/token/key/env exposed: PASS
+- evidence.json has law_compliance = "04": PASS
+- candidate.diff is BOM-less UTF-8: PASS
+- 05 not modified: PASS
+- formal laws not modified: PASS
+- .gitignore not modified: PASS
+
+All tests PASSED.
