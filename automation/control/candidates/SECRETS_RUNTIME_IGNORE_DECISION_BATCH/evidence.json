@@ -1,0 +1,19 @@
+{
+  "round_id": "SECRETS_RUNTIME_IGNORE_DECISION_BATCH",
+  "task_type": "candidate_creation",
+  "law_compliance": "04",
+  "status": "candidate_ready",
+  "canonical_base_head": "836ffa98b2a35f2034a2ec8c01bd9de18f9ec044",
+  "candidate_branch": "candidate/secrets-runtime-ignore-decision",
+  "gitignore_entries_added": [
+    "automation/secrets/",
+    "automation/runtime/queue.db",
+    "automation/runtime/slice1_metrics.json",
+    "runtime/"
+  ],
+  "secrets_content_not_read": true,
+  "runtime_artifacts_not_tracked": true,
+  "authorized_scope_only": true,
+  "forbidden_paths_not_touched": true,
+  "retained_untracked_paths_not_deleted_or_moved": true
+}

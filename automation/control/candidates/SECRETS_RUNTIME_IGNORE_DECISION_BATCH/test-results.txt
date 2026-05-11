@@ -1,0 +1,15 @@
+SECRETS_RUNTIME_IGNORE_DECISION_BATCH — validation results
+
+Tests performed:
+1. git status --porcelain count before: 45 untracked paths
+2. .gitignore entries verified present: PASS
+3. git check-ignore automation/secrets/: ignored
+4. git check-ignore automation/runtime/queue.db: ignored
+5. git check-ignore automation/runtime/slice1_metrics.json: ignored
+6. git check-ignore runtime/: ignored
+7. Secrets directory content not read: PASS
+8. Runtime artifacts not tracked: PASS
+9. No forbidden paths touched: PASS
+10. Authored scope only (.gitignore + evidence): PASS
+
+Result: ALL VALIDATIONS PASSED
