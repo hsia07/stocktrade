@@ -1,0 +1,20 @@
+{
+  "candidate_id": "PANEL_TEMP_TEST_DELETE_CANDIDATE",
+  "status": "candidate_created",
+  "law_compliance": "04",
+  "canonical_base_head": "76656954278081cd9b2ed730c8104b90736783ff",
+  "candidate_branch": "candidate/panel-temp-test-delete",
+  "deleted_untracked_paths": [
+    "automation/control/panel_temp.html",
+    "automation/control/test_button.html"
+  ],
+  "deletion_user_approved": true,
+  "deletion_was_untracked_local_cleanup": true,
+  "test_requirements": [
+    "both files existed before deletion",
+    "both files were untracked (not in git)",
+    "both files not ignored by .gitignore",
+    "no tracked files deleted",
+    "no other files modified or deleted"
+  ]
+}

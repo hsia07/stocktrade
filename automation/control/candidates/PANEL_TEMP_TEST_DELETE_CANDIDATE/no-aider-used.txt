@@ -1,0 +1,4 @@
+No Aider used for this candidate.
+
+All operations performed via native PowerShell commands.
+Evidence package created manually.
