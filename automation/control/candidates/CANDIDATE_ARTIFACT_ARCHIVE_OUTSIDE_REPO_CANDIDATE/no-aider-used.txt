@@ -1,0 +1,6 @@
+NO-AIDER-USED CONFIRMATION
+=========================
+
+This candidate does NOT involve AI-assisted coding (Aider).
+This is a governance archive operation moving existing untracked files to external location.
+No code changes, no implementation, no AI assistance required.

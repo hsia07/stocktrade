@@ -1,0 +1,42 @@
+{
+  "task_id": "CANDIDATE_ARTIFACT_ARCHIVE_OUTSIDE_REPO_CANDIDATE",
+  "round_id": "001",
+  "status": "completed",
+  "formal_status_code": "candidate_ready_awaiting_manual_review",
+  "timestamp": "2026-05-12T00:00:00Z",
+
+  "law_compliance": "04",
+
+  "archive_user_approved": true,
+  "archive_outside_repo": true,
+
+  "actual_archive_root": "C:\\Users\\richa\\OneDrive\\桌面\\stocktrade_external_archives\\CANDIDATE_ARTIFACT_ARCHIVE_OUTSIDE_REPO\\614a98437debc17d8586e28348017829a651768c",
+
+  "archived_paths": [
+    "automation/control/candidates/BLOCKER_H/",
+    "automation/control/candidates/PHASE2-API-AUTOMODE-TELEGRAM-INBOUND-RECEIVER-WIRING-FIX-REWORK/",
+    "automation/control/candidates/R008-POST-MERGE-EXTRA-COMMIT-INCIDENT-AUDIT_RETURN_TO_CHATGPT.txt",
+    "automation/control/candidates/R024-SMART-SUMMARY-LAYER-RUNTIME-INTEGRATION/",
+    "automation/control/candidates/TRUTH_AUDIT_INVALIDATION_RULING.md"
+  ],
+
+  "archived_destination_paths": [
+    "C:\\Users\\richa\\OneDrive\\桌面\\stocktrade_external_archives\\CANDIDATE_ARTIFACT_ARCHIVE_OUTSIDE_REPO\\614a98437debc17d8586e28348017829a651768c\\BLOCKER_H",
+    "C:\\Users\\richa\\OneDrive\\桌面\\stocktrade_external_archives\\CANDIDATE_ARTIFACT_ARCHIVE_OUTSIDE_REPO\\614a98437debc17d8586e28348017829a651768c\\PHASE2-API-AUTOMODE-TELEGRAM-INBOUND-RECEIVER-WIRING-FIX-REWORK",
+    "C:\\Users\\richa\\OneDrive\\桌面\\stocktrade_external_archives\\CANDIDATE_ARTIFACT_ARCHIVE_OUTSIDE_REPO\\614a98437debc17d8586e28348017829a651768c\\R008-POST-MERGE-EXTRA-COMMIT-INCIDENT-AUDIT_RETURN_TO_CHATGPT.txt",
+    "C:\\Users\\richa\\OneDrive\\桌面\\stocktrade_external_archives\\CANDIDATE_ARTIFACT_ARCHIVE_OUTSIDE_REPO\\614a98437debc17d8586e28348017829a651768c\\R024-SMART-SUMMARY-LAYER-RUNTIME-INTEGRATION",
+    "C:\\Users\\richa\\OneDrive\\桌面\\stocktrade_external_archives\\CANDIDATE_ARTIFACT_ARCHIVE_OUTSIDE_REPO\\614a98437debc17d8586e28348017829a651768c\\TRUTH_AUDIT_INVALIDATION_RULING.md"
+  ],
+
+  "archive_was_untracked_local_cleanup": true,
+
+  "real_secret_value_detected": false,
+  "secret_risk_final_status": "false_positive",
+
+  "rollback_instruction": "To rollback: Copy contents from actual_archive_root back to original paths in automation/control/candidates/. This will restore 5 paths to untracked state. Original paths are preserved in external archive.",
+
+  "untracked_paths_count_before": 18,
+  "untracked_paths_count_after": 13,
+
+  "candidate_base_head": "614a98437debc17d8586e28348017829a651768c"
+}

@@ -1,0 +1,23 @@
+﻿CANDIDATE_ARTIFACT_ARCHIVE_OUTSIDE_REPO_CANDIDATE
+==============================================
+
+Task: Archive 5 candidate artifact paths outside repo
+Status: COMPLETED
+Date: 2026-05-12
+
+APPROVED BY: Human reviewer
+APPROVAL_SOURCE: CANDIDATE_ARTIFACT_ARCHIVE_PATH_IDENTITY_RECONCILIATION_PASS
+
+ARCHIVED_PATHS (5):
+1. automation/control/candidates/BLOCKER_H/
+2. automation/control/candidates/PHASE2-API-AUTOMODE-TELEGRAM-INBOUND-RECEIVER-WIRING-FIX-REWORK/
+3. automation/control/candidates/R008-POST-MERGE-EXTRA-COMMIT-INCIDENT-AUDIT_RETURN_TO_CHATGPT.txt
+4. automation/control/candidates/R024-SMART-SUMMARY-LAYER-RUNTIME-INTEGRATION/
+5. automation/control/candidates/TRUTH_AUDIT_INVALIDATION_RULING.md
+
+DESTINATION: C:\Users\richa\OneDrive\桌面\stocktrade_external_archives\CANDIDATE_ARTIFACT_ARCHIVE_OUTSIDE_REPO\614a98437debc17d8586e28348017829a651768c
+
+SECRET_RISK_INSPECTION: All 5 paths confirmed false_positive
+REAL_SECRET_DETECTED: FALSE
+
+ARCHIVE_ROOT_OUTSIDE_REPO: TRUE

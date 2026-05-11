@@ -1,0 +1,45 @@
+{
+  "task": "CANDIDATE_ARTIFACT_ARCHIVE_OUTSIDE_REPO_CANDIDATE",
+  "status": "completed",
+  "round_id": "candidate-artifact-archive-outside-repo-2026-05-12-001",
+  "reply_id": "candidate-artifact-archive-outside-repo-2026-05-12-001",
+  "formal_status_code": "candidate_ready_awaiting_manual_review",
+  "timestamp": "2026-05-12T00:00:00Z",
+
+  "implementation": {
+    "archive_root_created": true,
+    "archive_root_outside_repo": true,
+    "all_5_paths_moved": true,
+    "evidence_package_created": true
+  },
+
+  "archive_operation": {
+    "source_paths_count": 5,
+    "destination_root": "stocktrade_external_archives/CANDIDATE_ARTIFACT_ARCHIVE_OUTSIDE_REPO/614a98437debc17d8586e28348017829a651768c",
+    "files_preserved": true,
+    "untracked_cleanup_completed": true
+  },
+
+  "secret_risk": {
+    "focused_inspection_reused": true,
+    "real_secret_detected": false,
+    "all_paths_false_positive": true
+  },
+
+  "verification": {
+    "original_paths_removed_from_repo": true,
+    "archive_destinations_verified": true,
+    "untracked_count_reduced_18_to_13": true,
+    "no_tracked_files_deleted": true
+  },
+
+  "restrictions_met": {
+    "no_gitignore_modified": true,
+    "no_tracked_files_modified": true,
+    "no_forbidden_paths_touched": true,
+    "no_telegram_auto_mode": true,
+    "no_secret_exposure": true
+  },
+
+  "evidence_package": "automation/control/candidates/CANDIDATE_ARTIFACT_ARCHIVE_OUTSIDE_REPO_CANDIDATE/"
+}

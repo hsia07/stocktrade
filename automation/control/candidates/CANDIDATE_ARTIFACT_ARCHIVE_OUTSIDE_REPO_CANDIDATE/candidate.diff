@@ -1,0 +1,36 @@
+diff --git a/automation/control/candidates/CANDIDATE_ARTIFACT_ARCHIVE_OUTSIDE_REPO_CANDIDATE/evidence.json b/automation/control/candidates/CANDIDATE_ARTIFACT_ARCHIVE_OUTSIDE_REPO_CANDIDATE/evidence.json
+new file mode 100644
+--- /dev/null
++++ b/automation/control/candidates/CANDIDATE_ARTIFACT_ARCHIVE_OUTSIDE_REPO_CANDIDATE/evidence.json
+@@ -0,0 +1,44 @@
++{
++  "task_id": "CANDIDATE_ARTIFACT_ARCHIVE_OUTSIDE_REPO_CANDIDATE",
++  ...
++}
+
+diff --git a/automation/control/candidates/CANDIDATE_ARTIFACT_ARCHIVE_OUTSIDE_REPO_CANDIDATE/report.json b/automation/control/candidates/CANDIDATE_ARTIFACT_ARCHIVE_OUTSIDE_REPO_CANDIDATE/report.json
+new file mode 100644
+--- /dev/null
++++ b/automation/control/candidates/CANDIDATE_ARTIFACT_ARCHIVE_OUTSIDE_REPO_CANDIDATE/report.json
+@@ -0,0 +1,38 @@
++{
++  "task": "CANDIDATE_ARTIFACT_ARCHIVE_OUTSIDE_REPO_CANDIDATE",
++  ...
++}
+
+diff --git a/automation/control/candidates/CANDIDATE_ARTIFACT_ARCHIVE_OUTSIDE_REPO_CANDIDATE/task.txt b/automation/control/candidates/CANDIDATE_ARTIFACT_ARCHIVE_OUTSIDE_REPO_CANDIDATE/task.txt
+new file mode 100644
+--- /dev/null
++++ b/automation/control/candidates/CANDIDATE_ARTIFACT_ARCHIVE_OUTSIDE_REPO_CANDIDATE/task.txt
+@@ -0,0 +1,24 @@
++CANDIDATE_ARTIFACT_ARCHIVE_OUTSIDE_REPO_CANDIDATE
++...
+
+ARCHIVED PATHS (5 untracked):
++ BLOCKER_H/
++ PHASE2-API-AUTOMODE-TELEGRAM-INBOUND-RECEIVER-WIRING-FIX-REWORK/
++ R008-POST-MERGE-EXTRA-COMMIT-INCIDENT-AUDIT_RETURN_TO_CHATGPT.txt
++ R024-SMART-SUMMARY-LAYER-RUNTIME-INTEGRATION/
++ TRUTH_AUDIT_INVALIDATION_RULING.md
+
+NOTE: Archived paths moved to external archive root, not tracked in git.
