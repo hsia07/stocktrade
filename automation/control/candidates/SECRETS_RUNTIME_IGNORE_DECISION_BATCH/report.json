@@ -37,7 +37,10 @@
   "gov_int_003_present": false,
   "telegram_auto_mode_started": false,
   "commit_created": true,
-  "candidate_commit": "8b78ad9cb9485a0f2519e3ebf7308da4a06d7f73",
-  "candidate_commit_message": "SECRETS_RUNTIME_IGNORE_DECISION_BATCH: add secrets/runtime paths to .gitignore",
-  "candidate_diff_fixed_binary_encoding": true
+  "candidate_commit_before_metadata_rework": "fed2f8697879026c3cbd920dc508a072285b2a61",
+  "stale_report_candidate_commit_before": "8b78ad9cb9485a0f2519e3ebf7308da4a06d7f73",
+  "candidate_commit": "fed2f8697879026c3cbd920dc508a072285b2a61",
+  "metadata_rework_reason": "report candidate_commit stale metadata correction",
+  "metadata_rework_recorded": true,
+  "metadata_rework_record_location": "report.json"
 }
