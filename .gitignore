@@ -28,3 +28,9 @@ automation/control/*.runtime.txt
 
 automation/control/panel_runtime.html
 .aider*
+
+# Secrets and runtime (do-not-track)
+automation/secrets/
+automation/runtime/queue.db
+automation/runtime/slice1_metrics.json
+runtime/

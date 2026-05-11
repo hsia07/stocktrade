@@ -1,0 +1,46 @@
+{
+  "round_id": "SECRETS_RUNTIME_IGNORE_DECISION_BATCH",
+  "task_type": "candidate_creation",
+  "status": "completed",
+  "formal_status_code": "SECRETS_RUNTIME_IGNORE_CANDIDATE_READY_AWAITING_MANUAL_REVIEW",
+  "canonical_base_head": "836ffa98b2a35f2034a2ec8c01bd9de18f9ec044",
+  "candidate_branch": "candidate/secrets-runtime-ignore-decision",
+  "files_created": [
+    ".gitignore (modified)",
+    "automation/control/candidates/SECRETS_RUNTIME_IGNORE_DECISION_BATCH/task.txt",
+    "automation/control/candidates/SECRETS_RUNTIME_IGNORE_DECISION_BATCH/evidence.json",
+    "automation/control/candidates/SECRETS_RUNTIME_IGNORE_DECISION_BATCH/report.json",
+    "automation/control/candidates/SECRETS_RUNTIME_IGNORE_DECISION_BATCH/candidate.diff",
+    "automation/control/candidates/SECRETS_RUNTIME_IGNORE_DECISION_BATCH/no-aider-used.txt",
+    "automation/control/candidates/SECRETS_RUNTIME_IGNORE_DECISION_BATCH/test-results.txt"
+  ],
+  "files_modified": [
+    ".gitignore"
+  ],
+  "gitignore_entries_added": [
+    "automation/secrets/",
+    "automation/runtime/queue.db",
+    "automation/runtime/slice1_metrics.json",
+    "runtime/"
+  ],
+  "secrets_content_read": false,
+  "secret_values_exposed": false,
+  "runtime_artifacts_tracked": false,
+  "authorized_scope_only": true,
+  "forbidden_paths_touched": false,
+  "retained_untracked_paths_deleted_moved_or_archived": false,
+  "evidence_package_complete": true,
+  "evidence_law_compliance": "04",
+  "candidate_diff_utf8": true,
+  "candidate_diff_bom": false,
+  "candidate_diff_binary": false,
+  "gov_int_003_present": false,
+  "telegram_auto_mode_started": false,
+  "commit_created": true,
+  "candidate_commit_before_metadata_rework": "fed2f8697879026c3cbd920dc508a072285b2a61",
+  "stale_report_candidate_commit_before": "8b78ad9cb9485a0f2519e3ebf7308da4a06d7f73",
+  "candidate_commit": "fed2f8697879026c3cbd920dc508a072285b2a61",
+  "metadata_rework_reason": "report candidate_commit stale metadata correction",
+  "metadata_rework_recorded": true,
+  "metadata_rework_record_location": "report.json"
+}

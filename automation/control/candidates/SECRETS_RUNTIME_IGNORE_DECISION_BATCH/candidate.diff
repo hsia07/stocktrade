@@ -1,0 +1,283 @@
+diff --git a/.gitignore b/.gitignore
+index 77644ad..430f2c9 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -28,3 +28,9 @@ automation/control/*.runtime.txt
+ 
+ automation/control/panel_runtime.html
+ .aider*
++
++# Secrets and runtime (do-not-track)
++automation/secrets/
++automation/runtime/queue.db
++automation/runtime/slice1_metrics.json
++runtime/
+diff --git a/automation/control/candidates/SECRETS_RUNTIME_IGNORE_DECISION_BATCH/candidate.diff b/automation/control/candidates/SECRETS_RUNTIME_IGNORE_DECISION_BATCH/candidate.diff
+new file mode 100644
+index 0000000..7452cfe
+--- /dev/null
++++ b/automation/control/candidates/SECRETS_RUNTIME_IGNORE_DECISION_BATCH/candidate.diff
+@@ -0,0 +1,139 @@
++diff --git a/.gitignore b/.gitignore
++index 77644ad..430f2c9 100644
++--- a/.gitignore
+++++ b/.gitignore
++@@ -28,3 +28,9 @@ automation/control/*.runtime.txt
++ 
++ automation/control/panel_runtime.html
++ .aider*
+++
+++# Secrets and runtime (do-not-track)
+++automation/secrets/
+++automation/runtime/queue.db
+++automation/runtime/slice1_metrics.json
+++runtime/
++diff --git a/automation/control/candidates/SECRETS_RUNTIME_IGNORE_DECISION_BATCH/candidate.diff b/automation/control/candidates/SECRETS_RUNTIME_IGNORE_DECISION_BATCH/candidate.diff
++new file mode 100644
++index 0000000..9dda04f
++Binary files /dev/null and b/automation/control/candidates/SECRETS_RUNTIME_IGNORE_DECISION_BATCH/candidate.diff differ
++diff --git a/automation/control/candidates/SECRETS_RUNTIME_IGNORE_DECISION_BATCH/evidence.json b/automation/control/candidates/SECRETS_RUNTIME_IGNORE_DECISION_BATCH/evidence.json
++new file mode 100644
++index 0000000..bc972ec
++--- /dev/null
+++++ b/automation/control/candidates/SECRETS_RUNTIME_IGNORE_DECISION_BATCH/evidence.json
++@@ -0,0 +1,19 @@
+++{
+++  "round_id": "SECRETS_RUNTIME_IGNORE_DECISION_BATCH",
+++  "task_type": "candidate_creation",
+++  "law_compliance": "04",
+++  "status": "candidate_ready",
+++  "canonical_base_head": "836ffa98b2a35f2034a2ec8c01bd9de18f9ec044",
+++  "candidate_branch": "candidate/secrets-runtime-ignore-decision",
+++  "gitignore_entries_added": [
+++    "automation/secrets/",
+++    "automation/runtime/queue.db",
+++    "automation/runtime/slice1_metrics.json",
+++    "runtime/"
+++  ],
+++  "secrets_content_not_read": true,
+++  "runtime_artifacts_not_tracked": true,
+++  "authorized_scope_only": true,
+++  "forbidden_paths_not_touched": true,
+++  "retained_untracked_paths_not_deleted_or_moved": true
+++}
++diff --git a/automation/control/candidates/SECRETS_RUNTIME_IGNORE_DECISION_BATCH/no-aider-used.txt b/automation/control/candidates/SECRETS_RUNTIME_IGNORE_DECISION_BATCH/no-aider-used.txt
++new file mode 100644
++index 0000000..4d69731
++--- /dev/null
+++++ b/automation/control/candidates/SECRETS_RUNTIME_IGNORE_DECISION_BATCH/no-aider-used.txt
++@@ -0,0 +1 @@
+++This batch was created without aider. AI assistant: OpenCode (anthropic).
++diff --git a/automation/control/candidates/SECRETS_RUNTIME_IGNORE_DECISION_BATCH/report.json b/automation/control/candidates/SECRETS_RUNTIME_IGNORE_DECISION_BATCH/report.json
++new file mode 100644
++index 0000000..311216f
++--- /dev/null
+++++ b/automation/control/candidates/SECRETS_RUNTIME_IGNORE_DECISION_BATCH/report.json
++@@ -0,0 +1,40 @@
+++{
+++  "round_id": "SECRETS_RUNTIME_IGNORE_DECISION_BATCH",
+++  "task_type": "candidate_creation",
+++  "status": "completed",
+++  "formal_status_code": "SECRETS_RUNTIME_IGNORE_CANDIDATE_READY_AWAITING_MANUAL_REVIEW",
+++  "canonical_base_head": "836ffa98b2a35f2034a2ec8c01bd9de18f9ec044",
+++  "candidate_branch": "candidate/secrets-runtime-ignore-decision",
+++  "files_created": [
+++    ".gitignore (modified)",
+++    "automation/control/candidates/SECRETS_RUNTIME_IGNORE_DECISION_BATCH/task.txt",
+++    "automation/control/candidates/SECRETS_RUNTIME_IGNORE_DECISION_BATCH/evidence.json",
+++    "automation/control/candidates/SECRETS_RUNTIME_IGNORE_DECISION_BATCH/report.json",
+++    "automation/control/candidates/SECRETS_RUNTIME_IGNORE_DECISION_BATCH/candidate.diff",
+++    "automation/control/candidates/SECRETS_RUNTIME_IGNORE_DECISION_BATCH/no-aider-used.txt",
+++    "automation/control/candidates/SECRETS_RUNTIME_IGNORE_DECISION_BATCH/test-results.txt"
+++  ],
+++  "files_modified": [
+++    ".gitignore"
+++  ],
+++  "gitignore_entries_added": [
+++    "automation/secrets/",
+++    "automation/runtime/queue.db",
+++    "automation/runtime/slice1_metrics.json",
+++    "runtime/"
+++  ],
+++  "secrets_content_read": false,
+++  "secret_values_exposed": false,
+++  "runtime_artifacts_tracked": false,
+++  "authorized_scope_only": true,
+++  "forbidden_paths_touched": false,
+++  "retained_untracked_paths_deleted_moved_or_archived": false,
+++  "evidence_package_complete": true,
+++  "evidence_law_compliance": "04",
+++  "candidate_diff_utf8": true,
+++  "candidate_diff_bom": false,
+++  "candidate_diff_binary": false,
+++  "gov_int_003_present": false,
+++  "telegram_auto_mode_started": false,
+++  "commit_created": false
+++}
++diff --git a/automation/control/candidates/SECRETS_RUNTIME_IGNORE_DECISION_BATCH/task.txt b/automation/control/candidates/SECRETS_RUNTIME_IGNORE_DECISION_BATCH/task.txt
++new file mode 100644
++index 0000000..079496f
++--- /dev/null
+++++ b/automation/control/candidates/SECRETS_RUNTIME_IGNORE_DECISION_BATCH/task.txt
++@@ -0,0 +1,16 @@
+++task_type: gitignore_update
+++round_id: SECRETS_RUNTIME_IGNORE_DECISION_BATCH
+++description: Add secrets and runtime paths to .gitignore to unblock Telegram auto-mode readiness
+++entries_added:
+++  - automation/secrets/
+++  - automation/runtime/queue.db
+++  - automation/runtime/slice1_metrics.json
+++  - runtime/
+++rationale: These paths contain secrets, runtime state, or artifacts that must never be tracked in the repo.
+++  They are blocking Telegram auto-mode readiness (45 untracked paths, of which these 4 are the highest-priority do-not-track items).
+++parent_decision_lock: RETAINED_UNTRACKED_PATHS_DECISION_LOCK_PASS
+++preconditions:
+++  - canonical HEAD: 836ffa98b2a35f2034a2ec8c01bd9de18f9ec044
+++  - base_branch: work/canonical-mainline-repair-001
+++  - untracked_paths_count_before: 45
+++  - untracked_paths_count_after_ignore: 41 (expected)
++diff --git a/automation/control/candidates/SECRETS_RUNTIME_IGNORE_DECISION_BATCH/test-results.txt b/automation/control/candidates/SECRETS_RUNTIME_IGNORE_DECISION_BATCH/test-results.txt
++new file mode 100644
++index 0000000..5ff3ba6
++--- /dev/null
+++++ b/automation/control/candidates/SECRETS_RUNTIME_IGNORE_DECISION_BATCH/test-results.txt
++@@ -0,0 +1,15 @@
+++SECRETS_RUNTIME_IGNORE_DECISION_BATCH — validation results
+++
+++Tests performed:
+++1. git status --porcelain count before: 45 untracked paths
+++2. .gitignore entries verified present: PASS
+++3. git check-ignore automation/secrets/: ignored
+++4. git check-ignore automation/runtime/queue.db: ignored
+++5. git check-ignore automation/runtime/slice1_metrics.json: ignored
+++6. git check-ignore runtime/: ignored
+++7. Secrets directory content not read: PASS
+++8. Runtime artifacts not tracked: PASS
+++9. No forbidden paths touched: PASS
+++10. Authored scope only (.gitignore + evidence): PASS
+++
+++Result: ALL VALIDATIONS PASSED
+diff --git a/automation/control/candidates/SECRETS_RUNTIME_IGNORE_DECISION_BATCH/evidence.json b/automation/control/candidates/SECRETS_RUNTIME_IGNORE_DECISION_BATCH/evidence.json
+new file mode 100644
+index 0000000..bc972ec
+--- /dev/null
++++ b/automation/control/candidates/SECRETS_RUNTIME_IGNORE_DECISION_BATCH/evidence.json
+@@ -0,0 +1,19 @@
++{
++  "round_id": "SECRETS_RUNTIME_IGNORE_DECISION_BATCH",
++  "task_type": "candidate_creation",
++  "law_compliance": "04",
++  "status": "candidate_ready",
++  "canonical_base_head": "836ffa98b2a35f2034a2ec8c01bd9de18f9ec044",
++  "candidate_branch": "candidate/secrets-runtime-ignore-decision",
++  "gitignore_entries_added": [
++    "automation/secrets/",
++    "automation/runtime/queue.db",
++    "automation/runtime/slice1_metrics.json",
++    "runtime/"
++  ],
++  "secrets_content_not_read": true,
++  "runtime_artifacts_not_tracked": true,
++  "authorized_scope_only": true,
++  "forbidden_paths_not_touched": true,
++  "retained_untracked_paths_not_deleted_or_moved": true
++}
+diff --git a/automation/control/candidates/SECRETS_RUNTIME_IGNORE_DECISION_BATCH/no-aider-used.txt b/automation/control/candidates/SECRETS_RUNTIME_IGNORE_DECISION_BATCH/no-aider-used.txt
+new file mode 100644
+index 0000000..4d69731
+--- /dev/null
++++ b/automation/control/candidates/SECRETS_RUNTIME_IGNORE_DECISION_BATCH/no-aider-used.txt
+@@ -0,0 +1 @@
++This batch was created without aider. AI assistant: OpenCode (anthropic).
+diff --git a/automation/control/candidates/SECRETS_RUNTIME_IGNORE_DECISION_BATCH/report.json b/automation/control/candidates/SECRETS_RUNTIME_IGNORE_DECISION_BATCH/report.json
+new file mode 100644
+index 0000000..9d9e591
+--- /dev/null
++++ b/automation/control/candidates/SECRETS_RUNTIME_IGNORE_DECISION_BATCH/report.json
+@@ -0,0 +1,43 @@
++{
++  "round_id": "SECRETS_RUNTIME_IGNORE_DECISION_BATCH",
++  "task_type": "candidate_creation",
++  "status": "completed",
++  "formal_status_code": "SECRETS_RUNTIME_IGNORE_CANDIDATE_READY_AWAITING_MANUAL_REVIEW",
++  "canonical_base_head": "836ffa98b2a35f2034a2ec8c01bd9de18f9ec044",
++  "candidate_branch": "candidate/secrets-runtime-ignore-decision",
++  "files_created": [
++    ".gitignore (modified)",
++    "automation/control/candidates/SECRETS_RUNTIME_IGNORE_DECISION_BATCH/task.txt",
++    "automation/control/candidates/SECRETS_RUNTIME_IGNORE_DECISION_BATCH/evidence.json",
++    "automation/control/candidates/SECRETS_RUNTIME_IGNORE_DECISION_BATCH/report.json",
++    "automation/control/candidates/SECRETS_RUNTIME_IGNORE_DECISION_BATCH/candidate.diff",
++    "automation/control/candidates/SECRETS_RUNTIME_IGNORE_DECISION_BATCH/no-aider-used.txt",
++    "automation/control/candidates/SECRETS_RUNTIME_IGNORE_DECISION_BATCH/test-results.txt"
++  ],
++  "files_modified": [
++    ".gitignore"
++  ],
++  "gitignore_entries_added": [
++    "automation/secrets/",
++    "automation/runtime/queue.db",
++    "automation/runtime/slice1_metrics.json",
++    "runtime/"
++  ],
++  "secrets_content_read": false,
++  "secret_values_exposed": false,
++  "runtime_artifacts_tracked": false,
++  "authorized_scope_only": true,
++  "forbidden_paths_touched": false,
++  "retained_untracked_paths_deleted_moved_or_archived": false,
++  "evidence_package_complete": true,
++  "evidence_law_compliance": "04",
++  "candidate_diff_utf8": true,
++  "candidate_diff_bom": false,
++  "candidate_diff_binary": false,
++  "gov_int_003_present": false,
++  "telegram_auto_mode_started": false,
++  "commit_created": true,
++  "candidate_commit": "8b78ad9cb9485a0f2519e3ebf7308da4a06d7f73",
++  "candidate_commit_message": "SECRETS_RUNTIME_IGNORE_DECISION_BATCH: add secrets/runtime paths to .gitignore",
++  "candidate_diff_fixed_binary_encoding": true
++}
+diff --git a/automation/control/candidates/SECRETS_RUNTIME_IGNORE_DECISION_BATCH/task.txt b/automation/control/candidates/SECRETS_RUNTIME_IGNORE_DECISION_BATCH/task.txt
+new file mode 100644
+index 0000000..079496f
+--- /dev/null
++++ b/automation/control/candidates/SECRETS_RUNTIME_IGNORE_DECISION_BATCH/task.txt
+@@ -0,0 +1,16 @@
++task_type: gitignore_update
++round_id: SECRETS_RUNTIME_IGNORE_DECISION_BATCH
++description: Add secrets and runtime paths to .gitignore to unblock Telegram auto-mode readiness
++entries_added:
++  - automation/secrets/
++  - automation/runtime/queue.db
++  - automation/runtime/slice1_metrics.json
++  - runtime/
++rationale: These paths contain secrets, runtime state, or artifacts that must never be tracked in the repo.
++  They are blocking Telegram auto-mode readiness (45 untracked paths, of which these 4 are the highest-priority do-not-track items).
++parent_decision_lock: RETAINED_UNTRACKED_PATHS_DECISION_LOCK_PASS
++preconditions:
++  - canonical HEAD: 836ffa98b2a35f2034a2ec8c01bd9de18f9ec044
++  - base_branch: work/canonical-mainline-repair-001
++  - untracked_paths_count_before: 45
++  - untracked_paths_count_after_ignore: 41 (expected)
+diff --git a/automation/control/candidates/SECRETS_RUNTIME_IGNORE_DECISION_BATCH/test-results.txt b/automation/control/candidates/SECRETS_RUNTIME_IGNORE_DECISION_BATCH/test-results.txt
+new file mode 100644
+index 0000000..5ff3ba6
+--- /dev/null
++++ b/automation/control/candidates/SECRETS_RUNTIME_IGNORE_DECISION_BATCH/test-results.txt
+@@ -0,0 +1,15 @@
++SECRETS_RUNTIME_IGNORE_DECISION_BATCH — validation results
++
++Tests performed:
++1. git status --porcelain count before: 45 untracked paths
++2. .gitignore entries verified present: PASS
++3. git check-ignore automation/secrets/: ignored
++4. git check-ignore automation/runtime/queue.db: ignored
++5. git check-ignore automation/runtime/slice1_metrics.json: ignored
++6. git check-ignore runtime/: ignored
++7. Secrets directory content not read: PASS
++8. Runtime artifacts not tracked: PASS
++9. No forbidden paths touched: PASS
++10. Authored scope only (.gitignore + evidence): PASS
++
++Result: ALL VALIDATIONS PASSED

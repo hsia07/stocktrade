@@ -1,0 +1,16 @@
+task_type: gitignore_update
+round_id: SECRETS_RUNTIME_IGNORE_DECISION_BATCH
+description: Add secrets and runtime paths to .gitignore to unblock Telegram auto-mode readiness
+entries_added:
+  - automation/secrets/
+  - automation/runtime/queue.db
+  - automation/runtime/slice1_metrics.json
+  - runtime/
+rationale: These paths contain secrets, runtime state, or artifacts that must never be tracked in the repo.
+  They are blocking Telegram auto-mode readiness (45 untracked paths, of which these 4 are the highest-priority do-not-track items).
+parent_decision_lock: RETAINED_UNTRACKED_PATHS_DECISION_LOCK_PASS
+preconditions:
+  - canonical HEAD: 836ffa98b2a35f2034a2ec8c01bd9de18f9ec044
+  - base_branch: work/canonical-mainline-repair-001
+  - untracked_paths_count_before: 45
+  - untracked_paths_count_after_ignore: 41 (expected)

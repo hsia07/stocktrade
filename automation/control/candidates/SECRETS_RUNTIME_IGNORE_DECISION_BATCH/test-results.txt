@@ -1,0 +1,25 @@
+SECRETS_RUNTIME_IGNORE_DECISION_BATCH — validation results
+
+Initial candidate tests:
+1. git status --porcelain count before: 45 untracked paths
+2. .gitignore entries verified present: PASS
+3. git check-ignore automation/secrets/: ignored
+4. git check-ignore automation/runtime/queue.db: ignored
+5. git check-ignore automation/runtime/slice1_metrics.json: ignored
+6. git check-ignore runtime/: ignored
+7. Secrets directory content not read: PASS
+8. Runtime artifacts not tracked: PASS
+9. No forbidden paths touched: PASS
+10. Authored scope only (.gitignore + evidence): PASS
+
+Metadata rework tests:
+11. report.json stale candidate_commit before rework: 8b78ad9 (stale)
+12. report.json candidate_commit after rework: fed2f86 (correct final HEAD)
+13. metadata_rework_reason recorded in report.json: PASS
+14. .gitignore not modified during rework: PASS
+15. Secrets not read during rework: PASS
+16. candidate.diff regenerated: PASS
+17. candidate.diff BOM-less UTF-8: PASS
+18. No source/test files modified: PASS
+
+Result: ALL VALIDATIONS PASSED
