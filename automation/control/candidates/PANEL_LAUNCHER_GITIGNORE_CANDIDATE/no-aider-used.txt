@@ -1,0 +1,4 @@
+No Aider used for this candidate.
+
+All modifications made manually via native Git operations.
+Evidence package created manually.

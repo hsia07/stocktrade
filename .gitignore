@@ -34,3 +34,13 @@ automation/secrets/
 automation/runtime/queue.db
 automation/runtime/slice1_metrics.json
 runtime/
+
+# Panel/Launcher helpers (non-governance, not part of control loop)
+Open-Panel-Only.ps1
+automation/control/create_panel_shortcut.ps1
+automation/control/panel_new.html
+automation/control/panel_runtime_simple.html
+automation/control/refresh_panel_simple.ps1
+automation/control/simple_control_loop.ps1
+automation/control/simple_panel.html
+open_panel_only.bat
