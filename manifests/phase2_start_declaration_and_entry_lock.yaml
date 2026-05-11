@@ -1,0 +1,53 @@
+round_id: PHASE2-START-DECLARATION-AND-ENTRY-LOCK
+task_type: phase2_start_declaration_and_entry_lock
+reply_id: phase2-start-declaration-and-entry-lock-001
+status: completed
+formal_status_code: candidate_ready_awaiting_manual_review
+timestamp: "2026-04-23T10:33:00+08:00"
+
+evidence_package:
+  base_dir: automation/control/candidates/PHASE2-START-DECLARATION-AND-ENTRY-LOCK
+  required_files:
+    - task.txt
+    - report.json
+    - evidence.json
+    - candidate.diff
+
+validators:
+  - script: scripts/validation/validate_evidence.py
+    args:
+      manifest: manifests/phase2_start_declaration_and_entry_lock.yaml
+  - script: scripts/validation/check_forbidden_changes.py
+    args:
+      manifest: manifests/phase2_start_declaration_and_entry_lock.yaml
+  - script: scripts/validation/check_required_evidence.py
+    args:
+      manifest: manifests/phase2_start_declaration_and_entry_lock.yaml
+
+constraints:
+  allowed_branches:
+    - work/canonical-mainline-repair-001
+    - work/PHASE2-START-DECLARATION-AND-ENTRY-LOCK-candidate
+  forbidden_branches:
+    - master
+    - work/r016-decision-trace
+  allowed_paths:
+    - _governance/**
+    - docs/**
+    - review_memory.txt
+    - manifests/**
+    - automation/control/candidates/PHASE2-START-DECLARATION-AND-ENTRY-LOCK/**
+  forbidden_paths:
+    - server.py
+    - index.js
+    - config.json
+    - run_opencode_loop.ps1
+    - .githooks/*
+  forbidden_actions:
+    - lane_release
+    - auto_mode_release
+    - stop_now_flag_removal
+    - phase2_startup_without_authorization
+    - modify_master
+    - modify_r016
+    - push_without_authorization

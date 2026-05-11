@@ -1,0 +1,28 @@
+round_id: "PHASE2-PREFLIGHT-REMOTE-SYNC-PUSH-PACKAGE"
+title: "確認 remote sync gap 的最小合法 push 範圍"
+status: "pending"
+depends_on:
+  - "PHASE2-READINESS-PREFLIGHT-AUDIT"
+allowed_paths:
+  - "automation/control/candidates/PHASE2-PREFLIGHT-REMOTE-SYNC-PUSH-PACKAGE/"
+forbidden_paths:
+  - "server.py"
+  - "index.js"
+  - "config.json"
+  - "run_opencode_loop.ps1"
+  - ".githooks/"
+required_evidence:
+  - "automation/control/candidates/PHASE2-PREFLIGHT-REMOTE-SYNC-PUSH-PACKAGE/evidence.json"
+  - "automation/control/candidates/PHASE2-PREFLIGHT-REMOTE-SYNC-PUSH-PACKAGE/report.json"
+  - "automation/control/candidates/PHASE2-PREFLIGHT-REMOTE-SYNC-PUSH-PACKAGE/candidate.diff"
+  - "automation/control/candidates/PHASE2-PREFLIGHT-REMOTE-SYNC-PUSH-PACKAGE/task.txt"
+required_checks:
+  - "scripts/validation/validate_evidence.py"
+risk_level: "green"
+owner: "governance"
+start_authorized: true
+notes: |
+  本候選為唯讀 package 確認，不涉及任何檔案修改。
+  不執行 push。
+  STOP_NOW.flag 仍生效，lane 維持凍結。
+  不得 merge / push / lane release / Phase 2 啟動。

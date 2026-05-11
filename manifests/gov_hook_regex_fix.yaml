@@ -1,0 +1,13 @@
+round_id: "GOV-HOOK-REGEX-FIX"
+title: "governance round hook regex fix for MERGE: GOV-* commits"
+status: "pending"
+depends_on: []
+allowed_paths:
+  - "scripts/validation/"
+forbidden_paths: []
+required_evidence:
+  - "automation/control/candidates/GOV-HOOK-REGEX-FIX/evidence.json"
+required_checks: []
+risk_level: "yellow"
+owner: "governance"
+start_authorized: true

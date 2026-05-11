@@ -1,0 +1,55 @@
+{
+  "candidate_id": "GOVERNANCE_MANIFEST_12_MANIFESTS",
+  "status": "candidate_created",
+  "law_compliance": "04",
+  "canonical_base_head": "efb18e1f8bb495b41196188203548df1c40e4c39",
+  "candidate_branch": "candidate/governance-manifest-12-manifests",
+  "files_tracked": [
+    "manifests/gov_hook_regex_fix.yaml",
+    "manifests/gov_manifest_model_fix.yaml",
+    "manifests/phase1_functional_realization_master_audit.yaml",
+    "manifests/phase1_site_readiness_truth_audit.yaml",
+    "manifests/phase2_preflight_remote_sync_push_execution.yaml",
+    "manifests/phase2_preflight_remote_sync_push_package.yaml",
+    "manifests/phase2_r006_r011_main_chain_integration_plan_audit.yaml",
+    "manifests/phase2_readiness_final_adjudication.yaml",
+    "manifests/phase2_readiness_preflight_audit.yaml",
+    "manifests/phase2_start_declaration_and_entry_lock.yaml",
+    "manifests/r007_silence_protection_integration.yaml",
+    "manifests/r007_unauthorized_merge_incident_audit.yaml"
+  ],
+  "phase_mapping": {
+    "Phase 1": "R001-R016",
+    "Phase 2": "R017-R048",
+    "Phase 3": "R049-R132",
+    "Phase 4": "R133-R161",
+    "A_rounds": {
+      "11A": "R012",
+      "36A": "R039",
+      "45A": "R048",
+      "90A": "R094"
+    }
+  },
+  "forbidden_files": [
+    "opencode_readable_laws/05_每輪詳細主題補充法典_機器可執行補充版.md",
+    "_governance/law/02*",
+    "_governance/law/03*",
+    "_governance/law/04*",
+    "_governance/law/01*",
+    ".gitignore",
+    ".opencode/",
+    "automation/secrets/",
+    "automation/runtime/",
+    "runtime/"
+  ],
+  "test_requirements": [
+    "no secret values exposed",
+    "current law priority preserved: 02 > 03 > 04 > 01",
+    "no old phase mapping override",
+    "A-round mapping preserved",
+    "no R016/R017 topic drift revival",
+    "no GOV-INT-003 invented scope",
+    "candidate diff scope limited to approved 12 manifests",
+    "candidate.diff BOM-less UTF-8 plain text"
+  ]
+}

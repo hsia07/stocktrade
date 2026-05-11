@@ -1,0 +1,59 @@
+round_id: R007-SILENCE-PROTECTION-INTEGRATION
+task_type: r007_silence_protection_integration_candidate
+reply_id: r007-silence-protection-integration-001
+status: completed
+formal_status_code: candidate_ready_awaiting_manual_review
+timestamp: "2026-04-23T11:10:00+08:00"
+
+evidence_package:
+  base_dir: automation/control/candidates/R007-SILENCE-PROTECTION-INTEGRATION
+  required_files:
+    - task.txt
+    - report.json
+    - evidence.json
+    - candidate.diff
+
+validators:
+  - script: scripts/validation/validate_evidence.py
+    args:
+      manifest: manifests/r007_silence_protection_integration.yaml
+  - script: scripts/validation/check_forbidden_changes.py
+    args:
+      manifest: manifests/r007_silence_protection_integration.yaml
+  - script: scripts/validation/check_required_evidence.py
+    args:
+      manifest: manifests/r007_silence_protection_integration.yaml
+
+constraints:
+  allowed_branches:
+    - work/canonical-mainline-repair-001
+    - work/R007-SILENCE-PROTECTION-INTEGRATION-candidate
+  forbidden_branches:
+    - master
+    - work/r016-decision-trace
+  allowed_paths:
+    - server.py
+    - monitoring/silence/recovery.py
+    - tests/test_r007_integration.py
+    - automation/control/candidates/R007-SILENCE-PROTECTION-INTEGRATION/**
+    - manifests/**
+  forbidden_paths:
+    - index.js
+    - config.json
+    - run_opencode_loop.ps1
+    - .githooks/*
+    - health/monitor.py
+    - circuit/breaker.py
+    - governance/state_machine/*.py
+    - scheduler/priority/*.py
+    - automation/control/artifacts/*.py
+  forbidden_actions:
+    - lane_release
+    - auto_mode_release
+    - stop_now_flag_removal
+    - modify_master
+    - modify_r016
+    - r006_integration
+    - r008_integration
+    - r009_integration
+    - r011_integration
