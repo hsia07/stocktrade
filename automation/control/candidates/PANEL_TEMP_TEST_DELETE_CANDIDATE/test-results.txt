@@ -1,0 +1,17 @@
+PANEL_TEMP_TEST_DELETE_CANDIDATE_TESTS
+
+Test Results:
+- canonical_base_head = 76656954278081cd9b2ed730c8104b90736783ff: PASS
+- candidate_branch = candidate/panel-temp-test-delete: PASS
+- panel_temp.html existed before delete: PASS
+- test_button.html existed before delete: PASS
+- panel_temp.html was untracked: PASS
+- test_button.html was untracked: PASS
+- both files not ignored by .gitignore: PASS
+- both files deleted successfully: PASS
+- no tracked files deleted: PASS
+- evidence.json has law_compliance = "04": PASS
+- evidence records user_approval = TRUE: PASS
+- evidence records untracked_local_cleanup = TRUE: PASS
+
+All tests PASSED.

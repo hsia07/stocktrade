@@ -1,0 +1,15 @@
+{
+  "candidate_id": "PANEL_TEMP_TEST_DELETE_CANDIDATE",
+  "audit_type": "untracked_local_cleanup_candidate",
+  "audit_result": "PASS",
+  "files_deleted": 2,
+  "files_deleted_list": [
+    "automation/control/panel_temp.html",
+    "automation/control/test_button.html"
+  ],
+  "both_files_were_untracked": true,
+  "both_files_not_ignored": true,
+  "no_tracked_files_deleted": true,
+  "no_other_files_modified": true,
+  "audit_timestamp": "2026-05-11T05:15:00Z"
+}

@@ -1,0 +1,10 @@
+PANEL_TEMP_TEST_DELETE_CANDIDATE
+
+Task: Delete 2 user-approved untracked temp/test UI files
+
+User approved deletion of:
+- automation/control/panel_temp.html (1 line compressed, superseded)
+- automation/control/test_button.html (17 lines JS test, no production purpose)
+
+These are untracked files in the working directory.
+Deletion is a local cleanup operation, not tracked file deletion.
