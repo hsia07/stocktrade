@@ -1,0 +1,16 @@
+task_type: governance_readable_law_phase_mapping_correction
+round_id: GOVERNANCE_MANIFEST_05_PHASE_MAPPING_CORRECTION
+description: Correct 05 readable law phase mapping to match current formal law
+previous_old_mapping:
+  - Phase 1 = R-001~R-015 (OLD - WRONG)
+  - Phase 2 = R-016~R-045A (OLD - WRONG)
+  - Phase 3 = R-046~R-128 (OLD - WRONG)
+  - Phase 4 = R-129~R-161 (OLD - WRONG)
+current_corrected_mapping:
+  - Phase 1 = R001-R016
+  - Phase 2 = R017-R048
+  - Phase 3 = R049-R132
+  - Phase 4 = R133-R161
+  - A 輪對映: 11A→R012, 36A→R039, 45A→R048, 90A→R094
+rationale: Previous 05 file contained old phase mapping that conflicted with formal law priority (02 > 03 > 04 > 01). This correction aligns 05 with current formal law baseline.
+parent_blocked_report: GOVERNANCE_MANIFEST_REVIEW_DEFINITION_LOCK_REWORK_BLOCKED

@@ -1,0 +1,24 @@
+{
+  "round_id": "GOVERNANCE_MANIFEST_05_PHASE_MAPPING_CORRECTION",
+  "task_type": "candidate_creation",
+  "law_compliance": "04",
+  "status": "candidate_ready",
+  "canonical_base_head": "624c36d4ac5d7d2536211e57b37defb1e71128a2",
+  "candidate_branch": "candidate/governance-manifest-05-phase-mapping-correction",
+  "old_phase_mapping_removed": true,
+  "current_phase_mapping_present": true,
+  "current_phase_mapping": {
+    "phase_1": "R001-R016",
+    "phase_2": "R017-R048",
+    "phase_3": "R049-R132",
+    "phase_4": "R133-R161",
+    "a_round_mapping": ["11A→R012", "36A→R039", "45A→R048", "90A→R094"]
+  },
+  "formal_law_priority_preserved": true,
+  "readable_law_05_role": "readable_or_machine_supplement_only",
+  "no_gov_int_003_scope": true,
+  "secrets_not_exposed": true,
+  "manifests_not_modified": true,
+  "formal_law_files_not_modified": true,
+  "authorized_scope_only": true
+}
