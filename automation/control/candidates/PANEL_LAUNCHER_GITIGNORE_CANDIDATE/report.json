@@ -1,0 +1,13 @@
+{
+  "candidate_id": "PANEL_LAUNCHER_GITIGNORE_CANDIDATE",
+  "audit_type": "gitignore_candidate_creation",
+  "audit_result": "PASS",
+  "gitignore_entries_added": 8,
+  "check_ignore_all_passed": true,
+  "panel_temp_untracked": true,
+  "test_button_untracked": true,
+  "no_broad_patterns": true,
+  "no_files_deleted": true,
+  "no_files_modified": true,
+  "audit_timestamp": "2026-05-11T03:27:00Z"
+}

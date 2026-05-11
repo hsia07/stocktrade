@@ -1,0 +1,16 @@
+PANEL_LAUNCHER_GITIGNORE_CANDIDATE_TESTS
+
+Test Results:
+- canonical_base_head = 0febfd334f1e6f1a5624f106973981ee04570020: PASS
+- candidate_branch = candidate/panel-launcher-gitignore: PASS
+- 8 gitignore entries added (precise paths): PASS
+- git check-ignore all 8 paths: PASS
+- panel_temp.html still untracked: PASS
+- test_button.html still untracked: PASS
+- no broad patterns used: PASS
+- no files deleted: PASS
+- evidence.json has law_compliance = "04": PASS
+- candidate.diff is BOM-less UTF-8: PASS
+- untracked paths reduced from 28 to 20: PASS
+
+All tests PASSED.

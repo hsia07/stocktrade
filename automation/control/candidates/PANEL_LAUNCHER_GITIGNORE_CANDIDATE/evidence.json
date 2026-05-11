@@ -1,0 +1,28 @@
+{
+  "candidate_id": "PANEL_LAUNCHER_GITIGNORE_CANDIDATE",
+  "status": "candidate_created",
+  "law_compliance": "04",
+  "canonical_base_head": "0febfd334f1e6f1a5624f106973981ee04570020",
+  "candidate_branch": "candidate/panel-launcher-gitignore",
+  "gitignore_entries_added": [
+    "Open-Panel-Only.ps1",
+    "automation/control/create_panel_shortcut.ps1",
+    "automation/control/panel_new.html",
+    "automation/control/panel_runtime_simple.html",
+    "automation/control/refresh_panel_simple.ps1",
+    "automation/control/simple_control_loop.ps1",
+    "automation/control/simple_panel.html",
+    "open_panel_only.bat"
+  ],
+  "files_not_touched": [
+    "automation/control/panel_temp.html",
+    "automation/control/test_button.html"
+  ],
+  "test_requirements": [
+    "all 8 paths pass git check-ignore",
+    "panel_temp.html still untracked",
+    "test_button.html still untracked",
+    "no broad patterns used",
+    "candidate.diff BOM-less UTF-8 plain text"
+  ]
+}

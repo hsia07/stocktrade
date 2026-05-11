@@ -1,0 +1,19 @@
+PANEL_LAUNCHER_GITIGNORE_CANDIDATE
+
+Task: Add 8 panel/launcher helper paths to .gitignore
+
+Paths to add to .gitignore:
+- Open-Panel-Only.ps1
+- automation/control/create_panel_shortcut.ps1
+- automation/control/panel_new.html
+- automation/control/panel_runtime_simple.html
+- automation/control/refresh_panel_simple.ps1
+- automation/control/simple_control_loop.ps1
+- automation/control/simple_panel.html
+- open_panel_only.bat
+
+Forbidden:
+- Do NOT use broad patterns (*.html, *.ps1, etc.)
+- Do NOT delete any files
+- Do NOT touch panel_temp.html or test_button.html
+- Do NOT track panel/launcher files
