@@ -1,0 +1,15 @@
+AUDIT_RUNTIME_ARCHIVE_OUTSIDE_REPO_CANDIDATE
+
+Task: Archive 3 audit runtime untracked paths outside repo
+
+Paths archived:
+- automation/control/PRE-LANE-RELEASE-audit/ (directory, 3 files, ~3 KB)
+- automation/control/critical_action_audit.jsonl (188 bytes)
+- automation/control/run_history.json (7,050 bytes)
+
+Rationale: Audit runtime records — not part of source code. User-approved
+via decision lock.
+
+Base: c3c47298a5824001d4786e19107d6b1441752ae7
+Branch: candidate/audit-runtime-archive
+Status: candidate_creation_completed
