@@ -1,8 +1,8 @@
 {
   "round_id": "PRE_PUSH_HOOK_ENTRYPOINT_FIX_CANDIDATE",
-  "task_type": "candidate_creation",
+  "task_type": "candidate_diff_encoding_rework",
   "status": "completed",
-  "formal_status_code": "candidate_ready_awaiting_manual_review",
+  "formal_status_code": "candidate_diff_encoding_rework_completed",
   "canonical_base": "85a9a1cae74beed5001a9b48252f1c028452c51c",
   "candidate_branch": "candidate/pre-push-hook-entrypoint-fix",
   "native_hook_failure_root_cause": "native_git_hook_entrypoint_mismatch",

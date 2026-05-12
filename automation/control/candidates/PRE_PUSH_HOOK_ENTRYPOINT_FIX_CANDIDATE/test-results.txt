@@ -1,5 +1,18 @@
-Test Results for PRE_PUSH_HOOK_ENTRYPOINT_FIX_CANDIDATE
+Test Results for PRE_PUSH_HOOK_ENTRYPOINT_FIX_CANDIDATE (encoding rework)
 ====================================================================
+Encoding rework verification:
+- candidate.diff UTF-8 without BOM: PASS
+- candidate.diff null bytes = 0: PASS
+- candidate.diff no UTF-16 BOM: PASS
+- candidate.diff not binary: PASS
+- candidate.diff self-reference excluded: PASS
+- Scope = 6 authorized files (excl. self): PASS
+- .githooks/pre-push.ps1 NOT modified: PASS
+- .githooks/pre-push.bat NOT modified: PASS
+- .gitignore NOT modified: PASS
+- Hook function unchanged: PASS
+- Law 04 check retained: PASS
+
 Precondition checks:
 - local HEAD = 85a9a1cae74beed5001a9b48252f1c028452c51c: PASS
 - remote HEAD = a2360cb7beeaf0c1f66aa85f67960263826dcfe7: PASS

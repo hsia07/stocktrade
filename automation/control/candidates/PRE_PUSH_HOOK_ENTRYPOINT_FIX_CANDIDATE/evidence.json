@@ -2,7 +2,7 @@
   "task_id": "PRE_PUSH_HOOK_ENTRYPOINT_FIX_CANDIDATE",
   "round_id": "001",
   "status": "completed",
-  "formal_status_code": "candidate_ready_awaiting_manual_review",
+  "formal_status_code": "candidate_diff_encoding_rework_completed",
   "timestamp": "2026-05-13T00:00:00Z",
   "law_compliance": "04",
   "native_hook_failure_root_cause": "native_git_hook_entrypoint_mismatch",
@@ -37,6 +37,14 @@
   "telegram_auto_mode_started": false,
   "debug_hook_py_untouched": true,
   "secret_values_exposed": false,
+  "encoding_rework": {
+    "reason": "Initial candidate.diff was UTF-16 LE (PowerShell '>' operator default). Regenerated as UTF-8 without BOM via Set-Content -Encoding ASCII. Self-reference excluded from diff (candidate.diff not included in its own diff output).",
+    "candidate_commit_before_rework": "051a243c9022b367188ad5ca8c92172c75e97594",
+    "candidate_diff_utf8_without_bom": true,
+    "candidate_diff_null_bytes": 0,
+    "candidate_diff_self_reference_excluded": true,
+    "hook_function_unchanged": true
+  },
   "required_next_action": [
     "MANUAL_REVIEW_PRE_PUSH_HOOK_ENTRYPOINT_FIX_CANDIDATE",
     "SIGNED_NO_FF_MERGE_INTO_CANONICAL_AFTER_REVIEW"
