@@ -1,0 +1,30 @@
+COMBINED_UNTRACKED_REMEDIATION_GOVERNANCE_GAP_RECORD_CANDIDATE
+
+Task: Record governance gap from combined untracked remediation
+
+Type: GOVERNANCE_GAP_RECORD (not a normal compliant candidate flow)
+
+Background:
+- containment audit (COMBINED_UNTRACKED_REMEDIATION_CONTAINMENT_AUDIT)
+  confirmed scope clean but detected governance gap.
+- formal_status_code = COMBINED_UNTRACKED_REMEDIATION_GOVERNANCE_GAP_DETECTED
+
+Gap description:
+stocktrade_launch_test/ was deleted via filesystem-only Remove-Item after
+user interactive choice "Delete clean workspace". Although the action was
+authorized and the path was untracked (no tracked deletion), the deletion
+lacked formal:
+- candidate branch
+- evidence package
+- manual review
+- no-ff merge
+- push
+- post-push reconciliation
+- rollback or recreate instruction
+
+This record does NOT retroactively convert the filesystem-only delete into
+a normal compliant candidate flow. This is an incident/governance gap record.
+
+Base: 3f58494af561c6ed698f4c7328985b4e411a3376
+Branch: candidate/combined-untracked-remediation-governance-gap-record
+Status: candidate_creation_completed
