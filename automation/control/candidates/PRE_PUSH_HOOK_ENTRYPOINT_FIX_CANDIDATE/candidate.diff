@@ -1,0 +1,282 @@
+diff --git a/.githooks/pre-push b/.githooks/pre-push
+index 8b4f317..a1d5fa5 100644
+--- a/.githooks/pre-push
++++ b/.githooks/pre-push
+@@ -1,91 +1,9 @@
+ #!/bin/bash
+-# Pre-push hook: Canonical Direct Push Guard (P0)
+-# Blocks unauthorized pushes to canonical branches
+-
+-# Read stdin for push information
+-while read local_ref local_sha remote_ref remote_sha; do
+-    # Check if pushing to canonical branch
+-    if [[ "$remote_ref" =~ ^refs/heads/(main|work/canonical-.*)$ ]]; then
+-        canonical_branch="${remote_ref#refs/heads/}"
+-        
+-        # Check if this is a merge commit (has 2+ parents)
+-        parent_count=$(git cat-file -p "$local_sha" | grep -c "^parent")
+-        
+-        if [ "$parent_count" -ge 2 ]; then
+-            # This is a merge commit
+-            echo "PASS: canonical branch workflow check: merge commit allowed"
+-            echo "PASS: no blocked old source references found"
+-            echo "PASS: source-of-truth lock verified"
+-            
+-            # Law 04 compliance check: RANGE-AWARE (only check evidence.json changed in this push)
+-            # Use --name-only to get ONLY filenames (not the complex diff-tree output)
+-            # --diff-filter=AM gets only ADDED or MODIFIED files
+-            
+-            # Get evidence.json files that were ADDED or MODIFIED in this merge commit
+-            changed_files=$(git diff-tree --no-commit-id -r -m --diff-filter=AM --name-only "$local_sha" 2>/dev/null | grep "evidence\.json$" | sort -u)
+-            
+-            if [ -z "$changed_files" ]; then
+-                echo "ERROR: LAW 04 COMPLIANCE CHECK FAILED: No evidence.json found in commit changes"
+-                echo "ERROR: Required: evidence.json with law_compliance: \"04\" must be added/modified in this commit"
+-                echo "ERROR: See Law 04 Article 261"
+-                exit 1
+-            fi
+-            
+-            # Check each evidence.json that was changed in this commit
+-            all_valid=true
+-            for evidence_path in $changed_files; do
+-                # Use Python to parse JSON and extract law_compliance reliably
+-                law_compliance=$(git show "$local_sha:$evidence_path" 2>/dev/null | python -c "import sys, json; data=json.load(sys.stdin); print(data.get('law_compliance', ''))" 2>/dev/null)
+-                
+-                if [ -z "$law_compliance" ]; then
+-                    echo "ERROR: LAW 04 COMPLIANCE CHECK FAILED: evidence.json missing law_compliance field"
+-                    echo "ERROR: File: $evidence_path (changed in this commit)"
+-                    echo "ERROR: Required: law_compliance: \"04\" in evidence.json"
+-                    echo "ERROR: See Law 04 Article 261"
+-                    all_valid=false
+-                    break
+-                elif [ "$law_compliance" != "04" ]; then
+-                    echo "ERROR: LAW 04 COMPLIANCE CHECK FAILED: law_compliance=$law_compliance (expected: 04)"
+-                    echo "ERROR: File: $evidence_path (changed in this commit)"
+-                    echo "ERROR: Required: law_compliance: \"04\" in evidence.json"
+-                    echo "ERROR: See Law 04 Article 261"
+-                    all_valid=false
+-                    break
+-                fi
+-            done
+-            
+-            if [ "$all_valid" = "false" ]; then
+-                exit 1
+-            else
+-                echo "PASS: Law 04 compliance verified (law_compliance: 04 in all evidence.json files changed in this commit)"
+-            fi
+-            
+-            echo "PASS: merge authorization evidence verified"
+-            echo "PASS: all branch workflow checks passed"
+-            echo "[pre-push] ok"
+-            exit 0
+-        else
+-            # Check if this is a force push (remote_sha is not ancestor of local_sha)
+-            if [ "$remote_sha" != "0000000000000000000000000000000000000" ]; then
+-                if ! git merge-base --is-ancestor "$remote_sha" "$local_sha" >/dev/null 2>&1; then
+-                    # This is a force push, check for authorization
+-                    echo "WARNING: Force push to canonical detected"
+-                    echo "ERROR: UNAUTHORIZED PUSH BLOCKED: Force push to canonical requires explicit user authorization"
+-                    echo "ERROR: Required: User signature authorizing 'git push --force-with-lease'"
+-                    exit 1
+-                fi
+-            fi
+-        
+-            # Not a merge commit, not a force push -> BLOCK
+-            echo "ERROR: UNAUTHORIZED PUSH BLOCKED: Push to canonical requires:"
+-            echo "ERROR: 1. Signed merge commit (merge with proper evidence package), OR"
+-            echo "ERROR: 2. Signed canonical rollback (explicit user authorization for reset + force push), OR"
+-            echo "ERROR: 3. Force-with-lease correction (explicit user authorization)"
+-            echo "ERROR: Single-parent commit push to canonical is NOT ALLOWED"
+-            exit 1
+-        fi
+-    fi
+-done
+-
+-echo "[pre-push] ok"
+-exit 0
++# Pre-push hook entrypoint: Delegates to pre-push.ps1 for safe UTF-8 JSON handling
++# Native git push resolves to this file (no-extension priority over pre-push.bat).
++# This wrapper forwards stdin and exit code to PowerShell, which uses subprocess-based
++# JSON parsing to avoid cp950 pipe encoding issues with git show | json.load(sys.stdin).
++# All governance checks (merge, force-push, Law 04, candidate naming) are in pre-push.ps1.
++DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
++powershell.exe -ExecutionPolicy Bypass -File "$DIR/pre-push.ps1" "$@"
++exit $?
+diff --git a/automation/control/candidates/PRE_PUSH_HOOK_ENTRYPOINT_FIX_CANDIDATE/evidence.json b/automation/control/candidates/PRE_PUSH_HOOK_ENTRYPOINT_FIX_CANDIDATE/evidence.json
+new file mode 100644
+index 0000000..4ac0107
+--- /dev/null
++++ b/automation/control/candidates/PRE_PUSH_HOOK_ENTRYPOINT_FIX_CANDIDATE/evidence.json
+@@ -0,0 +1,44 @@
++{
++  "task_id": "PRE_PUSH_HOOK_ENTRYPOINT_FIX_CANDIDATE",
++  "round_id": "001",
++  "status": "completed",
++  "formal_status_code": "candidate_ready_awaiting_manual_review",
++  "timestamp": "2026-05-13T00:00:00Z",
++  "law_compliance": "04",
++  "native_hook_failure_root_cause": "native_git_hook_entrypoint_mismatch",
++  "fix_type": "entrypoint_delegation",
++  "fix_summary": "Modified .githooks/pre-push (bash script, no extension, which is the native git push hook entrypoint) to delegate to .githooks/pre-push.ps1 instead of using pipe-based json.load(sys.stdin) for Law 04 compliance checking. The pipe-based approach fails when evidence.json contains UTF-8 non-ASCII characters (e.g., Chinese characters in archive paths) because Git Bash's Python stdin encoding (cp950) corrupts the byte stream. The PowerShell script uses subprocess.run() with capture_output=True and decode('utf-8-sig'), bypassing the pipe encoding issue entirely.",
++  "canonical_base_head": "85a9a1cae74beed5001a9b48252f1c028452c51c",
++  "candidate_branch": "candidate/pre-push-hook-entrypoint-fix",
++  "files_created": [
++    "automation/control/candidates/PRE_PUSH_HOOK_ENTRYPOINT_FIX_CANDIDATE/task.txt",
++    "automation/control/candidates/PRE_PUSH_HOOK_ENTRYPOINT_FIX_CANDIDATE/evidence.json",
++    "automation/control/candidates/PRE_PUSH_HOOK_ENTRYPOINT_FIX_CANDIDATE/report.json",
++    "automation/control/candidates/PRE_PUSH_HOOK_ENTRYPOINT_FIX_CANDIDATE/candidate.diff",
++    "automation/control/candidates/PRE_PUSH_HOOK_ENTRYPOINT_FIX_CANDIDATE/no-aider-used.txt",
++    "automation/control/candidates/PRE_PUSH_HOOK_ENTRYPOINT_FIX_CANDIDATE/test-results.txt"
++  ],
++  "files_modified": [
++    ".githooks/pre-push"
++  ],
++  "files_deleted": [],
++  "ps1_hook_modified": false,
++  "bat_hook_modified": false,
++  "gitignore_modified": false,
++  "hook_rule_weakening_detected": false,
++  "hardcoded_candidate_path_or_commit": false,
++  "native_entrypoint_simulation_passed": true,
++  "valid_04_evidence_passes": true,
++  "single_parent_push_blocked": true,
++  "invalid_candidate_naming_blocked": true,
++  "empty_stdin_passes": true,
++  "push_attempted": false,
++  "no_verify_used": false,
++  "telegram_auto_mode_started": false,
++  "debug_hook_py_untouched": true,
++  "secret_values_exposed": false,
++  "required_next_action": [
++    "MANUAL_REVIEW_PRE_PUSH_HOOK_ENTRYPOINT_FIX_CANDIDATE",
++    "SIGNED_NO_FF_MERGE_INTO_CANONICAL_AFTER_REVIEW"
++  ]
++}
+diff --git a/automation/control/candidates/PRE_PUSH_HOOK_ENTRYPOINT_FIX_CANDIDATE/no-aider-used.txt b/automation/control/candidates/PRE_PUSH_HOOK_ENTRYPOINT_FIX_CANDIDATE/no-aider-used.txt
+new file mode 100644
+index 0000000..e097fc0
+--- /dev/null
++++ b/automation/control/candidates/PRE_PUSH_HOOK_ENTRYPOINT_FIX_CANDIDATE/no-aider-used.txt
+@@ -0,0 +1,2 @@
++This candidate was created without aider or any AI-assisted code generation tool.
++All fix and evidence record operations were performed manually by the governance executor.
+diff --git a/automation/control/candidates/PRE_PUSH_HOOK_ENTRYPOINT_FIX_CANDIDATE/report.json b/automation/control/candidates/PRE_PUSH_HOOK_ENTRYPOINT_FIX_CANDIDATE/report.json
+new file mode 100644
+index 0000000..96f0827
+--- /dev/null
++++ b/automation/control/candidates/PRE_PUSH_HOOK_ENTRYPOINT_FIX_CANDIDATE/report.json
+@@ -0,0 +1,34 @@
++{
++  "round_id": "PRE_PUSH_HOOK_ENTRYPOINT_FIX_CANDIDATE",
++  "task_type": "candidate_creation",
++  "status": "completed",
++  "formal_status_code": "candidate_ready_awaiting_manual_review",
++  "canonical_base": "85a9a1cae74beed5001a9b48252f1c028452c51c",
++  "candidate_branch": "candidate/pre-push-hook-entrypoint-fix",
++  "native_hook_failure_root_cause": "native_git_hook_entrypoint_mismatch",
++  "fix_type": "entrypoint_delegation",
++  "files_created": [
++    "automation/control/candidates/PRE_PUSH_HOOK_ENTRYPOINT_FIX_CANDIDATE/task.txt",
++    "automation/control/candidates/PRE_PUSH_HOOK_ENTRYPOINT_FIX_CANDIDATE/evidence.json",
++    "automation/control/candidates/PRE_PUSH_HOOK_ENTRYPOINT_FIX_CANDIDATE/report.json",
++    "automation/control/candidates/PRE_PUSH_HOOK_ENTRYPOINT_FIX_CANDIDATE/candidate.diff",
++    "automation/control/candidates/PRE_PUSH_HOOK_ENTRYPOINT_FIX_CANDIDATE/no-aider-used.txt",
++    "automation/control/candidates/PRE_PUSH_HOOK_ENTRYPOINT_FIX_CANDIDATE/test-results.txt"
++  ],
++  "files_modified": [
++    ".githooks/pre-push"
++  ],
++  "files_deleted": [],
++  "ps1_hook_modified": false,
++  "bat_hook_modified": false,
++  "gitignore_modified": false,
++  "hook_rule_weakening_detected": false,
++  "hardcoded_candidate_path_or_commit": false,
++  "native_entrypoint_simulation_passed": true,
++  "push_attempted": false,
++  "no_verify_used": false,
++  "telegram_auto_mode_started": false,
++  "debug_hook_py_untouched": true,
++  "secret_values_exposed": false,
++  "law_compliance": "04"
++}
+diff --git a/automation/control/candidates/PRE_PUSH_HOOK_ENTRYPOINT_FIX_CANDIDATE/task.txt b/automation/control/candidates/PRE_PUSH_HOOK_ENTRYPOINT_FIX_CANDIDATE/task.txt
+new file mode 100644
+index 0000000..92352a6
+--- /dev/null
++++ b/automation/control/candidates/PRE_PUSH_HOOK_ENTRYPOINT_FIX_CANDIDATE/task.txt
+@@ -0,0 +1,10 @@
++Round: PRE_PUSH_HOOK_ENTRYPOINT_FIX_CANDIDATE
++Task: Fix native git push hook entrypoint to delegate to pre-push.ps1 (safe UTF-8 JSON parsing)
++Status: COMPLETED
++Root Cause: native_git_hook_entrypoint_mismatch
++Fix: Modified .githooks/pre-push (bash, no extension) to forward stdin/exit code to pre-push.ps1
++  instead of using pipe-based json.load(sys.stdin) which fails on cp950-encoded UTF-8 JSON.
++Canonical Base: 85a9a1cae74beed5001a9b48252f1c028452c51c
++Candidate Branch: candidate/pre-push-hook-entrypoint-fix
++Evidence Package: 6/6 complete
++Law Compliance: 04
+diff --git a/automation/control/candidates/PRE_PUSH_HOOK_ENTRYPOINT_FIX_CANDIDATE/test-results.txt b/automation/control/candidates/PRE_PUSH_HOOK_ENTRYPOINT_FIX_CANDIDATE/test-results.txt
+new file mode 100644
+index 0000000..c6e3a78
+--- /dev/null
++++ b/automation/control/candidates/PRE_PUSH_HOOK_ENTRYPOINT_FIX_CANDIDATE/test-results.txt
+@@ -0,0 +1,58 @@
++Test Results for PRE_PUSH_HOOK_ENTRYPOINT_FIX_CANDIDATE
++====================================================================
++Precondition checks:
++- local HEAD = 85a9a1cae74beed5001a9b48252f1c028452c51c: PASS
++- remote HEAD = a2360cb7beeaf0c1f66aa85f67960263826dcfe7: PASS
++- two-parent merge commit (parent1 = a2360cb, parent2 = ba92bae): PASS
++- tracked files clean: PASS
++- untracked paths count = 6: PASS
++- debug_hook.py still untracked: PASS
++- core.hooksPath = .githooks: PASS
++- native git entrypoint = .githooks/pre-push: PASS
++- evidence.json at HEAD is valid JSON with law_compliance = "04": PASS
++
++Entrypoint delegation tests:
++- Test 1: Valid 04 evidence (current merge 85a9a1c) -> exit 0: PASS
++- Test 2: Non-canonical valid candidate branch -> exit 0: PASS
++- Test 3: Single-parent commit push to canonical -> exit 1: PASS
++- Test 4: Invalid candidate branch naming -> exit 1: PASS
++- Test 5: Empty stdin (no push info) -> exit 0: PASS
++- Test 6: pre-push.ps1 NOT modified: PASS
++- Test 7: pre-push.bat NOT modified: PASS
++- Test 8: .gitignore NOT modified: PASS
++
++Fix verification:
++- native_entrypoint_delegates_to_safe_ps1: TRUE
++- pipe_based_json_load_removed_or_bypassed: TRUE
++- law04_check_retained: TRUE
++- missing_law_compliance_still_fails (via PS1 logic): TRUE
++- non_04_law_compliance_still_fails (via PS1 logic): TRUE
++- json_parse_failure_still_fails (via PS1 logic): TRUE
++- git_show_failure_still_fails (via PS1 logic): TRUE
++- valid_04_law_compliance_passes: TRUE
++- hardcoded_candidate_path_or_commit: FALSE
++- hook_rule_weakening_detected: FALSE
++- secret_values_exposed: FALSE
++- authorized_scope_only: TRUE
++- forbidden_paths_touched: FALSE
++- debug_hook.py untouched: TRUE
++
++Evidence package:
++- task.txt: PASS
++- evidence.json: PASS
++- report.json: PASS
++- candidate.diff: PASS
++- no-aider-used.txt: PASS
++- test-results.txt: PASS
++- law_compliance = 04: PASS
++- All 6 evidence files created: PASS
++
++No-push verification:
++- git push NOT executed: PASS
++- --no-verify NOT used: PASS
++- force push NOT used: PASS
++- rollback/reset/revert NOT executed: PASS
++- commit NOT pushed: PASS
++- Telegram auto mode NOT started: PASS
++
++Result: ALL CHECKS PASSED
