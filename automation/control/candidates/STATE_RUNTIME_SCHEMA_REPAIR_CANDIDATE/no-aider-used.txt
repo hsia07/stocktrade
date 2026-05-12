@@ -1,0 +1,7 @@
+NO-AIDER-USED CERTIFICATION
+Aider used: NO
+Tool used: OpenCode (direct write/edit/test)
+
+This candidate was created by salvaging unauthorized canonical-branch worktree changes into a formal candidate. All file modifications and test creation were performed directly by OpenCode without Aider.
+
+The salvage operation (candidate branch creation, evidence package generation, commit) was also performed directly by OpenCode.

@@ -1,0 +1,22 @@
+TEST RESULTS
+tests_run: 34
+tests_passed: 32
+tests_failed: 2
+all_required_schema_tests_passed: true
+
+=== Per-file results ===
+test_state_runtime_schema_repair.py: 9/9 PASS
+test_gov_int_001.py: 4/4 PASS
+test_gov_int_002.py: 8/8 PASS
+test_gov_infra_001.py: 6/6 PASS
+test_gov_infra_002.py: 4/6 PASS (2 pre-existing unrelated failures)
+
+=== Pre-existing failures (unrelated to schema repair) ===
+1. test_gov_infra_002::TestHistoricalCanonicalRoundExempt::test_historical_round_exempt
+   - Reason: evidence freshness check on 8-day-old test data fails because git repo setup in test doesn't match expected behavior
+2. test_gov_infra_002::TestMissingTimestampFails::test_check_completeness_integrates_freshness
+   - Reason: test data lacks required files (candidate.diff, no-aider-used.txt, test-results.txt), so check_completeness reports missing files before reaching freshness check
+
+=== No long-running loop started ===
+=== No Telegram message sent ===
+=== No secret exposed ===

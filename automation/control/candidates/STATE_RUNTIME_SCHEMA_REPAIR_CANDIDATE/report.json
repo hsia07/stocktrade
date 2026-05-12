@@ -1,0 +1,46 @@
+{
+  "round_id": "STATE_RUNTIME_SCHEMA_REPAIR_CANDIDATE",
+  "status": "completed",
+  "formal_status_code": "STATE_RUNTIME_SCHEMA_REPAIR_SALVAGE_CANDIDATE_READY_AWAITING_MANUAL_REVIEW",
+  "canonical_branch": "work/canonical-mainline-repair-001",
+  "candidate_branch": "candidate/state-runtime-schema-repair",
+  "canonical_head": "a8073e2a1f185c62d42e8d58952e90afe5a34f1d",
+  "salvaged_from_dirty_canonical_worktree": true,
+  "this_is_not_standard_candidate_creation": true,
+  "task_type": "salvage_candidate_creation",
+  "files_modified": [
+    "automation/control/start_loop.ps1"
+  ],
+  "files_created": [
+    "automation/control/tests/test_state_runtime_schema_repair.py",
+    "automation/control/candidates/STATE_RUNTIME_SCHEMA_REPAIR_CANDIDATE/task.txt",
+    "automation/control/candidates/STATE_RUNTIME_SCHEMA_REPAIR_CANDIDATE/evidence.json",
+    "automation/control/candidates/STATE_RUNTIME_SCHEMA_REPAIR_CANDIDATE/report.json",
+    "automation/control/candidates/STATE_RUNTIME_SCHEMA_REPAIR_CANDIDATE/candidate.diff",
+    "automation/control/candidates/STATE_RUNTIME_SCHEMA_REPAIR_CANDIDATE/no-aider-used.txt",
+    "automation/control/candidates/STATE_RUNTIME_SCHEMA_REPAIR_CANDIDATE/test-results.txt"
+  ],
+  "state_runtime_json_modified": false,
+  "telegram_inbound_runtime_wired": false,
+  "telegram_inbound_runtime_wiring_modified": false,
+  "control_bridge_running": false,
+  "telegram_sidecar_running": false,
+  "main_control_loop_running": false,
+  "gov_int_003_started": false,
+  "telegram_auto_mode_started": false,
+  "runtime_state_status": "stopped",
+  "pause_after_current_flag_present": false,
+  "current_mode_repair_behavior": "Add-Member idle default before override to multi_round_candidate_prep",
+  "current_mode_allowed_values": ["idle", "multi_round_candidate_prep", "stopped", "paused"],
+  "missing_current_mode_defaults_to_idle": true,
+  "missing_current_mode_does_not_default_to_running": true,
+  "test_count": 34,
+  "tests_passed": 32,
+  "tests_failed": 2,
+  "pre_existing_test_failure_recorded": true,
+  "pre_existing_test_failure_details": "test_gov_infra_002::TestHistoricalCanonicalRoundExempt::test_historical_round_exempt and test_gov_infra_002::TestMissingTimestampFails::test_check_completeness_integrates_freshness — both are evidence_checker freshness tests unrelated to schema repair",
+  "evidence_package_complete": true,
+  "remaining_blockers": [
+    "TELEGRAM_INBOUND_RUNTIME_WIRING_MISSING"
+  ]
+}

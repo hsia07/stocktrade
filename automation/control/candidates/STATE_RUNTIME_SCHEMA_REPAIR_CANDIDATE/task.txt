@@ -1,0 +1,28 @@
+=== TASK DESCRIPTION ===
+task_id: STATE_RUNTIME_SCHEMA_REPAIR_CANDIDATE
+task_type: salvage_candidate_creation
+phase: governance
+law_compliance: 04
+severity: MEDIUM
+
+=== PROBLEM STATEMENT ===
+GOV-INT-003 partial start was aborted. Containment audit found STATE_RUNTIME_SCHEMA_CURRENT_MODE_MISSING blocker: start_loop.ps1 fails at line 87 because state.runtime.json lacks the `current_mode` field (schema mismatch vs. state.template.json which defines "current_mode": "idle"). PowerShell PSCustomObject from ConvertFrom-Json cannot add new properties via direct assignment.
+
+=== SALVAGE ORIGIN ===
+record_type: SALVAGED_UNAUTHORIZED_WORKTREE_CHANGE_CANDIDATE
+original_issue: GOV_INT_003 partial start failed because state.runtime.json lacked current_mode
+unauthorized_worktree_change_detected: TRUE
+salvaged_from_dirty_canonical_worktree: TRUE
+this_is_not_standard_candidate_creation: TRUE
+unauthorized_changes_were: state.runtime schema repair applied directly on canonical branch without candidate branch, commit, or evidence package
+
+=== SOLUTION ===
+1. In start_loop.ps1, before setting current_mode to "multi_round_candidate_prep", check if current_mode exists on the loaded PSCustomObject. If missing, add it with Add-Member using default value "idle".
+2. Define allowed current_mode values: ["idle", "multi_round_candidate_prep", "stopped", "paused"].
+3. Add test file validating the fix via 9 tests using PowerShell simulation (no long-running loop started).
+4. Salvage the unauthorized worktree changes into a formal candidate with evidence package.
+
+=== FILES ===
+- automation/control/start_loop.ps1 (modified)
+- automation/control/tests/test_state_runtime_schema_repair.py (created)
+- automation/control/candidates/STATE_RUNTIME_SCHEMA_REPAIR_CANDIDATE/ (this evidence package)
