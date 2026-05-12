@@ -1,0 +1,14 @@
+{
+  "candidate_id": "OPENCODE_LOCAL_CONFIG_GITIGNORE_CANDIDATE",
+  "audit_type": "gitignore_candidate_creation",
+  "audit_result": "PASS",
+  "gitignore_entries_added": 1,
+  "entry": ".opencode/",
+  "check_ignore_passed": true,
+  "no_broad_patterns": true,
+  "no_files_deleted": true,
+  "no_other_files_modified": true,
+  "untracked_before": 5,
+  "expected_untracked_after": 4,
+  "audit_timestamp": "2026-05-13T03:00:00Z"
+}

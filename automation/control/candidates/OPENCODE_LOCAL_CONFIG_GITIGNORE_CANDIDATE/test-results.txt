@@ -1,0 +1,34 @@
+Test Results for OPENCODE_LOCAL_CONFIG_GITIGNORE_CANDIDATE
+====================================================================
+Precondition checks:
+- canonical base = 0ff6fe910d94496817f10e6d627e5101fa54d383: PASS
+- gitignore exists: PASS
+- .opencode/ exists: PASS
+- user approval present: PASS
+
+Gitignore modification:
+- .opencode/ entry added: PASS
+- no broad pattern used: PASS
+- no other files modified: PASS
+- no files deleted: PASS
+
+Evidence package:
+- task.txt: PASS
+- evidence.json: PASS
+- report.json: PASS
+- candidate.diff: PASS
+- no-aider-used.txt: PASS
+- test-results.txt: PASS
+- law_compliance = "04": PASS
+- user_approved = TRUE: PASS
+- active_reference_detected = FALSE: PASS
+- secret_risk_detected = FALSE: PASS
+
+No-push verification:
+- git push NOT executed: PASS
+- --no-verify NOT used: PASS
+- force push NOT used: PASS
+- rollback/reset/revert NOT executed: PASS
+- Telegram auto mode NOT started: PASS
+
+Result: ALL CHECKS PASSED
