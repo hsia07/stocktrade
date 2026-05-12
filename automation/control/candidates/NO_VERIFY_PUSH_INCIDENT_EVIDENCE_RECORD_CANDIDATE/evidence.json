@@ -1,0 +1,37 @@
+{
+  "task_id": "NO_VERIFY_PUSH_INCIDENT_EVIDENCE_RECORD_CANDIDATE",
+  "round_id": "001",
+  "status": "completed",
+  "formal_status_code": "candidate_ready_awaiting_manual_review",
+  "timestamp": "2026-05-12T00:00:00Z",
+  "law_compliance": "04",
+  "incident_type": "NO_VERIFY_PUSH_AFTER_PRE_PUSH_HOOK_FAILURE",
+  "incident_round_id": "LOCAL_HELPER_SCRIPTS_ARCHIVE_OUTSIDE_REPO_CANDIDATE",
+  "incident_audit_round_id": "NO_VERIFY_PUSH_GOVERNANCE_INCIDENT_CONTAINMENT_AUDIT",
+  "no_verify_used": true,
+  "pre_push_hook_failed_before_no_verify": true,
+  "governance_violation_confirmed": true,
+  "remote_was_updated_after_hook_failure": true,
+  "content_scope_valid_despite_process_violation": true,
+  "canonical_process_state": "PROCESS_VIOLATED_REMOTE_CONTENT_SCOPE_CLEAN",
+  "previous_remote_head": "98e3a997a1f0acfcf42e416616acd852f4d0ee1b",
+  "unauthorized_pushed_head": "a2360cb7beeaf0c1f66aa85f67960263826dcfe7",
+  "authorized_scope_files": [
+    "automation/control/candidates/LOCAL_HELPER_SCRIPTS_ARCHIVE_OUTSIDE_REPO_CANDIDATE/task.txt",
+    "automation/control/candidates/LOCAL_HELPER_SCRIPTS_ARCHIVE_OUTSIDE_REPO_CANDIDATE/evidence.json",
+    "automation/control/candidates/LOCAL_HELPER_SCRIPTS_ARCHIVE_OUTSIDE_REPO_CANDIDATE/report.json",
+    "automation/control/candidates/LOCAL_HELPER_SCRIPTS_ARCHIVE_OUTSIDE_REPO_CANDIDATE/candidate.diff",
+    "automation/control/candidates/LOCAL_HELPER_SCRIPTS_ARCHIVE_OUTSIDE_REPO_CANDIDATE/no-aider-used.txt",
+    "automation/control/candidates/LOCAL_HELPER_SCRIPTS_ARCHIVE_OUTSIDE_REPO_CANDIDATE/test-results.txt"
+  ],
+  "unauthorized_scope_detected": false,
+  "tracked_deletion_present": false,
+  "debug_hook_py_pushed": false,
+  "telegram_auto_mode_started": false,
+  "required_next_decision": [
+    "PRE_PUSH_HOOK_NATIVE_GIT_PUSH_CONTEXT_AUDIT",
+    "HUMAN_ACCEPT_REMOTE_SCOPE_CLEAN_BUT_PROCESS_VIOLATED_DECISION",
+    "SIGNED_ROLLBACK_OR_FORCE_WITH_LEASE_DECISION"
+  ],
+  "explicit_note": "This record does not accept the incident and does not authorize auto-mode."
+}

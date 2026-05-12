@@ -1,0 +1,27 @@
+{
+  "round_id": "NO_VERIFY_PUSH_INCIDENT_EVIDENCE_RECORD_CANDIDATE",
+  "task_type": "candidate_creation",
+  "status": "completed",
+  "formal_status_code": "candidate_ready_awaiting_manual_review",
+  "canonical_base": "a2360cb7beeaf0c1f66aa85f67960263826dcfe7",
+  "candidate_branch": "candidate/no-verify-push-incident-evidence-record",
+  "incident_type": "NO_VERIFY_PUSH_AFTER_PRE_PUSH_HOOK_FAILURE",
+  "governance_violation": true,
+  "remote_scope_clean": true,
+  "canonical_process_state": "PROCESS_VIOLATED_REMOTE_CONTENT_SCOPE_CLEAN",
+  "previous_remote_head": "98e3a997a1f0acfcf42e416616acd852f4d0ee1b",
+  "unauthorized_pushed_head": "a2360cb7beeaf0c1f66aa85f67960263826dcfe7",
+  "files_created": [
+    "automation/control/candidates/NO_VERIFY_PUSH_INCIDENT_EVIDENCE_RECORD_CANDIDATE/task.txt",
+    "automation/control/candidates/NO_VERIFY_PUSH_INCIDENT_EVIDENCE_RECORD_CANDIDATE/evidence.json",
+    "automation/control/candidates/NO_VERIFY_PUSH_INCIDENT_EVIDENCE_RECORD_CANDIDATE/report.json",
+    "automation/control/candidates/NO_VERIFY_PUSH_INCIDENT_EVIDENCE_RECORD_CANDIDATE/candidate.diff",
+    "automation/control/candidates/NO_VERIFY_PUSH_INCIDENT_EVIDENCE_RECORD_CANDIDATE/no-aider-used.txt",
+    "automation/control/candidates/NO_VERIFY_PUSH_INCIDENT_EVIDENCE_RECORD_CANDIDATE/test-results.txt"
+  ],
+  "files_modified": [],
+  "files_deleted": [],
+  "acceptance_or_rollback_executed": false,
+  "hook_fix_executed": false,
+  "law_compliance": "04"
+}
