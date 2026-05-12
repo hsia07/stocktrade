@@ -1,0 +1,48 @@
+Test Results for AUDIT_RUNTIME_ARCHIVE_OUTSIDE_REPO_CANDIDATE
+====================================================================
+Precondition checks:
+- canonical base = c3c47298a5824001d4786e19107d6b1441752ae7: PASS
+- user archive approval present: PASS
+- archive outside repo = TRUE: PASS
+- archive root inside repo = FALSE: PASS
+
+Archive paths check:
+- automation/control/PRE-LANE-RELEASE-audit/ was untracked: PASS
+- automation/control/critical_action_audit.jsonl was untracked: PASS
+- automation/control/run_history.json was untracked: PASS
+
+Archive results:
+- PRE-LANE-RELEASE-audit/ moved outside repo: PASS
+- critical_action_audit.jsonl moved outside repo: PASS
+- run_history.json moved outside repo: PASS
+- archive destination exists: PASS
+- original paths absent from repo: PASS
+- tracked deletion present: FALSE (PASS)
+- gitignore modified: FALSE (PASS)
+- githooks modified: FALSE (PASS)
+- tracked source files modified: FALSE (PASS)
+- other untracked batches touched: FALSE (PASS)
+- untracked count before: 4
+- untracked count after: 1
+
+Evidence package:
+- task.txt: PASS
+- evidence.json: PASS
+- report.json: PASS
+- candidate.diff: PASS
+- no-aider-used.txt: PASS
+- test-results.txt: PASS
+- law_compliance = "04": PASS
+- archive_user_approved = TRUE: PASS
+- active_reference_detected = FALSE: PASS
+- secret_risk_detected = FALSE: PASS
+- rollback_instruction present: PASS
+
+No-push verification:
+- git push NOT executed: PASS
+- --no-verify NOT used: PASS
+- force push NOT used: PASS
+- rollback/reset/revert NOT executed: PASS
+- Telegram auto mode NOT started: PASS
+
+Result: ALL CHECKS PASSED

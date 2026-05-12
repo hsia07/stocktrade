@@ -1,0 +1,36 @@
+{
+  "round_id": "AUDIT_RUNTIME_ARCHIVE_OUTSIDE_REPO_CANDIDATE",
+  "task_type": "candidate_creation",
+  "status": "completed",
+  "formal_status_code": "audit_runtime_archive_candidate_created",
+  "canonical_base": "c3c47298a5824001d4786e19107d6b1441752ae7",
+  "candidate_branch": "candidate/audit-runtime-archive",
+  "law_compliance": "04",
+  "archive_user_approved": true,
+  "archive_outside_repo": true,
+  "actual_archive_root": "C:\\Users\\richa\\OneDrive\\桌面\\stocktrade_external_archives\\AUDIT_RUNTIME_ARCHIVE_OUTSIDE_REPO\\c3c47298a5824001d4786e19107d6b1441752ae7",
+  "archived_paths": [
+    "automation/control/PRE-LANE-RELEASE-audit/ (3 files, ~3 KB)",
+    "automation/control/critical_action_audit.jsonl (188 bytes)",
+    "automation/control/run_history.json (7,050 bytes)"
+  ],
+  "active_reference_detected": false,
+  "secret_risk_detected": false,
+  "files_created": [
+    "automation/control/candidates/AUDIT_RUNTIME_ARCHIVE_OUTSIDE_REPO_CANDIDATE/task.txt",
+    "automation/control/candidates/AUDIT_RUNTIME_ARCHIVE_OUTSIDE_REPO_CANDIDATE/evidence.json",
+    "automation/control/candidates/AUDIT_RUNTIME_ARCHIVE_OUTSIDE_REPO_CANDIDATE/report.json",
+    "automation/control/candidates/AUDIT_RUNTIME_ARCHIVE_OUTSIDE_REPO_CANDIDATE/candidate.diff",
+    "automation/control/candidates/AUDIT_RUNTIME_ARCHIVE_OUTSIDE_REPO_CANDIDATE/no-aider-used.txt",
+    "automation/control/candidates/AUDIT_RUNTIME_ARCHIVE_OUTSIDE_REPO_CANDIDATE/test-results.txt"
+  ],
+  "files_modified": [],
+  "files_moved": [],
+  "tracked_source_files_modified": false,
+  "gitignore_modified": false,
+  "githooks_modified": false,
+  "secret_values_exposed": false,
+  "untracked_paths_count_before": 4,
+  "untracked_paths_count_after": 1,
+  "telegram_auto_mode_started": false
+}
