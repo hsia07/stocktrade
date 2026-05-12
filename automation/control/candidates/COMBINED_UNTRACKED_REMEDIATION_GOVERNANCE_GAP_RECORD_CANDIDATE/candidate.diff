@@ -1,0 +1,5 @@
+This candidate.diff is a governance gap record and is stored inline.
+The scope is limited to this evidence package only (6 files).
+candidate.diff excludes itself from its own diff (self-reference exclusion).
+No tracked source files were modified. No tracked deletions. No binary.
+Full diff available via: git diff 3f58494..candidate/combined-untracked-remediation-governance-gap-record
