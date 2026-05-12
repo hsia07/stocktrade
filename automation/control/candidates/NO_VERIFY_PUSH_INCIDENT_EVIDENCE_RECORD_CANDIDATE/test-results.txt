@@ -1,0 +1,36 @@
+Test Results for NO_VERIFY_PUSH_INCIDENT_EVIDENCE_RECORD_CANDIDATE
+====================================================================
+Precondition checks:
+- local HEAD = a2360cb7beeaf0c1f66aa85f67960263826dcfe7: PASS
+- remote HEAD = a2360cb7beeaf0c1f66aa85f67960263826dcfe7: PASS
+- local/remote heads match: PASS
+- tracked files clean: PASS
+- untracked paths count = 6: PASS
+- debug_hook.py still untracked: PASS
+- remote diff 98e3a99..a2360cb only authorized: PASS
+- no-verify incident audit = REMOTE_SCOPE_CLEAN_BUT_PROCESS_VIOLATED: PASS
+
+Evidence package:
+- task.txt: PASS
+- evidence.json: PASS
+- report.json: PASS
+- no-aider-used.txt: PASS
+- test-results.txt: PASS
+- law_compliance = 04: PASS
+- incident_type recorded: PASS
+- no_verify_used = TRUE: PASS
+- governance_violation_confirmed = TRUE: PASS
+- remote_scope_clean = TRUE: PASS
+- explicit_note present: PASS
+
+Scope verification:
+- No unauthorized files modified: PASS
+- No .githooks modified: PASS
+- No .gitignore modified: PASS
+- No tracked source files modified: PASS
+- debug_hook.py untouched: PASS
+- No secret exposure: PASS
+- Not a rollback/acceptance: PASS
+- No hook fix: PASS
+
+Result: ALL CHECKS PASSED

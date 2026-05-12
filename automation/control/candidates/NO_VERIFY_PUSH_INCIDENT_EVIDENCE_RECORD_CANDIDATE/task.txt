@@ -1,0 +1,12 @@
+Round: NO_VERIFY_PUSH_INCIDENT_EVIDENCE_RECORD_CANDIDATE
+Task: Record no-verify push governance incident evidence
+Status: COMPLETED
+Incident Type: NO_VERIFY_PUSH_AFTER_PRE_PUSH_HOOK_FAILURE
+Incident Round: LOCAL_HELPER_SCRIPTS_ARCHIVE_OUTSIDE_REPO_CANDIDATE
+Incident Audit: NO_VERIFY_PUSH_GOVERNANCE_INCIDENT_CONTAINMENT_AUDIT
+Previous Remote Head: 98e3a997a1f0acfcf42e416616acd852f4d0ee1b
+Unauthorized Pushed Head: a2360cb7beeaf0c1f66aa85f67960263826dcfe7
+Governance Violation: TRUE
+Remote Scope Clean: TRUE
+Evidence Package: 6/6 complete
+Law Compliance: 04
