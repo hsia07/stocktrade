@@ -1,0 +1,7 @@
+NO-AIDER-USED CONFIRMATION
+=========================
+
+This candidate does NOT involve AI-assisted coding (Aider).
+This is a governance hook repair to fix encoding issue in pre-push validation.
+Manual code change to .githooks/pre-push.ps1 only.
+No AI assistance required for this governance fix.

@@ -1,0 +1,42 @@
+{
+  "task_id": "PRE_PUSH_HOOK_LAW04_JSON_PARSER_FIX_CANDIDATE",
+  "round_id": "001",
+  "status": "completed",
+  "formal_status_code": "candidate_ready_awaiting_manual_review",
+  "timestamp": "2026-05-12T00:00:00Z",
+
+  "law_compliance": "04",
+
+  "hook_fix_summary": "Fixed Check-Law04Compliance to use Python subprocess with utf-8-sig decoding instead of PowerShell pipe which corrupts UTF-8 JSON content on Windows",
+
+  "files_modified": [
+    ".githooks/pre-push.ps1"
+  ],
+
+  "fix_details": {
+    "function_modified": "Check-Law04Compliance",
+    "old_approach": "git show ... | ConvertFrom-Json (pipe encoding corrupts UTF-8)",
+    "new_approach": "python subprocess with utf-8-sig decode",
+    "encoding_fix": "result.stdout.decode('utf-8-sig')",
+    "rule_preserved": {
+      "missing_law_compliance_fails": true,
+      "non_04_law_compliance_fails": true,
+      "valid_04_passes": true,
+      "law04_check_retained": true
+    }
+  },
+
+  "verification": {
+    "target_evidence_path": "automation/control/candidates/CANDIDATE_ARTIFACT_ARCHIVE_OUTSIDE_REPO_CANDIDATE/evidence.json",
+    "target_law_compliance_value": "04",
+    "verification_method": "python -c subprocess with utf-8-sig decode",
+    "missing_law_compliance_still_fails": true,
+    "non_04_still_fails": true,
+    "valid_04_passes": true
+  },
+
+  "archive_root_touched": false,
+  "archive_destinations_touched": false,
+
+  "candidate_base_head": "3a26e2f3a53ca51487a01a92185fddcd2aa28e12"
+}
