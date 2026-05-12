@@ -1,0 +1,55 @@
+Test Results for DEBUG_HOOK_ARCHIVE_OUTSIDE_REPO_CANDIDATE
+====================================================================
+Precondition checks:
+- canonical base = b36b830d34bf8eea0795e167a0227296b5bbc2d0: PASS
+- user archive approval present: PASS
+- archive outside repo = TRUE: PASS
+- archive root inside repo = FALSE: PASS
+- debug_hook.py existed and was untracked: PASS
+- debug_hook.py was not pushed: PASS
+- debug_hook.py was not gitignored: PASS
+- active_reference_detected = FALSE: PASS
+- secret_risk_detected = FALSE: PASS
+
+Archive results:
+- debug_hook.py moved outside repo: PASS
+- archive destination exists: PASS
+- original path absent from repo: PASS
+- unauthorized files moved: FALSE (PASS)
+- unauthorized files deleted: FALSE (PASS)
+- tracked deletion present: FALSE (PASS)
+- gitignore modified: FALSE (PASS)
+- githooks modified: FALSE (PASS)
+- tracked source files modified: FALSE (PASS)
+- other untracked batches touched: FALSE (PASS)
+- untracked count before: 6
+- untracked count after: 5
+
+Evidence package:
+- task.txt: PASS
+- evidence.json: PASS
+- report.json: PASS
+- candidate.diff: PASS
+- no-aider-used.txt: PASS
+- test-results.txt: PASS
+- law_compliance = "04": PASS
+- archive_user_approved = TRUE: PASS
+- archive_outside_repo = TRUE: PASS
+- active_reference_detected = FALSE: PASS
+- secret_risk_detected = FALSE: PASS
+- rollback_instruction present: PASS
+
+candidate.diff:
+- UTF-8: PASS
+- BOM: FALSE (PASS)
+- binary: FALSE (PASS)
+- scope: evidence package only (PASS)
+
+No-push verification:
+- git push NOT executed: PASS
+- --no-verify NOT used: PASS
+- force push NOT used: PASS
+- rollback/reset/revert NOT executed: PASS
+- Telegram auto mode NOT started: PASS
+
+Result: ALL CHECKS PASSED
