@@ -1,0 +1,58 @@
+Test Results for PRE_PUSH_HOOK_ENTRYPOINT_FIX_CANDIDATE
+====================================================================
+Precondition checks:
+- local HEAD = 85a9a1cae74beed5001a9b48252f1c028452c51c: PASS
+- remote HEAD = a2360cb7beeaf0c1f66aa85f67960263826dcfe7: PASS
+- two-parent merge commit (parent1 = a2360cb, parent2 = ba92bae): PASS
+- tracked files clean: PASS
+- untracked paths count = 6: PASS
+- debug_hook.py still untracked: PASS
+- core.hooksPath = .githooks: PASS
+- native git entrypoint = .githooks/pre-push: PASS
+- evidence.json at HEAD is valid JSON with law_compliance = "04": PASS
+
+Entrypoint delegation tests:
+- Test 1: Valid 04 evidence (current merge 85a9a1c) -> exit 0: PASS
+- Test 2: Non-canonical valid candidate branch -> exit 0: PASS
+- Test 3: Single-parent commit push to canonical -> exit 1: PASS
+- Test 4: Invalid candidate branch naming -> exit 1: PASS
+- Test 5: Empty stdin (no push info) -> exit 0: PASS
+- Test 6: pre-push.ps1 NOT modified: PASS
+- Test 7: pre-push.bat NOT modified: PASS
+- Test 8: .gitignore NOT modified: PASS
+
+Fix verification:
+- native_entrypoint_delegates_to_safe_ps1: TRUE
+- pipe_based_json_load_removed_or_bypassed: TRUE
+- law04_check_retained: TRUE
+- missing_law_compliance_still_fails (via PS1 logic): TRUE
+- non_04_law_compliance_still_fails (via PS1 logic): TRUE
+- json_parse_failure_still_fails (via PS1 logic): TRUE
+- git_show_failure_still_fails (via PS1 logic): TRUE
+- valid_04_law_compliance_passes: TRUE
+- hardcoded_candidate_path_or_commit: FALSE
+- hook_rule_weakening_detected: FALSE
+- secret_values_exposed: FALSE
+- authorized_scope_only: TRUE
+- forbidden_paths_touched: FALSE
+- debug_hook.py untouched: TRUE
+
+Evidence package:
+- task.txt: PASS
+- evidence.json: PASS
+- report.json: PASS
+- candidate.diff: PASS
+- no-aider-used.txt: PASS
+- test-results.txt: PASS
+- law_compliance = 04: PASS
+- All 6 evidence files created: PASS
+
+No-push verification:
+- git push NOT executed: PASS
+- --no-verify NOT used: PASS
+- force push NOT used: PASS
+- rollback/reset/revert NOT executed: PASS
+- commit NOT pushed: PASS
+- Telegram auto mode NOT started: PASS
+
+Result: ALL CHECKS PASSED

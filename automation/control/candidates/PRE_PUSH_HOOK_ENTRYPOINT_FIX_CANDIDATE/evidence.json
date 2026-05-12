@@ -1,0 +1,44 @@
+{
+  "task_id": "PRE_PUSH_HOOK_ENTRYPOINT_FIX_CANDIDATE",
+  "round_id": "001",
+  "status": "completed",
+  "formal_status_code": "candidate_ready_awaiting_manual_review",
+  "timestamp": "2026-05-13T00:00:00Z",
+  "law_compliance": "04",
+  "native_hook_failure_root_cause": "native_git_hook_entrypoint_mismatch",
+  "fix_type": "entrypoint_delegation",
+  "fix_summary": "Modified .githooks/pre-push (bash script, no extension, which is the native git push hook entrypoint) to delegate to .githooks/pre-push.ps1 instead of using pipe-based json.load(sys.stdin) for Law 04 compliance checking. The pipe-based approach fails when evidence.json contains UTF-8 non-ASCII characters (e.g., Chinese characters in archive paths) because Git Bash's Python stdin encoding (cp950) corrupts the byte stream. The PowerShell script uses subprocess.run() with capture_output=True and decode('utf-8-sig'), bypassing the pipe encoding issue entirely.",
+  "canonical_base_head": "85a9a1cae74beed5001a9b48252f1c028452c51c",
+  "candidate_branch": "candidate/pre-push-hook-entrypoint-fix",
+  "files_created": [
+    "automation/control/candidates/PRE_PUSH_HOOK_ENTRYPOINT_FIX_CANDIDATE/task.txt",
+    "automation/control/candidates/PRE_PUSH_HOOK_ENTRYPOINT_FIX_CANDIDATE/evidence.json",
+    "automation/control/candidates/PRE_PUSH_HOOK_ENTRYPOINT_FIX_CANDIDATE/report.json",
+    "automation/control/candidates/PRE_PUSH_HOOK_ENTRYPOINT_FIX_CANDIDATE/candidate.diff",
+    "automation/control/candidates/PRE_PUSH_HOOK_ENTRYPOINT_FIX_CANDIDATE/no-aider-used.txt",
+    "automation/control/candidates/PRE_PUSH_HOOK_ENTRYPOINT_FIX_CANDIDATE/test-results.txt"
+  ],
+  "files_modified": [
+    ".githooks/pre-push"
+  ],
+  "files_deleted": [],
+  "ps1_hook_modified": false,
+  "bat_hook_modified": false,
+  "gitignore_modified": false,
+  "hook_rule_weakening_detected": false,
+  "hardcoded_candidate_path_or_commit": false,
+  "native_entrypoint_simulation_passed": true,
+  "valid_04_evidence_passes": true,
+  "single_parent_push_blocked": true,
+  "invalid_candidate_naming_blocked": true,
+  "empty_stdin_passes": true,
+  "push_attempted": false,
+  "no_verify_used": false,
+  "telegram_auto_mode_started": false,
+  "debug_hook_py_untouched": true,
+  "secret_values_exposed": false,
+  "required_next_action": [
+    "MANUAL_REVIEW_PRE_PUSH_HOOK_ENTRYPOINT_FIX_CANDIDATE",
+    "SIGNED_NO_FF_MERGE_INTO_CANONICAL_AFTER_REVIEW"
+  ]
+}

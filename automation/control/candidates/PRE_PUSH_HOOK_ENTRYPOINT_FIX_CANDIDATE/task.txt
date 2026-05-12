@@ -1,0 +1,10 @@
+Round: PRE_PUSH_HOOK_ENTRYPOINT_FIX_CANDIDATE
+Task: Fix native git push hook entrypoint to delegate to pre-push.ps1 (safe UTF-8 JSON parsing)
+Status: COMPLETED
+Root Cause: native_git_hook_entrypoint_mismatch
+Fix: Modified .githooks/pre-push (bash, no extension) to forward stdin/exit code to pre-push.ps1
+  instead of using pipe-based json.load(sys.stdin) which fails on cp950-encoded UTF-8 JSON.
+Canonical Base: 85a9a1cae74beed5001a9b48252f1c028452c51c
+Candidate Branch: candidate/pre-push-hook-entrypoint-fix
+Evidence Package: 6/6 complete
+Law Compliance: 04

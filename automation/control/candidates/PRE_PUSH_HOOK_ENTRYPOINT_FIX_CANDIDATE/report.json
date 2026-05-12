@@ -1,0 +1,34 @@
+{
+  "round_id": "PRE_PUSH_HOOK_ENTRYPOINT_FIX_CANDIDATE",
+  "task_type": "candidate_creation",
+  "status": "completed",
+  "formal_status_code": "candidate_ready_awaiting_manual_review",
+  "canonical_base": "85a9a1cae74beed5001a9b48252f1c028452c51c",
+  "candidate_branch": "candidate/pre-push-hook-entrypoint-fix",
+  "native_hook_failure_root_cause": "native_git_hook_entrypoint_mismatch",
+  "fix_type": "entrypoint_delegation",
+  "files_created": [
+    "automation/control/candidates/PRE_PUSH_HOOK_ENTRYPOINT_FIX_CANDIDATE/task.txt",
+    "automation/control/candidates/PRE_PUSH_HOOK_ENTRYPOINT_FIX_CANDIDATE/evidence.json",
+    "automation/control/candidates/PRE_PUSH_HOOK_ENTRYPOINT_FIX_CANDIDATE/report.json",
+    "automation/control/candidates/PRE_PUSH_HOOK_ENTRYPOINT_FIX_CANDIDATE/candidate.diff",
+    "automation/control/candidates/PRE_PUSH_HOOK_ENTRYPOINT_FIX_CANDIDATE/no-aider-used.txt",
+    "automation/control/candidates/PRE_PUSH_HOOK_ENTRYPOINT_FIX_CANDIDATE/test-results.txt"
+  ],
+  "files_modified": [
+    ".githooks/pre-push"
+  ],
+  "files_deleted": [],
+  "ps1_hook_modified": false,
+  "bat_hook_modified": false,
+  "gitignore_modified": false,
+  "hook_rule_weakening_detected": false,
+  "hardcoded_candidate_path_or_commit": false,
+  "native_entrypoint_simulation_passed": true,
+  "push_attempted": false,
+  "no_verify_used": false,
+  "telegram_auto_mode_started": false,
+  "debug_hook_py_untouched": true,
+  "secret_values_exposed": false,
+  "law_compliance": "04"
+}
