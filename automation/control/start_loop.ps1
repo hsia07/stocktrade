@@ -83,6 +83,11 @@ $phaseEndRound = $state.phase_definition.($Phase).end_round
 $authorizedScope = "$phaseStartRound ~ $phaseEndRound"
 
 # Update state with multi-round candidate prep mode
+# Ensure current_mode exists (schema fix: template default is "idle")
+$allowedCurrentModes = @("idle", "multi_round_candidate_prep", "stopped", "paused")
+if (-not ($state.PSObject.Properties.Name -contains 'current_mode')) {
+    $state | Add-Member -NotePropertyName 'current_mode' -NotePropertyValue 'idle'
+}
 $state.run_state = "running"
 $state.current_mode = "multi_round_candidate_prep"
 $state.authorized_scope = $authorizedScope
