@@ -1,0 +1,33 @@
+{
+  "round_id": "DEBUG_HOOK_ARCHIVE_OUTSIDE_REPO_CANDIDATE",
+  "task_type": "candidate_creation",
+  "status": "completed",
+  "formal_status_code": "debug_hook_archive_candidate_created",
+  "canonical_base": "b36b830d34bf8eea0795e167a0227296b5bbc2d0",
+  "candidate_branch": "candidate/debug-hook-archive-outside-repo",
+  "law_compliance": "04",
+  "archive_user_approved": true,
+  "archive_outside_repo": true,
+  "actual_archive_root": "C:\\Users\\richa\\OneDrive\\桌面\\stocktrade_external_archives\\DEBUG_HOOK_ARCHIVE_OUTSIDE_REPO\\b36b830d34bf8eea0795e167a0227296b5bbc2d0",
+  "archived_paths": ["debug_hook.py"],
+  "active_reference_detected": false,
+  "secret_risk_detected": false,
+  "debug_hook_py_archived": true,
+  "files_created": [
+    "automation/control/candidates/DEBUG_HOOK_ARCHIVE_OUTSIDE_REPO_CANDIDATE/task.txt",
+    "automation/control/candidates/DEBUG_HOOK_ARCHIVE_OUTSIDE_REPO_CANDIDATE/evidence.json",
+    "automation/control/candidates/DEBUG_HOOK_ARCHIVE_OUTSIDE_REPO_CANDIDATE/report.json",
+    "automation/control/candidates/DEBUG_HOOK_ARCHIVE_OUTSIDE_REPO_CANDIDATE/candidate.diff",
+    "automation/control/candidates/DEBUG_HOOK_ARCHIVE_OUTSIDE_REPO_CANDIDATE/no-aider-used.txt",
+    "automation/control/candidates/DEBUG_HOOK_ARCHIVE_OUTSIDE_REPO_CANDIDATE/test-results.txt"
+  ],
+  "files_modified": [],
+  "files_moved": ["debug_hook.py"],
+  "tracked_source_files_modified": false,
+  "gitignore_modified": false,
+  "githooks_modified": false,
+  "secret_values_exposed": false,
+  "untracked_paths_count_before": 6,
+  "untracked_paths_count_after": 5,
+  "telegram_auto_mode_started": false
+}

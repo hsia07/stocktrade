@@ -1,0 +1,5 @@
+Round: DEBUG_HOOK_ARCHIVE_OUTSIDE_REPO_CANDIDATE
+Task: Archive debug_hook.py outside repo after user approval
+Base: b36b830d34bf8eea0795e167a0227296b5bbc2d0
+Branch: candidate/debug-hook-archive-outside-repo
+Status: candidate_creation_completed

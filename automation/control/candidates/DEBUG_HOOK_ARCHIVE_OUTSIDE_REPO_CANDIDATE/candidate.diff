@@ -1,0 +1,171 @@
+diff --git a/automation/control/candidates/DEBUG_HOOK_ARCHIVE_OUTSIDE_REPO_CANDIDATE/evidence.json b/automation/control/candidates/DEBUG_HOOK_ARCHIVE_OUTSIDE_REPO_CANDIDATE/evidence.json
+new file mode 100644
+index 0000000..31547da
+--- /dev/null
++++ b/automation/control/candidates/DEBUG_HOOK_ARCHIVE_OUTSIDE_REPO_CANDIDATE/evidence.json
+@@ -0,0 +1,46 @@
++{
++  "task_id": "DEBUG_HOOK_ARCHIVE_OUTSIDE_REPO_CANDIDATE",
++  "round_id": "001",
++  "status": "completed",
++  "formal_status_code": "debug_hook_archive_candidate_created",
++  "timestamp": "2026-05-13T02:44:00Z",
++  "law_compliance": "04",
++  "canonical_base_head": "b36b830d34bf8eea0795e167a0227296b5bbc2d0",
++  "candidate_branch": "candidate/debug-hook-archive-outside-repo",
++  "archive_user_approved": true,
++  "archive_outside_repo": true,
++  "actual_archive_root": "C:\\Users\\richa\\OneDrive\\???\\stocktrade_external_archives\\DEBUG_HOOK_ARCHIVE_OUTSIDE_REPO\\b36b830d34bf8eea0795e167a0227296b5bbc2d0",
++  "archive_root_inside_repo": false,
++  "archived_paths": ["debug_hook.py"],
++  "archived_destination_paths": ["C:\\Users\\richa\\OneDrive\\???\\stocktrade_external_archives\\DEBUG_HOOK_ARCHIVE_OUTSIDE_REPO\\b36b830d34bf8eea0795e167a0227296b5bbc2d0\\debug_hook.py"],
++  "archive_was_untracked_local_cleanup": true,
++  "archive_targets_were_tracked": false,
++  "archive_targets_were_untracked": true,
++  "active_reference_detected": false,
++  "secret_risk_detected": false,
++  "debug_hook_py_archived": true,
++  "debug_hook_py_still_untracked": false,
++  "rollback_instruction": "To restore debug_hook.py to repo worktree: Copy from 'C:\\Users\\richa\\OneDrive\\???\\stocktrade_external_archives\\DEBUG_HOOK_ARCHIVE_OUTSIDE_REPO\\b36b830d34bf8eea0795e167a0227296b5bbc2d0\\debug_hook.py' to repo root 'debug_hook.py'",
++  "files_created": [
++    "automation/control/candidates/DEBUG_HOOK_ARCHIVE_OUTSIDE_REPO_CANDIDATE/task.txt",
++    "automation/control/candidates/DEBUG_HOOK_ARCHIVE_OUTSIDE_REPO_CANDIDATE/evidence.json",
++    "automation/control/candidates/DEBUG_HOOK_ARCHIVE_OUTSIDE_REPO_CANDIDATE/report.json",
++    "automation/control/candidates/DEBUG_HOOK_ARCHIVE_OUTSIDE_REPO_CANDIDATE/candidate.diff",
++    "automation/control/candidates/DEBUG_HOOK_ARCHIVE_OUTSIDE_REPO_CANDIDATE/no-aider-used.txt",
++    "automation/control/candidates/DEBUG_HOOK_ARCHIVE_OUTSIDE_REPO_CANDIDATE/test-results.txt"
++  ],
++  "files_modified": [],
++  "files_deleted": [],
++  "files_moved": ["debug_hook.py"],
++  "tracked_source_files_modified": false,
++  "gitignore_modified": false,
++  "githooks_modified": false,
++  "secret_values_exposed": false,
++  "authorized_scope_only": true,
++  "other_untracked_batches_touched": false,
++  "telegram_auto_mode_started": false,
++  "required_next_action": [
++    "MANUAL_REVIEW_DEBUG_HOOK_ARCHIVE_OUTSIDE_REPO_CANDIDATE",
++    "SIGNED_NO_FF_MERGE_INTO_CANONICAL_AFTER_REVIEW"
++  ]
++}
+diff --git a/automation/control/candidates/DEBUG_HOOK_ARCHIVE_OUTSIDE_REPO_CANDIDATE/no-aider-used.txt b/automation/control/candidates/DEBUG_HOOK_ARCHIVE_OUTSIDE_REPO_CANDIDATE/no-aider-used.txt
+new file mode 100644
+index 0000000..4443eb0
+--- /dev/null
++++ b/automation/control/candidates/DEBUG_HOOK_ARCHIVE_OUTSIDE_REPO_CANDIDATE/no-aider-used.txt
+@@ -0,0 +1,2 @@
++This candidate was created manually without aider.
++Timestamp: 2026-05-13T02:44:00Z
+diff --git a/automation/control/candidates/DEBUG_HOOK_ARCHIVE_OUTSIDE_REPO_CANDIDATE/report.json b/automation/control/candidates/DEBUG_HOOK_ARCHIVE_OUTSIDE_REPO_CANDIDATE/report.json
+new file mode 100644
+index 0000000..24d003b
+--- /dev/null
++++ b/automation/control/candidates/DEBUG_HOOK_ARCHIVE_OUTSIDE_REPO_CANDIDATE/report.json
+@@ -0,0 +1,33 @@
++{
++  "round_id": "DEBUG_HOOK_ARCHIVE_OUTSIDE_REPO_CANDIDATE",
++  "task_type": "candidate_creation",
++  "status": "completed",
++  "formal_status_code": "debug_hook_archive_candidate_created",
++  "canonical_base": "b36b830d34bf8eea0795e167a0227296b5bbc2d0",
++  "candidate_branch": "candidate/debug-hook-archive-outside-repo",
++  "law_compliance": "04",
++  "archive_user_approved": true,
++  "archive_outside_repo": true,
++  "actual_archive_root": "C:\\Users\\richa\\OneDrive\\???\\stocktrade_external_archives\\DEBUG_HOOK_ARCHIVE_OUTSIDE_REPO\\b36b830d34bf8eea0795e167a0227296b5bbc2d0",
++  "archived_paths": ["debug_hook.py"],
++  "active_reference_detected": false,
++  "secret_risk_detected": false,
++  "debug_hook_py_archived": true,
++  "files_created": [
++    "automation/control/candidates/DEBUG_HOOK_ARCHIVE_OUTSIDE_REPO_CANDIDATE/task.txt",
++    "automation/control/candidates/DEBUG_HOOK_ARCHIVE_OUTSIDE_REPO_CANDIDATE/evidence.json",
++    "automation/control/candidates/DEBUG_HOOK_ARCHIVE_OUTSIDE_REPO_CANDIDATE/report.json",
++    "automation/control/candidates/DEBUG_HOOK_ARCHIVE_OUTSIDE_REPO_CANDIDATE/candidate.diff",
++    "automation/control/candidates/DEBUG_HOOK_ARCHIVE_OUTSIDE_REPO_CANDIDATE/no-aider-used.txt",
++    "automation/control/candidates/DEBUG_HOOK_ARCHIVE_OUTSIDE_REPO_CANDIDATE/test-results.txt"
++  ],
++  "files_modified": [],
++  "files_moved": ["debug_hook.py"],
++  "tracked_source_files_modified": false,
++  "gitignore_modified": false,
++  "githooks_modified": false,
++  "secret_values_exposed": false,
++  "untracked_paths_count_before": 6,
++  "untracked_paths_count_after": 5,
++  "telegram_auto_mode_started": false
++}
+diff --git a/automation/control/candidates/DEBUG_HOOK_ARCHIVE_OUTSIDE_REPO_CANDIDATE/task.txt b/automation/control/candidates/DEBUG_HOOK_ARCHIVE_OUTSIDE_REPO_CANDIDATE/task.txt
+new file mode 100644
+index 0000000..18a67c8
+--- /dev/null
++++ b/automation/control/candidates/DEBUG_HOOK_ARCHIVE_OUTSIDE_REPO_CANDIDATE/task.txt
+@@ -0,0 +1,5 @@
++Round: DEBUG_HOOK_ARCHIVE_OUTSIDE_REPO_CANDIDATE
++Task: Archive debug_hook.py outside repo after user approval
++Base: b36b830d34bf8eea0795e167a0227296b5bbc2d0
++Branch: candidate/debug-hook-archive-outside-repo
++Status: candidate_creation_completed
+diff --git a/automation/control/candidates/DEBUG_HOOK_ARCHIVE_OUTSIDE_REPO_CANDIDATE/test-results.txt b/automation/control/candidates/DEBUG_HOOK_ARCHIVE_OUTSIDE_REPO_CANDIDATE/test-results.txt
+new file mode 100644
+index 0000000..ef3fda1
+--- /dev/null
++++ b/automation/control/candidates/DEBUG_HOOK_ARCHIVE_OUTSIDE_REPO_CANDIDATE/test-results.txt
+@@ -0,0 +1,55 @@
++Test Results for DEBUG_HOOK_ARCHIVE_OUTSIDE_REPO_CANDIDATE
++====================================================================
++Precondition checks:
++- canonical base = b36b830d34bf8eea0795e167a0227296b5bbc2d0: PASS
++- user archive approval present: PASS
++- archive outside repo = TRUE: PASS
++- archive root inside repo = FALSE: PASS
++- debug_hook.py existed and was untracked: PASS
++- debug_hook.py was not pushed: PASS
++- debug_hook.py was not gitignored: PASS
++- active_reference_detected = FALSE: PASS
++- secret_risk_detected = FALSE: PASS
++
++Archive results:
++- debug_hook.py moved outside repo: PASS
++- archive destination exists: PASS
++- original path absent from repo: PASS
++- unauthorized files moved: FALSE (PASS)
++- unauthorized files deleted: FALSE (PASS)
++- tracked deletion present: FALSE (PASS)
++- gitignore modified: FALSE (PASS)
++- githooks modified: FALSE (PASS)
++- tracked source files modified: FALSE (PASS)
++- other untracked batches touched: FALSE (PASS)
++- untracked count before: 6
++- untracked count after: 5
++
++Evidence package:
++- task.txt: PASS
++- evidence.json: PASS
++- report.json: PASS
++- candidate.diff: PASS
++- no-aider-used.txt: PASS
++- test-results.txt: PASS
++- law_compliance = "04": PASS
++- archive_user_approved = TRUE: PASS
++- archive_outside_repo = TRUE: PASS
++- active_reference_detected = FALSE: PASS
++- secret_risk_detected = FALSE: PASS
++- rollback_instruction present: PASS
++
++candidate.diff:
++- UTF-8: PASS
++- BOM: FALSE (PASS)
++- binary: FALSE (PASS)
++- scope: evidence package only (PASS)
++
++No-push verification:
++- git push NOT executed: PASS
++- --no-verify NOT used: PASS
++- force push NOT used: PASS
++- rollback/reset/revert NOT executed: PASS
++- Telegram auto mode NOT started: PASS
++
++Result: ALL CHECKS PASSED
