@@ -1,0 +1,38 @@
+{
+  "task_id": "OPENCODE_LOCAL_CONFIG_GITIGNORE_CANDIDATE",
+  "round_id": "001",
+  "status": "completed",
+  "formal_status_code": "opencode_local_config_gitignore_candidate_created",
+  "timestamp": "2026-05-13T03:00:00Z",
+  "law_compliance": "04",
+  "canonical_base_head": "0ff6fe910d94496817f10e6d627e5101fa54d383",
+  "candidate_branch": "candidate/opencode-local-config-gitignore",
+  "gitignore_entry_added": ".opencode/",
+  "user_approved": true,
+  "active_reference_detected": false,
+  "secret_risk_detected": false,
+  "untracked_paths_count_before": 5,
+  "expected_untracked_paths_count_after": 4,
+  "files_created": [
+    "automation/control/candidates/OPENCODE_LOCAL_CONFIG_GITIGNORE_CANDIDATE/task.txt",
+    "automation/control/candidates/OPENCODE_LOCAL_CONFIG_GITIGNORE_CANDIDATE/evidence.json",
+    "automation/control/candidates/OPENCODE_LOCAL_CONFIG_GITIGNORE_CANDIDATE/report.json",
+    "automation/control/candidates/OPENCODE_LOCAL_CONFIG_GITIGNORE_CANDIDATE/candidate.diff",
+    "automation/control/candidates/OPENCODE_LOCAL_CONFIG_GITIGNORE_CANDIDATE/no-aider-used.txt",
+    "automation/control/candidates/OPENCODE_LOCAL_CONFIG_GITIGNORE_CANDIDATE/test-results.txt"
+  ],
+  "files_modified": [".gitignore"],
+  "files_deleted": [],
+  "files_moved": [],
+  "tracked_source_files_modified": false,
+  "gitignore_modified": true,
+  "githooks_modified": false,
+  "secret_values_exposed": false,
+  "authorized_scope_only": true,
+  "other_untracked_batches_touched": false,
+  "telegram_auto_mode_started": false,
+  "required_next_action": [
+    "MANUAL_REVIEW_OPENCODE_LOCAL_CONFIG_GITIGNORE_CANDIDATE",
+    "SIGNED_NO_FF_MERGE_INTO_CANONICAL_AFTER_REVIEW"
+  ]
+}

@@ -1,0 +1,12 @@
+OPENCODE_LOCAL_CONFIG_GITIGNORE_CANDIDATE
+
+Task: Add .opencode/ to root .gitignore
+
+Rationale: .opencode/ is the OpenCode AI local tool config directory
+(analogous to .vscode/ or .idea/). Standard practice: tool-specific
+config directories should be gitignored. No active codebase references.
+User-approved via decision lock.
+
+Base: 0ff6fe910d94496817f10e6d627e5101fa54d383
+Branch: candidate/opencode-local-config-gitignore
+Status: candidate_creation_completed

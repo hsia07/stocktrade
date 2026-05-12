@@ -44,3 +44,5 @@ automation/control/refresh_panel_simple.ps1
 automation/control/simple_control_loop.ps1
 automation/control/simple_panel.html
 open_panel_only.bat
+
+.opencode/
