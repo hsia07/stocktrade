@@ -1,0 +1,147 @@
+diff --git a/automation/control/candidates/LOCAL_HELPER_SCRIPTS_ARCHIVE_OUTSIDE_REPO_CANDIDATE/evidence.json b/automation/control/candidates/LOCAL_HELPER_SCRIPTS_ARCHIVE_OUTSIDE_REPO_CANDIDATE/evidence.json
+new file mode 100644
+index 0000000..d8e6dc9
+--- /dev/null
++++ b/automation/control/candidates/LOCAL_HELPER_SCRIPTS_ARCHIVE_OUTSIDE_REPO_CANDIDATE/evidence.json
+@@ -0,0 +1,37 @@
++{
++  "task_id": "LOCAL_HELPER_SCRIPTS_ARCHIVE_OUTSIDE_REPO_CANDIDATE",
++  "round_id": "001",
++  "status": "completed",
++  "formal_status_code": "candidate_ready_awaiting_manual_review",
++  "timestamp": "2026-05-12T00:00:00Z",
++  "law_compliance": "04",
++  "archive_user_approved": true,
++  "archive_outside_repo": true,
++  "actual_archive_root": "C:\\Users\\richa\\OneDrive\\桌面\\stocktrade_external_archives\\LOCAL_HELPER_SCRIPTS_ARCHIVE_OUTSIDE_REPO\\98e3a997a1f0acfcf42e416616acd852f4d0ee1b",
++  "archived_paths": [
++    "automation/control/fix_shortcut.ps1",
++    "automation/control/multi_round_runner.ps1",
++    "fix_governance_guide.py",
++    "fix_manifests.py",
++    "fix_phase1_closure.py",
++    "fix_r016_freeze.py",
++    "fix_review_memory.py",
++    "generate_audit_matrix_md.py"
++  ],
++  "archived_destination_paths": [
++    "C:\\Users\\richa\\OneDrive\\桌面\\stocktrade_external_archives\\LOCAL_HELPER_SCRIPTS_ARCHIVE_OUTSIDE_REPO\\98e3a997a1f0acfcf42e416616acd852f4d0ee1b\\fix_shortcut.ps1",
++    "C:\\Users\\richa\\OneDrive\\桌面\\stocktrade_external_archives\\LOCAL_HELPER_SCRIPTS_ARCHIVE_OUTSIDE_REPO\\98e3a997a1f0acfcf42e416616acd852f4d0ee1b\\multi_round_runner.ps1",
++    "C:\\Users\\richa\\OneDrive\\桌面\\stocktrade_external_archives\\LOCAL_HELPER_SCRIPTS_ARCHIVE_OUTSIDE_REPO\\98e3a997a1f0acfcf42e416616acd852f4d0ee1b\\fix_governance_guide.py",
++    "C:\\Users\\richa\\OneDrive\\桌面\\stocktrade_external_archives\\LOCAL_HELPER_SCRIPTS_ARCHIVE_OUTSIDE_REPO\\98e3a997a1f0acfcf42e416616acd852f4d0ee1b\\fix_manifests.py",
++    "C:\\Users\\richa\\OneDrive\\桌面\\stocktrade_external_archives\\LOCAL_HELPER_SCRIPTS_ARCHIVE_OUTSIDE_REPO\\98e3a997a1f0acfcf42e416616acd852f4d0ee1b\\fix_phase1_closure.py",
++    "C:\\Users\\richa\\OneDrive\\桌面\\stocktrade_external_archives\\LOCAL_HELPER_SCRIPTS_ARCHIVE_OUTSIDE_REPO\\98e3a997a1f0acfcf42e416616acd852f4d0ee1b\\fix_r016_freeze.py",
++    "C:\\Users\\richa\\OneDrive\\桌面\\stocktrade_external_archives\\LOCAL_HELPER_SCRIPTS_ARCHIVE_OUTSIDE_REPO\\98e3a997a1f0acfcf42e416616acd852f4d0ee1b\\fix_review_memory.py",
++    "C:\\Users\\richa\\OneDrive\\桌面\\stocktrade_external_archives\\LOCAL_HELPER_SCRIPTS_ARCHIVE_OUTSIDE_REPO\\98e3a997a1f0acfcf42e416616acd852f4d0ee1b\\generate_audit_matrix_md.py"
++  ],
++  "archive_was_untracked_local_cleanup": true,
++  "active_reference_detected": false,
++  "secret_risk_detected": false,
++  "debug_hook_py_excluded": true,
++  "debug_hook_py_still_untracked": true,
++  "rollback_instruction": "To restore archived helper scripts back to the repo worktree, copy each file from the actual_archive_root back to its original relative path within the repo. The 8 original paths are: automation/control/fix_shortcut.ps1, automation/control/multi_round_runner.ps1, fix_governance_guide.py, fix_manifests.py, fix_phase1_closure.py, fix_r016_freeze.py, fix_review_memory.py, generate_audit_matrix_md.py."
++}
+diff --git a/automation/control/candidates/LOCAL_HELPER_SCRIPTS_ARCHIVE_OUTSIDE_REPO_CANDIDATE/no-aider-used.txt b/automation/control/candidates/LOCAL_HELPER_SCRIPTS_ARCHIVE_OUTSIDE_REPO_CANDIDATE/no-aider-used.txt
+new file mode 100644
+index 0000000..b54bcdf
+--- /dev/null
++++ b/automation/control/candidates/LOCAL_HELPER_SCRIPTS_ARCHIVE_OUTSIDE_REPO_CANDIDATE/no-aider-used.txt
+@@ -0,0 +1,2 @@
++This candidate was created without aider or any AI-assisted code generation tool.
++All archive and move operations were performed manually by the governance executor.
+diff --git a/automation/control/candidates/LOCAL_HELPER_SCRIPTS_ARCHIVE_OUTSIDE_REPO_CANDIDATE/report.json b/automation/control/candidates/LOCAL_HELPER_SCRIPTS_ARCHIVE_OUTSIDE_REPO_CANDIDATE/report.json
+new file mode 100644
+index 0000000..4fc247d
+--- /dev/null
++++ b/automation/control/candidates/LOCAL_HELPER_SCRIPTS_ARCHIVE_OUTSIDE_REPO_CANDIDATE/report.json
+@@ -0,0 +1,27 @@
++{
++  "round_id": "LOCAL_HELPER_SCRIPTS_ARCHIVE_OUTSIDE_REPO_CANDIDATE",
++  "task_type": "candidate_creation",
++  "status": "completed",
++  "formal_status_code": "candidate_ready_awaiting_manual_review",
++  "canonical_base": "98e3a997a1f0acfcf42e416616acd852f4d0ee1b",
++  "candidate_branch": "candidate/local-helper-scripts-archive-outside-repo",
++  "archive_root": "C:\\Users\\richa\\OneDrive\\桌面\\stocktrade_external_archives\\LOCAL_HELPER_SCRIPTS_ARCHIVE_OUTSIDE_REPO\\98e3a997a1f0acfcf42e416616acd852f4d0ee1b",
++  "files_archived": 8,
++  "files_moved": [
++    "automation/control/fix_shortcut.ps1",
++    "automation/control/multi_round_runner.ps1",
++    "fix_governance_guide.py",
++    "fix_manifests.py",
++    "fix_phase1_closure.py",
++    "fix_r016_freeze.py",
++    "fix_review_memory.py",
++    "generate_audit_matrix_md.py"
++  ],
++  "files_deleted": [],
++  "files_modified": [],
++  "untracked_paths_count_before": 14,
++  "untracked_paths_count_after": 6,
++  "debug_hook_py_excluded": true,
++  "debug_hook_py_still_untracked": true,
++  "law_compliance": "04"
++}
+diff --git a/automation/control/candidates/LOCAL_HELPER_SCRIPTS_ARCHIVE_OUTSIDE_REPO_CANDIDATE/task.txt b/automation/control/candidates/LOCAL_HELPER_SCRIPTS_ARCHIVE_OUTSIDE_REPO_CANDIDATE/task.txt
+new file mode 100644
+index 0000000..3bbeb97
+--- /dev/null
++++ b/automation/control/candidates/LOCAL_HELPER_SCRIPTS_ARCHIVE_OUTSIDE_REPO_CANDIDATE/task.txt
+@@ -0,0 +1,8 @@
++Round: LOCAL_HELPER_SCRIPTS_ARCHIVE_OUTSIDE_REPO_CANDIDATE
++Task: Archive 8 approved untracked local helper scripts outside repo
++Status: COMPLETED
++Canonical Base: 98e3a997a1f0acfcf42e416616acd852f4d0ee1b
++Archive Root: C:\Users\richa\OneDrive\桌面\stocktrade_external_archives\LOCAL_HELPER_SCRIPTS_ARCHIVE_OUTSIDE_REPO\98e3a997a1f0acfcf42e416616acd852f4d0ee1b
++Archived Files: 8
++Evidence Package: 6/6 complete
++Law Compliance: 04
+diff --git a/automation/control/candidates/LOCAL_HELPER_SCRIPTS_ARCHIVE_OUTSIDE_REPO_CANDIDATE/test-results.txt b/automation/control/candidates/LOCAL_HELPER_SCRIPTS_ARCHIVE_OUTSIDE_REPO_CANDIDATE/test-results.txt
+new file mode 100644
+index 0000000..56f5e48
+--- /dev/null
++++ b/automation/control/candidates/LOCAL_HELPER_SCRIPTS_ARCHIVE_OUTSIDE_REPO_CANDIDATE/test-results.txt
+@@ -0,0 +1,43 @@
++Test Results for LOCAL_HELPER_SCRIPTS_ARCHIVE_OUTSIDE_REPO_CANDIDATE
++====================================================================
++Precondition checks:
++- canonical local HEAD = 98e3a997a1f0acfcf42e416616acd852f4d0ee1b: PASS
++- canonical remote HEAD = 98e3a997a1f0acfcf42e416616acd852f4d0ee1b: PASS
++- tracked files clean: PASS
++- untracked paths count before = 14: PASS
++- 8 approved paths exist and untracked: PASS
++- 0 approved paths are tracked: PASS
++- debug_hook.py exists and untracked: PASS
++- active_reference_detected = FALSE: PASS
++- secret_risk_detected = FALSE: PASS
++
++Archive verification:
++- 8 files moved to archive root: PASS
++- All 8 originals absent from repo: PASS
++- All 8 destinations exist at archive root: PASS
++- archive root outside repo: PASS
++- debug_hook.py untouched: PASS
++- untracked paths count after = 6: PASS
++
++Evidence package:
++- task.txt: PASS
++- evidence.json: PASS
++- report.json: PASS
++- no-aider-used.txt: PASS
++- test-results.txt: PASS
++- law_compliance = 04: PASS
++- archive_user_approved = TRUE: PASS
++- archive_outside_repo = TRUE: PASS
++- debug_hook_py_excluded = TRUE: PASS
++- rollback_instruction present: PASS
++
++Scope verification:
++- No unauthorized files moved: PASS
++- No unauthorized files deleted: PASS
++- No tracked source files modified: PASS
++- .gitignore not modified: PASS
++- .githooks not modified: PASS
++- No tracked deletion: PASS
++- No secret exposure: PASS
++
++Result: ALL CHECKS PASSED

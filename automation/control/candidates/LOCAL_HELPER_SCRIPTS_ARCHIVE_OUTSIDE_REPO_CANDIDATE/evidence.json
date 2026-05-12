@@ -1,0 +1,37 @@
+{
+  "task_id": "LOCAL_HELPER_SCRIPTS_ARCHIVE_OUTSIDE_REPO_CANDIDATE",
+  "round_id": "001",
+  "status": "completed",
+  "formal_status_code": "candidate_ready_awaiting_manual_review",
+  "timestamp": "2026-05-12T00:00:00Z",
+  "law_compliance": "04",
+  "archive_user_approved": true,
+  "archive_outside_repo": true,
+  "actual_archive_root": "C:\\Users\\richa\\OneDrive\\桌面\\stocktrade_external_archives\\LOCAL_HELPER_SCRIPTS_ARCHIVE_OUTSIDE_REPO\\98e3a997a1f0acfcf42e416616acd852f4d0ee1b",
+  "archived_paths": [
+    "automation/control/fix_shortcut.ps1",
+    "automation/control/multi_round_runner.ps1",
+    "fix_governance_guide.py",
+    "fix_manifests.py",
+    "fix_phase1_closure.py",
+    "fix_r016_freeze.py",
+    "fix_review_memory.py",
+    "generate_audit_matrix_md.py"
+  ],
+  "archived_destination_paths": [
+    "C:\\Users\\richa\\OneDrive\\桌面\\stocktrade_external_archives\\LOCAL_HELPER_SCRIPTS_ARCHIVE_OUTSIDE_REPO\\98e3a997a1f0acfcf42e416616acd852f4d0ee1b\\fix_shortcut.ps1",
+    "C:\\Users\\richa\\OneDrive\\桌面\\stocktrade_external_archives\\LOCAL_HELPER_SCRIPTS_ARCHIVE_OUTSIDE_REPO\\98e3a997a1f0acfcf42e416616acd852f4d0ee1b\\multi_round_runner.ps1",
+    "C:\\Users\\richa\\OneDrive\\桌面\\stocktrade_external_archives\\LOCAL_HELPER_SCRIPTS_ARCHIVE_OUTSIDE_REPO\\98e3a997a1f0acfcf42e416616acd852f4d0ee1b\\fix_governance_guide.py",
+    "C:\\Users\\richa\\OneDrive\\桌面\\stocktrade_external_archives\\LOCAL_HELPER_SCRIPTS_ARCHIVE_OUTSIDE_REPO\\98e3a997a1f0acfcf42e416616acd852f4d0ee1b\\fix_manifests.py",
+    "C:\\Users\\richa\\OneDrive\\桌面\\stocktrade_external_archives\\LOCAL_HELPER_SCRIPTS_ARCHIVE_OUTSIDE_REPO\\98e3a997a1f0acfcf42e416616acd852f4d0ee1b\\fix_phase1_closure.py",
+    "C:\\Users\\richa\\OneDrive\\桌面\\stocktrade_external_archives\\LOCAL_HELPER_SCRIPTS_ARCHIVE_OUTSIDE_REPO\\98e3a997a1f0acfcf42e416616acd852f4d0ee1b\\fix_r016_freeze.py",
+    "C:\\Users\\richa\\OneDrive\\桌面\\stocktrade_external_archives\\LOCAL_HELPER_SCRIPTS_ARCHIVE_OUTSIDE_REPO\\98e3a997a1f0acfcf42e416616acd852f4d0ee1b\\fix_review_memory.py",
+    "C:\\Users\\richa\\OneDrive\\桌面\\stocktrade_external_archives\\LOCAL_HELPER_SCRIPTS_ARCHIVE_OUTSIDE_REPO\\98e3a997a1f0acfcf42e416616acd852f4d0ee1b\\generate_audit_matrix_md.py"
+  ],
+  "archive_was_untracked_local_cleanup": true,
+  "active_reference_detected": false,
+  "secret_risk_detected": false,
+  "debug_hook_py_excluded": true,
+  "debug_hook_py_still_untracked": true,
+  "rollback_instruction": "To restore archived helper scripts back to the repo worktree, copy each file from the actual_archive_root back to its original relative path within the repo. The 8 original paths are: automation/control/fix_shortcut.ps1, automation/control/multi_round_runner.ps1, fix_governance_guide.py, fix_manifests.py, fix_phase1_closure.py, fix_r016_freeze.py, fix_review_memory.py, generate_audit_matrix_md.py."
+}

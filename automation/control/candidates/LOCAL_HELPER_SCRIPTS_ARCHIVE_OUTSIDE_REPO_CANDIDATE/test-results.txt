@@ -1,0 +1,43 @@
+Test Results for LOCAL_HELPER_SCRIPTS_ARCHIVE_OUTSIDE_REPO_CANDIDATE
+====================================================================
+Precondition checks:
+- canonical local HEAD = 98e3a997a1f0acfcf42e416616acd852f4d0ee1b: PASS
+- canonical remote HEAD = 98e3a997a1f0acfcf42e416616acd852f4d0ee1b: PASS
+- tracked files clean: PASS
+- untracked paths count before = 14: PASS
+- 8 approved paths exist and untracked: PASS
+- 0 approved paths are tracked: PASS
+- debug_hook.py exists and untracked: PASS
+- active_reference_detected = FALSE: PASS
+- secret_risk_detected = FALSE: PASS
+
+Archive verification:
+- 8 files moved to archive root: PASS
+- All 8 originals absent from repo: PASS
+- All 8 destinations exist at archive root: PASS
+- archive root outside repo: PASS
+- debug_hook.py untouched: PASS
+- untracked paths count after = 6: PASS
+
+Evidence package:
+- task.txt: PASS
+- evidence.json: PASS
+- report.json: PASS
+- no-aider-used.txt: PASS
+- test-results.txt: PASS
+- law_compliance = 04: PASS
+- archive_user_approved = TRUE: PASS
+- archive_outside_repo = TRUE: PASS
+- debug_hook_py_excluded = TRUE: PASS
+- rollback_instruction present: PASS
+
+Scope verification:
+- No unauthorized files moved: PASS
+- No unauthorized files deleted: PASS
+- No tracked source files modified: PASS
+- .gitignore not modified: PASS
+- .githooks not modified: PASS
+- No tracked deletion: PASS
+- No secret exposure: PASS
+
+Result: ALL CHECKS PASSED

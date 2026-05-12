@@ -1,0 +1,2 @@
+This candidate was created without aider or any AI-assisted code generation tool.
+All archive and move operations were performed manually by the governance executor.

@@ -1,0 +1,27 @@
+{
+  "round_id": "LOCAL_HELPER_SCRIPTS_ARCHIVE_OUTSIDE_REPO_CANDIDATE",
+  "task_type": "candidate_creation",
+  "status": "completed",
+  "formal_status_code": "candidate_ready_awaiting_manual_review",
+  "canonical_base": "98e3a997a1f0acfcf42e416616acd852f4d0ee1b",
+  "candidate_branch": "candidate/local-helper-scripts-archive-outside-repo",
+  "archive_root": "C:\\Users\\richa\\OneDrive\\桌面\\stocktrade_external_archives\\LOCAL_HELPER_SCRIPTS_ARCHIVE_OUTSIDE_REPO\\98e3a997a1f0acfcf42e416616acd852f4d0ee1b",
+  "files_archived": 8,
+  "files_moved": [
+    "automation/control/fix_shortcut.ps1",
+    "automation/control/multi_round_runner.ps1",
+    "fix_governance_guide.py",
+    "fix_manifests.py",
+    "fix_phase1_closure.py",
+    "fix_r016_freeze.py",
+    "fix_review_memory.py",
+    "generate_audit_matrix_md.py"
+  ],
+  "files_deleted": [],
+  "files_modified": [],
+  "untracked_paths_count_before": 14,
+  "untracked_paths_count_after": 6,
+  "debug_hook_py_excluded": true,
+  "debug_hook_py_still_untracked": true,
+  "law_compliance": "04"
+}

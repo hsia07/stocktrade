@@ -1,0 +1,8 @@
+Round: LOCAL_HELPER_SCRIPTS_ARCHIVE_OUTSIDE_REPO_CANDIDATE
+Task: Archive 8 approved untracked local helper scripts outside repo
+Status: COMPLETED
+Canonical Base: 98e3a997a1f0acfcf42e416616acd852f4d0ee1b
+Archive Root: C:\Users\richa\OneDrive\桌面\stocktrade_external_archives\LOCAL_HELPER_SCRIPTS_ARCHIVE_OUTSIDE_REPO\98e3a997a1f0acfcf42e416616acd852f4d0ee1b
+Archived Files: 8
+Evidence Package: 6/6 complete
+Law Compliance: 04
