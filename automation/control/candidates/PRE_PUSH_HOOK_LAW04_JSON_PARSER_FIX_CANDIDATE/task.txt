@@ -1,0 +1,25 @@
+﻿PRE_PUSH_HOOK_LAW04_JSON_PARSER_FIX_CANDIDATE
+============================================
+
+Task: Fix pre-push hook Law 04 JSON parser encoding issue
+Status: COMPLETED
+Date: 2026-05-12
+
+PROBLEM:
+The pre-push hook's Check-Law04Compliance function failed on Windows due to
+PowerShell pipe encoding corrupting UTF-8 JSON content. The old approach:
+  $content = git show ... | ConvertFrom-Json
+fails because pipe encoding corrupts UTF-8 data before Python/PowerShell can parse it.
+
+SOLUTION:
+Changed Check-Law04Compliance to use Python subprocess directly with UTF-8-sig decoding:
+  $pythonCmd = "import subprocess, json; result = subprocess.run(['git', 'show', ...], capture_output=True); data = json.loads(result.stdout.decode('utf-8-sig')); print(data.get('law_compliance', ''))"
+
+FIXED FILE:
+.githooks/pre-push.ps1 - Check-Law04Compliance function (lines 35-46)
+
+VERIFICATION:
+- Target evidence.json in HEAD: law_compliance = "04" - PASS
+- Missing law_compliance still fails: PASS
+- law_compliance = "03" still fails: PASS
+- Valid "04" passes: PASS

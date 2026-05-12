@@ -35,10 +35,13 @@ function Get-ChangedEvidenceFiles {
 function Check-Law04Compliance {
     param([string]$Sha, [string]$EvidencePath)
     try {
-        $content = git show "$($Sha):$EvidencePath" 2>$null
-        if (-not $content) { return $false }
-        $json = $content | ConvertFrom-Json
-        return ($json.law_compliance -eq "04")
+        # Use Python subprocess directly to avoid PowerShell pipe encoding issues
+        # The old approach ($content = git show ... | ConvertFrom-Json) fails on Windows
+        # because PowerShell's pipe encoding corrupts UTF-8 JSON content
+        $pythonCmd = "import subprocess, json; result = subprocess.run(['git', 'show', '$($Sha):$($EvidencePath)'], capture_output=True); data = json.loads(result.stdout.decode('utf-8-sig')); print(data.get('law_compliance', ''))"
+        $lawCompliance = python -c $pythonCmd 2>$null
+        if (-not $lawCompliance) { return $false }
+        return ($lawCompliance -eq "04")
     }
     catch {
         return $false

@@ -1,0 +1,33 @@
+{
+  "task": "PRE_PUSH_HOOK_LAW04_JSON_PARSER_FIX_CANDIDATE",
+  "status": "completed",
+  "round_id": "pre-push-hook-law04-json-parser-fix-2026-05-12-001",
+  "reply_id": "pre-push-hook-law04-json-parser-fix-2026-05-12-001",
+  "formal_status_code": "candidate_ready_awaiting_manual_review",
+  "timestamp": "2026-05-12T00:00:00Z",
+
+  "implementation": {
+    "hook_file_modified": ".githooks/pre-push.ps1",
+    "function_fixed": "Check-Law04Compliance",
+    "python_subprocess_approach": true,
+    "utf8_sig_decoding": true
+  },
+
+  "verification": {
+    "target_evidence_parse_result": "04",
+    "missing_law_compliance_fails": true,
+    "law_compliance_03_fails": true,
+    "law_compliance_04_passes": true,
+    "hook_rule_preserved": true
+  },
+
+  "restrictions_met": {
+    "law04_check_retained": true,
+    "missing_law_compliance_fails": true,
+    "non_04_law_compliance_fails": true,
+    "no_hardcode_bypass": true,
+    "no_scope_escalation": true
+  },
+
+  "evidence_package": "automation/control/candidates/PRE_PUSH_HOOK_LAW04_JSON_PARSER_FIX_CANDIDATE/"
+}
