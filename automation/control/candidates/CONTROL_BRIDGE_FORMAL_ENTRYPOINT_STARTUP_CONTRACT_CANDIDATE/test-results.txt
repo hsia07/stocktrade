@@ -1,0 +1,17 @@
+CONTROL_BRIDGE_FORMAL_ENTRYPOINT_STARTUP_CONTRACT_CANDIDATE test results
+Date: 2026-05-14
+Base: 70aebd6e300a12222e83b6cd42d6d736e529fd3c
+
+1. test_control_bridge_startup_contract.py: 27/27 PASS
+2. test_main_control_loop_functional.py: 32/32 PASS
+3. test_state_runtime_schema_repair.py: 19/19 PASS
+4. test_inbound_returns_policy.py: 11/11 PASS
+5. test_telegram_inbound_runtime_wiring.py: 24/24 PASS
+6. test_gov_int_001.py + test_gov_int_002.py: 12/12 PASS
+7. test_gov_infra_001.py + test_gov_infra_002.py: 12/13 PASS, 1 pre-existing unrelated FAIL
+
+Pre-existing unrelated failure:
+  test_gov_infra_002.py::TestMissingTimestampFails::test_check_completeness_integrates_freshness
+  - Requires candidate evidence files created only at runtime; unrelated to this candidate scope.
+
+TOTAL: 137/138 PASS, 1 pre-existing unrelated FAIL (not full suite pass)
