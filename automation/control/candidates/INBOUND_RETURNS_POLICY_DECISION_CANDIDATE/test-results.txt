@@ -1,0 +1,28 @@
+TEST RESULTS
+tests_run: 68
+tests_passed: 67
+tests_failed: 1
+all_required_policy_tests_passed: true
+
+=== Per-file results ===
+test_inbound_returns_policy.py: 11/11 PASS
+test_telegram_inbound_runtime_wiring.py: 24/24 PASS
+test_state_runtime_schema_repair.py: 9/9 PASS
+test_gov_int_001.py: 4/4 PASS
+test_gov_int_002.py: 8/8 PASS
+test_gov_infra_001.py: 7/7 PASS
+test_gov_infra_002.py: 5/6 PASS (1 pre-existing unrelated failure)
+
+=== Pre-existing failures (unrelated to policy decision) ===
+1. test_gov_infra_002::TestMissingTimestampFails::test_check_completeness_integrates_freshness
+   - Reason: test data lacks required files (candidate.diff, no-aider-used.txt, test-results.txt), so check_completeness reports missing files before reaching freshness check
+
+=== Policy decision ===
+- .gitignore policy chosen over archive/delete/block
+- inbound_returns/ files preserved on disk, hidden from git status
+- TelegramInboundReceiver still writes to inbound_returns/ (unchanged)
+- R053 retention/archive deferred to future candidate
+=== No long-running loop started ===
+=== No Telegram message sent ===
+=== No real Telegram API called ===
+=== No secret exposed ===

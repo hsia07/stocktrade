@@ -1,0 +1,22 @@
+=== TASK DESCRIPTION ===
+task_id: INBOUND_RETURNS_POLICY_DECISION_CANDIDATE
+task_type: policy_decision
+phase: governance
+law_compliance: 04
+severity: HIGH
+prior_blocker: INBOUND_RETURNS_POLICY_DECISION_DEFERRED
+
+=== PROBLEM STATEMENT ===
+The final deferred blocker from the GOV-INT-003 partial start abort. automation/control/inbound_returns/ receives runtime audit output (JSON log files) written by TelegramInboundReceiver.save_audit() at telegram_inbound.py:187. These files pollute git status output and risk accidental staging/committing. A policy decision is needed to govern this directory without deleting/moving/archiving files or modifying TelegramInboundReceiver behavior.
+
+=== SOLUTION ===
+1. Add `automation/control/inbound_returns/` to .gitignore with comment "Runtime audit output (TelegramInboundReceiver command audit logs)"
+2. Verify gitignore works: inbound_returns files disappear from untracked, but remain on disk
+3. Create test_inbound_returns_policy.py with 11 tests covering: gitignore effectiveness, file preservation, non-regression of source files and TelegramInboundReceiver
+4. Document decision: gitignore chosen over archive/delete/block as lowest-impact policy
+5. R053 retention/archive deferred to future candidate
+
+=== FILES ===
+- .gitignore (modified)
+- automation/control/tests/test_inbound_returns_policy.py (created)
+- automation/control/candidates/INBOUND_RETURNS_POLICY_DECISION_CANDIDATE/ (this evidence package)

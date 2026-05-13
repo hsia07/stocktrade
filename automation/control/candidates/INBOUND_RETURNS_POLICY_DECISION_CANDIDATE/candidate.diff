@@ -1,0 +1,124 @@
+diff --git a/.gitignore b/.gitignore
+index 9c2ac3d..41baa5f 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -46,3 +46,6 @@ automation/control/simple_panel.html
+ open_panel_only.bat
+ 
+ .opencode/
++
++# Runtime audit output (TelegramInboundReceiver command audit logs)
++automation/control/inbound_returns/
+diff --git a/automation/control/tests/test_inbound_returns_policy.py b/automation/control/tests/test_inbound_returns_policy.py
+new file mode 100644
+index 0000000..7023aff
+--- /dev/null
++++ b/automation/control/tests/test_inbound_returns_policy.py
+@@ -0,0 +1,107 @@
++"""
++INBOUND_RETURNS_POLICY_DECISION_CANDIDATE tests.
++
++Verifies:
++- automation/control/inbound_returns/ is ignored by .gitignore
++- inbound_return_*.json files are not tracked
++- ignore policy does not ignore source files (*.py)
++- ignore policy does not ignore candidate evidence packages
++- no inbound_returns files were deleted/moved/archived/committed
++"""
++
++from __future__ import annotations
++
++import subprocess
++from pathlib import Path
++
++import pytest
++
++REPO_ROOT = Path(__file__).parent.parent.parent.parent
++INBOUND_RETURNS = REPO_ROOT / "automation" / "control" / "inbound_returns"
++GITIGNORE = REPO_ROOT / ".gitignore"
++
++
++def _git(*args):
++    return subprocess.run(
++        ["git"] + list(args),
++        capture_output=True, text=True, cwd=REPO_ROOT
++    )
++
++
++class TestInboundReturnsIgnored:
++    def test_inbound_returns_directory_ignored(self):
++        result = _git("check-ignore", str(INBOUND_RETURNS / "test.json"))
++        assert result.returncode == 0, "inbound_returns/ directory should be gitignored"
++
++    def test_existing_json_files_ignored(self):
++        json_files = list(INBOUND_RETURNS.glob("*.json"))
++        if not json_files:
++            pytest.skip("no inbound_return_*.json files exist on this system")
++        for f in json_files:
++            result = _git("check-ignore", str(f))
++            assert result.returncode == 0, f"{f.name} should be gitignored"
++
++    def test_inbound_return_json_files_not_in_untracked(self):
++        result = _git("ls-files", "--others", "--exclude-standard")
++        untracked = set(l.strip() for l in result.stdout.split("\n") if l.strip())
++        inbound_return_files = {
++            "automation/control/inbound_returns/inbound_return_1778630189.json",
++            "automation/control/inbound_returns/inbound_return_1778630251.json",
++            "automation/control/inbound_returns/inbound_return_1778630671.json",
++            "automation/control/inbound_returns/inbound_return_1778630986.json",
++        }
++        present = inbound_return_files & untracked
++        assert len(present) == 0, (
++            f"inbound_return_*.json files still appear as untracked: {present}"
++        )
++
++    def test_source_files_not_ignored(self):
++        py_files = list((REPO_ROOT / "automation" / "control").rglob("*.py"))
++        ignored = []
++        for f in py_files:
++            result = _git("check-ignore", str(f))
++            if result.returncode == 0:
++                ignored.append(f.relative_to(REPO_ROOT))
++        assert len(ignored) == 0, f"Source files should not be ignored: {ignored[:5]}"
++
++    def test_evidence_packages_not_ignored(self):
++        candidates = REPO_ROOT / "automation" / "control" / "candidates"
++        if candidates.exists():
++            evidence_files = list(candidates.rglob("*.json")) + list(candidates.rglob("*.txt"))
++            ignored = []
++            for f in evidence_files[:20]:
++                result = _git("check-ignore", str(f))
++                if result.returncode == 0:
++                    ignored.append(f.relative_to(REPO_ROOT))
++            assert len(ignored) == 0, f"Evidence files should not be ignored: {ignored}"
++
++    def test_gitignore_contains_inbound_returns(self):
++        content = GITIGNORE.read_text(encoding="utf-8")
++        assert "inbound_returns" in content, ".gitignore must reference inbound_returns"
++
++
++class TestInboundReturnsPreserved:
++    def test_files_not_deleted(self):
++        if INBOUND_RETURNS.exists():
++            files = list(INBOUND_RETURNS.iterdir())
++            assert len(files) > 0, "inbound_returns files must not be deleted"
++            assert all(f.exists() for f in files), "All inbound_returns files must still exist"
++
++    def test_files_not_moved(self):
++        assert INBOUND_RETURNS.exists(), "inbound_returns directory must still exist"
++
++    def test_files_not_committed(self):
++        result = _git("ls-files", "--", "automation/control/inbound_returns/")
++        tracked = [l for l in result.stdout.split("\n") if l.strip()]
++        assert len(tracked) == 0, f"inbound_returns files must not be committed: {tracked}"
++
++
++class TestTelegramInboundNotAffected:
++    def test_telegram_inbound_py_not_modified(self):
++        result = _git("diff", "HEAD", "--", "automation/inbound/telegram_inbound.py")
++        assert result.stdout.strip() == "", "telegram_inbound.py must not be modified"
++
++    def test_telegram_inbound_still_writes_to_inbound_returns(self):
++        source = REPO_ROOT / "automation" / "inbound" / "telegram_inbound.py"
++        content = source.read_text(encoding="utf-8")
++        assert "inbound_returns" in content, "telegram_inbound.py must still reference inbound_returns"
