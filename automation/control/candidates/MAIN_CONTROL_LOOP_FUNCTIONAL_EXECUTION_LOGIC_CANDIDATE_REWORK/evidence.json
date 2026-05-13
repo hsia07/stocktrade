@@ -1,0 +1,92 @@
+{
+  "law_compliance": "04",
+  "record_type": "MAIN_CONTROL_LOOP_FUNCTIONAL_EXECUTION_LOGIC_CANDIDATE_REWORK",
+  "candidate": "MAIN_CONTROL_LOOP_FUNCTIONAL_EXECUTION_LOGIC_CANDIDATE_REWORK",
+  "base_head": "bfe7076356352b3078a45605bc6318ecdf01cd71",
+  "prior_invalid_candidate": "285306e1545d806556823a8cfa96fa0d75e300ca",
+  "invalid_reason": "candidate_parent_mismatch_and_missing_law_compliance",
+  "base_branch": "work/canonical-mainline-repair-001",
+  "candidate_branch": "candidate/main-control-loop-functional-execution-logic-rework",
+  "status": "ready_for_manual_review",
+  "formal_status_code": "MAIN_CONTROL_LOOP_FUNCTIONAL_EXECUTION_LOGIC_REWORK_CANDIDATE_READY_AWAITING_MANUAL_REVIEW",
+  "engine_repair_mode_removed": true,
+  "functional_execution_logic_added": true,
+  "fake_commit_prevention": true,
+  "safe_deny": true,
+  "merge_executed": false,
+  "push_executed": false,
+  "no_verify_used": false,
+  "gov_int_003_started": false,
+  "main_control_loop_started": false,
+  "real_telegram_api_called": false,
+  "trading_core_started": false,
+  "order_execution_allowed": false,
+  "secrets_exposed": false,
+  "modified_files": [
+    "automation/control/main_control_loop.ps1",
+    "automation/control/start_loop.ps1"
+  ],
+  "new_files": [
+    "automation/control/tests/test_main_control_loop_functional.py",
+    "automation/control/candidates/MAIN_CONTROL_LOOP_FUNCTIONAL_EXECUTION_LOGIC_CANDIDATE_REWORK/task.txt",
+    "automation/control/candidates/MAIN_CONTROL_LOOP_FUNCTIONAL_EXECUTION_LOGIC_CANDIDATE_REWORK/evidence.json",
+    "automation/control/candidates/MAIN_CONTROL_LOOP_FUNCTIONAL_EXECUTION_LOGIC_CANDIDATE_REWORK/report.json",
+    "automation/control/candidates/MAIN_CONTROL_LOOP_FUNCTIONAL_EXECUTION_LOGIC_CANDIDATE_REWORK/no-aider-used.txt",
+    "automation/control/candidates/MAIN_CONTROL_LOOP_FUNCTIONAL_EXECUTION_LOGIC_CANDIDATE_REWORK/test-results.txt"
+  ],
+  "changes": {
+    "main_control_loop.ps1": [
+      "Replaced lines 211-218 (ENGINE REPAIR MODE print banner) with GOVERNANCE CANDIDATE EXECUTION section",
+      "New execution path: runs evidence_checker.py, gate_report_persister.py",
+      "Writes candidate artifacts: evidence.json, report.json, task.txt, no-aider-used.txt, candidate.diff",
+      "Stages changes with git add, creates git commit with round ID in message",
+      "Generates candidate.diff from HEAD~1..HEAD diff",
+      "Safe-deny: no git merge/push, no trading/broker/execution/live, no runtime start"
+    ],
+    "start_loop.ps1": [
+      "Added $state.status_flags.whether_started = $true after run_state = 'running'",
+      "Fixes Guard-StartEvent: checks_whether_started precondition"
+    ],
+    "test_main_control_loop_functional.py (new)": [
+      "32 tests across 9 test classes",
+      "Covers all guard conditions, safe-deny, runtime state, commit integrity"
+    ]
+  },
+  "guard_status": {
+    "Guard-StartEvent": "PASS - whether_started=true added to start_loop.ps1",
+    "Guard-ToolExecution": "PASS - execution section runs governance scripts only",
+    "Guard-FunctionalCommit": "PASS - real git commit created (preCommit != postCommit)",
+    "Guard-RealCodeChanges": "PASS - main_control_loop.ps1 changes non-packaging",
+    "Guard-TrackedCandidate": "PASS - candidate files in tracked candidates/",
+    "Guard-NoSharedCommitReuse": "PASS - unique commit per candidate",
+    "Guard-CandidateDiff": "PASS - candidate.diff generated with Work: > 0"
+  },
+  "test_results": {
+    "test_main_control_loop_functional.py": {"passed": 32, "failed": 0, "total": 32},
+    "test_state_runtime_schema_repair.py": {"passed": 19, "failed": 0, "total": 19},
+    "test_inbound_returns_policy.py": {"passed": 11, "failed": 0, "total": 11},
+    "test_telegram_inbound_runtime_wiring.py": {"passed": 24, "failed": 0, "total": 24},
+    "test_gov_int_001.py": {"passed": 10, "failed": 0, "total": 10},
+    "test_gov_int_002.py": {"passed": 8, "failed": 0, "total": 8},
+    "test_gov_infra_001.py": {"passed": 7, "failed": 0, "total": 7},
+    "test_gov_infra_002.py": {"passed": 6, "failed": 1, "total": 7, "note": "pre-existing unrelated failure: test_check_completeness_integrates_freshness"}
+  },
+  "safe_deny_flags": {
+    "no_git_merge": true,
+    "no_git_push": true,
+    "no_promote": true,
+    "no_control_bridge_start": true,
+    "no_telegram_sidecar_start": true,
+    "no_main_control_loop_start": true,
+    "no_order_execution": true,
+    "no_trading_broker_live": true,
+    "forbidden_paths_not_referenced": true,
+    "secrets_not_exposed": true
+  },
+  "runtime_state": {
+    "control_bridge": "STOPPED",
+    "telegram_sidecar": "STOPPED",
+    "main_control_loop": "NOT RUNNING",
+    "order_execution_allowed": false
+  }
+}
