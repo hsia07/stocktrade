@@ -1,0 +1,31 @@
+=== TASK DESCRIPTION ===
+task_id: TELEGRAM_INBOUND_RUNTIME_WIRING_CANDIDATE
+task_type: feature_implementation
+phase: governance
+law_compliance: 04
+severity: HIGH
+
+=== PROBLEM STATEMENT ===
+GOV-INT-003 partial start aborted. Final remaining blocker: TELEGRAM_INBOUND_RUNTIME_WIRING_MISSING. TelegramInboundReceiver exists at automation/inbound/telegram_inbound.py with full /pause, /start, /status command processing, but is not wired into any runtime component. control_bridge.py is the existing local runtime bridge (:8766) that manages TelegramNotifier and has a clean HTTP server start/stop lifecycle — the natural integration point.
+
+=== SALVAGE ORIGIN ===
+record_type: SALVAGED_UNAUTHORIZED_WORKTREE_CHANGE_CANDIDATE
+original_issue: GOV_INT_003 partial start failed — final blocker TELEGRAM_INBOUND_RUNTIME_WIRING_MISSING
+unauthorized_worktree_change_detected: TRUE
+salvaged_from_dirty_canonical_worktree: TRUE
+this_is_not_standard_candidate_creation: TRUE
+unauthorized_changes_were: Telegram inbound runtime wiring partially applied directly on canonical branch without candidate branch, commit, or evidence package (import + instance wiring in control_bridge.py)
+
+=== SOLUTION ===
+1. Import TelegramInboundReceiver from automation.inbound.telegram_inbound in control_bridge.py
+2. Create module-level _inbound_receiver instance (mock mode by default; no auto-start at import)
+3. Add helper functions: start_telegram_inbound(), stop_telegram_inbound(), get_telegram_inbound_status()
+4. Wire start_telegram_inbound() into main() at bridge startup, stop_telegram_inbound() at shutdown
+5. Add /telegram-inbound-status HTTP endpoint returning masked receiver status (no secrets)
+6. Create test file with 24 tests covering: receiver init, lifecycle, commands, safe-fail, bridge wiring, schema non-regression
+7. Salvage unauthorized worktree changes into formal candidate with evidence package
+
+=== FILES ===
+- automation/control/control_bridge.py (modified)
+- automation/control/tests/test_telegram_inbound_runtime_wiring.py (created)
+- automation/control/candidates/TELEGRAM_INBOUND_RUNTIME_WIRING_CANDIDATE/ (this evidence package)

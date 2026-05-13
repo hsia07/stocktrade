@@ -11,6 +11,7 @@ from urllib.parse import urlparse
 import sys
 from datetime import datetime
 from automation.control.telegram_notifier import TelegramNotifier
+from automation.inbound.telegram_inbound import TelegramInboundReceiver
 
 REPO_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 CONTROL_DIR = os.path.join(REPO_ROOT, "automation", "control")
@@ -28,6 +29,29 @@ UNDEFINED_ROUND_VALUES = {"", "none", "undefined", "law_undefined"}
 
 # Module-level Telegram notifier (mock mode by default)
 _notifier = TelegramNotifier(mock_mode=True)
+
+# Module-level Telegram inbound receiver (mock mode by default; no auto-start at import)
+_inbound_receiver = TelegramInboundReceiver(use_mock=True)
+
+
+def start_telegram_inbound():
+    """Start Telegram inbound polling if enabled (non-mock mode)."""
+    _inbound_receiver.start()
+
+
+def stop_telegram_inbound():
+    """Stop Telegram inbound polling."""
+    _inbound_receiver.stop()
+
+
+def get_telegram_inbound_status():
+    """Return safe masked status of the inbound receiver."""
+    return {
+        "enabled": _inbound_receiver.enabled,
+        "stopped": _inbound_receiver._stop,
+        "has_thread": _inbound_receiver._thread is not None,
+        "last_command_result": _inbound_receiver._last_command_result,
+    }
 
 def is_round_defined(round_id: str) -> bool:
     """Check whether a round_id is defined (not None/empty/NONE/undefined/law_undefined)."""
@@ -807,6 +831,8 @@ class BridgeHandler(BaseHTTPRequestHandler):
                     self.send_json(200, {'status': 'error', 'message': str(e)})
             else:
                 self.send_json(200, {'status': 'not_found'})
+        elif path == '/telegram-inbound-status':
+            self.send_json(200, get_telegram_inbound_status())
         else:
             self.send_json(404, {'error': 'Not found'})
 
@@ -865,10 +891,13 @@ def main():
     print(f"  POST http://{host}:{port}/approve-and-promote")
     print("Press Ctrl+C to stop")
 
+    start_telegram_inbound()
+
     try:
         server.serve_forever()
     except KeyboardInterrupt:
         print("\nShutting down...")
+        stop_telegram_inbound()
         server.shutdown()
 
 
