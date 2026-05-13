@@ -1,0 +1,2 @@
+This candidate was created directly by OpenCode (code-authoring agent) without Aider.
+No Aider was used in any stage of this candidate's creation.

@@ -1,0 +1,140 @@
+diff --git a/automation/control/start_loop.ps1 b/automation/control/start_loop.ps1
+index fbf9389..f5e107e 100644
+--- a/automation/control/start_loop.ps1
++++ b/automation/control/start_loop.ps1
+@@ -5,8 +5,8 @@
+ 
+ param(
+     [switch]$Resume = $false,
+-    [string]$Phase = "R-006",
+-    [string]$StartRound = "R-006",
++    [string]$Phase = "",
++    [string]$StartRound = "",
+     [switch]$DryRun = $false
+ )
+ 
+@@ -59,6 +59,10 @@ function Initialize-StateSchema {
+         $State | Add-Member -NotePropertyName 'merge_gate' -NotePropertyValue $gate
+     }
+ 
++    if (-not ($State.PSObject.Properties.Name -contains 'updated_at')) {
++        $State | Add-Member -NotePropertyName 'updated_at' -NotePropertyValue ''
++    }
++
+     if (-not ($State.PSObject.Properties.Name -contains 'candidate_checklist')) {
+         $checklist = [PSCustomObject]@{
+             formal_status_code = 'not_started'
+@@ -81,6 +85,16 @@ function Initialize-StateSchema {
+     return $State
+ }
+ 
++# Safe property setter: adds property via Add-Member if missing, then sets value.
++function Set-StateProperty {
++    param($State, [string]$PropertyName, $Value)
++    if (-not ($State.PSObject.Properties.Name -contains $PropertyName)) {
++        $State | Add-Member -NotePropertyName $PropertyName -NotePropertyValue $Value
++    } else {
++        $State.$PropertyName = $Value
++    }
++}
++
+ Write-Host "[START] Initializing control loop..." -ForegroundColor Cyan
+ Write-Host "[START] Mode: $(if ($Resume) { 'RESUME' } else { 'START' })" -ForegroundColor Cyan
+ Write-Host "[START] Mode Definition: Multi-Round Candidate Pre-Fabrication Mode" -ForegroundColor Yellow
+@@ -100,6 +114,54 @@ if (!(Test-Path $statePath)) {
+ $stateJson = [System.IO.File]::ReadAllText($statePath, [System.Text.Encoding]::UTF8)
+ $state = $stateJson | ConvertFrom-Json
+ 
++# Resolve Phase / StartRound: prefer explicit params, then state fields, then fail closed
++$formattedPhase = if ($Phase) { $Phase } elseif ($state.current_phase) { $state.current_phase } else { "" }
++$formattedRound = if ($StartRound) { $StartRound } elseif ($state.current_round) { $state.current_round } else { "" }
++if (-not $formattedPhase -or -not $formattedRound) {
++    Write-Host ""
++    Write-Host "[BLOCKED] Cannot determine Phase / StartRound." -ForegroundColor Red
++    Write-Host "[BLOCKED] Provide -Phase and -StartRound parameters, or ensure state.runtime.json has current_phase and current_round." -ForegroundColor Yellow
++    Write-Host "[BLOCKED] Current context: Phase 2 / R017" -ForegroundColor Yellow
++    Write-Host ""
++    $state.run_state = "stopped_error"
++    $state.stop_reason = "missing_phase_or_round"
++    $state.last_error = "Phase/StartRound not specified and state lacks current_phase/current_round"
++    $json = $state | ConvertTo-Json -Depth 10
++    [System.IO.File]::WriteAllText($statePath, $json, [System.Text.Encoding]::UTF8)
++    exit 1
++}
++
++# Formal round mapping (Phase 1 = R001-R016, Phase 2 = R017-R048, Phase 3 = R049-R132, Phase 4 = R133-R161)
++$formalRounds = @{
++    "Phase 1" = @{ start_round = "R001"; end_round = "R016" }
++    "Phase 2" = @{ start_round = "R017"; end_round = "R048" }
++    "Phase 3" = @{ start_round = "R049"; end_round = "R132" }
++    "Phase 4" = @{ start_round = "R133"; end_round = "R161" }
++}
++
++# Validate formal phase name
++if (-not $formalRounds.ContainsKey($formattedPhase)) {
++    Write-Host ""
++    Write-Host "[BLOCKED] Unknown phase: $formattedPhase" -ForegroundColor Red
++    Write-Host "[BLOCKED] Valid phases: Phase 1, Phase 2, Phase 3, Phase 4" -ForegroundColor Yellow
++    exit 1
++}
++
++# Validate round is within phase bounds
++$phaseRounds = $formalRounds[$formattedPhase]
++$startNum = [int]$formattedRound.Substring(1)  # strip leading R
++$phaseStartNum = [int]$phaseRounds.start_round.Substring(1)
++$phaseEndNum = [int]$phaseRounds.end_round.Substring(1)
++if ($startNum -lt $phaseStartNum -or $startNum -gt $phaseEndNum) {
++    Write-Host ""
++    Write-Host "[BLOCKED] Round $formattedRound is not within $formattedPhase ($($phaseRounds.start_round)-$($phaseRounds.end_round))." -ForegroundColor Red
++    exit 1
++}
++
++# Use resolved values
++$Phase = $formattedPhase
++$StartRound = $formattedRound
++
+ # Normalize state schema: add missing fields with safe-deny defaults
+ $state = Initialize-StateSchema -State $state -Phase $Phase -StartRound $StartRound
+ 
+@@ -142,19 +204,20 @@ $authorizedScope = "$phaseStartRound ~ $phaseEndRound"
+ 
+ # Update state with multi-round candidate prep mode
+ $allowedCurrentModes = @("idle", "multi_round_candidate_prep", "stopped", "paused")
+-$state.run_state = "running"
++Set-StateProperty -State $state -PropertyName "run_state" -Value "running"
++Set-StateProperty -State $state -PropertyName "status_flags" -Value $state.status_flags
+ $state.status_flags.whether_started = $true
+-$state.current_mode = "multi_round_candidate_prep"
+-$state.authorized_scope = $authorizedScope
+-$state.last_action = "loop_start_multi_round_candidate_prep"
+-$state.last_error = $null
+-$state.stop_reason = $null
+-$state.current_phase = $Phase
+-if (-not $state.current_round) { $state.current_round = $StartRound }
+-$state.desired_action = "auto_execute_rounds_candidate_only"
+-$state.merge_gate.current_decision_state = "candidate_prep_in_progress"
+-$state.candidate_checklist.formal_status_code = "candidate_prep_in_progress"
+-$state.updated_at = (Get-Date).ToString("yyyy-MM-ddTHH:mm:ss")
++Set-StateProperty -State $state -PropertyName "current_mode" -Value "multi_round_candidate_prep"
++Set-StateProperty -State $state -PropertyName "authorized_scope" -Value $authorizedScope
++Set-StateProperty -State $state -PropertyName "last_action" -Value "loop_start_multi_round_candidate_prep"
++Set-StateProperty -State $state -PropertyName "last_error" -Value $null
++Set-StateProperty -State $state -PropertyName "stop_reason" -Value $null
++Set-StateProperty -State $state -PropertyName "current_phase" -Value $Phase
++if (-not $state.current_round) { Set-StateProperty -State $state -PropertyName "current_round" -Value $StartRound }
++Set-StateProperty -State $state -PropertyName "desired_action" -Value "auto_execute_rounds_candidate_only"
++if ($state.merge_gate) { $state.merge_gate.current_decision_state = "candidate_prep_in_progress" }
++if ($state.candidate_checklist) { $state.candidate_checklist.formal_status_code = "candidate_prep_in_progress" }
++Set-StateProperty -State $state -PropertyName "updated_at" -Value ((Get-Date).ToString("yyyy-MM-ddTHH:mm:ss"))
+ 
+ # Reset all 10 candidate criteria for new run
+ $state.candidate_checklist.theme_completed = $false
+@@ -266,7 +329,7 @@ try {
+ # Helper function
+ function Save-State {
+     param($State)
+-    $State.updated_at = (Get-Date).ToString("yyyy-MM-ddTHH:mm:ss")
++    Set-StateProperty -State $State -PropertyName "updated_at" -Value ((Get-Date).ToString("yyyy-MM-ddTHH:mm:ss"))
+     $json = $State | ConvertTo-Json -Depth 10
+     [System.IO.File]::WriteAllText($statePath, $json, [System.Text.Encoding]::UTF8)
+ }

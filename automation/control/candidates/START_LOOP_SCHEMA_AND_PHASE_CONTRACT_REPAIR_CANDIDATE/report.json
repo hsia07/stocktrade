@@ -1,0 +1,22 @@
+{
+    "candidate": "START_LOOP_SCHEMA_AND_PHASE_CONTRACT_REPAIR_CANDIDATE",
+    "status": "ready_for_review",
+    "summary": "Repaired start_loop.ps1: updated_at schema normalization, Set-StateProperty safe setter, Phase/StartRound fail-closed contract with formal round mapping validation.",
+    "files_modified": [
+        "automation/control/start_loop.ps1"
+    ],
+    "files_created": [
+        "automation/control/tests/test_start_loop_schema_phase_contract.py",
+        "automation/control/candidates/START_LOOP_SCHEMA_AND_PHASE_CONTRACT_REPAIR_CANDIDATE/task.txt",
+        "automation/control/candidates/START_LOOP_SCHEMA_AND_PHASE_CONTRACT_REPAIR_CANDIDATE/evidence.json",
+        "automation/control/candidates/START_LOOP_SCHEMA_AND_PHASE_CONTRACT_REPAIR_CANDIDATE/report.json",
+        "automation/control/candidates/START_LOOP_SCHEMA_AND_PHASE_CONTRACT_REPAIR_CANDIDATE/candidate.diff",
+        "automation/control/candidates/START_LOOP_SCHEMA_AND_PHASE_CONTRACT_REPAIR_CANDIDATE/no-aider-used.txt",
+        "automation/control/candidates/START_LOOP_SCHEMA_AND_PHASE_CONTRACT_REPAIR_CANDIDATE/test-results.txt"
+    ],
+    "blockers_repaired": [
+        "START_LOOP_UPDATED_AT_SCHEMA_NORMALIZATION_REPAIR_REQUIRED",
+        "START_LOOP_PHASE_STARTROUND_CONTRACT_REPAIR_REQUIRED"
+    ],
+    "remaining_blocker": "MAIN_CONTROL_LOOP_RESTART_BLOCKED_UNTIL_START_LOOP_CONTRACT_REPAIRED (awaiting merge/review)"
+}
