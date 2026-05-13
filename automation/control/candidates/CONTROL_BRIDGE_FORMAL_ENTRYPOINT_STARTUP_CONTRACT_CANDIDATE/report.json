@@ -1,0 +1,28 @@
+{
+    "record_type": "CONTROL_BRIDGE_FORMAL_ENTRYPOINT_STARTUP_CONTRACT_CANDIDATE",
+    "status": "candidate_created",
+    "base_head": "70aebd6e300a12222e83b6cd42d6d736e529fd3c",
+    "prior_blocker": "CONTROL_BRIDGE_FORMAL_ENTRYPOINT_STARTUP_CONTRACT_GAP",
+    "files_created": [
+        "automation/control/start_control_bridge.ps1",
+        "automation/control/tests/test_control_bridge_startup_contract.py"
+    ],
+    "files_modified": [
+        "automation/control/start_control_runtime.ps1"
+    ],
+    "files_deleted": [],
+    "hard_rules_followed": {
+        "no_runtime_started": true,
+        "no_telegram_sidecar": true,
+        "no_main_control_loop": true,
+        "no_trading_broker_execution_live": true,
+        "no_real_telegram_api": true,
+        "no_secret_output": true,
+        "no_merge": true,
+        "no_push": true,
+        "no_force_push": true,
+        "no_verify": false,
+        "pythonpath_contract_formalized": true,
+        "dry_run_available": true
+    }
+}

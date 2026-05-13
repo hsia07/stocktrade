@@ -1,0 +1,20 @@
+CONTROL_BRIDGE_FORMAL_ENTRYPOINT_STARTUP_CONTRACT_CANDIDATE
+
+Known blocker:
+  CONTROL_BRIDGE_FORMAL_ENTRYPOINT_STARTUP_CONTRACT_GAP
+
+Problem:
+  control_bridge.py uses package-style imports (from automation.control.telegram_notifier, from automation.inbound.telegram_inbound) but has no __init__.py files and no formal PYTHONPATH contract. Direct `python automation/control/control_bridge.py` fails with ModuleNotFoundError. Previous PID 50804 start used unauthorized PYTHONPATH retry.
+
+Solution:
+  1. Create automation/control/start_control_bridge.ps1 as formal standalone entrypoint.
+  2. Entrypoint auto-resolves repo root, sets PYTHONPATH = repo root in child process (not user-global), launches control_bridge.py.
+  3. Entrypoint supports -DryRun switch for validation without starting runtime.
+  4. Entrypoint explicitly safe-denies telegram_sidecar, main_control_loop, /start-loop, trading/broker/execution/live, and real Telegram API.
+  5. start_control_runtime.ps1 updated with documentation reference to the new entrypoint, but does NOT auto-start control_bridge.
+
+Scope:
+  - automation/control/start_control_bridge.ps1 (CREATE)
+  - automation/control/start_control_runtime.ps1 (MODIFY - documentation only)
+  - automation/control/tests/test_control_bridge_startup_contract.py (CREATE)
+  - automation/control/candidates/CONTROL_BRIDGE_FORMAL_ENTRYPOINT_STARTUP_CONTRACT_CANDIDATE/* (CREATE)
