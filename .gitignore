@@ -46,3 +46,6 @@ automation/control/simple_panel.html
 open_panel_only.bat
 
 .opencode/
+
+# Runtime audit output (TelegramInboundReceiver command audit logs)
+automation/control/inbound_returns/

@@ -1,0 +1,58 @@
+{
+  "round": "INBOUND_RETURNS_POLICY_DECISION_CANDIDATE",
+  "evidence_type": "policy_decision_candidate",
+  "law_compliance": "04",
+  "law_compliance_authority": "Law 04 Article 261",
+  "phase": "governance",
+  "append_only_audit": true,
+  "trace_id": "trace_inbound_returns_policy_decision",
+  "record_type": "STANDARD_POLICY_DECISION_CANDIDATE",
+  "original_issue": "GOV-INT-003 partial start abort — final deferred blocker INBOUND_RETURNS_POLICY_DECISION_DEFERRED",
+  "prior_blocker": "INBOUND_RETURNS_POLICY_DECISION_DEFERRED",
+  "inbound_returns_directory_exists": true,
+  "inbound_returns_files_count": 4,
+  "inbound_returns_files_preserved": true,
+  "inbound_returns_files_untracked": false,
+  "inbound_returns_files_committed": false,
+  "gitignore_policy_chosen": true,
+  "archive_policy_deferred": true,
+  "r053_retention_deferred": true,
+  "telegram_inbound_py_unmodified": true,
+  "telegram_inbound_still_writes_to_inbound_returns": true,
+  "state_runtime_json_modified": false,
+  "start_loop_ps1_modified": false,
+  "control_bridge_py_modified": false,
+  "source_files_modified": [
+    ".gitignore"
+  ],
+  "tests_created": [
+    "automation/control/tests/test_inbound_returns_policy.py"
+  ],
+  "pre_existing_test_failure_unrelated": true,
+  "no_files_deleted": true,
+  "no_files_moved": true,
+  "no_files_archived": true,
+  "no_long_running_loop_started": true,
+  "no_telegram_api_called": true,
+  "no_secrets_exposed": true,
+  "replay_log": [
+    "2026-05-13: candidate branch created candidate/inbound-returns-policy-decision from base 2cc7d68",
+    "2026-05-13: .gitignore modified — added automation/control/inbound_returns/ with comment",
+    "2026-05-13: gitignore verified: inbound_returns files hidden from untracked, present on disk",
+    "2026-05-13: test_inbound_returns_policy.py created with 11 tests (policy, preservation, non-regression)",
+    "2026-05-13: all 11 tests PASS, 68/69 total suite PASS (1 pre-existing unrelated)",
+    "2026-05-13: evidence package created"
+  ],
+  "test_results": {
+    "test_inbound_returns_policy_py": {"passed": 11, "failed": 0},
+    "test_telegram_inbound_runtime_wiring_py": {"passed": 24, "failed": 0},
+    "test_state_runtime_schema_repair_py": {"passed": 9, "failed": 0},
+    "test_gov_int_001_py": {"passed": 4, "failed": 0},
+    "test_gov_int_002_py": {"passed": 8, "failed": 0},
+    "test_gov_infra_001_py": {"passed": 7, "failed": 0},
+    "test_gov_infra_002_py": {"passed": 5, "failed": 1},
+    "pre_existing_failures": [
+      "test_gov_infra_002::TestMissingTimestampFails::test_check_completeness_integrates_freshness"
+    ]
+  }
+}

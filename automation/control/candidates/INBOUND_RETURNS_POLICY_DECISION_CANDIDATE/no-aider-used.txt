@@ -1,0 +1,7 @@
+NO-AIDER-USED CERTIFICATION
+Aider used: NO
+Tool used: OpenCode (direct write/edit/test)
+
+This candidate was created as a standard policy decision candidate. All file modifications and test creation were performed directly by OpenCode without Aider.
+
+The candidate creation (candidate branch, .gitignore edit, test file, evidence package) was performed directly by OpenCode.
