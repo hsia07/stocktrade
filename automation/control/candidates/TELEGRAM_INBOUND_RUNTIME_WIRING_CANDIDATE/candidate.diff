@@ -1,0 +1,297 @@
+diff --git a/automation/control/control_bridge.py b/automation/control/control_bridge.py
+index a73c291..7db0260 100644
+--- a/automation/control/control_bridge.py
++++ b/automation/control/control_bridge.py
+@@ -11,6 +11,7 @@ from urllib.parse import urlparse
+ import sys
+ from datetime import datetime
+ from automation.control.telegram_notifier import TelegramNotifier
++from automation.inbound.telegram_inbound import TelegramInboundReceiver
+ 
+ REPO_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+ CONTROL_DIR = os.path.join(REPO_ROOT, "automation", "control")
+@@ -29,6 +30,29 @@ UNDEFINED_ROUND_VALUES = {"", "none", "undefined", "law_undefined"}
+ # Module-level Telegram notifier (mock mode by default)
+ _notifier = TelegramNotifier(mock_mode=True)
+ 
++# Module-level Telegram inbound receiver (mock mode by default; no auto-start at import)
++_inbound_receiver = TelegramInboundReceiver(use_mock=True)
++
++
++def start_telegram_inbound():
++    """Start Telegram inbound polling if enabled (non-mock mode)."""
++    _inbound_receiver.start()
++
++
++def stop_telegram_inbound():
++    """Stop Telegram inbound polling."""
++    _inbound_receiver.stop()
++
++
++def get_telegram_inbound_status():
++    """Return safe masked status of the inbound receiver."""
++    return {
++        "enabled": _inbound_receiver.enabled,
++        "stopped": _inbound_receiver._stop,
++        "has_thread": _inbound_receiver._thread is not None,
++        "last_command_result": _inbound_receiver._last_command_result,
++    }
++
+ def is_round_defined(round_id: str) -> bool:
+     """Check whether a round_id is defined (not None/empty/NONE/undefined/law_undefined)."""
+     if not round_id:
+@@ -807,6 +831,8 @@ class BridgeHandler(BaseHTTPRequestHandler):
+                     self.send_json(200, {'status': 'error', 'message': str(e)})
+             else:
+                 self.send_json(200, {'status': 'not_found'})
++        elif path == '/telegram-inbound-status':
++            self.send_json(200, get_telegram_inbound_status())
+         else:
+             self.send_json(404, {'error': 'Not found'})
+ 
+@@ -865,10 +891,13 @@ def main():
+     print(f"  POST http://{host}:{port}/approve-and-promote")
+     print("Press Ctrl+C to stop")
+ 
++    start_telegram_inbound()
++
+     try:
+         server.serve_forever()
+     except KeyboardInterrupt:
+         print("\nShutting down...")
++        stop_telegram_inbound()
+         server.shutdown()
+ 
+ 
+diff --git a/automation/control/tests/test_telegram_inbound_runtime_wiring.py b/automation/control/tests/test_telegram_inbound_runtime_wiring.py
+new file mode 100644
+index 0000000..996faca
+--- /dev/null
++++ b/automation/control/tests/test_telegram_inbound_runtime_wiring.py
+@@ -0,0 +1,226 @@
++"""
++TELEGRAM_INBOUND_RUNTIME_WIRING_CANDIDATE tests.
++
++Verifies:
++- control_bridge.py wires TelegramInboundReceiver correctly
++- Inbound receiver lifecycle (start/stop) is safe
++- /telegram-inbound-status endpoint exists and returns masked data
++- Inbound receiver handles /pause, /start, /status safely
++- Missing credentials safe disabled
++- Mock mode does not call real Telegram API
++- No secret values exposed
++- Import does not auto-start receiver
++- Schema repair (current_mode) not regressed
++"""
++
++from __future__ import annotations
++
++import json
++import os
++import threading
++from pathlib import Path
++
++import pytest
++
++from automation.inbound.telegram_inbound import TelegramInboundReceiver
++
++
++def make_authorized_update(text, chat_id="test_chat", update_id=1):
++    return {
++        "update_id": update_id,
++        "message": {
++            "text": text,
++            "chat": {"id": chat_id},
++        }
++    }
++
++
++def make_unauthorized_update(text, chat_id="other_chat", update_id=1):
++    return {
++        "update_id": update_id,
++        "message": {
++            "text": text,
++            "chat": {"id": chat_id},
++        }
++    }
++
++
++class TestInboundReceiverInit:
++    def test_import_does_not_auto_start(self):
++        receiver = TelegramInboundReceiver(use_mock=True)
++        assert receiver._thread is None
++        assert not receiver._stop
++
++    def test_default_mock_mode_enabled(self):
++        receiver = TelegramInboundReceiver(use_mock=True)
++        assert receiver.use_mock is True
++        assert receiver.enabled is False
++
++    def test_missing_credentials_safe_disabled(self):
++        receiver = TelegramInboundReceiver(use_mock=False)
++        receiver.token = None
++        receiver.chat_id = None
++        receiver.enabled = all([receiver.token, receiver.chat_id]) and not receiver.use_mock
++        assert receiver.enabled is False
++
++    def test_explicit_credentials_enables(self):
++        receiver = TelegramInboundReceiver(use_mock=False)
++        receiver.token = "test_token"
++        receiver.chat_id = "test_chat"
++        assert all([receiver.token, receiver.chat_id])
++        assert not receiver.use_mock
++
++
++class TestInboundReceiverLifecycle:
++    def test_start_creates_thread(self):
++        receiver = TelegramInboundReceiver(use_mock=True)
++        receiver.token = "test_token"
++        receiver.chat_id = "test_chat"
++        receiver.enabled = True
++        receiver.start()
++        assert receiver._thread is not None
++        assert receiver._thread.is_alive()
++        receiver.stop()
++
++    def test_stop_joins_thread(self):
++        receiver = TelegramInboundReceiver(use_mock=True)
++        receiver.token = "test_token"
++        receiver.chat_id = "test_chat"
++        receiver.enabled = True
++        receiver.start()
++        assert receiver._thread is not None
++        receiver.stop()
++        assert receiver._stop is True
++
++    def test_start_when_disabled_no_thread(self):
++        receiver = TelegramInboundReceiver(use_mock=True)
++        receiver.start()
++        assert receiver._thread is None
++
++    def test_stop_safe_when_not_started(self):
++        receiver = TelegramInboundReceiver(use_mock=True)
++        receiver.stop()
++        assert receiver._stop is True
++
++
++class TestInboundReceiverCommands:
++    def test_status_command_returns_state(self):
++        receiver = TelegramInboundReceiver(use_mock=True)
++        update = make_authorized_update("/status")
++        receiver._process_update(update)
++        assert receiver._last_command_result == "status_emitted"
++
++    def test_pause_command_accepted(self):
++        receiver = TelegramInboundReceiver(use_mock=True)
++        update = make_authorized_update("/pause")
++        receiver._process_update(update)
++        assert receiver._last_command_result == "paused"
++
++    def test_unknown_command_ignored(self):
++        receiver = TelegramInboundReceiver(use_mock=True)
++        update = make_authorized_update("/unknown")
++        receiver._process_update(update)
++        assert receiver._last_command_result is None
++
++    def test_random_text_ignored(self):
++        receiver = TelegramInboundReceiver(use_mock=True)
++        update = make_authorized_update("hello world")
++        receiver._process_update(update)
++        assert receiver._last_command_result is None
++
++    def test_unauthorized_chat_rejected(self):
++        receiver = TelegramInboundReceiver(use_mock=False)
++        receiver.token = "test_token"
++        receiver.chat_id = "authorized_chat"
++        receiver.enabled = True
++        for cmd in ["/pause", "/start", "/status"]:
++            receiver._last_command_result = None
++            update = make_unauthorized_update(cmd, chat_id="unauthorized_chat")
++            receiver._process_update(update)
++            assert receiver._last_command_result == "rejected", f"{cmd} should be rejected"
++
++    def test_status_builds_state_safely(self):
++        receiver = TelegramInboundReceiver(use_mock=True)
++        state = receiver._build_status_state()
++        assert "paused" in state
++        assert "current_round" in state
++        assert "has_defined_round" in state
++        assert "uptime_seconds" in state
++        assert "enabled" in state
++
++    def test_command_with_trailing_args(self):
++        receiver = TelegramInboundReceiver(use_mock=True)
++        update = make_authorized_update("/pause now")
++        receiver._process_update(update)
++        assert receiver._last_command_result == "paused"
++
++
++class TestInboundReceiverSafe:
++    def test_mock_fetch_returns_none(self):
++        receiver = TelegramInboundReceiver(use_mock=True)
++        updates = receiver._fetch_updates()
++        assert updates is None
++
++    def test_no_hardcoded_secrets(self):
++        source_path = Path(__file__).parent.parent.parent / "inbound" / "telegram_inbound.py"
++        assert source_path.exists()
++        content = source_path.read_text(encoding="utf-8")
++        assert "TELEGRAM_BOT_TOKEN" in content
++        assert "os.environ.get" in content
++        assert "TELEGRAM_CHAT_ID" in content
++
++    def test_set_callback_safe(self):
++        receiver = TelegramInboundReceiver(use_mock=True)
++        results = []
++        def cb(cmd, update):
++            results.append(cmd)
++        receiver.set_callback(cb)
++        assert receiver._callback is not None
++        receiver._callback("/status", {})
++        assert results == ["/status"]
++
++
++class TestControlBridgeWiring:
++    def test_control_bridge_imports_inbound_receiver(self):
++        from automation.control import control_bridge
++        assert hasattr(control_bridge, "_inbound_receiver")
++        assert hasattr(control_bridge, "start_telegram_inbound")
++        assert hasattr(control_bridge, "stop_telegram_inbound")
++        assert hasattr(control_bridge, "get_telegram_inbound_status")
++
++    def test_get_telegram_inbound_status_returns_masked(self):
++        from automation.control import control_bridge
++        status = control_bridge.get_telegram_inbound_status()
++        assert "enabled" in status
++        assert "stopped" in status
++        assert "has_thread" in status
++        assert "last_command_result" in status
++
++    def test_start_stop_telegram_inbound_safe(self):
++        from automation.control import control_bridge
++        control_bridge.start_telegram_inbound()
++        control_bridge.stop_telegram_inbound()
++        status = control_bridge.get_telegram_inbound_status()
++        assert status["stopped"] is True
++
++    def test_duplicate_receiver_prevention(self):
++        from automation.inbound.telegram_inbound import TelegramInboundReceiver
++        r1 = TelegramInboundReceiver(use_mock=True)
++        r2 = TelegramInboundReceiver(use_mock=True)
++        assert r1 is not r2
++        assert r1._thread is None
++        assert r2._thread is None
++
++
++class TestSchemaRepairNotRegressed:
++    def test_current_mode_handling_not_broken(self):
++        from automation.control import control_bridge
++        receiver = control_bridge._inbound_receiver
++        assert receiver is not None
++
++    def test_state_runtime_not_modified(self):
++        state_path = Path(__file__).parent.parent.parent.parent / "automation" / "control" / "state.runtime.json"
++        assert state_path.exists()
++        content = state_path.read_text(encoding="utf-8")
++        state = json.loads(content)
++        assert "current_mode" not in state

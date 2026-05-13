@@ -1,0 +1,52 @@
+{
+  "round": "TELEGRAM_INBOUND_RUNTIME_WIRING_CANDIDATE",
+  "evidence_type": "salvaged_unauthorized_worktree_change_candidate",
+  "law_compliance": "04",
+  "law_compliance_authority": "Law 04 Article 261",
+  "phase": "governance",
+  "append_only_audit": true,
+  "trace_id": "trace_telegram_inbound_runtime_wiring",
+  "record_type": "SALVAGED_UNAUTHORIZED_WORKTREE_CHANGE_CANDIDATE",
+  "original_issue": "GOV_INT_003 partial start failed — final blocker TELEGRAM_INBOUND_RUNTIME_WIRING_MISSING",
+  "unauthorized_worktree_change_detected": true,
+  "salvaged_from_dirty_canonical_worktree": true,
+  "this_is_not_standard_candidate_creation": true,
+  "state_runtime_json_modified": false,
+  "telegram_inbound_runtime_wired": true,
+  "telegram_inbound_runtime_wiring_deferred": false,
+  "schema_repair_behavior_unchanged": true,
+  "source_files_modified": [
+    "automation/control/control_bridge.py"
+  ],
+  "tests_created": [
+    "automation/control/tests/test_telegram_inbound_runtime_wiring.py"
+  ],
+  "pre_existing_test_failure_unrelated": true,
+  "gov_int_003_started": false,
+  "telegram_auto_mode_started": false,
+  "no_telegram_api_called": true,
+  "no_secrets_exposed": true,
+  "replay_log": [
+    "2026-05-13: unauthorized worktree change detected on canonical branch (control_bridge.py import + partial wiring)",
+    "2026-05-13: containment audit confirmed 1 dirty file, no candidate branch/commit/evidence",
+    "2026-05-13: salvage candidate created on candidate/telegram-inbound-runtime-wiring branch",
+    "2026-05-13: wiring completed: module-level _inbound_receiver, start/stop helpers, /telegram-inbound-status endpoint",
+    "2026-05-13: test file created with 24 tests covering lifecycle, commands, safe-fail, bridge wiring, schema non-regression",
+    "2026-05-13: evidence package created with salvage origin documentation"
+  ],
+  "test_results": {
+    "test_telegram_inbound_runtime_wiring_py": {"passed": 24, "failed": 0},
+    "test_state_runtime_schema_repair_py": {"passed": 9, "failed": 0},
+    "test_gov_int_001_py": {"passed": 4, "failed": 0},
+    "test_gov_int_002_py": {"passed": 8, "failed": 0},
+    "test_gov_infra_001_py": {"passed": 7, "failed": 0},
+    "test_gov_infra_002_py": {"passed": 5, "failed": 1},
+    "test_gov_infra_003_py": {"passed": 9, "failed": 0},
+    "test_gov_infra_004_py": {"passed": 12, "failed": 0},
+    "test_gov_infra_005_py": {"passed": 12, "failed": 0},
+    "test_gov_infra_006_py": {"passed": 11, "failed": 0},
+    "pre_existing_failures": [
+      "test_gov_infra_002::TestMissingTimestampFails::test_check_completeness_integrates_freshness"
+    ]
+  }
+}
