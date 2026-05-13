@@ -1,0 +1,27 @@
+Task: MAIN_CONTROL_LOOP_FUNCTIONAL_EXECUTION_LOGIC_CANDIDATE_REWORK
+
+Base: bfe7076356352b3078a45605bc6318ecdf01cd71
+Branch: candidate/main-control-loop-functional-execution-logic-rework
+Prior invalid candidate: 285306e1545d806556823a8cfa96fa0d75e300ca
+Invalid reason: candidate_parent_mismatch_and_missing_law_compliance
+
+Goal: Replace ENGINE REPAIR MODE placeholder (main_control_loop.ps1 lines 211-218) with governance candidate execution path that:
+1. Runs evidence_checker.py and gate_report_persister.py
+2. Writes candidate round artifacts (evidence.json, report.json, task.txt, no-aider-used.txt, candidate.diff)
+3. Stages changed files and creates a real git commit
+4. Generates candidate.diff diff for guard verification
+
+Safe-deny enforcement:
+- No git merge/push/force-push
+- No trading/broker/execution/live mode
+- No control_bridge, telegram_sidecar, main_control_loop runtime start
+- No order execution
+
+Additional fix:
+- start_loop.ps1: added $state.status_flags.whether_started = $true to satisfy Guard-StartEvent preconditions
+
+Files modified:
+1. automation/control/main_control_loop.ps1 (modified)
+2. automation/control/start_loop.ps1 (modified)
+3. automation/control/tests/test_main_control_loop_functional.py (new)
+4. automation/control/candidates/MAIN_CONTROL_LOOP_FUNCTIONAL_EXECUTION_LOGIC_CANDIDATE_REWORK/* (new - evidence package)

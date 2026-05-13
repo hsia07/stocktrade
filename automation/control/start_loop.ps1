@@ -143,6 +143,7 @@ $authorizedScope = "$phaseStartRound ~ $phaseEndRound"
 # Update state with multi-round candidate prep mode
 $allowedCurrentModes = @("idle", "multi_round_candidate_prep", "stopped", "paused")
 $state.run_state = "running"
+$state.status_flags.whether_started = $true
 $state.current_mode = "multi_round_candidate_prep"
 $state.authorized_scope = $authorizedScope
 $state.last_action = "loop_start_multi_round_candidate_prep"

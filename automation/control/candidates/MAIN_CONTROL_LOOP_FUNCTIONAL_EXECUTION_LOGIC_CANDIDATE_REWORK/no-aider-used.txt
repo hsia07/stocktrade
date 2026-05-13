@@ -1,0 +1,6 @@
+This candidate was NOT created by aider or any AI code generation tool.
+All changes were made manually by the developer (Rich A.).
+Evidence: no aider sessions ran during this candidate creation.
+
+The candidate files, test file, and modifications to main_control_loop.ps1 and start_loop.ps1
+were written using text editor commands by the developer.

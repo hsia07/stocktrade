@@ -1,0 +1,24 @@
+{
+  "candidate": "MAIN_CONTROL_LOOP_FUNCTIONAL_EXECUTION_LOGIC_CANDIDATE_REWORK",
+  "summary": "Clean rework candidate: replaced ENGINE REPAIR MODE placeholder with governance candidate execution path. Added whether_started flag. Created 32-test functional suite. Single commit from canonical base bfe7076. law_compliance = 04.",
+  "prior_invalid_candidate": "285306e1545d806556823a8cfa96fa0d75e300ca",
+  "invalid_reason": "candidate_parent_mismatch_and_missing_law_compliance",
+  "scope_verification": {
+    "allowed_files_modified": ["automation/control/main_control_loop.ps1", "automation/control/start_loop.ps1"],
+    "allowed_files_created": ["automation/control/tests/test_main_control_loop_functional.py", "candidates/MAIN_CONTROL_LOOP_FUNCTIONAL_EXECUTION_LOGIC_CANDIDATE_REWORK/*"],
+    "forbidden_files_not_modified": true,
+    "no_runtime_start": true,
+    "no_order_execution": true,
+    "no_git_merge_push_promote": true
+  },
+  "key_decisions": [
+    "ENGINE REPAIR MODE replaced with governance-only execution path",
+    "start_loop.ps1 needed whether_started=true to unblock Guard-StartEvent",
+    "Single clean commit from canonical base bfe7076",
+    "evidence.json has top-level law_compliance: '04'"
+  ],
+  "risks": [
+    "Pre-existing unrelated test failure in test_gov_infra_002.py persists"
+  ],
+  "formal_status_code": "MAIN_CONTROL_LOOP_FUNCTIONAL_EXECUTION_LOGIC_REWORK_CANDIDATE_READY_AWAITING_MANUAL_REVIEW"
+}
