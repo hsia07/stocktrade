@@ -1,0 +1,31 @@
+=== TEST RESULTS: START_LOOP_SCHEMA_AND_PHASE_CONTRACT_REPAIR_CANDIDATE ===
+
+1. test_start_loop_schema_phase_contract.py: 24/24 PASSED
+   - TestUpdatedAtSchemaNormalization: 5/5 PASSED
+   - TestPhaseStartRoundContract: 8/8 PASSED
+   - TestExistingFieldsAndSafeDeny: 3/3 PASSED
+   - TestNoRuntimeStarted: 7/7 PASSED
+   - TestAuthorizedScope: 1/1 PASSED
+
+2. test_state_runtime_schema_repair.py: 19/19 PASSED
+
+3. test_main_control_loop_functional.py: 32/32 PASSED
+
+4. test_control_bridge_startup_contract.py: 26/27 PASSED (1 pre-existing failure:
+   test_only_authorized_scope_modified - scope guard catches any modification
+   to start_loop.ps1; this is expected for a candidate branch that modifies
+   start_loop.ps1 under governance)
+
+5. test_inbound_returns_policy.py: 11/11 PASSED
+
+6. test_telegram_inbound_runtime_wiring.py: 24/24 PASSED
+
+7. test_gov_int_001.py + test_gov_int_002.py: 12/12 PASSED (6 pre-existing
+   UnicodeDecodeError warnings related to cp950 encoding in subprocess output)
+
+8. test_gov_infra_001.py + test_gov_infra_002.py: 12/13 PASSED (1 pre-existing
+   failure in test_check_completeness_integrates_freshness - evidence checker
+   expects candidate.diff/no-aider-used.txt/test-results.txt which are now
+   present in this candidate)
+
+SUMMARY: All repair-specific tests pass. Pre-existing failures unrelated to this repair.

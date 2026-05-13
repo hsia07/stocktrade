@@ -1,0 +1,29 @@
+START_LOOP_SCHEMA_AND_PHASE_CONTRACT_REPAIR_CANDIDATE
+
+Blocker:
+- START_LOOP_UPDATED_AT_SCHEMA_NORMALIZATION_REPAIR_REQUIRED
+- START_LOOP_PHASE_STARTROUND_CONTRACT_REPAIR_REQUIRED
+
+Prior failure round: GOV_INT_003_RESTART_MAIN_CONTROL_LOOP_START_EXECUTION_AFTER_READINESS_PASS
+
+Failures:
+1. start_loop.ps1 line 157 ($state.updated_at = ...) crashed on schema_version=2.0 state
+   because Initialize-StateSchema did not add `updated_at` property.
+2. Default params $Phase = "R-006" and $StartRound = "R-006" were silently wrong
+   for current Phase 2 / R017 context, and no fail-closed guard existed.
+
+Repairs:
+1. Added `updated_at` to Initialize-StateSchema with safe-deny default ''.
+2. Added Set-StateProperty helper: safe setter that adds property via Add-Member
+   if missing, preventing direct assignment crashes on PSCustomObject.
+3. Replaced all direct property writes after schema normalization with
+   Set-StateProperty calls (run_state, current_mode, authorized_scope,
+   last_action, last_error, stop_reason, current_phase, current_round,
+   desired_action, updated_at).
+4. Updated Save-State to use Set-StateProperty for updated_at.
+5. Removed R-006 default values for -Phase and -StartRound (now "").
+6. Added phase/round resolution logic: prefers explicit params, then state
+   fields (current_phase, current_round), then fail closed.
+7. Added formal round mapping validation: Phase 1=R001-R016, Phase 2=R017-R048,
+   Phase 3=R049-R132, Phase 4=R133-R161. Round must be within phase bounds.
+8. Unknown phase names (e.g. "R-006") are rejected with BLOCKED.
