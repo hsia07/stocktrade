@@ -26,6 +26,61 @@ if (!(Test-Path $logDir)) {
     New-Item -ItemType Directory -Path $logDir -Force | Out-Null
 }
 
+# Schema normalization: ensure all required state fields exist with safe-deny defaults
+function Initialize-StateSchema {
+    param($State, $Phase, $StartRound)
+
+    if (-not ($State.PSObject.Properties.Name -contains 'current_mode')) {
+        $State | Add-Member -NotePropertyName 'current_mode' -NotePropertyValue 'idle'
+    }
+
+    if (-not ($State.PSObject.Properties.Name -contains 'stop_reason')) {
+        $State | Add-Member -NotePropertyName 'stop_reason' -NotePropertyValue $null
+    }
+
+    if (-not ($State.PSObject.Properties.Name -contains 'phase_definition')) {
+        $def = [PSCustomObject]@{}
+        $def | Add-Member -NotePropertyName $Phase -NotePropertyValue ([PSCustomObject]@{start_round = $StartRound; end_round = $StartRound})
+        $State | Add-Member -NotePropertyName 'phase_definition' -NotePropertyValue $def
+    } elseif (-not $State.phase_definition.$Phase) {
+        $State.phase_definition | Add-Member -NotePropertyName $Phase -NotePropertyValue ([PSCustomObject]@{start_round = $StartRound; end_round = $StartRound})
+    }
+
+    if (-not ($State.PSObject.Properties.Name -contains 'authorized_scope')) {
+        $State | Add-Member -NotePropertyName 'authorized_scope' -NotePropertyValue ''
+    }
+
+    if (-not ($State.PSObject.Properties.Name -contains 'desired_action')) {
+        $State | Add-Member -NotePropertyName 'desired_action' -NotePropertyValue 'none'
+    }
+
+    if (-not ($State.PSObject.Properties.Name -contains 'merge_gate')) {
+        $gate = [PSCustomObject]@{current_decision_state = 'closed'}
+        $State | Add-Member -NotePropertyName 'merge_gate' -NotePropertyValue $gate
+    }
+
+    if (-not ($State.PSObject.Properties.Name -contains 'candidate_checklist')) {
+        $checklist = [PSCustomObject]@{
+            formal_status_code = 'not_started'
+            theme_completed = $false
+            rerunnable_tests_passed = $false
+            evidence_package_complete = $false
+            validate_evidence_ps1_executed = $false
+            validate_evidence_result = $null
+            validate_evidence_executed_at = $null
+            validate_evidence_exit_code = $null
+            candidate_branch_auditable = $false
+            candidate_commit_auditable = $false
+            no_fabricated_evidence = $false
+            no_unauthorized_modifications = $false
+            complete_return_to_chatgpt = $false
+        }
+        $State | Add-Member -NotePropertyName 'candidate_checklist' -NotePropertyValue $checklist
+    }
+
+    return $State
+}
+
 Write-Host "[START] Initializing control loop..." -ForegroundColor Cyan
 Write-Host "[START] Mode: $(if ($Resume) { 'RESUME' } else { 'START' })" -ForegroundColor Cyan
 Write-Host "[START] Mode Definition: Multi-Round Candidate Pre-Fabrication Mode" -ForegroundColor Yellow
@@ -44,6 +99,9 @@ if (!(Test-Path $statePath)) {
 
 $stateJson = [System.IO.File]::ReadAllText($statePath, [System.Text.Encoding]::UTF8)
 $state = $stateJson | ConvertFrom-Json
+
+# Normalize state schema: add missing fields with safe-deny defaults
+$state = Initialize-StateSchema -State $state -Phase $Phase -StartRound $StartRound
 
 # Check for phase completion stop
 if ($state.stop_reason -eq "phase_completed") {
@@ -83,11 +141,7 @@ $phaseEndRound = $state.phase_definition.($Phase).end_round
 $authorizedScope = "$phaseStartRound ~ $phaseEndRound"
 
 # Update state with multi-round candidate prep mode
-# Ensure current_mode exists (schema fix: template default is "idle")
 $allowedCurrentModes = @("idle", "multi_round_candidate_prep", "stopped", "paused")
-if (-not ($state.PSObject.Properties.Name -contains 'current_mode')) {
-    $state | Add-Member -NotePropertyName 'current_mode' -NotePropertyValue 'idle'
-}
 $state.run_state = "running"
 $state.current_mode = "multi_round_candidate_prep"
 $state.authorized_scope = $authorizedScope

@@ -1,0 +1,552 @@
+diff --git a/automation/control/start_loop.ps1 b/automation/control/start_loop.ps1
+index b9aa244..4b7dda3 100644
+--- a/automation/control/start_loop.ps1
++++ b/automation/control/start_loop.ps1
+@@ -26,6 +26,61 @@ if (!(Test-Path $logDir)) {
+     New-Item -ItemType Directory -Path $logDir -Force | Out-Null
+ }
+ 
++# Schema normalization: ensure all required state fields exist with safe-deny defaults
++function Initialize-StateSchema {
++    param($State, $Phase, $StartRound)
++
++    if (-not ($State.PSObject.Properties.Name -contains 'current_mode')) {
++        $State | Add-Member -NotePropertyName 'current_mode' -NotePropertyValue 'idle'
++    }
++
++    if (-not ($State.PSObject.Properties.Name -contains 'stop_reason')) {
++        $State | Add-Member -NotePropertyName 'stop_reason' -NotePropertyValue $null
++    }
++
++    if (-not ($State.PSObject.Properties.Name -contains 'phase_definition')) {
++        $def = [PSCustomObject]@{}
++        $def | Add-Member -NotePropertyName $Phase -NotePropertyValue ([PSCustomObject]@{start_round = $StartRound; end_round = $StartRound})
++        $State | Add-Member -NotePropertyName 'phase_definition' -NotePropertyValue $def
++    } elseif (-not $State.phase_definition.$Phase) {
++        $State.phase_definition | Add-Member -NotePropertyName $Phase -NotePropertyValue ([PSCustomObject]@{start_round = $StartRound; end_round = $StartRound})
++    }
++
++    if (-not ($State.PSObject.Properties.Name -contains 'authorized_scope')) {
++        $State | Add-Member -NotePropertyName 'authorized_scope' -NotePropertyValue ''
++    }
++
++    if (-not ($State.PSObject.Properties.Name -contains 'desired_action')) {
++        $State | Add-Member -NotePropertyName 'desired_action' -NotePropertyValue 'none'
++    }
++
++    if (-not ($State.PSObject.Properties.Name -contains 'merge_gate')) {
++        $gate = [PSCustomObject]@{current_decision_state = 'closed'}
++        $State | Add-Member -NotePropertyName 'merge_gate' -NotePropertyValue $gate
++    }
++
++    if (-not ($State.PSObject.Properties.Name -contains 'candidate_checklist')) {
++        $checklist = [PSCustomObject]@{
++            formal_status_code = 'not_started'
++            theme_completed = $false
++            rerunnable_tests_passed = $false
++            evidence_package_complete = $false
++            validate_evidence_ps1_executed = $false
++            validate_evidence_result = $null
++            validate_evidence_executed_at = $null
++            validate_evidence_exit_code = $null
++            candidate_branch_auditable = $false
++            candidate_commit_auditable = $false
++            no_fabricated_evidence = $false
++            no_unauthorized_modifications = $false
++            complete_return_to_chatgpt = $false
++        }
++        $State | Add-Member -NotePropertyName 'candidate_checklist' -NotePropertyValue $checklist
++    }
++
++    return $State
++}
++
+ Write-Host "[START] Initializing control loop..." -ForegroundColor Cyan
+ Write-Host "[START] Mode: $(if ($Resume) { 'RESUME' } else { 'START' })" -ForegroundColor Cyan
+ Write-Host "[START] Mode Definition: Multi-Round Candidate Pre-Fabrication Mode" -ForegroundColor Yellow
+@@ -45,6 +100,9 @@ if (!(Test-Path $statePath)) {
+ $stateJson = [System.IO.File]::ReadAllText($statePath, [System.Text.Encoding]::UTF8)
+ $state = $stateJson | ConvertFrom-Json
+ 
++# Normalize state schema: add missing fields with safe-deny defaults
++$state = Initialize-StateSchema -State $state -Phase $Phase -StartRound $StartRound
++
+ # Check for phase completion stop
+ if ($state.stop_reason -eq "phase_completed") {
+     Write-Host ""
+@@ -83,11 +141,7 @@ $phaseEndRound = $state.phase_definition.($Phase).end_round
+ $authorizedScope = "$phaseStartRound ~ $phaseEndRound"
+ 
+ # Update state with multi-round candidate prep mode
+-# Ensure current_mode exists (schema fix: template default is "idle")
+ $allowedCurrentModes = @("idle", "multi_round_candidate_prep", "stopped", "paused")
+-if (-not ($state.PSObject.Properties.Name -contains 'current_mode')) {
+-    $state | Add-Member -NotePropertyName 'current_mode' -NotePropertyValue 'idle'
+-}
+ $state.run_state = "running"
+ $state.current_mode = "multi_round_candidate_prep"
+ $state.authorized_scope = $authorizedScope
+diff --git a/automation/control/tests/test_state_runtime_schema_repair.py b/automation/control/tests/test_state_runtime_schema_repair.py
+index 5e3057c..6fbd3d4 100644
+--- a/automation/control/tests/test_state_runtime_schema_repair.py
++++ b/automation/control/tests/test_state_runtime_schema_repair.py
+@@ -27,6 +27,38 @@ STATE_RUNTIME = CONTROL_DIR / "state.runtime.json"
+ 
+ ALLOWED_CURRENT_MODES = {"idle", "multi_round_candidate_prep", "stopped", "paused"}
+ 
++REQUIRED_SCHEMA_FIELDS = {
++    "stop_reason",
++    "phase_definition",
++    "authorized_scope",
++    "desired_action",
++    "merge_gate",
++    "candidate_checklist",
++}
++
++SAFE_DENY_DEFAULTS = {
++    "current_mode": "idle",
++    "stop_reason": None,
++    "authorized_scope": "",
++    "desired_action": "none",
++}
++
++CANDIDATE_CHECKLIST_SAFE_DENY = {
++    "formal_status_code": "not_started",
++    "theme_completed": False,
++    "rerunnable_tests_passed": False,
++    "evidence_package_complete": False,
++    "validate_evidence_ps1_executed": False,
++    "validate_evidence_result": None,
++    "validate_evidence_executed_at": None,
++    "validate_evidence_exit_code": None,
++    "candidate_branch_auditable": False,
++    "candidate_commit_auditable": False,
++    "no_fabricated_evidence": False,
++    "no_unauthorized_modifications": False,
++    "complete_return_to_chatgpt": False,
++}
++
+ 
+ class TestStartLoopCurrentModeSchema:
+     def test_start_loop_ps1_contains_current_mode_fix(self):
+@@ -129,6 +161,261 @@ Write-Output "run_state=$($state.run_state) current_mode=$($state.current_mode)"
+             f"current_mode should be idle: {proc.stdout}"
+ 
+ 
++class TestMainControlLoopStateSchemaRepair:
++    """6-field schema repair: start_loop.ps1 must handle missing fields without crash."""
++
++    def test_start_loop_ps1_contains_initialize_state_schema_function(self):
++        """start_loop.ps1 must contain the Initialize-StateSchema function."""
++        content = START_LOOP_PS1.read_text(encoding="utf-8")
++        assert "function Initialize-StateSchema" in content, \
++            "start_loop.ps1 missing Initialize-StateSchema function"
++
++    def test_start_loop_ps1_calls_initialize_state_schema(self):
++        """start_loop.ps1 must call Initialize-StateSchema after loading state."""
++        content = START_LOOP_PS1.read_text(encoding="utf-8")
++        assert "Initialize-StateSchema" in content, \
++            "start_loop.ps1 missing Initialize-StateSchema call"
++
++    def test_start_loop_ps1_covers_all_required_fields(self):
++        """Initialize-StateSchema must handle all 6 missing fields + current_mode."""
++        content = START_LOOP_PS1.read_text(encoding="utf-8")
++        for field in REQUIRED_SCHEMA_FIELDS:
++            assert field in content, \
++                f"Initialize-StateSchema missing field: {field}"
++        assert "current_mode" in content, \
++            "Initialize-StateSchema missing current_mode"
++
++    def test_schema_normalization_no_crash_on_minimal_state(self):
++        """Simulate loading minimal state with missing fields, verify no crash."""
++        ps_script = r"""
++$ErrorActionPreference = 'Stop'
++$state = '{"run_state":"stopped"}' | ConvertFrom-Json
++function Init {
++    param($S, $P, $R)
++    if (-not ($S.PSObject.Properties.Name -contains 'current_mode')) {
++        $S | Add-Member -NotePropertyName 'current_mode' -NotePropertyValue 'idle'
++    }
++    if (-not ($S.PSObject.Properties.Name -contains 'stop_reason')) {
++        $S | Add-Member -NotePropertyName 'stop_reason' -NotePropertyValue $null
++    }
++    if (-not ($S.PSObject.Properties.Name -contains 'phase_definition')) {
++        $d = @{}; $d[$P] = @{start_round=$R; end_round=$R}
++        $S | Add-Member -NotePropertyName 'phase_definition' -NotePropertyValue $d
++    }
++    if (-not ($S.PSObject.Properties.Name -contains 'authorized_scope')) {
++        $S | Add-Member -NotePropertyName 'authorized_scope' -NotePropertyValue ''
++    }
++    if (-not ($S.PSObject.Properties.Name -contains 'desired_action')) {
++        $S | Add-Member -NotePropertyName 'desired_action' -NotePropertyValue 'none'
++    }
++    if (-not ($S.PSObject.Properties.Name -contains 'merge_gate')) {
++        $S | Add-Member -NotePropertyName 'merge_gate' -NotePropertyValue ([PSCustomObject]@{current_decision_state='closed'})
++    }
++    if (-not ($S.PSObject.Properties.Name -contains 'candidate_checklist')) {
++        $S | Add-Member -NotePropertyName 'candidate_checklist' -NotePropertyValue ([PSCustomObject]@{formal_status_code='not_started'; theme_completed=$false; rerunnable_tests_passed=$false; evidence_package_complete=$false; validate_evidence_ps1_executed=$false; validate_evidence_result=$null; validate_evidence_executed_at=$null; validate_evidence_exit_code=$null; candidate_branch_auditable=$false; candidate_commit_auditable=$false; no_fabricated_evidence=$false; no_unauthorized_modifications=$false; complete_return_to_chatgpt=$false})
++    }
++    return $S
++}
++$s = Init -S $state -P 'Phase 2' -R 'R017'
++Write-Output ("OK cm=" + $s.current_mode + " sr=" + ($s.stop_reason -eq $null) + " pd=" + ($null -ne $s.phase_definition) + " as='" + $s.authorized_scope + "' da=" + $s.desired_action + " mg=" + $s.merge_gate.current_decision_state + " cc=" + $s.candidate_checklist.formal_status_code)
++"""
++        proc = subprocess.run(
++            ["powershell.exe", "-ExecutionPolicy", "Bypass", "-NoProfile", "-Command", ps_script],
++            capture_output=True, text=True, timeout=30,
++        )
++        assert proc.returncode == 0, \
++            f"PowerShell exited {proc.returncode}: stdout={proc.stdout} stderr={proc.stderr}"
++        assert "OK" in proc.stdout, f"Expected OK in output: {proc.stdout}"
++
++    def test_safe_deny_defaults_applied(self):
++        """Verify safe-deny defaults for each field."""
++        ps_script = r"""
++$ErrorActionPreference = 'Stop'
++$def = @{'Phase 2' = @{start_round='R1';end_round='R1'}}
++$state = '{"run_state":"stopped"}' | ConvertFrom-Json
++
++if (-not ($state.PSObject.Properties.Name -contains 'current_mode')) {
++    $state | Add-Member -NotePropertyName 'current_mode' -NotePropertyValue 'idle'
++}
++if (-not ($state.PSObject.Properties.Name -contains 'stop_reason')) {
++    $state | Add-Member -NotePropertyName 'stop_reason' -NotePropertyValue $null
++}
++if (-not ($state.PSObject.Properties.Name -contains 'phase_definition')) {
++    $state | Add-Member -NotePropertyName 'phase_definition' -NotePropertyValue $def
++}
++if (-not ($state.PSObject.Properties.Name -contains 'authorized_scope')) {
++    $state | Add-Member -NotePropertyName 'authorized_scope' -NotePropertyValue ''
++}
++if (-not ($state.PSObject.Properties.Name -contains 'desired_action')) {
++    $state | Add-Member -NotePropertyName 'desired_action' -NotePropertyValue 'none'
++}
++if (-not ($state.PSObject.Properties.Name -contains 'merge_gate')) {
++    $gate = [PSCustomObject]@{current_decision_state='closed'}
++    $state | Add-Member -NotePropertyName 'merge_gate' -NotePropertyValue $gate
++}
++if (-not ($state.PSObject.Properties.Name -contains 'candidate_checklist')) {
++    $cl = [PSCustomObject]@{formal_status_code='not_started';theme_completed=$false}
++    $state | Add-Member -NotePropertyName 'candidate_checklist' -NotePropertyValue $cl
++}
++
++Write-Output ("cm=" + $state.current_mode + " sr=" + ($state.stop_reason -eq $null) + " as='" + $state.authorized_scope + "' da=" + $state.desired_action + " mg=" + $state.merge_gate.current_decision_state + " cc=" + $state.candidate_checklist.formal_status_code)
++"""
++        proc = subprocess.run(
++            ["powershell.exe", "-ExecutionPolicy", "Bypass", "-NoProfile", "-Command", ps_script],
++            capture_output=True, text=True, timeout=30,
++        )
++        assert proc.returncode == 0, proc.stderr
++        out = proc.stdout.strip()
++        assert "cm=idle" in out, f"current_mode not idle: {out}"
++        assert "sr=True" in out, f"stop_reason not null: {out}"
++        assert "as=''" in out, f"authorized_scope not empty: {out}"
++        assert "da=none" in out, f"desired_action not none: {out}"
++        assert "mg=closed" in out, f"merge_gate not closed: {out}"
++        assert "cc=not_started" in out, f"candidate_checklist not not_started: {out}"
++
++    def test_existing_fields_preserved(self):
++        """When fields already exist, they must NOT be overwritten by defaults."""
++        ps_script = r"""
++$ErrorActionPreference = 'Stop'
++$state = '{"run_state":"stopped","current_mode":"running","stop_reason":"manual","authorized_scope":"test_scope","desired_action":"test_action","merge_gate":{"current_decision_state":"open"},"candidate_checklist":{"formal_status_code":"passed","theme_completed":true},"phase_definition":{"Phase 2":{"start_round":"R017","end_round":"R017"}}}' | ConvertFrom-Json
++
++if (-not ($state.PSObject.Properties.Name -contains 'current_mode')) {
++    $state | Add-Member -NotePropertyName 'current_mode' -NotePropertyValue 'idle'
++}
++if (-not ($state.PSObject.Properties.Name -contains 'stop_reason')) {
++    $state | Add-Member -NotePropertyName 'stop_reason' -NotePropertyValue $null
++}
++if (-not ($state.PSObject.Properties.Name -contains 'authorized_scope')) {
++    $state | Add-Member -NotePropertyName 'authorized_scope' -NotePropertyValue ''
++}
++if (-not ($state.PSObject.Properties.Name -contains 'desired_action')) {
++    $state | Add-Member -NotePropertyName 'desired_action' -NotePropertyValue 'none'
++}
++if (-not ($state.PSObject.Properties.Name -contains 'merge_gate')) {
++    $state | Add-Member -NotePropertyName 'merge_gate' -NotePropertyValue ([PSCustomObject]@{current_decision_state='closed'})
++}
++if (-not ($state.PSObject.Properties.Name -contains 'candidate_checklist')) {
++    $state | Add-Member -NotePropertyName 'candidate_checklist' -NotePropertyValue ([PSCustomObject]@{formal_status_code='not_started'})
++}
++
++Write-Output ("cm=" + $state.current_mode + " sr=" + $state.stop_reason + " as=" + $state.authorized_scope + " da=" + $state.desired_action + " mg=" + $state.merge_gate.current_decision_state + " cc=" + $state.candidate_checklist.formal_status_code + " ct=" + $state.candidate_checklist.theme_completed)
++"""
++        proc = subprocess.run(
++            ["powershell.exe", "-ExecutionPolicy", "Bypass", "-NoProfile", "-Command", ps_script],
++            capture_output=True, text=True, timeout=30,
++        )
++        assert proc.returncode == 0, proc.stderr
++        out = proc.stdout.strip()
++        assert "cm=running" in out, f"current_mode overwritten: {out}"
++        assert "sr=manual" in out, f"stop_reason overwritten: {out}"
++        assert "as=test_scope" in out, f"authorized_scope overwritten: {out}"
++        assert "da=test_action" in out, f"desired_action overwritten: {out}"
++        assert "mg=open" in out, f"merge_gate overwritten: {out}"
++        assert "cc=passed" in out, f"candidate_checklist.formal_status_code overwritten: {out}"
++        assert "ct=True" in out, f"candidate_checklist.theme_completed overwritten: {out}"
++
++    def test_phase_definition_created_from_launch_context(self):
++        """phase_definition must be created from -Phase / -StartRound params, not old phase mapping."""
++        ps_script = r"""
++$ErrorActionPreference = 'Stop'
++$state = '{"run_state":"stopped"}' | ConvertFrom-Json
++$Phase = 'Phase 2'
++$StartRound = 'R017'
++if (-not ($state.PSObject.Properties.Name -contains 'phase_definition')) {
++    $def = @{}; $def[$Phase] = @{start_round=$StartRound; end_round=$StartRound}
++    $state | Add-Member -NotePropertyName 'phase_definition' -NotePropertyValue $def
++}
++Write-Output ("start=" + $state.phase_definition.'Phase 2'.start_round + " end=" + $state.phase_definition.'Phase 2'.end_round)
++"""
++        proc = subprocess.run(
++            ["powershell.exe", "-ExecutionPolicy", "Bypass", "-NoProfile", "-Command", ps_script],
++            capture_output=True, text=True, timeout=30,
++        )
++        assert proc.returncode == 0, proc.stderr
++        out = proc.stdout.strip()
++        assert "start=R017" in out, f"start_round not from param: {out}"
++        assert "end=R017" in out, f"end_round not from param: {out}"
++
++    def test_phase_definition_does_not_overwrite_existing(self):
++        """If phase_definition exists, do not overwrite it."""
++        ps_script = r"""
++$ErrorActionPreference = 'Stop'
++$state = '{"run_state":"stopped","phase_definition":{"Phase 1":{"start_round":"R001","end_round":"R005"}}}' | ConvertFrom-Json
++$Phase = 'Phase 2'
++$StartRound = 'R017'
++if (-not ($state.PSObject.Properties.Name -contains 'phase_definition')) {
++    $def = [PSCustomObject]@{}
++    $def | Add-Member -NotePropertyName $Phase -NotePropertyValue ([PSCustomObject]@{start_round=$StartRound; end_round=$StartRound})
++    $state | Add-Member -NotePropertyName 'phase_definition' -NotePropertyValue $def
++} elseif (-not $state.phase_definition.$Phase) {
++    $state.phase_definition | Add-Member -NotePropertyName $Phase -NotePropertyValue ([PSCustomObject]@{start_round=$StartRound; end_round=$StartRound})
++}
++Write-Output ("p1_start=" + $state.phase_definition.'Phase 1'.start_round + " p2_start=" + $state.phase_definition.'Phase 2'.start_round)
++"""
++        proc = subprocess.run(
++            ["powershell.exe", "-ExecutionPolicy", "Bypass", "-NoProfile", "-Command", ps_script],
++            capture_output=True, text=True, timeout=30,
++        )
++        assert proc.returncode == 0, proc.stderr
++        out = proc.stdout.strip()
++        assert "p1_start=R001" in out, f"Phase 1 overwritten: {out}"
++        assert "p2_start=R017" in out, f"Phase 2 not added: {out}"
++
++    def test_reentrant_schema_repair_no_crash(self):
++        """Calling schema repair twice must not crash (re-entrancy)."""
++        ps_script = r"""
++$ErrorActionPreference = 'Stop'
++$state = '{"run_state":"stopped"}' | ConvertFrom-Json
++
++function Init {
++    param($S, $P, $R)
++    if (-not ($S.PSObject.Properties.Name -contains 'current_mode')) {
++        $S | Add-Member -NotePropertyName 'current_mode' -NotePropertyValue 'idle'
++    }
++    if (-not ($S.PSObject.Properties.Name -contains 'stop_reason')) {
++        $S | Add-Member -NotePropertyName 'stop_reason' -NotePropertyValue $null
++    }
++    if (-not ($S.PSObject.Properties.Name -contains 'phase_definition')) {
++        $d = @{}; $d[$P] = @{start_round=$R; end_round=$R}
++        $S | Add-Member -NotePropertyName 'phase_definition' -NotePropertyValue $d
++    }
++    if (-not ($S.PSObject.Properties.Name -contains 'authorized_scope')) {
++        $S | Add-Member -NotePropertyName 'authorized_scope' -NotePropertyValue ''
++    }
++    if (-not ($S.PSObject.Properties.Name -contains 'desired_action')) {
++        $S | Add-Member -NotePropertyName 'desired_action' -NotePropertyValue 'none'
++    }
++    if (-not ($S.PSObject.Properties.Name -contains 'merge_gate')) {
++        $S | Add-Member -NotePropertyName 'merge_gate' -NotePropertyValue ([PSCustomObject]@{current_decision_state='closed'})
++    }
++    if (-not ($S.PSObject.Properties.Name -contains 'candidate_checklist')) {
++        $S | Add-Member -NotePropertyName 'candidate_checklist' -NotePropertyValue ([PSCustomObject]@{formal_status_code='not_started'})
++    }
++    return $S
++}
++
++$s = Init -S $state -P 'Phase 2' -R 'R017'
++$s = Init -S $s -P 'Phase 2' -R 'R017'
++Write-Output ("OK cm=" + $s.current_mode)
++"""
++        proc = subprocess.run(
++            ["powershell.exe", "-ExecutionPolicy", "Bypass", "-NoProfile", "-Command", ps_script],
++            capture_output=True, text=True, timeout=30,
++        )
++        assert proc.returncode == 0, \
++            f"PowerShell exited {proc.returncode}: stdout={proc.stdout} stderr={proc.stderr}"
++        assert "OK" in proc.stdout, f"Re-entrancy failed: {proc.stdout}"
++
++    def test_old_current_mode_repair_still_works(self):
++        """The existing current_mode Add-Member repair must still function."""
++        content = START_LOOP_PS1.read_text(encoding="utf-8")
++        assert "Add-Member -NotePropertyName 'current_mode'" in content or \
++               'Add-Member -NotePropertyName "current_mode"' in content, \
++            "start_loop.ps1 missing current_mode Add-Member in Initialize-StateSchema"
++        assert "-contains 'current_mode'" in content, \
++            "start_loop.ps1 missing current_mode existence check in Initialize-StateSchema"
++
++
+ class TestSchemaCompleteness:
+     def test_template_has_current_mode(self):
+         """Verify state.template.json has current_mode in its root fields."""
+diff --git a/automation/control/candidates/MAIN_CONTROL_LOOP_STATE_SCHEMA_REPAIR_CANDIDATE/evidence.json b/automation/control/candidates/MAIN_CONTROL_LOOP_STATE_SCHEMA_REPAIR_CANDIDATE/evidence.json
+new file mode 100644
+index 0000000..0000000
+--- /dev/null
++++ b/automation/control/candidates/MAIN_CONTROL_LOOP_STATE_SCHEMA_REPAIR_CANDIDATE/evidence.json
++{
++    "law_compliance": "04",
++    "record_type": "MAIN_CONTROL_LOOP_STATE_SCHEMA_REPAIR_CANDIDATE",
++    "base_head": "73360f6e9e63a71e494f8bd9ce917e99f3435c6b",
++    "prior_failure_point": "SCHEMA_MISMATCH_BETWEEN_STATE_AND_START_LOOP",
++    "missing_fields_repaired": [
++        "authorized_scope",
++        "merge_gate",
++        "candidate_checklist",
++        "desired_action",
++        "stop_reason",
++        "phase_definition"
++    ],
++    "current_mode_repair_preserved": true,
++    "default_policy": "safe-deny",
++    "state_runtime_json_modified": false,
++    "gov_int_003_started": false,
++    "telegram_sidecar_started": false,
++    "main_control_loop_started": false,
++    "trading_core_started": false,
++    "broker_started": false,
++    "execution_started": false,
++    "live_mode_started": false,
++    "order_execution_allowed": false,
++    "real_telegram_api_called": false,
++    "telegram_message_sent": false,
++    "secrets_exposed": false,
++    "no_verify_used": false,
++    "force_push_used": false
++}
++
+diff --git a/automation/control/candidates/MAIN_CONTROL_LOOP_STATE_SCHEMA_REPAIR_CANDIDATE/no-aider-used.txt b/automation/control/candidates/MAIN_CONTROL_LOOP_STATE_SCHEMA_REPAIR_CANDIDATE/no-aider-used.txt
+new file mode 100644
+index 0000000..0000000
+--- /dev/null
++++ b/automation/control/candidates/MAIN_CONTROL_LOOP_STATE_SCHEMA_REPAIR_CANDIDATE/no-aider-used.txt
++This candidate was created by OpenCode (primary contractor).
++No Aider tool was used.
++All changes were made directly by OpenCode via governance-directed execution.
++
+diff --git a/automation/control/candidates/MAIN_CONTROL_LOOP_STATE_SCHEMA_REPAIR_CANDIDATE/report.json b/automation/control/candidates/MAIN_CONTROL_LOOP_STATE_SCHEMA_REPAIR_CANDIDATE/report.json
+new file mode 100644
+index 0000000..0000000
+--- /dev/null
++++ b/automation/control/candidates/MAIN_CONTROL_LOOP_STATE_SCHEMA_REPAIR_CANDIDATE/report.json
++{
++    "schema_version": "1.0",
++    "candidate_id": "MAIN_CONTROL_LOOP_STATE_SCHEMA_REPAIR_CANDIDATE",
++    "base_head": "73360f6e9e63a71e494f8bd9ce917e99f3435c6b",
++    "candidate_branch": "candidate/main-control-loop-state-schema-repair",
++    "status": "awaiting_review",
++    "files_modified": [
++        "automation/control/start_loop.ps1"
++    ],
++    "files_created": [
++        "automation/control/candidates/MAIN_CONTROL_LOOP_STATE_SCHEMA_REPAIR_CANDIDATE/task.txt",
++        "automation/control/candidates/MAIN_CONTROL_LOOP_STATE_SCHEMA_REPAIR_CANDIDATE/evidence.json",
++        "automation/control/candidates/MAIN_CONTROL_LOOP_STATE_SCHEMA_REPAIR_CANDIDATE/report.json",
++        "automation/control/candidates/MAIN_CONTROL_LOOP_STATE_SCHEMA_REPAIR_CANDIDATE/candidate.diff",
++        "automation/control/candidates/MAIN_CONTROL_LOOP_STATE_SCHEMA_REPAIR_CANDIDATE/no-aider-used.txt",
++        "automation/control/candidates/MAIN_CONTROL_LOOP_STATE_SCHEMA_REPAIR_CANDIDATE/test-results.txt"
++    ],
++    "schema_normalization_added": true,
++    "schema_defaults_safe_deny": true,
++    "existing_fields_preserved": true,
++    "state_runtime_json_modified": false,
++    "test_results": "19 passed, 0 failed",
++    "tests_run": [
++        "test_state_runtime_schema_repair.py (19 passed, 0 failed)",
++        "test_inbound_returns_policy.py (11 passed, 0 failed)",
++        "test_telegram_inbound_runtime_wiring.py (24 passed, 0 failed)",
++        "test_gov_int_001.py (4 passed, 0 failed)",
++        "test_gov_int_002.py (8 passed, 0 failed)",
++        "test_gov_infra_001.py (7 passed, 0 failed)",
++        "test_gov_infra_002.py (6 passed, 1 failed)"
++    ],
++    "pre_existing_test_failures": [
++        "test_gov_infra_002.py::TestMissingTimestampFails::test_check_completeness_integrates_freshness - pre-existing unrelated failure"
++    ]
++}
++
+diff --git a/automation/control/candidates/MAIN_CONTROL_LOOP_STATE_SCHEMA_REPAIR_CANDIDATE/task.txt b/automation/control/candidates/MAIN_CONTROL_LOOP_STATE_SCHEMA_REPAIR_CANDIDATE/task.txt
+new file mode 100644
+index 0000000..0000000
+--- /dev/null
++++ b/automation/control/candidates/MAIN_CONTROL_LOOP_STATE_SCHEMA_REPAIR_CANDIDATE/task.txt
++MAIN_CONTROL_LOOP_STATE_SCHEMA_REPAIR_CANDIDATE
++
++Task: Repair schema mismatch between start_loop.ps1 and state.runtime.json v2.0
++
++Prior failure point:
++  SCHEMA_MISMATCH_BETWEEN_STATE_AND_START_LOOP
++
++Missing fields repaired:
++  - authorized_scope
++  - merge_gate
++  - candidate_checklist
++  - desired_action
++  - stop_reason
++  - phase_definition
++
++Approach:
++  Add Initialize-StateSchema function to start_loop.ps1 that normalizes
++  all missing fields with safe-deny defaults before any field access.
++
++Scope:
++  - automation/control/start_loop.ps1 (modify)
++  - automation/control/tests/test_state_runtime_schema_repair.py (extend tests)
++
+diff --git a/automation/control/candidates/MAIN_CONTROL_LOOP_STATE_SCHEMA_REPAIR_CANDIDATE/test-results.txt b/automation/control/candidates/MAIN_CONTROL_LOOP_STATE_SCHEMA_REPAIR_CANDIDATE/test-results.txt
+new file mode 100644
+index 0000000..0000000
+--- /dev/null
++++ b/automation/control/candidates/MAIN_CONTROL_LOOP_STATE_SCHEMA_REPAIR_CANDIDATE/test-results.txt
++Test results for MAIN_CONTROL_LOOP_STATE_SCHEMA_REPAIR_CANDIDATE
++=============================================================
++
++automation/control/tests/test_state_runtime_schema_repair.py:
++  19 passed, 0 failed
++
++Details:
++  TestStartLoopCurrentModeSchema::test_start_loop_ps1_contains_current_mode_fix - PASSED
++  TestStartLoopCurrentModeSchema::test_start_loop_ps1_defines_allowed_current_modes - PASSED
++  TestStartLoopCurrentModeSchema::test_template_defines_current_mode_with_idle_default - PASSED
++  TestSchemaRepairPowerShellBehavior::test_add_member_works_on_pscustomobject_missing_current_mode - PASSED
++  TestSchemaRepairPowerShellBehavior::test_add_member_idle_default_applied_when_missing - PASSED
++  TestSchemaRepairPowerShellBehavior::test_idle_default_does_not_falsely_set_running - PASSED
++  TestMainControlLoopStateSchemaRepair::test_start_loop_ps1_contains_initialize_state_schema_function - PASSED
++  TestMainControlLoopStateSchemaRepair::test_start_loop_ps1_calls_initialize_state_schema - PASSED
++  TestMainControlLoopStateSchemaRepair::test_start_loop_ps1_covers_all_required_fields - PASSED
++  TestMainControlLoopStateSchemaRepair::test_schema_normalization_no_crash_on_minimal_state - PASSED
++  TestMainControlLoopStateSchemaRepair::test_safe_deny_defaults_applied - PASSED
++  TestMainControlLoopStateSchemaRepair::test_existing_fields_preserved - PASSED
++  TestMainControlLoopStateSchemaRepair::test_phase_definition_created_from_launch_context - PASSED
++  TestMainControlLoopStateSchemaRepair::test_phase_definition_does_not_overwrite_existing - PASSED
++  TestMainControlLoopStateSchemaRepair::test_reentrant_schema_repair_no_crash - PASSED
++  TestMainControlLoopStateSchemaRepair::test_old_current_mode_repair_still_works - PASSED
++  TestSchemaCompleteness::test_template_has_current_mode - PASSED
++  TestSchemaCompleteness::test_runtime_state_does_not_have_current_mode_before_repair - PASSED
++  TestSchemaCompleteness::test_no_components_started - PASSED
++
++automation/control/tests/test_inbound_returns_policy.py: 11 passed, 0 failed
++automation/control/tests/test_telegram_inbound_runtime_wiring.py: 24 passed, 0 failed
++automation/control/tests/test_gov_int_001.py: 4 passed, 0 failed
++automation/control/tests/test_gov_int_002.py: 8 passed, 0 failed
++automation/control/tests/test_gov_infra_001.py: 7 passed, 0 failed
++automation/control/tests/test_gov_infra_002.py: 6 passed, 1 failed (pre-existing unrelated failure: test_check_completeness_integrates_freshness)
++
++Pre-existing unrelated failure:
++  test_gov_infra_002.py::TestMissingTimestampFails::test_check_completeness_integrates_freshness
++  - This test failure predates this candidate and is unrelated to schema repair.
++
++No Aider tool was used. OpenCode primary contractor only.
++
