@@ -1,0 +1,3 @@
+This candidate was created by OpenCode (primary contractor).
+No Aider tool was used.
+All changes were made directly by OpenCode via governance-directed execution.

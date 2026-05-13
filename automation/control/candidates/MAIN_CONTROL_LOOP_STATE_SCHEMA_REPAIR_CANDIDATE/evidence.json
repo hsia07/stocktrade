@@ -1,0 +1,30 @@
+{
+    "law_compliance": "04",
+    "record_type": "MAIN_CONTROL_LOOP_STATE_SCHEMA_REPAIR_CANDIDATE",
+    "base_head": "73360f6e9e63a71e494f8bd9ce917e99f3435c6b",
+    "prior_failure_point": "SCHEMA_MISMATCH_BETWEEN_STATE_AND_START_LOOP",
+    "missing_fields_repaired": [
+        "authorized_scope",
+        "merge_gate",
+        "candidate_checklist",
+        "desired_action",
+        "stop_reason",
+        "phase_definition"
+    ],
+    "current_mode_repair_preserved": true,
+    "default_policy": "safe-deny",
+    "state_runtime_json_modified": false,
+    "gov_int_003_started": false,
+    "telegram_sidecar_started": false,
+    "main_control_loop_started": false,
+    "trading_core_started": false,
+    "broker_started": false,
+    "execution_started": false,
+    "live_mode_started": false,
+    "order_execution_allowed": false,
+    "real_telegram_api_called": false,
+    "telegram_message_sent": false,
+    "secrets_exposed": false,
+    "no_verify_used": false,
+    "force_push_used": false
+}

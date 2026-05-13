@@ -1,0 +1,35 @@
+{
+    "schema_version": "1.0",
+    "candidate_id": "MAIN_CONTROL_LOOP_STATE_SCHEMA_REPAIR_CANDIDATE",
+    "base_head": "73360f6e9e63a71e494f8bd9ce917e99f3435c6b",
+    "candidate_branch": "candidate/main-control-loop-state-schema-repair",
+    "status": "awaiting_review",
+    "files_modified": [
+        "automation/control/start_loop.ps1"
+    ],
+    "files_created": [
+        "automation/control/candidates/MAIN_CONTROL_LOOP_STATE_SCHEMA_REPAIR_CANDIDATE/task.txt",
+        "automation/control/candidates/MAIN_CONTROL_LOOP_STATE_SCHEMA_REPAIR_CANDIDATE/evidence.json",
+        "automation/control/candidates/MAIN_CONTROL_LOOP_STATE_SCHEMA_REPAIR_CANDIDATE/report.json",
+        "automation/control/candidates/MAIN_CONTROL_LOOP_STATE_SCHEMA_REPAIR_CANDIDATE/candidate.diff",
+        "automation/control/candidates/MAIN_CONTROL_LOOP_STATE_SCHEMA_REPAIR_CANDIDATE/no-aider-used.txt",
+        "automation/control/candidates/MAIN_CONTROL_LOOP_STATE_SCHEMA_REPAIR_CANDIDATE/test-results.txt"
+    ],
+    "schema_normalization_added": true,
+    "schema_defaults_safe_deny": true,
+    "existing_fields_preserved": true,
+    "state_runtime_json_modified": false,
+    "test_results": "19 passed, 0 failed",
+    "tests_run": [
+        "test_state_runtime_schema_repair.py (19 passed, 0 failed)",
+        "test_inbound_returns_policy.py (11 passed, 0 failed)",
+        "test_telegram_inbound_runtime_wiring.py (24 passed, 0 failed)",
+        "test_gov_int_001.py (4 passed, 0 failed)",
+        "test_gov_int_002.py (8 passed, 0 failed)",
+        "test_gov_infra_001.py (7 passed, 0 failed)",
+        "test_gov_infra_002.py (6 passed, 1 failed)"
+    ],
+    "pre_existing_test_failures": [
+        "test_gov_infra_002.py::TestMissingTimestampFails::test_check_completeness_integrates_freshness - pre-existing unrelated failure"
+    ]
+}

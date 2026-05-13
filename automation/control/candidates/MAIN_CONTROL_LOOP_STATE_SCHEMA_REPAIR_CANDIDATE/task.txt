@@ -1,0 +1,22 @@
+MAIN_CONTROL_LOOP_STATE_SCHEMA_REPAIR_CANDIDATE
+
+Task: Repair schema mismatch between start_loop.ps1 and state.runtime.json v2.0
+
+Prior failure point:
+  SCHEMA_MISMATCH_BETWEEN_STATE_AND_START_LOOP
+
+Missing fields repaired:
+  - authorized_scope
+  - merge_gate
+  - candidate_checklist
+  - desired_action
+  - stop_reason
+  - phase_definition
+
+Approach:
+  Add Initialize-StateSchema function to start_loop.ps1 that normalizes
+  all missing fields with safe-deny defaults before any field access.
+
+Scope:
+  - automation/control/start_loop.ps1 (modify)
+  - automation/control/tests/test_state_runtime_schema_repair.py (extend tests)

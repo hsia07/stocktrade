@@ -1,0 +1,39 @@
+Test results for MAIN_CONTROL_LOOP_STATE_SCHEMA_REPAIR_CANDIDATE
+=============================================================
+
+automation/control/tests/test_state_runtime_schema_repair.py:
+  19 passed, 0 failed
+
+Details:
+  TestStartLoopCurrentModeSchema::test_start_loop_ps1_contains_current_mode_fix - PASSED
+  TestStartLoopCurrentModeSchema::test_start_loop_ps1_defines_allowed_current_modes - PASSED
+  TestStartLoopCurrentModeSchema::test_template_defines_current_mode_with_idle_default - PASSED
+  TestSchemaRepairPowerShellBehavior::test_add_member_works_on_pscustomobject_missing_current_mode - PASSED
+  TestSchemaRepairPowerShellBehavior::test_add_member_idle_default_applied_when_missing - PASSED
+  TestSchemaRepairPowerShellBehavior::test_idle_default_does_not_falsely_set_running - PASSED
+  TestMainControlLoopStateSchemaRepair::test_start_loop_ps1_contains_initialize_state_schema_function - PASSED
+  TestMainControlLoopStateSchemaRepair::test_start_loop_ps1_calls_initialize_state_schema - PASSED
+  TestMainControlLoopStateSchemaRepair::test_start_loop_ps1_covers_all_required_fields - PASSED
+  TestMainControlLoopStateSchemaRepair::test_schema_normalization_no_crash_on_minimal_state - PASSED
+  TestMainControlLoopStateSchemaRepair::test_safe_deny_defaults_applied - PASSED
+  TestMainControlLoopStateSchemaRepair::test_existing_fields_preserved - PASSED
+  TestMainControlLoopStateSchemaRepair::test_phase_definition_created_from_launch_context - PASSED
+  TestMainControlLoopStateSchemaRepair::test_phase_definition_does_not_overwrite_existing - PASSED
+  TestMainControlLoopStateSchemaRepair::test_reentrant_schema_repair_no_crash - PASSED
+  TestMainControlLoopStateSchemaRepair::test_old_current_mode_repair_still_works - PASSED
+  TestSchemaCompleteness::test_template_has_current_mode - PASSED
+  TestSchemaCompleteness::test_runtime_state_does_not_have_current_mode_before_repair - PASSED
+  TestSchemaCompleteness::test_no_components_started - PASSED
+
+automation/control/tests/test_inbound_returns_policy.py: 11 passed, 0 failed
+automation/control/tests/test_telegram_inbound_runtime_wiring.py: 24 passed, 0 failed
+automation/control/tests/test_gov_int_001.py: 4 passed, 0 failed
+automation/control/tests/test_gov_int_002.py: 8 passed, 0 failed
+automation/control/tests/test_gov_infra_001.py: 7 passed, 0 failed
+automation/control/tests/test_gov_infra_002.py: 6 passed, 1 failed (pre-existing unrelated failure: test_check_completeness_integrates_freshness)
+
+Pre-existing unrelated failure:
+  test_gov_infra_002.py::TestMissingTimestampFails::test_check_completeness_integrates_freshness
+  - This test failure predates this candidate and is unrelated to schema repair.
+
+No Aider tool was used. OpenCode primary contractor only.
