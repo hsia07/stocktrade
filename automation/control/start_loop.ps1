@@ -309,6 +309,17 @@ try {
         Write-Host ""
         Write-Host "[START] Main control loop exited with code: $exitCode" -ForegroundColor Red
         Write-Host "[START] Check log for details: $logFile" -ForegroundColor Yellow
+        
+        # Converge runtime state on child failure: run_state must not remain "running"
+        $state.run_state = "failed_safe"
+        $state.status_flags.started = $false
+        $state.status_flags.whether_started = $false
+        $state.stop_reason = "child_nonzero_exit"
+        $state.last_action = "start_loop_child_failed"
+        $state.last_error = "Main control loop exited with code $exitCode"
+        Set-StateProperty -State $state -PropertyName "updated_at" -Value ((Get-Date).ToString("yyyy-MM-ddTHH:mm:ss"))
+        $json = $state | ConvertTo-Json -Depth 10
+        [System.IO.File]::WriteAllText($statePath, $json, [System.Text.Encoding]::UTF8)
     }
     
     exit $exitCode

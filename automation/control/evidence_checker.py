@@ -11,12 +11,21 @@ import json
 import logging
 import re
 import subprocess
+import sys
 from pathlib import Path
 from typing import Tuple, List, Dict, Any
 
+# Ensure repo root is in sys.path for direct script invocation compatibility
+_repo_root = str(Path(__file__).resolve().parent.parent.parent)
+if _repo_root not in sys.path:
+    sys.path.insert(0, _repo_root)
+
 logger = logging.getLogger("evidence_checker")
 
-from .return_to_chatgpt_verifier import ReturnToChatGPTVerifier
+try:
+    from .return_to_chatgpt_verifier import ReturnToChatGPTVerifier
+except ImportError:
+    from automation.control.return_to_chatgpt_verifier import ReturnToChatGPTVerifier
 
 
 class Law04ComplianceError(Exception):
