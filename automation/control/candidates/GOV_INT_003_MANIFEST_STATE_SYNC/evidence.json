@@ -1,0 +1,53 @@
+{
+  "law_compliance": "04",
+  "round_id": "GOV_INT_003_REBUILD_MANIFEST_STATE_SYNC_FORMAL_CANDIDATE",
+  "task_type": "governance_manifest_state_reconciliation",
+  "description": "Update manifests/current_round.yaml and automation/control/state.runtime.json to reflect GOV-INT-003 intervention completion after evidence-checker BOM fix, main-control-loop 6 pipeline fixes, and remote push reconciliation",
+  "authorized_files": [
+    "manifests/current_round.yaml",
+    "automation/control/state.runtime.json",
+    "automation/control/candidates/GOV_INT_003_MANIFEST_STATE_SYNC/evidence.json"
+  ],
+  "manifest_updates": {
+    "notes": "Updated to record GOV-INT-003 completion: evidence-checker BOM fix merged/pushed, main-control-loop 6 fixes merged/pushed, manifest/state sync completed",
+    "required_evidence": "Added GOV_INT_003_MANIFEST_STATE_SYNC/evidence.json to required_evidence list",
+    "backlog": "Added gov_int_003 backlog entry with type governance_intervention, describing all three candidate branches and merged_at_commit 7816087"
+  },
+  "state_updates": {
+    "current_round": "R017 -> GOV_INT_003_COMPLETED",
+    "round_id": "R017 -> GOV_INT_003_COMPLETED",
+    "last_action": "awaiting_phase2_entry_authorization -> gov_int_003_containment_completed",
+    "containment_note": "Updated to reflect GOV-INT-003 intervention completion",
+    "awaiting": "phase2_entry_authorization_for_R017 -> manifest_state_sync_awaiting_next_dispatch",
+    "valid_candidates": "Added gov_int_003: true"
+  },
+  "verification": {
+    "local_head": "781608729eb5293a621d899ebd8ef34bc4a0ac3f",
+    "remote_head": "781608729eb5293a621d899ebd8ef34bc4a0ac3f",
+    "canonical_branch": "work/canonical-mainline-repair-001",
+    "evidence_checker_bom_fix_pushed": true,
+    "main_control_loop_6_fixes_pushed": true,
+    "post_push_reconciliation_passed": true,
+    "chain_frozen": true,
+    "backlog_preserved": true,
+    "gov_int_003_intervention_recorded": true
+  },
+  "prohibited_actions_verified": {
+    "no_merge": true,
+    "no_push": true,
+    "no_promote": true,
+    "no_pr": true,
+    "no_force_push": true,
+    "no_no_verify": true,
+    "no_main_control_loop": true,
+    "no_trading": true,
+    "no_broker": true,
+    "no_execution": true,
+    "no_live": true,
+    "order_execution_allowed": false
+  },
+  "containment": {
+    "quarantine_branch": "quarantine/gov-int-003-r017-artifacts",
+    "preserve_dir": "C:\\Users\\richa\\OneDrive\\桌面\\GOV_INT_003_CONTAINMENT_PRESERVE_20260515_021802"
+  }
+}
