@@ -1,0 +1,19 @@
+{
+  "law_compliance": "04",
+  "task_id": "GOV_INT_003_PARAMETER_CONTRACT_REPAIR",
+  "repair_round_id": "GOV_INT_003_STRICT_LAW04_EVIDENCE_REPAIR_CANDIDATE_REWORK",
+  "base_head": "2ee9d0390e9fa8e25008ec5e822e38b6ca2945f4",
+  "candidate_base_commit": "2ee9d0390e9fa8e25008ec5e822e38b6ca2945f4",
+  "original_candidate_commit": "08739255df462924d7097b9ed98ed2c3360c52ed",
+  "repair_scope": "start_loop.ps1 parameter contract: replace unsupported -Phase/-StartRound with -RepoRoot in child invocation; add multi-word value quoting to prevent token splitting",
+  "files_modified": [
+    "automation/control/start_loop.ps1"
+  ],
+  "evidence_added": [
+    "automation/control/candidates/GOV_INT_003_PARAMETER_CONTRACT_REPAIR/evidence.json"
+  ],
+  "hook_requirement": "pre-push hook Law 04 Article 261: merge commit must include at least one added/modified evidence.json with law_compliance: 04",
+  "no_trading_started": true,
+  "no_runtime_artifacts_committed": true,
+  "created_at": "2026-05-14T18:00:00+08:00"
+}
