@@ -1,0 +1,37 @@
+{
+    "law_compliance": "04",
+    "task_id": "GOV_INT_003",
+    "task_type": "repair_candidate_evidence_addition",
+    "repair_round_id": "GOV_INT_003_REPAIR_CANDIDATE_EVIDENCE_CHECKER_IMPORT_AND_START_LOOP_FAILURE_STATE",
+    "base_head": "7a24b1af08877f0b219cd886d6c3d0b8af07970e",
+    "previous_candidate_commit": "9e4e6eee7eef40225f9d9bf3f5fe47184ba983c4",
+    "repair_scope": "evidence_checker import fix + start_loop failure state convergence",
+    "files_modified": [
+        "automation/control/evidence_checker.py",
+        "automation/control/start_loop.ps1"
+    ],
+    "evidence_added": [
+        "automation/control/candidates/GOV_INT_003_EVIDENCE_CHECKER_IMPORT_FAILURE_STATE_REPAIR/evidence.json"
+    ],
+    "failure_points": [
+        "main_control_loop -> governance candidate execution -> evidence_checker.py line 19 -> ImportError: attempted relative import with no known parent package",
+        "start_loop.ps1: child non-zero exit did not converge run_state (left as 'running')"
+    ],
+    "repairs": [
+        {
+            "file": "automation/control/evidence_checker.py",
+            "repair": "Added sys.path repo root insertion + try/except fallback from relative to absolute import"
+        },
+        {
+            "file": "automation/control/start_loop.ps1",
+            "repair": "On child non-zero exit: set run_state=failed_safe, reset whether_started/started, record stop_reason/last_error/last_action/updated_at"
+        }
+    ],
+    "validation_summary": "direct invocation import PASS, module import PASS, verifier missing FAILS explicitly (not silently), failed_safe schema-compatible with bridge/start_loop/Guard-StartEvent, all guards preserved, Phase 2/R017 contract intact, R-006 absent, evidence.json law_compliance=04 preserved",
+    "legal_effect": "No runtime start, no trading, no merge, no push, no promote",
+    "no_runtime_started": true,
+    "no_trading_started": true,
+    "no_runtime_artifacts_committed": true,
+    "hook_requirement": "pre-push hook must see law_compliance=04 for this candidate",
+    "created_at": "2026-05-15T12:15:00+08:00"
+}
