@@ -1,0 +1,64 @@
+{
+  "law_compliance": "04",
+  "round_id": "GOV_INT_003_REWORK_EVIDENCE_CHECKER_BOM_FIX_UNICODE_SAFE_FORMAL_CANDIDATE",
+  "task_type": "repair_candidate_rework_creation",
+  "description": "Unicode-safe rework: evidence_checker.py BOM-safe encoding (utf-8 → utf-8-sig for 14 open() calls only, read_text() calls unchanged)",
+  "authorized_files": [
+    "automation/control/evidence_checker.py",
+    "automation/control/candidates/GOV_INT_003_EVIDENCE_CHECKER_BOM_FIX_REWORK/evidence.json"
+  ],
+  "changes": {
+    "file": "automation/control/evidence_checker.py",
+    "replace": "encoding=\"utf-8\" → encoding=\"utf-8-sig\"",
+    "count": 14,
+    "scope": "with open() calls only; 3 read_text() calls left unchanged"
+  },
+  "unicode_safe_method": "Python subprocess from git + open() write with explicit UTF-8, no PowerShell",
+  "rework_reason": "Previous candidate 501dd7e had Unicode corruption via PowerShell CP950. This rework preserves all Unicode (em dash, Chinese characters).",
+  "scope_verification": {
+    "total_encoding_utf8_before": 17,
+    "total_encoding_utf8_sig_after": 14,
+    "read_text_encoding_utf8_unchanged": 3,
+    "non_encoding_diff_lines": 0,
+    "unicode_corruption_detected": false
+  },
+  "preservation": {
+    "gate_report_persister.py": "present",
+    "start_loop.ps1": "present",
+    "evidence_checker_class": "present",
+    "em_dash_preserved": true,
+    "chinese_text_preserved": true,
+    "guards_verified": [
+      "Guard-StartEvent",
+      "Guard-FunctionalCommit",
+      "Guard-CandidateDiff",
+      "Guard-TrackedCandidate",
+      "Guard-NoSharedCommitReuse",
+      "Guard-RealCodeChanges"
+    ]
+  },
+  "syntax_check": "PASS",
+  "direct_import_check": "PASS",
+  "containment": {
+    "patch_source": "C:\\Users\\richa\\OneDrive\\桌面\\GOV_INT_003_CONTAINMENT_PRESERVE_20260515_021802\\evidence_checker_bom_fix.patch",
+    "bad_candidate_branch": "candidate/gov-int-003-evidence-checker-bom-fix",
+    "bad_candidate_commit": "501dd7e5150f9e941beb5cebfeef13c98b514a0f",
+    "bad_candidate_preserved": true,
+    "preserve_dir": "C:\\Users\\richa\\OneDrive\\桌面\\GOV_INT_003_CONTAINMENT_PRESERVE_20260515_021802"
+  },
+  "prohibited_actions_verified": {
+    "no_merge": true,
+    "no_push": true,
+    "no_promote": true,
+    "no_pr": true,
+    "no_force_push": true,
+    "no_no_verify": true,
+    "no_main_control_loop": true,
+    "no_trading": true,
+    "no_broker": true,
+    "no_execution": true,
+    "no_live": true,
+    "no_powershell_writealltext": true,
+    "order_execution_allowed": false
+  }
+}
