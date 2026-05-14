@@ -1,11 +1,11 @@
 {
     "schema_version": "2.0",
     "run_state": "stopped",
-    "current_round": "R017",
-    "round_id": "R017",
+    "current_round": "GOV_INT_003_COMPLETED",
+    "round_id": "GOV_INT_003_COMPLETED",
     "current_phase": "Phase 2",
     "branch": "work/canonical-mainline-repair-001",
-    "last_action": "awaiting_phase2_entry_authorization",
+    "last_action": "gov_int_003_containment_completed",
     "last_error": "none",
     "status_flags": {
         "authorized": true,
@@ -18,7 +18,8 @@
         "auto_continue": false
     },
     "valid_candidates": {
-        "r017": false
+        "r017": false,
+        "gov_int_003": true
     },
     "fail_closed_guards": {
         "opencode_primary_contractor": true,
@@ -30,6 +31,6 @@
         "shared_commit_reuse_blocked": true,
         "validate_evidence_real_changes": true
     },
-    "containment_note": "Phase 1 formal closure signed off. Lane released. Phase 2 hygiene aligned. R017 not yet authorized.",
-    "awaiting": "phase2_entry_authorization_for_R017"
+    "containment_note": "GOV-INT-003 intervention completed: evidence-checker BOM fix, main-control-loop 6 pipeline fixes, manifest/state sync. Chain remains frozen. Next dispatch TBD.",
+    "awaiting": "manifest_state_sync_awaiting_next_dispatch"
 }

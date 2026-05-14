@@ -17,6 +17,7 @@ forbidden_paths:
   - "master"
 required_evidence:
   - "automation/control/candidates/PHASE2-API-AUTOMODE-STATE-NORMALIZATION/evidence.json"
+  - "automation/control/candidates/GOV_INT_003_MANIFEST_STATE_SYNC/evidence.json"
 required_checks:
   - "py ./scripts/validation/check_branch_workflow.py --repo-root . --all"
   - "py ./scripts/validation/check_forbidden_changes.py --manifest ./manifests/phase2_entry_hygiene_alignment.yaml"
@@ -30,7 +31,7 @@ direct_fail_conditions:
 risk_level: "green"
 owner: "you"
 start_authorized: true
-notes: "State normalization round. Structured state synced to actual progress. Chain frozen pending backlog merge. R020 awaiting dispatch authorization after backlog clearance."
+notes: "State normalization round. Structured state synced to actual progress. Chain frozen pending backlog merge. R020 awaiting dispatch authorization after backlog clearance. GOV-INT-003 intervention completed: evidence-checker BOM fix merged/pushed, main-control-loop 6 fixes merged/pushed, manifest/state sync completed."
 containment_status: "PHASE2_ENTRY_AUTHORIZED_AUTO_MODE_AUTHORIZED"
 auto_run: false
 desired_action: null
@@ -75,5 +76,16 @@ backlog:
     evidence_complete: true
     tests_pass: true
     validators_pass: true
+    merge_review_status: "merged"
+    pushed_to_remote: true
+  gov_int_003:
+    type: "governance_intervention"
+    description: "GOV-INT-003 containment and repair: evidence-checker BOM fix, main-control-loop 6 pipeline fixes, manifest/state reconciliation"
+    candidate_branches:
+      evidence_checker_bom_fix_rework: "candidate/gov-int-003-evidence-checker-bom-fix-rework"
+      main_control_loop_6_fixes: "candidate/gov-int-003-main-control-loop-6-fixes"
+      manifest_state_sync: "candidate/gov-int-003-manifest-state-sync"
+    merged_at_commit: "781608729eb5293a621d899ebd8ef34bc4a0ac3f"
+    evidence_complete: true
     merge_review_status: "merged"
     pushed_to_remote: true
