@@ -1,0 +1,29 @@
+{
+  "law_compliance": "04",
+  "task_id": "GOV_INT_003_GATE_REPORT_PERSISTER_IMPORT_CLI_REPAIR",
+  "repair_round_id": "GOV_INT_003_REPAIR_CANDIDATE_GATE_REPORT_PERSISTER_IMPORT_AND_CLI_CONTRACT",
+  "base_head": "5d14b60f77843760c7a17f497c0a107be52e9355",
+  "repair_scope": [
+    "gate_report_persister.py: import shim for direct script invocation",
+    "gate_report_persister.py: CLI --repo-root argument with candidate_dir auto-derivation",
+    "evidence.json: law_compliance=04 metadata for this repair candidate"
+  ],
+  "failure_point": "main_control_loop → gate_report_persister.py import failure at module load",
+  "observed_error": "ModuleNotFoundError: No module named 'automation' at gate_report_persister.py line 21: from automation.control.evidence_gate_orchestrator import EvidenceGateOrchestrator",
+  "files_modified": [
+    "automation/control/gate_report_persister.py"
+  ],
+  "files_read_only_verified": [
+    "automation/control/evidence_checker.py",
+    "automation/control/evidence_gate_orchestrator.py",
+    "automation/control/start_loop.ps1",
+    "automation/control/main_control_loop.ps1",
+    "automation/control/state.runtime.json"
+  ],
+  "validation_summary": "gate_report_persister direct script invocation no longer fails with ModuleNotFoundError; --repo-root accepted; all guards preserved; previous repairs intact",
+  "no_runtime_started": true,
+  "no_trading_started": true,
+  "no_runtime_artifacts_committed": true,
+  "evidence_type": "governance_infrastructure_hardening",
+  "created_at": "2026-05-15T12:45:00"
+}

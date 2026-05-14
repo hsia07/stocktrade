@@ -18,7 +18,15 @@ import sys
 from pathlib import Path
 from typing import Any, Dict, Optional
 
-from automation.control.evidence_gate_orchestrator import EvidenceGateOrchestrator
+# Ensure repo root is in sys.path for direct script invocation compatibility
+_repo_root = str(Path(__file__).resolve().parent.parent.parent)
+if _repo_root not in sys.path:
+    sys.path.insert(0, _repo_root)
+
+try:
+    from .evidence_gate_orchestrator import EvidenceGateOrchestrator
+except ImportError:
+    from automation.control.evidence_gate_orchestrator import EvidenceGateOrchestrator
 
 REPORTS_DIR = Path(__file__).resolve().parent / "reports"
 
@@ -75,6 +83,14 @@ def persist_gate_report(
     return report
 
 
+def _derive_candidate_dir(repo_root: Path) -> Path:
+    """Derive candidate directory from repo root + state file."""
+    state_path = repo_root / "automation" / "control" / "state.runtime.json"
+    state = json.loads(state_path.read_text(encoding="utf-8-sig"))
+    current_round = state.get("current_round", "UNKNOWN")
+    return repo_root / "automation" / "control" / "candidates" / current_round
+
+
 def main() -> int:
     """CLI entry point: returns 0 on PASS, 1 on BLOCKED, 2 on error."""
     import argparse
@@ -85,7 +101,16 @@ def main() -> int:
     parser.add_argument(
         "candidate_dir",
         type=str,
-        help="Path to candidate evidence directory",
+        nargs="?",
+        default=None,
+        help="Path to candidate evidence directory (optional if --repo-root is provided)",
+    )
+    parser.add_argument(
+        "--repo-root",
+        type=str,
+        default=None,
+        help="Repo root path. If provided without candidate_dir, "
+             "derives candidate path from state.runtime.json",
     )
     parser.add_argument(
         "--reports-dir",
@@ -95,9 +120,20 @@ def main() -> int:
     )
     args = parser.parse_args()
 
+    candidate_dir_arg = args.candidate_dir
+    if candidate_dir_arg is None:
+        if args.repo_root is not None:
+            candidate_dir_arg = str(
+                _derive_candidate_dir(Path(args.repo_root).resolve())
+            )
+        else:
+            candidate_dir_arg = str(
+                _derive_candidate_dir(Path(__file__).resolve().parent.parent.parent)
+            )
+
     try:
         persist_gate_report(
-            candidate_dir=Path(args.candidate_dir),
+            candidate_dir=Path(candidate_dir_arg),
             reports_dir=Path(args.reports_dir) if args.reports_dir else None,
         )
         return 0
