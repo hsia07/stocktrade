@@ -124,7 +124,7 @@ class EvidenceChecker:
         report_path = candidate_dir / "report.json"
         if report_path.exists():
             try:
-                with open(report_path, "r", encoding="utf-8") as f:
+                with open(report_path, "r", encoding="utf-8-sig") as f:
                     report = json.load(f)
                 if report.get("status") == "completed":
                     pass  # Full completed status — always accepted
@@ -146,7 +146,7 @@ class EvidenceChecker:
         evidence_path = candidate_dir / "evidence.json"
         if evidence_path.exists():
             try:
-                with open(evidence_path, "r", encoding="utf-8") as f:
+                with open(evidence_path, "r", encoding="utf-8-sig") as f:
                     evidence = json.load(f)
                 # Check test results if present
                 tests = evidence.get("test_results", {})
@@ -222,7 +222,7 @@ class EvidenceChecker:
         canonical_branch = "work/canonical-mainline-repair-001"  # default
         if report_path.exists():
             try:
-                with open(report_path, "r", encoding="utf-8") as f:
+                with open(report_path, "r", encoding="utf-8-sig") as f:
                     report = json.load(f)
                 canonical_branch = report.get("canonical_branch", canonical_branch)
             except Exception:
@@ -233,7 +233,7 @@ class EvidenceChecker:
 
         if evidence_path.exists():
             try:
-                with open(evidence_path, "r", encoding="utf-8") as f:
+                with open(evidence_path, "r", encoding="utf-8-sig") as f:
                     evidence = json.load(f)
                 candidate_commit = evidence.get("candidate_commit") or evidence.get(
                     "commit_hash"
@@ -244,7 +244,7 @@ class EvidenceChecker:
         # Fallback: use candidate_branch from report.json if evidence lacks commit
         if not candidate_commit and report_path.exists():
             try:
-                with open(report_path, "r", encoding="utf-8") as f:
+                with open(report_path, "r", encoding="utf-8-sig") as f:
                     report = json.load(f)
                 candidate_branch = report.get("candidate_branch")
                 if candidate_branch:
@@ -613,7 +613,7 @@ class EvidenceChecker:
         issues = []
         
         try:
-            with open(file_path, "r", encoding="utf-8") as f:
+            with open(file_path, "r", encoding="utf-8-sig") as f:
                 content = f.read()
             
             # Check 1: No override claims
@@ -725,7 +725,7 @@ class EvidenceChecker:
         baseline_path = repo_root / "CURRENT_GOVERNANCE_BASELINE.md"
         if baseline_path.exists():
             try:
-                with open(baseline_path, "r", encoding="utf-8") as f:
+                with open(baseline_path, "r", encoding="utf-8-sig") as f:
                     baseline_content = f.read()
                 
                 # Check for phase completion contradictions
@@ -772,7 +772,7 @@ class EvidenceChecker:
         # Check 5: baseline readable conflicts
         if baseline_path.exists():
             try:
-                with open(baseline_path, "r", encoding="utf-8") as f:
+                with open(baseline_path, "r", encoding="utf-8-sig") as f:
                     baseline_content = f.read()
                 
                 # Check for readable vs formal conflicts
@@ -924,7 +924,7 @@ class EvidenceChecker:
         evidence_path = candidate_dir / "evidence.json"
         if evidence_path.exists():
             try:
-                with open(evidence_path, "r", encoding="utf-8") as f:
+                with open(evidence_path, "r", encoding="utf-8-sig") as f:
                     evidence = json.load(f)
                     law_compliance = evidence.get("law_compliance")
                     if law_compliance == "04":
@@ -939,7 +939,7 @@ class EvidenceChecker:
         # Check 3: Commit hash valid 40hex
         if evidence_path.exists():
             try:
-                with open(evidence_path, "r", encoding="utf-8") as f:
+                with open(evidence_path, "r", encoding="utf-8-sig") as f:
                     evidence = json.load(f)
                     commit_hash = evidence.get("candidate_commit") or evidence.get("implementation_commit")
                     if commit_hash:
@@ -959,7 +959,7 @@ class EvidenceChecker:
         # Check 5: No scope expansion (single topic)
         if evidence_path.exists():
             try:
-                with open(evidence_path, "r", encoding="utf-8") as f:
+                with open(evidence_path, "r", encoding="utf-8-sig") as f:
                     evidence = json.load(f)
                     task_type = evidence.get("task_type", "")
                     if "phase3" in task_type.lower():
@@ -1103,7 +1103,7 @@ class EvidenceChecker:
 
             if check_type == "json_object":
                 try:
-                    with open(file_path, "r", encoding="utf-8") as f:
+                    with open(file_path, "r", encoding="utf-8-sig") as f:
                         data = json.load(f)
                 except Exception as e:
                     issues.append(f"schema:{filename}:parse_error:{e}")
@@ -1213,14 +1213,14 @@ class EvidenceChecker:
 
         try:
             if report_path.exists():
-                with open(report_path, "r", encoding="utf-8") as f:
+                with open(report_path, "r", encoding="utf-8-sig") as f:
                     report_data = json.load(f)
         except Exception:
             pass
 
         try:
             if evidence_path.exists():
-                with open(evidence_path, "r", encoding="utf-8") as f:
+                with open(evidence_path, "r", encoding="utf-8-sig") as f:
                     evidence_data = json.load(f)
         except Exception:
             pass
