@@ -1,0 +1,55 @@
+{
+  "law_compliance": "04",
+  "round_id": "GOV_INT_003_REBUILD_MAIN_CONTROL_LOOP_6_FIXES_FORMAL_CANDIDATE",
+  "task_type": "repair_candidate_creation",
+  "description": "Rebuild main_control_loop.ps1 with 6 pipeline fixes (no --no-verify, Unicode-safe)",
+  "authorized_files": [
+    "automation/control/main_control_loop.ps1",
+    "automation/control/candidates/GOV_INT_003_MAIN_CONTROL_LOOP_6_FIXES/evidence.json"
+  ],
+  "six_fixes": {
+    "gate_reporter_reordered_after_artifacts": true,
+    "test_results_artifact_handling": true,
+    "no_verify_removed": true,
+    "candidate_diff_staging_second_commit_handling": true,
+    "run_history_safe_init": true,
+    "eap_safe_handling": true
+  },
+  "safety": {
+    "direct_canonical_commit_risk_removed": true,
+    "auto_merge_push_promote_disabled": true,
+    "no_verify_used": false
+  },
+  "unicode_safe_method": "Python subprocess from git + open() write with explicit UTF-8",
+  "preservation": {
+    "evidence_checker_bom_fix_utf8_sig_count": 14,
+    "gate_report_persister": "present",
+    "start_loop_failure_state": "present",
+    "evidence_checker_import_shim": "present",
+    "guards_preserved": [
+      "Guard-StartEvent",
+      "Guard-FunctionalCommit",
+      "Guard-RealCodeChanges",
+      "Guard-CandidateDiff"
+    ]
+  },
+  "containment": {
+    "patch_source": "C:\\Users\\richa\\OneDrive\\桌面\\GOV_INT_003_CONTAINMENT_PRESERVE_20260515_021802\\main_control_loop_6_fixes.patch",
+    "quarantine_branch": "quarantine/gov-int-003-r017-artifacts",
+    "preserve_dir": "C:\\Users\\richa\\OneDrive\\桌面\\GOV_INT_003_CONTAINMENT_PRESERVE_20260515_021802"
+  },
+  "prohibited_actions_verified": {
+    "no_merge": true,
+    "no_push": true,
+    "no_promote": true,
+    "no_pr": true,
+    "no_force_push": true,
+    "no_no_verify": true,
+    "no_main_control_loop": true,
+    "no_trading": true,
+    "no_broker": true,
+    "no_execution": true,
+    "no_live": true,
+    "order_execution_allowed": false
+  }
+}
