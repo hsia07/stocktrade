@@ -1,0 +1,76 @@
+{
+  "law_compliance": "04",
+  "round_id": "GOV_INT_003_CHAIN_UNFREEZE_BACKLOG_MERGE_FORMAL_CANDIDATE",
+  "task_type": "governance_chain_unfreeze_candidate_creation",
+  "description": "Unfreeze chain by recording that all backlog entries (R018, R019, telegram_send_path) are verified merged and pushed to remote. Update chain_status from frozen_pending_backlog_merge to backlog_merged_ready_for_next_dispatch.",
+  "authorized_files": [
+    "manifests/current_round.yaml",
+    "automation/control/candidates/GOV_INT_003_CHAIN_UNFREEZE_BACKLOG_MERGE/evidence.json"
+  ],
+  "manifest_updates": {
+    "chain_status": "frozen_pending_backlog_merge -> backlog_merged_ready_for_next_dispatch",
+    "notes": "Updated to record backlog merge completion and GOV-INT-003 chain unfreeze",
+    "required_evidence": "Added GOV_INT_003_CHAIN_UNFREEZE_BACKLOG_MERGE/evidence.json",
+    "current_round": "NONE (preserved)",
+    "next_round_to_dispatch": "R020 (preserved)"
+  },
+  "backlog_verification": {
+    "r018": {
+      "commit": "8c75cb0e89406e1585bdfd1064e7473f54f65daa",
+      "merged_at": "f928db636d1cdd948a88f4cd33082a9286f73371",
+      "pushed_to_remote": true,
+      "merge_review_status": "merged"
+    },
+    "r019": {
+      "commit": "092e38ccfd12181cd07684c57a0f8fcdd836872b",
+      "merged_at": "13e1a1d91cae5a845135299dd01975fe18a064b5",
+      "pushed_to_remote": true,
+      "merge_review_status": "merged"
+    },
+    "telegram_send_path_completion": {
+      "commit": "c827917b865bba7250068f3ff491a3de64ffd493",
+      "merged_at": "fc6e71a2f65749398c41d55e0768247a1f44cc96",
+      "pushed_to_remote": true,
+      "merge_review_status": "merged"
+    }
+  },
+  "gov_int_003_status": {
+    "evidence_checker_bom_fix": "merged_and_pushed",
+    "main_control_loop_6_fixes": "merged_and_pushed",
+    "manifest_state_sync": "merged_and_pushed",
+    "chain_unfreeze_backlog_merge": "candidate_ready",
+    "completion_head": "99e97458e1dc7382c71dd35936368e6d615c8c33"
+  },
+  "preservation": {
+    "evidence_checker_bom_fix_utf8_sig_count": 14,
+    "previous_repairs_intact": [
+      "evidence_checker_bom_fix",
+      "gate_report_persister_repair",
+      "start_loop_failure_state_repair",
+      "main_control_loop_6_fixes"
+    ],
+    "state_runtime_json": "not_modified",
+    "source_code": "not_modified"
+  },
+  "prohibited_actions_verified": {
+    "no_r020_dispatch": true,
+    "no_r030_dispatch": true,
+    "no_main_control_loop": true,
+    "no_start_loop": true,
+    "no_merge": true,
+    "no_push": true,
+    "no_promote": true,
+    "no_pr": true,
+    "no_force_push": true,
+    "no_no_verify": true,
+    "no_trading": true,
+    "no_broker": true,
+    "no_execution": true,
+    "no_live": true,
+    "order_execution_allowed": false
+  },
+  "containment_reference": {
+    "quarantine_branch": "quarantine/gov-int-003-r017-artifacts",
+    "preserve_dir": "C:\\Users\\richa\\OneDrive\\桌面\\GOV_INT_003_CONTAINMENT_PRESERVE_20260515_021802"
+  }
+}

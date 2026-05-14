@@ -18,6 +18,7 @@ forbidden_paths:
 required_evidence:
   - "automation/control/candidates/PHASE2-API-AUTOMODE-STATE-NORMALIZATION/evidence.json"
   - "automation/control/candidates/GOV_INT_003_MANIFEST_STATE_SYNC/evidence.json"
+  - "automation/control/candidates/GOV_INT_003_CHAIN_UNFREEZE_BACKLOG_MERGE/evidence.json"
 required_checks:
   - "py ./scripts/validation/check_branch_workflow.py --repo-root . --all"
   - "py ./scripts/validation/check_forbidden_changes.py --manifest ./manifests/phase2_entry_hygiene_alignment.yaml"
@@ -31,7 +32,7 @@ direct_fail_conditions:
 risk_level: "green"
 owner: "you"
 start_authorized: true
-notes: "State normalization round. Structured state synced to actual progress. Chain frozen pending backlog merge. R020 awaiting dispatch authorization after backlog clearance. GOV-INT-003 intervention completed: evidence-checker BOM fix merged/pushed, main-control-loop 6 fixes merged/pushed, manifest/state sync completed."
+notes: "State normalization round. Structured state synced to actual progress. Backlog merge complete (R018/R019/telegram_send_path all merged+pushed). GOV-INT-003 intervention completed: evidence-checker BOM fix merged/pushed, main-control-loop 6 fixes merged/pushed, manifest/state sync completed, chain unfreeze/backlog merge state reconciled. Chain ready for next dispatch."
 containment_status: "PHASE2_ENTRY_AUTHORIZED_AUTO_MODE_AUTHORIZED"
 auto_run: false
 desired_action: null
@@ -49,7 +50,7 @@ phase: "Phase 2"
 last_completed_round: "R019"
 current_round: "NONE"
 next_round_to_dispatch: "R020"
-chain_status: "frozen_pending_backlog_merge"
+chain_status: "backlog_merged_ready_for_next_dispatch"
 backlog:
   r018:
     branch: "work/candidate-r018-schema-migration"
