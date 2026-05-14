@@ -256,10 +256,9 @@ Write-Host "[START] Script: $loopScript" -ForegroundColor Gray
 Write-Host "[START] Log: $logFile" -ForegroundColor Gray
 Write-Host ""
 
-# Build arguments - use current_round from state, not hardcoded default
+# Build arguments - pass repo root to main control loop
 $loopArgs = @(
-    "-Phase", $Phase,
-    "-StartRound", $state.current_round
+    "-RepoRoot", $repoRoot
 )
 
 if ($Resume) {
@@ -274,7 +273,10 @@ try {
     # Start the loop and capture output with UTF-8 encoding
     $psi = New-Object System.Diagnostics.ProcessStartInfo
     $psi.FileName = "powershell.exe"
-    $psi.Arguments = "-ExecutionPolicy Bypass -NoProfile -File `"$loopScript`" $($loopArgs -join ' ')"
+    $argStr = ($loopArgs | ForEach-Object {
+        if ($_ -match '\s') { "`"$_`"" } else { $_ }
+    }) -join ' '
+    $psi.Arguments = "-ExecutionPolicy Bypass -NoProfile -File `"$loopScript`" $argStr"
     $psi.RedirectStandardOutput = $true
     $psi.RedirectStandardError = $true
     $psi.UseShellExecute = $false
