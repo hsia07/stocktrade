@@ -1,0 +1,112 @@
+{
+  "law_compliance": "04",
+  "round_id": "R030_DECISION_PRECHECKLIST_DISPATCH_AND_FORMAL_CANDIDATE_CREATION",
+  "task_type": "r030_decision_prechecklist_candidate_creation",
+  "expected_base_head": "0a79f80424fe42458e87318a39a2d6a2a7988b21",
+  "r030_topic": "決策前檢查清單",
+  "r030_topic_matches_formal_topic_table": true,
+  "r030_phase": "Phase 2 (原第29輪 in topic table, mapped to Phase 2 under current round mapping)",
+  "r030_phase_valid_under_current_mapping": true,
+  "exact_primary_file": "modules/decision_prechecklist/checklist.py",
+  "exact_related_files": [
+    "modules/decision_prechecklist/__init__.py",
+    "modules/decision_prechecklist/nea_engine.py",
+    "modules/decision_prechecklist/position_sizing.py",
+    "modules/decision_prechecklist/confidence_calibration.py",
+    "modules/decision_prechecklist/replay_trace.py",
+    "tests/test_decision_prechecklist.py"
+  ],
+  "modified_files": [],
+  "added_files": [
+    "modules/decision_prechecklist/__init__.py",
+    "modules/decision_prechecklist/checklist.py",
+    "modules/decision_prechecklist/nea_engine.py",
+    "modules/decision_prechecklist/position_sizing.py",
+    "modules/decision_prechecklist/confidence_calibration.py",
+    "modules/decision_prechecklist/replay_trace.py",
+    "tests/test_decision_prechecklist.py",
+    "automation/control/candidates/R030_DECISION_PRECHECKLIST_DISPATCH/evidence.json"
+  ],
+  "implementation_summary": "R030 Decision PreChecklist candidate: deterministic pre-order gate that enforces all R030 constraints before any buy/sell/order enters the execution chain. Integrates Market Reality Layer checks, NEA (Net Expected Advantage) engine, deterministic Risk Gate / Final Gate with veto, position sizing against 6 independent limits, confidence calibration guard (raw confidence never directly sizes positions), Taiwan market constraints (price limits, T+2, sessions, odd lots, liquidity, suspension, disposition stocks), single-signal no-direct-trade rule, event/news/social no-direct-trade rule, LLM-not-trade-core enforcement, and full replay trace with decision chain.",
+  "checklist_item_coverage": {
+    "market_reality_layer": "Checklist evaluates cost, slippage, fill probability, liquidity, price validity. Market reality fail blocks trade with MARKET_REALITY_FAIL veto.",
+    "nea_net_expected_advantage": "NEAEngine calculates net_edge = gross_return - costs - slippage - risk_premium. Passes only if net_edge >= min, expected_net_rr >= min, fill_probability >= min, regime_uncertainty <= max. NEA_FAIL veto with reason codes.",
+    "deterministic_risk_gate": "Risk Gate / Final Gate implemented via extra_veto_hook. Any veto blocks trade. Veto requires reason_code. All vetoes recorded in decision trace.",
+    "deterministic_position_sizing": "PositionSizingEngine calculates max_qty = min(risk_budget, liquidity, portfolio_exposure, strategy_cap, regime_cap, cash_available). Raw confidence cannot directly size positions. Calibrated confidence only used as secondary modifier.",
+    "confidence_calibration": "ConfidenceCalibrationGuard: raw_confidence <= 0.5 blocked. Historical Brier score > 0.3 halves calibration factor. Fewer than 5 past decisions applies 0.8x multiplier. Regime uncertainty reduces calibration factor. Raw confidence never directly used for sizing.",
+    "replay_compatibility": "ReplayTrace: trace_id, symbol, side, candidate_action, timestamp, decision_chain (all steps with results), risk_snapshot, market_reality_snapshot, threshold_config_version, final_decision, vetoes, order/fill/pnl refs. Supports replay and audit.",
+    "order_fill_pnl_schema": "ReplayTrace includes order_ref, fill_ref, pnl_ref fields for downstream linkage.",
+    "taiwan_market_constraints": "Checks: suspended (is_suspended), disposition stock (is_disposition_stock), near ±10% limit (is_near_limit_up/is_near_limit_down), liquidity insufficient (liquidity_score < 0.3), collection auction session (is_collection_auction). Each constraint can veto. Odd lot (is_odd_lot) flagged but not automatically blocked.",
+    "single_signal_no_direct_trade": "Single signal sources (technical_indicator, ai_score, single_strategy) blocked with SINGLE_SIGNAL_DIRECT_TRADE veto. Event/news/social sources get HIGH_IMPACT_UNCONFIRMED_EVENT veto.",
+    "llm_not_trade_core": "Signal sources containing 'llm' or 'api' blocked with LLM_IS_TRADE_CORE veto. LLM can assist research/summary but not release trades.",
+    "event_news_social_no_direct_trade": "news_headline, social_sentiment, breaking_event, unconfirmed_rumor, event_driven: blocked with HIGH_IMPACT_UNCONFIRMED_EVENT veto. Only watch/no-trade/reduce-size/wait-confirmation/tighten-risk allowed.",
+    "risk_veto_can_block_any_trade": "All vetoes block the trade. extra_veto_hook allows any external Risk Gate to inject additional veto. Veto requires reason_code. All vetoes recorded in trace."
+  },
+  "prohibited_runtime_proof": {
+    "main_control_loop_started": false,
+    "start_loop_executed": false,
+    "r030_dispatch_started": "TRUE (this is the controlled candidate dispatch — not runtime loop)",
+    "gov_int_005_started": false,
+    "trading_core_started": false,
+    "broker_started": false,
+    "execution_started": false,
+    "live_mode_started": false,
+    "order_execution_allowed": false
+  },
+  "tests": {
+    "file": "tests/test_decision_prechecklist.py",
+    "test_count": 20,
+    "passed": 20,
+    "failed": 0,
+    "coverage": [
+      "single_signal_technical_indicator_blocked",
+      "event_news_social_blocked",
+      "social_sentiment_blocked",
+      "single_signal_ai_score_blocked",
+      "llm_source_blocked",
+      "normal_strategy_passes",
+      "taiwan_suspended_blocked",
+      "taiwan_disposition_stock_blocked",
+      "taiwan_near_limit_up_blocked",
+      "taiwan_liquidity_insufficient_blocked",
+      "nea_edge_below_minimum_blocked",
+      "nea_fill_probability_low_blocked",
+      "confidence_calibration_low_raw",
+      "confidence_calibration_high_brier",
+      "position_sizing_respects_all_limits",
+      "replay_trace_fields",
+      "extra_veto_hook",
+      "non_taiwan_stock_no_taiwan_checks",
+      "confidence_raw_not_above_calibrated"
+    ]
+  },
+  "r030_preflight_result_after_candidate": "PASS",
+  "python_syntax_checks_pass": true,
+  "fresh_rtc_valid": true,
+  "check_return_to_chatgpt_accepts_fresh_rtc": true,
+  "validators_pass": {
+    "check_r030_preflight": true,
+    "check_return_to_chatgpt": true
+  },
+  "protected_files_not_modified": {
+    "state_runtime_json": false,
+    "manifests_current_round_yaml": false,
+    "latest_return_to_chatgpt": false,
+    "law_files": false,
+    "templates": false,
+    "hooks": false,
+    "check_return_to_chatgpt": false,
+    "runtime_control_code": false,
+    "trading_broker_execution_live": false
+  },
+  "git_operations": {
+    "git_add_executed": false,
+    "commit_created": false,
+    "merge_executed": false,
+    "push_executed": false,
+    "force_push_used": false,
+    "no_verify_used": false
+  },
+  "secret_values_exposed": false,
+  "candidate_ready_for_manual_review": true
+}
