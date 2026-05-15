@@ -7,6 +7,22 @@
     "expected_base_branch": "work/canonical-mainline-repair-001",
     "candidate_branch": "candidate/gov-backlog-006-validators-guards-mechanical-enforcement-hardening",
     "law_compliance": "04",
+    "candidate_diff_artifact": {
+        "present": true,
+        "authorized": true,
+        "path": "automation/control/candidates/GOV_BACKLOG_006_VALIDATORS_GUARDS_MECHANICAL_ENFORCEMENT_HARDENING/candidate.diff",
+        "encoding": "UTF-8",
+        "non_empty": true,
+        "sha256_prefix": "fc5c3893fca0d025",
+        "corresponds_to_actual_git_diff_from_base": true,
+        "note": "Content = git diff 762021003a59dd77705d12f8b6b1e08a7941ec98 e002f353689da46264dffe3d63a36d7ce1f6e229 (original 10-file candidate changes)"
+    },
+    "rework_info": {
+        "reason": "GOV_BACKLOG_006_MANUAL_REVIEW rejected: candidate_diff_artifact_present = FALSE",
+        "rework_type": "candidate_diff_artifact_rework",
+        "rework_commit": null,
+        "previous_candidate_commit": "e002f353689da46264dffe3d63a36d7ce1f6e229"
+    },
     "governance_backlog_requirement": "GOV-BACKLOG-006 validators/guards mechanical enforcement hardening",
     "r030_dispatch_started": false,
     "gov_int_005_started": false,
@@ -80,7 +96,8 @@
         "scripts/validation/check_aider_constraints.py",
         "scripts/validation/check_mirror_sync.py",
         "scripts/validation/check_manifest_state_consistency.py",
-        "automation/control/candidates/GOV_BACKLOG_006_VALIDATORS_GUARDS_MECHANICAL_ENFORCEMENT_HARDENING/evidence.json"
+        "automation/control/candidates/GOV_BACKLOG_006_VALIDATORS_GUARDS_MECHANICAL_ENFORCEMENT_HARDENING/evidence.json",
+        "automation/control/candidates/GOV_BACKLOG_006_VALIDATORS_GUARDS_MECHANICAL_ENFORCEMENT_HARDENING/candidate.diff"
     ],
     "work_done": [
         "Created check_r030_preflight.py — R030 dispatch readiness validator",
@@ -91,6 +108,7 @@
         "Hardened check_required_evidence.py — added secret scan, law_compliance exact string, prohibited_actions_verified completeness, authorized scope validation, candidate.diff presence check",
         "Hardened check_real_changes.py — added evidence-only change rejection, candidate.diff vs actual git diff hash comparison, fail-closed on no real changes",
         "Hardened pre-push.ps1 — added dirty tree guard, runtime guard (main_control_loop/r030/order_execution), manifest/state consistency check",
-        "Hardened pre-commit — added forbidden changes validator call, Aider evidence-only commit warning"
+        "Hardened pre-commit — added forbidden changes validator call, Aider evidence-only commit warning",
+        "Rework: generated candidate.diff (diff from expected_base_head to original candidate), updated evidence.json with candidate_diff_artifact metadata"
     ]
 }

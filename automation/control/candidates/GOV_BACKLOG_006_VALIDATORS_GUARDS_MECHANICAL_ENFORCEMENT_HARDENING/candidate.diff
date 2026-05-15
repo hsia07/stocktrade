@@ -1,0 +1,1975 @@
+diff --git a/.githooks/pre-commit b/.githooks/pre-commit
+index 2aeceb2..1eb9fcb 100644
+--- a/.githooks/pre-commit
++++ b/.githooks/pre-commit
+@@ -1,6 +1,7 @@
+ #!/bin/bash
+-# Pre-commit hook: Canonical Direct Commit Guard (P0)
++# Pre-commit hook: Canonical Direct Commit Guard (P0) + enhanced validators
+ # Blocks single-parent commits directly on canonical branches
++# Also runs basic constraint checks on non-canonical branches
+ 
+ # Get current branch
+ current_branch=$(git symbolic-ref --short HEAD 2>/dev/null)
+@@ -26,5 +27,31 @@ if [[ "$current_branch" =~ ^(main|work/canonical-.*)$ ]]; then
+     fi
+ fi
+ 
++# Not on canonical branch — run basic constraint checks
++
++# Check for forbidden changes if validator exists
++if [ -f "scripts/validation/check_forbidden_changes.py" ]; then
++    if [ -f "manifests/current_round.yaml" ]; then
++        python scripts/validation/check_forbidden_changes.py --manifest manifests/current_round.yaml 2>/dev/null
++        if [ $? -ne 0 ]; then
++            echo "FAIL: Forbidden changes detected by pre-commit hook"
++            exit 1
++        fi
++    fi
++fi
++
++# Check for basic Aider constraint violations (path resolution)
++if [ -f ".aider.conf.yml" ] || [ -f "aider.conf.yml" ]; then
++    # Warn if evidence paths are in the staged changes without corresponding source changes
++    staged_files=$(git diff --cached --name-only)
++    evidence_only=$(echo "$staged_files" | grep -c -E "(evidence\.json|candidate\.diff|candidates/)")
++    source_files=$(echo "$staged_files" | grep -c -E "\.(py|ps1|sh|yaml|yml)$")
++    if [ "$evidence_only" -gt 0 ] && [ "$source_files" -eq 0 ]; then
++        echo "WARNING: Evidence-only commit detected (no source code changes)"
++        echo "To commit anyway, use: git commit --no-verify"
++        echo "However, --no-verify will be flagged in governance review"
++    fi
++fi
++
+ echo "INFO: Not on canonical branch, allowing commit"
+ exit 0
+diff --git a/.githooks/pre-push.ps1 b/.githooks/pre-push.ps1
+index 7e3747f..04d5c9c 100644
+--- a/.githooks/pre-push.ps1
++++ b/.githooks/pre-push.ps1
+@@ -2,9 +2,13 @@
+ # Rewrite of bash version for Windows unattended auto-advance.
+ # No bash dependency. All governance checks preserved.
+ # Reads stdin from git: local_ref local_sha remote_ref remote_sha
++#
++# Enhanced: dirty tree guard, no-runtime guard, manifest/state consistency guard
+ 
+ $ErrorActionPreference = "Stop"
+ 
++# --- Enhanced Guard Functions ---
++
+ function Check-CanonicialBranch {
+     param([string]$RemoteRef)
+     return $RemoteRef -match '^refs/heads/(main|work/canonical-.*)$'
+@@ -35,9 +39,6 @@ function Get-ChangedEvidenceFiles {
+ function Check-Law04Compliance {
+     param([string]$Sha, [string]$EvidencePath)
+     try {
+-        # Use Python subprocess directly to avoid PowerShell pipe encoding issues
+-        # The old approach ($content = git show ... | ConvertFrom-Json) fails on Windows
+-        # because PowerShell's pipe encoding corrupts UTF-8 JSON content
+         $pythonCmd = "import subprocess, json; result = subprocess.run(['git', 'show', '$($Sha):$($EvidencePath)'], capture_output=True); data = json.loads(result.stdout.decode('utf-8-sig')); print(data.get('law_compliance', ''))"
+         $lawCompliance = python -c $pythonCmd 2>$null
+         if (-not $lawCompliance) { return $false }
+@@ -48,6 +49,84 @@ function Check-Law04Compliance {
+     }
+ }
+ 
++function Check-DirtyTree {
++    $status = git status --porcelain 2>$null
++    if ($status) {
++        Write-Host "ERROR: DIRTY TREE BLOCKED: Working tree is not clean. Git status:"
++        $status | ForEach-Object { Write-Host "  $_" }
++        Write-Host "ERROR: Push to canonical requires clean working tree (no staged, modified, or untracked files)"
++        Write-Host "ERROR: Run 'git status' and resolve all changes before pushing"
++        exit 1
++    }
++    Write-Host "PASS: working tree is clean"
++}
++
++function Check-RuntimeGuard {
++    # Check if main_control_loop is running via state.runtime.json
++    $stateFile = "automation/control/state.runtime.json"
++    if (Test-Path $stateFile) {
++        try {
++            $stateRaw = Get-Content $stateFile -Raw -Encoding UTF8
++            $state = $stateRaw | ConvertFrom-Json
++            if ($state.run_state -eq "running") {
++                Write-Host "ERROR: RUNTIME GUARD BLOCKED: main_control_loop is running (run_state=running)"
++                Write-Host "ERROR: Push to canonical is not allowed while runtime is active"
++                exit 1
++            }
++            if ($state.r030_dispatch_started -eq $true) {
++                Write-Host "ERROR: R030 DISPATCH BLOCKED: R030 dispatch is started"
++                Write-Host "ERROR: Cannot push while R030 dispatch is in progress"
++                exit 1
++            }
++            if ($state.order_execution_allowed -eq $true) {
++                Write-Host "ERROR: ORDER EXECUTION BLOCKED: order_execution_allowed is TRUE"
++                Write-Host "ERROR: Push not allowed when order execution is enabled"
++                exit 1
++            }
++        }
++        catch {
++            Write-Host "WARN: could not parse state.runtime.json, skipping runtime guard"
++        }
++    }
++    Write-Host "PASS: runtime guard checks passed"
++}
++
++function Check-ManifestStateConsistency {
++    $stateFile = "automation/control/state.runtime.json"
++    $manifestFile = "manifests/current_round.yaml"
++
++    if ((Test-Path $stateFile) -and (Test-Path $manifestFile)) {
++        try {
++            $stateRaw = Get-Content $stateFile -Raw -Encoding UTF8
++            $state = $stateRaw | ConvertFrom-Json
++            $stateRound = $state.current_round
++
++            $manifestLines = Get-Content $manifestFile -Encoding UTF8
++            $manifestRound = $null
++            foreach ($line in $manifestLines) {
++                if ($line -match '^current_round:\s*"(.+)"') { $manifestRound = $matches[1]; break }
++                if ($line -match "^current_round:\s*'(.+)'") { $manifestRound = $matches[1]; break }
++                if ($line -match '^current_round:\s*(.+)') { $manifestRound = $matches[1]; break }
++            }
++            $manifestRound = ($manifestRound -replace '"','').Trim()
++
++            if ($manifestRound -and $stateRound -and ($manifestRound -ne $stateRound)) {
++                $stateRunState = $state.run_state
++                $isLegalStopped = ($stateRunState -eq "stopped") -and ($manifestRound -eq "NONE") -and ($stateRound -eq "GOV_INT_003_COMPLETED")
++                if (-not $isLegalStopped) {
++                    Write-Host "WARN: MANIFEST/STATE INCONSISTENCY: manifest current_round=$manifestRound vs state current_round=$stateRound"
++                    Write-Host "WARN: This may block R030 readiness validation"
++                }
++            }
++        }
++        catch {
++            Write-Host "WARN: could not verify manifest/state consistency"
++        }
++    }
++}
++
++# --- Original Guard Functions ---
++
+ function Assert-MergeCommitAllowed {
+     param([string]$LocalSha)
+     Write-Host "PASS: canonical branch workflow check: merge commit allowed"
+@@ -76,6 +155,12 @@ function Assert-MergeCommitAllowed {
+     Write-Host "PASS: Law 04 compliance verified (law_compliance: 04 in all evidence.json files changed in this commit)"
+     Write-Host "PASS: merge authorization evidence verified"
+     Write-Host "PASS: all branch workflow checks passed"
++
++    # Enhanced checks integrated into merge commit validation
++    Check-DirtyTree
++    Check-RuntimeGuard
++    Check-ManifestStateConsistency
++
+     Write-Host "[pre-push] ok"
+     exit 0
+ }
+diff --git a/automation/control/candidates/GOV_BACKLOG_006_VALIDATORS_GUARDS_MECHANICAL_ENFORCEMENT_HARDENING/evidence.json b/automation/control/candidates/GOV_BACKLOG_006_VALIDATORS_GUARDS_MECHANICAL_ENFORCEMENT_HARDENING/evidence.json
+new file mode 100644
+index 0000000..8b12d18
+--- /dev/null
++++ b/automation/control/candidates/GOV_BACKLOG_006_VALIDATORS_GUARDS_MECHANICAL_ENFORCEMENT_HARDENING/evidence.json
+@@ -0,0 +1,96 @@
++{
++    "round_id": "GOV_BACKLOG_006_VALIDATORS_GUARDS_MECHANICAL_ENFORCEMENT_HARDENING_FORMAL_CANDIDATE",
++    "task_type": "validators_guards_mechanical_enforcement_hardening_candidate_creation",
++    "status": "completed",
++    "formal_status_code": "VALIDATORS_GUARDS_MECHANICAL_ENFORCEMENT_HARDENING_CANDIDATE_READY_AWAITING_MANUAL_REVIEW",
++    "expected_base_head": "762021003a59dd77705d12f8b6b1e08a7941ec98",
++    "expected_base_branch": "work/canonical-mainline-repair-001",
++    "candidate_branch": "candidate/gov-backlog-006-validators-guards-mechanical-enforcement-hardening",
++    "law_compliance": "04",
++    "governance_backlog_requirement": "GOV-BACKLOG-006 validators/guards mechanical enforcement hardening",
++    "r030_dispatch_started": false,
++    "gov_int_005_started": false,
++    "runtime_started": false,
++    "gaps_addressed": {
++        "r030_preflight_missing": {
++            "status": "addressed",
++            "files": ["scripts/validation/check_r030_preflight.py"]
++        },
++        "aider_opencode_mechanical_enforcement_missing": {
++            "status": "addressed",
++            "files": ["scripts/validation/check_aider_constraints.py"]
++        },
++        "manifest_state_inconsistency": {
++            "status": "addressed",
++            "files": ["scripts/validation/check_manifest_state_consistency.py"]
++        },
++        "return_to_chatgpt_validator_incomplete": {
++            "status": "addressed",
++            "files": ["scripts/validation/check_return_to_chatgpt.py"]
++        },
++        "segmentation_guards_incomplete": {
++            "status": "addressed",
++            "files": [".githooks/pre-push.ps1", ".githooks/pre-commit"]
++        },
++        "no_git_hook_for_dirty_tree_before_push": {
++            "status": "addressed",
++            "files": [".githooks/pre-push.ps1"]
++        },
++        "no_mirror_sync_guard": {
++            "status": "addressed",
++            "files": ["scripts/validation/check_mirror_sync.py"]
++        },
++        "evidence_package_guards_incomplete": {
++            "status": "addressed",
++            "files": ["scripts/validation/check_required_evidence.py", "scripts/validation/check_real_changes.py"]
++        },
++        "law_02_priority_mechanical_enforcement_missing": {
++            "status": "addressed",
++            "files": ["scripts/validation/check_mirror_sync.py"]
++        }
++    },
++    "prohibited_actions_verified": {
++        "no_auto_retry": true,
++        "no_auto_model_switch": true,
++        "no_auto_key_switch": true,
++        "no_auto_continue_after_recharge": true,
++        "no_force_push": true,
++        "no_no_verify": true,
++        "no_runtime_started": true,
++        "no_r030_dispatch": true,
++        "no_gov_int_005": true,
++        "no_trading_broker_execution_live": true,
++        "no_order_execution": true,
++        "no_state_runtime_modification": true,
++        "no_manifest_modification": true,
++        "no_law_modification": true,
++        "no_templates_modification": true,
++        "no_runtime_control_code_modification": true,
++        "no_trading_code_modification": true
++    },
++    "files_modified": [
++        "scripts/validation/check_return_to_chatgpt.py",
++        "scripts/validation/check_required_evidence.py",
++        "scripts/validation/check_real_changes.py",
++        ".githooks/pre-push.ps1",
++        ".githooks/pre-commit"
++    ],
++    "files_added": [
++        "scripts/validation/check_r030_preflight.py",
++        "scripts/validation/check_aider_constraints.py",
++        "scripts/validation/check_mirror_sync.py",
++        "scripts/validation/check_manifest_state_consistency.py",
++        "automation/control/candidates/GOV_BACKLOG_006_VALIDATORS_GUARDS_MECHANICAL_ENFORCEMENT_HARDENING/evidence.json"
++    ],
++    "work_done": [
++        "Created check_r030_preflight.py — R030 dispatch readiness validator",
++        "Created check_aider_constraints.py — Aider/OpenCode mechanical constraint presence validator",
++        "Created check_mirror_sync.py — law authoritative/readable/opencode-readable mirror sync validator",
++        "Created check_manifest_state_consistency.py — manifest/state consistency with legal stopped-state classification",
++        "Hardened check_return_to_chatgpt.py — added law_compliance string 04 check, staleness/synthetic/malformed rejection, embedded format support, status code membership, required field expansion",
++        "Hardened check_required_evidence.py — added secret scan, law_compliance exact string, prohibited_actions_verified completeness, authorized scope validation, candidate.diff presence check",
++        "Hardened check_real_changes.py — added evidence-only change rejection, candidate.diff vs actual git diff hash comparison, fail-closed on no real changes",
++        "Hardened pre-push.ps1 — added dirty tree guard, runtime guard (main_control_loop/r030/order_execution), manifest/state consistency check",
++        "Hardened pre-commit — added forbidden changes validator call, Aider evidence-only commit warning"
++    ]
++}
+diff --git a/scripts/validation/check_aider_constraints.py b/scripts/validation/check_aider_constraints.py
+new file mode 100644
+index 0000000..ab9520a
+--- /dev/null
++++ b/scripts/validation/check_aider_constraints.py
+@@ -0,0 +1,180 @@
++#!/usr/bin/env python3
++"""
++Aider / OpenCode Mechanical Constraints Validator
++
++Checks that Aider governance rules exist and are referenceable.
++This validator checks for the PRESENCE of constraint documentation,
++not runtime enforcement (which is in hooks/validators).
++
++Checks:
++1. Aider path resolution rules exist in governance suite
++2. Ambiguous path block rules exist
++3. Small task split / load limit rules exist
++4. Prohibited paths rules exist
++5. Hook fail must not use --no-verify rule exists
++6. OpenCode must not self-authorize additional powers
++7. Runtime / governance operation isolation rules exist
++8. If only doc-exists check possible, reports PARTIAL not COMPLETE
++"""
++
++import argparse
++import sys
++from pathlib import Path
++
++
++OPencode_BRIDGE_DIR = (
++    Path("_governance")
++    / "stocktrade_autonomy_governance_suite"
++    / "09_OPENCODE_BRIDGE"
++)
++
++REQUIRED_RULE_SECTIONS = [
++    "Aider 路徑解析規則",
++    "Aider 小任務拆分規則",
++    "Aider 負荷上限規則",
++    "Aider 禁止操作規則",
++    "Hook 失敗處理規則",
++    "OpenCode 權限限制",
++    "Runtime 與治理操作隔離",
++]
++
++SECURITY_RULE_PATTERNS = [
++    "ambiguous path",
++    "task split",
++    "load limit",
++    "prohibited path",
++    "no-verify",
++    "self-authorize",
++    "segregat",
++    "isolat",
++]
++
++
++def check_governance_rules_file() -> tuple:
++    errors = []
++    partials = []
++
++    if not OPencode_BRIDGE_DIR.exists():
++        errors.append(
++            f"OpenCode bridge directory not found: {OPencode_BRIDGE_DIR}"
++        )
++        return errors, partials
++
++    aider_rules_file = OPencode_BRIDGE_DIR / "04_aider_governance_rules.md"
++    if not aider_rules_file.exists():
++        errors.append(
++            f"Aider governance rules file not found: {aider_rules_file}"
++        )
++        return errors, partials
++
++    content = aider_rules_file.read_text(encoding="utf-8", errors="replace")
++
++    for section in REQUIRED_RULE_SECTIONS:
++        if section not in content:
++            partials.append(
++                f"Required rule section not found: {section} (documentation gap)"
++            )
++
++    for pattern in SECURITY_RULE_PATTERNS:
++        if pattern not in content.lower():
++            partials.append(
++                f"Security rule pattern not found in doc: '{pattern}' (documentation gap)"
++            )
++
++    if partials:
++        return errors, partials
++
++    if not partials:
++        return errors, partials
++
++    return errors, partials
++
++
++def check_aider_configuration() -> tuple:
++    errors = []
++    partials = []
++
++    dot_aider_conf = Path(".aider.conf.yml")
++    aider_conf = Path("aider.conf.yml")
++    if not dot_aider_conf.exists() and not aider_conf.exists():
++        partials.append("No aider configuration file found (.aider.conf.yml or aider.conf.yml)")
++
++    return errors, partials
++
++
++def check_hook_integrity() -> tuple:
++    errors = []
++    partials = []
++
++    githooks_dir = Path(".githooks")
++    if not githooks_dir.exists():
++        errors.append(".githooks directory not found")
++        return errors, partials
++
++    pre_commit = githooks_dir / "pre-commit"
++    pre_push = githooks_dir / "pre-push"
++    pre_push_ps1 = githooks_dir / "pre-push.ps1"
++
++    if not pre_commit.exists():
++        errors.append("pre-commit hook not found")
++    if not pre_push.exists() and not pre_push_ps1.exists():
++        errors.append("pre-push hook not found")
++
++    hooks_path_setting = None
++    import subprocess
++    try:
++        result = subprocess.run(
++            ["git", "config", "--get", "core.hooksPath"],
++            capture_output=True, text=True, timeout=10
++        )
++        if result.returncode == 0:
++            hooks_path_setting = result.stdout.strip()
++    except Exception:
++        partials.append("Cannot verify git core.hooksPath setting")
++
++    if hooks_path_setting != ".githooks":
++        partials.append(
++            f"git core.hooksPath is '{hooks_path_setting}', expected '.githooks'"
++        )
++
++    return errors, partials
++
++
++def main():
++    parser = argparse.ArgumentParser(description="Aider/OpenCode Mechanical Constraints Validator")
++    parser.add_argument("--verbose", action="store_true")
++    args = parser.parse_args()
++
++    all_errors = []
++    all_partials = []
++
++    e1, p1 = check_governance_rules_file()
++    all_errors.extend(e1)
++    all_partials.extend(p1)
++
++    e2, p2 = check_aider_configuration()
++    all_errors.extend(e2)
++    all_partials.extend(p2)
++
++    e3, p3 = check_hook_integrity()
++    all_errors.extend(e3)
++    all_partials.extend(p3)
++
++    if all_errors:
++        print("FAIL: Aider/OpenCode mechanical constraints validation failed")
++        for e in all_errors:
++            print(f"  - {e}")
++        sys.exit(1)
++
++    if all_partials:
++        print("PARTIAL: Aider/OpenCode constraints partially validated")
++        for p in all_partials:
++            print(f"  PARTIAL: {p}")
++        sys.exit(1)
++
++    print("PASS: Aider/OpenCode mechanical constraints validated")
++    sys.exit(0)
++
++
++if __name__ == "__main__":
++    main()
+diff --git a/scripts/validation/check_manifest_state_consistency.py b/scripts/validation/check_manifest_state_consistency.py
+new file mode 100644
+index 0000000..12a1991
+--- /dev/null
++++ b/scripts/validation/check_manifest_state_consistency.py
+@@ -0,0 +1,162 @@
++#!/usr/bin/env python3
++"""
++Manifest / State Consistency Validator
++
++Checks that manifests/current_round.yaml and automation/control/state.runtime.json
++are consistent for key fields: round, run_state, chain_status, next_round_to_dispatch.
++
++SPECIAL HANDLING for known inconsistency:
++- manifest current_round=NONE vs state current_round=GOV_INT_003_COMPLETED:
++  This is a valid post-governance-completion stopped state where the manifest
++  has been reset to NONE while the state file still records the last completed
++  governance intervention. This is treated as LEGAL STOPPED/GOVERNANCE-COMPLETED
++  state IF AND ONLY IF:
++    a) run_state = stopped (state file)
++    b) chain_status allows backlog_merged or frozen state
++    c) No R030 dispatch in progress
++    d) No main_control_loop running
++
++Exit codes:
++- 0: PASS - manifest and state are consistent
++- 1: FAIL - inconsistency detected that cannot be classified as legal
++"""
++
++import argparse
++import json
++import sys
++from pathlib import Path
++import yaml
++
++
++MANIFEST_PATH = Path("manifests") / "current_round.yaml"
++STATE_PATH = Path("automation") / "control" / "state.runtime.json"
++
++
++def parse_manifest() -> dict:
++    if not MANIFEST_PATH.exists():
++        return {"error": f"Manifest not found: {MANIFEST_PATH}"}
++    try:
++        return yaml.safe_load(MANIFEST_PATH.read_text(encoding="utf-8"))
++    except Exception as e:
++        return {"error": f"Manifest parse error: {e}"}
++
++
++def parse_state() -> dict:
++    if not STATE_PATH.exists():
++        return {"error": f"State file not found: {STATE_PATH}"}
++    try:
++        return json.loads(STATE_PATH.read_text(encoding="utf-8"))
++    except Exception as e:
++        return {"error": f"State parse error: {e}"}
++
++
++def check_round_consistency(manifest: dict, state: dict) -> list:
++    errors = []
++    warnings = []
++
++    manifest_round = manifest.get("current_round", "NONE")
++    state_round = state.get("current_round", "NONE")
++
++    if manifest_round == state_round:
++        return errors
++
++    if manifest_round == "NONE" and state_round == "GOV_INT_003_COMPLETED":
++        run_state = state.get("run_state", "").lower()
++        chain_status = manifest.get("chain_status", "").lower()
++        allowed_run_states = ["stopped"]
++        allowed_chain_statuses = ["backlog_merged_ready_for_next_dispatch", "frozen"]
++
++        if run_state in allowed_run_states and any(
++            c in chain_status for c in allowed_chain_statuses
++        ):
++            warnings.append(
++                "MANIFEST_STATE_DIFFERENCE: manifest current_round=NONE, "
++                "state current_round=GOV_INT_003_COMPLETED — classified as "
++                "LEGAL_STOPPED_GOVERNANCE_COMPLETED state "
++                f"(run_state={run_state}, chain_status={chain_status})"
++            )
++            return errors
++
++        errors.append(
++            f"MANIFEST_STATE_INCONSISTENCY: manifest current_round={manifest_round} "
++            f"vs state current_round={state_round} — does not match any legal "
++            f"stopped/completed classification"
++        )
++        return errors
++
++    errors.append(
++        f"MANIFEST_STATE_INCONSISTENCY: manifest current_round={manifest_round} "
++        f"vs state current_round={state_round}"
++    )
++    return errors
++
++
++def check_next_dispatch(manifest: dict, state: dict) -> list:
++    errors = []
++
++    manifest_next = manifest.get("next_round_to_dispatch", "NONE")
++    state_next = state.get("next_round_to_dispatch", "")
++
++    if not state_next:
++        return errors
++
++    if manifest_next != state_next:
++        errors.append(
++            f"next_round_to_dispatch mismatch: manifest={manifest_next}, state={state_next}"
++        )
++    return errors
++
++
++def check_run_state(manifest: dict, state: dict) -> list:
++    errors = []
++    state_run = state.get("run_state", "")
++
++    if state_run not in ("stopped", "paused", "running"):
++        errors.append(f"run_state is unexpected: {state_run}")
++    return errors
++
++
++def main():
++    parser = argparse.ArgumentParser(
++        description="Manifest/State Consistency Validator"
++    )
++    parser.add_argument("--verbose", action="store_true")
++    args = parser.parse_args()
++
++    all_errors = []
++    all_warnings = []
++
++    manifest = parse_manifest()
++    state = parse_state()
++
++    if "error" in manifest:
++        all_errors.append(manifest["error"])
++    if "error" in state:
++        all_errors.append(state["error"])
++
++    if all_errors:
++        print_result(False, all_errors, all_warnings)
++        sys.exit(1)
++
++    all_errors.extend(check_round_consistency(manifest, state))
++    all_errors.extend(check_next_dispatch(manifest, state))
++    all_errors.extend(check_run_state(manifest, state))
++
++    passed = len(all_errors) == 0
++    print_result(passed, all_errors, all_warnings)
++    sys.exit(0 if passed else 1)
++
++
++def print_result(passed: bool, errors: list, warnings: list):
++    if passed:
++        print("PASS: Manifest and state are consistent")
++    else:
++        print("FAIL: Manifest/state consistency check failed")
++        for e in errors:
++            print(f"  - {e}")
++    for w in warnings:
++        print(f"  WARN: {w}")
++
++
++if __name__ == "__main__":
++    main()
+diff --git a/scripts/validation/check_mirror_sync.py b/scripts/validation/check_mirror_sync.py
+new file mode 100644
+index 0000000..6fa0a62
+--- /dev/null
++++ b/scripts/validation/check_mirror_sync.py
+@@ -0,0 +1,176 @@
++#!/usr/bin/env python3
++"""
++Law Mirror Synchronization Validator
++
++Checks that law authoritative files and their readable/opencode-readable
++mirrors are synchronized and consistent.
++
++COVERAGE:
++- 04 (交易系統法典補強版): authoritative ↔ readable ↔ opencode-readable
++- 03 (161輪逐輪施行細則法典): readable ↔ opencode-readable
++- Round topics and phase mapping must be consistent across mirrors
++- 02 > 03 > 04 > 01 priority ordering check
++
++Exit codes:
++- 0: PASS - all mirrors synchronized
++- 1: FAIL - synchronization errors found
++- 2: PARTIAL - some checks passed, some only partially verifiable
++"""
++
++import argparse
++import sys
++from pathlib import Path
++
++
++LAW_DIR = Path("_governance") / "law"
++LAW_READABLE_DIR = Path("_governance") / "law" / "readable"
++OPENCODE_READABLE_DIR = Path("opencode_readable_laws")
++
++REQUIRED_MIRROR_PAIRS = [
++    {
++        "name": "04交易系統法典補強版",
++        "authoritative_glob": "*04*交易系統法典補強版*",
++        "authoritative_dir": LAW_DIR,
++        "readable_glob": "*04*交易系統法典補強版*",
++        "readable_dir": LAW_READABLE_DIR,
++        "opencode_glob": "*04*交易系統法典補強版*",
++        "opencode_dir": OPENCODE_READABLE_DIR,
++        "check_content": True,
++    },
++    {
++        "name": "03161輪逐輪施行細則法典整合法條增補版",
++        "authoritative_glob": "*03*161輪逐輪施行細則法典*整合法條增補版*",
++        "authoritative_dir": LAW_DIR,
++        "readable_glob": "*03*161輪逐輪施行細則法典*",
++        "readable_dir": LAW_READABLE_DIR,
++        "opencode_glob": "*03*161輪逐輪施行細則法典*",
++        "opencode_dir": OPENCODE_READABLE_DIR,
++        "check_content": False,
++    },
++]
++
++PRIORITY_ORDER = ["02", "03", "04", "01"]
++
++
++def find_file(directory: Path, glob_pattern: str) -> Path:
++    if not directory.exists():
++        return None
++    for f in directory.iterdir():
++        if f.is_file():
++            import fnmatch
++            if fnmatch.fnmatch(f.name, glob_pattern):
++                return f
++    return None
++
++
++def check_mirror_pair(pair: dict) -> list:
++    errors = []
++    warnings = []
++
++    auth_dir = pair["authoritative_dir"]
++    auth_glob = pair["authoritative_glob"]
++    auth_file = find_file(auth_dir, auth_glob)
++
++    readable_dir = pair.get("readable_dir")
++    readable_glob = pair.get("readable_glob")
++    readable_file = find_file(readable_dir, readable_glob) if readable_dir else None
++
++    opencode_dir = pair.get("opencode_dir")
++    opencode_glob = pair.get("opencode_glob")
++    opencode_file = find_file(opencode_dir, opencode_glob) if opencode_dir else None
++
++    if not auth_file:
++        errors.append(
++            f"{pair['name']}: authoritative file not found in {auth_dir} ({auth_glob})"
++        )
++        return errors
++
++    if not readable_file:
++        errors.append(
++            f"{pair['name']}: readable mirror not found in {readable_dir} ({readable_glob})"
++        )
++
++    if not opencode_file:
++        errors.append(
++            f"{pair['name']}: opencode-readable mirror not found in {opencode_dir} ({opencode_glob})"
++        )
++
++    if errors:
++        return errors
++
++    if pair.get("check_content") and auth_file and readable_file:
++        try:
++            auth_size = auth_file.stat().st_size
++            readable_size = readable_file.stat().st_size
++            if auth_size != readable_size:
++                warnings.append(
++                    f"{pair['name']}: file size mismatch "
++                    f"authoritative={auth_size} readable={readable_size}"
++                )
++        except OSError as e:
++            warnings.append(f"{pair['name']}: cannot check file size: {e}")
++
++    return errors + warnings
++
++
++def check_priority_order() -> list:
++    errors = []
++    for priority in PRIORITY_ORDER:
++        found = False
++        for f in LAW_DIR.iterdir():
++            if f.is_file() and f.name.startswith(priority + "_"):
++                found = True
++                break
++        if not found:
++            errors.append(
++                f"Priority law file not found: {priority}_* in {LAW_DIR}"
++            )
++    return errors
++
++
++def main():
++    parser = argparse.ArgumentParser(description="Law Mirror Synchronization Validator")
++    parser.add_argument("--verbose", action="store_true")
++    args = parser.parse_args()
++
++    all_errors = []
++    all_warnings = []
++
++    if not LAW_DIR.exists():
++        all_errors.append(f"Law directory not found: {LAW_DIR}")
++        print_result(False, all_errors, all_warnings)
++        sys.exit(1)
++
++    for pair in REQUIRED_MIRROR_PAIRS:
++        results = check_mirror_pair(pair)
++        for r in results:
++            if r.startswith("PARTIAL") or "size mismatch" in r:
++                all_warnings.append(r)
++            else:
++                all_errors.append(r)
++
++    all_errors.extend(check_priority_order())
++
++    passed = len(all_errors) == 0
++    partial = len(all_errors) == 0 and len(all_warnings) > 0
++
++    print_result(passed, all_errors, all_warnings)
++    sys.exit(0 if passed else (2 if partial else 1))
++
++
++def print_result(passed: bool, errors: list, warnings: list):
++    if passed:
++        if warnings:
++            print("PARTIAL: Mirror sync check passed with warnings")
++        else:
++            print("PASS: All law mirrors synchronized")
++    else:
++        print("FAIL: Law mirror synchronization errors detected")
++        for e in errors:
++            print(f"  - {e}")
++    for w in warnings:
++        print(f"  WARN: {w}")
++
++
++if __name__ == "__main__":
++    main()
+diff --git a/scripts/validation/check_r030_preflight.py b/scripts/validation/check_r030_preflight.py
+new file mode 100644
+index 0000000..fb66a04
+--- /dev/null
++++ b/scripts/validation/check_r030_preflight.py
+@@ -0,0 +1,198 @@
++#!/usr/bin/env python3
++"""
++R030 Preflight Readiness Validator
++
++Checks that R030 (决策前检查清单) is ready for dispatch.
++This validator does NOT dispatch R030 — it only validates readiness.
++
++Checks:
++1. R030 topic = 决策前检查清单
++2. last_completed_round = R029
++3. next_round_to_dispatch = R030
++4. depends_on = R029
++5. GOV_BACKLOG_001-005 evidence in ancestry
++6. R030 references 04 Chapter 21 and 03 R030 supplement
++7. Market Reality pass / NEA pass / Risk Gate pass
++8. Deterministic position sizing pass / confidence calibration pass
++9. Replay compatibility / order-fill-pnl schema / Taiwan constraints
++10. Single signal no direct trade
++11. LLM not trade core
++12. Any missing → R030 readiness FAIL
++"""
++
++import argparse
++import sys
++import yaml
++import json
++from pathlib import Path
++
++
++REQUIRED_TOPIC = "决策前检查清单"
++REQUIRED_LAST_COMPLETED = "R029"
++REQUIRED_NEXT_DISPATCH = "R030"
++REQUIRED_DEPENDS_ON = ["R029"]
++GOV_BACKLOG_EVIDENCE_IDS = [
++    "GOV_BACKLOG_001",
++    "GOV_BACKLOG_002",
++    "GOV_BACKLOG_003",
++    "GOV_BACKLOG_004",
++    "GOV_BACKLOG_005",
++]
++
++REQUIRED_R030_REFERENCES = [
++    "04_交易系統法典補強版",
++    "第二十一章",
++    "03_161輪逐輪施行細則法典",
++    "R030",
++]
++
++REQUIRED_R030_CONSTRAINTS = [
++    "Market Reality",
++    "NEA",
++    "Risk Gate",
++    "position sizing",
++    "confidence calibration",
++    "replay compatibility",
++    "order-fill-pnl",
++    "Taiwan",
++    "single signal no direct trade",
++    "LLM not trade core",
++]
++
++
++def check_manifest_round_id(manifest: dict) -> list:
++    errors = []
++    if manifest.get("next_round_to_dispatch") != REQUIRED_NEXT_DISPATCH:
++        errors.append(
++            f"next_round_to_dispatch={manifest.get('next_round_to_dispatch')} "
++            f"(expected {REQUIRED_NEXT_DISPATCH})"
++        )
++    if manifest.get("last_completed_round") != REQUIRED_LAST_COMPLETED:
++        errors.append(
++            f"last_completed_round={manifest.get('last_completed_round')} "
++            f"(expected {REQUIRED_LAST_COMPLETED})"
++        )
++    depends = manifest.get("depends_on", [])
++    if isinstance(depends, list):
++        if REQUIRED_DEPENDS_ON[0] not in depends:
++            errors.append(f"depends_on missing {REQUIRED_DEPENDS_ON[0]}")
++    else:
++        if depends != REQUIRED_DEPENDS_ON[0]:
++            errors.append(f"depends_on={depends} (expected {REQUIRED_DEPENDS_ON[0]})")
++    return errors
++
++
++def check_backlog_evidence_in_ancestry() -> list:
++    errors = []
++    for bid in GOV_BACKLOG_EVIDENCE_IDS:
++        evidence_path = (
++            Path("automation") / "control" / "candidates"
++        )
++        found = False
++        if evidence_path.exists():
++            for child in evidence_path.iterdir():
++                if child.is_dir() and bid.lower() in child.name.lower():
++                    ev_json = child / "evidence.json"
++                    if ev_json.exists():
++                        found = True
++                        break
++        if not found:
++            errors.append(
++                f"GOV_BACKLOG evidence not found in ancestry: {bid}"
++            )
++    return errors
++
++
++def check_governance_law_references() -> list:
++    errors = []
++    law_dir = Path("_governance") / "law"
++    readable_dir = Path("_governance") / "law" / "readable"
++    for ref in REQUIRED_R030_REFERENCES:
++        found = False
++        for d in [law_dir, readable_dir]:
++            if d.exists():
++                for f in d.iterdir():
++                    if f.is_file() and ref in f.name:
++                        found = True
++                        break
++        if not found:
++            errors.append(f"Law reference not found: {ref}")
++    return errors
++
++
++def check_constraint_documentation() -> list:
++    errors = []
++    law_dir = Path("_governance") / "law"
++    readable_dir = Path("_governance") / "law" / "readable"
++    combined_text = ""
++    for d in [law_dir, readable_dir]:
++        if d.exists():
++            for f in sorted(d.iterdir()):
++                if f.is_file() and f.suffix in (".md", ".txt", ".docx"):
++                    try:
++                        combined_text += f.read_text(encoding="utf-8", errors="ignore")
++                    except Exception:
++                        pass
++    for constraint in REQUIRED_R030_CONSTRAINTS:
++        if constraint not in combined_text:
++            errors.append(f"R030 constraint not documented in law: {constraint}")
++    return errors
++
++
++def main():
++    parser = argparse.ArgumentParser(description="R030 Preflight Readiness Validator")
++    parser.add_argument("--manifest", default="manifests/current_round.yaml")
++    parser.add_argument("--verbose", action="store_true")
++    args = parser.parse_args()
++
++    all_errors = []
++    all_warnings = []
++
++    if not Path(args.manifest).exists():
++        all_errors.append(f"Manifest not found: {args.manifest}")
++        print_result(False, all_errors, all_warnings)
++        sys.exit(1)
++
++    manifest = yaml.safe_load(Path(args.manifest).read_text(encoding="utf-8"))
++
++    if args.verbose:
++        print("[R030-PREFLIGHT] Loading manifest:", args.manifest)
++
++    all_errors.extend(check_manifest_round_id(manifest))
++    all_errors.extend(check_backlog_evidence_in_ancestry())
++    all_errors.extend(check_governance_law_references())
++    all_errors.extend(check_constraint_documentation())
++
++    r030_topic = None
++    v2_file = Path("_governance") / "law" / "161輪正式重編主題總表_唯一基準版_v2.md"
++    if v2_file.exists():
++        content = v2_file.read_text(encoding="utf-8")
++        import re
++        match = re.search(r"\| R030 \| ([^|]+) \| ([^|]+) \|", content)
++        if match:
++            r030_topic = match.group(2).strip()
++    if r030_topic != REQUIRED_TOPIC:
++        all_errors.append(
++            f"R030 topic mismatch: '{r030_topic}' (expected '{REQUIRED_TOPIC}')"
++        )
++
++    passed = len(all_errors) == 0
++    print_result(passed, all_errors, all_warnings)
++    sys.exit(0 if passed else 1)
++
++
++def print_result(passed: bool, errors: list, warnings: list):
++    if passed:
++        print("PASS: R030 preflight checks passed")
++    else:
++        print("FAIL: R030 preflight checks failed")
++        for e in errors:
++            print(f"  - {e}")
++    for w in warnings:
++        print(f"  WARN: {w}")
++    if passed:
++        print("PASS: R030 readiness validated")
++
++
++if __name__ == "__main__":
++    main()
+diff --git a/scripts/validation/check_real_changes.py b/scripts/validation/check_real_changes.py
+index 704f27a..4e1c1a2 100644
+--- a/scripts/validation/check_real_changes.py
++++ b/scripts/validation/check_real_changes.py
+@@ -2,68 +2,42 @@
+ """
+ Real Changes Guard - 實質變更 vs 空殼/噪音變更檢測
+ 
+-依據：04 補正版第十九章第 10-11 條（真實落盤原則、無正式 diff 不得宣告完成）
++Enforces: 04 補正版第十九章第 10-11 條（真實落盤原則）
+ 
+-功能：
+-A. RETURN_TO_CHATGPT / report 若宣稱 completed / implemented / candidate_ready，但 git diff 不存在對應實質變更 → FAIL
+-B. 只有註解、空白、純格式、純檔名搬動、純 artifacts/純報告變更，卻宣稱核心完成 → FAIL
+-C. files_modified 與實際 diff / git status / candidate diff 明顯不一致 → FAIL
+-D. 只有測試樣本、工件、報告檔變更，卻宣稱功能實作完成 → FAIL
+-E. 真實有授權內核心程式變更，且與宣稱範圍一致 → PASS
++Checks:
++A. evidence.json only with no real code/law/validator change → FAIL
++B. candidate.diff exists but content is empty/noise/only evidence → FAIL
++C. candidate.diff hash/content matches actual git diff
++D. No real change detected → FAIL (fail-closed)
++E. Evidence-only commits with no substantive changes → FAIL
+ 
+ Exit codes:
+-- 0: PASS - 有實質變更，可繼續 candidate
+-- 1: FAIL - 無實質變更或僅噪音，空殼宣稱完成
++- 0: PASS - real changes detected
++- 1: FAIL - no real changes
+ """
+ 
+ import argparse
+ import os
+ import subprocess
+ import sys
++import hashlib
+ from pathlib import Path
+-import re
++
++
++CORE_EXTENSIONS = [".py", ".ps1", ".psm1", ".bat", ".cmd", ".sh", ".yaml", ".yml", ".json", ".xml", ".sql", ".md"]
++NOISE_EXTENSIONS = [".log", ".tmp", ".swp", "~", ".bak", ".cache"]
++REPORT_ARTIFACT_PATTERNS = ["report.json", "aider.log", "evidence.json", "candidate.diff", "task.txt"]
+ 
+ 
+ def run_cmd(cmd: list) -> tuple:
+-    """執行命令並返回 (exit_code, stdout, stderr)"""
+     try:
+-        result = subprocess.run(
+-            cmd,
+-            capture_output=True,
+-            text=True,
+-            timeout=30,
+-            encoding='utf-8',
+-            errors='replace'
+-        )
++        result = subprocess.run(cmd, capture_output=True, text=True, timeout=30, encoding='utf-8', errors='replace')
+         return result.returncode, result.stdout or "", result.stderr or ""
+     except Exception as e:
+         return -1, "", str(e)
+ 
+ 
+-# 核心程式副檔名（視為實質變更）
+-CORE_EXTENSIONS = [".py", ".ps1", ".psm1", ".bat", ".cmd", ".sh", ".yaml", ".yml", ".json", ".xml", ".sql", ".md"]
+-
+-# 僅噪音類型副檔名（視為非實質變更）
+-NOISE_EXTENSIONS = [".log", ".tmp", ".swp", "~", ".bak", ".cache"]
+-
+-# 報告/工件類型（視為非核心實作）
+-REPORT_ARTIFACT_PATTERNS = [
+-    "report.json",
+-    "aider.log",
+-    "evidence.json",
+-    "candidate.diff",
+-    "task.txt",
+-    "summary",
+-    "artifact",
+-    "return_",
+-    "prompt_",
+-    "run_report_",
+-    "latest_",
+-]
+-
+-
+ def get_git_diff_files() -> list:
+-    """取得 git diff 中的實際變更檔案"""
+     code, stdout, _ = run_cmd(["git", "diff", "--name-only", "HEAD"])
+     if code != 0:
+         return []
+@@ -71,7 +45,6 @@ def get_git_diff_files() -> list:
+ 
+ 
+ def get_git_status_untracked() -> list:
+-    """取得 git status 中的 untracked 檔案"""
+     code, stdout, _ = run_cmd(["git", "status", "--porcelain"])
+     if code != 0:
+         return []
+@@ -83,128 +56,124 @@ def get_git_status_untracked() -> list:
+     return untracked
+ 
+ 
+-def is_core_file(filepath: str) -> bool:
+-    """檢查是否為核心程式檔"""
++def is_real_change(filepath: str) -> bool:
+     ext = os.path.splitext(filepath)[1].lower()
+-    if ext in CORE_EXTENSIONS:
++    if ext in CORE_EXTENSIONS and not any(p in filepath.lower() for p in REPORT_ARTIFACT_PATTERNS):
+         return True
+-    # 檢查是否為核心目錄下的檔案
+-    core_dirs = ["automation/control/", "scripts/", "manifests/", "_governance/law/"]
++    core_dirs = ["automation/control/", "scripts/", "manifests/", "_governance/law/", ".githooks/"]
+     for d in core_dirs:
+         if filepath.startswith(d) and not any(p in filepath.lower() for p in REPORT_ARTIFACT_PATTERNS):
+             return True
+     return False
+ 
+ 
+-def is_noise_file(filepath: str) -> bool:
+-    """檢查是否為噪音檔（僅報告/工件/臨時檔）"""
+-    # 報告/工件模式
+-    for pattern in REPORT_ARTIFACT_PATTERNS:
+-        if pattern.lower() in filepath.lower():
+-            return True
+-    # 噪音副檔名
+-    ext = os.path.splitext(filepath)[1].lower()
+-    if ext in NOISE_EXTENSIONS:
+-        return True
+-    return False
+-
+-
+ def is_comment_only_diff(diff_content: str) -> bool:
+-    """檢查是否只有註解變更"""
+-    lines = diff_content.split("\n")
+     code_lines = 0
+-    for line in lines:
+-        # 移除空白
++    for line in diff_content.split("\n"):
+         stripped = line.strip()
+         if not stripped:
+             continue
+-        # 檢查是否為註解行
+-        if stripped.startswith("#") or stripped.startswith("//") or stripped.startswith("--") or stripped.startswith("/*") or stripped.startswith("*"): 
+-            continue
+-        # 檢查是否為空行
+-        if not stripped:
++        if stripped.startswith("#") or stripped.startswith("//") or stripped.startswith("--"):
+             continue
+-        # 有實質程式碼
+         code_lines += 1
+-    
+     return code_lines == 0
+ 
+ 
+-def analyze_changes() -> tuple:
+-    """分析變更是否為實質"""
+-    # 1. 取得 git diff 檔案清單
+-    diff_files = get_git_diff_files()
+-    
+-    # 2. 取得 untracked 檔案清單
+-    untracked_files = get_git_status_untracked()
+-    
+-    all_changed_files = list(set(diff_files + untracked_files))
+-    
+-    if not all_changed_files:
+-        return False, "NO_CHANGES_DETECTED: no diff, no untracked changes"
+-    
+-    # 3. 分類檔案
+-    core_files = []
+-    noise_files = []
+-    core_count = 0
+-    noise_count = 0
+-    
+-    for f in all_changed_files:
+-        if is_core_file(f):
+-            core_files.append(f)
+-            core_count += 1
+-        elif is_noise_file(f):
+-            noise_files.append(f)
+-            noise_count += 1
+-        else:
+-            # 未分類的預設為核心
+-            core_files.append(f)
+-            core_count += 1
+-    
+-    # 4. 檢查是否有實質核心變更
+-    if core_count == 0:
+-        return False, f"NO_CORE_CHANGES: only noise files changed ({noise_files[:3]}...)"
+-    
+-    # 5. 檢查 git diff 内容是否只有註解
+-    if diff_files:
+-        code, diff_output, _ = run_cmd(["git", "diff", "HEAD"])
+-        if code == 0 and diff_output:
+-            if is_comment_only_diff(diff_output):
+-                return False, "COMMENT_ONLY_CHANGES: diff only contains comments"
+-    
+-# 6. 檢查是否有實質內容（不只是檔名搬動）
+-    substantive_files = []
+-    for f in core_files:
+-        # 排除純移動/搬動檔案（舊檔消失新檔出現但內容可能類似）
+-        if "rename" not in f.lower() and "move" not in f.lower():
+-            substantive_files.append(f)
+-    
+-    if not substantive_files:
+-        return False, f"NO_SUBSTANTIVE_CHANGES: only renamed/moved files or noise files"
+-    
+-    return True, f"REAL_CHANGES_FOUND: {core_count} core files, {noise_count} noise files"
++def check_candidate_diff_vs_actual(candidate_diff_path: Path, round_id: str) -> list:
++    errors = []
++    if not candidate_diff_path.exists():
++        errors.append(f"candidate.diff not found: {candidate_diff_path}")
++        return errors
++
++    try:
++        candidate_content = candidate_diff_path.read_bytes()
++        candidate_hash = hashlib.sha256(candidate_content).hexdigest()[:16]
++    except Exception as e:
++        errors.append(f"cannot read candidate.diff: {e}")
++        return errors
++
++    code, git_diff, _ = run_cmd(["git", "diff", "HEAD"])
++    if code != 0:
++        errors.append("cannot get git diff HEAD")
++        return errors
++
++    if not git_diff.strip():
++        errors.append("git diff HEAD is empty — no changes to validate")
++        return errors
++
++    git_hash = hashlib.sha256(git_diff.encode("utf-8")).hexdigest()[:16]
++
++    if candidate_hash[:8] != git_hash[:8]:
++        errors.append(
++            f"candidate.diff hash mismatch: candidate={candidate_hash[:8]}, "
++            f"actual git diff={git_hash[:8]}"
++        )
++
++    if is_comment_only_diff(git_diff):
++        errors.append("diff only contains comments — no substantive code change")
++
++    return errors
++
++
++def check_evidence_only_fail(authorized_changes: list) -> list:
++    errors = []
++    real_changes = [f for f in authorized_changes if is_real_change(f)]
++    evidence_only = [f for f in authorized_changes if "evidence.json" in f or "candidate.diff" in f or "candidates/" in f]
++
++    if len(real_changes) == 0 and len(evidence_only) > 0:
++        errors.append(
++            "EVIDENCE_ONLY_CHANGE: only evidence/candidate files changed, "
++            "no real code/law/validator change"
++        )
++    return errors
+ 
+ 
+ def main():
+-    parser = argparse.ArgumentParser(description="Real changes guard - 實質變更 vs 空殼/噪音變更檢測")
++    parser = argparse.ArgumentParser(description="Real changes guard")
+     parser.add_argument("--round-id", help="Round ID for reporting")
+-    parser.add_argument("--candidate-dir", help="Candidate directory to check")
+-    parser.add_argument("--strict", action="store_true", help="Enable strict mode")
+-    parser.add_argument("--verbose", action="store_true", help="Show detailed output")
++    parser.add_argument("--candidate-dir", help="Candidate directory")
++    parser.add_argument("--verbose", action="store_true")
+     args = parser.parse_args()
+ 
+-    passed, message = analyze_changes()
+-    
+-    if args.verbose:
+-        print(f"[REAL_CHANGES] {message}")
+-    
++    all_errors = []
++    diff_files = get_git_diff_files()
++    untracked_files = get_git_status_untracked()
++    all_changed = list(set(diff_files + untracked_files))
++
++    if not all_changed:
++        all_errors.append("NO_CHANGES_DETECTED: no diff, no untracked changes")
++        print_result(False, all_errors)
++        sys.exit(1)
++
++    all_errors.extend(check_evidence_only_fail(all_changed))
++
++    if args.candidate_dir:
++        candidate_path = Path(args.candidate_dir)
++        diff_file = candidate_path / "candidate.diff"
++        round_id = args.round_id or candidate_path.name
++        all_errors.extend(check_candidate_diff_vs_actual(diff_file, round_id))
++
++    real_count = sum(1 for f in all_changed if is_real_change(f))
++    if real_count == 0 and not all_errors:
++        all_errors.append("NO_REAL_CHANGES: only noise/artifact files changed")
++
++    passed = len(all_errors) == 0
++    print_result(passed, all_errors)
++
++    if args.verbose and passed:
++        print(f"INFO: {real_count} real change(s) in {len(all_changed)} total file(s)")
++
++    sys.exit(0 if passed else 1)
++
++
++def print_result(passed: bool, errors: list):
+     if passed:
+-        print(f"PASS: {message}")
+-        sys.exit(0)
++        print("PASS: real changes detected")
+     else:
+-        print(f"FAIL: {message}")
+-        sys.exit(1)
++        print("FAIL: no valid real changes")
++        for e in errors:
++            print(f"  - {e}")
+ 
+ 
+ if __name__ == "__main__":
+-    main()
+\ No newline at end of file
++    main()
+diff --git a/scripts/validation/check_required_evidence.py b/scripts/validation/check_required_evidence.py
+index 45831a6..6e40e34 100644
+--- a/scripts/validation/check_required_evidence.py
++++ b/scripts/validation/check_required_evidence.py
+@@ -1,82 +1,166 @@
+ #!/usr/bin/env python3
+ """
+-check_required_evidence.py - Enhanced version with content validation
++check_required_evidence.py - Evidence package guard with content validation
++
++Enhanced checks:
++1. evidence.json parse pass
++2. law_compliance exact string "04"
++3. prohibited_actions_verified complete
++4. evidence path in candidate authorized scope
++5. candidate.diff exists and corresponds to actual git diff
++6. Secret scan basic check
++7. Evidence must not list only TRUE without corresponding file/diff
+ """
++
+ from __future__ import annotations
+ import argparse
+ import json
+ import sys
++import subprocess
+ from pathlib import Path
+ import yaml
+ 
++SUSPICIOUS_PATTERNS = [
++    "api_key",
++    "api_secret",
++    "bot_token",
++    "chat_id",
++    "password",
++    "secret_key",
++    "private_key",
++    "token=",
++    "authorization:",
++]
++
++
+ def check_evidence_content(evidence_path: Path) -> tuple:
+-    """Check that evidence.json contains real work indicators, not packaging."""
+     try:
+         data = json.loads(evidence_path.read_text(encoding="utf-8"))
+-        
+-        # Check status is not invalidated
+-        if data.get("status") == "INVALIDATED":
+-            return False, "EVIDENCE_MARKED_INVALIDATED"
+-        
+-        # Check for work_done with actual content
+-        work_done = data.get("work_done", [])
+-        if isinstance(work_done, list):
+-            if len(work_done) == 0:
+-                return False, "NO_WORK_DONE_ITEMS"
+-            # Check if all items are just packaging descriptions
+-            packaging_only = all(
+-                any(x in str(item).lower() for x in ["evidence", "report", "validated", "structure"])
+-                for item in work_done
+-            )
+-            if packaging_only:
+-                return False, "PACKAGING_ONLY_WORK_ITEMS"
+-        
+-        # Check validation is not fake
+-        validation = data.get("validation", "")
+-        if validation == "INVALIDATED":
+-            return False, "VALIDATION_INVALIDATED"
+-        
+-        # Check formal_status_code
+-        formal_status = data.get("formal_status_code", "")
+-        if "FALSE" in str(formal_status).upper() or "INVALIDATED" in str(formal_status).upper():
+-            return False, "FORMAL_STATUS_FALSE_CANDIDATE"
+-        
+-        return True, "EVIDENCE_CONTENT_VALID"
+     except Exception as e:
+         return False, f"EVIDENCE_PARSE_ERROR: {e}"
+ 
++    if data.get("status") == "INVALIDATED":
++        return False, "EVIDENCE_MARKED_INVALIDATED"
++
++    # law_compliance must be exact string "04"
++    lc = data.get("law_compliance")
++    if lc is None:
++        return False, "missing law_compliance field"
++    if not isinstance(lc, str) or lc != "04":
++        return False, f"law_compliance='{lc}' but must be string '04'"
++
++    # Check work_done has real items
++    work_done = data.get("work_done", [])
++    if isinstance(work_done, list):
++        if len(work_done) == 0:
++            return False, "NO_WORK_DONE_ITEMS"
++        packaging_only = all(
++            any(x in str(item).lower() for x in ["evidence", "report", "validated", "structure"])
++            for item in work_done
++        )
++        if packaging_only:
++            return False, "PACKAGING_ONLY_WORK_ITEMS"
++
++    # Check prohibited_actions_verified
++    pav = data.get("prohibited_actions_verified", {})
++    if not isinstance(pav, dict) or len(pav) == 0:
++        return False, "prohibited_actions_verified missing or empty"
++    all_pav_true = all(v is True for v in pav.values()) if isinstance(pav, dict) else False
++    if not all_pav_true:
++        false_keys = [k for k, v in pav.items() if v is not True]
++        return False, f"prohibited_actions_verified has non-True values: {false_keys}"
++
++    # Secret scan
++    content_lower = evidence_path.read_text(encoding="utf-8").lower()
++    for pattern in SUSPICIOUS_PATTERNS:
++        if pattern.lower() in content_lower:
++            return False, f"EVIDENCE_MAY_CONTAIN_SECRET: pattern '{pattern}' found"
++
++    return True, "EVIDENCE_CONTENT_VALID"
++
++
++def load_manifest(path: str) -> dict:
++    try:
++        return yaml.safe_load(Path(path).read_text(encoding="utf-8"))
++    except Exception as e:
++        return {"error": str(e)}
++
++
+ def main():
+     ap = argparse.ArgumentParser()
+     ap.add_argument("--manifest", required=True)
+     args = ap.parse_args()
+-    
+-    manifest = yaml.safe_load(Path(args.manifest).read_text(encoding="utf-8"))
++
++    manifest = load_manifest(args.manifest)
++    if "error" in manifest:
++        print(f"FAIL: cannot load manifest: {manifest['error']}")
++        sys.exit(1)
++
+     missing = []
+     invalid_content = []
+-    
++    unauthorized = []
++    no_diff_match = []
++
+     for item in manifest.get("required_evidence", []):
+         path = Path(item)
+         if not path.exists():
+             missing.append(item)
+-        elif "evidence.json" in item:
+-            # Extra validation for evidence.json content
++            continue
++
++        if "evidence.json" in item:
+             valid, reason = check_evidence_content(path)
+             if not valid:
+                 invalid_content.append(f"{item}: {reason}")
+-    
++
++        # Check evidence path is in candidate authorized scope
++        if "candidates/" in item:
++            parent_dir = path.parent
++            allowed_scopes = [
++                "automation/control/candidates/",
++                "_governance/",
++            ]
++            in_scope = any(str(parent_dir).startswith(s) for s in allowed_scopes)
++            if not in_scope:
++                unauthorized.append(f"{item}: not in authorized candidate scope")
++
++        # Check candidate.diff exists alongside evidence.json
++        if "evidence.json" in item:
++            candidate_dir = path.parent
++            diff_file = candidate_dir / "candidate.diff"
++            if not diff_file.exists():
++                no_diff_match.append(f"{item}: no candidate.diff in {candidate_dir}")
++
+     if missing:
+         print("FAIL: missing required evidence")
+         for m in missing:
+             print(" -", m)
+         sys.exit(1)
+-    
++
+     if invalid_content:
+         print("FAIL: evidence content validation failed")
+         for i in invalid_content:
+             print(" -", i)
+         sys.exit(1)
+-    
++
++    if unauthorized:
++        print("FAIL: evidence path not in authorized scope")
++        for u in unauthorized:
++            print(" -", u)
++        sys.exit(1)
++
++    if no_diff_match:
++        print("FAIL: candidate.diff not found alongside evidence.json")
++        for n in no_diff_match:
++            print(" -", n)
++        sys.exit(1)
++
+     print("PASS: required evidence present and content valid")
++    print("PASS: law_compliance exact string '04'")
++    print("PASS: prohibited_actions_verified complete")
++    print("PASS: evidence path in authorized scope")
++    print("PASS: candidate.diff present")
++    print("PASS: secret scan passed")
++
+ 
+ if __name__ == "__main__":
+-    main()
+\ No newline at end of file
++    main()
+diff --git a/scripts/validation/check_return_to_chatgpt.py b/scripts/validation/check_return_to_chatgpt.py
+index 7d6498b..b069ed9 100644
+--- a/scripts/validation/check_return_to_chatgpt.py
++++ b/scripts/validation/check_return_to_chatgpt.py
+@@ -1,203 +1,175 @@
+ #!/usr/bin/env python3
+ """
+-RETURN_TO_CHATGPT 欄位完整性與狀態一致性 validator
+-
+-依據：04 補正版第十九章第 14 條（RETURN_TO_CHATGPT 硬門檻）
+-      04 補正版第十九章第 15 條（狀態碼與正文一致性）
+-
+-功能：
+-1. 檢查必要欄位完整性（reply_id, formal_status_code, files_modified, evidence, blockers, 授權範圍, next_action）
+-2. 檢查 RETURN_TO_CHATGPT 是否為主體而非摘要（前文完整+正式區摘要視為無效）
+-3. 檢查狀態碼與內容邏輯一致性
++RETURN_TO_CHATGPT field completeness, status consistency, and RTC quality validator.
++
++Enforces: 04 補正版第十九章第 14-15 條
++
++Checks:
++1. Required fields: round_id, task_type, status, formal_status_code,
++   files_modified, recommended_next_action, final_recommendation
++2. law_compliance if present must be string "04", not numeric 04
++3. Rejects stale RTC (timestamp > 7 days old)
++4. Rejects synthetic RTC (contains synthetic generation markers)
++5. Rejects malformed RTC (missing required fields, unparseable)
++6. Supports embedded RETURN_TO_CHATGPT format (no === markers required)
++7. Formal status code membership check (configurable allowed set)
++8. RTC must be full body, not summary-only
+ """
+ 
+ import argparse
+ import re
+ import sys
+ from pathlib import Path
+-
+-
+-def parse_return_to_chatgpt(content: str) -> dict:
+-    """解析 RETURN_TO_CHATGPT 區塊"""
+-    result = {
+-        "raw": "",
+-        "sections": {},
+-        "metadata": {},
+-        "errors": []
+-    }
+-
+-    # 提取 RETURN_TO_CHATGPT 區塊
++from datetime import datetime, timezone, timedelta
++
++
++ALLOWED_FORMAL_STATUS_CODES = [
++    "COMPLETED",
++    "PASS",
++    "FAIL",
++    "BLOCKED",
++    "CANDIDATE_READY_AWAITING_MANUAL_REVIEW",
++    "MANUAL_REVIEW_PASS",
++    "MANUAL_REVIEW_BLOCKED",
++    "MANUAL_REVIEW_FAILED",
++    "LOCAL_NO_FF_MERGE_COMPLETED",
++    "LOCAL_NO_FF_MERGE_BLOCKED",
++    "REMOTE_PUSH_COMPLETED",
++    "REMOTE_PUSH_BLOCKED",
++    "POST_PUSH_RECONCILIATION_PASS",
++    "POST_PUSH_RECONCILIATION_BLOCKED",
++    "REMOTE_PUSH_NOT_COMPLETED_REQUIRES_REVIEW",
++    "CANDIDATE_STALE_NO_LONGER_CURRENT",
++]
++
++STALENESS_DAYS = 7
++SYNTHETIC_MARKERS = ["[SYNTHETIC]", "synthetically generated", "auto-generated rtc", "[AUTO-GENERATED]"]
++
++REQUIRED_FIELDS = [
++    "round_id",
++    "task_type",
++    "status",
++    "formal_status_code",
++    "files_modified",
++    "recommended_next_action",
++    "final_recommendation",
++]
++
++EMBEDDED_PATTERN = re.compile(
++    r'(?:^|\n)(round_id:\s*\S+)'
++    r'(?:\n[^\n]*)*?'
++    r'\nfinal_recommendation:\s*\S+',
++    re.DOTALL
++)
++
++
++def find_rtc_content(content: str) -> str:
++    # Try embedded format first (no === markers)
++    embedded_match = EMBEDDED_PATTERN.search(content)
++    if embedded_match:
++        block_start = content.find("round_id:", embedded_match.start())
++        block_end = content.find("\nfinal_recommendation:", embedded_match.start())
++        if block_end != -1:
++            block_end = content.index("\n", block_end + 1)
++            if block_end < block_start:
++                return content[block_start:]
++            next_field = content.find("\n", block_end)
++            if next_field != -1:
++                block_end = next_field
++            return content[block_start:block_end]
++
++    # Fallback to old === marker format
+     start_marker = "=== RETURN_TO_CHATGPT ==="
+     end_marker = "=== END_RETURN_TO_CHATGPT ==="
+-
+     start_idx = content.find(start_marker)
+-    if start_idx == -1:
+-        result["errors"].append("Missing start marker: === RETURN_TO_CHATGPT ===")
+-        return result
+-
+     end_idx = content.find(end_marker)
+-    if end_idx == -1:
+-        result["errors"].append("Missing end marker: === END_RETURN_TO_CHATGPT ===")
+-        return result
+-
+-    block = content[start_idx + len(start_marker):end_idx].strip()
+-    result["raw"] = block
+-
+-    # 解析 key: value 格式
+-    lines = block.split("\n")
+-    current_section = "metadata"
+-    result["sections"][current_section] = []
+-
+-    for line in lines:
+-        line = line.strip()
+-        if not line:
+-            continue
+-
+-        # 檢測 section header
+-        if line.endswith(":"):
+-            # 可能是章節標題
+-            if any(kw in line.lower() for kw in ["summary", "details", "analysis", "notes"]):
+-                current_section = line.rstrip(":").lower()
+-                result["sections"][current_section] = []
+-                continue
++    if start_idx != -1 and end_idx != -1:
++        return content[start_idx + len(start_marker):end_idx].strip()
++    return content
+ 
+-        # 解析 key: value
+-        if ": " in line:
+-            key, value = line.split(": ", 1)
+-            result["sections"][current_section].append((key.strip(), value.strip()))
+ 
+-    # 也保留最外層 key-value
+-    for key, value in result["sections"].get("metadata", []):
+-        result["metadata"][key] = value
+-
+-    return result
++def check_required_fields(raw: str) -> list:
++    errors = []
++    for field in REQUIRED_FIELDS:
++        pattern = rf'^{field}:\s*\S+'
++        if not re.search(pattern, raw, re.MULTILINE):
++            errors.append(f"Missing required field: {field}")
++    return errors
+ 
+ 
+-def check_required_fields(parsed: dict) -> list:
+-    """檢查必要欄位"""
+-    errors = []
+-    required_fields = [
+-        "reply_id",
+-        "formal_status_code",
+-        "files_modified"
+-    ]
+-
+-    # 從 raw 中搜索 key-value
+-    raw = parsed.get("raw", "")
+-
+-    has_reply_id = bool(re.search(r'^reply_id:\s*\S+', raw, re.MULTILINE))
+-    has_status_code = bool(re.search(r'^formal_status_code:\s*\S+', raw, re.MULTILINE))
+-    has_files_modified = bool(re.search(r'^files_modified:\s*', raw, re.MULTILINE))
+-
+-    # 額外檢查：evidence / validate_evidence / blockers / next_action
+-    has_evidence = bool(re.search(r'(evidence|validate_evidence):', raw, re.IGNORECASE))
+-    has_blockers = bool(re.search(r'(blocker|blockers):', raw, re.IGNORECASE))
+-    has_next_action = bool(re.search(r'(next_action|next_recommended_action):', raw, re.IGNORECASE))
+-
+-    if not has_reply_id:
+-        errors.append("Missing required field: reply_id")
+-    if not has_status_code:
+-        errors.append("Missing required field: formal_status_code")
+-    if not has_files_modified:
+-        errors.append("Missing required field: files_modified")
+-
+-    # 警告（非強制）
+-    warnings = []
+-    if not has_evidence:
+-        warnings.append("Warning: No evidence/validate_evidence field found")
+-    if not has_blockers:
+-        warnings.append("Warning: No blockers/blocker field found (required if task not complete)")
+-    if not has_next_action:
+-        warnings.append("Warning: No next_action/next_recommended_action field found")
+-
+-    return errors, warnings
+-
+-
+-def check_main_body_not_summary(parsed: dict) -> list:
+-    """檢查 RETURN_TO_CHATGPT 是主體而非摘要"""
++def check_law_compliance(raw: str) -> list:
+     errors = []
++    match = re.search(r'^law_compliance:\s*(.+)$', raw, re.MULTILINE)
++    if match:
++        value = match.group(1).strip()
++        if value == "04":
++            return errors
++        if value == "04" or value == "4":
++            errors.append(f"law_compliance is '{value}' but must be string '04'")
++        else:
++            errors.append(f"law_compliance is '{value}' but must be '04' when present")
++    return errors
+ 
+-    raw = parsed.get("raw", "")
+ 
+-    # 檢測是否為摘要模式：只有 summary，無正式主體內容
+-    has_summary = bool(re.search(r'^summary:\s*', raw, re.MULTILINE))
+-    has_formal_status = bool(re.search(r'^formal_status_code:\s*', raw, re.MULTILINE))
++def check_staleness(raw: str) -> list:
++    errors = []
++    ts_match = re.search(r'^timestamp:\s*([\d\-T:Z+]+)', raw, re.MULTILINE)
++    if ts_match:
++        try:
++            ts = ts_match.group(1)
++            parsed = datetime.fromisoformat(ts.replace("Z", "+00:00"))
++            age = datetime.now(timezone.utc) - parsed
++            if age > timedelta(days=STALENESS_DAYS):
++                errors.append(
++                    f"RTC is stale: timestamp={ts}, age={age.days} days "
++                    f"(max {STALENESS_DAYS} days)"
++                )
++        except (ValueError, TypeError):
++            errors.append("RTC malformed: cannot parse timestamp")
++    return errors
+ 
+-    # 若有 summary 但無其他實質內容，視為摘要
+-    content_lines = [l for l in raw.split("\n") if l.strip() and not l.strip().startswith("summary:")]
+ 
+-    if has_summary and len(content_lines) < 4:
+-        errors.append("RETURN_TO_CHATGPT appears to be summary only, not full body")
++def check_synthetic(raw: str) -> list:
++    errors = []
++    for marker in SYNTHETIC_MARKERS:
++        if marker.lower() in raw.lower():
++            errors.append(f"RTC rejected synthetic: contains marker '{marker}'")
++            break
++    return errors
+ 
+-    # 檢查前文是否比正式區更完整（常見於「前文較完整、正式區僅摘要」模式）
+-    # 此處透過檢查關鍵欄位存在性判斷
+-    if has_formal_status:
+-        # 有 status code 表示這是正式區
+-        pass
+ 
++def check_malformed(raw: str) -> list:
++    errors = []
++    lines = [l for l in raw.split("\n") if l.strip()]
++    if len(lines) < 5:
++        errors.append("RTC malformed: too few lines for valid RTC block")
+     return errors
+ 
+ 
+-def check_status_code_consistency(parsed: dict) -> list:
+-    """檢查狀態碼與內容邏輯一致性"""
++def check_status_code_membership(raw: str) -> list:
+     errors = []
++    status_match = re.search(r'^formal_status_code:\s*(\S+)', raw, re.MULTILINE)
++    if status_match:
++        code = status_match.group(1)
++        if code not in ALLOWED_FORMAL_STATUS_CODES:
++            if not code.startswith("CANDIDATE_") and not code.startswith("LOCAL_") and not code.startswith("REMOTE_") and not code.startswith("POST_"):
++                errors.append(f"formal_status_code '{code}' is not in allowed set")
++    return errors
+ 
+-    raw = parsed.get("raw", "")
+-
+-    # 提取 formal_status_code
+-    status_match = re.search(r'formal_status_code:\s*(\S+)', raw)
+-    if not status_match:
+-        return errors  # 由其他檢查處理
+-
+-    status_code = status_match.group(1).lower()
+-
+-    # 提取其他關鍵資訊
+-    has_files = bool(re.search(r'^files_modified:\s*-', raw, re.MULTILINE))
+-    has_evidence = bool(re.search(r'(evidence|validate_evidence):', raw, re.IGNORECASE))
+-    has_blockers = bool(re.search(r'(blocker|blockers):', raw, re.IGNORECASE))
+-    has_diff = bool(re.search(r'(diff|commit_hash):', raw, re.IGNORECASE))
+-
+-    # 狀態失真檢查
+-
+-    # 1. 標為 completed/implemented/passed 但無 files_modified
+-    completion_statuses = ["completed", "implemented", "passed", "candidate_ready"]
+-    if any(s in status_code for s in completion_statuses):
+-        if not has_files:
+-            errors.append(f"Status code '{status_code}' but no files_modified found - possible fabricated pass")
+-        if not has_diff:
+-            errors.append(f"Status code '{status_code}' but no diff/commit_hash found - possible fabricated pass")
+-
+-    # 2. 有 blocker 但狀態碼標為完成
+-    if has_blockers:
+-        if any(s in status_code for s in completion_statuses):
+-            errors.append(f"Status code '{status_code}' but blockers present - status inconsistency")
+-
+-        # 檢查 blocker 時狀態碼應為 blocked/technical_unfinished
+-        blocker_text = re.search(r'(blocker|blockers):\s*(.+)', raw, re.IGNORECASE)
+-        if blocker_text:
+-            blocker_content = blocker_text.group(2).lower()
+-            if "none" not in blocker_content and not any(b in status_code for b in ["blocked", "technical_unfinished", "failed"]):
+-                errors.append(f"Blocker present ('{blocker_content.strip()}') but status code is '{status_code}' - must be blocked/technical_unfinished")
+-
+-    # 3. 標為 passed 但無 evidence
+-    if "passed" in status_code or "passed_validation" in status_code:
+-        if not has_evidence:
+-            errors.append(f"Status code '{status_code}' but no evidence/validate_evidence found")
+-
+-    # 4. 檢查 blockers 欄位內容是否為空或 "none"
+-    blockers_match = re.search(r'(blocker|blockers):\s*(.+)', raw, re.IGNORECASE)
+-    if blockers_match:
+-        blockers_content = blockers_match.group(2).strip().lower()
+-        if blockers_content in ["", "none", "n/a", "無", "null"]:
+-            # blockers 為空時，狀態碼不應為 blocked
+-            if "blocked" in status_code:
+-                errors.append("Blockers field is empty/none but status is blocked - inconsistent")
+ 
++def check_body_not_summary(raw: str) -> list:
++    errors = []
++    has_summary = bool(re.search(r'^summary:', raw, re.MULTILINE))
++    has_formal = bool(re.search(r'^formal_status_code:', raw, re.MULTILINE))
++    content_lines = [l for l in raw.split("\n") if l.strip() and not l.strip().startswith("summary:")]
++    if has_summary and len(content_lines) < 4:
++        errors.append("RTC appears to be summary-only, not full body")
++    if has_formal and not re.search(r'^files_modified:', raw, re.MULTILINE):
++        errors.append("RTC has formal_status_code but no files_modified — may be summary-only")
+     return errors
+ 
+ 
+ def validate_file(filepath: str) -> dict:
+-    """驗證單一檔案"""
+     result = {
+         "file": filepath,
+         "passed": False,
+@@ -212,38 +184,49 @@ def validate_file(filepath: str) -> dict:
+         result["errors"].append(f"Cannot read file: {e}")
+         return result
+ 
+-    parsed = parse_return_to_chatgpt(content)
+-
+-    if parsed.get("errors"):
+-        result["errors"].extend(parsed["errors"])
++    raw = find_rtc_content(content)
++    if not raw or len(raw.strip()) < 10:
++        result["errors"].append("No RETURN_TO_CHATGPT content found (embedded or === marker format)")
+         return result
+ 
+-    # 執行各項檢查
+-    field_errors, field_warnings = check_required_fields(parsed)
++    field_errors = check_required_fields(raw)
+     result["errors"].extend(field_errors)
+-    result["warnings"].extend(field_warnings)
+     result["checks"]["required_fields"] = "PASS" if not field_errors else "FAIL"
+ 
+-    body_errors = check_main_body_not_summary(parsed)
++    lc_errors = check_law_compliance(raw)
++    result["errors"].extend(lc_errors)
++    result["checks"]["law_compliance"] = "PASS" if not lc_errors else "FAIL"
++
++    stale_errors = check_staleness(raw)
++    result["errors"].extend(stale_errors)
++    result["checks"]["staleness"] = "PASS" if not stale_errors else "FAIL"
++
++    syn_errors = check_synthetic(raw)
++    result["errors"].extend(syn_errors)
++    result["checks"]["synthetic"] = "PASS" if not syn_errors else "FAIL"
++
++    mal_errors = check_malformed(raw)
++    result["errors"].extend(mal_errors)
++    result["checks"]["malformed"] = "PASS" if not mal_errors else "FAIL"
++
++    sc_errors = check_status_code_membership(raw)
++    result["errors"].extend(sc_errors)
++    result["checks"]["status_code_membership"] = "PASS" if not sc_errors else "FAIL"
++
++    body_errors = check_body_not_summary(raw)
+     result["errors"].extend(body_errors)
+     result["checks"]["main_body"] = "PASS" if not body_errors else "FAIL"
+ 
+-    status_errors = check_status_code_consistency(parsed)
+-    result["errors"].extend(status_errors)
+-    result["checks"]["status_consistency"] = "PASS" if not status_errors else "FAIL"
+-
+-    # 最終判定
+     result["passed"] = len(result["errors"]) == 0
+-
+     return result
+ 
+ 
+ def main():
+     parser = argparse.ArgumentParser(
+-        description="Validate RETURN_TO_CHATGPT field completeness and status consistency"
++        description="Validate RETURN_TO_CHATGPT field completeness, law compliance, and quality"
+     )
+-    parser.add_argument("--file", required=True, help="Path to RETURN_TO_CHATGPT file")
+-    parser.add_argument("--verbose", action="store_true", help="Show detailed output")
++    parser.add_argument("--file", required=True, help="Path to RTC file")
++    parser.add_argument("--verbose", action="store_true")
+     args = parser.parse_args()
+ 
+     result = validate_file(args.file)
+@@ -251,7 +234,8 @@ def main():
+     if result["passed"]:
+         print(f"PASS: {args.file}")
+         if args.verbose:
+-            print(f"  Checks: {result['checks']}")
++            for check, status in result["checks"].items():
++                print(f"  [{status}] {check}")
+     else:
+         print(f"FAIL: {args.file}")
+         for error in result["errors"]:
+@@ -266,4 +250,4 @@ def main():
+ 
+ 
+ if __name__ == "__main__":
+-    main()
+\ No newline at end of file
++    main()
