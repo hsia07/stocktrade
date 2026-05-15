@@ -1,0 +1,51 @@
+{
+  "schema_version": "2.0",
+  "round_id": "GOV_BACKLOG_002_LAW_0416_INTEGRATION_PACKAGE_HARDENING_FORMAL_CANDIDATE",
+  "task_type": "law_0416_integration_hardening_candidate_creation",
+  "status": "candidate_ready_awaiting_manual_review",
+  "law_compliance": "04",
+  "expected_base_head": "8fe6b98e5ceac0a32b4d85403bdebf432f320f96",
+  "actual_base_head": "8fe6b98e5ceac0a32b4d85403bdebf432f320f96",
+  "phase_3_conflict_resolved": true,
+  "usage_exhaustion_supplementary_rules_added": true,
+  "templates_added": true,
+  "mirrors_synchronized": true,
+  "files_modified": [
+    "_governance/law/04_交易系統法典補強版_20260416_修正版.md",
+    "_governance/law/readable/04_交易系統法典補強版_20260416_修正版.md",
+    "opencode_readable_laws/04_交易系統法典補強版_20260416_修正版.md"
+  ],
+  "files_added": [
+    "_governance/templates/PAUSE_REPORT_TEMPLATE.md",
+    "_governance/templates/RESOURCE_EXHAUSTION_REPORT_TEMPLATE.md",
+    "_governance/templates/RESUME_READINESS_PREFLIGHT_TEMPLATE.md",
+    "_governance/templates/MANUAL_START_RESUME_TEMPLATE.md"
+  ],
+  "prohibited_actions_verified": {
+    "main_control_loop_running": false,
+    "r030_dispatch_started": false,
+    "gov_int_005_started": false,
+    "runtime_modified": false,
+    "state_runtime_json_modified": false,
+    "manifest_modified": false,
+    "current_governance_baseline_modified": false,
+    "source_code_modified": false,
+    "hooks_modified": false,
+    "validators_modified": false,
+    "git_add_executed": false,
+    "commit_created": false,
+    "merge_executed": false,
+    "push_executed": false,
+    "force_push_used": false,
+    "no_verify_used": false,
+    "promote_executed": false,
+    "pr_created": false,
+    "trading_started": false,
+    "broker_started": false,
+    "execution_started": false,
+    "live_mode_started": false,
+    "order_execution_allowed": false,
+    "secret_exposed": false
+  },
+  "prohibited_actions_verified_at": "creation_time"
+}
