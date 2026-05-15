@@ -14,6 +14,11 @@ from .traceability_chain import (
     TraceabilityLink,
     ChainVerificationResult,
 )
+from .decision_comparator import (
+    DecisionComparator,
+    DecisionComparisonReport,
+    ComparisonFieldDiff,
+)
 
 __all__ = [
     "DecisionPreChecklist",
@@ -35,4 +40,7 @@ __all__ = [
     "TraceabilityChain",
     "TraceabilityLink",
     "ChainVerificationResult",
+    "DecisionComparator",
+    "DecisionComparisonReport",
+    "ComparisonFieldDiff",
 ]
