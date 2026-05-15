@@ -1,0 +1,97 @@
+{
+  "law_compliance": "04",
+  "round_id": "GOV_BACKLOG_003_PANEL_CONTROL_CHAIN_HARDENING_FORMAL_CANDIDATE",
+  "task_type": "panel_control_chain_hardening_candidate_creation",
+  "expected_base_head": "57945213cf3e2a0267db0160f2b74253f557effb",
+  "gaps_addressed": {
+    "GAP-1_CRITICAL_copy_rtc_synthetic": {
+      "status": "addressed",
+      "detail": "panel_new.html no longer constructs synthetic RTC. Copy RTC reads from /return-artifact endpoint. panel displays stale/unavailable when RTC is missing or stale."
+    },
+    "GAP-2_HIGH_pause_flag_bypass": {
+      "status": "addressed",
+      "detail": "PAUSE.flag check added in 3 layers: check_can_start(), do_start_loop(), start_loop.ps1. All fail-closed."
+    },
+    "GAP-3_HIGH_usage_exhaustion_not_wired": {
+      "status": "addressed",
+      "detail": "usage exhaustion state checked in check_can_start() via stop_reason. pre_resume_checks() from pause_state.py imported and called."
+    },
+    "GAP-4_MEDIUM_stale_rtc_file": {
+      "status": "addressed",
+      "detail": "latest_return_to_chatgpt.runtime.txt updated with STALE marker. Panel displays as stale and refuses to copy stale RTC as current."
+    },
+    "GAP-5_MEDIUM_no_governance_review_guard": {
+      "status": "addressed",
+      "detail": "GOVERNANCE_REVIEW_IN_PROGRESS.lock, MERGE_IN_PROGRESS.lock, PUSH_IN_PROGRESS.lock, RECONCILIATION_IN_PROGRESS.lock all checked in check_can_start(), do_start_loop(), and start_loop.ps1."
+    },
+    "GAP-6_MEDIUM_can_start_incomplete": {
+      "status": "addressed",
+      "detail": "/can-start now returns full preflight: blockers[], pause_flag_present, usage_exhaustion_state, git_status_clean, head_match, governance_lock, etc."
+    },
+    "GAP-7_LOW_stale_state": {
+      "status": "acknowledged_not_actionable",
+      "detail": "current_round still GOV_INT_003_COMPLETED. Cannot update without dispatch authorization. Not blocking."
+    }
+  },
+  "files_modified": [
+    "automation/control/control_bridge.py",
+    "automation/control/panel_new.html",
+    "automation/control/start_loop.ps1",
+    "automation/control/latest_return_to_chatgpt.runtime.txt",
+    "_governance/law/04_交易系統法典補強版_20260416_修正版.md",
+    "_governance/law/readable/04_交易系統法典補強版_20260416_修正版.md",
+    "opencode_readable_laws/04_交易系統法典補強版_20260416_修正版.md"
+  ],
+  "files_added": [
+    "automation/control/candidates/GOV_BACKLOG_003_PANEL_CONTROL_CHAIN_HARDENING/evidence.json"
+  ],
+  "prohibited_actions_verified": {
+    "r030_dispatch_started": false,
+    "gov_int_005_started": false,
+    "main_control_loop_running": false,
+    "start_loop_executed": false,
+    "trading_core_started": false,
+    "broker_started": false,
+    "execution_started": false,
+    "live_mode_started": false,
+    "order_execution_allowed": false,
+    "merge_executed": false,
+    "push_executed": false,
+    "force_push_used": false,
+    "no_verify_used": false,
+    "promote_executed": false,
+    "pr_created": false,
+    "secret_values_exposed": false
+  },
+  "checks": {
+    "copy_rtc_synthetic_removed": true,
+    "copy_rtc_truth_source_bound": true,
+    "return_artifact_endpoint_present": true,
+    "return_artifact_reads_truth_source": true,
+    "rtc_missing_or_stale_fail_closed": true,
+    "latest_return_to_chatgpt_stale_no_longer_copied": true,
+    "pause_flag_blocks_can_start": true,
+    "pause_flag_blocks_start_loop_endpoint": true,
+    "pause_flag_blocks_start_loop_ps1": true,
+    "usage_exhaustion_integrated_into_bridge": true,
+    "pre_resume_checks_called_before_start": true,
+    "can_start_returns_full_preflight_status": true,
+    "can_start_reports_blockers": true,
+    "governance_review_runtime_guard_present": true,
+    "panel_displays_pause_state": true,
+    "panel_displays_governance_lock": true,
+    "panel_displays_can_start_blockers": true,
+    "order_execution_allowed_ui_guard_present": true,
+    "law_04_mirrors_synchronized": true,
+    "state_runtime_json_modified": false,
+    "manifest_modified": false,
+    "pause_state_py_modified": false,
+    "status_scheduler_modified": false,
+    "telegram_notifier_modified": false,
+    "trading_broker_execution_live_modified": false,
+    "hooks_modified": false,
+    "validators_modified": false
+  },
+  "created_at": "2026-05-15T00:00:00",
+  "author": "opencode_panel_control_chain_hardening_candidate_executor"
+}

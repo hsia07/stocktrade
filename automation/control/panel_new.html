@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <title>Stocktrade Control Panel</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    :root {
+      --bg: #0b1020;
+      --card: rgba(255,255,255,0.08);
+      --card-border: rgba(255,255,255,0.10);
+      --text: #e5ecff;
+      --muted: #a9b6d3;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+      color: var(--text);
+      background: var(--bg);
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .wrap { max-width: 900px; margin: 0 auto; }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 20px;
+      margin-bottom: 16px;
+    }
+    h1 { margin: 0 0 16px; font-size: 28px; }
+    h2 { margin: 0 0 12px; font-size: 18px; color: var(--muted); }
+    .status-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .status-item { background: rgba(0,0,0,0.3); padding: 12px; border-radius: 8px; }
+    .status-label { color: var(--muted); font-size: 13px; }
+    .status-value { font-size: 18px; font-weight: bold; margin-top: 4px; }
+    .btn {
+      border: 0;
+      border-radius: 10px;
+      padding: 12px 20px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 14px;
+      color: white;
+      margin-right: 10px;
+    }
+    .btn-ok { background: #16a34a; }
+    .btn-primary { background: #2563eb; }
+    .btn-processing { background: #7c3aed; }
+    .btn-warn { background: #f59e0b; }
+    .btn-danger { background: #dc2626; }
+    .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+    .buttons { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 16px; }
+    .mono {
+      white-space: pre-wrap;
+      font-family: Consolas, monospace;
+      background: #111827;
+      color: #dbe7ff;
+      padding: 14px;
+      border-radius: 10px;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+    #statusMsg { margin-top: 10px; color: #93c5fd; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <h1>Stocktrade Control Panel</h1>
+      <div class="status-grid">
+        <div class="status-item">
+          <div class="status-label">Mode</div>
+          <div class="status-value" id="modeValue">stopped</div>
+        </div>
+        <div class="status-item">
+          <div class="status-label">Round</div>
+          <div class="status-value" id="roundValue">R-011</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>常用操作</h2>
+      <div class="buttons">
+        <button id="startBtn" class="btn btn-ok" onclick="startLoop()">Start / Resume</button>
+        <button id="stopBtn" class="btn btn-danger" onclick="stopNow()">Stop Now</button>
+        <button id="copyBtn" class="btn btn-primary" onclick="copyReturn()">Copy RETURN_TO_CHATGPT</button>
+      </div>
+      <div id="statusMsg"></div>
+    </div>
+
+    <div class="card">
+      <h2>最新狀態</h2>
+      <div class="mono" id="stateMono">loading...</div>
+    </div>
+
+    <div class="card">
+      <h2>RETURN_TO_CHATGPT</h2>
+      <div class="mono" id="returnBox">loading...</div>
+    </div>
+  </div>
+
+  <script>
+    const API_BASE = "http://127.0.0.1:8766";
+
+    async function startLoop() {
+      var btn = document.getElementById("startBtn");
+      btn.className = "btn btn-processing";
+      btn.textContent = "啟動中...";
+      btn.disabled = true;
+      setStatus("請求中...");
+
+      try {
+        var resp = await fetch(API_BASE + "/start-loop", { method: "POST" });
+        var data = await resp.json();
+        
+        if (data.status === "started") {
+          btn.textContent = "執行中";
+          setStatus("Loop 已啟動");
+          pollState();
+        } else if (data.status === "blocked") {
+          btn.className = "btn btn-warn";
+          btn.textContent = "Start / Resume";
+          btn.disabled = false;
+          setStatus("被阻擋: " + data.reason);
+        } else {
+          setStatus("錯誤: " + JSON.stringify(data));
+          btn.textContent = "Start / Resume";
+          btn.disabled = false;
+        }
+      } catch(e) {
+        setStatus("連線錯誤: " + e);
+        btn.textContent = "Start / Resume";
+        btn.disabled = false;
+      }
+    }
+
+    async function stopNow() {
+      if (!confirm("確定要立即停止嗎？")) return;
+      try {
+        var resp = await fetch(API_BASE + "/stop-now", { method: "POST" });
+        var data = await resp.json();
+        setStatus("已停止");
+        updateDisplay();
+      } catch(e) {
+        setStatus("錯誤: " + e);
+      }
+    }
+
+    async function copyReturn() {
+      // Copy RETURN_TO_CHATGPT from truth source only, never synthetic
+      try {
+        var resp = await fetch(API_BASE + "/return-artifact");
+        var data = await resp.json();
+        if (data.status === "found" && data.content && data.validity !== "stale") {
+          var text = data.content;
+        } else if (data.status === "found" && data.content && data.validity === "stale") {
+          setStatus("無法複製：RETURN_TO_CHATGPT 已過時 (stale R-014)。請先產生最新正式 RTC。");
+          return;
+        } else {
+          setStatus("無法複製：RETURN_TO_CHATGPT 來源不存在。必須先建立正式 RTC。");
+          return;
+        }
+        try {
+          await navigator.clipboard.writeText(text);
+          setStatus("已複製");
+        } catch(e) {
+          var ta = document.createElement("textarea");
+          ta.value = text;
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand("copy");
+          document.body.removeChild(ta);
+          setStatus("已複製");
+        }
+      } catch(e) {
+        setStatus("無法讀取 RETURN_TO_CHATGPT: " + e);
+      }
+    }
+
+    function setStatus(msg) {
+      document.getElementById("statusMsg").textContent = msg;
+    }
+
+    async function updateDisplay() {
+      try {
+        var resp = await fetch(API_BASE + "/state");
+        var data = await resp.json();
+        
+        document.getElementById("modeValue").textContent = data.run_state || "stopped";
+        document.getElementById("roundValue").textContent = data.current_round || "-";
+        
+        // Build state display with pause/governance context
+        var stateParts = [
+          "round: " + (data.current_round || "-"),
+          "mode: " + (data.run_state || "-"),
+          "phase: " + (data.current_phase || "-"),
+          "last_action: " + (data.last_action || "-"),
+          "last_error: " + (data.last_error || "none")
+        ];
+        document.getElementById("stateMono").textContent = stateParts.join("\n");
+        
+        // Update button state based on /can-start blockers
+        var startBtn = document.getElementById("startBtn");
+        try {
+          var csResp = await fetch(API_BASE + "/can-start");
+          var csData = await csResp.json();
+          
+          if (data.run_state === "running") {
+            startBtn.textContent = "執行中";
+            startBtn.disabled = true;
+          } else if (csData.can_start === false) {
+            startBtn.className = "btn btn-warn";
+            startBtn.textContent = "Start / Resume";
+            startBtn.disabled = true;
+            // Show blockers in state display
+            if (csData.blockers && csData.blockers.length > 0) {
+              var blockerText = csData.blockers.map(function(b) {
+                return "[BLOCKED] " + b.gate + ": " + b.reason;
+              }).join("\n");
+              stateParts.push("\n--- Blockers ---\n" + blockerText);
+              document.getElementById("stateMono").textContent = stateParts.join("\n");
+            }
+          } else {
+            startBtn.className = "btn btn-ok";
+            startBtn.textContent = "Start / Resume";
+            startBtn.disabled = false;
+          }
+        } catch(e) {
+          if (data.run_state === "running") {
+            startBtn.textContent = "執行中";
+            startBtn.disabled = true;
+          } else {
+            startBtn.className = "btn btn-ok";
+            startBtn.textContent = "Start / Resume";
+            startBtn.disabled = false;
+          }
+        }
+        
+        // GET RETURN_TO_CHATGPT FROM TRUTH SOURCE ONLY - never synthetic
+        try {
+          var rtcResp = await fetch(API_BASE + "/return-artifact");
+          var rtcData = await rtcResp.json();
+          if (rtcData.status === "found" && rtcData.content) {
+            if (rtcData.validity === "stale") {
+              document.getElementById("returnBox").textContent = "=== RETURN_TO_CHATGPT [STALE - R-014 from 2026-04-17] ===\n" +
+                rtcData.content +
+                "\n=== WARNING: This RETURN_TO_CHATGPT is STALE. Not safe for use as current governance record. ===";
+            } else {
+              document.getElementById("returnBox").textContent = rtcData.content;
+            }
+          } else {
+            document.getElementById("returnBox").textContent = "=== RETURN_TO_CHATGPT [UNAVAILABLE] ===\n" +
+              "No RETURN_TO_CHATGPT truth source found.\n" +
+              "source: " + (rtcData.source || "unknown") + "\n" +
+              "Status: UNAVAILABLE — cannot start until a valid RTC exists.\n" +
+              "=== END ===";
+          }
+        } catch(e) {
+          document.getElementById("returnBox").textContent = "=== RETURN_TO_CHATGPT [UNAVAILABLE] ===\nError fetching: " + e;
+        }
+        
+      } catch(e) {
+        document.getElementById("stateMono").textContent = "Error: " + e;
+      }
+    }
+
+    function pollState() {
+      setInterval(updateDisplay, 3000);
+    }
+
+    // Initial load
+    updateDisplay();
+    setInterval(updateDisplay, 5000);
+  </script>
+</body>
+</html>

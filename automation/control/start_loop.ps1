@@ -26,6 +26,93 @@ if (!(Test-Path $logDir)) {
     New-Item -ItemType Directory -Path $logDir -Force | Out-Null
 }
 
+# --- PAUSE.flag check ---
+$pauseFlag = Join-Path $controlDir "PAUSE.flag"
+if (Test-Path $pauseFlag) {
+    $pauseContent = Get-Content $pauseFlag -Raw -ErrorAction SilentlyContinue
+    Write-Host ""
+    Write-Host "[BLOCKED] PAUSE.flag is set. Cannot start loop." -ForegroundColor Red
+    if ($pauseContent) { Write-Host "[BLOCKED] PAUSE content: $pauseContent" -ForegroundColor Yellow }
+    Write-Host "[BLOCKED] Clear PAUSE.flag or use explicit /start with pre-resume checks." -ForegroundColor Yellow
+    Write-Host ""
+    
+    # Update state to reflect pause block
+    if (Test-Path $statePath) {
+        $stateJson = [System.IO.File]::ReadAllText($statePath, [System.Text.Encoding]::UTF8)
+        $state = $stateJson | ConvertFrom-Json
+        $state.run_state = "stopped_error"
+        $state.stop_reason = "paused"
+        $state.last_error = "PAUSE.flag blocked start_loop.ps1"
+        $json = $state | ConvertTo-Json -Depth 10
+        [System.IO.File]::WriteAllText($statePath, $json, [System.Text.Encoding]::UTF8)
+    }
+    exit 1
+}
+
+# --- Governance / merge / push / reconciliation lock check ---
+$govLock = Join-Path $controlDir "GOVERNANCE_REVIEW_IN_PROGRESS.lock"
+$mergeLock = Join-Path $controlDir "MERGE_IN_PROGRESS.lock"
+$pushLock = Join-Path $controlDir "PUSH_IN_PROGRESS.lock"
+$reconLock = Join-Path $controlDir "RECONCILIATION_IN_PROGRESS.lock"
+foreach ($lock in @($govLock, $mergeLock, $pushLock, $reconLock)) {
+    if (Test-Path $lock) {
+        Write-Host ""
+        Write-Host "[BLOCKED] Governance/operation lock found: $(Split-Path $lock -Leaf)" -ForegroundColor Red
+        Write-Host "[BLOCKED] Cannot start runtime during governance review, merge, push, or reconciliation." -ForegroundColor Yellow
+        Write-Host ""
+        if (Test-Path $statePath) {
+            $stateJson = [System.IO.File]::ReadAllText($statePath, [System.Text.Encoding]::UTF8)
+            $state = $stateJson | ConvertFrom-Json
+            $state.run_state = "stopped_error"
+            $state.stop_reason = "governance_lock_blocked"
+            $state.last_error = "$(Split-Path $lock -Leaf) blocked start_loop.ps1"
+            $json = $state | ConvertTo-Json -Depth 10
+            [System.IO.File]::WriteAllText($statePath, $json, [System.Text.Encoding]::UTF8)
+        }
+        exit 1
+    }
+}
+
+# --- Pre-resume checks ---
+Write-Host "[CHECK] Running pre-resume checks..." -ForegroundColor Cyan
+
+# Check local/remote HEAD match
+$localHead = git rev-parse HEAD 2>$null
+$remoteHead = git rev-parse origin/work/canonical-mainline-repair-001 2>$null
+if ($localHead -and $remoteHead -and ($localHead -ne $remoteHead)) {
+    Write-Host "[BLOCKED] Pre-resume: local HEAD ($($localHead.Substring(0,12))) != remote HEAD ($($remoteHead.Substring(0,12)))" -ForegroundColor Red
+    Write-Host "[BLOCKED] Run pre-resume checks or sync before starting." -ForegroundColor Yellow
+    if (Test-Path $statePath) {
+        $stateJson = [System.IO.File]::ReadAllText($statePath, [System.Text.Encoding]::UTF8)
+        $state = $stateJson | ConvertFrom-Json
+        $state.run_state = "stopped_error"
+        $state.stop_reason = "head_mismatch"
+        $state.last_error = "local != remote HEAD"
+        $json = $state | ConvertTo-Json -Depth 10
+        [System.IO.File]::WriteAllText($statePath, $json, [System.Text.Encoding]::UTF8)
+    }
+    exit 1
+}
+
+# Check git status
+$gitStatus = git status --porcelain 2>$null
+if ($gitStatus) {
+    Write-Host "[BLOCKED] Pre-resume: working tree is not clean" -ForegroundColor Red
+    Write-Host "[BLOCKED] git status: $gitStatus" -ForegroundColor Yellow
+    if (Test-Path $statePath) {
+        $stateJson = [System.IO.File]::ReadAllText($statePath, [System.Text.Encoding]::UTF8)
+        $state = $stateJson | ConvertFrom-Json
+        $state.run_state = "stopped_error"
+        $state.stop_reason = "dirty_git_status"
+        $state.last_error = "Working tree not clean"
+        $json = $state | ConvertTo-Json -Depth 10
+        [System.IO.File]::WriteAllText($statePath, $json, [System.Text.Encoding]::UTF8)
+    }
+    exit 1
+}
+
+Write-Host "[CHECK] Pre-resume checks passed" -ForegroundColor Green
+
 # Schema normalization: ensure all required state fields exist with safe-deny defaults
 function Initialize-StateSchema {
     param($State, $Phase, $StartRound)
