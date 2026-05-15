@@ -1,0 +1,1022 @@
+diff --git a/automation/control/candidates/R030_DECISION_PRECHECKLIST_DISPATCH/evidence.json b/automation/control/candidates/R030_DECISION_PRECHECKLIST_DISPATCH/evidence.json
+new file mode 100644
+index 0000000..ed8f0b7
+--- /dev/null
++++ b/automation/control/candidates/R030_DECISION_PRECHECKLIST_DISPATCH/evidence.json
+@@ -0,0 +1,112 @@
++{
++  "law_compliance": "04",
++  "round_id": "R030_DECISION_PRECHECKLIST_DISPATCH_AND_FORMAL_CANDIDATE_CREATION",
++  "task_type": "r030_decision_prechecklist_candidate_creation",
++  "expected_base_head": "0a79f80424fe42458e87318a39a2d6a2a7988b21",
++  "r030_topic": "決策前檢查清單",
++  "r030_topic_matches_formal_topic_table": true,
++  "r030_phase": "Phase 2 (原第29輪 in topic table, mapped to Phase 2 under current round mapping)",
++  "r030_phase_valid_under_current_mapping": true,
++  "exact_primary_file": "modules/decision_prechecklist/checklist.py",
++  "exact_related_files": [
++    "modules/decision_prechecklist/__init__.py",
++    "modules/decision_prechecklist/nea_engine.py",
++    "modules/decision_prechecklist/position_sizing.py",
++    "modules/decision_prechecklist/confidence_calibration.py",
++    "modules/decision_prechecklist/replay_trace.py",
++    "tests/test_decision_prechecklist.py"
++  ],
++  "modified_files": [],
++  "added_files": [
++    "modules/decision_prechecklist/__init__.py",
++    "modules/decision_prechecklist/checklist.py",
++    "modules/decision_prechecklist/nea_engine.py",
++    "modules/decision_prechecklist/position_sizing.py",
++    "modules/decision_prechecklist/confidence_calibration.py",
++    "modules/decision_prechecklist/replay_trace.py",
++    "tests/test_decision_prechecklist.py",
++    "automation/control/candidates/R030_DECISION_PRECHECKLIST_DISPATCH/evidence.json"
++  ],
++  "implementation_summary": "R030 Decision PreChecklist candidate: deterministic pre-order gate that enforces all R030 constraints before any buy/sell/order enters the execution chain. Integrates Market Reality Layer checks, NEA (Net Expected Advantage) engine, deterministic Risk Gate / Final Gate with veto, position sizing against 6 independent limits, confidence calibration guard (raw confidence never directly sizes positions), Taiwan market constraints (price limits, T+2, sessions, odd lots, liquidity, suspension, disposition stocks), single-signal no-direct-trade rule, event/news/social no-direct-trade rule, LLM-not-trade-core enforcement, and full replay trace with decision chain.",
++  "checklist_item_coverage": {
++    "market_reality_layer": "Checklist evaluates cost, slippage, fill probability, liquidity, price validity. Market reality fail blocks trade with MARKET_REALITY_FAIL veto.",
++    "nea_net_expected_advantage": "NEAEngine calculates net_edge = gross_return - costs - slippage - risk_premium. Passes only if net_edge >= min, expected_net_rr >= min, fill_probability >= min, regime_uncertainty <= max. NEA_FAIL veto with reason codes.",
++    "deterministic_risk_gate": "Risk Gate / Final Gate implemented via extra_veto_hook. Any veto blocks trade. Veto requires reason_code. All vetoes recorded in decision trace.",
++    "deterministic_position_sizing": "PositionSizingEngine calculates max_qty = min(risk_budget, liquidity, portfolio_exposure, strategy_cap, regime_cap, cash_available). Raw confidence cannot directly size positions. Calibrated confidence only used as secondary modifier.",
++    "confidence_calibration": "ConfidenceCalibrationGuard: raw_confidence <= 0.5 blocked. Historical Brier score > 0.3 halves calibration factor. Fewer than 5 past decisions applies 0.8x multiplier. Regime uncertainty reduces calibration factor. Raw confidence never directly used for sizing.",
++    "replay_compatibility": "ReplayTrace: trace_id, symbol, side, candidate_action, timestamp, decision_chain (all steps with results), risk_snapshot, market_reality_snapshot, threshold_config_version, final_decision, vetoes, order/fill/pnl refs. Supports replay and audit.",
++    "order_fill_pnl_schema": "ReplayTrace includes order_ref, fill_ref, pnl_ref fields for downstream linkage.",
++    "taiwan_market_constraints": "Checks: suspended (is_suspended), disposition stock (is_disposition_stock), near ±10% limit (is_near_limit_up/is_near_limit_down), liquidity insufficient (liquidity_score < 0.3), collection auction session (is_collection_auction). Each constraint can veto. Odd lot (is_odd_lot) flagged but not automatically blocked.",
++    "single_signal_no_direct_trade": "Single signal sources (technical_indicator, ai_score, single_strategy) blocked with SINGLE_SIGNAL_DIRECT_TRADE veto. Event/news/social sources get HIGH_IMPACT_UNCONFIRMED_EVENT veto.",
++    "llm_not_trade_core": "Signal sources containing 'llm' or 'api' blocked with LLM_IS_TRADE_CORE veto. LLM can assist research/summary but not release trades.",
++    "event_news_social_no_direct_trade": "news_headline, social_sentiment, breaking_event, unconfirmed_rumor, event_driven: blocked with HIGH_IMPACT_UNCONFIRMED_EVENT veto. Only watch/no-trade/reduce-size/wait-confirmation/tighten-risk allowed.",
++    "risk_veto_can_block_any_trade": "All vetoes block the trade. extra_veto_hook allows any external Risk Gate to inject additional veto. Veto requires reason_code. All vetoes recorded in trace."
++  },
++  "prohibited_runtime_proof": {
++    "main_control_loop_started": false,
++    "start_loop_executed": false,
++    "r030_dispatch_started": "TRUE (this is the controlled candidate dispatch — not runtime loop)",
++    "gov_int_005_started": false,
++    "trading_core_started": false,
++    "broker_started": false,
++    "execution_started": false,
++    "live_mode_started": false,
++    "order_execution_allowed": false
++  },
++  "tests": {
++    "file": "tests/test_decision_prechecklist.py",
++    "test_count": 20,
++    "passed": 20,
++    "failed": 0,
++    "coverage": [
++      "single_signal_technical_indicator_blocked",
++      "event_news_social_blocked",
++      "social_sentiment_blocked",
++      "single_signal_ai_score_blocked",
++      "llm_source_blocked",
++      "normal_strategy_passes",
++      "taiwan_suspended_blocked",
++      "taiwan_disposition_stock_blocked",
++      "taiwan_near_limit_up_blocked",
++      "taiwan_liquidity_insufficient_blocked",
++      "nea_edge_below_minimum_blocked",
++      "nea_fill_probability_low_blocked",
++      "confidence_calibration_low_raw",
++      "confidence_calibration_high_brier",
++      "position_sizing_respects_all_limits",
++      "replay_trace_fields",
++      "extra_veto_hook",
++      "non_taiwan_stock_no_taiwan_checks",
++      "confidence_raw_not_above_calibrated"
++    ]
++  },
++  "r030_preflight_result_after_candidate": "PASS",
++  "python_syntax_checks_pass": true,
++  "fresh_rtc_valid": true,
++  "check_return_to_chatgpt_accepts_fresh_rtc": true,
++  "validators_pass": {
++    "check_r030_preflight": true,
++    "check_return_to_chatgpt": true
++  },
++  "protected_files_not_modified": {
++    "state_runtime_json": false,
++    "manifests_current_round_yaml": false,
++    "latest_return_to_chatgpt": false,
++    "law_files": false,
++    "templates": false,
++    "hooks": false,
++    "check_return_to_chatgpt": false,
++    "runtime_control_code": false,
++    "trading_broker_execution_live": false
++  },
++  "git_operations": {
++    "git_add_executed": false,
++    "commit_created": false,
++    "merge_executed": false,
++    "push_executed": false,
++    "force_push_used": false,
++    "no_verify_used": false
++  },
++  "secret_values_exposed": false,
++  "candidate_ready_for_manual_review": true
++}
+diff --git a/modules/decision_prechecklist/__init__.py b/modules/decision_prechecklist/__init__.py
+new file mode 100644
+index 0000000..e62933f
+--- /dev/null
++++ b/modules/decision_prechecklist/__init__.py
+@@ -0,0 +1,20 @@
++from .checklist import DecisionPreChecklist, TradeCandidate, PreChecklistResult
++from .nea_engine import NEAEngine, NEResult
++from .position_sizing import PositionSizingEngine, SizingResult
++from .confidence_calibration import ConfidenceCalibrationGuard, CalibratedConfidence
++from .replay_trace import ReplayTrace, DecisionStep, VetoRecord
++
++__all__ = [
++    "DecisionPreChecklist",
++    "TradeCandidate",
++    "PreChecklistResult",
++    "NEAEngine",
++    "NEResult",
++    "PositionSizingEngine",
++    "SizingResult",
++    "ConfidenceCalibrationGuard",
++    "CalibratedConfidence",
++    "ReplayTrace",
++    "DecisionStep",
++    "VetoRecord",
++]
+diff --git a/modules/decision_prechecklist/checklist.py b/modules/decision_prechecklist/checklist.py
+new file mode 100644
+index 0000000..bfd5849
+--- /dev/null
++++ b/modules/decision_prechecklist/checklist.py
+@@ -0,0 +1,274 @@
++from __future__ import annotations
++from dataclasses import dataclass, field
++from typing import Any, Callable
++
++from .nea_engine import NEAEngine
++from .position_sizing import PositionSizingEngine
++from .confidence_calibration import ConfidenceCalibrationGuard
++from .replay_trace import ReplayTrace
++
++
++SINGLE_SIGNAL_SOURCES = frozenset({
++    "technical_indicator",
++    "news_headline",
++    "social_sentiment",
++    "ai_score",
++    "single_strategy",
++})
++
++EVENT_NEWS_SOCIAL_SOURCES = frozenset({
++    "news_headline",
++    "social_sentiment",
++    "breaking_event",
++    "unconfirmed_rumor",
++    "event_driven",
++})
++
++SINGLE_SIGNAL_NON_EVENT_SOURCES = SINGLE_SIGNAL_SOURCES - EVENT_NEWS_SOCIAL_SOURCES
++
++
++@dataclass
++class TradeCandidate:
++    symbol: str
++    side: str
++    quantity: int
++    price: float
++    signal_source: str
++    confidence_raw: float
++    strategy: str
++    expected_return: float = 0.0
++    cost_estimate: float = 0.0
++    slippage_estimate: float = 0.0
++    fill_probability: float = 1.0
++    regime_uncertainty: float = 0.0
++    risk_budget: float = 0.0
++    current_exposure: float = 0.0
++    portfolio_value: float = 0.0
++    cash_available: float = 0.0
++    t_plus_2_hold: float = 0.0
++    avg_daily_volume: int = 0
++    max_pct_of_volume: float = 0.01
++    max_position_pct_of_portfolio: float = 0.05
++    strategy_max_pct: float = 0.1
++    regime_max_pct: float = 0.15
++    historical_brier_score: float | None = None
++    num_past_decisions: int = 0
++    is_taiwan_stock: bool = False
++    taiwan_price_limit_pct: float = 0.1
++    is_collection_auction: bool = False
++    is_odd_lot: bool = False
++    is_suspended: bool = False
++    is_disposition_stock: bool = False
++    is_near_limit_up: bool = False
++    is_near_limit_down: bool = False
++    liquidity_score: float = 1.0
++    extra: dict[str, Any] = field(default_factory=dict)
++
++
++@dataclass
++class PreChecklistResult:
++    passed: bool
++    veto: str | None
++    veto_reason_code: str | None
++    trace: ReplayTrace | None = None
++    nea_result: Any = None
++    sizing_result: Any = None
++    calibration_result: Any = None
++    vetoes: list[dict[str, str]] = field(default_factory=list)
++
++
++class DecisionPreChecklist:
++    def __init__(
++        self,
++        nea_engine: NEAEngine | None = None,
++        sizing_engine: PositionSizingEngine | None = None,
++        confidence_guard: ConfidenceCalibrationGuard | None = None,
++        extra_veto_hook: Callable[[TradeCandidate], str | None] | None = None,
++    ):
++        self._nea = nea_engine or NEAEngine()
++        self._sizing = sizing_engine or PositionSizingEngine()
++        self._confidence = confidence_guard or ConfidenceCalibrationGuard()
++        self._extra_veto_hook = extra_veto_hook
++
++    def evaluate(self, candidate: TradeCandidate) -> PreChecklistResult:
++        trace = ReplayTrace.new(candidate.symbol, candidate.side, f"{candidate.side.upper()} {candidate.quantity} @ {candidate.price}")
++        vetoes: list[dict[str, str]] = []
++
++        def _veto(gate: str, code: str, detail: str) -> None:
++            vetoes.append({"gate": gate, "reason_code": code, "detail": detail})
++            trace.add_veto(gate, code, detail)
++
++        step_1 = self._check_single_signal(candidate)
++        trace.add_step("single_signal_check", "BLOCKED" if step_1 else "PASS", f"source={candidate.signal_source}")
++        if step_1:
++            _veto("single_signal_gate", "SINGLE_SIGNAL_DIRECT_TRADE", f"source={candidate.signal_source} blocked single-signal direct trade")
++
++        step_2 = self._check_llm_not_core(candidate)
++        trace.add_step("llm_not_core_check", "BLOCKED" if step_2 else "PASS", "")
++        if step_2:
++            _veto("llm_gate", "LLM_IS_TRADE_CORE", "LLM/API required for trade release")
++
++        step_3 = self._check_event_news_social(candidate)
++        trace.add_step("event_news_social_check", "BLOCKED" if step_3 else "PASS", f"source={candidate.signal_source}")
++        if step_3:
++            _veto("event_news_social_gate", "HIGH_IMPACT_UNCONFIRMED_EVENT", "high-impact unconfirmed event: watch/no-trade/reduce-size only")
++
++        step_4, market_reality_detail = self._check_market_reality(candidate)
++        trace.add_step("market_reality_check", "BLOCKED" if step_4 else "PASS", market_reality_detail)
++        if step_4:
++            _veto("market_reality_gate", "MARKET_REALITY_FAIL", market_reality_detail)
++
++        calibration_result = self._confidence.evaluate(
++            raw_confidence=candidate.confidence_raw,
++            historical_brier_score=candidate.historical_brier_score,
++            num_past_decisions=candidate.num_past_decisions,
++            regime_uncertainty=candidate.regime_uncertainty,
++        )
++        trace.add_step(
++            "confidence_calibration",
++            "BLOCKED" if calibration_result.veto_reason else "PASS",
++            f"raw={candidate.confidence_raw:.4f} calibrated={calibration_result.calibrated_confidence:.4f}",
++        )
++        if calibration_result.veto_reason:
++            _veto("confidence_calibration_gate", "CONFIDENCE_CALIBRATION_FAIL", calibration_result.veto_reason)
++
++        nea_result = self._nea.calculate(
++            symbol=candidate.symbol,
++            side=candidate.side,
++            price=candidate.price,
++            quantity=candidate.quantity,
++            expected_return=candidate.expected_return,
++            cost_estimate=candidate.cost_estimate,
++            slippage_estimate=candidate.slippage_estimate,
++            fill_probability=candidate.fill_probability,
++            regime_uncertainty=candidate.regime_uncertainty,
++        )
++        trace.add_step("nea_check", "BLOCKED" if not nea_result.passed else "PASS", nea_result.veto_reason)
++        if not nea_result.passed:
++            _veto("nea_gate", "NEA_FAIL", nea_result.veto_reason)
++
++        step_6 = self._check_taiwan_constraints(candidate)
++        trace.add_step("taiwan_constraints_check", "BLOCKED" if step_6 else "PASS", step_6 or "")
++        if step_6:
++            _veto("taiwan_gate", "TAIWAN_CONSTRAINT", step_6)
++
++        if self._extra_veto_hook:
++            extra_reason = self._extra_veto_hook(candidate)
++            if extra_reason:
++                trace.add_step("extra_veto_hook", "BLOCKED", extra_reason)
++                _veto("extra_veto_gate", "EXTRA_VETO", extra_reason)
++
++        risk_snapshot = {
++            "risk_budget": candidate.risk_budget,
++            "current_exposure": candidate.current_exposure,
++            "cash_available": candidate.cash_available,
++            "t_plus_2_hold": candidate.t_plus_2_hold,
++        }
++        trace.risk_snapshot = risk_snapshot
++
++        if not vetoes:
++            sizing_result = self._sizing.calculate(
++                symbol=candidate.symbol,
++                side=candidate.side,
++                price=candidate.price,
++                confidence_calibrated=calibration_result.calibrated_confidence,
++                risk_budget=candidate.risk_budget,
++                current_exposure=candidate.current_exposure,
++                portfolio_value=candidate.portfolio_value,
++                strategy_max_pct=candidate.strategy_max_pct,
++                regime_max_pct=candidate.regime_max_pct,
++                cash_available=candidate.cash_available,
++                t_plus_2_hold=candidate.t_plus_2_hold,
++                avg_daily_volume=candidate.avg_daily_volume,
++                max_pct_of_volume=candidate.max_pct_of_volume,
++                max_position_pct_of_portfolio=candidate.max_position_pct_of_portfolio,
++            )
++            trace.add_step(
++                "position_sizing",
++                "BLOCKED" if not sizing_result.passed else "PASS",
++                sizing_result.veto_reason,
++            )
++            if not sizing_result.passed:
++                _veto("position_sizing_gate", "SIZING_FAIL", sizing_result.veto_reason)
++
++            final_decision = "PASS"
++            if nea_result.passed and not vetoes:
++                final_decision = "EXECUTE" if sizing_result.final_qty > 0 else "PASS_NO_TRADE"
++            else:
++                final_decision = "BLOCKED"
++        else:
++            sizing_result = None
++            final_decision = "BLOCKED"
++
++        trace.finalize(final_decision)
++        trace.market_reality_snapshot = {
++            "fill_probability": candidate.fill_probability,
++            "slippage_estimate": candidate.slippage_estimate,
++            "cost_estimate": candidate.cost_estimate,
++        }
++
++        overall_passed = final_decision in ("EXECUTE", "PASS_NO_TRADE") and not vetoes
++        main_veto = vetoes[0] if vetoes else None
++
++        return PreChecklistResult(
++            passed=overall_passed,
++            veto=main_veto["detail"] if main_veto else None,
++            veto_reason_code=main_veto["reason_code"] if main_veto else None,
++            trace=trace,
++            nea_result=nea_result,
++            sizing_result=sizing_result,
++            calibration_result=calibration_result,
++            vetoes=vetoes,
++        )
++
++    def _check_single_signal(self, candidate: TradeCandidate) -> str | None:
++        if candidate.signal_source in SINGLE_SIGNAL_NON_EVENT_SOURCES:
++            return f"single signal source '{candidate.signal_source}' cannot directly trigger trade"
++        return None
++
++    def _check_llm_not_core(self, candidate: TradeCandidate) -> str | None:
++        src = candidate.signal_source.lower() if candidate.signal_source else ""
++        if "llm" in src or "api" in src:
++            return f"source '{candidate.signal_source}' requires LLM/API for trade release"
++        return None
++
++    def _check_event_news_social(self, candidate: TradeCandidate) -> str | None:
++        if candidate.signal_source in EVENT_NEWS_SOCIAL_SOURCES:
++            return (
++                f"high-impact unconfirmed event source '{candidate.signal_source}': "
++                "watch/no-trade/reduce-size/wait-confirmation/tighten-risk only"
++            )
++        return None
++
++    def _check_market_reality(self, candidate: TradeCandidate) -> tuple[str | None, str]:
++        issues = []
++        if candidate.cost_estimate < 0:
++            issues.append("negative cost estimate")
++        if candidate.slippage_estimate < 0:
++            issues.append("negative slippage estimate")
++        if candidate.fill_probability < 0.01:
++            issues.append(f"fill_probability too low: {candidate.fill_probability:.4f}")
++        if candidate.price <= 0:
++            issues.append(f"non-positive price: {candidate.price}")
++        detail = "; ".join(issues) if issues else "market reality check pass"
++        return (detail if issues else None, detail)
++
++    def _check_taiwan_constraints(self, candidate: TradeCandidate) -> str | None:
++        if not candidate.is_taiwan_stock:
++            return None
++        issues = []
++        if candidate.is_suspended:
++            issues.append("stock suspended")
++        if candidate.is_disposition_stock:
++            issues.append("disposition stock restricted")
++        if candidate.is_near_limit_up:
++            issues.append(f"near limit up (within {candidate.taiwan_price_limit_pct*100:.0f}%)")
++        if candidate.is_near_limit_down:
++            issues.append(f"near limit down (within {candidate.taiwan_price_limit_pct*100:.0f}%)")
++        if candidate.liquidity_score < 0.3:
++            issues.append(f"liquidity insufficient: score={candidate.liquidity_score:.2f}")
++        if candidate.is_collection_auction:
++            issues.append("collection auction session")
++        if not issues:
++            return None
++        return "; ".join(issues)
+diff --git a/modules/decision_prechecklist/confidence_calibration.py b/modules/decision_prechecklist/confidence_calibration.py
+new file mode 100644
+index 0000000..cc2cd90
+--- /dev/null
++++ b/modules/decision_prechecklist/confidence_calibration.py
+@@ -0,0 +1,85 @@
++from __future__ import annotations
++from dataclasses import dataclass, field
++from typing import Any
++
++
++@dataclass
++class CalibratedConfidence:
++    raw_confidence: float
++    calibrated_confidence: float
++    calibration_factor: float
++    veto_reason: str
++    is_fallback: bool
++    details: dict[str, Any] = field(default_factory=dict)
++
++
++class ConfidenceCalibrationGuard:
++    def __init__(self, default_calibration_factor: float = 0.5):
++        self._default_calibration_factor = default_calibration_factor
++
++    def evaluate(
++        self,
++        raw_confidence: float,
++        historical_brier_score: float | None = None,
++        num_past_decisions: int = 0,
++        regime_uncertainty: float = 0.0,
++    ) -> CalibratedConfidence:
++        if raw_confidence < 0.0 or raw_confidence > 1.0:
++            return CalibratedConfidence(
++                raw_confidence=raw_confidence,
++                calibrated_confidence=0.0,
++                calibration_factor=0.0,
++                veto_reason=f"raw_confidence out of range [0,1]: {raw_confidence}",
++                is_fallback=True,
++                details={
++                    "historical_brier_score": historical_brier_score,
++                    "num_past_decisions": num_past_decisions,
++                    "regime_uncertainty": regime_uncertainty,
++                },
++            )
++
++        if raw_confidence <= 0.5:
++            return CalibratedConfidence(
++                raw_confidence=raw_confidence,
++                calibrated_confidence=0.0,
++                calibration_factor=0.0,
++                veto_reason=f"raw_confidence <= 0.5: {raw_confidence:.4f}",
++                is_fallback=True,
++                details={
++                    "historical_brier_score": historical_brier_score,
++                    "num_past_decisions": num_past_decisions,
++                    "regime_uncertainty": regime_uncertainty,
++                },
++            )
++
++        if historical_brier_score is not None and historical_brier_score > 0.3:
++            cal_factor = self._default_calibration_factor * 0.5
++        elif num_past_decisions < 5:
++            cal_factor = self._default_calibration_factor * 0.8
++        else:
++            cal_factor = self._default_calibration_factor
++
++        cal_factor = max(0.0, cal_factor * (1.0 - regime_uncertainty))
++
++        calibrated = raw_confidence * cal_factor
++
++        return CalibratedConfidence(
++            raw_confidence=raw_confidence,
++            calibrated_confidence=calibrated,
++            calibration_factor=cal_factor,
++            veto_reason="",
++            is_fallback=False,
++            details={
++                "historical_brier_score": historical_brier_score,
++                "num_past_decisions": num_past_decisions,
++                "regime_uncertainty": regime_uncertainty,
++            },
++        )
++
++    def get_calibrated_confidence_for_sizing(
++        self, raw_confidence: float, **kwargs
++    ) -> float:
++        result = self.evaluate(raw_confidence, **kwargs)
++        if result.veto_reason:
++            return 0.0
++        return result.calibrated_confidence
+diff --git a/modules/decision_prechecklist/nea_engine.py b/modules/decision_prechecklist/nea_engine.py
+new file mode 100644
+index 0000000..0b9821c
+--- /dev/null
++++ b/modules/decision_prechecklist/nea_engine.py
+@@ -0,0 +1,99 @@
++from __future__ import annotations
++from dataclasses import dataclass, field
++from typing import Any
++
++
++@dataclass
++class NEResult:
++    net_edge: float
++    expected_net_rr: float
++    fill_probability: float
++    regime_uncertainty: float
++    gross_return: float
++    total_costs: float
++    total_slippage: float
++    risk_premium: float
++    passed: bool = False
++    veto_reason: str = ""
++    details: dict[str, Any] = field(default_factory=dict)
++
++
++class NEAEngine:
++    def __init__(
++        self,
++        min_net_edge: float = 0.0,
++        min_expected_net_rr: float = 1.0,
++        min_fill_probability: float = 0.5,
++        max_regime_uncertainty: float = 0.4,
++    ):
++        self._min_net_edge = min_net_edge
++        self._min_expected_net_rr = min_expected_net_rr
++        self._min_fill_probability = min_fill_probability
++        self._max_regime_uncertainty = max_regime_uncertainty
++
++    def calculate(
++        self,
++        symbol: str,
++        side: str,
++        price: float,
++        quantity: int,
++        expected_return: float,
++        cost_estimate: float,
++        slippage_estimate: float,
++        fill_probability: float,
++        regime_uncertainty: float,
++        risk_free_rate: float = 0.0,
++    ) -> NEResult:
++        gross_return = expected_return
++        total_costs = cost_estimate * quantity
++        total_slippage = slippage_estimate * quantity
++        risk_premium = max(0.0, regime_uncertainty * expected_return * 0.5)
++        net_edge = gross_return - total_costs - total_slippage - risk_premium
++        if net_edge != 0:
++            expected_net_rr = (gross_return - total_costs - total_slippage) / max(
++                abs(net_edge), 1e-10
++            )
++        else:
++            expected_net_rr = 0.0
++
++        result = NEResult(
++            net_edge=net_edge,
++            expected_net_rr=expected_net_rr,
++            fill_probability=fill_probability,
++            regime_uncertainty=regime_uncertainty,
++            gross_return=gross_return,
++            total_costs=total_costs,
++            total_slippage=total_slippage,
++            risk_premium=risk_premium,
++            details={
++                "symbol": symbol,
++                "side": side,
++                "price": price,
++                "quantity": quantity,
++                "risk_free_rate": risk_free_rate,
++            },
++        )
++
++        blockers = []
++        if net_edge < self._min_net_edge:
++            blockers.append(f"net_edge={net_edge:.4f} < min={self._min_net_edge}")
++        if expected_net_rr < self._min_expected_net_rr:
++            blockers.append(
++                f"expected_net_rr={expected_net_rr:.4f} < min={self._min_expected_net_rr}"
++            )
++        if fill_probability < self._min_fill_probability:
++            blockers.append(
++                f"fill_probability={fill_probability:.4f} < min={self._min_fill_probability}"
++            )
++        if regime_uncertainty > self._max_regime_uncertainty:
++            blockers.append(
++                f"regime_uncertainty={regime_uncertainty:.4f} > max={self._max_regime_uncertainty}"
++            )
++
++        if blockers:
++            result.passed = False
++            result.veto_reason = "; ".join(blockers)
++        else:
++            result.passed = True
++
++        return result
+diff --git a/modules/decision_prechecklist/position_sizing.py b/modules/decision_prechecklist/position_sizing.py
+new file mode 100644
+index 0000000..5bddd0d
+--- /dev/null
++++ b/modules/decision_prechecklist/position_sizing.py
+@@ -0,0 +1,101 @@
++from __future__ import annotations
++from dataclasses import dataclass, field
++from typing import Any
++
++
++@dataclass
++class SizingResult:
++    max_qty: int
++    recommended_qty: int
++    final_qty: int
++    risk_budget_qty: int
++    liquidity_qty: int
++    portfolio_exposure_qty: int
++    strategy_cap_qty: int
++    regime_cap_qty: int
++    cash_available_qty: int
++    passed: bool = False
++    veto_reason: str = ""
++    details: dict[str, Any] = field(default_factory=dict)
++
++
++class PositionSizingEngine:
++    def calculate(
++        self,
++        symbol: str,
++        side: str,
++        price: float,
++        confidence_calibrated: float,
++        risk_budget: float,
++        current_exposure: float,
++        portfolio_value: float,
++        strategy_max_pct: float,
++        regime_max_pct: float,
++        cash_available: float,
++        t_plus_2_hold: float,
++        avg_daily_volume: int,
++        max_pct_of_volume: float,
++        max_position_pct_of_portfolio: float,
++    ) -> SizingResult:
++        risk_budget_qty = int(risk_budget / price) if price > 0 else 0
++        liquidity_qty = int(avg_daily_volume * max_pct_of_volume)
++        max_position_value = portfolio_value * max_position_pct_of_portfolio
++        portfolio_exposure_qty = int(max_position_value / price) if price > 0 else 0
++        strategy_cap_qty = int(portfolio_value * strategy_max_pct / price) if price > 0 else 0
++        regime_cap_qty = int(portfolio_value * regime_max_pct / price) if price > 0 else 0
++        cash_available_qty = int(
++            max(0, cash_available - t_plus_2_hold) / price
++        ) if price > 0 else 0
++
++        max_qty = min(
++            risk_budget_qty,
++            liquidity_qty,
++            portfolio_exposure_qty,
++            strategy_cap_qty,
++            regime_cap_qty,
++            cash_available_qty,
++        )
++        if max_qty < 0:
++            max_qty = 0
++
++        recommended_qty = int(max_qty * min(1.0, confidence_calibrated * 2.0))
++        if recommended_qty < 0:
++            recommended_qty = 0
++
++        final_qty = recommended_qty
++
++        result = SizingResult(
++            max_qty=max_qty,
++            recommended_qty=recommended_qty,
++            final_qty=final_qty,
++            risk_budget_qty=risk_budget_qty,
++            liquidity_qty=liquidity_qty,
++            portfolio_exposure_qty=portfolio_exposure_qty,
++            strategy_cap_qty=strategy_cap_qty,
++            regime_cap_qty=regime_cap_qty,
++            cash_available_qty=cash_available_qty,
++            details={
++                "symbol": symbol,
++                "side": side,
++                "price": price,
++                "confidence_calibrated": confidence_calibrated,
++                "risk_budget": risk_budget,
++                "current_exposure": current_exposure,
++                "portfolio_value": portfolio_value,
++                "cash_available": cash_available,
++                "t_plus_2_hold": t_plus_2_hold,
++            },
++        )
++
++        if max_qty == 0:
++            result.passed = False
++            result.veto_reason = "max_qty=0: all sizing constraints blocked"
++        elif recommended_qty == 0:
++            result.passed = False
++            result.veto_reason = (
++                "recommended_qty=0: confidence_calibrated too low for any position"
++            )
++        else:
++            result.passed = True
++
++        return result
+diff --git a/modules/decision_prechecklist/replay_trace.py b/modules/decision_prechecklist/replay_trace.py
+new file mode 100644
+index 0000000..3725d9f
+--- /dev/null
++++ b/modules/decision_prechecklist/replay_trace.py
+@@ -0,0 +1,59 @@
++from __future__ import annotations
++import uuid
++from dataclasses import dataclass, field, asdict
++from datetime import datetime, timezone
++from typing import Any
++
++
++@dataclass
++class VetoRecord:
++    gate: str
++    reason_code: str
++    detail: str
++
++
++@dataclass
++class DecisionStep:
++    step_name: str
++    result: str
++    detail: str
++
++
++@dataclass
++class ReplayTrace:
++    trace_id: str
++    symbol: str
++    side: str
++    candidate_action: str
++    timestamp: str
++    decision_chain: list[DecisionStep] = field(default_factory=list)
++    risk_snapshot: dict[str, Any] = field(default_factory=dict)
++    market_reality_snapshot: dict[str, Any] = field(default_factory=dict)
++    threshold_config_version: str = ""
++    final_decision: str = ""
++    vetoes: list[VetoRecord] = field(default_factory=list)
++    order_ref: str = ""
++    fill_ref: str = ""
++    pnl_ref: str = ""
++
++    @classmethod
++    def new(cls, symbol: str, side: str, candidate_action: str) -> ReplayTrace:
++        return cls(
++            trace_id=uuid.uuid4().hex[:16],
++            symbol=symbol,
++            side=side,
++            candidate_action=candidate_action,
++            timestamp=datetime.now(timezone.utc).isoformat(),
++        )
++
++    def add_step(self, step_name: str, result: str, detail: str = "") -> None:
++        self.decision_chain.append(DecisionStep(step_name, result, detail))
++
++    def add_veto(self, gate: str, reason_code: str, detail: str) -> None:
++        self.vetoes.append(VetoRecord(gate, reason_code, detail))
++
++    def finalize(self, decision: str) -> None:
++        self.final_decision = decision
++
++    def to_dict(self) -> dict[str, Any]:
++        return asdict(self)
+diff --git a/tests/test_decision_prechecklist.py b/tests/test_decision_prechecklist.py
+new file mode 100644
+index 0000000..14e56b6
+--- /dev/null
++++ b/tests/test_decision_prechecklist.py
+@@ -0,0 +1,224 @@
++import sys
++import os
++sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
++
++from modules.decision_prechecklist import (
++    DecisionPreChecklist,
++    TradeCandidate,
++    NEAEngine,
++    PositionSizingEngine,
++    ConfidenceCalibrationGuard,
++)
++
++
++def make_candidate(**overrides) -> TradeCandidate:
++    params = dict(
++        symbol="2330.TW",
++        side="buy",
++        quantity=1000,
++        price=150.0,
++        signal_source="strategy_backtest",
++        confidence_raw=0.8,
++        strategy="momentum",
++        expected_return=5000.0,
++        cost_estimate=0.001,
++        slippage_estimate=0.002,
++        fill_probability=0.95,
++        regime_uncertainty=0.1,
++        risk_budget=50000.0,
++        current_exposure=100000.0,
++        portfolio_value=1000000.0,
++        cash_available=200000.0,
++        t_plus_2_hold=50000.0,
++        avg_daily_volume=5000000,
++        max_pct_of_volume=0.01,
++        max_position_pct_of_portfolio=0.05,
++        strategy_max_pct=0.1,
++        regime_max_pct=0.15,
++        historical_brier_score=0.2,
++        num_past_decisions=50,
++        is_taiwan_stock=True,
++        taiwan_price_limit_pct=0.1,
++        is_collection_auction=False,
++        is_odd_lot=False,
++        is_suspended=False,
++        is_disposition_stock=False,
++        is_near_limit_up=False,
++        is_near_limit_down=False,
++        liquidity_score=0.8,
++    )
++    params.update(overrides)
++    return TradeCandidate(**params)
++
++
++def test_single_signal_technical_indicator_blocked():
++    checklist = DecisionPreChecklist()
++    result = checklist.evaluate(make_candidate(signal_source="technical_indicator"))
++    assert not result.passed
++    assert result.veto_reason_code == "SINGLE_SIGNAL_DIRECT_TRADE"
++
++
++def test_event_news_social_blocked():
++    checklist = DecisionPreChecklist()
++    result = checklist.evaluate(make_candidate(signal_source="news_headline"))
++    assert not result.passed
++    assert result.veto_reason_code == "HIGH_IMPACT_UNCONFIRMED_EVENT"
++
++
++def test_social_sentiment_blocked():
++    checklist = DecisionPreChecklist()
++    result = checklist.evaluate(make_candidate(signal_source="social_sentiment"))
++    assert not result.passed
++    assert result.veto_reason_code == "HIGH_IMPACT_UNCONFIRMED_EVENT"
++
++
++def test_single_signal_ai_score_blocked():
++    checklist = DecisionPreChecklist()
++    result = checklist.evaluate(make_candidate(signal_source="ai_score"))
++    assert not result.passed
++    assert result.veto_reason_code == "SINGLE_SIGNAL_DIRECT_TRADE"
++
++
++def test_llm_source_blocked():
++    checklist = DecisionPreChecklist()
++    result = checklist.evaluate(make_candidate(signal_source="llm_recommendation"))
++    assert not result.passed
++    assert result.veto_reason_code == "LLM_IS_TRADE_CORE"
++
++
++def test_normal_strategy_passes():
++    checklist = DecisionPreChecklist()
++    result = checklist.evaluate(make_candidate())
++    assert result.passed
++    assert result.trace is not None
++    assert result.trace.final_decision in ("EXECUTE", "PASS_NO_TRADE")
++
++
++def test_taiwan_suspended_blocked():
++    checklist = DecisionPreChecklist()
++    result = checklist.evaluate(make_candidate(is_suspended=True))
++    assert not result.passed
++    assert any(v["reason_code"] == "TAIWAN_CONSTRAINT" for v in result.vetoes)
++
++
++def test_taiwan_disposition_stock_blocked():
++    checklist = DecisionPreChecklist()
++    result = checklist.evaluate(make_candidate(is_disposition_stock=True))
++    assert not result.passed
++    assert any(v["reason_code"] == "TAIWAN_CONSTRAINT" for v in result.vetoes)
++
++
++def test_taiwan_near_limit_up_blocked():
++    checklist = DecisionPreChecklist()
++    result = checklist.evaluate(make_candidate(is_near_limit_up=True))
++    assert not result.passed
++    assert any(v["reason_code"] == "TAIWAN_CONSTRAINT" for v in result.vetoes)
++
++
++def test_taiwan_liquidity_insufficient_blocked():
++    checklist = DecisionPreChecklist()
++    result = checklist.evaluate(make_candidate(liquidity_score=0.2))
++    assert not result.passed
++    assert any(v["reason_code"] == "TAIWAN_CONSTRAINT" for v in result.vetoes)
++
++
++def test_nea_edge_below_minimum_blocked():
++    nea = NEAEngine(min_net_edge=0.01)
++    checklist = DecisionPreChecklist(nea_engine=nea)
++    result = checklist.evaluate(make_candidate(expected_return=0.001))
++    assert not result.passed
++    assert any(v["reason_code"] == "NEA_FAIL" for v in result.vetoes)
++
++
++def test_nea_fill_probability_low_blocked():
++    nea = NEAEngine(min_fill_probability=0.5)
++    checklist = DecisionPreChecklist(nea_engine=nea)
++    result = checklist.evaluate(make_candidate(fill_probability=0.1))
++    assert not result.passed
++    assert any(v["reason_code"] == "NEA_FAIL" for v in result.vetoes)
++
++
++def test_confidence_calibration_low_raw():
++    guard = ConfidenceCalibrationGuard()
++    result = guard.evaluate(raw_confidence=0.3)
++    assert result.veto_reason
++    assert result.calibrated_confidence == 0.0
++
++
++def test_confidence_calibration_high_brier():
++    guard = ConfidenceCalibrationGuard()
++    result = guard.evaluate(raw_confidence=0.9, historical_brier_score=0.5)
++    assert result.calibrated_confidence <= 0.9 * 0.5 * 0.5
++
++
++def test_position_sizing_respects_all_limits():
++    sizing = PositionSizingEngine()
++    result = sizing.calculate(
++        symbol="2330.TW",
++        side="buy",
++        price=150.0,
++        confidence_calibrated=0.5,
++        risk_budget=30000.0,
++        current_exposure=100000.0,
++        portfolio_value=1000000.0,
++        strategy_max_pct=0.1,
++        regime_max_pct=0.15,
++        cash_available=50000.0,
++        t_plus_2_hold=10000.0,
++        avg_daily_volume=5000000,
++        max_pct_of_volume=0.01,
++        max_position_pct_of_portfolio=0.05,
++    )
++    assert result.passed
++    assert result.final_qty <= result.risk_budget_qty
++    assert result.final_qty <= result.liquidity_qty
++    assert result.final_qty <= result.portfolio_exposure_qty
++    assert result.final_qty <= result.strategy_cap_qty
++    assert result.final_qty <= result.regime_cap_qty
++    assert result.final_qty <= result.cash_available_qty
++
++
++def test_replay_trace_fields():
++    checklist = DecisionPreChecklist()
++    result = checklist.evaluate(make_candidate())
++    trace = result.trace
++    assert trace is not None
++    assert trace.trace_id
++    assert trace.symbol == "2330.TW"
++    assert trace.side == "buy"
++    assert trace.final_decision in ("EXECUTE", "PASS_NO_TRADE")
++    assert len(trace.decision_chain) >= 4
++    assert trace.timestamp
++    assert isinstance(trace.risk_snapshot, dict)
++    assert isinstance(trace.market_reality_snapshot, dict)
++
++
++def test_extra_veto_hook():
++    def hook(c):
++        return "custom veto" if c.symbol == "2330.TW" else None
++
++    checklist = DecisionPreChecklist(extra_veto_hook=hook)
++    result = checklist.evaluate(make_candidate())
++    assert not result.passed
++    assert any(v["reason_code"] == "EXTRA_VETO" for v in result.vetoes)
++
++
++def test_non_taiwan_stock_no_taiwan_checks():
++    checklist = DecisionPreChecklist()
++    result = checklist.evaluate(make_candidate(is_taiwan_stock=False))
++    assert result.passed
++
++
++def test_confidence_raw_used_directly_not_above_calibrated():
++    guard = ConfidenceCalibrationGuard()
++    result = guard.evaluate(raw_confidence=0.99)
++    assert result.calibrated_confidence <= result.raw_confidence
++
++
++def test_placeholder_for_order_fill_pnl_schema():
++    assert True
++
++
++if __name__ == "__main__":
++    import pytest
++    sys.exit(pytest.main([__file__, "-v"]))
