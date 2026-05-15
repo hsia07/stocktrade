@@ -1,0 +1,126 @@
+{
+    "round_id": "GOV_BACKLOG_006_VALIDATORS_GUARDS_MECHANICAL_ENFORCEMENT_HARDENING_FORMAL_CANDIDATE",
+    "task_type": "validators_guards_mechanical_enforcement_hardening_candidate_creation",
+    "status": "completed",
+    "formal_status_code": "VALIDATORS_GUARDS_MECHANICAL_ENFORCEMENT_HARDENING_CANDIDATE_READY_AWAITING_MANUAL_REVIEW",
+    "expected_base_head": "762021003a59dd77705d12f8b6b1e08a7941ec98",
+    "expected_base_branch": "work/canonical-mainline-repair-001",
+    "candidate_branch": "candidate/gov-backlog-006-validators-guards-mechanical-enforcement-hardening",
+    "law_compliance": "04",
+    "candidate_diff_artifact": {
+        "present": true,
+        "authorized": true,
+        "path": "automation/control/candidates/GOV_BACKLOG_006_VALIDATORS_GUARDS_MECHANICAL_ENFORCEMENT_HARDENING/candidate.diff",
+        "encoding": "UTF-8",
+        "non_empty": true,
+        "line_ending": "LF",
+        "sha256_prefix": "4fb52bf487662294",
+        "corresponds_to_actual_git_diff_from_base": true,
+        "note": "Content = git diff 762021003a59dd77705d12f8b6b1e08a7941ec98 e002f353689da46264dffe3d63a36d7ce1f6e229 (original 10-file candidate changes), LF line endings, byte-for-byte match"
+    },
+    "rework_info": [
+        {
+            "reason": "GOV_BACKLOG_006_MANUAL_REVIEW rejected: candidate_diff_artifact_present = FALSE",
+            "rework_type": "candidate_diff_artifact_rework",
+            "rework_commit": "c9e707605f8c065d2fb56c4bb3b37b8641c2bf17",
+            "previous_candidate_commit": "e002f353689da46264dffe3d63a36d7ce1f6e229"
+        },
+        {
+            "reason": "GOV_BACKLOG_006_REWORK_MANUAL_REVIEW rejected: candidate.diff CRLF vs LF hash mismatch",
+            "rework_type": "candidate_diff_line_ending_rework",
+            "rework_commit": null,
+            "line_ending_fix": "regenerated candidate.diff in binary mode (LF), updated hash to 4fb52bf487662294",
+            "previous_candidate_commit": "e002f353689da46264dffe3d63a36d7ce1f6e229",
+            "previous_rework_commit": "c9e707605f8c065d2fb56c4bb3b37b8641c2bf17"
+        }
+    ],
+    "governance_backlog_requirement": "GOV-BACKLOG-006 validators/guards mechanical enforcement hardening",
+    "r030_dispatch_started": false,
+    "gov_int_005_started": false,
+    "runtime_started": false,
+    "gaps_addressed": {
+        "r030_preflight_missing": {
+            "status": "addressed",
+            "files": ["scripts/validation/check_r030_preflight.py"]
+        },
+        "aider_opencode_mechanical_enforcement_missing": {
+            "status": "addressed",
+            "files": ["scripts/validation/check_aider_constraints.py"]
+        },
+        "manifest_state_inconsistency": {
+            "status": "addressed",
+            "files": ["scripts/validation/check_manifest_state_consistency.py"]
+        },
+        "return_to_chatgpt_validator_incomplete": {
+            "status": "addressed",
+            "files": ["scripts/validation/check_return_to_chatgpt.py"]
+        },
+        "segmentation_guards_incomplete": {
+            "status": "addressed",
+            "files": [".githooks/pre-push.ps1", ".githooks/pre-commit"]
+        },
+        "no_git_hook_for_dirty_tree_before_push": {
+            "status": "addressed",
+            "files": [".githooks/pre-push.ps1"]
+        },
+        "no_mirror_sync_guard": {
+            "status": "addressed",
+            "files": ["scripts/validation/check_mirror_sync.py"]
+        },
+        "evidence_package_guards_incomplete": {
+            "status": "addressed",
+            "files": ["scripts/validation/check_required_evidence.py", "scripts/validation/check_real_changes.py"]
+        },
+        "law_02_priority_mechanical_enforcement_missing": {
+            "status": "addressed",
+            "files": ["scripts/validation/check_mirror_sync.py"]
+        }
+    },
+    "prohibited_actions_verified": {
+        "no_auto_retry": true,
+        "no_auto_model_switch": true,
+        "no_auto_key_switch": true,
+        "no_auto_continue_after_recharge": true,
+        "no_force_push": true,
+        "no_no_verify": true,
+        "no_runtime_started": true,
+        "no_r030_dispatch": true,
+        "no_gov_int_005": true,
+        "no_trading_broker_execution_live": true,
+        "no_order_execution": true,
+        "no_state_runtime_modification": true,
+        "no_manifest_modification": true,
+        "no_law_modification": true,
+        "no_templates_modification": true,
+        "no_runtime_control_code_modification": true,
+        "no_trading_code_modification": true
+    },
+    "files_modified": [
+        "scripts/validation/check_return_to_chatgpt.py",
+        "scripts/validation/check_required_evidence.py",
+        "scripts/validation/check_real_changes.py",
+        ".githooks/pre-push.ps1",
+        ".githooks/pre-commit"
+    ],
+    "files_added": [
+        "scripts/validation/check_r030_preflight.py",
+        "scripts/validation/check_aider_constraints.py",
+        "scripts/validation/check_mirror_sync.py",
+        "scripts/validation/check_manifest_state_consistency.py",
+        "automation/control/candidates/GOV_BACKLOG_006_VALIDATORS_GUARDS_MECHANICAL_ENFORCEMENT_HARDENING/evidence.json",
+        "automation/control/candidates/GOV_BACKLOG_006_VALIDATORS_GUARDS_MECHANICAL_ENFORCEMENT_HARDENING/candidate.diff"
+    ],
+    "work_done": [
+        "Created check_r030_preflight.py — R030 dispatch readiness validator",
+        "Created check_aider_constraints.py — Aider/OpenCode mechanical constraint presence validator",
+        "Created check_mirror_sync.py — law authoritative/readable/opencode-readable mirror sync validator",
+        "Created check_manifest_state_consistency.py — manifest/state consistency with legal stopped-state classification",
+        "Hardened check_return_to_chatgpt.py — added law_compliance string 04 check, staleness/synthetic/malformed rejection, embedded format support, status code membership, required field expansion",
+        "Hardened check_required_evidence.py — added secret scan, law_compliance exact string, prohibited_actions_verified completeness, authorized scope validation, candidate.diff presence check",
+        "Hardened check_real_changes.py — added evidence-only change rejection, candidate.diff vs actual git diff hash comparison, fail-closed on no real changes",
+        "Hardened pre-push.ps1 — added dirty tree guard, runtime guard (main_control_loop/r030/order_execution), manifest/state consistency check",
+        "Hardened pre-commit — added forbidden changes validator call, Aider evidence-only commit warning",
+        "Rework: generated candidate.diff (diff from expected_base_head to original candidate), updated evidence.json with candidate_diff_artifact metadata",
+        "Line-ending rework: regenerated candidate.diff in binary mode (LF, byte-for-byte match to git diff 7620210 e002f35), updated hash to 4fb52bf487662294"
+    ]
+}
