@@ -2,7 +2,7 @@ round_id: "STATE-NORMALIZATION"
 title: "Auto-Mode State Normalization"
 status: "candidate_pass"
 depends_on:
-  - "R029"
+  - "R030"
 allowed_paths:
   - "manifests/"
   - "automation/control/"

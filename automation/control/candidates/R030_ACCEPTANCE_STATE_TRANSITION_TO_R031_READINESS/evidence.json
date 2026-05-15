@@ -1,7 +1,10 @@
 {
   "law_compliance": "04",
-  "round_id": "R030_ACCEPTANCE_STATE_TRANSITION_TO_R031_READINESS_CANDIDATE",
-  "task_type": "r030_acceptance_state_transition_candidate_creation",
+  "round_id": "R030_ACCEPTANCE_STATE_TRANSITION_DEPENDS_ON_REWORK_CANDIDATE",
+  "task_type": "r030_acceptance_state_transition_depends_on_rework",
+  "rework_reason": "stale manifest_depends_on R029 corrected to R030 for R030 accepted -> R031 readiness chain consistency",
+  "blocked_candidate_commit": "41a900674b1cf7d3807bb9a6f644a99a51ab80b4",
+  "rework_candidate_commit": "2c57a85285b20afc4ef004836d4a980dc5cee687",
   "expected_base_head": "e47cbe17a17fd1966208492e5b614e1e9b9a6af4",
   "actual_base_head": "e47cbe17a17fd1966208492e5b614e1e9b9a6af4",
   "candidate_branch": "candidate/r030-acceptance-state-transition-to-r031-readiness",
@@ -39,8 +42,15 @@
     "last_completed_round_new": "R030",
     "next_round_to_dispatch_old": "R030",
     "next_round_to_dispatch_new": "R031",
+    "depends_on_old": "R029",
+    "depends_on_new": "R030",
     "chain_status_old": "backlog_merged_ready_for_next_dispatch",
     "chain_status_new": "r030_accepted_ready_for_r031_readiness_or_scope_audit"
+  },
+  "rework_verification": {
+    "original_blocked_commit": "41a900674b1cf7d3807bb9a6f644a99a51ab80b4",
+    "depends_on_was_list_with_R029": true,
+    "depends_on_now_list_with_R030": true
   },
   "prohibited_runtime_proof": {
     "main_control_loop_running": false,

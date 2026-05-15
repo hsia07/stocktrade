@@ -1,6 +1,6 @@
 ﻿=== RETURN_TO_CHATGPT [CURRENT] ===
 status: CURRENT
-note: This RETURN_TO_CHATGPT entry (R030_ACCEPTANCE_STATE_TRANSITION) is the current runtime snapshot as of 2026-05-16, reflecting R030 final acceptance.
+note: This RETURN_TO_CHATGPT entry (R030_ACCEPTANCE_STATE_TRANSITION_DEPENDS_ON_REWORK) is the current runtime snapshot as of 2026-05-16, reflecting R030 final acceptance with corrected depends_on.
 round_id: R030_FINAL_COMPLETION_REVIEW_WITH_WEBSITE_WIRING_FINDING
 reply_id: R030_ACCEPTANCE-20260516-000000
 timestamp: 2026-05-16T05:05:53+08:00
@@ -19,6 +19,7 @@ index_v2_uses_decision_prechecklist: FALSE
 api_state_contains_r030_fields: FALSE
 r030_order_pipeline_wired: FALSE
 r030_execution_pipeline_wired: FALSE
+manifest_depends_on: R030
 next_round_id: R031
 next_round_topic: 信心來源拆解 / Confidence Source Decomposition
 next_round_dispatch_allowed_now: FALSE
@@ -57,6 +58,7 @@ index_v2_uses_decision_prechecklist_true_or_false: FALSE
 api_state_contains_r030_fields_true_or_false: FALSE
 r030_order_pipeline_wired_true_or_false: FALSE
 r030_execution_pipeline_wired_true_or_false: FALSE
+manifest_depends_on: R030
 next_round_id: R031
 next_round_topic: 信心來源拆解 / Confidence Source Decomposition
 next_round_dispatch_allowed_now_true_or_false: FALSE
