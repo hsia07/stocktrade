@@ -12,6 +12,7 @@ import sys
 from datetime import datetime
 from automation.control.telegram_notifier import TelegramNotifier
 from automation.inbound.telegram_inbound import TelegramInboundReceiver
+from automation.control.pause_state import PauseStateManager
 
 REPO_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 CONTROL_DIR = os.path.join(REPO_ROOT, "automation", "control")
@@ -23,6 +24,15 @@ LAST_ACTION_FILE = os.path.join(CONTROL_DIR, "last_action.runtime.json")
 APPROVED_CANDIDATE_FILE = os.path.join(PROMOTION_DIR, "approved_candidate.runtime.json")
 PROMOTION_PLAN_FILE = os.path.join(PROMOTION_DIR, "promotion_plan.runtime.json")
 PROMOTION_RESULT_FILE = os.path.join(PROMOTION_DIR, "promotion_result.runtime.json")
+
+# RETURN_TO_CHATGPT truth source – must be read directly, never synthetically generated
+RTC_TRUTH_SOURCE = os.path.join(CONTROL_DIR, "latest_return_to_chatgpt.runtime.txt")
+
+# Governance review lock marker paths
+GOVERNANCE_LOCK_FILE = os.path.join(CONTROL_DIR, "GOVERNANCE_REVIEW_IN_PROGRESS.lock")
+MERGE_IN_PROGRESS_LOCK = os.path.join(CONTROL_DIR, "MERGE_IN_PROGRESS.lock")
+PUSH_IN_PROGRESS_LOCK = os.path.join(CONTROL_DIR, "PUSH_IN_PROGRESS.lock")
+RECONCILIATION_IN_PROGRESS_LOCK = os.path.join(CONTROL_DIR, "RECONCILIATION_IN_PROGRESS.lock")
 
 # Undefined round values — construction/dispatch is blocked for these
 UNDEFINED_ROUND_VALUES = {"", "none", "undefined", "law_undefined"}
@@ -353,22 +363,172 @@ def get_state():
 
 
 def check_can_start():
-    """Check if loop can be started"""
+    """Check if loop can be started.
+    
+    Returns full preflight status including:
+    - PAUSE.flag check
+    - governance review lock check
+    - usage exhaustion / pre-resume checks
+    - git status / HEAD match
+    - phase completion / signoff
+    - runtime state
+    """
     state = get_state()
     run_state = state.get('run_state', 'stopped')
     phase_completion = state.get('phase_completion_state', 'none')
     signoff_required = state.get('signoff_required', False)
+    pause_mgr = PauseStateManager()
     
-    # Can't start if phase is completed and waiting for signoff
+    blockers = []
+    pause_info = {}
+    
+    # GATE 1: PAUSE.flag check
+    if pause_mgr.is_paused():
+        pause_info = pause_mgr.get_pause_info() or {}
+        pause_reason = pause_info.get('reason', pause_mgr._read_pause_reason_from_source())
+        pause_sub_reason = 'unknown'
+        if pause_reason == PauseStateManager.REASON_USAGE:
+            pause_sub_reason = pause_info.get('usage_sub_reason', 'usage_exhausted')
+        blockers.append({
+            'gate': 'pause_flag',
+            'reason': 'PAUSE.flag is set',
+            'pause_reason': pause_reason,
+            'pause_sub_reason': pause_sub_reason,
+            'recommended_next_action': 'Clear PAUSE.flag or use explicit /start with pre-resume checks'
+        })
+    
+    # GATE 2: Governance review lock check
+    if os.path.exists(GOVERNANCE_LOCK_FILE):
+        blockers.append({
+            'gate': 'governance_review_lock',
+            'reason': 'Governance review in progress (GOVERNANCE_REVIEW_IN_PROGRESS.lock exists)'
+        })
+    if os.path.exists(MERGE_IN_PROGRESS_LOCK):
+        blockers.append({
+            'gate': 'merge_in_progress',
+            'reason': 'Merge in progress (MERGE_IN_PROGRESS.lock exists)'
+        })
+    if os.path.exists(PUSH_IN_PROGRESS_LOCK):
+        blockers.append({
+            'gate': 'push_in_progress',
+            'reason': 'Push in progress (PUSH_IN_PROGRESS.lock exists)'
+        })
+    if os.path.exists(RECONCILIATION_IN_PROGRESS_LOCK):
+        blockers.append({
+            'gate': 'reconciliation_in_progress',
+            'reason': 'Post-push reconciliation in progress (RECONCILIATION_IN_PROGRESS.lock exists)'
+        })
+    
+    # GATE 3: Pre-resume checks (if previously paused)
+    if run_state in ('paused', 'stopped'):
+        pre_resume = pause_mgr.pre_resume_checks()
+        if not pre_resume.get('can_resume', True):
+            for check in pre_resume.get('failed_checks', []):
+                blockers.append({
+                    'gate': 'pre_resume_check',
+                    'reason': check
+                })
+    
+    # GATE 4: Usage exhaustion check from state
+    stop_reason = state.get('stop_reason', '')
+    if stop_reason in ('usage_exhausted', 'insufficient_balance', 'api_quota_exhausted', 'model_unavailable', 'usage_source_unavailable'):
+        blockers.append({
+            'gate': 'usage_exhaustion',
+            'reason': f'Usage exhaustion stop: {stop_reason}. Manual /start and pre-resume checks required.'
+        })
+    
+    # GATE 5: Phase completed + waiting for signoff
     if phase_completion == 'completed' and signoff_required:
         _notifier.send_awaiting_instruction_notification()
-        return {'can_start': False, 'reason': 'Phase completed, waiting for signoff. Use Ready for Signoff first.'}
+        blockers.append({
+            'gate': 'phase_completed_signoff_required',
+            'reason': 'Phase completed, waiting for signoff. Use Ready for Signoff first.'
+        })
     
-    # Can't start if already running
+    # GATE 6: Already running
     if run_state == 'running':
-        return {'can_start': False, 'reason': 'Loop is already running'}
+        blockers.append({
+            'gate': 'already_running',
+            'reason': 'Loop is already running'
+        })
     
-    return {'can_start': True, 'run_state': run_state, 'phase': state.get('current_phase', 'unknown')}
+    # GATE 7: Local/remote HEAD match
+    try:
+        import subprocess
+        local_head = subprocess.run(['git', 'rev-parse', 'HEAD'], capture_output=True, text=True, timeout=15).stdout.strip()
+        remote_head = subprocess.run(['git', 'rev-parse', 'origin/work/canonical-mainline-repair-001'], capture_output=True, text=True, timeout=15).stdout.strip()
+        if local_head != remote_head:
+            blockers.append({
+                'gate': 'head_mismatch',
+                'reason': f'local HEAD ({local_head[:12]}) != remote HEAD ({remote_head[:12]}). Use pre-resume checks.'
+            })
+    except Exception:
+        blockers.append({
+            'gate': 'git_check_failed',
+            'reason': 'Could not verify local/remote HEAD match'
+        })
+    
+    # GATE 8: Git status clean
+    try:
+        import subprocess
+        result = subprocess.run(['git', 'status', '--porcelain'], capture_output=True, text=True, timeout=15).stdout.strip()
+        if result:
+            blockers.append({
+                'gate': 'git_status_dirty',
+                'reason': f'Working tree is not clean. git status: {result[:200]}'
+            })
+    except Exception:
+        blockers.append({
+            'gate': 'git_status_check_failed',
+            'reason': 'Could not verify git status'
+        })
+    
+    # GATE 9: main_control_loop not running
+    if run_state == 'running':
+        blockers.append({
+            'gate': 'main_control_loop_running',
+            'reason': 'main_control_loop is already running'
+        })
+    
+    # GATE 10: R030 or dispatch check from state
+    r030_started = state.get('r030_dispatch_started', False)
+    if r030_started:
+        blockers.append({
+            'gate': 'r030_dispatch_started',
+            'reason': 'R030 dispatch is already started'
+        })
+    
+    # GATE 11: order_execution_allowed must be FALSE
+    order_exec_allowed = state.get('order_execution_allowed', False)
+    if order_exec_allowed:
+        blockers.append({
+            'gate': 'order_execution_allowed',
+            'reason': 'order_execution_allowed is TRUE. Must be FALSE before start.'
+        })
+    
+    can_start = len(blockers) == 0
+    
+    return {
+        'can_start': can_start,
+        'run_state': run_state,
+        'phase': state.get('current_phase', 'unknown'),
+        'pause_flag_present': pause_mgr.is_paused(),
+        'pause_reason': pause_info.get('reason', 'none') if pause_mgr.is_paused() else 'none',
+        'pause_sub_reason': pause_info.get('pause_sub_reason', 'none') if pause_mgr.is_paused() else 'none',
+        'blockers': blockers,
+        'usage_exhaustion_state': stop_reason if stop_reason in ('usage_exhausted', 'insufficient_balance', 'api_quota_exhausted', 'model_unavailable', 'usage_source_unavailable') else 'none',
+        'pre_resume_checks_pass': can_start if not pause_mgr.is_paused() else False,
+        'git_status_clean': not any(b['gate'] == 'git_status_dirty' for b in blockers) if not any(b['gate'] in ('git_status_check_failed',) for b in blockers) else False,
+        'local_remote_heads_match': not any(b['gate'] == 'head_mismatch' for b in blockers),
+        'governance_review_lock_present': os.path.exists(GOVERNANCE_LOCK_FILE),
+        'main_control_loop_running': run_state == 'running',
+        'r030_dispatch_started': r030_started,
+        'trading_core_started': state.get('trading_core_started', False),
+        'broker_started': state.get('broker_started', False),
+        'execution_started': state.get('execution_started', False),
+        'live_mode_started': state.get('live_mode_started', False),
+        'order_execution_allowed': order_exec_allowed
+    }
 
 
 def do_start_loop():
@@ -376,12 +536,58 @@ def do_start_loop():
     
     Returns immediately so the panel doesn't hang.
     The panel polls /state and /last-action to see progress.
+    
+    GUARDS:
+    - check_can_start() must pass (includes PAUSE.flag, governance lock, pre-resume checks)
+    - PAUSE.flag must not be set
+    - Pre-resume checks must pass if state allows
     """
     check = check_can_start()
     if not check['can_start']:
+        blockers_str = '; '.join([b['reason'] for b in check.get('blockers', [])]) if check.get('blockers') else check.get('reason', 'unknown')
         result = {
             'status': 'blocked',
-            'reason': check['reason'],
+            'reason': blockers_str,
+            'action': 'none',
+            'blockers': check.get('blockers', []),
+            'can_start_full_status': check
+        }
+        save_json(LAST_ACTION_FILE, result)
+        return result
+    
+    # PAUSE.flag double-check (belt and suspenders)
+    pause_mgr = PauseStateManager()
+    if pause_mgr.is_paused():
+        pause_info = pause_mgr.get_pause_info() or {}
+        result = {
+            'status': 'blocked',
+            'reason': 'PAUSE.flag is set. Clear pause before starting.',
+            'action': 'none',
+            'pause_info': pause_info
+        }
+        save_json(LAST_ACTION_FILE, result)
+        return result
+    
+    # Pre-resume checks (if applicable)
+    state = get_state()
+    run_state = state.get('run_state', 'stopped')
+    if run_state in ('paused', 'stopped'):
+        pre_resume = pause_mgr.pre_resume_checks()
+        if not pre_resume.get('can_resume', True):
+            result = {
+                'status': 'blocked',
+                'reason': 'Pre-resume checks failed',
+                'action': 'none',
+                'pre_resume_failed_checks': pre_resume.get('failed_checks', [])
+            }
+            save_json(LAST_ACTION_FILE, result)
+            return result
+    
+    # Governance lock check
+    if check.get('governance_review_lock_present', False):
+        result = {
+            'status': 'blocked',
+            'reason': 'Governance review in progress. Cannot start runtime during governance, merge, push, or reconciliation.',
             'action': 'none'
         }
         save_json(LAST_ACTION_FILE, result)
@@ -820,17 +1026,30 @@ class BridgeHandler(BaseHTTPRequestHandler):
                 'last_action_action': last_action.get('action', 'none')
             })
         elif path == '/return-artifact':
-            state = get_state()
-            artifact_path = state.get('latest_return_artifact', '')
-            if artifact_path and os.path.exists(artifact_path):
+            # Must read directly from RTC_TRUTH_SOURCE (latest_return_to_chatgpt.runtime.txt)
+            # Never synthesize from state fields
+            if os.path.exists(RTC_TRUTH_SOURCE):
                 try:
-                    with open(artifact_path, 'r', encoding='utf-8-sig') as f:
+                    with open(RTC_TRUTH_SOURCE, 'r', encoding='utf-8-sig') as f:
                         content = f.read()
-                    self.send_json(200, {'status': 'found', 'content': content})
+                    validity = 'stale' if 'R-014' in content and '2026-04-17' in content else 'unknown'
+                    self.send_json(200, {
+                        'status': 'found',
+                        'content': content,
+                        'source': RTC_TRUTH_SOURCE,
+                        'validity': validity,
+                        'note': 'This is the formal RETURN_TO_CHATGPT truth source. Never construct synthetically.'
+                    })
                 except Exception as e:
-                    self.send_json(200, {'status': 'error', 'message': str(e)})
+                    self.send_json(200, {'status': 'error', 'message': str(e), 'source': RTC_TRUTH_SOURCE})
             else:
-                self.send_json(200, {'status': 'not_found'})
+                self.send_json(200, {
+                    'status': 'not_found',
+                    'source': RTC_TRUTH_SOURCE,
+                    'note': 'No RETURN_TO_CHATGPT truth source available. Must create one before /start.',
+                    'unavailable': True,
+                    'can_proceed': False
+                })
         elif path == '/telegram-inbound-status':
             self.send_json(200, get_telegram_inbound_status())
         else:
