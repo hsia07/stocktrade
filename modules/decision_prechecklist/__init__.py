@@ -19,6 +19,14 @@ from .decision_comparator import (
     DecisionComparisonReport,
     ComparisonFieldDiff,
 )
+from .replay_isolation import (
+    ReplayIsolationGate,
+    ReplayStoreIsolator,
+    IsolationContext,
+    IsolationCheckResult,
+    ExecutionMode,
+    ISOLATED_STORE_NAMES,
+)
 
 __all__ = [
     "DecisionPreChecklist",
@@ -43,4 +51,10 @@ __all__ = [
     "DecisionComparator",
     "DecisionComparisonReport",
     "ComparisonFieldDiff",
+    "ReplayIsolationGate",
+    "ReplayStoreIsolator",
+    "IsolationContext",
+    "IsolationCheckResult",
+    "ExecutionMode",
+    "ISOLATED_STORE_NAMES",
 ]
