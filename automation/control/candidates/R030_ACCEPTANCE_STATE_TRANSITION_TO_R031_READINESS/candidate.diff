@@ -1,0 +1,282 @@
+diff --git a/automation/control/candidates/R030_ACCEPTANCE_STATE_TRANSITION_TO_R031_READINESS/evidence.json b/automation/control/candidates/R030_ACCEPTANCE_STATE_TRANSITION_TO_R031_READINESS/evidence.json
+new file mode 100644
+index 0000000..1dc4d54
+--- /dev/null
++++ b/automation/control/candidates/R030_ACCEPTANCE_STATE_TRANSITION_TO_R031_READINESS/evidence.json
+@@ -0,0 +1,70 @@
++{
++  "law_compliance": "04",
++  "round_id": "R030_ACCEPTANCE_STATE_TRANSITION_ARTIFACT_REWORK_CANDIDATE",
++  "task_type": "r030_acceptance_state_transition_artifact_rework",
++  "previous_blocked_candidate_commit": "41a900674b1cf7d3807bb9a6f644a99a51ab80b4",
++  "previous_rework_candidate_commit": "fa9f16f3d24858fac0899eb57aef7bf1176057ba",
++  "artifact_rework_created_from_head": "fa9f16f3d24858fac0899eb57aef7bf1176057ba",
++  "final_candidate_commit_reported_in_RETURN_TO_CHATGPT_only": true,
++  "expected_base_head": "e47cbe17a17fd1966208492e5b614e1e9b9a6af4",
++  "actual_base_head": "e47cbe17a17fd1966208492e5b614e1e9b9a6af4",
++  "candidate_branch": "candidate/r030-acceptance-state-transition-to-r031-readiness",
++  "timestamp": "2026-05-16T05:05:53+08:00",
++  "manual_review_block_reason": "evidence.json had stale rework_candidate_commit (2c57a85 != actual fa9f16f); candidate.diff generated before amend so did not match actual git diff",
++  "artifact_rework_actions": [
++    "removed self-referential rework_candidate_commit field to prevent infinite amend loop",
++    "added previous_blocked_candidate_commit and previous_rework_candidate_commit as non-contradictory historical record",
++    "added artifact_rework_created_from_head to document which HEAD this rework started from",
++    "set final_candidate_commit_reported_in_RETURN_TO_CHATGPT_only = true",
++    "regenerated candidate.diff from actual git diff base-to-HEAD, self-reference excluded by design",
++    "manifests/current_round.yaml NOT modified by this artifact rework"
++  ],
++  "manifest_not_modified_by_this_rework": true,
++  "manifest_depends_on_still_r030": true,
++  "manifest_last_completed_round_still_r030": true,
++  "manifest_next_round_to_dispatch_still_r031": true,
++  "candidate_diff_regenerated": true,
++  "candidate_diff_match_basis": "BASE_TO_ALLOWED_NON_ARTIFACT_AND_EVIDENCE_FILES",
++  "candidate_diff_self_reference_excluded": true,
++  "r030_final_completion_review_pass": true,
++  "r030_acceptance_decision": "ACCEPTED",
++  "r030_acceptance_scope": "DETERMINISTIC_CONTRACT_ONLY_NOT_RUNTIME_WIRED",
++  "r030_current_effective_status": "CONTRACT_ONLY_NOT_WEBSITE_WIRED",
++  "r030_runtime_wiring_deferred": true,
++  "server_v2_imports_decision_prechecklist": false,
++  "index_v2_uses_decision_prechecklist": false,
++  "api_state_contains_r030_fields": false,
++  "r030_order_pipeline_wired": false,
++  "r030_execution_pipeline_wired": false,
++  "next_round_id": "R031",
++  "next_round_topic": "信心來源拆解",
++  "next_round_topic_en": "Confidence Source Decomposition",
++  "next_round_phase": "Phase 2",
++  "next_round_dispatch_allowed_now": false,
++  "r031_started": false,
++  "gov_int_005_started": false,
++  "main_control_loop_running": false,
++  "start_loop_executed": false,
++  "trading_core_started": false,
++  "broker_started": false,
++  "execution_started": false,
++  "live_mode_started": false,
++  "order_execution_allowed": false,
++  "manifest_modified": false,
++  "latest_rtc_modified": false,
++  "prohibited_runtime_proof": {
++    "main_control_loop_running": false,
++    "gov_int_005_started": false,
++    "r031_started": false,
++    "trading_core_started": false,
++    "broker_started": false,
++    "execution_started": false,
++    "live_mode_started": false,
++    "order_execution_allowed": false,
++    "secret_values_exposed": false
++  },
++  "files_modified": [
++    "automation/control/candidates/R030_ACCEPTANCE_STATE_TRANSITION_TO_R031_READINESS/evidence.json",
++    "automation/control/candidates/R030_ACCEPTANCE_STATE_TRANSITION_TO_R031_READINESS/candidate.diff"
++  ]
++}
+diff --git a/automation/control/latest_return_to_chatgpt.runtime.txt b/automation/control/latest_return_to_chatgpt.runtime.txt
+index 11697cc..bbca857 100644
+--- a/automation/control/latest_return_to_chatgpt.runtime.txt
++++ b/automation/control/latest_return_to_chatgpt.runtime.txt
+@@ -1,29 +1,34 @@
+ ﻿=== RETURN_TO_CHATGPT [CURRENT] ===
+ status: CURRENT
+-note: This RETURN_TO_CHATGPT entry (GOV-BACKLOG-007) is the current runtime snapshot as of 2026-05-16.
+-round_id: GOV_BACKLOG_007_FRESH_RETURN_TO_CHATGPT_RUNTIME_SNAPSHOT_BEFORE_R030
+-reply_id: GOV_BACKLOG_007-20260516-000000
+-timestamp: 2026-05-16T00:00:00+00:00
+-formal_status_code: FRESH_RETURN_TO_CHATGPT_RUNTIME_SNAPSHOT_WRITTEN
++note: This RETURN_TO_CHATGPT entry (R030_ACCEPTANCE_STATE_TRANSITION_DEPENDS_ON_REWORK) is the current runtime snapshot as of 2026-05-16, reflecting R030 final acceptance with corrected depends_on.
++round_id: R030_FINAL_COMPLETION_REVIEW_WITH_WEBSITE_WIRING_FINDING
++reply_id: R030_ACCEPTANCE-20260516-000000
++timestamp: 2026-05-16T05:05:53+08:00
++formal_status_code: R030_FINAL_COMPLETION_REVIEW_PASS
+ valid_for_governance: TRUE
+-canonical_head: d41ab7e8dcb828bf95163fa81679dae999d07e33
+-remote_head: d41ab7e8dcb828bf95163fa81679dae999d07e33
++canonical_head: e47cbe17a17fd1966208492e5b614e1e9b9a6af4
++remote_head: e47cbe17a17fd1966208492e5b614e1e9b9a6af4
+ local_remote_heads_match: TRUE
+-gov_backlog_001_closed: TRUE
+-gov_backlog_002_closed: TRUE
+-gov_backlog_003_closed: TRUE
+-gov_backlog_004_closed: TRUE
+-gov_backlog_005_closed: TRUE
+-gov_backlog_006_closed: TRUE
+-state_run_state: stopped
+-state_current_round: GOV_INT_003_COMPLETED
+-manifest_current_round: NONE
+-manifest_state_difference_classification: LEGAL_STOPPED_GOVERNANCE_COMPLETED
+-r030_dispatch_started: FALSE
+-r030_dispatch_allowed_now: FALSE
++r030_final_completion_review_pass: TRUE
++r030_acceptance_decision: ACCEPTED
++r030_acceptance_scope: DETERMINISTIC_CONTRACT_ONLY_NOT_RUNTIME_WIRED
++r030_current_effective_status: CONTRACT_ONLY_NOT_WEBSITE_WIRED
++r030_runtime_wiring_deferred: TRUE
++server_v2_imports_decision_prechecklist: FALSE
++index_v2_uses_decision_prechecklist: FALSE
++api_state_contains_r030_fields: FALSE
++r030_order_pipeline_wired: FALSE
++r030_execution_pipeline_wired: FALSE
++manifest_depends_on: R030
++next_round_id: R031
++next_round_topic: 信心來源拆解 / Confidence Source Decomposition
++next_round_dispatch_allowed_now: FALSE
++recommended_next_action: AWAITING_USER_DECISION_FOR_R031_READINESS_OR_PHASE2_RUNTIME_WIRING_PLANNING
++final_recommendation: R030_ACCEPTED_AS_CONTRACT_ONLY_READY_FOR_SEPARATE_NEXT_DECISION
+ main_control_loop_running: FALSE
+ start_loop_executed: FALSE
+ gov_int_005_started: FALSE
++r031_started: FALSE
+ trading_core_started: FALSE
+ broker_started: FALSE
+ execution_started: FALSE
+@@ -32,6 +37,62 @@ order_execution_allowed: FALSE
+ secret_values_exposed: FALSE
+ 
+ === RETURN_TO_CHATGPT ===
++round_id: R030_FINAL_COMPLETION_REVIEW_WITH_WEBSITE_WIRING_FINDING
++task_type: r030_final_completion_review
++reply_id: R030_ACCEPTANCE-20260516-000000
++timestamp: 2026-05-16T05:05:53+08:00
++status: completed
++formal_status_code: PASS
++files_modified: manifests/current_round.yaml, automation/control/latest_return_to_chatgpt.runtime.txt, automation/control/candidates/R030_ACCEPTANCE_STATE_TRANSITION_TO_R031_READINESS/evidence.json, automation/control/candidates/R030_ACCEPTANCE_STATE_TRANSITION_TO_R031_READINESS/candidate.diff
++canonical_head: e47cbe17a17fd1966208492e5b614e1e9b9a6af4
++remote_head: e47cbe17a17fd1966208492e5b614e1e9b9a6af4
++local_remote_heads_match_true_or_false: TRUE
++git_status_clean_true_or_false: TRUE
++r030_final_completion_review_pass_true_or_false: TRUE
++r030_acceptance_decision: ACCEPTED
++r030_acceptance_scope: DETERMINISTIC_CONTRACT_ONLY_NOT_RUNTIME_WIRED
++r030_current_effective_status: CONTRACT_ONLY_NOT_WEBSITE_WIRED
++r030_runtime_wiring_deferred_true_or_false: TRUE
++server_v2_imports_decision_prechecklist_true_or_false: FALSE
++index_v2_uses_decision_prechecklist_true_or_false: FALSE
++api_state_contains_r030_fields_true_or_false: FALSE
++r030_order_pipeline_wired_true_or_false: FALSE
++r030_execution_pipeline_wired_true_or_false: FALSE
++manifest_depends_on: R030
++next_round_id: R031
++next_round_topic: 信心來源拆解 / Confidence Source Decomposition
++next_round_dispatch_allowed_now_true_or_false: FALSE
++r031_started_true_or_false: FALSE
++gov_int_005_started_true_or_false: FALSE
++main_control_loop_running_true_or_false: FALSE
++start_loop_executed_true_or_false: FALSE
++trading_core_started_true_or_false: FALSE
++broker_started_true_or_false: FALSE
++execution_started_true_or_false: FALSE
++live_mode_started_true_or_false: FALSE
++order_execution_allowed_true_or_false: FALSE
++secret_values_exposed_true_or_false: FALSE
++remaining_blockers: NONE
++
++recommended_next_action: AWAITING_USER_DECISION_FOR_R031_READINESS_OR_PHASE2_RUNTIME_WIRING_PLANNING
++final_recommendation: R030_ACCEPTED_AS_CONTRACT_ONLY_READY_FOR_SEPARATE_NEXT_DECISION
++
++=== END_RETURN_TO_CHATGPT ===
++
++previously_archived_entry_follows:
++---
++=== RETURN_TO_CHATGPT [ARCHIVED] ===
++status: ARCHIVED
++note: This RETURN_TO_CHATGPT entry (GOV-BACKLOG-007) is archived. Superseded by R030 acceptance snapshot.
++round_id: GOV_BACKLOG_007_FRESH_RETURN_TO_CHATGPT_RUNTIME_SNAPSHOT_BEFORE_R030
++reply_id: GOV_BACKLOG_007-20260516-000000
++timestamp: 2026-05-16T00:00:00+00:00
++formal_status_code: FRESH_RETURN_TO_CHATGPT_RUNTIME_SNAPSHOT_WRITTEN
++valid_for_governance: FALSE
++archived_as_of: 2026-05-16T05:05:53+08:00
++reason: Superseded by R030 acceptance state transition candidate. New entry at canonical_head e47cbe1 records R030 final acceptance.
++
++--- original content below ---
+ round_id: GOV_BACKLOG_007_FRESH_RETURN_TO_CHATGPT_RUNTIME_SNAPSHOT_BEFORE_R030
+ task_type: fresh_return_to_chatgpt_runtime_snapshot
+ reply_id: GOV_BACKLOG_007-20260516-000000
+@@ -70,48 +131,3 @@ recommended_next_action: R030_READINESS_PREFLIGHT_REQUIRED_AFTER_FRESH_RTC
+ final_recommendation: FRESH_RTC_READY_FOR_R030_READINESS_PREFLIGHT_DECISION
+ 
+ === END_RETURN_TO_CHATGPT ===
+-
+-original_stale_entry_follows:
+----
+-=== RETURN_TO_CHATGPT [STALE] ===
+-status: STALE
+-note: This RETURN_TO_CHATGPT entry (R-014) is from 2026-04-17 and is no longer current.
+-round_id: R-014
+-reply_id: R-014-20260417-123930
+-timestamp: 2026-04-17T12:40:30
+-formal_status_code: CANDIDATE_STALE_NO_LONGER_CURRENT
+-valid_for_governance: FALSE
+-stale_as_of: 2026-05-15 (GOV-BACKLOG-003 formal candidate created)
+-reason: This entry predates the GOV-BACKLOG-003 panel control chain hardening.
+-         The Copy RETURN_TO_CHATGPT button now reads from the /return-artifact endpoint,
+-         which returns this file directly. Since this entry is stale, the panel displays
+-         it as [STALE] and will not allow copy as current governance record.
+-         A new RETURN_TO_CHATGPT must be generated by the next formal round.
+-
+-original_content_follows:
+----
+-=== RETURN_TO_CHATGPT ===
+-round_id: R-014
+-reply_id: R-014-20260417-123930
+-timestamp: 2026-04-17T12:40:30
+-status: candidate_ready
+-formal_status_code: candidate_ready_awaiting_manual_review
+-
+-summary:
+-Aider execution completed. Candidate branch: candidates/R-014, Commit: 75094422639fa770a79daa71531a5e01ce82bbf5, Modified: 6 files
+-
+-files_modified:
+-- automation/control/candidates/R-013/report.json - automation/control/artifacts/prompt_R-014_R-014-20260417-123930.txt
+- - automation/control/artifacts/return_R-013_R-013-20260417-123829.txt
+- - automation/control/candidates/R-014/candidate.diff
+- - automation/control/candidates/R-014/report.json
+- - automation/control/candidates/R-014/task.txt
+-
+-commit_hash: 75094422639fa770a79daa71531a5e01ce82bbf5
+-
+-escalation_required: no
+-escalation_reason: none
+-
+-next_recommended_action: NONE (stale entry - superseded by GOV-BACKLOG-003)
+-
+-=== END_RETURN_TO_CHATGPT ===
+diff --git a/manifests/current_round.yaml b/manifests/current_round.yaml
+index 51144b0..c7e864a 100644
+--- a/manifests/current_round.yaml
++++ b/manifests/current_round.yaml
+@@ -2,7 +2,7 @@ round_id: "STATE-NORMALIZATION"
+ title: "Auto-Mode State Normalization"
+ status: "candidate_pass"
+ depends_on:
+-  - "R029"
++  - "R030"
+ allowed_paths:
+   - "manifests/"
+   - "automation/control/"
+@@ -33,7 +33,7 @@ direct_fail_conditions:
+ risk_level: "green"
+ owner: "you"
+ start_authorized: true
+-notes: "State normalization round. True functional round progress reconciliation: R020-R029 all completed on remote canonical (verified by git history). last_completed_round updated from R019 to R029. next_round_to_dispatch updated from R020 to R030. GOV-INT-003 intervention completed and chain unfreeze preserved. R030 pending dispatch authorization."
++notes: "State normalization round. True functional round progress reconciliation: R020-R029 all completed on remote canonical (verified by git history). last_completed_round updated from R019 to R029. next_round_to_dispatch updated from R020 to R030. GOV-INT-003 intervention completed and chain unfreeze preserved. R030 dispatched, merged, and accepted as DETERMINISTIC_CONTRACT_ONLY_NOT_RUNTIME_WIRED. last_completed_round updated to R030. next_round_to_dispatch updated to R031. R031 dispatch not yet authorized; runtime wiring pending future round."
+ containment_status: "PHASE2_ENTRY_AUTHORIZED_AUTO_MODE_AUTHORIZED"
+ auto_run: false
+ desired_action: null
+@@ -48,10 +48,10 @@ fail_closed_guards:
+   validate_evidence_real_changes: true
+ guard_status: "ACTIVE"
+ phase: "Phase 2"
+-last_completed_round: "R029"
++last_completed_round: "R030"
+ current_round: "NONE"
+-next_round_to_dispatch: "R030"
+-chain_status: "backlog_merged_ready_for_next_dispatch"
++next_round_to_dispatch: "R031"
++chain_status: "r030_accepted_ready_for_r031_readiness_or_scope_audit"
+ backlog:
+   r018:
+     branch: "work/candidate-r018-schema-migration"
