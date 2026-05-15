@@ -83,6 +83,17 @@ class StatusScheduler:
         candidate_checker = CandidateChecker(self.repo_root)
         candidate_info = candidate_checker.check_candidate_exists(current_round) if current_round != "NONE" else {"exists": False}
 
+        paused = self.pause_manager.is_paused()
+        pause_info = self.pause_manager.get_pause_info() if paused else None
+        pause_reason = pause_info.get("reason", "") if pause_info else ""
+        pause_sub_reason = pause_info.get("sub_reason", "") if pause_info else ""
+        waiting_manual_start = paused
+        resume_blockers = []
+        if paused:
+            prc = self.pause_manager.pre_resume_checks()
+            if not prc.get("can_resume", True):
+                resume_blockers = prc.get("failed_checks", [])
+
         state = {
             "current_round": current_round,
             "last_completed_round": manifest.get("last_completed_round", "unknown"),
@@ -99,13 +110,21 @@ class StatusScheduler:
             "candidate_exists": candidate_info.get("exists", False),
             "awaiting_review": False,
             "lane_frozen": False,
-            "paused": self.pause_manager.is_paused(),
+            "paused": paused,
             "backlog_pending": backlog_pending,
+            "pause_reason": pause_reason,
+            "pause_sub_reason": pause_sub_reason,
+            "waiting_manual_start": waiting_manual_start,
+            "resume_blockers": resume_blockers,
+            "usage_exhaustion": pause_reason == "paused_by_usage",
         }
 
         # Determine stop reason and gate type based on canonical state
         if state["paused"]:
-            state["stop_reason"] = "pause_flag_active"
+            if pause_reason == "paused_by_usage" and pause_sub_reason:
+                state["stop_reason"] = f"usage_exhaustion_{pause_sub_reason}"
+            else:
+                state["stop_reason"] = "pause_flag_active"
             state["stop_gate_type"] = "pause_gate"
         elif state["chain_status"] == "frozen_pending_backlog_merge" and backlog_pending:
             state["stop_reason"] = "backlog_merge_review_pending"
