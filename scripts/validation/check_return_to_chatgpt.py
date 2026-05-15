@@ -40,6 +40,7 @@ ALLOWED_FORMAL_STATUS_CODES = [
     "POST_PUSH_RECONCILIATION_BLOCKED",
     "REMOTE_PUSH_NOT_COMPLETED_REQUIRES_REVIEW",
     "CANDIDATE_STALE_NO_LONGER_CURRENT",
+    "FRESH_RETURN_TO_CHATGPT_RUNTIME_SNAPSHOT_WRITTEN",
 ]
 
 STALENESS_DAYS = 7
@@ -64,27 +65,28 @@ EMBEDDED_PATTERN = re.compile(
 
 
 def find_rtc_content(content: str) -> str:
-    # Try embedded format first (no === markers)
-    embedded_match = EMBEDDED_PATTERN.search(content)
-    if embedded_match:
-        block_start = content.find("round_id:", embedded_match.start())
-        block_end = content.find("\nfinal_recommendation:", embedded_match.start())
-        if block_end != -1:
-            block_end = content.index("\n", block_end + 1)
-            if block_end < block_start:
-                return content[block_start:]
-            next_field = content.find("\n", block_end)
-            if next_field != -1:
-                block_end = next_field
-            return content[block_start:block_end]
-
-    # Fallback to old === marker format
     start_marker = "=== RETURN_TO_CHATGPT ==="
     end_marker = "=== END_RETURN_TO_CHATGPT ==="
     start_idx = content.find(start_marker)
     end_idx = content.find(end_marker)
     if start_idx != -1 and end_idx != -1:
         return content[start_idx + len(start_marker):end_idx].strip()
+
+    embedded_match = EMBEDDED_PATTERN.search(content)
+    if embedded_match:
+        block_start = content.find("round_id:", embedded_match.start())
+        if block_start == -1:
+            return content
+        block_end = content.find("\nfinal_recommendation:", block_start)
+        if block_end == -1:
+            return content
+        block_end = content.index("\n", block_end + 1)
+        if block_end < block_start:
+            return content[block_start:]
+        next_field = content.find("\n", block_end)
+        if next_field != -1:
+            block_end = next_field
+        return content[block_start:block_end]
     return content
 
 
@@ -117,6 +119,12 @@ def check_staleness(raw: str) -> list:
     if ts_match:
         try:
             ts = ts_match.group(1)
+            if "+" not in ts and not ts.endswith("Z"):
+                errors.append(
+                    f"RTC timestamp must be timezone-aware: '{ts}' has no timezone "
+                    f"(expected suffix +00:00 or Z)"
+                )
+                return errors
             parsed = datetime.fromisoformat(ts.replace("Z", "+00:00"))
             age = datetime.now(timezone.utc) - parsed
             if age > timedelta(days=STALENESS_DAYS):

@@ -1,4 +1,79 @@
-﻿=== RETURN_TO_CHATGPT [STALE] ===
+﻿=== RETURN_TO_CHATGPT [CURRENT] ===
+status: CURRENT
+note: This RETURN_TO_CHATGPT entry (GOV-BACKLOG-007) is the current runtime snapshot as of 2026-05-16.
+round_id: GOV_BACKLOG_007_FRESH_RETURN_TO_CHATGPT_RUNTIME_SNAPSHOT_BEFORE_R030
+reply_id: GOV_BACKLOG_007-20260516-000000
+timestamp: 2026-05-16T00:00:00+00:00
+formal_status_code: FRESH_RETURN_TO_CHATGPT_RUNTIME_SNAPSHOT_WRITTEN
+valid_for_governance: TRUE
+canonical_head: d41ab7e8dcb828bf95163fa81679dae999d07e33
+remote_head: d41ab7e8dcb828bf95163fa81679dae999d07e33
+local_remote_heads_match: TRUE
+gov_backlog_001_closed: TRUE
+gov_backlog_002_closed: TRUE
+gov_backlog_003_closed: TRUE
+gov_backlog_004_closed: TRUE
+gov_backlog_005_closed: TRUE
+gov_backlog_006_closed: TRUE
+state_run_state: stopped
+state_current_round: GOV_INT_003_COMPLETED
+manifest_current_round: NONE
+manifest_state_difference_classification: LEGAL_STOPPED_GOVERNANCE_COMPLETED
+r030_dispatch_started: FALSE
+r030_dispatch_allowed_now: FALSE
+main_control_loop_running: FALSE
+start_loop_executed: FALSE
+gov_int_005_started: FALSE
+trading_core_started: FALSE
+broker_started: FALSE
+execution_started: FALSE
+live_mode_started: FALSE
+order_execution_allowed: FALSE
+secret_values_exposed: FALSE
+
+=== RETURN_TO_CHATGPT ===
+round_id: GOV_BACKLOG_007_FRESH_RETURN_TO_CHATGPT_RUNTIME_SNAPSHOT_BEFORE_R030
+task_type: fresh_return_to_chatgpt_runtime_snapshot
+reply_id: GOV_BACKLOG_007-20260516-000000
+timestamp: 2026-05-16T00:00:00+00:00
+status: completed
+formal_status_code: FRESH_RETURN_TO_CHATGPT_RUNTIME_SNAPSHOT_WRITTEN
+files_modified: automation/control/latest_return_to_chatgpt.runtime.txt
+canonical_head: d41ab7e8dcb828bf95163fa81679dae999d07e33
+remote_head: d41ab7e8dcb828bf95163fa81679dae999d07e33
+local_remote_heads_match_true_or_false: TRUE
+git_status_clean_true_or_false: TRUE
+gov_backlog_001_closed_true_or_false: TRUE
+gov_backlog_002_closed_true_or_false: TRUE
+gov_backlog_003_closed_true_or_false: TRUE
+gov_backlog_004_closed_true_or_false: TRUE
+gov_backlog_005_closed_true_or_false: TRUE
+gov_backlog_006_closed_true_or_false: TRUE
+state_run_state: stopped
+state_current_round: GOV_INT_003_COMPLETED
+manifest_current_round: NONE
+manifest_state_difference_classification: LEGAL_STOPPED_GOVERNANCE_COMPLETED
+r030_dispatch_started_true_or_false: FALSE
+r030_dispatch_allowed_now_true_or_false: FALSE
+main_control_loop_running_true_or_false: FALSE
+start_loop_executed_true_or_false: FALSE
+gov_int_005_started_true_or_false: FALSE
+trading_core_started_true_or_false: FALSE
+broker_started_true_or_false: FALSE
+execution_started_true_or_false: FALSE
+live_mode_started_true_or_false: FALSE
+order_execution_allowed_true_or_false: FALSE
+secret_values_exposed_true_or_false: FALSE
+remaining_blockers: NONE
+
+recommended_next_action: R030_READINESS_PREFLIGHT_REQUIRED_AFTER_FRESH_RTC
+final_recommendation: FRESH_RTC_READY_FOR_R030_READINESS_PREFLIGHT_DECISION
+
+=== END_RETURN_TO_CHATGPT ===
+
+original_stale_entry_follows:
+---
+=== RETURN_TO_CHATGPT [STALE] ===
 status: STALE
 note: This RETURN_TO_CHATGPT entry (R-014) is from 2026-04-17 and is no longer current.
 round_id: R-014

@@ -1,0 +1,54 @@
+{
+  "law_compliance": "04",
+  "round_id": "GOV_BACKLOG_008A_FRESH_RTC_VALIDATOR_AND_RUNTIME_TRUTH_SOURCE_COMPATIBILITY_HARDENING_FORMAL_CANDIDATE",
+  "task_type": "fresh_rtc_validator_runtime_truth_source_compatibility_candidate_creation",
+  "expected_base_head": "d41ab7e8dcb828bf95163fa81679dae999d07e33",
+  "modified_files": [
+    "automation/control/latest_return_to_chatgpt.runtime.txt",
+    "scripts/validation/check_return_to_chatgpt.py"
+  ],
+  "added_files": [
+    "automation/control/candidates/GOV_BACKLOG_008A_FRESH_RTC_VALIDATOR_RUNTIME_TRUTH_SOURCE_COMPATIBILITY/evidence.json"
+  ],
+  "issues_addressed": {
+    "missing_files_modified": "fixed — added files_modified to formal RETURN block",
+    "final_recommendation_extraction": "fixed — value on same line for reliable extraction",
+    "timestamp_timezone": "fixed — timezone-aware +00:00 in both CURRENT header and RETURN block; validator enforces timezone awareness",
+    "status_code_not_in_allowlist": "fixed — FRESH_RETURN_TO_CHATGPT_RUNTIME_SNAPSHOT_WRITTEN added to ALLOWED_FORMAL_STATUS_CODES",
+    "summary_only_warning": "fixed — files_modified now present, resolves the heuristic"
+  },
+  "validator_fixes": {
+    "find_rtc_content_priority": "=== markers checked first, embedded pattern is fallback — prevents CURRENT header round_id from corrupting extraction",
+    "embeddded_multiline_extraction": "improved robustness with proper bounds checking",
+    "timezone_requirement": "timestamp without offset/Z now rejected",
+    "status_code_allowlist": "FRESH_RETURN_TO_CHATGPT_RUNTIME_SNAPSHOT_WRITTEN added"
+  },
+  "validator_accepts_fresh_rtc": true,
+  "latest_return_to_chatgpt_updated": true,
+  "latest_return_to_chatgpt_formal_body_valid": true,
+  "old_r014_no_longer_primary": true,
+  "r030_dispatch_started": false,
+  "gov_int_005_started": false,
+  "runtime_started": false,
+  "main_control_loop_running": false,
+  "order_execution_allowed": false,
+  "git_add_executed": false,
+  "commit_created": false,
+  "merge_executed": false,
+  "push_executed": false,
+  "force_push_used": false,
+  "no_verify_used": false,
+  "promote_executed": false,
+  "pr_created": false,
+  "secret_values_exposed": false,
+  "prohibited_actions_verified": {
+    "state_runtime_json_modified": false,
+    "manifests_current_round_modified": false,
+    "law_files_modified": false,
+    "templates_modified": false,
+    "hooks_modified": false,
+    "r030_preflight_modified": false,
+    "runtime_control_code_modified": false,
+    "trading_broker_execution_live_modified": false
+  }
+}
