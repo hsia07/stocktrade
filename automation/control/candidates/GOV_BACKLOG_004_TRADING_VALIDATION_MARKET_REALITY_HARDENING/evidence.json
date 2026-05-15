@@ -1,0 +1,137 @@
+{
+  "law_compliance": "04",
+  "round_id": "GOV_BACKLOG_004_TRADING_VALIDATION_MARKET_REALITY_GOVERNANCE_HARDENING_FORMAL_CANDIDATE",
+  "task_type": "trading_validation_market_reality_governance_hardening_candidate_creation",
+  "expected_base_head": "263935aebb993e37e0a2072b0d6e9fe7bef0e94e",
+  "gaps_addressed": {
+    "GAP-1_backtest_replay_governance": {
+      "status": "addressed",
+      "detail": "04 law chapter 21 section 1 (articles 83-85): TradingView/Pine limited to L0 draft; Python backtest/event replay/decision trace/order-fill-pnl schema/Risk Gate veto replay all required; TradingView-only forbidden."
+    },
+    "GAP-2_market_reality_layer": {
+      "status": "addressed",
+      "detail": "04 law chapter 21 section 2 (articles 86-87): cost model, slippage model, liquidity veto, fill realism, broker/local reconciliation, expected vs actual drift, no-trade when infeasible."
+    },
+    "GAP-3_taiwan_market_constraints": {
+      "status": "addressed",
+      "detail": "04 law chapter 21 section 3 (article 88): ±10%, T+2, call auctions, trading hours, odd/lot shares, halts, disposal stocks, no crypto/US assumptions."
+    },
+    "GAP-4_l0_l9_trading_validation_ladder": {
+      "status": "addressed",
+      "detail": "04 law chapter 21 section 4 (articles 89-90): L0 Backtest through L9 Paper trading 6-12mo fully defined; backtest alone insufficient; L4+L8 required before paper; L7+L9 required before live; formal acceptance records specified."
+    },
+    "GAP-5_strategy_lifecycle_governance": {
+      "status": "addressed",
+      "detail": "04 law chapter 21 section 5 (articles 91-94): research_only default; auto-promote only to shadow/paper; paper-to-live requires human approval; rolling health check, TTL, regime validity, decay detection, promotion expiry, revalidation; auto downgrade allowed, auto upgrade forbidden."
+    },
+    "GAP-6_position_sizing_allocation_trace": {
+      "status": "addressed",
+      "detail": "04 law chapter 21 section 6 (articles 95-97): deterministic qty=min() formula; LLM cannot control qty; allocation trace required; 10 exposure caps defined; strategy cannot self-fund; risk gate veto."
+    },
+    "GAP-7_nea_governance": {
+      "status": "addressed",
+      "detail": "04 law chapter 21 section 7 (articles 98-100): 7 release conditions; net_edge formula with all terms (C,S,B,T,R,U); p_hat must be calibrated; single signal cannot directly trade."
+    },
+    "GAP-8_confidence_calibration": {
+      "status": "addressed",
+      "detail": "04 law chapter 21 section 8 (articles 101-102): raw confidence cannot release trade; calibration required; 6 minimum calibration records."
+    },
+    "GAP-9_setup_sop_single_signal": {
+      "status": "addressed",
+      "detail": "04 law chapter 21 section 9 (articles 103-104): 10-field mandatory setup structure; A/B/C score label only; NO TRADE = hard veto; FRVP/ICT/etc data-availability-gated; Python/event-driven replay required, not TradingView-only."
+    },
+    "GAP-10_event_credibility_llm_governance": {
+      "status": "addressed",
+      "detail": "04 law chapter 21 section 10 (articles 105-109): 8 event source categories; 5-tier credibility ranking; dedup/stale/ttl/importance/conflict resolution; high-impact unconfirmed = watch/no-trade/reduce/wait/tighten; 6-AI = local modules; LLM API only for summary/research; LLM timeout cannot lower risk."
+    },
+    "GAP-11_r030_applicability": {
+      "status": "addressed",
+      "detail": "04 law chapter 21 section 11 (articles 110-111): R030 must reference all chapter 21 rules; 11 mandatory checkpoints listed; failure to reference = FAIL; R030 not dispatched in this candidate."
+    }
+  },
+  "files_modified": [
+    "_governance/law/04_交易系統法典補強版_20260416_修正版.md",
+    "_governance/law/readable/04_交易系統法典補強版_20260416_修正版.md",
+    "opencode_readable_laws/04_交易系統法典補強版_20260416_修正版.md",
+    "_governance/law/readable/03_161輪逐輪施行細則法典_整合法條增補版.md",
+    "opencode_readable_laws/03_161輪逐輪施行細則法典_整合法條增補版.md"
+  ],
+  "files_added": [
+    "automation/control/candidates/GOV_BACKLOG_004_TRADING_VALIDATION_MARKET_REALITY_HARDENING/evidence.json"
+  ],
+  "prohibited_actions_verified": {
+    "main_control_loop_running": false,
+    "start_loop_executed": false,
+    "r030_dispatch_started": false,
+    "gov_int_005_started": false,
+    "trading_core_started": false,
+    "broker_started": false,
+    "execution_started": false,
+    "live_mode_started": false,
+    "order_execution_allowed": false,
+    "runtime_code_modified": false,
+    "state_runtime_json_modified": false,
+    "manifest_modified": false,
+    "control_bridge_modified": false,
+    "panel_modified": false,
+    "start_loop_modified": false,
+    "main_control_loop_modified": false,
+    "trading_broker_execution_live_modified": false,
+    "hooks_modified": false,
+    "validators_modified": false,
+    "merge_executed": false,
+    "push_executed": false,
+    "force_push_used": false,
+    "no_verify_used": false,
+    "promote_executed": false,
+    "pr_created": false,
+    "secret_values_exposed": false
+  },
+  "checks": {
+    "law_04_authoritative_modified": true,
+    "law_04_readable_mirror_modified": true,
+    "opencode_readable_law_04_modified": true,
+    "law_04_mirrors_synchronized": true,
+    "law_03_readable_modified": true,
+    "opencode_readable_law_03_modified": true,
+    "law_03_topics_preserved": true,
+    "phase_mapping_preserved": true,
+    "backtest_replay_governance_added": true,
+    "python_backtest_required_added": true,
+    "tradingview_only_forbidden_added": true,
+    "event_replay_compatibility_added": true,
+    "decision_trace_replay_added": true,
+    "order_fill_pnl_schema_added": true,
+    "risk_gate_veto_replay_added": true,
+    "market_reality_layer_added": true,
+    "cost_model_required_added": true,
+    "slippage_model_required_added": true,
+    "liquidity_veto_required_added": true,
+    "fill_probability_required_added": true,
+    "partial_fill_rejected_timeout_cancel_added": true,
+    "taiwan_market_constraints_added": true,
+    "l0_l9_trading_validation_ladder_added": true,
+    "strategy_lifecycle_governance_added": true,
+    "human_approval_for_live_promotion_added": true,
+    "position_sizing_deterministic_engine_added": true,
+    "portfolio_allocation_trace_added": true,
+    "nea_governance_preserved_and_referenced": true,
+    "nea_formula_present": true,
+    "confidence_calibration_required_added": true,
+    "raw_confidence_not_trade_release_rule_present": true,
+    "setup_sop_governance_added": true,
+    "single_signal_no_direct_trade_added": true,
+    "event_source_credibility_governance_added": true,
+    "llm_not_trade_core_rule_present": true,
+    "r030_constraints_linkage_added": true,
+    "r030_not_dispatched": true,
+    "runtime_code_modified": false,
+    "state_runtime_json_modified": false,
+    "manifest_modified": false,
+    "control_bridge_modified": false,
+    "panel_modified": false,
+    "start_loop_modified": false
+  },
+  "created_at": "2026-05-15T00:00:00",
+  "author": "opencode_trading_validation_market_reality_governance_hardening_candidate_executor"
+}
