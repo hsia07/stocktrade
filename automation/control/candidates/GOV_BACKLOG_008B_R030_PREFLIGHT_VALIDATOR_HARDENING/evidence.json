@@ -1,0 +1,54 @@
+{
+  "law_compliance": "04",
+  "round_id": "GOV_BACKLOG_008B_R030_PREFLIGHT_VALIDATOR_HARDENING_FORMAL_CANDIDATE",
+  "task_type": "r030_preflight_validator_hardening_candidate_creation",
+  "expected_base_head": "371100be573f0ca40815a5eeb89a303b31e832e2",
+  "modified_files": [
+    "scripts/validation/check_r030_preflight.py"
+  ],
+  "added_files": [
+    "automation/control/candidates/GOV_BACKLOG_008B_R030_PREFLIGHT_VALIDATOR_HARDENING/evidence.json"
+  ],
+  "blockers_fixed": {
+    "Traditional_vs_Simplified_Chinese_topic": "REQUIRED_TOPIC + REQUIRED_TOPIC_ALIASES supports both Simplified and Traditional",
+    "law_reference_filename_only_search": "Changed to content-based search (reads .md/.txt law files, not filenames)",
+    "English_only_constraint_search": "R030_CONSTRAINT_GROUPS with bilingual terms; any match in group passes",
+    "Windows_CP950_stdout_crash": "setup_stdout_encoding() reconfigures stdout/stderr to utf-8 with errors=replace"
+  },
+  "fix_details": {
+    "topic_check": "REQUIRED_TOPIC='决策前检查清单' with REQUIRED_TOPIC_ALIASES=['決策前檢查清單']. Still rejects arbitrary topics.",
+    "law_references": "check_governance_law_references now reads file content (utf-8) and searches for refs in combined text, not filenames.",
+    "constraint_search": "10 constraint groups defined each with English + Chinese terms. Any term match = constraint documented.",
+    "cp950_safe": "sys.stdout/sys.stderr reconfigure to utf-8 errors=replace at main() start."
+  },
+  "r030_preflight_result_after_fix": "PASS",
+  "r030_preflight_blockers_remaining": [],
+  "fresh_rtc_still_valid": true,
+  "check_return_to_chatgpt_still_accepts_fresh_rtc": true,
+  "r030_dispatch_started": false,
+  "gov_int_005_started": false,
+  "runtime_started": false,
+  "main_control_loop_running": false,
+  "order_execution_allowed": false,
+  "git_add_executed": false,
+  "commit_created": false,
+  "merge_executed": false,
+  "push_executed": false,
+  "force_push_used": false,
+  "no_verify_used": false,
+  "promote_executed": false,
+  "pr_created": false,
+  "secret_values_exposed": false,
+  "prohibited_actions_verified": {
+    "state_runtime_json_modified": false,
+    "manifests_current_round_modified": false,
+    "latest_return_to_chatgpt_modified": false,
+    "law_files_modified": false,
+    "templates_modified": false,
+    "hooks_modified": false,
+    "check_return_to_chatgpt_modified": false,
+    "check_manifest_state_consistency_modified": false,
+    "runtime_control_code_modified": false,
+    "trading_broker_execution_live_modified": false
+  }
+}
