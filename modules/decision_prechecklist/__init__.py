@@ -9,6 +9,11 @@ from .confidence_decomposition import (
     ConfidenceSource,
     CONFIDENCE_SOURCE_KEYS,
 )
+from .traceability_chain import (
+    TraceabilityChain,
+    TraceabilityLink,
+    ChainVerificationResult,
+)
 
 __all__ = [
     "DecisionPreChecklist",
@@ -27,4 +32,7 @@ __all__ = [
     "ConfidenceDecompositionReport",
     "ConfidenceSource",
     "CONFIDENCE_SOURCE_KEYS",
+    "TraceabilityChain",
+    "TraceabilityLink",
+    "ChainVerificationResult",
 ]

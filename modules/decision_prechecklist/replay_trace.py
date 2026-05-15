@@ -1,4 +1,6 @@
 from __future__ import annotations
+import hashlib
+import json
 import uuid
 from dataclasses import dataclass, field, asdict
 from datetime import datetime, timezone
@@ -35,6 +37,8 @@ class ReplayTrace:
     order_ref: str = ""
     fill_ref: str = ""
     pnl_ref: str = ""
+    previous_trace_hash: str = ""
+    chain_link_id: str = ""
 
     @classmethod
     def new(cls, symbol: str, side: str, candidate_action: str) -> ReplayTrace:
@@ -54,6 +58,24 @@ class ReplayTrace:
 
     def finalize(self, decision: str) -> None:
         self.final_decision = decision
+
+    def compute_trace_hash(self) -> str:
+        payload = {
+            "trace_id": self.trace_id,
+            "symbol": self.symbol,
+            "side": self.side,
+            "candidate_action": self.candidate_action,
+            "timestamp": self.timestamp,
+            "final_decision": self.final_decision,
+            "previous_trace_hash": self.previous_trace_hash,
+            "chain_link_id": self.chain_link_id,
+            "order_ref": self.order_ref,
+            "fill_ref": self.fill_ref,
+            "pnl_ref": self.pnl_ref,
+            "vetoes": [asdict(v) for v in self.vetoes],
+        }
+        raw = json.dumps(payload, sort_keys=True, ensure_ascii=False).encode("utf-8")
+        return hashlib.sha256(raw).hexdigest()
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)
