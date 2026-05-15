@@ -33,7 +33,7 @@ direct_fail_conditions:
 risk_level: "green"
 owner: "you"
 start_authorized: true
-notes: "State normalization round. True functional round progress reconciliation: R020-R029 all completed on remote canonical (verified by git history). last_completed_round updated from R019 to R029. next_round_to_dispatch updated from R020 to R030. GOV-INT-003 intervention completed and chain unfreeze preserved. R030 pending dispatch authorization."
+notes: "State normalization round. True functional round progress reconciliation: R020-R029 all completed on remote canonical (verified by git history). last_completed_round updated from R019 to R029. next_round_to_dispatch updated from R020 to R030. GOV-INT-003 intervention completed and chain unfreeze preserved. R030 dispatched, merged, and accepted as DETERMINISTIC_CONTRACT_ONLY_NOT_RUNTIME_WIRED. last_completed_round updated to R030. next_round_to_dispatch updated to R031. R031 dispatch not yet authorized; runtime wiring pending future round."
 containment_status: "PHASE2_ENTRY_AUTHORIZED_AUTO_MODE_AUTHORIZED"
 auto_run: false
 desired_action: null
@@ -48,10 +48,10 @@ fail_closed_guards:
   validate_evidence_real_changes: true
 guard_status: "ACTIVE"
 phase: "Phase 2"
-last_completed_round: "R029"
+last_completed_round: "R030"
 current_round: "NONE"
-next_round_to_dispatch: "R030"
-chain_status: "backlog_merged_ready_for_next_dispatch"
+next_round_to_dispatch: "R031"
+chain_status: "r030_accepted_ready_for_r031_readiness_or_scope_audit"
 backlog:
   r018:
     branch: "work/candidate-r018-schema-migration"
