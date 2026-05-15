@@ -1,20 +1,37 @@
 diff --git a/automation/control/candidates/R030_ACCEPTANCE_STATE_TRANSITION_TO_R031_READINESS/evidence.json b/automation/control/candidates/R030_ACCEPTANCE_STATE_TRANSITION_TO_R031_READINESS/evidence.json
 new file mode 100644
-index 0000000..2f39f64
+index 0000000..1dc4d54
 --- /dev/null
 +++ b/automation/control/candidates/R030_ACCEPTANCE_STATE_TRANSITION_TO_R031_READINESS/evidence.json
-@@ -0,0 +1,74 @@
+@@ -0,0 +1,70 @@
 +{
 +  "law_compliance": "04",
-+  "round_id": "R030_ACCEPTANCE_STATE_TRANSITION_DEPENDS_ON_REWORK_CANDIDATE",
-+  "task_type": "r030_acceptance_state_transition_depends_on_rework",
-+  "rework_reason": "stale manifest_depends_on R029 corrected to R030 for R030 accepted -> R031 readiness chain consistency",
-+  "blocked_candidate_commit": "41a900674b1cf7d3807bb9a6f644a99a51ab80b4",
-+  "rework_candidate_commit": null,
++  "round_id": "R030_ACCEPTANCE_STATE_TRANSITION_ARTIFACT_REWORK_CANDIDATE",
++  "task_type": "r030_acceptance_state_transition_artifact_rework",
++  "previous_blocked_candidate_commit": "41a900674b1cf7d3807bb9a6f644a99a51ab80b4",
++  "previous_rework_candidate_commit": "fa9f16f3d24858fac0899eb57aef7bf1176057ba",
++  "artifact_rework_created_from_head": "fa9f16f3d24858fac0899eb57aef7bf1176057ba",
++  "final_candidate_commit_reported_in_RETURN_TO_CHATGPT_only": true,
 +  "expected_base_head": "e47cbe17a17fd1966208492e5b614e1e9b9a6af4",
 +  "actual_base_head": "e47cbe17a17fd1966208492e5b614e1e9b9a6af4",
 +  "candidate_branch": "candidate/r030-acceptance-state-transition-to-r031-readiness",
 +  "timestamp": "2026-05-16T05:05:53+08:00",
++  "manual_review_block_reason": "evidence.json had stale rework_candidate_commit (2c57a85 != actual fa9f16f); candidate.diff generated before amend so did not match actual git diff",
++  "artifact_rework_actions": [
++    "removed self-referential rework_candidate_commit field to prevent infinite amend loop",
++    "added previous_blocked_candidate_commit and previous_rework_candidate_commit as non-contradictory historical record",
++    "added artifact_rework_created_from_head to document which HEAD this rework started from",
++    "set final_candidate_commit_reported_in_RETURN_TO_CHATGPT_only = true",
++    "regenerated candidate.diff from actual git diff base-to-HEAD, self-reference excluded by design",
++    "manifests/current_round.yaml NOT modified by this artifact rework"
++  ],
++  "manifest_not_modified_by_this_rework": true,
++  "manifest_depends_on_still_r030": true,
++  "manifest_last_completed_round_still_r030": true,
++  "manifest_next_round_to_dispatch_still_r031": true,
++  "candidate_diff_regenerated": true,
++  "candidate_diff_match_basis": "BASE_TO_ALLOWED_NON_ARTIFACT_AND_EVIDENCE_FILES",
++  "candidate_diff_self_reference_excluded": true,
 +  "r030_final_completion_review_pass": true,
 +  "r030_acceptance_decision": "ACCEPTED",
 +  "r030_acceptance_scope": "DETERMINISTIC_CONTRACT_ONLY_NOT_RUNTIME_WIRED",
@@ -39,25 +56,8 @@ index 0000000..2f39f64
 +  "execution_started": false,
 +  "live_mode_started": false,
 +  "order_execution_allowed": false,
-+  "manifest_modified": true,
-+  "latest_rtc_modified": true,
-+  "evidence_json_created": true,
-+  "candidate_diff_created": true,
-+  "manifest_transition": {
-+    "last_completed_round_old": "R029",
-+    "last_completed_round_new": "R030",
-+    "next_round_to_dispatch_old": "R030",
-+    "next_round_to_dispatch_new": "R031",
-+    "depends_on_old": "R029",
-+    "depends_on_new": "R030",
-+    "chain_status_old": "backlog_merged_ready_for_next_dispatch",
-+    "chain_status_new": "r030_accepted_ready_for_r031_readiness_or_scope_audit"
-+  },
-+  "rework_verification": {
-+    "original_blocked_commit": "41a900674b1cf7d3807bb9a6f644a99a51ab80b4",
-+    "depends_on_was_list_with_R029": true,
-+    "depends_on_now_list_with_R030": true
-+  },
++  "manifest_modified": false,
++  "latest_rtc_modified": false,
 +  "prohibited_runtime_proof": {
 +    "main_control_loop_running": false,
 +    "gov_int_005_started": false,
@@ -70,10 +70,6 @@ index 0000000..2f39f64
 +    "secret_values_exposed": false
 +  },
 +  "files_modified": [
-+    "manifests/current_round.yaml",
-+    "automation/control/latest_return_to_chatgpt.runtime.txt"
-+  ],
-+  "files_added": [
 +    "automation/control/candidates/R030_ACCEPTANCE_STATE_TRANSITION_TO_R031_READINESS/evidence.json",
 +    "automation/control/candidates/R030_ACCEPTANCE_STATE_TRANSITION_TO_R031_READINESS/candidate.diff"
 +  ]
