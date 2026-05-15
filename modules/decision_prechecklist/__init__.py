@@ -3,6 +3,12 @@ from .nea_engine import NEAEngine, NEResult
 from .position_sizing import PositionSizingEngine, SizingResult
 from .confidence_calibration import ConfidenceCalibrationGuard, CalibratedConfidence
 from .replay_trace import ReplayTrace, DecisionStep, VetoRecord
+from .confidence_decomposition import (
+    ConfidenceSourceDecomposer,
+    ConfidenceDecompositionReport,
+    ConfidenceSource,
+    CONFIDENCE_SOURCE_KEYS,
+)
 
 __all__ = [
     "DecisionPreChecklist",
@@ -17,4 +23,8 @@ __all__ = [
     "ReplayTrace",
     "DecisionStep",
     "VetoRecord",
+    "ConfidenceSourceDecomposer",
+    "ConfidenceDecompositionReport",
+    "ConfidenceSource",
+    "CONFIDENCE_SOURCE_KEYS",
 ]

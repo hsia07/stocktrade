@@ -1,0 +1,81 @@
+{
+  "round_id": "R031",
+  "task_type": "confidence_source_decomposition",
+  "status": "completed",
+  "formal_status_code": "R031_CONFIDENCE_DECOMPOSITION_PASS",
+  "staging_branch": "auto/telegram-r031-r048-phase2-20260516-0542",
+  "round_topic": "信心來源拆解",
+  "round_phase": "Phase 2",
+  "source_topic_table": "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md",
+  "base_head": "1cf03ce29a8340cb9364edff69be3a16dee29ea4",
+  "candidate_commit": "STAGING_COMMIT_PENDING",
+  "files_modified": [
+    "modules/decision_prechecklist/__init__.py",
+    "modules/decision_prechecklist/checklist.py",
+    "modules/decision_prechecklist/confidence_calibration.py",
+    "tests/test_decision_prechecklist.py"
+  ],
+  "files_added": [],
+  "candidate_diff_path": "automation/control/candidates/R031_CONFIDENCE_DECOMPOSITION/candidate.diff",
+  "evidence_json_path": "automation/control/candidates/R031_CONFIDENCE_DECOMPOSITION/evidence.json",
+  "authorized_files_only": true,
+  "tests_pass": true,
+  "validators_pass": true,
+  "self_review_result": "PASS",
+  "r030_contract_only_preserved": true,
+  "canonical_merge_executed": false,
+  "canonical_push_executed": false,
+  "runtime_started": false,
+  "trading_broker_execution_live_started": false,
+  "order_execution_allowed": false,
+  "blockers": [],
+  "recommended_next_action": "PROCEED_TO_R032",
+  "law_priority_verified": "02 > 03 > 04 > 01",
+  "preflight_checks": {
+    "round_id_check": "PASS",
+    "topic_table_check": "PASS",
+    "phase_mapping_check": "PASS",
+    "law_priority_check": "PASS",
+    "fresh_rtc_check": "PASS",
+    "manifest_state_check": "PASS",
+    "branch_head_check": "PASS",
+    "dirty_tree_check": "PASS",
+    "authorized_file_scope_check": "PASS",
+    "runtime_stopped_check": "PASS",
+    "order_execution_allowed_check": "PASS",
+    "r030_contract_only_preserved_check": "PASS"
+  },
+  "confidence_decomposition": {
+    "source_count": 7,
+    "source_keys": [
+      "pattern",
+      "fundamental",
+      "regime_alignment",
+      "signal_source_reliability",
+      "timeframe_alignment",
+      "data_quality",
+      "contradiction_resolution"
+    ],
+    "default_config_weights": {
+      "pattern": 0.2,
+      "fundamental": 0.2,
+      "regime_alignment": 0.15,
+      "signal_source_reliability": 0.15,
+      "timeframe_alignment": 0.1,
+      "data_quality": 0.1,
+      "contradiction_resolution": 0.1
+    },
+    "modules_created": [
+      "modules/decision_prechecklist/confidence_decomposition.py"
+    ],
+    "modules_modified": [
+      "modules/decision_prechecklist/__init__.py",
+      "modules/decision_prechecklist/confidence_calibration.py",
+      "modules/decision_prechecklist/checklist.py",
+      "tests/test_confidence_decomposition.py",
+      "tests/test_decision_prechecklist.py"
+    ]
+  },
+  "generated_at": "2026-05-16T05:47:37",
+  "candidate_diff_bytes": 49150
+}

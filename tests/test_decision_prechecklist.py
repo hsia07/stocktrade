@@ -8,6 +8,7 @@ from modules.decision_prechecklist import (
     NEAEngine,
     PositionSizingEngine,
     ConfidenceCalibrationGuard,
+    ConfidenceSourceDecomposer,
 )
 
 
@@ -213,6 +214,62 @@ def test_confidence_raw_used_directly_not_above_calibrated():
     guard = ConfidenceCalibrationGuard()
     result = guard.evaluate(raw_confidence=0.99)
     assert result.calibrated_confidence <= result.raw_confidence
+
+
+def test_confidence_calibration_with_decomposition():
+    guard = ConfidenceCalibrationGuard()
+    decomposer = ConfidenceSourceDecomposer()
+    dec_result = decomposer.decompose(raw_confidence=0.8)
+    result = guard.evaluate(raw_confidence=0.8, decomposition=dec_result)
+    assert not result.veto_reason
+    assert result.calibrated_confidence > 0
+    assert result.decomposition is not None
+    assert result.decomposition.overall_calibrated > 0
+
+
+def test_confidence_calibration_with_decomposition_veto():
+    guard = ConfidenceCalibrationGuard()
+    decomposer = ConfidenceSourceDecomposer()
+    dec_result = decomposer.decompose(raw_confidence=0.0)
+    result = guard.evaluate(raw_confidence=0.0, decomposition=dec_result)
+    assert result.veto_reason
+    assert result.calibrated_confidence == 0.0
+    assert result.decomposition is not None
+
+
+def test_checklist_with_decomposer_integration():
+    checklist = DecisionPreChecklist()
+    result = checklist.evaluate(make_candidate())
+    assert result.passed
+    assert result.decomposition_result is not None
+    assert len(result.decomposition_result.sources) == 7
+
+
+def test_checklist_decomposer_source_scores_affect_result():
+    checklist = DecisionPreChecklist()
+    result_good = checklist.evaluate(make_candidate())
+    result_bad = checklist.evaluate(make_candidate(
+        confidence_decomposition={
+            "pattern": 0.1,
+            "fundamental": 0.1,
+            "regime_alignment": 0.1,
+            "signal_source_reliability": 0.1,
+            "timeframe_alignment": 0.1,
+            "data_quality": 0.1,
+            "contradiction_resolution": 0.1,
+        }
+    ))
+    assert result_good.decomposition_result.overall_calibrated > 0
+    assert result_bad.decomposition_result.overall_calibrated <= result_good.decomposition_result.overall_calibrated
+
+
+def test_decomposition_adds_trace_step():
+    checklist = DecisionPreChecklist()
+    result = checklist.evaluate(make_candidate())
+    assert result.trace is not None
+    steps = [s for s in result.trace.decision_chain if s.step_name == "confidence_decomposition"]
+    assert len(steps) == 1
+    assert steps[0].result == "PASS"
 
 
 def test_placeholder_for_order_fill_pnl_schema():
