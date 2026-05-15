@@ -1,0 +1,56 @@
+{
+  "law_compliance": "04",
+  "round_id": "TRUE_ROUND_PROGRESS_MAPPING_MANIFEST_REPAIR_FORMAL_CANDIDATE_AFTER_GOV_INT_003",
+  "task_type": "true_round_progress_mapping_manifest_repair_candidate_creation",
+  "description": "Fix manifest round progress mapping: update last_completed_round from R019 to R029 and next_round_to_dispatch from R020 to R030 to reflect true git history on remote canonical branch",
+  "authorized_files": [
+    "manifests/current_round.yaml",
+    "automation/control/candidates/TRUE_ROUND_PROGRESS_MAPPING_MANIFEST_REPAIR_R030/evidence.json"
+  ],
+  "manifest_updates": {
+    "last_completed_round": "R019 -> R029",
+    "next_round_to_dispatch": "R020 -> R030",
+    "current_round": "NONE (preserved)",
+    "chain_status": "backlog_merged_ready_for_next_dispatch (preserved)",
+    "depends_on": "R019 -> R029",
+    "notes": "Updated to reflect true round progress reconciliation",
+    "required_evidence": "Added TRUE_ROUND_PROGRESS_MAPPING_MANIFEST_REPAIR_R030/evidence.json"
+  },
+  "round_completion_table": {
+    "R020": { "completed": true, "merge_commit": "3899d5a", "topic": "RUNTIME_INTEGRATION (User Error Protection)" },
+    "R021": { "completed": true, "merge_commit": "75286d5", "topic": "FEATURE_CONSTRUCTION (Important Settings Lock)" },
+    "R022": { "completed": true, "merge_commit": "040f2d5", "topic": "TUTORIAL_UI_COMPLETE (Newcomer Tutorial UI)" },
+    "R023": { "completed": true, "merge_commit": "ad734a5", "topic": "HOMEPAGE_ENHANCEMENT (Homepage & Newcomer Experience)" },
+    "R024": { "completed": true, "merge_commit": "382ccef", "topic": "SMART_SUMMARY_LAYER_V2 (Smart Summary Layer)" },
+    "R025": { "completed": true, "merge_commit": "65d68d5", "topic": "MOBILE_EMERGENCY_TAKEOVER (Mobile Emergency / Non-core)" },
+    "R026": { "completed": true, "merge_commit": "ea447e6", "topic": "MODULAR_TRADING_INTERFACE (Modular Trading Interface Optimization)" },
+    "R027": { "completed": true, "merge_commit": "486fd0e", "topic": "ARBITRAGE_PROTECTION (Arbitrage Protection Mechanism)" },
+    "R028": { "completed": true, "merge_commit": "0c5c1be", "topic": "MARKET_REALITY_LAYER (Market Reality Layer base integration)" },
+    "R029": { "completed": true, "merge_commit": "8fb9393", "topic": "COST_TRACKING_SLIPPAGE (Cost tracking, Slippage monitoring, Fill probability)" }
+  },
+  "verification": {
+    "highest_confirmed_completed_round": "R029",
+    "true_next_expected_round": "R030",
+    "r030_not_dispatchable_from_old_manifest": true,
+    "state_runtime_json_not_modified": true,
+    "chain_unfreeze_preserved": true,
+    "gov_int_003_completion_preserved": true
+  },
+  "prohibited_actions_verified": {
+    "no_r020_dispatch": true,
+    "no_r030_dispatch": true,
+    "no_main_control_loop": true,
+    "no_start_loop": true,
+    "no_merge": true,
+    "no_push": true,
+    "no_promote": true,
+    "no_pr": true,
+    "no_force_push": true,
+    "no_no_verify": true,
+    "no_trading": true,
+    "no_broker": true,
+    "no_execution": true,
+    "no_live": true,
+    "order_execution_allowed": false
+  }
+}
