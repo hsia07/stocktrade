@@ -1,0 +1,82 @@
+{
+  "law_compliance": "04",
+  "round_id": "GOV_BACKLOG_001_OPENCODE_AIDER_AUTOMATION_RULES_HARDENING_FORMAL_CANDIDATE",
+  "task_type": "governance_rules_hardening_candidate_creation",
+  "description": "Add OpenCode and Aider governance rules hardening documents to codify governance practices established during GOV-INT-003",
+  "audit_reference": "GOV_BACKLOG_001_OPENCODE_AIDER_AUTOMATION_RULES_GAP_AUDIT_AFTER_R030_PREFLIGHT_PAUSE",
+  "gaps_addressed": [
+    "bundled_approval_not_prohibited",
+    "separate_merge_push_reconciliation_not_required",
+    "no_verify_not_prohibited",
+    "hook_fail_no_expansion_not_defined",
+    "aider_scope_not_defined",
+    "aider_task_split_not_defined",
+    "aider_load_limit_not_defined",
+    "return_to_chatgpt_formal_body_not_in_bridge_template",
+    "runtime_during_governance_not_prohibited"
+  ],
+  "authorized_files": [
+    "_governance/stocktrade_autonomy_governance_suite/09_OPENCODE_BRIDGE/03_opencode_governance_rules_hardening.md",
+    "_governance/stocktrade_autonomy_governance_suite/09_OPENCODE_BRIDGE/04_aider_governance_rules.md",
+    "automation/control/candidates/GOV_BACKLOG_001_OPENCODE_AIDER_RULES_HARDENING/evidence.json"
+  ],
+  "expected_base_head": "3898a409754df9f68c1ce9e129cc7abe2c27014e",
+  "not_modified_verified": {
+    "state_runtime_json": true,
+    "manifests_current_round_yaml": true,
+    "source_code": true,
+    "hooks": true,
+    "validators": true,
+    "law_01_02_03_04": true
+  },
+  "prohibited_actions_verified": {
+    "no_merge": true,
+    "no_push": true,
+    "no_promote": true,
+    "no_pr": true,
+    "no_force_push": true,
+    "no_no_verify": true,
+    "no_main_control_loop": true,
+    "no_start_loop": true,
+    "no_r030_dispatch": true,
+    "no_r020_dispatch": true,
+    "no_trading": true,
+    "no_broker": true,
+    "no_execution": true,
+    "no_live": true,
+    "no_runtime_start": true,
+    "no_manifest_modification": true,
+    "no_state_modification": true,
+    "order_execution_allowed": false
+  },
+  "files_added": [
+    "_governance/stocktrade_autonomy_governance_suite/09_OPENCODE_BRIDGE/03_opencode_governance_rules_hardening.md",
+    "_governance/stocktrade_autonomy_governance_suite/09_OPENCODE_BRIDGE/04_aider_governance_rules.md"
+  ],
+  "rule_coverage": {
+    "bundled_approval_prohibited": true,
+    "separate_merge_push_reconciliation_required": true,
+    "no_verify_prohibited": true,
+    "hook_fail_no_expansion_prohibited": true,
+    "force_push_prohibited": true,
+    "runtime_no_start_during_governance": true,
+    "return_to_chatgpt_formal_body_required": true,
+    "aider_path_resolution_defined": true,
+    "aider_small_task_split_defined": true,
+    "aider_load_limit_defined": true,
+    "aider_prohibited_paths_defined": true,
+    "aider_hook_fail_handling_defined": true,
+    "aider_reporting_rules_defined": true,
+    "opencode_self_authorization_prohibited": true,
+    "r030_readiness_not_dispatch_authorization": true
+  },
+  "verification": {
+    "candidate_not_merged": true,
+    "candidate_not_pushed": true,
+    "r030_not_dispatched": true,
+    "runtime_not_started": true,
+    "git_status_clean_before_creation": true,
+    "base_head_matches_expected": true,
+    "no_secrets_exposed": true
+  }
+}
