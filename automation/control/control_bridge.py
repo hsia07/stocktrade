@@ -386,9 +386,9 @@ def check_can_start():
     if pause_mgr.is_paused():
         pause_info = pause_mgr.get_pause_info() or {}
         pause_reason = pause_info.get('reason', pause_mgr._read_pause_reason_from_source())
-        pause_sub_reason = 'unknown'
-        if pause_reason == PauseStateManager.REASON_USAGE:
-            pause_sub_reason = pause_info.get('usage_sub_reason', 'usage_exhausted')
+        pause_sub_reason = pause_info.get('sub_reason', '')
+        if not pause_sub_reason and pause_reason == PauseStateManager.REASON_USAGE:
+            pause_sub_reason = pause_info.get('usage_sub_reason', pause_mgr.USAGE_SUB_UNKNOWN)
         blockers.append({
             'gate': 'pause_flag',
             'reason': 'PAUSE.flag is set',
@@ -514,9 +514,10 @@ def check_can_start():
         'phase': state.get('current_phase', 'unknown'),
         'pause_flag_present': pause_mgr.is_paused(),
         'pause_reason': pause_info.get('reason', 'none') if pause_mgr.is_paused() else 'none',
-        'pause_sub_reason': pause_info.get('pause_sub_reason', 'none') if pause_mgr.is_paused() else 'none',
+        'pause_sub_reason': pause_info.get('sub_reason', 'none') if pause_mgr.is_paused() else 'none',
         'blockers': blockers,
         'usage_exhaustion_state': stop_reason if stop_reason in ('usage_exhausted', 'insufficient_balance', 'api_quota_exhausted', 'model_unavailable', 'usage_source_unavailable') else 'none',
+        'usage_sub_reason': pause_info.get('sub_reason', 'none') if pause_mgr.is_paused() and pause_info.get('reason') == PauseStateManager.REASON_USAGE else 'none',
         'pre_resume_checks_pass': can_start if not pause_mgr.is_paused() else False,
         'git_status_clean': not any(b['gate'] == 'git_status_dirty' for b in blockers) if not any(b['gate'] in ('git_status_check_failed',) for b in blockers) else False,
         'local_remote_heads_match': not any(b['gate'] == 'head_mismatch' for b in blockers),
@@ -527,7 +528,9 @@ def check_can_start():
         'broker_started': state.get('broker_started', False),
         'execution_started': state.get('execution_started', False),
         'live_mode_started': state.get('live_mode_started', False),
-        'order_execution_allowed': order_exec_allowed
+        'order_execution_allowed': order_exec_allowed,
+        'waiting_manual_start': pause_mgr.is_paused(),
+        'resume_blockers': [b['reason'] for b in blockers] if blockers else []
     }
 
 

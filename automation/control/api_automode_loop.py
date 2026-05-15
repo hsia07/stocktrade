@@ -6,11 +6,13 @@ Implements Phase 2B auto-pause trigger rules:
 - stuck_duration >= 30min can trigger auto pause (standalone)
 - no_new_commit >= 60min AND no_new_RETURN_TO_CHATGPT >= 45min can trigger auto pause (combination only)
 - no_new_phase_transition >= 90min only as auxiliary signal (cannot trigger alone)
+- Phase 2B usage exhaustion sub-category detection: insufficient_balance, api_quota, model_unavailable, source_unavailable
 """
 
 import logging
 from typing import Dict, Any, Optional
 import time
+from pathlib import Path
 
 from automation.control.pause_state import PauseStateManager
 from automation.control.auto_advance import AutoAdvanceController
@@ -152,21 +154,30 @@ class APIAutoModeLoop:
     
     def check_usage_exhaustion(self) -> None:
         """
-        Check if usage is exhausted (via sentinel file).
-        If exhausted, trigger auto-pause and send usage_exhausted notification.
+        Check if usage is exhausted (via sentinel files).
+        Phase 2B: auto-detect sub-category (insufficient_balance / api_quota / model_unavailable / source_unavailable).
+        If exhausted, trigger auto-pause with sub_reason and send usage_exhausted notification.
         """
-        if self.auto_advance.check_usage_exhaustion():
-            logger.warning("Usage exhausted detected — triggering pause")
-            try:
-                from automation.control.telegram_notifier import TelegramNotifier
-                notifier = TelegramNotifier(mock_mode=True)
-                notifier.send_usage_exhausted_notification()
-            except Exception as e:
-                logger.error(f"Failed to send usage exhausted notification: {e}")
-            self._trigger_auto_pause(
-                reason=PauseStateManager.REASON_USAGE,
-                extra_data={"trigger": "usage_exhaustion_sentinel"}
-            )
+        # Use PauseStateManager to auto-detect sub-category from sentinel files
+        sub_reason = self.pause_manager.detect_usage_sub_reason()
+        
+        if sub_reason is None:
+            # No usage sentinel found — check generic sentinel via auto_advance
+            if not self.auto_advance.check_usage_exhaustion():
+                return
+            sub_reason = self.pause_manager.USAGE_SUB_UNKNOWN
+        
+        logger.warning(f"Usage exhausted detected — sub_reason={sub_reason}, triggering pause")
+        try:
+            from automation.control.telegram_notifier import TelegramNotifier
+            notifier = TelegramNotifier(mock_mode=True)
+            notifier.send_usage_exhausted_notification(sub_reason=sub_reason)
+        except Exception as e:
+            logger.error(f"Failed to send usage exhausted notification: {e}")
+        self._trigger_auto_pause(
+            reason=PauseStateManager.REASON_USAGE,
+            extra_data={"trigger": "usage_exhaustion_sentinel", "usage_sub_reason": sub_reason}
+        )
 
     def manual_start_request(self) -> Dict[str, Any]:
         """

@@ -1,0 +1,86 @@
+{
+  "law_compliance": "04",
+  "round_id": "GOV_BACKLOG_005_LAW_0416_PHASE2B_RUNTIME_CHAIN_HARDENING_FORMAL_CANDIDATE",
+  "task_type": "law_0416_phase2b_runtime_chain_hardening_candidate_creation",
+  "expected_base_head": "d8e768f3a23a6ed68c3b3d3d5c8900ca1390e10f",
+  "modified_files": [
+    "automation/control/pause_state.py",
+    "automation/control/telegram_notifier.py",
+    "automation/control/api_automode_loop.py",
+    "automation/control/control_bridge.py",
+    "automation/control/status_scheduler.py"
+  ],
+  "added_files": [
+    "automation/control/candidates/GOV_BACKLOG_005_LAW_0416_PHASE2B_RUNTIME_CHAIN_HARDENING/evidence.json"
+  ],
+  "gaps_addressed": {
+    "gap_1_usage_subcategory_detection": {
+      "status": "addressed",
+      "details": "Added PauseStateManager.USAGE_SUB_REASONS with 4 sub-categories + unknown fallback. Added detect_usage_sub_reason() sentinel-based detection. Added classify_usage_exhaustion() fail-closed classification. Updated set_pause() to auto-classify. Updated api_automode_loop.check_usage_exhaustion() to use sub-category detection."
+    },
+    "gap_2_telegram_dedup": {
+      "status": "addressed",
+      "details": "Added TelegramNotifier._make_fingerprint() for deterministic fingerprinting. Added _is_duplicate() with 5-minute DEDUP_WINDOW_SECONDS. Updated send_pause_notification() and send_usage_exhausted_notification() to dedup. Dedup failure does not block pause (fail-closed)."
+    },
+    "gap_3_pre_resume_rtc_validity": {
+      "status": "addressed",
+      "details": "Added PauseStateManager._check_rtc_validity() checking: truth source exists, not synthetic, required formal body fields present, not stale (>7 days). Integrated into pre_resume_checks(). Malformed/missing/stale RTC blocks resume."
+    },
+    "gap_4_pre_resume_pause_reason_resolution": {
+      "status": "addressed",
+      "details": "Added PauseStateManager._check_pause_reason_resolved() checking: sentinel cleared for usage sub-categories, user override evidence for unknown_usage_exhaustion. Non-usage pauses bypass. Integrated into pre_resume_checks(). Unresolved pause reason blocks resume."
+    }
+  },
+  "usage_subcategory_detection_coverage": {
+    "insufficient_balance": true,
+    "api_quota_exhausted": true,
+    "model_unavailable": true,
+    "usage_source_unavailable": true,
+    "unknown_usage_exhaustion_fail_closed": true
+  },
+  "telegram_dedup_coverage": {
+    "fingerprint_method": "sha256(reason|sub_reason|extra)[:16]",
+    "dedup_window_seconds": 300,
+    "max_dedup_entries": 20,
+    "dedup_failure_does_not_block_pause": true,
+    "notification_includes_sub_reason": true,
+    "notification_includes_manual_start_requirement": true
+  },
+  "pre_resume_rtc_check_coverage": {
+    "truth_source_exists": true,
+    "rejects_synthetic_rtc": true,
+    "requires_formal_body_fields": true,
+    "rejects_stale_rtc": true,
+    "missing_rtc_blocks_resume": true
+  },
+  "pre_resume_pause_reason_resolution_coverage": {
+    "sentinel_cleared_check": true,
+    "user_override_evidence": true,
+    "non_usage_bypass": true,
+    "unknown_usage_requires_explicit_override": true,
+    "unresolved_blocks_resume": true
+  },
+  "prohibited_actions_verified": {
+    "auto_retry": "not_introduced",
+    "auto_model_switch": "not_introduced",
+    "auto_key_switch": "not_introduced",
+    "auto_continue_after_recharge": "not_introduced",
+    "manual_start_required": "preserved"
+  },
+  "bridge_integration": {
+    "can_start_reports_sub_reason": true,
+    "can_start_includes_rtc_and_pause_resolution_blockers": true,
+    "start_loop_blocks_failed_pre_resume": true,
+    "status_scheduler_reports_waiting_manual_start": true,
+    "status_scheduler_reports_resume_blockers": true
+  },
+  "r030_dispatch_started": false,
+  "gov_int_005_started": false,
+  "runtime_started": false,
+  "trading_core_started": false,
+  "broker_started": false,
+  "execution_started": false,
+  "live_mode_started": false,
+  "order_execution_allowed": false,
+  "created_at": "2026-05-15T00:00:00"
+}
