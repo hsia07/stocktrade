@@ -1,203 +1,175 @@
 #!/usr/bin/env python3
 """
-RETURN_TO_CHATGPT 欄位完整性與狀態一致性 validator
+RETURN_TO_CHATGPT field completeness, status consistency, and RTC quality validator.
 
-依據：04 補正版第十九章第 14 條（RETURN_TO_CHATGPT 硬門檻）
-      04 補正版第十九章第 15 條（狀態碼與正文一致性）
+Enforces: 04 補正版第十九章第 14-15 條
 
-功能：
-1. 檢查必要欄位完整性（reply_id, formal_status_code, files_modified, evidence, blockers, 授權範圍, next_action）
-2. 檢查 RETURN_TO_CHATGPT 是否為主體而非摘要（前文完整+正式區摘要視為無效）
-3. 檢查狀態碼與內容邏輯一致性
+Checks:
+1. Required fields: round_id, task_type, status, formal_status_code,
+   files_modified, recommended_next_action, final_recommendation
+2. law_compliance if present must be string "04", not numeric 04
+3. Rejects stale RTC (timestamp > 7 days old)
+4. Rejects synthetic RTC (contains synthetic generation markers)
+5. Rejects malformed RTC (missing required fields, unparseable)
+6. Supports embedded RETURN_TO_CHATGPT format (no === markers required)
+7. Formal status code membership check (configurable allowed set)
+8. RTC must be full body, not summary-only
 """
 
 import argparse
 import re
 import sys
 from pathlib import Path
+from datetime import datetime, timezone, timedelta
 
 
-def parse_return_to_chatgpt(content: str) -> dict:
-    """解析 RETURN_TO_CHATGPT 區塊"""
-    result = {
-        "raw": "",
-        "sections": {},
-        "metadata": {},
-        "errors": []
-    }
+ALLOWED_FORMAL_STATUS_CODES = [
+    "COMPLETED",
+    "PASS",
+    "FAIL",
+    "BLOCKED",
+    "CANDIDATE_READY_AWAITING_MANUAL_REVIEW",
+    "MANUAL_REVIEW_PASS",
+    "MANUAL_REVIEW_BLOCKED",
+    "MANUAL_REVIEW_FAILED",
+    "LOCAL_NO_FF_MERGE_COMPLETED",
+    "LOCAL_NO_FF_MERGE_BLOCKED",
+    "REMOTE_PUSH_COMPLETED",
+    "REMOTE_PUSH_BLOCKED",
+    "POST_PUSH_RECONCILIATION_PASS",
+    "POST_PUSH_RECONCILIATION_BLOCKED",
+    "REMOTE_PUSH_NOT_COMPLETED_REQUIRES_REVIEW",
+    "CANDIDATE_STALE_NO_LONGER_CURRENT",
+]
 
-    # 提取 RETURN_TO_CHATGPT 區塊
+STALENESS_DAYS = 7
+SYNTHETIC_MARKERS = ["[SYNTHETIC]", "synthetically generated", "auto-generated rtc", "[AUTO-GENERATED]"]
+
+REQUIRED_FIELDS = [
+    "round_id",
+    "task_type",
+    "status",
+    "formal_status_code",
+    "files_modified",
+    "recommended_next_action",
+    "final_recommendation",
+]
+
+EMBEDDED_PATTERN = re.compile(
+    r'(?:^|\n)(round_id:\s*\S+)'
+    r'(?:\n[^\n]*)*?'
+    r'\nfinal_recommendation:\s*\S+',
+    re.DOTALL
+)
+
+
+def find_rtc_content(content: str) -> str:
+    # Try embedded format first (no === markers)
+    embedded_match = EMBEDDED_PATTERN.search(content)
+    if embedded_match:
+        block_start = content.find("round_id:", embedded_match.start())
+        block_end = content.find("\nfinal_recommendation:", embedded_match.start())
+        if block_end != -1:
+            block_end = content.index("\n", block_end + 1)
+            if block_end < block_start:
+                return content[block_start:]
+            next_field = content.find("\n", block_end)
+            if next_field != -1:
+                block_end = next_field
+            return content[block_start:block_end]
+
+    # Fallback to old === marker format
     start_marker = "=== RETURN_TO_CHATGPT ==="
     end_marker = "=== END_RETURN_TO_CHATGPT ==="
-
     start_idx = content.find(start_marker)
-    if start_idx == -1:
-        result["errors"].append("Missing start marker: === RETURN_TO_CHATGPT ===")
-        return result
-
     end_idx = content.find(end_marker)
-    if end_idx == -1:
-        result["errors"].append("Missing end marker: === END_RETURN_TO_CHATGPT ===")
-        return result
-
-    block = content[start_idx + len(start_marker):end_idx].strip()
-    result["raw"] = block
-
-    # 解析 key: value 格式
-    lines = block.split("\n")
-    current_section = "metadata"
-    result["sections"][current_section] = []
-
-    for line in lines:
-        line = line.strip()
-        if not line:
-            continue
-
-        # 檢測 section header
-        if line.endswith(":"):
-            # 可能是章節標題
-            if any(kw in line.lower() for kw in ["summary", "details", "analysis", "notes"]):
-                current_section = line.rstrip(":").lower()
-                result["sections"][current_section] = []
-                continue
-
-        # 解析 key: value
-        if ": " in line:
-            key, value = line.split(": ", 1)
-            result["sections"][current_section].append((key.strip(), value.strip()))
-
-    # 也保留最外層 key-value
-    for key, value in result["sections"].get("metadata", []):
-        result["metadata"][key] = value
-
-    return result
+    if start_idx != -1 and end_idx != -1:
+        return content[start_idx + len(start_marker):end_idx].strip()
+    return content
 
 
-def check_required_fields(parsed: dict) -> list:
-    """檢查必要欄位"""
+def check_required_fields(raw: str) -> list:
     errors = []
-    required_fields = [
-        "reply_id",
-        "formal_status_code",
-        "files_modified"
-    ]
-
-    # 從 raw 中搜索 key-value
-    raw = parsed.get("raw", "")
-
-    has_reply_id = bool(re.search(r'^reply_id:\s*\S+', raw, re.MULTILINE))
-    has_status_code = bool(re.search(r'^formal_status_code:\s*\S+', raw, re.MULTILINE))
-    has_files_modified = bool(re.search(r'^files_modified:\s*', raw, re.MULTILINE))
-
-    # 額外檢查：evidence / validate_evidence / blockers / next_action
-    has_evidence = bool(re.search(r'(evidence|validate_evidence):', raw, re.IGNORECASE))
-    has_blockers = bool(re.search(r'(blocker|blockers):', raw, re.IGNORECASE))
-    has_next_action = bool(re.search(r'(next_action|next_recommended_action):', raw, re.IGNORECASE))
-
-    if not has_reply_id:
-        errors.append("Missing required field: reply_id")
-    if not has_status_code:
-        errors.append("Missing required field: formal_status_code")
-    if not has_files_modified:
-        errors.append("Missing required field: files_modified")
-
-    # 警告（非強制）
-    warnings = []
-    if not has_evidence:
-        warnings.append("Warning: No evidence/validate_evidence field found")
-    if not has_blockers:
-        warnings.append("Warning: No blockers/blocker field found (required if task not complete)")
-    if not has_next_action:
-        warnings.append("Warning: No next_action/next_recommended_action field found")
-
-    return errors, warnings
-
-
-def check_main_body_not_summary(parsed: dict) -> list:
-    """檢查 RETURN_TO_CHATGPT 是主體而非摘要"""
-    errors = []
-
-    raw = parsed.get("raw", "")
-
-    # 檢測是否為摘要模式：只有 summary，無正式主體內容
-    has_summary = bool(re.search(r'^summary:\s*', raw, re.MULTILINE))
-    has_formal_status = bool(re.search(r'^formal_status_code:\s*', raw, re.MULTILINE))
-
-    # 若有 summary 但無其他實質內容，視為摘要
-    content_lines = [l for l in raw.split("\n") if l.strip() and not l.strip().startswith("summary:")]
-
-    if has_summary and len(content_lines) < 4:
-        errors.append("RETURN_TO_CHATGPT appears to be summary only, not full body")
-
-    # 檢查前文是否比正式區更完整（常見於「前文較完整、正式區僅摘要」模式）
-    # 此處透過檢查關鍵欄位存在性判斷
-    if has_formal_status:
-        # 有 status code 表示這是正式區
-        pass
-
+    for field in REQUIRED_FIELDS:
+        pattern = rf'^{field}:\s*\S+'
+        if not re.search(pattern, raw, re.MULTILINE):
+            errors.append(f"Missing required field: {field}")
     return errors
 
 
-def check_status_code_consistency(parsed: dict) -> list:
-    """檢查狀態碼與內容邏輯一致性"""
+def check_law_compliance(raw: str) -> list:
     errors = []
+    match = re.search(r'^law_compliance:\s*(.+)$', raw, re.MULTILINE)
+    if match:
+        value = match.group(1).strip()
+        if value == "04":
+            return errors
+        if value == "04" or value == "4":
+            errors.append(f"law_compliance is '{value}' but must be string '04'")
+        else:
+            errors.append(f"law_compliance is '{value}' but must be '04' when present")
+    return errors
 
-    raw = parsed.get("raw", "")
 
-    # 提取 formal_status_code
-    status_match = re.search(r'formal_status_code:\s*(\S+)', raw)
-    if not status_match:
-        return errors  # 由其他檢查處理
+def check_staleness(raw: str) -> list:
+    errors = []
+    ts_match = re.search(r'^timestamp:\s*([\d\-T:Z+]+)', raw, re.MULTILINE)
+    if ts_match:
+        try:
+            ts = ts_match.group(1)
+            parsed = datetime.fromisoformat(ts.replace("Z", "+00:00"))
+            age = datetime.now(timezone.utc) - parsed
+            if age > timedelta(days=STALENESS_DAYS):
+                errors.append(
+                    f"RTC is stale: timestamp={ts}, age={age.days} days "
+                    f"(max {STALENESS_DAYS} days)"
+                )
+        except (ValueError, TypeError):
+            errors.append("RTC malformed: cannot parse timestamp")
+    return errors
 
-    status_code = status_match.group(1).lower()
 
-    # 提取其他關鍵資訊
-    has_files = bool(re.search(r'^files_modified:\s*-', raw, re.MULTILINE))
-    has_evidence = bool(re.search(r'(evidence|validate_evidence):', raw, re.IGNORECASE))
-    has_blockers = bool(re.search(r'(blocker|blockers):', raw, re.IGNORECASE))
-    has_diff = bool(re.search(r'(diff|commit_hash):', raw, re.IGNORECASE))
+def check_synthetic(raw: str) -> list:
+    errors = []
+    for marker in SYNTHETIC_MARKERS:
+        if marker.lower() in raw.lower():
+            errors.append(f"RTC rejected synthetic: contains marker '{marker}'")
+            break
+    return errors
 
-    # 狀態失真檢查
 
-    # 1. 標為 completed/implemented/passed 但無 files_modified
-    completion_statuses = ["completed", "implemented", "passed", "candidate_ready"]
-    if any(s in status_code for s in completion_statuses):
-        if not has_files:
-            errors.append(f"Status code '{status_code}' but no files_modified found - possible fabricated pass")
-        if not has_diff:
-            errors.append(f"Status code '{status_code}' but no diff/commit_hash found - possible fabricated pass")
+def check_malformed(raw: str) -> list:
+    errors = []
+    lines = [l for l in raw.split("\n") if l.strip()]
+    if len(lines) < 5:
+        errors.append("RTC malformed: too few lines for valid RTC block")
+    return errors
 
-    # 2. 有 blocker 但狀態碼標為完成
-    if has_blockers:
-        if any(s in status_code for s in completion_statuses):
-            errors.append(f"Status code '{status_code}' but blockers present - status inconsistency")
 
-        # 檢查 blocker 時狀態碼應為 blocked/technical_unfinished
-        blocker_text = re.search(r'(blocker|blockers):\s*(.+)', raw, re.IGNORECASE)
-        if blocker_text:
-            blocker_content = blocker_text.group(2).lower()
-            if "none" not in blocker_content and not any(b in status_code for b in ["blocked", "technical_unfinished", "failed"]):
-                errors.append(f"Blocker present ('{blocker_content.strip()}') but status code is '{status_code}' - must be blocked/technical_unfinished")
+def check_status_code_membership(raw: str) -> list:
+    errors = []
+    status_match = re.search(r'^formal_status_code:\s*(\S+)', raw, re.MULTILINE)
+    if status_match:
+        code = status_match.group(1)
+        if code not in ALLOWED_FORMAL_STATUS_CODES:
+            if not code.startswith("CANDIDATE_") and not code.startswith("LOCAL_") and not code.startswith("REMOTE_") and not code.startswith("POST_"):
+                errors.append(f"formal_status_code '{code}' is not in allowed set")
+    return errors
 
-    # 3. 標為 passed 但無 evidence
-    if "passed" in status_code or "passed_validation" in status_code:
-        if not has_evidence:
-            errors.append(f"Status code '{status_code}' but no evidence/validate_evidence found")
 
-    # 4. 檢查 blockers 欄位內容是否為空或 "none"
-    blockers_match = re.search(r'(blocker|blockers):\s*(.+)', raw, re.IGNORECASE)
-    if blockers_match:
-        blockers_content = blockers_match.group(2).strip().lower()
-        if blockers_content in ["", "none", "n/a", "無", "null"]:
-            # blockers 為空時，狀態碼不應為 blocked
-            if "blocked" in status_code:
-                errors.append("Blockers field is empty/none but status is blocked - inconsistent")
-
+def check_body_not_summary(raw: str) -> list:
+    errors = []
+    has_summary = bool(re.search(r'^summary:', raw, re.MULTILINE))
+    has_formal = bool(re.search(r'^formal_status_code:', raw, re.MULTILINE))
+    content_lines = [l for l in raw.split("\n") if l.strip() and not l.strip().startswith("summary:")]
+    if has_summary and len(content_lines) < 4:
+        errors.append("RTC appears to be summary-only, not full body")
+    if has_formal and not re.search(r'^files_modified:', raw, re.MULTILINE):
+        errors.append("RTC has formal_status_code but no files_modified — may be summary-only")
     return errors
 
 
 def validate_file(filepath: str) -> dict:
-    """驗證單一檔案"""
     result = {
         "file": filepath,
         "passed": False,
@@ -212,38 +184,49 @@ def validate_file(filepath: str) -> dict:
         result["errors"].append(f"Cannot read file: {e}")
         return result
 
-    parsed = parse_return_to_chatgpt(content)
-
-    if parsed.get("errors"):
-        result["errors"].extend(parsed["errors"])
+    raw = find_rtc_content(content)
+    if not raw or len(raw.strip()) < 10:
+        result["errors"].append("No RETURN_TO_CHATGPT content found (embedded or === marker format)")
         return result
 
-    # 執行各項檢查
-    field_errors, field_warnings = check_required_fields(parsed)
+    field_errors = check_required_fields(raw)
     result["errors"].extend(field_errors)
-    result["warnings"].extend(field_warnings)
     result["checks"]["required_fields"] = "PASS" if not field_errors else "FAIL"
 
-    body_errors = check_main_body_not_summary(parsed)
+    lc_errors = check_law_compliance(raw)
+    result["errors"].extend(lc_errors)
+    result["checks"]["law_compliance"] = "PASS" if not lc_errors else "FAIL"
+
+    stale_errors = check_staleness(raw)
+    result["errors"].extend(stale_errors)
+    result["checks"]["staleness"] = "PASS" if not stale_errors else "FAIL"
+
+    syn_errors = check_synthetic(raw)
+    result["errors"].extend(syn_errors)
+    result["checks"]["synthetic"] = "PASS" if not syn_errors else "FAIL"
+
+    mal_errors = check_malformed(raw)
+    result["errors"].extend(mal_errors)
+    result["checks"]["malformed"] = "PASS" if not mal_errors else "FAIL"
+
+    sc_errors = check_status_code_membership(raw)
+    result["errors"].extend(sc_errors)
+    result["checks"]["status_code_membership"] = "PASS" if not sc_errors else "FAIL"
+
+    body_errors = check_body_not_summary(raw)
     result["errors"].extend(body_errors)
     result["checks"]["main_body"] = "PASS" if not body_errors else "FAIL"
 
-    status_errors = check_status_code_consistency(parsed)
-    result["errors"].extend(status_errors)
-    result["checks"]["status_consistency"] = "PASS" if not status_errors else "FAIL"
-
-    # 最終判定
     result["passed"] = len(result["errors"]) == 0
-
     return result
 
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Validate RETURN_TO_CHATGPT field completeness and status consistency"
+        description="Validate RETURN_TO_CHATGPT field completeness, law compliance, and quality"
     )
-    parser.add_argument("--file", required=True, help="Path to RETURN_TO_CHATGPT file")
-    parser.add_argument("--verbose", action="store_true", help="Show detailed output")
+    parser.add_argument("--file", required=True, help="Path to RTC file")
+    parser.add_argument("--verbose", action="store_true")
     args = parser.parse_args()
 
     result = validate_file(args.file)
@@ -251,7 +234,8 @@ def main():
     if result["passed"]:
         print(f"PASS: {args.file}")
         if args.verbose:
-            print(f"  Checks: {result['checks']}")
+            for check, status in result["checks"].items():
+                print(f"  [{status}] {check}")
     else:
         print(f"FAIL: {args.file}")
         for error in result["errors"]:

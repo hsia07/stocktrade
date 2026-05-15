@@ -2,8 +2,12 @@
 # Rewrite of bash version for Windows unattended auto-advance.
 # No bash dependency. All governance checks preserved.
 # Reads stdin from git: local_ref local_sha remote_ref remote_sha
+#
+# Enhanced: dirty tree guard, no-runtime guard, manifest/state consistency guard
 
 $ErrorActionPreference = "Stop"
+
+# --- Enhanced Guard Functions ---
 
 function Check-CanonicialBranch {
     param([string]$RemoteRef)
@@ -35,9 +39,6 @@ function Get-ChangedEvidenceFiles {
 function Check-Law04Compliance {
     param([string]$Sha, [string]$EvidencePath)
     try {
-        # Use Python subprocess directly to avoid PowerShell pipe encoding issues
-        # The old approach ($content = git show ... | ConvertFrom-Json) fails on Windows
-        # because PowerShell's pipe encoding corrupts UTF-8 JSON content
         $pythonCmd = "import subprocess, json; result = subprocess.run(['git', 'show', '$($Sha):$($EvidencePath)'], capture_output=True); data = json.loads(result.stdout.decode('utf-8-sig')); print(data.get('law_compliance', ''))"
         $lawCompliance = python -c $pythonCmd 2>$null
         if (-not $lawCompliance) { return $false }
@@ -47,6 +48,84 @@ function Check-Law04Compliance {
         return $false
     }
 }
+
+function Check-DirtyTree {
+    $status = git status --porcelain 2>$null
+    if ($status) {
+        Write-Host "ERROR: DIRTY TREE BLOCKED: Working tree is not clean. Git status:"
+        $status | ForEach-Object { Write-Host "  $_" }
+        Write-Host "ERROR: Push to canonical requires clean working tree (no staged, modified, or untracked files)"
+        Write-Host "ERROR: Run 'git status' and resolve all changes before pushing"
+        exit 1
+    }
+    Write-Host "PASS: working tree is clean"
+}
+
+function Check-RuntimeGuard {
+    # Check if main_control_loop is running via state.runtime.json
+    $stateFile = "automation/control/state.runtime.json"
+    if (Test-Path $stateFile) {
+        try {
+            $stateRaw = Get-Content $stateFile -Raw -Encoding UTF8
+            $state = $stateRaw | ConvertFrom-Json
+            if ($state.run_state -eq "running") {
+                Write-Host "ERROR: RUNTIME GUARD BLOCKED: main_control_loop is running (run_state=running)"
+                Write-Host "ERROR: Push to canonical is not allowed while runtime is active"
+                exit 1
+            }
+            if ($state.r030_dispatch_started -eq $true) {
+                Write-Host "ERROR: R030 DISPATCH BLOCKED: R030 dispatch is started"
+                Write-Host "ERROR: Cannot push while R030 dispatch is in progress"
+                exit 1
+            }
+            if ($state.order_execution_allowed -eq $true) {
+                Write-Host "ERROR: ORDER EXECUTION BLOCKED: order_execution_allowed is TRUE"
+                Write-Host "ERROR: Push not allowed when order execution is enabled"
+                exit 1
+            }
+        }
+        catch {
+            Write-Host "WARN: could not parse state.runtime.json, skipping runtime guard"
+        }
+    }
+    Write-Host "PASS: runtime guard checks passed"
+}
+
+function Check-ManifestStateConsistency {
+    $stateFile = "automation/control/state.runtime.json"
+    $manifestFile = "manifests/current_round.yaml"
+
+    if ((Test-Path $stateFile) -and (Test-Path $manifestFile)) {
+        try {
+            $stateRaw = Get-Content $stateFile -Raw -Encoding UTF8
+            $state = $stateRaw | ConvertFrom-Json
+            $stateRound = $state.current_round
+
+            $manifestLines = Get-Content $manifestFile -Encoding UTF8
+            $manifestRound = $null
+            foreach ($line in $manifestLines) {
+                if ($line -match '^current_round:\s*"(.+)"') { $manifestRound = $matches[1]; break }
+                if ($line -match "^current_round:\s*'(.+)'") { $manifestRound = $matches[1]; break }
+                if ($line -match '^current_round:\s*(.+)') { $manifestRound = $matches[1]; break }
+            }
+            $manifestRound = ($manifestRound -replace '"','').Trim()
+
+            if ($manifestRound -and $stateRound -and ($manifestRound -ne $stateRound)) {
+                $stateRunState = $state.run_state
+                $isLegalStopped = ($stateRunState -eq "stopped") -and ($manifestRound -eq "NONE") -and ($stateRound -eq "GOV_INT_003_COMPLETED")
+                if (-not $isLegalStopped) {
+                    Write-Host "WARN: MANIFEST/STATE INCONSISTENCY: manifest current_round=$manifestRound vs state current_round=$stateRound"
+                    Write-Host "WARN: This may block R030 readiness validation"
+                }
+            }
+        }
+        catch {
+            Write-Host "WARN: could not verify manifest/state consistency"
+        }
+    }
+}
+
+# --- Original Guard Functions ---
 
 function Assert-MergeCommitAllowed {
     param([string]$LocalSha)
@@ -76,6 +155,12 @@ function Assert-MergeCommitAllowed {
     Write-Host "PASS: Law 04 compliance verified (law_compliance: 04 in all evidence.json files changed in this commit)"
     Write-Host "PASS: merge authorization evidence verified"
     Write-Host "PASS: all branch workflow checks passed"
+
+    # Enhanced checks integrated into merge commit validation
+    Check-DirtyTree
+    Check-RuntimeGuard
+    Check-ManifestStateConsistency
+
     Write-Host "[pre-push] ok"
     exit 0
 }
