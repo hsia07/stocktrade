@@ -1,0 +1,27 @@
+{
+  "round_id": "R043",
+  "round_name": "新聞/事件分析層 (News Event Analysis Layer)",
+  "topic": "R043=新聞/事件分析層",
+  "core_module": "modules/decision_prechecklist/news_analyzer.py",
+  "test_file": "tests/test_news_analyzer.py",
+  "test_results": {
+    "total": 10,
+    "passed": 10,
+    "failed": 0,
+    "execution_time_seconds": 0.15
+  },
+  "features_enhanced": [
+    "SOURCE_CREDIBILITY_MAP with source credibility scoring",
+    "NewsEvent.source_credibility() method",
+    "NewsEvent.age_minutes() method",
+    "NewsEvent.is_stale() method",
+    "StructuredSignal dataclass",
+    "NewsAnalyzer.get_stale_events() method",
+    "NewsAnalyzer.clear_stale() method",
+    "NewsAnalyzer.to_signals() method with stale filtering"
+  ],
+  "diff_stats": "news_analyzer.py +82 lines, test_news_analyzer.py +57 lines",
+  "verification_status": "PASS",
+  "staging_commit": "4c42da9b2e5b393f5965250dd6db7d94e4934f58",
+  "canonical_commit": "1cf03ce29a8340cb9364edff69be3a16dee29ea4"
+}

@@ -1,0 +1,22 @@
+RETURN_TO_CHATGPT
+
+formal_status_code: COMPLETED_CANDIDATE
+round_id: R044
+round_name: 事件去重與舊聞污染保護 EVENT_DEDUP_OLD_NEWS_POLLUTION_PROTECTION
+staging_branch: staging (4c42da9b)
+canonical_baseline: 1cf03ce (unchanged)
+origin: 1cf03ce (unchanged, no push)
+
+Summary:
+Enhanced event_deduplicator.py with stale-news pollution protection: category-based STALE_MAX_AGE_MINUTES map, StaleCheckResult dataclass, check_stale, filter_stale, and dedup_and_filter methods. 9/9 tests pass. No merge, no push, no deployment.
+
+Files changed:
+  modules/decision_prechecklist/event_deduplicator.py   (+55)
+  tests/test_event_deduplicator.py                      (+64)
+
+Verification:
+  - All 9 test functions pass
+  - Python syntax check: OK
+  - Staging HEAD unchanged from prior rounds
+  - No broker API calls, no order_execution_allowed=TRUE
+  - Shared foundation round (Phase 2 topic), not canonical-ready

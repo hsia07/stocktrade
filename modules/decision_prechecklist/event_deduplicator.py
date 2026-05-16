@@ -1,7 +1,18 @@
 from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Any
+from datetime import datetime, timezone
 from modules.decision_prechecklist.news_analyzer import NewsEvent
+
+
+STALE_MAX_AGE_MINUTES: dict[str, int] = {
+    "earnings": 1440,
+    "regulatory": 4320,
+    "macro": 2880,
+    "corporate_action": 720,
+    "analyst_rating": 1440,
+    "general": 360,
+}
 
 
 @dataclass
@@ -10,6 +21,15 @@ class DedupResult:
     duplicate: NewsEvent
     similarity: float
     is_duplicate: bool
+
+
+@dataclass
+class StaleCheckResult:
+    event: NewsEvent
+    is_stale: bool
+    age_minutes: float
+    max_age_minutes: int
+    action: str
 
 
 class EventDeduplicator:
@@ -39,6 +59,41 @@ class EventDeduplicator:
         if key not in self._seen_headlines:
             self._seen_headlines[key] = []
         self._seen_headlines[key].append(event)
+
+    def check_stale(self, event: NewsEvent) -> StaleCheckResult:
+        try:
+            age = (datetime.now(timezone.utc) - datetime.fromisoformat(event.timestamp)).total_seconds() / 60
+        except (ValueError, TypeError):
+            age = 0.0
+        max_age = STALE_MAX_AGE_MINUTES.get(event.category, 360)
+        stale = age > max_age
+        return StaleCheckResult(
+            event=event,
+            is_stale=stale,
+            age_minutes=age,
+            max_age_minutes=max_age,
+            action="reject" if stale else "accept",
+        )
+
+    def filter_stale(self, events: list[NewsEvent]) -> tuple[list[NewsEvent], list[NewsEvent]]:
+        fresh: list[NewsEvent] = []
+        stale: list[NewsEvent] = []
+        for e in events:
+            result = self.check_stale(e)
+            if result.is_stale:
+                stale.append(e)
+            else:
+                fresh.append(e)
+        return fresh, stale
+
+    def dedup_and_filter(self, event: NewsEvent) -> DedupResult | StaleCheckResult | None:
+        stale_result = self.check_stale(event)
+        if stale_result.is_stale:
+            return stale_result
+        dup_result = self.check(event)
+        if dup_result is None:
+            self.register(event)
+        return dup_result
 
     def _jaccard_similarity(self, a: str, b: str) -> float:
         set_a = set(a.lower().split())

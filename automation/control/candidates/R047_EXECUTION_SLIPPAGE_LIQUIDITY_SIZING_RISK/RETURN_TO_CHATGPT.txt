@@ -1,0 +1,22 @@
+RETURN_TO_CHATGPT
+
+formal_status_code: COMPLETED_CANDIDATE
+round_id: R047
+round_name: 執行/Slippage/流動性/部位/強風控 EXECUTION_SLIPPAGE_LIQUIDITY_SIZING_RISK
+staging_branch: staging (4c42da9b)
+canonical_baseline: 1cf03ce (unchanged)
+origin: 1cf03ce (unchanged, no push)
+
+Summary:
+Enhanced execution_sizing_guard.py with Taiwan market constraints: TaiwanMarketRule enum, TaiwanMarketConstraints dataclass with circuit_breaker, position_cap, and day_trade_limit checks. Integration with ExecutionSizingGuard.calculate() via optional taiwan parameter. 10/10 tests pass.
+
+Files changed:
+  modules/decision_prechecklist/execution_sizing_guard.py   (+46)
+  tests/test_execution_sizing_guard.py                      (+44)
+
+Verification:
+  - All 10 test functions pass
+  - Python syntax check: OK
+  - Staging HEAD unchanged from prior rounds
+  - No broker API calls, no order_execution_allowed=TRUE
+  - Shared foundation round (Phase 2 topic), not canonical-ready

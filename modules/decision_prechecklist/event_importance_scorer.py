@@ -1,8 +1,16 @@
 from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Any
+from enum import Enum
 from datetime import datetime, timezone
 from modules.decision_prechecklist.news_analyzer import NewsEvent
+
+
+class RiskTier(Enum):
+    LOW = "low"
+    MEDIUM = "medium"
+    HIGH = "high"
+    CRITICAL = "critical"
 
 
 @dataclass
@@ -12,6 +20,7 @@ class ImportanceScoredEvent:
     time_decay_factor: float
     effective_score: float
     ttl_minutes: int
+    risk_tier: RiskTier = RiskTier.MEDIUM
 
 
 class EventImportanceScorer:
@@ -38,13 +47,26 @@ class EventImportanceScorer:
             age_minutes = 0
         decay = max(0.1, 1.0 - (age_minutes / ttl)) if ttl > 0 else 0.1
 
+        effective = base * decay
+        risk_tier = self._determine_risk_tier(effective, event.category)
+
         return ImportanceScoredEvent(
             event=event,
             importance_score=base,
             time_decay_factor=decay,
-            effective_score=base * decay,
+            effective_score=effective,
             ttl_minutes=ttl,
+            risk_tier=risk_tier,
         )
+
+    def _determine_risk_tier(self, effective_score: float, category: str) -> RiskTier:
+        if effective_score >= 0.8 and category in ("regulatory", "earnings"):
+            return RiskTier.CRITICAL
+        if effective_score >= 0.6:
+            return RiskTier.HIGH
+        if effective_score >= 0.3:
+            return RiskTier.MEDIUM
+        return RiskTier.LOW
 
     def is_expired(self, scored: ImportanceScoredEvent) -> bool:
         try:
