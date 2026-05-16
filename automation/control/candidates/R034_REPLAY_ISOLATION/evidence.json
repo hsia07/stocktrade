@@ -39,5 +39,8 @@
     ],
     "test_count": 18
   },
-  "generated_at": "2026-05-16T05:53:54"
+  "generated_at": "2026-05-16T05:53:54",
+  "candidate_commit": "c8a3f12c07c71a8fca8c417ffed297ab9d029b65",
+  "source_topic_table": "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md",
+  "law_priority_verified": "02 > 03 > 04 > 01"
 }

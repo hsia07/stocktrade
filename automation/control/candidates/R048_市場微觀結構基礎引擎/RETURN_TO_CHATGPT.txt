@@ -1,0 +1,28 @@
+round_id: R048
+task_type: microstructure_engine
+status: shared_foundation_only
+formal_status_code: R048_SHARED_FOUNDATION
+staging_branch: auto/telegram-r031-r048-phase2-20260516-0542
+round_topic: 市場微觀結構基礎引擎
+round_phase: Phase 2
+candidate_commit: c529d9aa6a5e899c51afa3236638fcd558648469
+base_head: 2d8b848db6106b2425d02b0a736675a8fbc75bba
+shared_future_round_foundation_true_or_false: TRUE
+candidate_diff_present_true_or_false: FALSE
+evidence_json_present_true_or_false: TRUE
+authorized_files_only_true_or_false: TRUE
+tests_pass_true_or_false: TRUE
+validators_pass_true_or_false: TRUE
+self_review_result: FOUNDATION_ONLY
+r030_contract_only_preserved_true_or_false: TRUE
+canonical_merge_executed_true_or_false: FALSE
+canonical_push_executed_true_or_false: FALSE
+origin_push_executed_true_or_false: FALSE
+runtime_started_true_or_false: FALSE
+trading_broker_execution_live_started_true_or_false: FALSE
+order_execution_allowed_true_or_false: FALSE
+blockers: []
+source_topic_table: _governance/law/161輪正式重編主題總表_唯一基準版_v2.md
+law_priority_verified: 02 > 03 > 04 > 01
+recommended_next_action: CONTINUE_TO_NEXT_ROUND_IN_BATCH
+summary: "Shared foundation for 市場微觀結構基礎引擎. Module and tests exist but round scope not yet complete. Will be finalized when R048 is executed as a formal round."

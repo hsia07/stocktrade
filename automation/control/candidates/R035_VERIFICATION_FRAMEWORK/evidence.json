@@ -27,5 +27,8 @@
   "order_execution_allowed": false,
   "blockers": [],
   "recommended_next_action": "PROCEED_TO_R036",
-  "generated_at": "2026-05-16T05:55:25"
+  "generated_at": "2026-05-16T05:55:25",
+  "candidate_commit": "45ac10fbf2041a78708e3d9a2b3e60e7a72aeb6d",
+  "source_topic_table": "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md",
+  "law_priority_verified": "02 > 03 > 04 > 01"
 }

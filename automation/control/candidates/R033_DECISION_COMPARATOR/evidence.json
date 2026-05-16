@@ -58,5 +58,6 @@
     ],
     "test_count": 15
   },
-  "generated_at": "2026-05-16T05:52:44"
+  "generated_at": "2026-05-16T05:52:44",
+  "candidate_commit": "450bffbe6ba571e3922ac1fa6e6371d9f32704ad"
 }

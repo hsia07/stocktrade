@@ -8,7 +8,7 @@
   "round_phase": "Phase 2",
   "source_topic_table": "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md",
   "base_head": "1cf03ce29a8340cb9364edff69be3a16dee29ea4",
-  "candidate_commit": "STAGING_COMMIT_PENDING",
+  "candidate_commit": "bf0c59a314b490f50717a23ba8fd468c7f3806f3",
   "files_modified": [
     "modules/decision_prechecklist/__init__.py",
     "modules/decision_prechecklist/checklist.py",
