@@ -27,6 +27,60 @@ from .replay_isolation import (
     ExecutionMode,
     ISOLATED_STORE_NAMES,
 )
+from .verification_framework import (
+    VerificationRunner,
+    VerificationCheck,
+    VerificationSuiteResult,
+    StressTestEngine,
+    StressTestScenario,
+    StressTestResult,
+)
+from .fixed_test_dataset import (
+    FixedTestCase,
+    FixedTestRunResult,
+    FIXED_TEST_CASES,
+    make_candidate,
+    register,
+)
+from .auto_regression_check import (
+    AutoRegressionChecker,
+    RegressionSuiteResult,
+)
+from .cicd_verification_chain import (
+    CICDVerificationChain,
+    CICDStageResult,
+    CICDPipelineResult,
+)
+from .annotation_manager import (
+    AnnotationManager,
+    AnnotationEntry,
+    DataLabel,
+    LABEL_CATEGORIES,
+)
+from .market_candidate_pool import (
+    CandidatePool,
+    MarketCandidate,
+    ArbitraryStockQuerier,
+)
+from .features_regimes_strategies import (
+    Feature,
+    RegimeInfo,
+    StrategyInfo,
+    StrategyType,
+    StrategyEvaluationResult,
+)
+from .stock_pool_governance import (
+    TierGovernor,
+    TieredStock,
+    PoolTier,
+    DEFAULT_TIER_LIMITS,
+)
+from .news_analyzer import NewsAnalyzer, NewsEvent
+from .event_deduplicator import EventDeduplicator, DedupResult
+from .event_importance_scorer import EventImportanceScorer, ImportanceScoredEvent
+from .conflict_integrator import ConflictIntegrator, ConflictRecord
+from .execution_sizing_guard import SlippageEstimator, ExecutionSizingGuard, SlippageEstimate, LiquidityInfo, SizingConstraint
+from .microstructure_engine import MicrostructureEngine, OrderBookSnapshot, OrderBookLevel, MicrostructureFeatures
 
 __all__ = [
     "DecisionPreChecklist",
@@ -57,4 +111,52 @@ __all__ = [
     "IsolationCheckResult",
     "ExecutionMode",
     "ISOLATED_STORE_NAMES",
+    "VerificationRunner",
+    "VerificationCheck",
+    "VerificationSuiteResult",
+    "StressTestEngine",
+    "StressTestScenario",
+    "StressTestResult",
+    "FixedTestCase",
+    "FixedTestRunResult",
+    "FIXED_TEST_CASES",
+    "make_candidate",
+    "AutoRegressionChecker",
+    "RegressionSuiteResult",
+    "CICDVerificationChain",
+    "CICDStageResult",
+    "CICDPipelineResult",
+    "AnnotationManager",
+    "AnnotationEntry",
+    "DataLabel",
+    "LABEL_CATEGORIES",
+    "CandidatePool",
+    "MarketCandidate",
+    "ArbitraryStockQuerier",
+    "Feature",
+    "RegimeInfo",
+    "StrategyInfo",
+    "StrategyType",
+    "StrategyEvaluationResult",
+    "TierGovernor",
+    "TieredStock",
+    "PoolTier",
+    "DEFAULT_TIER_LIMITS",
+    "NewsAnalyzer",
+    "NewsEvent",
+    "EventDeduplicator",
+    "DedupResult",
+    "EventImportanceScorer",
+    "ImportanceScoredEvent",
+    "ConflictIntegrator",
+    "ConflictRecord",
+    "SlippageEstimator",
+    "ExecutionSizingGuard",
+    "SlippageEstimate",
+    "LiquidityInfo",
+    "SizingConstraint",
+    "MicrostructureEngine",
+    "OrderBookSnapshot",
+    "OrderBookLevel",
+    "MicrostructureFeatures",
 ]

@@ -230,9 +230,19 @@ def test_confidence_calibration_with_decomposition():
 def test_confidence_calibration_with_decomposition_veto():
     guard = ConfidenceCalibrationGuard()
     decomposer = ConfidenceSourceDecomposer()
+    dec_result = decomposer.decompose(raw_confidence=-0.1)
+    result = guard.evaluate(raw_confidence=-0.1, decomposition=dec_result)
+    assert result.veto_reason
+    assert result.calibrated_confidence == 0.0
+    assert result.decomposition is not None
+
+
+def test_confidence_calibration_with_decomposition_no_veto_at_zero():
+    guard = ConfidenceCalibrationGuard()
+    decomposer = ConfidenceSourceDecomposer()
     dec_result = decomposer.decompose(raw_confidence=0.0)
     result = guard.evaluate(raw_confidence=0.0, decomposition=dec_result)
-    assert result.veto_reason
+    assert not result.veto_reason
     assert result.calibrated_confidence == 0.0
     assert result.decomposition is not None
 

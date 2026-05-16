@@ -1,0 +1,30 @@
+﻿round_id: R032
+task_type: trade_log_traceability_chain
+status: completed
+formal_status_code: R032_TRACEABILITY_CHAIN_PASS
+staging_branch: auto/telegram-r031-r048-phase2-20260516-0542
+candidate_commit: 8f85628380521046ae1e488b2af75b7bf3d10676
+round_topic: 交易日誌可追責鏈
+round_phase: Phase 2
+source_topic_table: _governance/law/161輪正式重編主題總表_唯一基準版_v2.md
+base_head: "previous staging commit"
+files_modified:
+  - modules/decision_prechecklist/__init__.py
+  - modules/decision_prechecklist/replay_trace.py
+  - modules/decision_prechecklist/traceability_chain.py (NEW)
+  - tests/test_traceability_chain.py (NEW)
+  - automation/control/candidates/R032_TRACEABILITY_CHAIN/evidence.json
+  - automation/control/candidates/R032_TRACEABILITY_CHAIN/candidate.diff
+authorized_files_only_true_or_false: TRUE
+tests_pass_true_or_false: TRUE
+validators_pass_true_or_false: TRUE
+self_review_result: PASS
+r030_contract_only_preserved_true_or_false: TRUE
+canonical_merge_executed_true_or_false: FALSE
+canonical_push_executed_true_or_false: FALSE
+runtime_started_true_or_false: FALSE
+trading_broker_execution_live_started_true_or_false: FALSE
+order_execution_allowed_true_or_false: FALSE
+blockers: []
+recommended_next_action: PROCEED_TO_R033
+summary: "Built hash-chained traceability chain for trade decisions. TraceabilityChain creates SHA-256-linked decision records that detect tampering or broken chain links. Supports JSONL export/import for append-only persistent storage. ReplayTrace extended with hash-chain fields for cross-linkage."
