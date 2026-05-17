@@ -5,7 +5,6 @@ Complies with NEA v0.1 mandatory patches for R029.
 """
 
 from typing import Dict, Optional
-import random
 from datetime import datetime
 
 
@@ -24,14 +23,14 @@ class FillProbabilityModel:
         Estimate fill probability before order placement.
         Returns structured fill probability breakdown.
         """
-        # Base probability based on lot type
+        # Deterministic base probability: higher volume / odd-lot → lower fill probability
         if is_odd_lot:
-            base_prob = random.uniform(0.75, 0.95)  # Lower for odd lots
+            base_prob = 0.85
         else:
             if volume > 10000:  # Large volume
-                base_prob = random.uniform(0.85, 0.98)  # Partial fill likely
+                base_prob = 0.90
             else:
-                base_prob = random.uniform(0.95, 1.0)  # Normal fill rate
+                base_prob = 0.97
                 
         # Adjust based on market volatility
         volatility_adjustment = {

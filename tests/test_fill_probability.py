@@ -50,6 +50,46 @@ class TestFillProbabilityEstimate:
         result = model.estimate_fill_probability(1000, is_odd_lot=False, market_volatility='low')
         assert 0.0 <= result['fill_probability'] <= 1.0
 
+    def test_same_input_repeated_result_identical(self):
+        """Deterministic: same input must produce identical fill_probability."""
+        model = FillProbabilityModel()
+        result1 = model.estimate_fill_probability(1000, is_odd_lot=False, market_volatility='normal')
+        result2 = model.estimate_fill_probability(1000, is_odd_lot=False, market_volatility='normal')
+        assert result1['fill_probability'] == result2['fill_probability']
+        assert result1['base_probability'] == result2['base_probability']
+
+    def test_large_volume_always_less_than_normal(self):
+        """Deterministic: large volume must always have lower fill probability."""
+        model = FillProbabilityModel()
+        normal = model.estimate_fill_probability(1000, is_odd_lot=False)
+        large = model.estimate_fill_probability(20000, is_odd_lot=False)
+        assert large['fill_probability'] < normal['fill_probability']
+        # Explicit deterministic values
+        assert normal['base_probability'] == 0.97
+        assert large['base_probability'] == 0.90
+
+    def test_high_volatility_always_reduces(self):
+        """Deterministic: high volatility must always reduce fill probability."""
+        model = FillProbabilityModel()
+        normal = model.estimate_fill_probability(1000, is_odd_lot=False, market_volatility='normal')
+        high = model.estimate_fill_probability(1000, is_odd_lot=False, market_volatility='high')
+        assert high['fill_probability'] < normal['fill_probability']
+
+    def test_low_volatility_always_increases(self):
+        """Deterministic: low volatility must always increase fill probability."""
+        model = FillProbabilityModel()
+        normal = model.estimate_fill_probability(1000, is_odd_lot=False, market_volatility='normal')
+        low = model.estimate_fill_probability(1000, is_odd_lot=False, market_volatility='low')
+        assert low['fill_probability'] > normal['fill_probability']
+
+    def test_odd_lot_always_lower_than_board_lot(self):
+        """Deterministic: odd lot must always have lower fill probability."""
+        model = FillProbabilityModel()
+        board = model.estimate_fill_probability(1000, is_odd_lot=False)
+        odd = model.estimate_fill_probability(500, is_odd_lot=True)
+        assert odd['fill_probability'] < board['fill_probability']
+        assert odd['base_probability'] == 0.85
+
 
 class TestFillProbabilityRecording:
     def test_record_actual_fill_exact_match(self):
