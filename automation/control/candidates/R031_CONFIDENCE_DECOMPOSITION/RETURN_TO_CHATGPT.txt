@@ -31,4 +31,8 @@ trading_broker_execution_live_started_true_or_false: FALSE
 order_execution_allowed_true_or_false: FALSE
 blockers: []
 recommended_next_action: PROCEED_TO_R032
-summary: "Created ConfidenceSourceDecomposer that decomposes raw confidence into 7 named, weighted, traceable sources (pattern, fundamental, regime_alignment, signal_source_reliability, timeframe_alignment, data_quality, contradiction_resolution). Integrated into existing ConfidenceCalibrationGuard and DecisionPreChecklist pipeline. All 44 R031-related tests pass (19 new + 25 existing)."
+r031_failure_fix_applied_true_or_false: TRUE
+r031_failure_root_cause: "test_confidence_decomposition.py used DEFAULT_SOURCE_CONFIG.copy() (shallow copy) then mutated config['pattern']['min_raw']=0.5, which altered module-level state. Fixed in confidence_decomposition.py constructor via copy.deepcopy() to prevent shared mutable state pollution."
+r031_pre_fix_overall_tests: "461 passed, 8 failed (R031 confidence calibration failure among them)"
+r031_post_fix_overall_tests: "462 passed, 7 failed (R031 confidence calibration failure eliminated; remaining 7 are R027 arbitrage_protection + R006 psutil pre-existing)"
+summary: "Created ConfidenceSourceDecomposer that decomposes raw confidence into 7 named, weighted, traceable sources (pattern, fundamental, regime_alignment, signal_source_reliability, timeframe_alignment, data_quality, contradiction_resolution). Integrated into existing ConfidenceCalibrationGuard and DecisionPreChecklist pipeline. All 45 R031-related tests pass. Fixed shallow-copy mutable-default pollution bug that caused test_confidence_calibration_with_decomposition_no_veto_at_zero to fail in full suite."

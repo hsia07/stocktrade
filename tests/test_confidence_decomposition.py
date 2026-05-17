@@ -126,7 +126,7 @@ def test_decompose_regime_penalty():
 
 
 def test_decompose_individual_source_veto():
-    config = DEFAULT_SOURCE_CONFIG.copy()
+    config = {k: dict(v) for k, v in DEFAULT_SOURCE_CONFIG.items()}
     config["pattern"]["min_raw"] = 0.5
     decomposer = ConfidenceSourceDecomposer(source_config=config)
     result = decomposer.decompose(

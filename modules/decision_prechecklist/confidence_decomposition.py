@@ -1,6 +1,7 @@
 from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Any
+import copy
 
 
 CONFIDENCE_SOURCE_KEYS = frozenset({
@@ -70,7 +71,7 @@ class ConfidenceSourceDecomposer:
         low_experience_threshold: int = 5,
         default_regime_uncertainty_penalty: float = 0.0,
     ):
-        self._config = source_config or DEFAULT_SOURCE_CONFIG
+        self._config = copy.deepcopy(source_config) if source_config is not None else copy.deepcopy(DEFAULT_SOURCE_CONFIG)
         self._validate_config()
         self._brier_penalty_threshold = brier_penalty_threshold
         self._low_experience_threshold = low_experience_threshold

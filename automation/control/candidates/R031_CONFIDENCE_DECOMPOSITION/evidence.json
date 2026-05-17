@@ -13,6 +13,8 @@
     "modules/decision_prechecklist/__init__.py",
     "modules/decision_prechecklist/checklist.py",
     "modules/decision_prechecklist/confidence_calibration.py",
+    "modules/decision_prechecklist/confidence_decomposition.py",
+    "tests/test_confidence_decomposition.py",
     "tests/test_decision_prechecklist.py"
   ],
   "files_added": [],
@@ -22,6 +24,8 @@
   "tests_pass": true,
   "validators_pass": true,
   "self_review_result": "PASS",
+  "r031_failure_fix_applied": true,
+  "r031_failure_root_cause": "test_confidence_decomposition.py test_decompose_individual_source_veto used DEFAULT_SOURCE_CONFIG.copy() (shallow copy) then mutated config['pattern']['min_raw']=0.5, permanently altering the module-level DEFAULT_SOURCE_CONFIG dict. Fixed: confidence_decomposition.py constructor now uses copy.deepcopy() to prevent shared mutable state pollution.",
   "r030_contract_only_preserved": true,
   "canonical_merge_executed": false,
   "canonical_push_executed": false,
