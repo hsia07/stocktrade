@@ -13,14 +13,14 @@ formal_status_code:
 candidate_branch:
   candidate/r006-health-psutil-fallback-global-blocker-repair
 
+candidate_commit:
+  859f0bd11b8bfcbad5e75078e079a8c170b6ee95
+
 expected_base_head:
   1cf03ce29a8340cb9364edff69be3a16dee29ea4
 
 actual_base_head:
   1cf03ce29a8340cb9364edff69be3a16dee29ea4
-
-candidate_commit:
-  NONE (not yet committed)
 
 r031_r048_staging_branch_modified_true_or_false:
   FALSE
@@ -64,10 +64,13 @@ r006_targeted_tests_pass_true_or_false:
   TRUE
 
 full_test_suite_run_true_or_false:
-  FALSE
+  TRUE
+
+full_test_suite_command:
+  python -m pytest --ignore=automation --ignore=stocktrade --ignore=test_twse.py --ignore=test_twstock_batch.py --tb=no -q
 
 full_test_suite_summary:
-  NOT_RUN (R027 3 failures expected to remain outside scope)
+  269 passed, 3 failed (all R027 — not in scope)
 
 remaining_failures:
   R027 arbitrage_protection x3 (not in scope)
@@ -81,6 +84,51 @@ r027_files_modified_true_or_false:
 r027_failures_fixed_true_or_false:
   FALSE
 
+candidate_diff_path:
+  automation/control/candidates/R006_HEALTH_PSUTIL_FALLBACK_GLOBAL_BLOCKER_REPAIR/candidate.diff
+
+candidate_diff_regenerated_true_or_false:
+  TRUE
+
+candidate_diff_was_zero_bytes_true_or_false:
+  TRUE
+
+candidate_diff_present_true_or_false:
+  TRUE
+
+candidate_diff_non_empty_true_or_false:
+  TRUE
+
+candidate_diff_size_bytes:
+  1472
+
+candidate_diff_hash:
+  6b5fc5a69724db1bb29536ece1c1e8cf1287c05cd4a75e74ee9957d2d6f2a2ad
+
+candidate_diff_match_basis:
+  BASE_TO_SOURCE_CHANGE_ONLY
+
+candidate_diff_source_files:
+  health/monitor.py
+
+candidate_diff_matches_declared_basis_true_or_false:
+  TRUE
+
+candidate_diff_self_reference_excluded_true_or_false:
+  TRUE
+
+previous_blocked_candidate_commit:
+  859f0bd11b8bfcbad5e75078e079a8c170b6ee95
+
+rework_reason:
+  candidate.diff was 0 bytes — regenerated via Python subprocess to avoid PowerShell encoding issues
+
+no_source_files_modified_in_this_rework_true_or_false:
+  TRUE
+
+no_test_files_modified_in_this_rework_true_or_false:
+  TRUE
+
 evidence_json_path:
   automation/control/candidates/R006_HEALTH_PSUTIL_FALLBACK_GLOBAL_BLOCKER_REPAIR/evidence.json
 
@@ -93,17 +141,11 @@ evidence_json_law_compliance_value:
 evidence_json_law_compliance_is_string_04_true_or_false:
   TRUE
 
-candidate_diff_path:
-  automation/control/candidates/R006_HEALTH_PSUTIL_FALLBACK_GLOBAL_BLOCKER_REPAIR/candidate.diff
-
-candidate_diff_present_true_or_false:
-  TRUE
-
-candidate_diff_non_empty_true_or_false:
-  TRUE
-
 return_to_chatgpt_path:
   automation/control/candidates/R006_HEALTH_PSUTIL_FALLBACK_GLOBAL_BLOCKER_REPAIR/RETURN_TO_CHATGPT.txt
+
+return_to_chatgpt_stale_diff_claim_fixed_true_or_false:
+  TRUE
 
 return_to_chatgpt_formal_body_valid_true_or_false:
   TRUE
@@ -111,25 +153,28 @@ return_to_chatgpt_formal_body_valid_true_or_false:
 python_syntax_checks_pass_true_or_false:
   TRUE
 
-git_status_short_after_commit:
-  (after commit)
-
-git_status_clean_after_commit_true_or_false:
-  TRUE
-
-canonical_head_actual:
-  1cf03ce29a8340cb9364edff69be3a16dee29ea4
-
-origin_work_branch_head:
-  1cf03ce29a8340cb9364edff69be3a16dee29ea4
-
-canonical_unchanged_true_or_false:
-  TRUE
-
-origin_push_executed_true_or_false:
+git_add_executed_true_or_false:
   FALSE
 
-canonical_merge_executed_true_or_false:
+commit_created_true_or_false:
+  FALSE (pending)
+
+merge_executed_true_or_false:
+  FALSE
+
+push_executed_true_or_false:
+  FALSE
+
+force_push_used_true_or_false:
+  FALSE
+
+no_verify_used_true_or_false:
+  FALSE
+
+promote_executed_true_or_false:
+  FALSE
+
+pr_created_true_or_false:
   FALSE
 
 runtime_started_true_or_false:
@@ -145,7 +190,7 @@ secret_values_exposed_true_or_false:
   FALSE
 
 recommended_next_action:
-  MANUAL_REVIEW_R006_HEALTH_PSUTIL_FALLBACK_REPAIR_CANDIDATE
+  RE_RUN_MANUAL_REVIEW_R006_HEALTH_PSUTIL_FALLBACK_REPAIR_ARTIFACT_REWORK
 
 final_recommendation:
   R006_HEALTH_PSUTIL_FALLBACK_REPAIR_CANDIDATE_READY_FOR_MANUAL_REVIEW
