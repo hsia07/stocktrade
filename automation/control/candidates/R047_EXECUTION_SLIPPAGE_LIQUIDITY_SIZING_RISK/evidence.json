@@ -23,13 +23,15 @@
   "diff_stats": "execution_sizing_guard.py +113 lines, test_execution_sizing_guard.py +263 lines",
   "verification_status": "PASS",
   "law_compliance": "04",
-  "staging_commit": "0e51ed8ad3bdb571f25c65e9adf81575ff5ac4e3",
-  "current_head": "7ad5c3ee3ab6a5a0af746d27c3c14c7c9ee8fa9a",
-  "canonical_commit": "1cf03ce29a8340cb9364edff69be3a16dee29ea4",
   "previous_rework_commit": "01d6f2759c629356e3319652c291b4062d9a9f04",
+  "validated_subject_head": "1d7755c3c9d7e96cf776e3aed762c3bdf6b0a1db",
+  "artifact_parent_head": "1d7755c3c9d7e96cf776e3aed762c3bdf6b0a1db",
+  "canonical_commit": "1cf03ce29a8340cb9364edff69be3a16dee29ea4",
+  "self_commit_hash_embedded_true_or_false": false,
+  "self_commit_hash_not_embedded_reason": "git content-addressed commit cannot reliably self-reference",
   "coverage_rework": {
     "previous_result": "weak_pass_with_gaps",
-    "previous_gap": "TaiwanMarketRule.PRICE_STEP declared but not enforced; Taiwan constraints T+2/auction/odd-lot/near-limit/suspended/disposition only in pre-existing checklist.py, not in R047; liquidity_insufficient had no reason code; slippage_excessive was warning-only; evidence.json staging_commit mismatch",
+    "previous_gap": "TaiwanMarketRule.PRICE_STEP declared but not enforced; Taiwan constraints T+2/auction/odd-lot/near-limit/suspended/disposition only in pre-existing checklist.py, not in R047; liquidity_insufficient had no reason code; slippage_excessive was warning-only",
     "rework_fixes": [
       "PRICE_STEP now enforced in TaiwanMarketConstraints.check() with price parameter validation",
       "Added t_plus_2_blocked, collection_auction, is_odd_lot, near_limit_up, near_limit_down, is_suspended, is_disposition_stock fields to TaiwanMarketConstraints",
@@ -44,5 +46,5 @@
     ],
     "result_after_rework": "pass"
   },
-  "generated_at": "2026-05-18T13:00:00"
+  "generated_at": "2026-05-18T13:15:00"
 }
