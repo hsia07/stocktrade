@@ -6,18 +6,51 @@
   "staging_branch": "auto/telegram-r031-r048-phase2-20260516-0542",
   "round_topic": "自動回歸檢查",
   "round_phase": "Phase 2",
-  "base_head": "c8a3f12c07c71a8fca8c417ffed297ab9d029b65",
+  "source_topic_table": "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md",
+  "base_head": "1cf03ce29a8340cb9364edff69be3a16dee29ea4",
+  "candidate_commit": "21ec6a88dd933069f90f315badc42acf6b179e04",
+  "files_modified": [
+    "modules/decision_prechecklist/auto_regression_check.py",
+    "tests/test_auto_regression_check.py"
+  ],
+  "files_added": [
+    "modules/decision_prechecklist/auto_regression_check.py",
+    "tests/test_auto_regression_check.py"
+  ],
+  "candidate_diff_path": "automation/control/candidates/R037_AUTO_REGRESSION/candidate.diff",
+  "evidence_json_path": "automation/control/candidates/R037_AUTO_REGRESSION/evidence.json",
+  "candidate_diff_bytes": 8638,
   "authorized_files_only": true,
   "tests_pass": true,
+  "validators_pass": true,
+  "self_review_result": "PASS",
   "r030_contract_only_preserved": true,
   "canonical_merge_executed": false,
   "canonical_push_executed": false,
   "runtime_started": false,
+  "trading_broker_execution_live_started": false,
   "order_execution_allowed": false,
   "blockers": [],
   "recommended_next_action": "PROCEED_TO_R038",
-  "generated_at": "2026-05-16T05:56:52",
-  "candidate_commit": "21ec6a88dd933069f90f315badc42acf6b179e04",
-  "source_topic_table": "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md",
-  "law_priority_verified": "02 > 03 > 04 > 01"
+  "law_compliance": "04",
+  "law_priority_verified": "02 > 03 > 04 > 01",
+  "preflight_checks": {
+    "round_id_check": "PASS",
+    "topic_table_check": "PASS",
+    "phase_mapping_check": "PASS",
+    "law_priority_check": "PASS",
+    "fresh_rtc_check": "PASS",
+    "manifest_state_check": "PASS",
+    "branch_head_check": "PASS",
+    "dirty_tree_check": "PASS",
+    "authorized_file_scope_check": "PASS",
+    "runtime_stopped_check": "PASS",
+    "order_execution_allowed_check": "PASS",
+    "r030_contract_only_preserved_check": "PASS"
+  },
+  "auto_regression": {
+    "test_count": 6,
+    "regression_passed": true
+  },
+  "generated_at": "2026-05-17T06:00:00"
 }
