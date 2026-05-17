@@ -1,54 +1,42 @@
-round_id: PHASE2_CORE_A1_SERVER_WIRING_SMOKE_TEST_REWORK
-task_type: phase2_core_a1_server_wiring_smoke_test_rework
+round_id: PHASE2_CORE_A1_CANDIDATE_REFRESH_WITH_CANONICAL_MERGE
+task_type: phase2_core_a1_candidate_refresh_with_canonical_merge
 status: completed
-formal_status_code: PHASE2_CORE_A1_SERVER_WIRING_SMOKE_TEST_REWORK_PASS
-head_before_rework: 4e5141d3f4432b296bb3fda42b27d21a4890bc17
-canonical_base: ee711b95e9ea21195447a1fd162f38bbe2e8820f
+formal_status_code: PHASE2_CORE_A1_CANDIDATE_REFRESH_PASS
+candidate_branch: candidate/phase2-core-a1-shadow-readonly-integration
+candidate_head_before_refresh: b33472735143c1d3c0e93c9caa21e3708eae2f1f
+canonical_head_merged_into_candidate: fa2449bd3498dc727dd7ce0948df39f2067978a3
+refreshed_candidate_head: eea3fd72f4d81255ab0c67289ac503896b775651
+refresh_merge_executed: TRUE
+merge_conflict_occurred: FALSE
+rebase_executed: FALSE
+push_executed: FALSE
+canonical_merge_executed: FALSE
 
-rework_scope: Add explicit server.py wiring smoke / failure-safety tests
-files_added: tests/test_phase2_core_a_server_wiring.py (21 tests)
-files_modified: evidence.json, candidate.diff, RETURN_TO_CHATGPT.txt
-server_py_modified: FALSE
+r029_stabilization_included: TRUE
+production_random_removed: TRUE
+same_input_deterministic: TRUE
+large_volume_always_reduces: TRUE
+fill_probability_bounds_preserved: TRUE
+
+core_a1_invariants_preserved:
+  server_py_wiring_within_limits: TRUE
+  no_order_side_effects: TRUE
+  order_execution_allowed: FALSE
+  aggregator_exception_fail_safe: TRUE
+  api_endpoint_added: FALSE
+  ui_wiring_added: FALSE
+  runtime_state_write_added: FALSE
 
 test_results:
   core_a1_targeted: 50/50 PASSED (29 aggregator + 21 server wiring)
+  fill_probability: 17/17 PASSED
+  failing_test_20x_rerun: 20/20 PASS
   decision_prechecklist: 26/26 PASSED
   execution_sizing_guard: 32/32 PASSED
   microstructure_engine: 16/16 PASSED
-  full_subset: 615 passed, 1 failed (pre-existing R029 stochastic)
+  full_subset: 621 passed, 0 failed
 
-server_wiring_smoke_tests (5):
-  test_server_imports_without_error
-  test_trading_engine_has_core_a_shadow_field
-  test_core_a_shadow_is_aggregator
-  test_shadow_evaluate_runs_without_crashing
-  test_shadow_evaluate_preserves_existing_decision
-
-aggregator_failure_tests (4):
-  test_shadow_failure_caught_as_unavailable
-  test_shadow_failure_does_not_change_order_permission
-  test_shadow_failure_does_not_trigger_broker
-  test_server_loop_wiring_catches_shadow_exception
-
-wiring_limit_tests (3):
-  test_server_py_wiring_has_no_new_import_beyond_one
-  test_server_py_wiring_has_no_new_field_beyond_one
-  test_server_py_wiring_has_no_new_eval_beyond_one
-
-no_side_effect_tests (6):
-  test_no_broker_api_call_from_shadow
-  test_no_execution_call_from_shadow
-  test_no_live_mode_from_shadow
-  test_order_execution_allowed_remains_false
-  test_no_direct_buy_sell_in_shadow
-  test_no_api_endpoint_added_anywhere
-
-implied_true_false_removed: TRUE
-tests_cover_server_wiring_smoke: TRUE (explicit, not implied)
-tests_cover_aggregator_failure_fail_safe: TRUE (explicit)
-
+all_tests_pass: TRUE
 remaining_blockers: NONE
-manual_review_required: TRUE
-awaiting_manual_review: TRUE
-
-final_recommendation: Server wiring smoke test rework PASSES. 21 explicit server wiring tests added covering import, field presence, evaluate safety, failure catch, wiring limits, no side-effects. All 50 Core-A1 tests pass. 615/616 full suite (1 pre-existing R029 stochastic failure). Ready for manual review.
+recommended_next_action: MANUAL_REVIEW_PHASE2_CORE_A1_REFRESHED_CANDIDATE_BEFORE_LOCAL_MERGE
+final_recommendation: PHASE2_CORE_A1_CANDIDATE_REFRESHED_AWAITING_LOCAL_MERGE_DECISION
