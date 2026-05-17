@@ -20,15 +20,48 @@ class TaiwanMarketConstraints:
     current_position: int = 0
     price_step: float = 0.01
     circuit_breaker_active: bool = False
+    t_plus_2_blocked: bool = False
+    collection_auction: bool = False
+    is_odd_lot: bool = False
+    near_limit_up: bool = False
+    near_limit_down: bool = False
+    is_suspended: bool = False
+    is_disposition_stock: bool = False
     violated_rules: list[str] = field(default_factory=list)
 
-    def check(self, quantity: int) -> bool:
+    def check(self, quantity: int, price: float | None = None) -> bool:
         self.violated_rules = []
         if not self.is_taiwan_stock:
             return True
         if self.circuit_breaker_active:
             self.violated_rules.append("circuit_breaker")
             return False
+        if self.is_suspended:
+            self.violated_rules.append("suspended")
+            return False
+        if self.is_disposition_stock:
+            self.violated_rules.append("disposition_stock")
+            return False
+        if self.collection_auction:
+            self.violated_rules.append("collection_auction")
+            return False
+        if self.t_plus_2_blocked:
+            self.violated_rules.append("t_plus_2")
+            return False
+        if self.near_limit_up:
+            self.violated_rules.append("near_limit_up")
+            return False
+        if self.near_limit_down:
+            self.violated_rules.append("near_limit_down")
+            return False
+        if self.is_odd_lot:
+            self.violated_rules.append("odd_lot")
+            return False
+        if price is not None and self.price_step > 0:
+            remainder = price % self.price_step
+            if remainder > 1e-9 and abs(remainder - self.price_step) > 1e-9:
+                self.violated_rules.append("price_step")
+                return False
         if self.max_position > 0 and self.current_position + quantity > self.max_position:
             self.violated_rules.append("position_cap")
             return False
@@ -93,7 +126,7 @@ class ExecutionSizingGuard:
 
         taiwan_violations: list[str] = []
         if taiwan is not None:
-            if not taiwan.check(final):
+            if not taiwan.check(final, price=price):
                 taiwan_violations = list(taiwan.violated_rules)
                 final = 0
 

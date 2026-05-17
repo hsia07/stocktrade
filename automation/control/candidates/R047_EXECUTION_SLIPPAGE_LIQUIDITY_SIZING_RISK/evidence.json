@@ -5,20 +5,35 @@
   "core_module": "modules/decision_prechecklist/execution_sizing_guard.py",
   "test_file": "tests/test_execution_sizing_guard.py",
   "test_results": {
-    "total": 10,
-    "passed": 10,
+    "total": 22,
+    "passed": 22,
     "failed": 0,
-    "execution_time_seconds": 0.12
+    "execution_time_seconds": 0.11
   },
   "features_enhanced": [
-    "TaiwanMarketRule enum",
-    "TaiwanMarketConstraints dataclass with circuit_breaker, position_cap, day_trade_limit checks",
+    "TaiwanMarketRule enum with all 11 Taiwan constraint types",
+    "TaiwanMarketConstraints dataclass enforcing price_step, circuit_breaker, position_cap, day_trade_limit, suspended, disposition_stock, collection_auction, T+2, near_limit_up, near_limit_down, odd_lot",
     "SizingConstraint.taiwan_violations field",
-    "ExecutionSizingGuard.calculate() accepts optional TaiwanMarketConstraints"
+    "ExecutionSizingGuard.calculate() accepts optional TaiwanMarketConstraints with price parameter",
+    "R047 coverage rework: all declared Taiwan constraint rules now enforced and tested"
   ],
-  "diff_stats": "execution_sizing_guard.py +46 lines, test_execution_sizing_guard.py +44 lines",
+  "diff_stats": "execution_sizing_guard.py +93 lines, test_execution_sizing_guard.py +163 lines",
   "verification_status": "PASS",
   "law_compliance": "04",
-  "staging_commit": "4c42da9b2e5b393f5965250dd6db7d94e4934f58",
-  "canonical_commit": "1cf03ce29a8340cb9364edff69be3a16dee29ea4"
+  "staging_commit": "8a82d6f2c7f54e7ecb79ba4c8f1ea947c9521255",
+  "canonical_commit": "1cf03ce29a8340cb9364edff69be3a16dee29ea4",
+  "coverage_rework": {
+    "previous_result": "weak_pass",
+    "previous_gap": "TaiwanMarketRule.PRICE_STEP declared but not enforced; Taiwan constraints T+2/auction/odd-lot/near-limit/suspended/disposition only in pre-existing checklist.py, not in R047",
+    "rework_fixes": [
+      "PRICE_STEP now enforced in TaiwanMarketConstraints.check() with price parameter validation",
+      "Added t_plus_2_blocked, collection_auction, is_odd_lot, near_limit_up, near_limit_down, is_suspended, is_disposition_stock fields to TaiwanMarketConstraints",
+      "All 11 Taiwan constraint types enforced in check(), each blocking (no-trade) when violated",
+      "Added 12 new tests covering all Taiwan constraint types and integration paths",
+      "price_step validated against price quantization: round(price / price_step) * price_step == price",
+      "Priority order enforced: circuit_breaker > suspended > disposition > auction > T+2 > near_limit > odd_lot > position_cap > day_trade_limit"
+    ],
+    "result_after_rework": "pass"
+  },
+  "generated_at": "2026-05-18T12:40:00"
 }

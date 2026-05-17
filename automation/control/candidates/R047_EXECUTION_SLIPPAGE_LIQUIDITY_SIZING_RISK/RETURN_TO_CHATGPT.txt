@@ -1,22 +1,59 @@
 RETURN_TO_CHATGPT
 
-formal_status_code: COMPLETED_CANDIDATE
+formal_status_code: COMPLETED_CANDIDATE_COVERAGE_REWORK
 round_id: R047
 round_name: 執行/Slippage/流動性/部位/強風控 EXECUTION_SLIPPAGE_LIQUIDITY_SIZING_RISK
-staging_branch: staging (4c42da9b)
+staging_branch: auto/telegram-r031-r048-phase2-20260516-0542
 canonical_baseline: 1cf03ce (unchanged)
 origin: 1cf03ce (unchanged, no push)
 
 Summary:
-Enhanced execution_sizing_guard.py with Taiwan market constraints: TaiwanMarketRule enum, TaiwanMarketConstraints dataclass with circuit_breaker, position_cap, and day_trade_limit checks. Integration with ExecutionSizingGuard.calculate() via optional taiwan parameter. 10/10 tests pass.
+Taiwan constraint enforcement rework: TaiwanMarketConstraints now enforces all 11
+declared Taiwan market rule types. Each rule blocks (no-trade) when violated:
+circuit_breaker, suspended, disposition_stock, collection_auction, T+2,
+near_limit_up, near_limit_down, odd_lot, price_step, position_cap, day_trade_limit.
+22/22 tests pass (10 original + 12 new).
+
+Rework detail:
+- PRICE_STEP: Was declared in TaiwanMarketRule enum but NOT enforced in
+  TaiwanMarketConstraints.check(). Now enforced via price parameter validation:
+  price % price_step must be near-zero, otherwise blocked as "price_step".
+- Added 7 new fields to TaiwanMarketConstraints: t_plus_2_blocked,
+  collection_auction, is_odd_lot, near_limit_up, near_limit_down,
+  is_suspended, is_disposition_stock. All enforced in check().
+- Priority order: circuit_breaker > suspended > disposition > auction >
+  T+2 > near_limit > odd_lot > price_step > position_cap > day_trade_limit.
+- All violations are no-trade (final_qty=0, veto_reason set, taiwan_violations populated).
+- ExecutionSizingGuard.calculate() passes price to taiwan.check() for price_step validation.
+
+Previous gap: R031_R048 coverage audit reported R047 as "weak_pass" because
+price_step was declared but not enforced, and T+2/auction/odd-lot/near-limit/
+halted constraints only existed in pre-existing checklist.py, not in R047 guard.
+Now resolved: all Taiwan constraint types are enforced at the sizing guard level
+as defense-in-depth, regardless of whether checklist.py also checks them.
+
+Taiwan constraint source and test matrix (after rework):
+  price_step:         source=enforced in check(price=)    test=test_taiwan_price_step_invalid
+  circuit_breaker:    source=enforced in check()          test=test_taiwan_circuit_breaker_blocks
+  suspended:          source=enforced in check()          test=test_taiwan_suspended_blocks
+  disposition_stock:  source=enforced in check()          test=test_taiwan_disposition_stock_blocks
+  collection_auction: source=enforced in check()          test=test_taiwan_collection_auction_blocks
+  T+2:                source=enforced in check()          test=test_taiwan_t_plus_2_blocks
+  near_limit_up:      source=enforced in check()          test=test_taiwan_near_limit_up_blocks
+  near_limit_down:    source=enforced in check()          test=test_taiwan_near_limit_down_blocks
+  odd_lot:            source=enforced in check()          test=test_taiwan_odd_lot_blocks
+  position_cap:       source=enforced in check()          test=test_taiwan_position_cap
+  day_trade_limit:    source=enforced in check()          test=test_taiwan_day_trade_limit
 
 Files changed:
-  modules/decision_prechecklist/execution_sizing_guard.py   (+46)
-  tests/test_execution_sizing_guard.py                      (+44)
+  modules/decision_prechecklist/execution_sizing_guard.py   (+93)
+  tests/test_execution_sizing_guard.py                      (+163)
+  automation/control/candidates/R047_EXECUTION_SLIPPAGE_LIQUIDITY_SIZING_RISK/evidence.json (updated)
 
 Verification:
-  - All 10 test functions pass
+  - All 22 test functions pass (10 original + 12 new Taiwan constraint tests)
   - Python syntax check: OK
-  - Staging HEAD unchanged from prior rounds
+  - 234 R031-R048 tests pass (full subset)
   - No broker API calls, no order_execution_allowed=TRUE
-  - Shared foundation round (Phase 2 topic), not canonical-ready
+  - No server_v2.py / index_v2.html / broker / execution / live modified
+  - R047 merged from coverage audit "weak_pass" to "pass"
