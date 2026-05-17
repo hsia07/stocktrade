@@ -1,0 +1,51 @@
+round_id: PHASE2_CORE_A1_SHADOW_READONLY_INTEGRATION_CONSTRUCTION
+task_type: phase2_core_a1_shadow_readonly_integration_construction
+status: completed
+formal_status_code: PHASE2_CORE_A1_SHADOW_INTEGRATION_CANDIDATE_READY_FOR_MANUAL_REVIEW
+
+construction_branch: candidate/phase2-core-a1-shadow-readonly-integration
+base_head: ee711b95e9ea21195447a1fd162f38bbe2e8820f
+
+files_added (3):
+  modules/phase2/__init__.py
+  modules/phase2/core_a_shadow_aggregator.py
+  tests/test_phase2_core_a_shadow_aggregator.py
+
+files_modified (1):
+  server.py (+1 import, +1 field, +1 eval call per symbol, fail-closed)
+
+test_results:
+  core_a1_tests: 29/29 PASSED
+  decision_prechecklist: 26/26 PASSED
+  execution_sizing_guard: 32/32 PASSED
+  microstructure_engine: 16/16 PASSED
+  full_clean_subset: 595/595 PASSED
+
+safety_gates:
+  no_order_side_effects: TRUE
+  order_execution_allowed: FALSE
+  broker_api: NOT CALLED
+  execution_live: NOT STARTED
+  runtime_state: NOT WRITTEN
+  server_v2: NOT MODIFIED
+  index_v2: NOT MODIFIED
+  api_endpoint: NOT ADDED
+  ui_wiring: NOT ADDED
+  R030 precheck bypass: FALSE
+  R027 veto bypass: FALSE
+  R047 sizing bypass: FALSE
+  R048 microstructure bypass: FALSE
+  aggregator fail-closed: TRUE
+  shadow_unavailable present: TRUE
+
+scope_hardening_compliance:
+  allowed files only: TRUE
+  forbidden files not touched: TRUE
+  wiring limits respected: TRUE
+
+remaining_blockers: NONE
+manual_review_required: TRUE
+awaiting_manual_review: TRUE
+
+final_recommendation: Phase 2 Core-A1 shadow integration candidate is READY for manual review.
+All 595 tests pass. No broker/execution/live contamination. Wiring within scope hardening limits.

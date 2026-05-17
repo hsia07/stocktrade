@@ -33,6 +33,8 @@ from governance.state_machine.mode_recorder import ModeRecorder
 # R009 Execution Model Integration imports
 from scheduler.priority.scheduler import PriorityScheduler, CommandRouter, Priority, Task, TaskType
 from scheduler.priority.monitor import PriorityMonitor
+# Phase 2 Core-A1 Shadow Integration (read-only, no broker/execution/live)
+from modules.phase2.core_a_shadow_aggregator import CoreAShadowAggregator
 
 load_dotenv()
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
@@ -985,6 +987,8 @@ class TradingEngine:
         self.command_router = CommandRouter(self.priority_scheduler)
         # Register R009 task type handlers (advisory recording)
         self._register_r009_handlers()
+        # Phase 2 Core-A1 Shadow Aggregator (read-only, fail-closed)
+        self.core_a_shadow = CoreAShadowAggregator()
 
     def _map_to_r008_mode(self) -> Mode:
         """Map existing PAPER_TRADE/AUTO_TRADE state to R008 Mode"""
@@ -1141,6 +1145,15 @@ class TradingEngine:
                 self.agent_reports["risk"]             = asdict(self.risk.get_report())
                 self.agent_reports["execution"]        = asdict(self.execution.get_report())
                 self.agent_reports[f"market_{sym}"]    = asdict(self.analyst.analyze(sym, bars, tick))
+
+                # Phase 2 Core-A1 Shadow Evaluation (read-only, fail-closed)
+                if self.core_a_shadow is not None:
+                    try:
+                        shadow_snap = self.core_a_shadow.evaluate(sym, bars, tick, self.risk.open_positions)
+                        if shadow_snap.shadow_result == "unavailable":
+                            log.info("Core-A Shadow unavailable for %s", sym)
+                    except Exception:
+                        log.warning("Core-A Shadow exception for %s (fail-closed)", sym)
 
                 self.observer.emit("market", f"market_{sym}", "info", f"Updated {sym}", {"price": tick["price"]})
 
