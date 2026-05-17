@@ -1,3 +1,4 @@
+import os
 import time
 from datetime import datetime
 
@@ -25,12 +26,19 @@ class HealthCheck:
 
     def check_memory_usage(self):
         # 模擬檢查記憶體使用
-        import psutil
-        memory = psutil.virtual_memory()
-        status = 'ok' if memory.percent < 80 else 'warning'
-        details = f"Memory usage is {memory.percent}%" if status == 'ok' else "High memory usage detected"
-        timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        return {'status': status, 'details': details, 'timestamp': timestamp}
+        try:
+            import psutil
+            memory = psutil.virtual_memory()
+            status = 'ok' if memory.percent < 80 else 'warning'
+            details = f"Memory usage is {memory.percent}%" if status == 'ok' else "High memory usage detected"
+            timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            return {'status': status, 'details': details, 'timestamp': timestamp}
+        except ImportError:
+            return {
+                'status': 'warning',
+                'details': 'Memory check skipped: psutil not available (install with: pip install psutil)',
+                'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            }
 
     def check_disk_space(self):
         # 模擬檢查磁碟空間
