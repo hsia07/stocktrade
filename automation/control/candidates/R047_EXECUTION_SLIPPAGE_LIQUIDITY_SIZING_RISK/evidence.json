@@ -5,35 +5,43 @@
   "core_module": "modules/decision_prechecklist/execution_sizing_guard.py",
   "test_file": "tests/test_execution_sizing_guard.py",
   "test_results": {
-    "total": 22,
-    "passed": 22,
+    "total": 32,
+    "passed": 32,
     "failed": 0,
-    "execution_time_seconds": 0.11
+    "execution_time_seconds": 0.12
   },
   "features_enhanced": [
     "TaiwanMarketRule enum with all 11 Taiwan constraint types",
     "TaiwanMarketConstraints dataclass enforcing price_step, circuit_breaker, position_cap, day_trade_limit, suspended, disposition_stock, collection_auction, T+2, near_limit_up, near_limit_down, odd_lot",
     "SizingConstraint.taiwan_violations field",
     "ExecutionSizingGuard.calculate() accepts optional TaiwanMarketConstraints with price parameter",
-    "R047 coverage rework: all declared Taiwan constraint rules now enforced and tested"
+    "Liquidity insufficient explicit reason code (liquidity_insufficient) for reduce-size and no-trade",
+    "Slippage excessive deterministic threshold (max_allowed_slippage=0.05) with no-trade veto (slippage_excessive)",
+    "Cash insufficient reason code (cash_insufficient)",
+    "Risk budget exhausted reason code (risk_budget_exhausted)"
   ],
-  "diff_stats": "execution_sizing_guard.py +93 lines, test_execution_sizing_guard.py +163 lines",
+  "diff_stats": "execution_sizing_guard.py +113 lines, test_execution_sizing_guard.py +263 lines",
   "verification_status": "PASS",
   "law_compliance": "04",
-  "staging_commit": "8a82d6f2c7f54e7ecb79ba4c8f1ea947c9521255",
+  "staging_commit": "9c4dc21175d37b8321fd038b9dffa05361ab891b",
   "canonical_commit": "1cf03ce29a8340cb9364edff69be3a16dee29ea4",
+  "previous_rework_commit": "01d6f2759c629356e3319652c291b4062d9a9f04",
   "coverage_rework": {
-    "previous_result": "weak_pass",
-    "previous_gap": "TaiwanMarketRule.PRICE_STEP declared but not enforced; Taiwan constraints T+2/auction/odd-lot/near-limit/suspended/disposition only in pre-existing checklist.py, not in R047",
+    "previous_result": "weak_pass_with_gaps",
+    "previous_gap": "TaiwanMarketRule.PRICE_STEP declared but not enforced; Taiwan constraints T+2/auction/odd-lot/near-limit/suspended/disposition only in pre-existing checklist.py, not in R047; liquidity_insufficient had no reason code; slippage_excessive was warning-only; evidence.json staging_commit mismatch",
     "rework_fixes": [
       "PRICE_STEP now enforced in TaiwanMarketConstraints.check() with price parameter validation",
       "Added t_plus_2_blocked, collection_auction, is_odd_lot, near_limit_up, near_limit_down, is_suspended, is_disposition_stock fields to TaiwanMarketConstraints",
       "All 11 Taiwan constraint types enforced in check(), each blocking (no-trade) when violated",
       "Added 12 new tests covering all Taiwan constraint types and integration paths",
       "price_step validated against price quantization: round(price / price_step) * price_step == price",
-      "Priority order enforced: circuit_breaker > suspended > disposition > auction > T+2 > near_limit > odd_lot > position_cap > day_trade_limit"
+      "Priority order enforced: circuit_breaker > suspended > disposition > auction > T+2 > near_limit > odd_lot > position_cap > day_trade_limit",
+      "Explicit liquidity_insufficient reason code in veto_reason when liquidity limits reduce size or block trade",
+      "Deterministic slippage threshold (max_allowed_slippage=0.05) blocks trade (final_qty=0) with slippage_excessive reason code",
+      "Cash_insufficient and risk_budget_exhausted reason codes for sizing limit tracing",
+      "10 new tests for liquidity reason codes, slippage threshold, boundary cases, and integration"
     ],
     "result_after_rework": "pass"
   },
-  "generated_at": "2026-05-18T12:40:00"
+  "generated_at": "2026-05-18T13:00:00"
 }

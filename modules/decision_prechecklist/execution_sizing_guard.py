@@ -77,6 +77,7 @@ class SlippageEstimate:
     liquidity_factor: float
     volatility_factor: float
     total_slippage: float
+    veto_reason: str = ""
 
 
 @dataclass
@@ -98,7 +99,7 @@ class SizingConstraint:
 
 
 class SlippageEstimator:
-    def estimate(self, quantity: int, price: float, liquidity: LiquidityInfo) -> SlippageEstimate:
+    def estimate(self, quantity: int, price: float, liquidity: LiquidityInfo, max_allowed_slippage: float = 0.05) -> SlippageEstimate:
         base_slippage = liquidity.spread / 2.0
         share_of_volume = quantity / max(liquidity.avg_daily_volume, 1)
         volume_slippage = share_of_volume * 0.01
@@ -106,17 +107,20 @@ class SlippageEstimator:
         vol_factor = 1.0
         total = base_slippage + volume_slippage
         total = total * liquidity_factor * vol_factor
+        veto = "slippage_excessive" if total > max_allowed_slippage else ""
         return SlippageEstimate(
             expected_slippage=base_slippage + volume_slippage,
             liquidity_factor=liquidity_factor,
             volatility_factor=vol_factor,
             total_slippage=total,
+            veto_reason=veto,
         )
 
 
 class ExecutionSizingGuard:
-    def __init__(self, max_order_pct_of_volume: float = 0.01):
+    def __init__(self, max_order_pct_of_volume: float = 0.01, max_allowed_slippage: float = 0.05):
         self._max_pct = max_order_pct_of_volume
+        self._max_slippage = max_allowed_slippage
 
     def calculate(self, quantity: int, price: float, risk_budget: float, cash_available: float, liquidity: LiquidityInfo, taiwan: TaiwanMarketConstraints | None = None) -> SizingConstraint:
         max_by_risk = int(risk_budget / max(price, 0.01)) if price > 0 else 0
@@ -130,7 +134,44 @@ class ExecutionSizingGuard:
                 taiwan_violations = list(taiwan.violated_rules)
                 final = 0
 
-        veto = "" if final > 0 else "all sizing constraints reduced to zero"
+        slippage_excessive = False
+        if final > 0:
+            slippage_est = SlippageEstimator().estimate(final, price, liquidity, self._max_slippage)
+            if slippage_est.veto_reason:
+                slippage_excessive = True
+                final = 0
+
+        veto = ""
+        if final == 0:
+            if taiwan_violations:
+                pass
+            elif slippage_excessive:
+                veto = "slippage_excessive"
+            elif max_by_cash == 0:
+                veto = "cash_insufficient"
+            elif max_by_risk == 0:
+                veto = "risk_budget_exhausted"
+            elif max_by_liquidity == 0:
+                veto = "liquidity_insufficient"
+            else:
+                parts = []
+                if max_by_liquidity < quantity:
+                    parts.append("liquidity_insufficient")
+                if max_by_cash < quantity:
+                    parts.append("cash_insufficient")
+                if max_by_risk < quantity:
+                    parts.append("risk_budget_exhausted")
+                veto = ";".join(parts) if parts else "all_sizing_reduced_to_zero"
+        elif final < quantity:
+            parts = []
+            if max_by_liquidity < quantity:
+                parts.append("liquidity_insufficient")
+            if max_by_cash < quantity:
+                parts.append("cash_insufficient")
+            if max_by_risk < quantity:
+                parts.append("risk_budget_exhausted")
+            veto = ";".join(parts)
+
         return SizingConstraint(
             max_qty_by_risk=max_by_risk,
             max_qty_by_liquidity=max_by_liquidity,
