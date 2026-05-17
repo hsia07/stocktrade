@@ -1,0 +1,58 @@
+round_id: R029_FILL_PROBABILITY_DETERMINISM_STABILIZATION_CANDIDATE
+task_type: r029_fill_probability_determinism_stabilization
+status: completed
+formal_status_code: R029_FILL_PROBABILITY_STABILIZATION_CANDIDATE_READY_FOR_MANUAL_REVIEW
+
+canonical_head: ee711b95e9ea21195447a1fd162f38bbe2e8820f
+construction_branch: candidate/r029-fill-probability-determinism-stabilization
+
+files_modified:
+  modules/market_reality/fill_probability.py
+  tests/test_fill_probability.py
+
+root_cause:
+  random.uniform(0.95, 1.0) for normal volume overlapped with
+  random.uniform(0.85, 0.98) for large volume. Overlap region [0.95, 0.98]
+  caused large_volume_prob >= normal_volume_prob ~10% of runs.
+
+stabilization_strategy:
+  Replaced random.uniform with deterministic base_prob values:
+    normal volume: 0.97
+    large volume: 0.90
+    odd lot: 0.85
+  All values separated by >=0.07, ensuring monotonicity under all
+  volatility adjustments (low +0.02, normal 0.0, high -0.05).
+  Production path is fully deterministic. No uncontrolled random.
+
+test_results:
+  fill_probability_tests: 17/17 PASSED
+  r029_market_reality_tests: 48/48 PASSED
+  full_clean_subset: 571/571 PASSED (0 failures)
+  20x_rerun_large_volume: 20/20 PASS
+
+monotonicity_verification:
+  normal (0.97) > large (0.90) > odd_lot (0.85) under all volatility:
+    low:  normal=0.99, large=0.92, odd=0.87
+    norm: normal=0.97, large=0.90, odd=0.85
+    high: normal=0.92, large=0.85, odd=0.80
+  All differences >=0.05. No overlap possible.
+
+safety_verification:
+  server.py: NOT MODIFIED
+  server_v2.py: NOT MODIFIED
+  index_v2.html: NOT MODIFIED
+  core_a1_files: NOT MODIFIED
+  broker/execution/live: NOT MODIFIED
+  no API endpoint added
+  no UI wiring added
+  no runtime state write
+
+remaining_blockers: NONE
+manual_review_required: TRUE
+awaiting_manual_review: TRUE
+
+final_recommendation: R029 fill probability stabilization PASSES.
+Random removed from production path. Deterministic monotonic values ensure
+large volume always has lower fill probability than normal volume.
+All 571 tests pass. 20x rerun of previously failing test passes 100%.
+Ready for manual review and potential no-ff merge into canonical.
