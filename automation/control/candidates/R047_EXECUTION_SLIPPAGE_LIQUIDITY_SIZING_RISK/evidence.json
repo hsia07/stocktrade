@@ -24,6 +24,7 @@
   "verification_status": "PASS",
   "law_compliance": "04",
   "staging_commit": "0e51ed8ad3bdb571f25c65e9adf81575ff5ac4e3",
+  "current_head": "7ad5c3ee3ab6a5a0af746d27c3c14c7c9ee8fa9a",
   "canonical_commit": "1cf03ce29a8340cb9364edff69be3a16dee29ea4",
   "previous_rework_commit": "01d6f2759c629356e3319652c291b4062d9a9f04",
   "coverage_rework": {
