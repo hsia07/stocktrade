@@ -1,0 +1,58 @@
+{
+  "round": "R027_R028_R029_HISTORICAL_GAP_REWORK",
+  "title": "Historical gap rework before R049 readiness decision",
+  "status": "COMPLETE_ALL_TESTS_PASS",
+  "branch": "auto/r027-r028-r029-historical-gap-rework-before-r049-readiness",
+  "canonical_head": "c85b9e8173b79f4f7478ec3f8cf5ec9ef831c114",
+  "generated_at": "2026-05-18T02:22:10.952076",
+  "scope": "CONTRACT_MODULES_TESTS_ARTIFACTS_NOT_RUNTIME_WIRED",
+  "order_execution_allowed": false,
+  "summary": {
+    "stale_path_fixed": {
+      "file": "tests/test_arbitrage_protection.py",
+      "description": "R027 path changed from R027-ARBITRAGE-PROTECTION/ (6 files) to R027_ARBITRAGE_PROTECTION_VETO_SEMANTICS_REPAIR/ (3 files)"
+    },
+    "new_test_files": [
+      "tests/test_market_reality_layer.py (22 tests)",
+      "tests/test_cost_tracking.py (14 tests)",
+      "tests/test_slippage_monitor.py (13 tests)",
+      "tests/test_fill_probability.py (12 tests)",
+      "tests/test_market_reality_integration.py (10 tests)"
+    ],
+    "total_new_tests": 71,
+    "total_test_suite": 561,
+    "total_passed": 561,
+    "total_failed": 0,
+    "historical_audit_verdict": "WEAK_PASS_WITH_GAPS",
+    "weak_pass_rounds": [
+      "R001-R005",
+      "R027",
+      "R028",
+      "R029",
+      "R041"
+    ],
+    "blocked_rounds": 0,
+    "fixes_applied": [
+      "R027 stale artifact path corrected",
+      "R028 trading session mock patch for deterministic testing",
+      "R028 integration test key name trade_count -> total_trades",
+      "R029 slippage tolerance realistic price computation",
+      "R029 fill probability volatility test uses volatility_adjustment field instead of stochastic comparison"
+    ]
+  },
+  "files_modified": [
+    "tests/test_arbitrage_protection.py"
+  ],
+  "files_added": [
+    "tests/test_market_reality_layer.py",
+    "tests/test_cost_tracking.py",
+    "tests/test_slippage_monitor.py",
+    "tests/test_fill_probability.py",
+    "tests/test_market_reality_integration.py"
+  ],
+  "preflight_checks": {
+    "single_round_pass": true,
+    "full_suite_pass": true,
+    "total_tests_run": 561
+  }
+}

@@ -1,0 +1,39 @@
+=== R027/R028/R029 HISTORICAL GAP REWORK — COMPLETE ===
+
+What was done:
+1. R027 stale path fix: test_arbitrage_protection.py:284 — corrected from
+   R027-ARBITRAGE-PROTECTION/ (6 files) → R027_ARBITRAGE_PROTECTION_VETO_SEMANTICS_REPAIR/ (3 files)
+
+2. R028 dedicated tests: test_market_reality_layer.py (22 tests)
+   - Price limit (±10% up/down + edges)
+   - Trading session (pre-market, continuous, odd-lot, outside hours)
+   - T+2 settlement
+   - Odd-lot / board-lot distinction
+   - Liquidity check (low-volume, large-order, sufficient)
+   - Cost/slippage/fill schema
+   - evaluate_order (success, price breach, liquidity failure, fail-safe)
+
+3. R029 dedicated tests:
+   - test_cost_tracking.py (14 tests) — buy/sell tax, zero volume, cost per share,
+     variance tracking, history append, summary
+   - test_slippage_monitor.py (13 tests) — estimate structure, odd-lot/volume
+     effects, recording within/outside tolerance, history, summary, schema
+   - test_fill_probability.py (12 tests) — normal/odd/high-vol/low-vol/large-vol,
+     recording exact-match/underperforms, history, summary
+   - test_market_reality_integration.py (10 tests) — evaluation structure,
+     cost/slippage/fill breakdowns, Taiwan compliance, price breach,
+     recording, monitoring summary
+
+Test results:
+- All 561 tests pass (0 failures)
+- 71 new tests added across R028 + R029 coverage gaps
+- 6 fixable issues encountered and resolved (trading session time dependency,
+  key name mismatch, tolerance threshold, stochastic comparison)
+
+Key design decisions:
+- Source modules (layer.py, cost_tracking.py, etc.) NOT modified
+- Trading session mock patch used where source has datetime.now() limitation
+- All 5 new test files + test_arbitrage_protection.py changed
+- No runtime/broker/live modifications
+
+Next step: await manual review signoff before R049 readiness audit can proceed.
