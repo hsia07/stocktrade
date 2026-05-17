@@ -1,0 +1,29 @@
+round_id: R034
+task_type: replay_live_mode_isolation
+status: completed
+formal_status_code: R034_REPLAY_ISOLATION_PASS
+staging_branch: auto/telegram-r031-r048-phase2-20260516-0542
+round_topic: 回放與真實模式隔離
+round_phase: Phase 2
+candidate_commit: c8a3f12c07c71a8fca8c417ffed297ab9d029b65
+base_head: 8f85628380521046ae1e488b2af75b7bf3d10676
+candidate_diff_path: automation/control/candidates/R034_REPLAY_ISOLATION/candidate.diff
+evidence_json_path: automation/control/candidates/R034_REPLAY_ISOLATION/evidence.json
+candidate_diff_present_true_or_false: TRUE
+evidence_json_present_true_or_false: TRUE
+authorized_files_only_true_or_false: TRUE
+tests_pass_true_or_false: TRUE
+validators_pass_true_or_false: TRUE
+self_review_result: PASS
+r030_contract_only_preserved_true_or_false: TRUE
+canonical_merge_executed_true_or_false: FALSE
+canonical_push_executed_true_or_false: FALSE
+origin_push_executed_true_or_false: FALSE
+runtime_started_true_or_false: FALSE
+trading_broker_execution_live_started_true_or_false: FALSE
+order_execution_allowed_true_or_false: FALSE
+blockers: []
+source_topic_table: _governance/law/161輪正式重編主題總表_唯一基準版_v2.md
+law_priority_verified: 02 > 03 > 04 > 01
+recommended_next_action: PROCEED_TO_R035
+summary: ReplayIsolation: store isolation gate ensuring replay-mode data is quarantined from live-mode. 18 tests pass.

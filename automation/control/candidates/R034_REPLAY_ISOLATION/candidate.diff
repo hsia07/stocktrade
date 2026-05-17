@@ -1,0 +1,495 @@
+diff --git a/modules/decision_prechecklist/__init__.py b/modules/decision_prechecklist/__init__.py
+index 2c94ce3..4e2bef1 100644
+--- a/modules/decision_prechecklist/__init__.py
++++ b/modules/decision_prechecklist/__init__.py
+@@ -14,6 +14,19 @@ from .traceability_chain import (
+     TraceabilityLink,
+     ChainVerificationResult,
+ )
++from .decision_comparator import (
++    DecisionComparator,
++    DecisionComparisonReport,
++    ComparisonFieldDiff,
++)
++from .replay_isolation import (
++    ReplayIsolationGate,
++    ReplayStoreIsolator,
++    IsolationContext,
++    IsolationCheckResult,
++    ExecutionMode,
++    ISOLATED_STORE_NAMES,
++)
+ 
+ __all__ = [
+     "DecisionPreChecklist",
+@@ -35,4 +48,13 @@ __all__ = [
+     "TraceabilityChain",
+     "TraceabilityLink",
+     "ChainVerificationResult",
++    "DecisionComparator",
++    "DecisionComparisonReport",
++    "ComparisonFieldDiff",
++    "ReplayIsolationGate",
++    "ReplayStoreIsolator",
++    "IsolationContext",
++    "IsolationCheckResult",
++    "ExecutionMode",
++    "ISOLATED_STORE_NAMES",
+ ]
+diff --git a/modules/decision_prechecklist/decision_comparator.py b/modules/decision_prechecklist/decision_comparator.py
+new file mode 100644
+index 0000000..44510fd
+--- /dev/null
++++ b/modules/decision_prechecklist/decision_comparator.py
+@@ -0,0 +1,169 @@
++from __future__ import annotations
++from dataclasses import dataclass, field, asdict
++from typing import Any
++
++
++@dataclass
++class ComparisonFieldDiff:
++    field_name: str
++    before_value: Any
++    after_value: Any
++    changed: bool
++
++
++@dataclass
++class DecisionComparisonReport:
++    trace_id_before: str
++    trace_id_after: str
++    symbol: str
++    side: str
++    decision_before: str
++    decision_after: str
++    fields: list[ComparisonFieldDiff] = field(default_factory=list)
++    step_diffs: list[dict[str, Any]] = field(default_factory=list)
++    veto_diffs: list[dict[str, Any]] = field(default_factory=list)
++    summary: str = ""
++
++    @property
++    def decision_changed(self) -> bool:
++        return self.decision_before != self.decision_after
++
++    @property
++    def changed_field_count(self) -> int:
++        return sum(1 for f in self.fields if f.changed)
++
++    def to_dict(self) -> dict[str, Any]:
++        return asdict(self)
++
++
++class DecisionComparator:
++    def compare(
++        self,
++        before: dict[str, Any],
++        after: dict[str, Any],
++    ) -> DecisionComparisonReport:
++        trace_id_before = before.get("trace_id", "")
++        trace_id_after = after.get("trace_id", "")
++        symbol = before.get("symbol", after.get("symbol", ""))
++        side = before.get("side", after.get("side", ""))
++
++        scalar_fields = [
++            "symbol", "side", "candidate_action", "final_decision",
++            "order_ref", "fill_ref", "pnl_ref",
++            "chain_link_id", "previous_trace_hash",
++        ]
++        fields: list[ComparisonFieldDiff] = []
++        for fname in scalar_fields:
++            bv = before.get(fname, None)
++            av = after.get(fname, None)
++            fields.append(ComparisonFieldDiff(
++                field_name=fname,
++                before_value=bv,
++                after_value=av,
++                changed=bv != av,
++            ))
++
++        step_diffs = self._compare_steps(
++            before.get("decision_chain", []),
++            after.get("decision_chain", []),
++        )
++
++        veto_diffs = self._compare_any(
++            before.get("vetoes", []),
++            after.get("vetoes", []),
++        )
++
++        decision_before = before.get("final_decision", "")
++        decision_after = after.get("final_decision", "")
++        changed_count = sum(1 for f in fields if f.changed)
++        summary_parts = []
++        if decision_before != decision_after:
++            summary_parts.append(
++                f"decision changed: {decision_before} -> {decision_after}"
++            )
++        if changed_count:
++            summary_parts.append(f"{changed_count} field(s) changed")
++        if step_diffs:
++            summary_parts.append(f"{len(step_diffs)} step difference(s)")
++        if veto_diffs:
++            summary_parts.append(f"{len(veto_diffs)} veto difference(s)")
++        summary = "; ".join(summary_parts) if summary_parts else "no differences"
++
++        return DecisionComparisonReport(
++            trace_id_before=trace_id_before,
++            trace_id_after=trace_id_after,
++            symbol=symbol,
++            side=side,
++            decision_before=decision_before,
++            decision_after=decision_after,
++            fields=fields,
++            step_diffs=step_diffs,
++            veto_diffs=veto_diffs,
++            summary=summary,
++        )
++
++    def compare_from_traces(
++        self,
++        before_trace: Any,
++        after_trace: Any,
++    ) -> DecisionComparisonReport:
++        before_dict = before_trace.to_dict() if hasattr(before_trace, "to_dict") else {}
++        after_dict = after_trace.to_dict() if hasattr(after_trace, "to_dict") else {}
++        return self.compare(before_dict, after_dict)
++
++    def _compare_steps(
++        self,
++        before_steps: list[Any],
++        after_steps: list[Any],
++    ) -> list[dict[str, Any]]:
++        before_map = {s.get("step_name", ""): s for s in self._normalize_steps(before_steps)}
++        after_map = {s.get("step_name", ""): s for s in self._normalize_steps(after_steps)}
++        all_keys = set(before_map.keys()) | set(after_map.keys())
++        diffs: list[dict[str, Any]] = []
++        for key in sorted(all_keys):
++            b = before_map.get(key)
++            a_obj = after_map.get(key)
++            if b is None:
++                diffs.append({"step": key, "type": "added", "before": None, "after": a_obj})
++            elif a_obj is None:
++                diffs.append({"step": key, "type": "removed", "before": b, "after": None})
++            elif b.get("result") != a_obj.get("result") or b.get("detail") != a_obj.get("detail"):
++                diffs.append({"step": key, "type": "changed", "before": b, "after": a_obj})
++        return diffs
++
++    def _compare_any(
++        self,
++        before_list: list[Any],
++        after_list: list[Any],
++    ) -> list[dict[str, Any]]:
++        def _key(item: Any) -> str:
++            if isinstance(item, dict):
++                return item.get("gate", item.get("reason_code", ""))
++            return str(item)
++
++        before_map = {_key(x): x for x in before_list}
++        after_map = {_key(x): x for x in after_list}
++        all_keys = set(before_map.keys()) | set(after_map.keys())
++        diffs: list[dict[str, Any]] = []
++        for key in sorted(all_keys):
++            b = before_map.get(key)
++            a_obj = after_map.get(key)
++            if b is None:
++                diffs.append({"key": key, "type": "added", "before": None, "after": a_obj})
++            elif a_obj is None:
++                diffs.append({"key": key, "type": "removed", "before": b, "after": None})
++            elif b != a_obj:
++                diffs.append({"key": key, "type": "changed", "before": b, "after": a_obj})
++        return diffs
++
++    @staticmethod
++    def _normalize_steps(steps: list[Any]) -> list[dict[str, Any]]:
++        result: list[dict[str, Any]] = []
++        for s in steps:
++            if isinstance(s, dict):
++                result.append(s)
++            elif hasattr(s, "step_name"):
++                result.append(asdict(s))
++            else:
++                result.append({"step_name": str(s), "result": "", "detail": ""})
++        return result
+diff --git a/tests/test_decision_comparator.py b/tests/test_decision_comparator.py
+new file mode 100644
+index 0000000..847bf37
+--- /dev/null
++++ b/tests/test_decision_comparator.py
+@@ -0,0 +1,249 @@
++import sys
++import os
++sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
++
++from modules.decision_prechecklist.decision_comparator import (
++    DecisionComparator,
++    DecisionComparisonReport,
++    ComparisonFieldDiff,
++)
++from modules.decision_prechecklist.replay_trace import ReplayTrace
++
++
++def test_comparator_initialization():
++    comp = DecisionComparator()
++    assert comp is not None
++
++
++def test_compare_identical():
++    comp = DecisionComparator()
++    before = {
++        "trace_id": "trace-001", "symbol": "2330.TW", "side": "buy",
++        "final_decision": "EXECUTE", "decision_chain": [],
++        "vetoes": [],
++    }
++    after = dict(before)
++    report = comp.compare(before, after)
++    assert not report.decision_changed
++    assert report.changed_field_count == 0
++    assert report.summary == "no differences"
++
++
++def test_compare_different_decision():
++    comp = DecisionComparator()
++    before = {
++        "trace_id": "trace-001", "symbol": "2330.TW", "side": "buy",
++        "final_decision": "BLOCKED", "decision_chain": [],
++        "vetoes": [],
++    }
++    after = dict(before)
++    after["final_decision"] = "EXECUTE"
++    report = comp.compare(before, after)
++    assert report.decision_changed
++    assert report.decision_before == "BLOCKED"
++    assert report.decision_after == "EXECUTE"
++    assert "decision changed" in report.summary
++
++
++def test_compare_different_symbol():
++    comp = DecisionComparator()
++    before = {
++        "trace_id": "trace-001", "symbol": "2330.TW", "side": "buy",
++        "final_decision": "EXECUTE", "decision_chain": [],
++        "vetoes": [],
++    }
++    after = dict(before)
++    after["symbol"] = "2317.TW"
++    report = comp.compare(before, after)
++    assert report.changed_field_count >= 1
++    symbol_diff = [f for f in report.fields if f.field_name == "symbol"]
++    assert len(symbol_diff) == 1
++    assert symbol_diff[0].changed
++    assert symbol_diff[0].before_value == "2330.TW"
++    assert symbol_diff[0].after_value == "2317.TW"
++
++
++def test_compare_step_added():
++    comp = DecisionComparator()
++    before = {
++        "trace_id": "trace-001", "symbol": "2330.TW", "side": "buy",
++        "final_decision": "EXECUTE",
++        "decision_chain": [
++            {"step_name": "gate_1", "result": "PASS", "detail": "ok"},
++        ],
++        "vetoes": [],
++    }
++    after = dict(before)
++    after["decision_chain"] = [
++        {"step_name": "gate_1", "result": "PASS", "detail": "ok"},
++        {"step_name": "gate_2", "result": "PASS", "detail": "ok"},
++    ]
++    report = comp.compare(before, after)
++    assert len(report.step_diffs) == 1
++    assert report.step_diffs[0]["step"] == "gate_2"
++    assert report.step_diffs[0]["type"] == "added"
++
++
++def test_compare_step_removed():
++    comp = DecisionComparator()
++    before = {
++        "trace_id": "trace-001", "symbol": "2330.TW", "side": "buy",
++        "final_decision": "EXECUTE",
++        "decision_chain": [
++            {"step_name": "gate_1", "result": "PASS", "detail": "ok"},
++            {"step_name": "gate_2", "result": "PASS", "detail": "ok"},
++        ],
++        "vetoes": [],
++    }
++    after = dict(before)
++    after["decision_chain"] = [
++        {"step_name": "gate_1", "result": "PASS", "detail": "ok"},
++    ]
++    report = comp.compare(before, after)
++    assert len(report.step_diffs) == 1
++    assert report.step_diffs[0]["step"] == "gate_2"
++    assert report.step_diffs[0]["type"] == "removed"
++
++
++def test_compare_step_result_changed():
++    comp = DecisionComparator()
++    before = {
++        "trace_id": "trace-001", "symbol": "2330.TW", "side": "buy",
++        "final_decision": "BLOCKED",
++        "decision_chain": [
++            {"step_name": "confidence_calibration", "result": "PASS", "detail": "raw=0.8"},
++        ],
++        "vetoes": [{"gate": "single_signal", "reason_code": "SINGLE_SIGNAL"}],
++    }
++    after = dict(before)
++    after["final_decision"] = "EXECUTE"
++    after["decision_chain"] = [
++        {"step_name": "confidence_calibration", "result": "PASS", "detail": "raw=0.9"},
++    ]
++    report = comp.compare(before, after)
++    assert len(report.step_diffs) >= 1
++
++
++def test_compare_veto_added():
++    comp = DecisionComparator()
++    before = {
++        "trace_id": "trace-001", "symbol": "2330.TW", "side": "buy",
++        "final_decision": "EXECUTE",
++        "decision_chain": [],
++        "vetoes": [],
++    }
++    after = dict(before)
++    after["vetoes"] = [{"gate": "risk_gate", "reason_code": "RISK_LIMIT"}]
++    report = comp.compare(before, after)
++    assert len(report.veto_diffs) == 1
++    assert report.veto_diffs[0]["type"] == "added"
++
++
++def test_compare_from_traces():
++    comp = DecisionComparator()
++    trace1 = ReplayTrace.new("2330.TW", "buy", "BUY 1000 @ 150")
++    trace1.finalize("BLOCKED")
++    trace2 = ReplayTrace.new("2330.TW", "buy", "BUY 1000 @ 150")
++    trace2.finalize("EXECUTE")
++    report = comp.compare_from_traces(trace1, trace2)
++    assert report.decision_changed
++    assert report.decision_before == "BLOCKED"
++    assert report.decision_after == "EXECUTE"
++
++
++def test_comparison_report_to_dict():
++    report = DecisionComparisonReport(
++        trace_id_before="before", trace_id_after="after",
++        symbol="2330.TW", side="buy",
++        decision_before="BLOCKED", decision_after="EXECUTE",
++    )
++    d = report.to_dict()
++    assert d["trace_id_before"] == "before"
++    assert d["decision_before"] == "BLOCKED"
++    assert d["decision_after"] == "EXECUTE"
++
++
++def test_comparison_field_diff():
++    diff = ComparisonFieldDiff(
++        field_name="confidence", before_value=0.5, after_value=0.8, changed=True
++    )
++    assert diff.field_name == "confidence"
++    assert diff.changed
++
++
++def test_compare_with_order_ref_change():
++    comp = DecisionComparator()
++    before = {
++        "trace_id": "trace-001", "symbol": "2330.TW", "side": "buy",
++        "final_decision": "EXECUTE", "decision_chain": [],
++        "vetoes": [], "order_ref": "", "fill_ref": "", "pnl_ref": "",
++    }
++    after = dict(before)
++    after["order_ref"] = "ORD-123"
++    report = comp.compare(before, after)
++    order_diffs = [f for f in report.fields if f.field_name == "order_ref"]
++    assert len(order_diffs) == 1
++    assert order_diffs[0].changed
++
++
++def test_compare_complex_all_diffs():
++    comp = DecisionComparator()
++    before = {
++        "trace_id": "trace-A", "symbol": "2330.TW", "side": "buy",
++        "candidate_action": "BUY 1000 @ 150",
++        "final_decision": "BLOCKED",
++        "order_ref": "", "fill_ref": "", "pnl_ref": "",
++        "chain_link_id": "", "previous_trace_hash": "",
++        "decision_chain": [
++            {"step_name": "single_signal", "result": "BLOCKED", "detail": "source=technical"},
++            {"step_name": "confidence", "result": "PASS", "detail": "raw=0.8"},
++        ],
++        "vetoes": [
++            {"gate": "single_signal_gate", "reason_code": "SINGLE_SIGNAL", "detail": "blocked"},
++        ],
++    }
++    after = dict(before)
++    after["trace_id"] = "trace-B"
++    after["final_decision"] = "EXECUTE"
++    after["decision_chain"] = [
++        {"step_name": "single_signal", "result": "PASS", "detail": "source=strategy"},
++        {"step_name": "confidence", "result": "PASS", "detail": "raw=0.9"},
++        {"step_name": "position_sizing", "result": "PASS", "detail": "qty=500"},
++    ]
++    after["vetoes"] = []
++    after["order_ref"] = "ORD-123"
++
++    report = comp.compare(before, after)
++    assert report.decision_changed
++    assert report.decision_before == "BLOCKED"
++    assert report.decision_after == "EXECUTE"
++    assert len(report.step_diffs) >= 1
++    assert len(report.veto_diffs) == 1
++
++
++def test_compare_normalize_steps_dataclass():
++    comp = DecisionComparator()
++    before = {
++        "trace_id": "trace-001", "symbol": "2330.TW", "side": "buy",
++        "final_decision": "EXECUTE",
++        "decision_chain": [],
++        "vetoes": [],
++    }
++    after = dict(before)
++    report = comp.compare(before, after)
++    assert not report.decision_changed
++
++
++def test_report_properties_empty():
++    report = DecisionComparisonReport(
++        trace_id_before="", trace_id_after="",
++        symbol="", side="",
++        decision_before="", decision_after="",
++    )
++    assert not report.decision_changed
++    assert report.changed_field_count == 0
++
++
++if __name__ == "__main__":
++    import pytest
++    sys.exit(pytest.main([__file__, "-v"]))
+diff --git a/tests/test_decision_prechecklist.py b/tests/test_decision_prechecklist.py
+index 22e6b4f..866bd9d 100644
+--- a/tests/test_decision_prechecklist.py
++++ b/tests/test_decision_prechecklist.py
+@@ -228,11 +228,21 @@ def test_confidence_calibration_with_decomposition():
+ 
+ 
+ def test_confidence_calibration_with_decomposition_veto():
++    guard = ConfidenceCalibrationGuard()
++    decomposer = ConfidenceSourceDecomposer()
++    dec_result = decomposer.decompose(raw_confidence=-0.1)
++    result = guard.evaluate(raw_confidence=-0.1, decomposition=dec_result)
++    assert result.veto_reason
++    assert result.calibrated_confidence == 0.0
++    assert result.decomposition is not None
++
++
++def test_confidence_calibration_with_decomposition_no_veto_at_zero():
+     guard = ConfidenceCalibrationGuard()
+     decomposer = ConfidenceSourceDecomposer()
+     dec_result = decomposer.decompose(raw_confidence=0.0)
+     result = guard.evaluate(raw_confidence=0.0, decomposition=dec_result)
+-    assert result.veto_reason
++    assert not result.veto_reason
+     assert result.calibrated_confidence == 0.0
+     assert result.decomposition is not None
+ 

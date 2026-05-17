@@ -1,0 +1,64 @@
+{
+  "round_id": "R041",
+  "task_type": "features_regimes_strategies",
+  "status": "completed",
+  "formal_status_code": "R041_FEATURES_REGIMES_STRATEGIES_PASS",
+  "staging_branch": "auto/telegram-r031-r048-phase2-20260516-0542",
+  "round_topic": "features / regimes / strategies",
+  "round_phase": "Phase 2",
+  "source_topic_table": "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md",
+  "base_head": "1cf03ce29a8340cb9364edff69be3a16dee29ea4",
+  "candidate_commit": "2d8b848db6106b2425d02b0a736675a8fbc75bba",
+  "files_modified": [
+    "modules/decision_prechecklist/__init__.py",
+    "modules/decision_prechecklist/features_regimes_strategies.py",
+    "tests/test_features_regimes_strategies.py"
+  ],
+  "files_added": [
+    "modules/decision_prechecklist/features_regimes_strategies.py",
+    "tests/test_features_regimes_strategies.py"
+  ],
+  "candidate_diff_path": "automation/control/candidates/R041_FEATURES_REGIMES/candidate.diff",
+  "evidence_json_path": "automation/control/candidates/R041_FEATURES_REGIMES/evidence.json",
+  "candidate_diff_bytes": 7000,
+  "authorized_files_only": true,
+  "tests_pass": true,
+  "validators_pass": true,
+  "self_review_result": "PASS",
+  "r030_contract_only_preserved": true,
+  "canonical_merge_executed": false,
+  "canonical_push_executed": false,
+  "runtime_started": false,
+  "trading_broker_execution_live_started": false,
+  "order_execution_allowed": false,
+  "blockers": [],
+  "recommended_next_action": "PROCEED_TO_R042",
+  "law_compliance": "04",
+  "law_priority_verified": "02 > 03 > 04 > 01",
+  "preflight_checks": {
+    "round_id_check": "PASS",
+    "topic_table_check": "PASS",
+    "phase_mapping_check": "PASS",
+    "law_priority_check": "PASS",
+    "fresh_rtc_check": "PASS",
+    "manifest_state_check": "PASS",
+    "branch_head_check": "PASS",
+    "dirty_tree_check": "PASS",
+    "authorized_file_scope_check": "PASS",
+    "runtime_stopped_check": "PASS",
+    "order_execution_allowed_check": "PASS",
+    "r030_contract_only_preserved_check": "PASS"
+  },
+  "features_regimes": {
+    "test_count": 6,
+    "strategy_types": [
+      "MOMENTUM",
+      "MEAN_REVERSION",
+      "BREAKOUT",
+      "ARBITRAGE",
+      "TREND_FOLLOWING",
+      "VALUE"
+    ]
+  },
+  "generated_at": "2026-05-17T06:00:00"
+}

@@ -6,6 +6,7 @@ from .nea_engine import NEAEngine
 from .position_sizing import PositionSizingEngine
 from .confidence_calibration import ConfidenceCalibrationGuard
 from .replay_trace import ReplayTrace
+from .confidence_decomposition import ConfidenceSourceDecomposer
 
 
 SINGLE_SIGNAL_SOURCES = frozenset({
@@ -62,6 +63,7 @@ class TradeCandidate:
     is_near_limit_up: bool = False
     is_near_limit_down: bool = False
     liquidity_score: float = 1.0
+    confidence_decomposition: dict[str, float] = field(default_factory=dict)
     extra: dict[str, Any] = field(default_factory=dict)
 
 
@@ -74,6 +76,7 @@ class PreChecklistResult:
     nea_result: Any = None
     sizing_result: Any = None
     calibration_result: Any = None
+    decomposition_result: Any = None
     vetoes: list[dict[str, str]] = field(default_factory=list)
 
 
@@ -83,11 +86,13 @@ class DecisionPreChecklist:
         nea_engine: NEAEngine | None = None,
         sizing_engine: PositionSizingEngine | None = None,
         confidence_guard: ConfidenceCalibrationGuard | None = None,
+        confidence_decomposer: ConfidenceSourceDecomposer | None = None,
         extra_veto_hook: Callable[[TradeCandidate], str | None] | None = None,
     ):
         self._nea = nea_engine or NEAEngine()
         self._sizing = sizing_engine or PositionSizingEngine()
         self._confidence = confidence_guard or ConfidenceCalibrationGuard()
+        self._decomposer = confidence_decomposer or ConfidenceSourceDecomposer()
         self._extra_veto_hook = extra_veto_hook
 
     def evaluate(self, candidate: TradeCandidate) -> PreChecklistResult:
@@ -118,11 +123,27 @@ class DecisionPreChecklist:
         if step_4:
             _veto("market_reality_gate", "MARKET_REALITY_FAIL", market_reality_detail)
 
+        dec_result = self._decomposer.decompose(
+            raw_confidence=candidate.confidence_raw,
+            source_scores=candidate.confidence_decomposition or None,
+            historical_brier_score=candidate.historical_brier_score,
+            num_past_decisions=candidate.num_past_decisions,
+            regime_uncertainty=candidate.regime_uncertainty,
+        )
+        trace.add_step(
+            "confidence_decomposition",
+            "BLOCKED" if dec_result.veto_reason else "PASS",
+            f"{len(dec_result.sources)} sources, overall={dec_result.overall_calibrated:.4f}",
+        )
+        if dec_result.veto_reason:
+            _veto("confidence_decomposition_gate", "CONFIDENCE_DECOMPOSITION_FAIL", dec_result.veto_reason)
+
         calibration_result = self._confidence.evaluate(
             raw_confidence=candidate.confidence_raw,
             historical_brier_score=candidate.historical_brier_score,
             num_past_decisions=candidate.num_past_decisions,
             regime_uncertainty=candidate.regime_uncertainty,
+            decomposition=dec_result if not dec_result.veto_reason else None,
         )
         trace.add_step(
             "confidence_calibration",
@@ -218,6 +239,7 @@ class DecisionPreChecklist:
             nea_result=nea_result,
             sizing_result=sizing_result,
             calibration_result=calibration_result,
+            decomposition_result=dec_result,
             vetoes=vetoes,
         )
 

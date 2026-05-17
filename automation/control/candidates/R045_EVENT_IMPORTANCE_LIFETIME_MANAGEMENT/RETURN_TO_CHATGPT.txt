@@ -1,0 +1,22 @@
+RETURN_TO_CHATGPT
+
+formal_status_code: COMPLETED_CANDIDATE
+round_id: R045
+round_name: 事件重要度分層與壽命管理 EVENT_IMPORTANCE_LIFETIME_MANAGEMENT
+staging_branch: staging (4c42da9b)
+canonical_baseline: 1cf03ce (unchanged)
+origin: 1cf03ce (unchanged, no push)
+
+Summary:
+Enhanced event_importance_scorer.py with RiskTier enum (LOW/MEDIUM/HIGH/CRITICAL), risk_tier field on ImportanceScoredEvent, and _determine_risk_tier method based on effective score and category. 7/7 tests pass. No merge, no push, no deployment.
+
+Files changed:
+  modules/decision_prechecklist/event_importance_scorer.py   (+24)
+  tests/test_event_importance_scorer.py                      (+32)
+
+Verification:
+  - All 7 test functions pass
+  - Python syntax check: OK
+  - Staging HEAD unchanged from prior rounds
+  - No broker API calls, no order_execution_allowed=TRUE
+  - Shared foundation round (Phase 2 topic), not canonical-ready

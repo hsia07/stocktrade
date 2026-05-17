@@ -1,0 +1,29 @@
+{
+  "round_id": "R048",
+  "round_name": "市場微觀結構基礎引擎 (Market Microstructure Engine)",
+  "topic": "R048=市場微觀結構基礎引擎",
+  "core_module": "modules/decision_prechecklist/microstructure_engine.py",
+  "test_file": "tests/test_microstructure_engine.py",
+  "test_results": {
+    "total": 16,
+    "passed": 16,
+    "failed": 0,
+    "execution_time_seconds": 0.14
+  },
+  "features_enhanced": [
+    "MarketSession enum (PRE_MARKET, REGULAR, AFTER_HOURS, CLOSED)",
+    "FillFeasibility dataclass",
+    "LimitUpDownInfo dataclass",
+    "OrderBookSnapshot.get_limit_up_down() method",
+    "OrderBookSnapshot.assess_fill() method for fill feasibility",
+    "OrderBookSnapshot.previous_close field",
+    "MicrostructureFeatures.fill_feasibility, limit_up_down, market_session fields",
+    "MicrostructureEngine.get_current_session() method for Taiwan market hours",
+    "MicrostructureEngine.compute_features() accepts side/quantity/price params"
+  ],
+  "diff_stats": "microstructure_engine.py +107 lines, test_microstructure_engine.py +91 lines",
+  "verification_status": "PASS",
+  "law_compliance": "04",
+  "staging_commit": "4c42da9b2e5b393f5965250dd6db7d94e4934f58",
+  "canonical_commit": "1cf03ce29a8340cb9364edff69be3a16dee29ea4"
+}

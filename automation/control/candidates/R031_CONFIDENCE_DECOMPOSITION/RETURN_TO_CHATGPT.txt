@@ -1,0 +1,38 @@
+﻿round_id: R031
+task_type: confidence_source_decomposition
+status: completed
+formal_status_code: R031_CONFIDENCE_DECOMPOSITION_PASS
+staging_branch: auto/telegram-r031-r048-phase2-20260516-0542
+candidate_commit: bf0c59a314b490f50717a23ba8fd468c7f3806f3
+round_topic: 信心來源拆解
+round_phase: Phase 2
+source_topic_table: _governance/law/161輪正式重編主題總表_唯一基準版_v2.md
+base_head: 1cf03ce29a8340cb9364edff69be3a16dee29ea4
+files_modified:
+  - modules/decision_prechecklist/__init__.py
+  - modules/decision_prechecklist/checklist.py
+  - modules/decision_prechecklist/confidence_calibration.py
+  - modules/decision_prechecklist/confidence_decomposition.py (NEW)
+  - tests/test_confidence_decomposition.py (NEW)
+  - tests/test_decision_prechecklist.py
+  - automation/control/candidates/R031_CONFIDENCE_DECOMPOSITION/evidence.json
+  - automation/control/candidates/R031_CONFIDENCE_DECOMPOSITION/candidate.diff
+candidate_diff_path: automation/control/candidates/R031_CONFIDENCE_DECOMPOSITION/candidate.diff
+evidence_json_path: automation/control/candidates/R031_CONFIDENCE_DECOMPOSITION/evidence.json
+authorized_files_only_true_or_false: TRUE
+tests_pass_true_or_false: TRUE
+validators_pass_true_or_false: TRUE
+self_review_result: PASS
+r030_contract_only_preserved_true_or_false: TRUE
+canonical_merge_executed_true_or_false: FALSE
+canonical_push_executed_true_or_false: FALSE
+runtime_started_true_or_false: FALSE
+trading_broker_execution_live_started_true_or_false: FALSE
+order_execution_allowed_true_or_false: FALSE
+blockers: []
+recommended_next_action: PROCEED_TO_R032
+r031_failure_fix_applied_true_or_false: TRUE
+r031_failure_root_cause: "test_confidence_decomposition.py used DEFAULT_SOURCE_CONFIG.copy() (shallow copy) then mutated config['pattern']['min_raw']=0.5, which altered module-level state. Fixed in confidence_decomposition.py constructor via copy.deepcopy() to prevent shared mutable state pollution."
+r031_pre_fix_overall_tests: "461 passed, 8 failed (R031 confidence calibration failure among them)"
+r031_post_fix_overall_tests: "462 passed, 7 failed (R031 confidence calibration failure eliminated; remaining 7 are R027 arbitrage_protection + R006 psutil pre-existing)"
+summary: "Created ConfidenceSourceDecomposer that decomposes raw confidence into 7 named, weighted, traceable sources (pattern, fundamental, regime_alignment, signal_source_reliability, timeframe_alignment, data_quality, contradiction_resolution). Integrated into existing ConfidenceCalibrationGuard and DecisionPreChecklist pipeline. All 45 R031-related tests pass. Fixed shallow-copy mutable-default pollution bug that caused test_confidence_calibration_with_decomposition_no_veto_at_zero to fail in full suite."

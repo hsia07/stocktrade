@@ -1,6 +1,9 @@
 from __future__ import annotations
 from dataclasses import dataclass, field
-from typing import Any
+from typing import Any, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from .confidence_decomposition import ConfidenceDecompositionReport
 
 
 @dataclass
@@ -11,6 +14,7 @@ class CalibratedConfidence:
     veto_reason: str
     is_fallback: bool
     details: dict[str, Any] = field(default_factory=dict)
+    decomposition: Any = None
 
 
 class ConfidenceCalibrationGuard:
@@ -23,7 +27,29 @@ class ConfidenceCalibrationGuard:
         historical_brier_score: float | None = None,
         num_past_decisions: int = 0,
         regime_uncertainty: float = 0.0,
+        decomposition: ConfidenceDecompositionReport | None = None,
     ) -> CalibratedConfidence:
+        if decomposition is not None:
+            if decomposition.veto_reason:
+                return CalibratedConfidence(
+                    raw_confidence=raw_confidence,
+                    calibrated_confidence=0.0,
+                    calibration_factor=0.0,
+                    veto_reason=decomposition.veto_reason,
+                    is_fallback=decomposition.is_fallback,
+                    details=decomposition.details,
+                    decomposition=decomposition,
+                )
+            return CalibratedConfidence(
+                raw_confidence=raw_confidence,
+                calibrated_confidence=decomposition.overall_calibrated,
+                calibration_factor=decomposition.overall_calibrated / max(raw_confidence, 1e-9),
+                veto_reason="",
+                is_fallback=False,
+                details=decomposition.details,
+                decomposition=decomposition,
+            )
+
         if raw_confidence < 0.0 or raw_confidence > 1.0:
             return CalibratedConfidence(
                 raw_confidence=raw_confidence,

@@ -1,0 +1,25 @@
+{
+  "round_id": "R044",
+  "round_name": "事件去重與舊聞污染保護 (Event Dedup & Old News Pollution Protection)",
+  "topic": "R044=事件去重與舊聞污染保護",
+  "core_module": "modules/decision_prechecklist/event_deduplicator.py",
+  "test_file": "tests/test_event_deduplicator.py",
+  "test_results": {
+    "total": 9,
+    "passed": 9,
+    "failed": 0,
+    "execution_time_seconds": 0.12
+  },
+  "features_enhanced": [
+    "STALE_MAX_AGE_MINUTES category-based stale age map",
+    "StaleCheckResult dataclass",
+    "EventDeduplicator.check_stale() method",
+    "EventDeduplicator.filter_stale() method",
+    "EventDeduplicator.dedup_and_filter() combined method"
+  ],
+  "diff_stats": "event_deduplicator.py +55 lines, test_event_deduplicator.py +64 lines",
+  "verification_status": "PASS",
+  "law_compliance": "04",
+  "staging_commit": "4c42da9b2e5b393f5965250dd6db7d94e4934f58",
+  "canonical_commit": "1cf03ce29a8340cb9364edff69be3a16dee29ea4"
+}

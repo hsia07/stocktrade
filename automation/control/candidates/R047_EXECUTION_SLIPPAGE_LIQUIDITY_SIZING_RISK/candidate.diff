@@ -1,0 +1,330 @@
+diff --git a/modules/decision_prechecklist/execution_sizing_guard.py b/modules/decision_prechecklist/execution_sizing_guard.py
+index 042d835..fc0d92b 100644
+--- a/modules/decision_prechecklist/execution_sizing_guard.py
++++ b/modules/decision_prechecklist/execution_sizing_guard.py
+@@ -20,15 +20,48 @@ class TaiwanMarketConstraints:
+     current_position: int = 0
+     price_step: float = 0.01
+     circuit_breaker_active: bool = False
++    t_plus_2_blocked: bool = False
++    collection_auction: bool = False
++    is_odd_lot: bool = False
++    near_limit_up: bool = False
++    near_limit_down: bool = False
++    is_suspended: bool = False
++    is_disposition_stock: bool = False
+     violated_rules: list[str] = field(default_factory=list)
+ 
+-    def check(self, quantity: int) -> bool:
++    def check(self, quantity: int, price: float | None = None) -> bool:
+         self.violated_rules = []
+         if not self.is_taiwan_stock:
+             return True
+         if self.circuit_breaker_active:
+             self.violated_rules.append("circuit_breaker")
+             return False
++        if self.is_suspended:
++            self.violated_rules.append("suspended")
++            return False
++        if self.is_disposition_stock:
++            self.violated_rules.append("disposition_stock")
++            return False
++        if self.collection_auction:
++            self.violated_rules.append("collection_auction")
++            return False
++        if self.t_plus_2_blocked:
++            self.violated_rules.append("t_plus_2")
++            return False
++        if self.near_limit_up:
++            self.violated_rules.append("near_limit_up")
++            return False
++        if self.near_limit_down:
++            self.violated_rules.append("near_limit_down")
++            return False
++        if self.is_odd_lot:
++            self.violated_rules.append("odd_lot")
++            return False
++        if price is not None and self.price_step > 0:
++            remainder = price % self.price_step
++            if remainder > 1e-9 and abs(remainder - self.price_step) > 1e-9:
++                self.violated_rules.append("price_step")
++                return False
+         if self.max_position > 0 and self.current_position + quantity > self.max_position:
+             self.violated_rules.append("position_cap")
+             return False
+@@ -44,6 +77,7 @@ class SlippageEstimate:
+     liquidity_factor: float
+     volatility_factor: float
+     total_slippage: float
++    veto_reason: str = ""
+ 
+ 
+ @dataclass
+@@ -65,7 +99,7 @@ class SizingConstraint:
+ 
+ 
+ class SlippageEstimator:
+-    def estimate(self, quantity: int, price: float, liquidity: LiquidityInfo) -> SlippageEstimate:
++    def estimate(self, quantity: int, price: float, liquidity: LiquidityInfo, max_allowed_slippage: float = 0.05) -> SlippageEstimate:
+         base_slippage = liquidity.spread / 2.0
+         share_of_volume = quantity / max(liquidity.avg_daily_volume, 1)
+         volume_slippage = share_of_volume * 0.01
+@@ -73,17 +107,20 @@ class SlippageEstimator:
+         vol_factor = 1.0
+         total = base_slippage + volume_slippage
+         total = total * liquidity_factor * vol_factor
++        veto = "slippage_excessive" if total > max_allowed_slippage else ""
+         return SlippageEstimate(
+             expected_slippage=base_slippage + volume_slippage,
+             liquidity_factor=liquidity_factor,
+             volatility_factor=vol_factor,
+             total_slippage=total,
++            veto_reason=veto,
+         )
+ 
+ 
+ class ExecutionSizingGuard:
+-    def __init__(self, max_order_pct_of_volume: float = 0.01):
++    def __init__(self, max_order_pct_of_volume: float = 0.01, max_allowed_slippage: float = 0.05):
+         self._max_pct = max_order_pct_of_volume
++        self._max_slippage = max_allowed_slippage
+ 
+     def calculate(self, quantity: int, price: float, risk_budget: float, cash_available: float, liquidity: LiquidityInfo, taiwan: TaiwanMarketConstraints | None = None) -> SizingConstraint:
+         max_by_risk = int(risk_budget / max(price, 0.01)) if price > 0 else 0
+@@ -93,11 +130,48 @@ class ExecutionSizingGuard:
+ 
+         taiwan_violations: list[str] = []
+         if taiwan is not None:
+-            if not taiwan.check(final):
++            if not taiwan.check(final, price=price):
+                 taiwan_violations = list(taiwan.violated_rules)
+                 final = 0
+ 
+-        veto = "" if final > 0 else "all sizing constraints reduced to zero"
++        slippage_excessive = False
++        if final > 0:
++            slippage_est = SlippageEstimator().estimate(final, price, liquidity, self._max_slippage)
++            if slippage_est.veto_reason:
++                slippage_excessive = True
++                final = 0
++
++        veto = ""
++        if final == 0:
++            if taiwan_violations:
++                pass
++            elif slippage_excessive:
++                veto = "slippage_excessive"
++            elif max_by_cash == 0:
++                veto = "cash_insufficient"
++            elif max_by_risk == 0:
++                veto = "risk_budget_exhausted"
++            elif max_by_liquidity == 0:
++                veto = "liquidity_insufficient"
++            else:
++                parts = []
++                if max_by_liquidity < quantity:
++                    parts.append("liquidity_insufficient")
++                if max_by_cash < quantity:
++                    parts.append("cash_insufficient")
++                if max_by_risk < quantity:
++                    parts.append("risk_budget_exhausted")
++                veto = ";".join(parts) if parts else "all_sizing_reduced_to_zero"
++        elif final < quantity:
++            parts = []
++            if max_by_liquidity < quantity:
++                parts.append("liquidity_insufficient")
++            if max_by_cash < quantity:
++                parts.append("cash_insufficient")
++            if max_by_risk < quantity:
++                parts.append("risk_budget_exhausted")
++            veto = ";".join(parts)
++
+         return SizingConstraint(
+             max_qty_by_risk=max_by_risk,
+             max_qty_by_liquidity=max_by_liquidity,
+diff --git a/tests/test_execution_sizing_guard.py b/tests/test_execution_sizing_guard.py
+index ce3f7e7..9df06a2 100644
+--- a/tests/test_execution_sizing_guard.py
++++ b/tests/test_execution_sizing_guard.py
+@@ -1,5 +1,5 @@
+ import sys, os; sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
+-from modules.decision_prechecklist.execution_sizing_guard import SlippageEstimator, ExecutionSizingGuard, LiquidityInfo, TaiwanMarketConstraints
++from modules.decision_prechecklist.execution_sizing_guard import SlippageEstimator, ExecutionSizingGuard, LiquidityInfo, TaiwanMarketConstraints, SizingConstraint
+ 
+ 
+ def test_slippage_estimate():
+@@ -75,5 +75,174 @@ def test_taiwan_sizing_allows_normal():
+     assert result.final_qty > 0
+ 
+ 
++def test_taiwan_price_step_invalid():
++    tc = TaiwanMarketConstraints(
++        symbol="2330.TW", is_taiwan_stock=True, price_step=0.01,
++        day_trade_remaining=5, max_position=10000,
++    )
++    assert tc.check(1000, price=150.01) is True
++    assert tc.check(1000, price=150.001) is False
++    assert "price_step" in tc.violated_rules
++
++
++def test_taiwan_suspended_blocks():
++    tc = TaiwanMarketConstraints(symbol="2330.TW", is_taiwan_stock=True, is_suspended=True)
++    assert tc.check(100) is False
++    assert "suspended" in tc.violated_rules
++
++
++def test_taiwan_disposition_stock_blocks():
++    tc = TaiwanMarketConstraints(symbol="2330.TW", is_taiwan_stock=True, is_disposition_stock=True)
++    assert tc.check(100) is False
++    assert "disposition_stock" in tc.violated_rules
++
++
++def test_taiwan_collection_auction_blocks():
++    tc = TaiwanMarketConstraints(symbol="2330.TW", is_taiwan_stock=True, collection_auction=True)
++    assert tc.check(100) is False
++    assert "collection_auction" in tc.violated_rules
++
++
++def test_taiwan_t_plus_2_blocks():
++    tc = TaiwanMarketConstraints(symbol="2330.TW", is_taiwan_stock=True, t_plus_2_blocked=True)
++    assert tc.check(100) is False
++    assert "t_plus_2" in tc.violated_rules
++
++
++def test_taiwan_near_limit_up_blocks():
++    tc = TaiwanMarketConstraints(symbol="2330.TW", is_taiwan_stock=True, near_limit_up=True)
++    assert tc.check(100) is False
++    assert "near_limit_up" in tc.violated_rules
++
++
++def test_taiwan_near_limit_down_blocks():
++    tc = TaiwanMarketConstraints(symbol="2330.TW", is_taiwan_stock=True, near_limit_down=True)
++    assert tc.check(100) is False
++    assert "near_limit_down" in tc.violated_rules
++
++
++def test_taiwan_odd_lot_blocks():
++    tc = TaiwanMarketConstraints(symbol="2330.TW", is_taiwan_stock=True, is_odd_lot=True)
++    assert tc.check(100) is False
++    assert "odd_lot" in tc.violated_rules
++
++
++def test_taiwan_all_constraints_pass_with_no_violations():
++    tc = TaiwanMarketConstraints(
++        symbol="2330.TW", is_taiwan_stock=True,
++        day_trade_remaining=5, max_position=10000,
++        circuit_breaker_active=False, t_plus_2_blocked=False,
++        collection_auction=False, is_odd_lot=False,
++        near_limit_up=False, near_limit_down=False,
++        is_suspended=False, is_disposition_stock=False,
++    )
++    assert tc.check(100, price=150.00) is True
++    assert len(tc.violated_rules) == 0
++
++
++def test_taiwan_multiple_violations_first_triggers():
++    tc = TaiwanMarketConstraints(
++        symbol="2330.TW", is_taiwan_stock=True,
++        circuit_breaker_active=True, is_suspended=True,
++    )
++    assert tc.check(100) is False
++    assert tc.violated_rules == ["circuit_breaker"]
++
++
++def test_taiwan_sizing_integration_suspended():
++    guard = ExecutionSizingGuard()
++    liq = LiquidityInfo(symbol="2330.TW", avg_daily_volume=5000000, spread=0.002, liquidity_score=0.8)
++    taiwan = TaiwanMarketConstraints(symbol="2330.TW", is_taiwan_stock=True, is_suspended=True, day_trade_remaining=5, max_position=10000)
++    result = guard.calculate(quantity=1000, price=150.0, risk_budget=50000.0, cash_available=200000.0, liquidity=liq, taiwan=taiwan)
++    assert result.final_qty == 0
++    assert "suspended" in result.taiwan_violations
++
++
++def test_taiwan_sizing_integration_price_step():
++    guard = ExecutionSizingGuard()
++    liq = LiquidityInfo(symbol="2330.TW", avg_daily_volume=5000000, spread=0.002, liquidity_score=0.8)
++    taiwan = TaiwanMarketConstraints(symbol="2330.TW", is_taiwan_stock=True, day_trade_remaining=5, max_position=10000)
++    result = guard.calculate(quantity=1000, price=150.001, risk_budget=50000.0, cash_available=200000.0, liquidity=liq, taiwan=taiwan)
++    assert result.final_qty == 0
++    assert "price_step" in result.taiwan_violations
++
++
++def test_slippage_estimate_passes_within_threshold():
++    est = SlippageEstimator()
++    liq = LiquidityInfo(symbol="2330.TW", avg_daily_volume=5000000, spread=0.002, liquidity_score=0.8)
++    result = est.estimate(quantity=1000, price=150.0, liquidity=liq)
++    assert result.total_slippage > 0
++    assert result.veto_reason == ""
++
++
++def test_slippage_excessive_blocks():
++    est = SlippageEstimator()
++    liq = LiquidityInfo(symbol="HALF", avg_daily_volume=100, spread=0.10, liquidity_score=0.1)
++    result = est.estimate(quantity=100, price=10.0, liquidity=liq)
++    assert result.veto_reason == "slippage_excessive"
++
++
++def test_slippage_boundary_just_under():
++    est = SlippageEstimator()
++    liq = LiquidityInfo(symbol="BOUNDARY", avg_daily_volume=500000, spread=0.002, liquidity_score=0.8)
++    result = est.estimate(quantity=500, price=150.0, liquidity=liq, max_allowed_slippage=0.02)
++    assert result.total_slippage > 0
++    assert result.veto_reason == ""
++
++
++def test_slippage_boundary_just_over():
++    est = SlippageEstimator()
++    liq = LiquidityInfo(symbol="BOUNDARY", avg_daily_volume=500, spread=0.05, liquidity_score=0.2)
++    result = est.estimate(quantity=200, price=10.0, liquidity=liq, max_allowed_slippage=0.01)
++    assert result.veto_reason == "slippage_excessive"
++
++
++def test_sizing_guard_liquidity_reduce_size_reason():
++    guard = ExecutionSizingGuard(max_order_pct_of_volume=0.01)
++    liq = LiquidityInfo(symbol="LOW", avg_daily_volume=1000, spread=0.01, liquidity_score=0.3)
++    result = guard.calculate(quantity=100000, price=10.0, risk_budget=1000000.0, cash_available=1000000.0, liquidity=liq)
++    assert result.final_qty <= 10
++    assert "liquidity_insufficient" in result.veto_reason
++
++
++def test_sizing_guard_liquidity_no_trade_reason():
++    guard = ExecutionSizingGuard()
++    liq = LiquidityInfo(symbol="ZERO", avg_daily_volume=0, spread=0.10, liquidity_score=0.0)
++    result = guard.calculate(quantity=1000, price=10.0, risk_budget=100000.0, cash_available=100000.0, liquidity=liq)
++    assert result.final_qty == 0
++    assert "liquidity_insufficient" in result.veto_reason
++
++
++def test_sizing_guard_cash_insufficient_reason():
++    guard = ExecutionSizingGuard()
++    liq = LiquidityInfo(symbol="2330.TW", avg_daily_volume=5000000, spread=0.002, liquidity_score=0.8)
++    result = guard.calculate(quantity=1000, price=150.0, risk_budget=0.0, cash_available=0.0, liquidity=liq)
++    assert result.final_qty == 0
++    assert "cash_insufficient" in result.veto_reason
++
++
++def test_sizing_guard_risk_exhausted_reason():
++    guard = ExecutionSizingGuard()
++    liq = LiquidityInfo(symbol="2330.TW", avg_daily_volume=5000000, spread=0.002, liquidity_score=0.8)
++    result = guard.calculate(quantity=100000, price=150.0, risk_budget=100.0, cash_available=1000000.0, liquidity=liq)
++    assert result.final_qty < 100000
++    assert "risk_budget_exhausted" in result.veto_reason
++
++
++def test_sizing_guard_slippage_integration_veto():
++    guard = ExecutionSizingGuard(max_allowed_slippage=0.01)
++    liq = LiquidityInfo(symbol="TINY", avg_daily_volume=100, spread=0.10, liquidity_score=0.1)
++    result = guard.calculate(quantity=100, price=10.0, risk_budget=100000.0, cash_available=100000.0, liquidity=liq)
++    assert result.final_qty == 0
++
++
++def test_taiwan_sizing_integration_slippage_excessive():
++    guard = ExecutionSizingGuard(max_allowed_slippage=0.01)
++    liq = LiquidityInfo(symbol="TINY", avg_daily_volume=100, spread=0.10, liquidity_score=0.1)
++    taiwan = TaiwanMarketConstraints(symbol="2330.TW", is_taiwan_stock=True, day_trade_remaining=5, max_position=10000)
++    result = guard.calculate(quantity=100, price=10.0, risk_budget=100000.0, cash_available=100000.0, liquidity=liq, taiwan=taiwan)
++    assert result.final_qty == 0
++
++
+ if __name__ == "__main__":
+     import pytest; sys.exit(pytest.main([__file__, "-v"]))

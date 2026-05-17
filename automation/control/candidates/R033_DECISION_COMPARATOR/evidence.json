@@ -1,0 +1,64 @@
+{
+  "round_id": "R033",
+  "task_type": "trade_replay_decision_before_after_comparison",
+  "status": "completed",
+  "formal_status_code": "R033_DECISION_COMPARATOR_PASS",
+  "staging_branch": "auto/telegram-r031-r048-phase2-20260516-0542",
+  "round_topic": "交易回放與決策前後對照",
+  "round_phase": "Phase 2",
+  "source_topic_table": "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md",
+  "base_head": "bf0c59a314b490f50717a23ba8fd468c7f3806f3",
+  "files_modified": [
+    "modules/decision_prechecklist/__init__.py",
+    "modules/decision_prechecklist/replay_trace.py",
+    "modules/decision_prechecklist/traceability_chain.py",
+    "tests/test_decision_prechecklist.py",
+    "tests/test_traceability_chain.py"
+  ],
+  "files_added": [],
+  "candidate_diff_path": "automation/control/candidates/R033_DECISION_COMPARATOR/candidate.diff",
+  "evidence_json_path": "automation/control/candidates/R033_DECISION_COMPARATOR/evidence.json",
+  "candidate_diff_bytes": 16891,
+  "authorized_files_only": true,
+  "tests_pass": true,
+  "validators_pass": true,
+  "self_review_result": "PASS",
+  "r030_contract_only_preserved": true,
+  "canonical_merge_executed": false,
+  "canonical_push_executed": false,
+  "runtime_started": false,
+  "trading_broker_execution_live_started": false,
+  "order_execution_allowed": false,
+  "blockers": [],
+  "recommended_next_action": "PROCEED_TO_R034",
+  "law_compliance": "04",
+  "law_priority_verified": "02 > 03 > 04 > 01",
+  "preflight_checks": {
+    "round_id": "PASS",
+    "topic_table": "PASS",
+    "phase_mapping": "PASS",
+    "law_priority": "PASS",
+    "fresh_rtc": "PASS",
+    "manifest_state": "PASS",
+    "branch_head": "PASS",
+    "dirty_tree": "PASS",
+    "authorized_file_scope": "PASS",
+    "runtime_stopped": "PASS",
+    "order_execution_allowed": "PASS",
+    "r030_contract_only": "PASS"
+  },
+  "decision_comparator": {
+    "modules_created": [
+      "modules/decision_prechecklist/decision_comparator.py"
+    ],
+    "modules_modified": [
+      "modules/decision_prechecklist/__init__.py"
+    ],
+    "tests_created": [
+      "tests/test_decision_comparator.py"
+    ],
+    "test_count": 15
+  },
+  "generated_at": "2026-05-16T05:52:44",
+  "candidate_commit": "450bffbe6ba571e3922ac1fa6e6371d9f32704ad"
+}

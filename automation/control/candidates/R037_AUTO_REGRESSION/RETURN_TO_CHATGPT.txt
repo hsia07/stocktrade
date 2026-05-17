@@ -1,0 +1,29 @@
+round_id: R037
+task_type: auto_regression_check
+status: completed
+formal_status_code: R037_AUTO_REGRESSION_PASS
+staging_branch: auto/telegram-r031-r048-phase2-20260516-0542
+round_topic: 自動回歸檢查
+round_phase: Phase 2
+candidate_commit: 21ec6a88dd933069f90f315badc42acf6b179e04
+base_head: 45ac10fbf2041a78708e3d9a2b3e60e7a72aeb6d
+candidate_diff_path: automation/control/candidates/R037_AUTO_REGRESSION/candidate.diff
+evidence_json_path: automation/control/candidates/R037_AUTO_REGRESSION/evidence.json
+candidate_diff_present_true_or_false: TRUE
+evidence_json_present_true_or_false: TRUE
+authorized_files_only_true_or_false: TRUE
+tests_pass_true_or_false: TRUE
+validators_pass_true_or_false: TRUE
+self_review_result: PASS
+r030_contract_only_preserved_true_or_false: TRUE
+canonical_merge_executed_true_or_false: FALSE
+canonical_push_executed_true_or_false: FALSE
+origin_push_executed_true_or_false: FALSE
+runtime_started_true_or_false: FALSE
+trading_broker_execution_live_started_true_or_false: FALSE
+order_execution_allowed_true_or_false: FALSE
+blockers: []
+source_topic_table: _governance/law/161輪正式重編主題總表_唯一基準版_v2.md
+law_priority_verified: 02 > 03 > 04 > 01
+recommended_next_action: PROCEED_TO_R038
+summary: AutoRegressionChecker: automated cross-round regression detection using known-result comparison. 6 tests pass.

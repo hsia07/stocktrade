@@ -1,0 +1,22 @@
+RETURN_TO_CHATGPT
+
+formal_status_code: COMPLETED_CANDIDATE
+round_id: R043
+round_name: 新聞/事件分析層 NEWS_EVENT_ANALYSIS_LAYER
+staging_branch: staging (4c42da9b)
+canonical_baseline: 1cf03ce (unchanged)
+origin: 1cf03ce (unchanged, no push)
+
+Summary:
+Enhanced news_analyzer.py with source credibility mapping (SOURCE_CREDIBILITY_MAP), stale news protection (is_stale, get_stale_events, clear_stale), and StructuredSignal dataclass for downstream signal consumption. 10/10 tests pass. No merge to main, no push, no deployment.
+
+Files changed:
+  modules/decision_prechecklist/news_analyzer.py   (+82)
+  tests/test_news_analyzer.py                      (+57)
+
+Verification:
+  - All 10 test functions pass
+  - Python syntax check: OK
+  - Staging HEAD unchanged from prior rounds
+  - No broker API calls, no order_execution_allowed=TRUE
+  - Shared foundation round (Phase 2 topic), not canonical-ready

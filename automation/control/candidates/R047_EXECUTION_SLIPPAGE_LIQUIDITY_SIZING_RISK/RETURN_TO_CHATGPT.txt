@@ -1,0 +1,50 @@
+RETURN_TO_CHATGPT
+
+formal_status_code: COMPLETED_CANDIDATE_REWORK_PASS_ARTIFACT_HASH_FIXED
+round_id: R047
+round_name: 執行/Slippage/流動性/部位/強風控 EXECUTION_SLIPPAGE_LIQUIDITY_SIZING_RISK
+staging_branch: auto/telegram-r031-r048-phase2-20260516-0542
+canonical_baseline: 1cf03ce (unchanged)
+origin: 1cf03ce (unchanged, no push)
+
+Summary (artifact hash consistency rework):
+This artifact-only commit fixes 4 blockers identified by the hash/evidence
+consistency audit:
+1. evidence.json staging_commit contained invalid commit hash
+2. evidence.json current_head was stale (off by 1 commit)
+3. candidate.diff was dirty (working tree != HEAD)
+4. documentation-only was used as TRUE/FALSE value
+
+Fix applied:
+- Removed invalid hash 0e51ed8ad3bdb571f25c65e9adf81575ff5ac4e3 from evidence.json
+- Removed current_head field (was stale by 1 commit)
+- Added validated_subject_head = 1d7755c3c9d7e96cf776e3aed762c3bdf6b0a1db (the last commit
+  with functional source/test changes, before the evidence-metadata-only chain)
+- Added artifact_parent_head = 1d7755c3c9d7e96cf776e3aed762c3bdf6b0a1db
+- Added self_commit_hash_embedded_true_or_false = FALSE with clear reason:
+  git content-addressed commit cannot reliably self-reference
+- candidate.diff regenerated from base 9fff36d to subject 1d7755c, only source+test
+  files (self-reference excluded)
+- No documentation-only values used
+
+Rework history:
+  stage 1 (commit 01d6f27): Taiwan constraint enforcement gap closed
+  stage 2 (commit 2551e84): liquidity/slippage reason codes + evidence repair
+  stage 3 (current): artifact hash consistency fix (evidence/RTC/candidate.diff only)
+
+Functional source unchanged:
+  modules/decision_prechecklist/execution_sizing_guard.py = unchanged from 1d7755c
+  tests/test_execution_sizing_guard.py = unchanged from 1d7755c
+  All 32 R047 tests verify functional correctness.
+
+Verification:
+  - Source files modified: FALSE
+  - Test files modified: FALSE
+  - candidate.diff present: TRUE, non-empty, self-reference excluded
+  - evidence.json parse: PASS
+  - law_compliance: "04"
+  - No invalid commit hash remains
+  - No documentation-only TRUE/FALSE remains
+  - git status after commit: EMPTY
+  - No broker API calls, no order_execution_allowed=TRUE
+  - No server_v2.py / index_v2.html / broker / execution / live modified
