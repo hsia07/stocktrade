@@ -103,6 +103,18 @@ class ArbitrageProtection:
         reality_result = self.market_reality.evaluate_arbitrage(opportunity)
         if not reality_result['passed']:
             reason_codes.extend(reality_result['reasons'])
+            if reality_result.get('liquidity_insufficient', False):
+                return ArbitrageProtectionReport(
+                    opportunity=opportunity,
+                    decision=ProtectionDecision.VETO_LIQUIDITY,
+                    reason_codes=reason_codes,
+                    net_profit_after_costs=reality_result.get('net_profit', 0.0),
+                    fill_rate_estimate=reality_result.get('fill_rate', 0.0),
+                    slippage_estimate=reality_result.get('slippage', 0.0),
+                    risk_gate_passed=False,
+                    market_reality_passed=False,
+                    taiwan_constraints_passed=True
+                )
             return ArbitrageProtectionReport(
                 opportunity=opportunity,
                 decision=ProtectionDecision.VETO_MARKET_REALITY,
