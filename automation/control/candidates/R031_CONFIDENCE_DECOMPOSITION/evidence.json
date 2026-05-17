@@ -34,6 +34,7 @@
   "order_execution_allowed": false,
   "blockers": [],
   "recommended_next_action": "PROCEED_TO_R032",
+  "law_compliance": "04",
   "law_priority_verified": "02 > 03 > 04 > 01",
   "preflight_checks": {
     "round_id_check": "PASS",

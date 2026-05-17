@@ -42,5 +42,21 @@
   "generated_at": "2026-05-16T05:53:54",
   "candidate_commit": "c8a3f12c07c71a8fca8c417ffed297ab9d029b65",
   "source_topic_table": "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md",
-  "law_priority_verified": "02 > 03 > 04 > 01"
+  "law_compliance": "04",
+  "law_priority_verified": "02 > 03 > 04 > 01",
+  "preflight_checks": {
+    "round_id_check": "PASS",
+    "topic_table_check": "PASS",
+    "phase_mapping_check": "PASS",
+    "law_priority_check": "PASS",
+    "fresh_rtc_check": "PASS",
+    "manifest_state_check": "PASS",
+    "branch_head_check": "PASS",
+    "dirty_tree_check": "PASS",
+    "authorized_file_scope_check": "PASS",
+    "runtime_stopped_check": "PASS",
+    "order_execution_allowed_check": "PASS",
+    "r030_contract_only_preserved_check": "PASS"
+  },
+  "generated_at": "2026-05-17T06:00:00"
 }

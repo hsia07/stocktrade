@@ -17,6 +17,7 @@
   ],
   "diff_stats": "event_importance_scorer.py +24 lines, test_event_importance_scorer.py +32 lines",
   "verification_status": "PASS",
+  "law_compliance": "04",
   "staging_commit": "4c42da9b2e5b393f5965250dd6db7d94e4934f58",
   "canonical_commit": "1cf03ce29a8340cb9364edff69be3a16dee29ea4"
 }
