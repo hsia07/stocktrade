@@ -1,10 +1,19 @@
 === R027/R028/R029 HISTORICAL GAP REWORK — COMPLETE ===
 
+Original rework commit:
+  133202910b06f09ee3f5cdcb97764178bbb62d5f
+
+Artifact law_compliance rework:
+  - Added law_compliance: "04" to evidence.json (top-level field)
+  - Regenerated candidate.diff excluding artifact self-reference
+  - Updated RETURN_TO_CHATGPT.txt with rework record
+  - Previous commit: 133202910b06f09ee3f5cdcb97764178bbb62d5f
+
 What was done:
 1. R027 stale path fix: test_arbitrage_protection.py:284 — corrected from
    R027-ARBITRAGE-PROTECTION/ (6 files) → R027_ARBITRAGE_PROTECTION_VETO_SEMANTICS_REPAIR/ (3 files)
 
-2. R028 dedicated tests: test_market_reality_layer.py (22 tests)
+2. R028 dedicated tests: test_market_reality_layer.py (27 tests)
    - Price limit (±10% up/down + edges)
    - Trading session (pre-market, continuous, odd-lot, outside hours)
    - T+2 settlement
@@ -25,8 +34,8 @@ What was done:
      recording, monitoring summary
 
 Test results:
-- All 561 tests pass (0 failures)
-- 71 new tests added across R028 + R029 coverage gaps
+- All 566 tests pass (0 failures) — validated in full clean subset run
+- 70 new tests added across R028 + R029 coverage gaps
 - 6 fixable issues encountered and resolved (trading session time dependency,
   key name mismatch, tolerance threshold, stochastic comparison)
 
@@ -36,4 +45,9 @@ Key design decisions:
 - All 5 new test files + test_arbitrage_protection.py changed
 - No runtime/broker/live modifications
 
-Next step: await manual review signoff before R049 readiness audit can proceed.
+Artifact governance:
+- evidence.json: law_compliance = "04" (exact string)
+- candidate.diff: non-empty, excludes artifact self-reference
+- RETURN_TO_CHATGPT.txt: formal body valid
+
+Next step: await manual review signoff of artifact rework, then local merge decision.

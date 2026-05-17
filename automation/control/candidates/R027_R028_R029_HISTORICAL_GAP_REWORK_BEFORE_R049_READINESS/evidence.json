@@ -1,5 +1,6 @@
 {
   "round": "R027_R028_R029_HISTORICAL_GAP_REWORK",
+  "law_compliance": "04",
   "title": "Historical gap rework before R049 readiness decision",
   "status": "COMPLETE_ALL_TESTS_PASS",
   "branch": "auto/r027-r028-r029-historical-gap-rework-before-r049-readiness",
