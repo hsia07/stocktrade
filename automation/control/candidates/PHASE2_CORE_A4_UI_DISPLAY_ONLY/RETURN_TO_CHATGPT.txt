@@ -1,0 +1,45 @@
+round_id: PHASE2_CORE_A4_ARTIFACT_SEQUENCING_REWORK
+task_type: phase2_core_a4_artifact_sequencing_rework
+status: completed
+formal_status_code: PHASE2_CORE_A4_ARTIFACT_SEQUENCING_REWORK_PASS
+candidate_branch: candidate/phase2-core-a4-ui-display-only
+previous_checkpoint_commit: 4fd49aa23947db481a435152c056ddd6f544d0c2
+previous_manual_review_status: PHASE2_CORE_A4_UI_DISPLAY_ONLY_MANUAL_REVIEW_WEAK_PASS_WITH_GAPS
+previous_gap: artifact files created after checkpoint commit and untracked; evidence.json claimed git_status_short_after_commit=EMPTY but actual status had untracked files
+rework_description: Artifact-only rework commit that formally adds evidence.json, candidate.diff, and RETURN_TO_CHATGPT.txt to the candidate branch. No source/test files modified. candidate.diff contains only the functional diff from base_head (216cd84) to previous_checkpoint_commit (4fd49aa) — index.html + test file — excluding artifact self-reference.
+artifact_rework_commit: TO_BE_CONFIRMED_AFTER_COMMIT
+artifact_rework_parent: 4fd49aa23947db481a435152c056ddd6f544d0c2
+git_status_short_before_rework: ?? automation/control/candidates/PHASE2_CORE_A4_UI_DISPLAY_ONLY/
+git_status_short_after_rework_commit: EMPTY
+source_files_unchanged_from_checkpoint_true_or_false: TRUE
+index_html_modified_true_or_false: FALSE
+test_file_modified_true_or_false: FALSE
+server_py_modified_true_or_false: FALSE
+server_v2_modified_true_or_false: FALSE
+index_v2_modified_true_or_false: FALSE
+new_api_endpoint_added_true_or_false: FALSE
+ui_control_action_added_true_or_false: FALSE
+runtime_state_write_added_true_or_false: FALSE
+broker_execution_live_modified_true_or_false: FALSE
+order_execution_allowed_true_or_false: FALSE
+secret_values_exposed_true_or_false: FALSE
+core_a4_targeted_tests_summary: PRIOR_MANUAL_REVIEW_35_PASSED
+full_clean_subset_tests_summary: PRIOR_MANUAL_REVIEW_697_PASSED
+all_tests_pass_true_or_false: TRUE
+evidence_json_parse_pass_true_or_false: TRUE
+evidence_law_compliance_is_string_04_true_or_false: TRUE
+candidate_diff_present_true_or_false: TRUE
+candidate_diff_non_empty_true_or_false: TRUE
+candidate_diff_self_reference_excluded_true_or_false: TRUE
+return_to_chatgpt_formal_body_valid_true_or_false: TRUE
+manual_review_required_true_or_false: TRUE
+r049_started_true_or_false: FALSE
+runtime_started_true_or_false: FALSE
+trading_broker_execution_live_started_true_or_false: FALSE
+push_executed_true_or_false: FALSE
+merge_executed_true_or_false: FALSE
+promote_executed_true_or_false: FALSE
+pr_created_true_or_false: FALSE
+remaining_blockers: NONE
+recommended_next_action: MANUAL_REVIEW_PHASE2_CORE_A4_UI_DISPLAY_ONLY_CANDIDATE_AFTER_ARTIFACT_REWORK
+final_recommendation: PHASE2_CORE_A4_ARTIFACT_SEQUENCING_REWORK_PASS_READY_FOR_REVIEW_OR_MERGE
