@@ -1,0 +1,198 @@
+﻿round_id:
+  UI_VISIBLE_ROUND_ACCEPTANCE_GATE_GOVERNANCE_CONSTRUCTION
+
+task_type:
+  ui_visible_round_acceptance_gate_governance_construction
+
+status:
+  completed
+
+formal_status_code:
+  UI_VISIBLE_ROUND_ACCEPTANCE_GATE_CANDIDATE_READY_FOR_MANUAL_REVIEW
+
+canonical_head:
+  7ce9ad9c340fca1db4e90f1c1636037af61959e4
+
+construction_branch:
+  work/canonical-mainline-repair-001
+
+base_head:
+  7ce9ad9c340fca1db4e90f1c1636037af61959e4
+
+local_remote_heads_match_true_or_false:
+  TRUE
+
+git_status_short_before:
+  EMPTY
+
+gate_specification_file:
+  _governance/audit/ui_visible_round_acceptance_gate.md
+
+files_added:
+  - _governance/audit/ui_visible_round_acceptance_gate.md
+  - automation/control/candidates/UI_VISIBLE_ROUND_ACCEPTANCE_GATE/evidence.json
+  - automation/control/candidates/UI_VISIBLE_ROUND_ACCEPTANCE_GATE/candidate.diff
+  - automation/control/candidates/UI_VISIBLE_ROUND_ACCEPTANCE_GATE/RETURN_TO_CHATGPT.txt
+
+files_modified:
+  (none)
+
+authorized_files_only_true_or_false:
+  TRUE
+
+ui_visible_round_acceptance_gate_added_true_or_false:
+  TRUE
+
+gate_applies_to_ui_user_facing_rounds_true_or_false:
+  TRUE
+
+gate_applies_to_dashboard_panel_report_true_or_false:
+  TRUE
+
+gate_applies_to_beginner_summary_mobile_visualization_query_true_or_false:
+  TRUE
+
+visible_surface_evidence_required_true_or_false:
+  TRUE
+
+placeholder_mojibake_scan_required_true_or_false:
+  TRUE
+
+fake_feature_claim_forbidden_true_or_false:
+  TRUE
+
+contract_only_disclosure_required_true_or_false:
+  TRUE
+
+ui_trading_control_pollution_fail_condition_added_true_or_false:
+  TRUE
+
+backend_runtime_boundary_fail_condition_added_true_or_false:
+  TRUE
+
+required_return_to_chatgpt_fields_added_true_or_false:
+  TRUE
+
+direct_fail_conditions_added_true_or_false:
+  TRUE
+
+phase3_r049_precondition_added_true_or_false:
+  TRUE
+
+direct_fail_conditions_count:
+  18
+
+mandatory_return_to_chatgpt_fields_count:
+  17
+
+server_py_modified_true_or_false:
+  FALSE
+
+server_v2_modified_true_or_false:
+  FALSE
+
+index_html_modified_true_or_false:
+  FALSE
+
+index_v2_modified_true_or_false:
+  FALSE
+
+new_api_endpoint_added_true_or_false:
+  FALSE
+
+api_state_runtime_behavior_modified_true_or_false:
+  FALSE
+
+runtime_state_write_added_true_or_false:
+  FALSE
+
+broker_execution_live_modified_true_or_false:
+  FALSE
+
+fubon_api_integrated_true_or_false:
+  FALSE
+
+r049_started_true_or_false:
+  FALSE
+
+order_execution_allowed_true_or_false:
+  FALSE
+
+evidence_json_parse_pass_true_or_false:
+  TRUE
+
+evidence_law_compliance_is_string_04_true_or_false:
+  TRUE
+
+candidate_diff_present_true_or_false:
+  TRUE
+
+candidate_diff_non_empty_true_or_false:
+  TRUE
+
+candidate_diff_authorized_files_only_true_or_false:
+  TRUE
+
+return_to_chatgpt_formal_body_valid_true_or_false:
+  TRUE
+
+evidence_json_all_fields_valid_true_or_false:
+  TRUE
+
+tests_run_true_or_false:
+  FALSE (governance construction round: no product tests; see validators below)
+
+validators_summary:
+  Gate spec sections verified: 15/15 present
+  Gate applicability triggers: 36 terms covered
+  Direct FAIL conditions: 18 defined
+  Mandatory RETURN_TO_CHATGPT fields: 17 defined
+  Safety invariants check: server.py/server_v2/index.html/index_v2 not modified = TRUE
+  R049 check: NOT started = TRUE
+  order_execution_allowed check: FALSE = TRUE
+  Secret exposure check: zero secrets in added files = TRUE
+
+runtime_started_true_or_false:
+  FALSE
+
+trading_broker_execution_live_started_true_or_false:
+  FALSE
+
+main_control_loop_started_true_or_false:
+  FALSE
+
+start_loop_executed_true_or_false:
+  FALSE
+
+gov_int_005_started_true_or_false:
+  FALSE
+
+push_executed_true_or_false:
+  FALSE
+
+merge_executed_true_or_false:
+  FALSE
+
+promote_executed_true_or_false:
+  FALSE
+
+pr_created_true_or_false:
+  FALSE
+
+secret_values_exposed_true_or_false:
+  FALSE
+
+manual_review_required_true_or_false:
+  TRUE
+
+checkpoint_commit_created_true_or_false:
+  TRUE (see below)
+
+remaining_blockers:
+  NONE
+
+recommended_next_action:
+  MANUAL_REVIEW_UI_VISIBLE_ROUND_ACCEPTANCE_GATE_CANDIDATE
+
+final_recommendation:
+  UI_VISIBLE_ROUND_ACCEPTANCE_GATE governance specification constructed with 15 sections, 18 direct FAIL conditions, 17 mandatory RETURN_TO_CHATGPT fields. Covers UI/dashboard/panel/report/beginner/summary/mobile/visualization/query rounds. Requires visible surface evidence, placeholder/mojibake scan, fake feature claim prohibition, contract-only disclosure, no trading control pollution, and backend/runtime boundary checks. Adds Phase3/R049 precondition. Zero product source files modified. Candidate ready for manual review.
