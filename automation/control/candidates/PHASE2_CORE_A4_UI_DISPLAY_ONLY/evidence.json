@@ -13,7 +13,7 @@
   "previous_gap": "artifact files created after checkpoint commit and untracked; evidence.json claimed git_status_short_after_commit=EMPTY but actual status had untracked files",
   "rework_description": "Artifact-only rework commit that formally adds evidence.json, candidate.diff, and RETURN_TO_CHATGPT.txt to the candidate branch. No source/test files modified. candidate.diff contains only the functional diff from base_head to previous_checkpoint_commit (index.html + test file), excluding artifact self-reference.",
   "artifact_rework_commit_created": true,
-  "artifact_rework_commit": "TO_BE_CONFIRMED_AFTER_COMMIT",
+  "artifact_rework_commit": "9de733522a79cc6dd0587689dcbf5e1b53521612",
   "artifact_rework_parent": "4fd49aa23947db481a435152c056ddd6f544d0c2",
   "git_status_before_rework": "?? automation/control/candidates/PHASE2_CORE_A4_UI_DISPLAY_ONLY/",
   "git_status_short_after_commit": "EMPTY",
