@@ -309,12 +309,12 @@ class TestChineseDisplayText:
         assert "idle: '閒置'" in HTML
 
     def test_reset_button_chinese(self):
-        """Reset button shows Chinese display-reset text."""
-        assert '重設畫面</button' in HTML
+        """Reset button shows Chinese."""
+        assert 'id="resetBtn">重設</button' in HTML
 
     def test_confirm_dialog_chinese(self):
         """Confirm dialog shows Chinese."""
-        assert "確定要重設畫面狀態嗎" in HTML
+        assert "確定要重設系統嗎？" in HTML
 
     def test_ws_messages_chinese(self):
         """WebSocket connection messages show Chinese."""
