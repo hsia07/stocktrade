@@ -396,54 +396,54 @@ body{
   <div class="ws-dot" id="wsDot" title="WebSocket connected"></div>
 
   <div id="topbar-tabs">
-    <button class="tab-btn active" data-page="dashboard">SHORT Entry</button>
-    <button class="tab-btn" data-page="agents">SHORT Entry</button>
-    <button class="tab-btn" data-page="market">SHORT SHORT</button>
-    <button class="tab-btn" data-page="positions">SHORT SHORT</button>
-    <button class="tab-btn" data-page="signals">? SHORT</button>
-    <button class="tab-btn" data-page="trades">SHORT SHORT</button>
-    <button class="tab-btn" data-page="risk">Entry SHORT</button>
+    <button class="tab-btn active" data-page="dashboard">儀表板</button>
+    <button class="tab-btn" data-page="agents">AI 代理人</button>
+    <button class="tab-btn" data-page="market">即時報價</button>
+    <button class="tab-btn" data-page="positions">持倉概覽</button>
+    <button class="tab-btn" data-page="signals">交易訊號</button>
+    <button class="tab-btn" data-page="trades">成交記錄</button>
+    <button class="tab-btn" data-page="risk">風控管理</button>
   </div>
 
   <div id="topbar-right">
     <span id="clock">--:--:--</span>
-    <button class="pill-btn danger" id="resetBtn">SHORT</button>
-    <button class="pill-btn" id="modeBtn">Entry?</button>
+    <button class="pill-btn danger" id="resetBtn">重設</button>
+    <button class="pill-btn" id="modeBtn">模擬</button>
   </div>
 </div>
 
 <div id="app">
   <aside id="sidebar">
     <div class="sidebar-section">
-      <div class="sidebar-label">SHORT</div>
-      <div class="nav-item active" data-page="dashboard"><span class="nav-icon">SHORT</span>Entry</div>
-      <div class="nav-item" data-page="agents"><span class="nav-icon">SHORT</span>Entry <span class="nav-badge badge-ok" id="nb-agents">6/6</span></div>
-      <div class="nav-item" data-page="market"><span class="nav-icon">SHORT</span>SHORT</div>
-      <div class="nav-item" data-page="positions"><span class="nav-icon">SHORT</span>SHORT <span class="nav-badge badge-idle" id="nb-pos">0</span></div>
-      <div class="nav-item" data-page="signals"><span class="nav-icon">?</span>SHORT <span class="nav-badge badge-ok" id="nb-sig">0</span></div>
-      <div class="nav-item" data-page="trades"><span class="nav-icon">SHORT</span>SHORT <span class="nav-badge badge-idle" id="nb-trades">0</span></div>
-      <div class="nav-item" data-page="risk"><span class="nav-icon">Entry</span>SHORT</div>
+      <div class="sidebar-label">主選單</div>
+      <div class="nav-item active" data-page="dashboard"><span class="nav-icon">◆</span>儀表板</div>
+      <div class="nav-item" data-page="agents"><span class="nav-icon">◆</span>AI 代理人 <span class="nav-badge badge-ok" id="nb-agents">6/6</span></div>
+      <div class="nav-item" data-page="market"><span class="nav-icon">◆</span>即時報價</div>
+      <div class="nav-item" data-page="positions"><span class="nav-icon">◆</span>持倉 <span class="nav-badge badge-idle" id="nb-pos">0</span></div>
+      <div class="nav-item" data-page="signals"><span class="nav-icon">◆</span>訊號 <span class="nav-badge badge-ok" id="nb-sig">0</span></div>
+      <div class="nav-item" data-page="trades"><span class="nav-icon">◆</span>成交 <span class="nav-badge badge-idle" id="nb-trades">0</span></div>
+      <div class="nav-item" data-page="risk"><span class="nav-icon">◆</span>風控</div>
     </div>
 
     <div class="sidebar-section" style="margin-top:auto">
-      <div class="sidebar-label">Entry?</div>
+      <div class="sidebar-label">系統狀態</div>
     </div>
     <div id="sidebar-stats">
-      <div class="stat-row"><span class="stat-label">Entry?</span><span class="stat-val" id="s-pnl">NT$ 0</span></div>
-      <div class="stat-row"><span class="stat-label">Entry?</span><span class="stat-val" id="s-trades">0 / 6</span></div>
-      <div class="stat-row"><span class="stat-label">Entry</span><span class="stat-val" id="s-pos">0 / 2</span></div>
-      <div class="stat-row"><span class="stat-label">Entry?</span><span class="stat-val ok" id="s-status">SHORT</span></div>
+      <div class="stat-row"><span class="stat-label">即時損益</span><span class="stat-val" id="s-pnl">NT$ 0</span></div>
+      <div class="stat-row"><span class="stat-label">今日交易</span><span class="stat-val" id="s-trades">0 / 6</span></div>
+      <div class="stat-row"><span class="stat-label">持倉</span><span class="stat-val" id="s-pos">0 / 2</span></div>
+      <div class="stat-row"><span class="stat-label">系統狀態</span><span class="stat-val ok" id="s-status">運行中</span></div>
     </div>
   </aside>
 
   <main id="main">
     <div class="page active" id="page-dashboard">
       <div class="kpi-strip" id="kpi-strip">
-        <div class="kpi-box"><div class="kpi-label">Entry?</div><div class="kpi-value" id="kpi-pnl">NT$ 0</div><div class="kpi-sub">SHORT</div></div>
-        <div class="kpi-box"><div class="kpi-label">Entry?</div><div class="kpi-value" id="kpi-trades">0</div><div class="kpi-sub">SHORT</div></div>
-        <div class="kpi-box"><div class="kpi-label">Entry</div><div class="kpi-value" id="kpi-pos">0</div><div class="kpi-sub">SHORT</div></div>
-        <div class="kpi-box"><div class="kpi-label">Entry?</div><div class="kpi-value" id="kpi-loss">0</div><div class="kpi-sub">Entry?</div></div>
-        <div class="kpi-box"><div class="kpi-label">Entry?</div><div class="kpi-value" id="kpi-sig">0</div><div class="kpi-sub">Entry?</div></div>
+        <div class="kpi-box"><div class="kpi-label">即時損益</div><div class="kpi-value" id="kpi-pnl">NT$ 0</div><div class="kpi-sub">日結</div></div>
+        <div class="kpi-box"><div class="kpi-label">交易次數</div><div class="kpi-value" id="kpi-trades">0</div><div class="kpi-sub">累計</div></div>
+        <div class="kpi-box"><div class="kpi-label">持倉數量</div><div class="kpi-value" id="kpi-pos">0</div><div class="kpi-sub">即時</div></div>
+        <div class="kpi-box"><div class="kpi-label">連續虧損</div><div class="kpi-value" id="kpi-loss">0</div><div class="kpi-sub">次數</div></div>
+        <div class="kpi-box"><div class="kpi-label">訊號數量</div><div class="kpi-value" id="kpi-sig">0</div><div class="kpi-sub">累計</div></div>
       </div>
 
       <div class="agents-grid" id="dash-agents"></div>
@@ -457,11 +457,11 @@ body{
 
       <div class="g2">
         <div class="card">
-          <div class="card-title"><span class="dot" style="background:var(--accent2)"></span>Entry?</div>
+          <div class="card-title"><span class="dot" style="background:var(--accent2)"></span>系統日誌</div>
           <div id="log-console"></div>
         </div>
         <div class="card">
-          <div class="card-title"><span class="dot" style="background:var(--warn)"></span>Entry?</div>
+          <div class="card-title"><span class="dot" style="background:var(--warn)"></span>最新訊號</div>
           <div id="dash-signals"></div>
         </div>
       </div>
@@ -474,10 +474,10 @@ body{
 
     <div class="page" id="page-market">
       <div class="card">
-        <div class="card-title"><span class="dot" style="background:var(--accent)"></span>EntryEntry</div>
+        <div class="card-title"><span class="dot" style="background:var(--accent)"></span>即時報價</div>
         <table class="tick-table">
           <thead><tr>
-            <th>SHORT</th><th>SHORT</th><th>SHORT</th><th>Entry</th><th>SHORT</th><th>SHORT</th><th>SHORT</th><th>SHORT</th><th>Entry</th>
+            <th>代號</th><th>價格</th><th>漲跌</th><th>漲跌幅</th><th>買價</th><th>賣價</th><th>買量</th><th>賣量</th><th>成交量</th>
           </tr></thead>
           <tbody id="market-tbody"></tbody>
         </table>
@@ -486,23 +486,23 @@ body{
 
     <div class="page" id="page-positions">
       <div class="card mb">
-        <div class="card-title"><span class="dot" style="background:var(--buy)"></span>Entry?</div>
-        <div id="positions-list"><div class="neutral" style="font-size:13px;padding:20px 0;text-align:center">EntryEntry</div></div>
+        <div class="card-title"><span class="dot" style="background:var(--buy)"></span>持倉明細</div>
+        <div id="positions-list"><div class="neutral" style="font-size:13px;padding:20px 0;text-align:center">暫無持倉</div></div>
       </div>
     </div>
 
     <div class="page" id="page-signals">
       <div class="card">
-        <div class="card-title"><span class="dot" style="background:var(--signal)"></span>Entry?</div>
+        <div class="card-title"><span class="dot" style="background:var(--signal)"></span>訊號記錄</div>
         <div id="signals-list"></div>
       </div>
     </div>
 
     <div class="page" id="page-trades">
       <div class="card">
-        <div class="card-title"><span class="dot" style="background:var(--exec)"></span>Entry?</div>
+        <div class="card-title"><span class="dot" style="background:var(--exec)"></span>交易記錄</div>
         <div class="trade-row trade-header">
-          <span>SHORT</span><span>SHORT</span><span>SHORT</span><span>SHORT</span><span>SHORT</span><span>SHORT</span><span>SHORT</span>
+          <span>標的代號</span><span>方向</span><span>進場價</span><span>出場價</span><span>張數</span><span>損益</span><span>原因</span>
         </div>
         <div id="trades-list"></div>
       </div>
@@ -511,11 +511,11 @@ body{
     <div class="page" id="page-risk">
       <div class="g2">
         <div class="card">
-          <div class="card-title"><span class="dot" style="background:var(--risk)"></span>Entry?</div>
+          <div class="card-title"><span class="dot" style="background:var(--risk)"></span>風控參數</div>
           <div id="risk-params"></div>
         </div>
         <div class="card">
-          <div class="card-title"><span class="dot" style="background:var(--warn)"></span>Entry?</div>
+          <div class="card-title"><span class="dot" style="background:var(--warn)"></span>風控狀態</div>
           <div id="risk-status"></div>
         </div>
       </div>
@@ -524,10 +524,10 @@ body{
 </div>
 
 <div id="statusbar">
-  <span>SHORT <span id="sb-ws">Entry</span></span>
-  <span>SHORT Entry? <span id="sb-data">--</span></span>
-  <span>SHORT Entry? <span id="sb-engine">Entry?</span></span>
-  <span style="margin-left:auto">EntryEntryEntryEntryEntryEntry</span>
+  <span>連線: <span id="sb-ws">未連線</span></span>
+  <span>資料時間: <span id="sb-data">--</span></span>
+  <span>引擎狀態: <span id="sb-engine">正常</span></span>
+  <span style="margin-left:auto">唯讀模式 | 模擬交易</span>
 </div>
 
 <script>
@@ -537,12 +537,12 @@ body{
 const WS_URL = 'ws://localhost:8765/ws';
 const SYMBOLS = ['2330','2454','2382','3017','2317','2308'];
 const SYM_NAME = {
-  '2330': 'Entry',
-  '2454': 'Entry',
-  '2382': 'SHORT',
-  '3017': 'SHORT',
-  '2317': 'SHORT',
-  '2308': 'Entry',
+  '2330': '台積電',
+  '2454': '聯發科',
+  '2382': '廣達',
+  '3017': '欣興',
+  '2317': '鴻海',
+  '2308': '可成',
 };
 
 const state = {
@@ -589,8 +589,8 @@ function connectWS() {
     ws.onopen = () => {
       state.connected = true;
       wsDot.className = 'ws-dot connected';
-      sbWs.textContent = 'Entry';
-      addLog('WebSocket connected', 'ok');
+      sbWs.textContent = '已連線';
+      addLog('WebSocket 已連線', 'ok');
     };
 
     ws.onmessage = e => {
@@ -600,23 +600,23 @@ function connectWS() {
         render(data);
         sbData.textContent = data.timestamp || '--';
       } catch (err) {
-        addLog('EntryEntry: ' + err.message, 'warn');
+        addLog('解析錯誤: ' + err.message, 'warn');
       }
     };
 
     ws.onclose = () => {
       state.connected = false;
       wsDot.className = 'ws-dot error';
-      sbWs.textContent = 'Entry5 Entry?';
-      addLog('WebSocket connectedEntry?', 'warn');
+      sbWs.textContent = '連線中斷';
+      addLog('WebSocket 連線中斷', 'warn');
       setTimeout(connectWS, 5000);
     };
 
     ws.onerror = () => {
-      addLog('WebSocket connectedEntryEntryEntry?', 'alert');
+      addLog('WebSocket 連線錯誤', 'alert');
     };
   } catch (e) {
-    addLog('Entry? WebSocket SHORT', 'alert');
+    addLog('無法建立 WebSocket 連線', 'alert');
     setTimeout(connectWS, 5000);
   }
 }
@@ -633,7 +633,7 @@ function render(data) {
   renderRisk(data);
   renderCoreAShadow(data);
   updateNavBadges(data);
-  sbEngine.textContent = data.is_halted ? 'SHORT' : 'Entry';
+  sbEngine.textContent = data.is_halted ? '已暫停' : '運行中';
 }
 
 function renderKPI(data) {
@@ -655,17 +655,17 @@ function renderSidebarStats(data) {
   $('s-pnl').className = 'stat-val ' + (pnl > 0 ? 'pos' : pnl < 0 ? 'neg' : '');
   $('s-trades').textContent = `${data.daily_trades || 0} / 6`;
   $('s-pos').textContent = `${Object.keys(data.positions || {}).length} / 2`;
-  $('s-status').textContent = data.is_halted ? 'SHORT' : 'SHORT';
+  $('s-status').textContent = data.is_halted ? '已暫停' : '運行中';
   $('s-status').className = 'stat-val ' + (data.is_halted ? 'neg' : 'ok');
 }
 
 const AGENT_DEFS = [
-  { key: 'quant', cls: 'quant', label: 'EntrySHORT', icon: 'SHORT' },
-  { key: 'backtest', cls: 'backtest', label: 'Entry?', icon: 'SHORT' },
-  { key: 'risk', cls: 'risk', label: 'Entry', icon: 'Entry' },
-  { key: 'signal', cls: 'signal', label: 'Entry?', icon: '?' },
-  { key: 'exec', cls: 'exec', label: 'Entry?', icon: 'SHORT' },
-  { key: 'market', cls: 'market', label: 'Entry?', icon: 'SHORT' },
+  { key: 'quant', cls: 'quant', label: '量化分析', icon: '◆' },
+  { key: 'backtest', cls: 'backtest', label: '回測引擎', icon: '◆' },
+  { key: 'risk', cls: 'risk', label: '風險控制', icon: '◆' },
+  { key: 'signal', cls: 'signal', label: '訊號生成', icon: '◆' },
+  { key: 'exec', cls: 'exec', label: '執行代理', icon: '◆' },
+  { key: 'market', cls: 'market', label: '市場觀察', icon: '◆' },
 ];
 
 function getAgentData(data, key, sym) {
@@ -681,7 +681,7 @@ function statusClass(status) {
 }
 
 function statusLabel(status) {
-  return { ok: 'SHORT', warn: 'SHORT', alert: 'SHORT', idle: 'SHORT' }[status] || 'SHORT';
+  return { ok: '正常', warn: '注意', alert: '異常', idle: '閒置' }[status] || '閒置';
 }
 
 function renderAgents(data, containerId, compact) {
@@ -697,9 +697,9 @@ function renderAgents(data, containerId, compact) {
         <div class="agent-header">
           <span class="agent-icon">${def.icon}</span>
           <span class="agent-name">${def.label}</span>
-          <span class="agent-status status-idle">SHORT</span>
+          <span class="agent-status status-idle">閒置</span>
         </div>
-        <div class="agent-summary" style="color:var(--muted)">EntryEntry...</div>
+        <div class="agent-summary" style="color:var(--muted)">等待資料…</div>
       </div>`;
       continue;
     }
@@ -736,7 +736,7 @@ function detectNewSignal(rep, sym) {
   state.signals.unshift({ sym, dir, summary: rep.summary, time: rep.timestamp, details: rep.details });
   state.sigCount += 1;
   if (state.signals.length > 50) state.signals.pop();
-  addLog(`EntrySHORT${rep.summary}`, dir === 'long' ? 'ok' : 'alert');
+  addLog(`新訊號: ${rep.summary}`, dir === 'long' ? 'ok' : 'alert');
 }
 
 function renderMarket(data) {
@@ -778,7 +778,7 @@ function renderPositions(data) {
   const list = $('positions-list');
   if (!list) return;
   if (!keys.length) {
-    list.innerHTML = '<div class="neutral" style="font-size:13px;padding:20px 0;text-align:center">EntryEntry</div>';
+    list.innerHTML = '<div class="neutral" style="font-size:13px;padding:20px 0;text-align:center">暫無持倉</div>';
     return;
   }
 
@@ -794,17 +794,17 @@ function renderPositions(data) {
         <div class="pos-sym">${sym}</div>
         <div style="font-size:11px;color:var(--muted)">${SYM_NAME[sym] || ''}</div>
       </div>
-      <div><div class="pos-dir ${pos.direction}">${pos.direction === 'long' ? 'SHORT' : 'SHORT'}</div></div>
+      <div><div class="pos-dir ${pos.direction}">${pos.direction === 'long' ? '多' : '空'}</div></div>
       <div>
-        <div style="font-size:11px;color:var(--muted)">Entry</div>
+        <div style="font-size:11px;color:var(--muted)">進場價</div>
         <div style="font-family:var(--mono)">${pos.entry?.toFixed(2) || '-'}</div>
       </div>
       <div>
-        <div style="font-size:11px;color:var(--muted)">SHORT</div>
+        <div style="font-size:11px;color:var(--muted)">現價</div>
         <div class="${cls}" style="font-family:var(--mono)">${price.toFixed(2)}</div>
       </div>
       <div>
-        <div style="font-size:11px;color:var(--muted)">EntrySHORT</div>
+        <div style="font-size:11px;color:var(--muted)">未實現損益</div>
         <div class="${cls}" style="font-family:var(--mono);font-weight:700">${upnl >= 0 ? '+' : ''}${Math.round(upnl).toLocaleString()}</div>
       </div>
     </div>`;
@@ -817,7 +817,7 @@ function renderTrades(data) {
   const list = $('trades-list');
   if (!list) return;
   if (!trades.length) {
-    list.innerHTML = '<div class="neutral" style="font-size:13px;padding:16px;text-align:center">EntryEntry</div>';
+    list.innerHTML = '<div class="neutral" style="font-size:13px;padding:16px;text-align:center">暫無成交</div>';
     return;
   }
   list.innerHTML = [...trades].reverse().map(t => {
@@ -825,7 +825,7 @@ function renderTrades(data) {
     const isLong = t.direction?.includes('long');
     return `<div class="trade-row">
       <span>${t.symbol} <span style="color:var(--muted);font-size:10px">${SYM_NAME[t.symbol] || ''}</span></span>
-      <span class="${isLong ? 'up' : 'down'}">${isLong ? '?' : '?'}</span>
+      <span class="${isLong ? 'up' : 'down'}">${isLong ? '多' : '空'}</span>
       <span style="font-family:var(--mono)">${t.entry?.toFixed(2) || '-'}</span>
       <span style="font-family:var(--mono)">${t.exit?.toFixed(2) || '-'}</span>
       <span>${t.lots || '-'}</span>
@@ -840,9 +840,9 @@ function renderSignals() {
   const list = $('signals-list');
   if (!list) return;
   if (!state.signals.length) {
-    list.innerHTML = '<div class="neutral" style="font-size:13px;padding:16px;text-align:center">EntryEntry</div>';
+    list.innerHTML = '<div class="neutral" style="font-size:13px;padding:16px;text-align:center">暫無訊號</div>';
     const dashEmpty = $('dash-signals');
-    if (dashEmpty) dashEmpty.innerHTML = '<div class="neutral" style="font-size:13px;padding:16px;text-align:center">EntrySHORT</div>';
+    if (dashEmpty) dashEmpty.innerHTML = '<div class="neutral" style="font-size:13px;padding:16px;text-align:center">暫無訊號</div>';
     return;
   }
 
@@ -851,7 +851,7 @@ function renderSignals() {
     dash.innerHTML = state.signals.slice(0, 4).map(s => `
       <div class="signal-item ${s.dir}">
         <strong>${s.sym}</strong> ${SYM_NAME[s.sym] || ''}
-        <span class="${s.dir === 'long' ? 'up' : 'down'}" style="float:right">${s.dir === 'long' ? 'SHORT SHORT' : 'SHORT SHORT'}</span>
+        <span class="${s.dir === 'long' ? 'up' : 'down'}" style="float:right">${s.dir === 'long' ? '做多' : '做空'}</span>
         <br><span style="color:var(--muted);font-size:11px">${s.summary} ? ${s.time || ''}</span>
       </div>`).join('');
   }
@@ -860,7 +860,7 @@ function renderSignals() {
     <div class="signal-item ${s.dir}">
       <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
         <strong>${s.sym} ${SYM_NAME[s.sym] || ''}</strong>
-        <span class="${s.dir === 'long' ? 'up' : 'down'}">${s.dir === 'long' ? 'SHORT Entry?' : 'SHORT Entry?'}</span>
+        <span class="${s.dir === 'long' ? 'up' : 'down'}">${s.dir === 'long' ? '做多' : '做空'}</span>
       </div>
       <div style="font-family:var(--mono);font-size:11px;color:var(--muted)">${s.time || ''}</div>
       <div style="font-size:12px;color:var(--muted);margin-top:4px">${(s.details || []).join(' | ')}</div>
@@ -872,16 +872,16 @@ function renderRisk(data) {
   const params = $('risk-params');
   const status = $('risk-status');
   const riskParams = [
-    ['EntryEntry', 'NT$ 5,000'],
-    ['EntryEntry', 'NT$ 1,500'],
-    ['EntryEntry', '6 ?'],
-    ['EntrySHORT', '2 ?'],
-    ['EntryEntry', '65%'],
-    ['EntrySHORT', '09:10 ~ 13:00'],
-    ['EntryEntry', '13:20'],
-    ['EntryEntry', '3 ?'],
-    ['EntryEntry', '0.5%'],
-    ['EntryEntrySHORT', '25%'],
+    ['單筆最大損失', 'NT$ 5,000'],
+    ['日損限額', 'NT$ 1,500'],
+    ['連續虧損', '6 次'],
+    ['持倉上限', '2 檔'],
+    ['部位比例', '65%'],
+    ['交易時段', '09:10 ~ 13:00'],
+    ['收盤平倉', '13:20'],
+    ['波動率限制', '3 倍'],
+    ['手續費率', '0.5%'],
+    ['保證金比率', '25%'],
   ];
   if (params) {
     params.innerHTML = riskParams.map(([k, v]) => `
@@ -985,17 +985,17 @@ function fmt(n) {
 }
 
 $('resetBtn').addEventListener('click', () => {
-  if (!confirm('EntryEntryEntryEntryEntry?')) return;
+  if (!confirm('確定要重設系統嗎？')) return;
   if (state.ws?.readyState === WebSocket.OPEN) state.ws.send(JSON.stringify({ cmd: 'reset' }));
   state.signals = [];
   state.sigCount = 0;
   state._lastSigKey = '';
-  addLog('EntryEntry?', 'warn');
+  addLog('已重設系統', 'warn');
 });
 
 $('modeBtn').textContent = 'PAPER';
 buildSymPills();
-addLog(`EntrySHORT ${WS_URL}`, 'info');
+addLog(`WebSocket 已連線: ${WS_URL}`, 'info');
 connectWS();
 
 async function fetchMode() {
