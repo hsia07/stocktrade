@@ -1,22 +1,20 @@
 {
-  "round_id": "PHASE2_UI_CONTROL_WARNING_REMEDIATION_UNAUTHORIZED_TEST_FILE_REWORK",
-  "task_type": "phase2_ui_control_warning_remediation_unauthorized_test_file_rework",
-  "formal_status_code": "PHASE2_UI_CONTROL_WARNING_REMEDIATION_SCOPE_REWORK_PASS",
+  "round_id": "PHASE2_UI_CONTROL_WARNING_REMEDIATION_TEST_EXPECTATION_REWORK",
+  "task_type": "phase2_ui_control_warning_remediation_test_expectation_rework",
+  "formal_status_code": "PHASE2_UI_CONTROL_WARNING_REMEDIATION_TEST_REWORK_PASS",
   "canonical_head": "cffbd21ef1a7331f2f0de60364bacd0e9755d0ed",
   "construction_branch": "candidate/phase2-ui-control-warning-remediation",
   "base_head": "cffbd21ef1a7331f2f0de60364bacd0e9755d0ed",
   "law_compliance": "04",
   "option": "A",
-  "previous_checkpoint_commit": "a1b967820a3531ac9eb887614ed1da37b9fd7aa8",
-  "previous_authorized_files_only_claim_invalid": true,
-  "unauthorized_file_detected": "tests/test_phase2_ui_copy_mojibake_cleanup.py",
-  "unauthorized_file_restored_to_base": true,
-  "rework_summary": "tests/test_phase2_ui_copy_mojibake_cleanup.py was incorrectly listed as modified in the original construction. This round reverts it to base version (cffbd21) so the candidate diff contains only authorized files. The copy cleanup tests will now fail because they check for old button text (重設/重設系統) but index.html now has 重設畫面. This is an expected consequence of the Option A resetBtn text change — the copy cleanup test must be separately authorized for update.",
+  "previous_unauthorized_scope_rework_commit": "5058af72bc878a4e70cc681329e7835d36442c98",
+  "test_rework_authorized_by_user": true,
+  "test_rework_scope": "Updated 2 resetBtn-related text expectations in tests/test_phase2_ui_copy_mojibake_cleanup.py to match approved Option A UI: '重設' → '重設畫面', '確定要重設系統嗎？' → '確定要重設畫面狀態嗎？（僅顯示狀態，不下單）'",
   "files_modified": [
-    "index.html"
+    "index.html",
+    "tests/test_phase2_ui_control_warning_remediation.py"
   ],
   "files_added": [
-    "tests/test_phase2_ui_control_warning_remediation.py",
     "automation/control/candidates/PHASE2_UI_CONTROL_WARNING_REMEDIATION/evidence.json",
     "automation/control/candidates/PHASE2_UI_CONTROL_WARNING_REMEDIATION/candidate.diff",
     "automation/control/candidates/PHASE2_UI_CONTROL_WARNING_REMEDIATION/RETURN_TO_CHATGPT.txt"
@@ -46,14 +44,15 @@
   },
   "tests_run": {
     "remediation_tests": "33/33 PASS",
-    "ui_copy_cleanup_tests": "39/41 PASS (2 expected failures: reset_button_chinese and confirm_dialog_chinese check old text)",
+    "ui_copy_cleanup_tests": "41/41 PASS",
     "core_a4_tests": "35/35 PASS",
     "core_a3_api_contract_tests": "24/24 PASS",
     "core_a2_snapshot_exposure_tests": "17/17 PASS",
     "traceability_tests": "16/16 PASS",
     "decision_execution_tests": "58/58 PASS",
-    "full_clean_subset": "769/771 PASS (2 expected failures in copy cleanup test — needs separate authorization to update)"
+    "full_clean_subset": "771/771 PASS"
   },
+  "all_tests_pass": true,
   "backend_changes": false,
   "endpoint_changes": false,
   "broker_live_order_side_effects": false,
@@ -67,5 +66,8 @@
   "merge_executed": false,
   "promote_executed": false,
   "pr_created": false,
-  "scope_rework_note": "This rework only restores the unauthorized file to base. All authorized remediation features (resetBtn neutral + tooltip, modeBtn read-only) are preserved. Next step: obtain authorization to update copy cleanup test expectations, or accept the 2 known test failures as expected side effects."
+  "test_assertions_not_removed": true,
+  "tests_not_deleted": true,
+  "test_scope_not_weakened": true,
+  "source_not_modified": true
 }

@@ -1,64 +1,64 @@
 round_id:
-  PHASE2_UI_CONTROL_WARNING_REMEDIATION_UNAUTHORIZED_TEST_FILE_REWORK
+  PHASE2_UI_CONTROL_WARNING_REMEDIATION_TEST_EXPECTATION_REWORK
 
 task_type:
-  phase2_ui_control_warning_remediation_unauthorized_test_file_rework
+  phase2_ui_control_warning_remediation_test_expectation_rework
 
 status:
-  completed (with known test gaps — see test results)
+  completed
 
 formal_status_code:
-  PHASE2_UI_CONTROL_WARNING_REMEDIATION_SCOPE_REWORK_PASS
+  PHASE2_UI_CONTROL_WARNING_REMEDIATION_TEST_REWORK_PASS
 
 candidate_branch:
   candidate/phase2-ui-control-warning-remediation
 
-previous_checkpoint_commit:
-  a1b967820a3531ac9eb887614ed1da37b9fd7aa8
+previous_rework_commit:
+  5058af72bc878a4e70cc681329e7835d36442c98
 
 base_head:
   cffbd21ef1a7331f2f0de60364bacd0e9755d0ed
 
-rework_commit_created_true_or_false:
+test_rework_commit_created_true_or_false:
   TRUE
 
-rework_commit:
-  [hash will be filled after commit]
+test_rework_commit:
+  [hash after commit]
 
 git_status_short_after_commit:
   EMPTY
 
-previous_authorized_files_only_claim_invalid_true_or_false:
-  TRUE
-
-unauthorized_file_detected:
-  tests/test_phase2_ui_copy_mojibake_cleanup.py
-
-unauthorized_file_restored_to_base_true_or_false:
-  TRUE
-
-unauthorized_file_removed_from_candidate_diff_true_or_false:
-  TRUE
-
 files_modified_by_rework:
-  - tests/test_phase2_ui_copy_mojibake_cleanup.py (restored to base — effectively a revert)
+  - tests/test_phase2_ui_copy_mojibake_cleanup.py (2 test expectations updated)
   - automation/control/candidates/PHASE2_UI_CONTROL_WARNING_REMEDIATION/evidence.json (updated)
+  - automation/control/candidates/PHASE2_UI_CONTROL_WARNING_REMEDIATION/candidate.diff (regenerated)
   - automation/control/candidates/PHASE2_UI_CONTROL_WARNING_REMEDIATION/RETURN_TO_CHATGPT.txt (updated)
 
 files_added_by_rework:
-  (none — candidate.diff regenerated, no new files added)
+  (none)
 
 authorized_files_only_true_or_false:
   TRUE
 
-index_html_modified_true_or_false:
+ui_copy_cleanup_test_modified_true_or_false:
   TRUE
 
-ui_control_warning_test_modified_true_or_false:
-  FALSE (unchanged from previous commit — was always authorized)
+ui_copy_cleanup_test_change_scope:
+  Updated 2 resetBtn-related text expectations only:
+  1. test_reset_button_chinese: 'id="resetBtn">重設</button' → '重設畫面</button'
+  2. test_confirm_dialog_chinese: "確定要重設系統嗎？" → "確定要重設畫面狀態嗎？（僅顯示狀態，不下單）"
 
-ui_copy_cleanup_test_modified_true_or_false:
-  FALSE (restored to base — no unauthorized modification remains)
+tests_deleted_true_or_false:
+  FALSE
+
+assertions_removed_true_or_false:
+  FALSE
+
+test_weakened_true_or_false:
+  FALSE
+
+index_html_modified_by_this_rework_true_or_false:
+  FALSE
 
 server_py_modified_true_or_false:
   FALSE
@@ -87,25 +87,7 @@ fubon_api_integrated_true_or_false:
 resetBtn_remediated_true_or_false:
   TRUE
 
-resetBtn_text:
-  重設畫面
-
-resetBtn_danger_class_removed_true_or_false:
-  TRUE
-
-resetBtn_has_display_only_tooltip_true_or_false:
-  TRUE
-
-resetBtn_sends_order_true_or_false:
-  FALSE
-
 modeBtn_converted_to_readonly_true_or_false:
-  TRUE
-
-modeBtn_is_button_true_or_false:
-  FALSE
-
-modeBtn_click_handler_removed_true_or_false:
   TRUE
 
 modeBtn_fetch_toggle_mode_removed_true_or_false:
@@ -123,9 +105,6 @@ live_toggle_remaining_true_or_false:
 core_a4_panel_preserved_true_or_false:
   TRUE
 
-render_core_a_shadow_preserved_true_or_false:
-  TRUE
-
 visible_placeholder_scan_pass_true_or_false:
   TRUE
 
@@ -139,7 +118,7 @@ ui_control_warning_tests_summary:
   33/33 PASS
 
 ui_copy_cleanup_tests_summary:
-  39/41 PASS (2 expected failures — test_reset_button_chinese and test_confirm_dialog_chinese check old button text "重設" not the new "重設畫面")
+  41/41 PASS
 
 core_a4_tests_summary:
   35/35 PASS
@@ -157,10 +136,10 @@ decision_execution_tests_summary:
   58/58 PASS
 
 full_clean_subset_tests_summary:
-  769/771 PASS (2 expected failures in copy cleanup test)
+  771/771 PASS
 
 all_tests_pass_true_or_false:
-  FALSE (2 expected failures in copy cleanup — see above)
+  TRUE
 
 evidence_json_parse_pass_true_or_false:
   TRUE
@@ -175,7 +154,7 @@ candidate_diff_non_empty_true_or_false:
   TRUE
 
 candidate_diff_authorized_files_only_true_or_false:
-  TRUE (no unauthorized files)
+  TRUE
 
 return_to_chatgpt_formal_body_valid_true_or_false:
   TRUE
@@ -235,11 +214,10 @@ manual_review_required_true_or_false:
   TRUE
 
 remaining_blockers:
-  - tests/test_phase2_ui_copy_mojibake_cleanup.py at base version checks for old button text ("重設") which conflicts with Option A resetBtn text change ("重設畫面"). Needs separate authorization to update the test expectation.
+  NONE
 
 recommended_next_action:
-  MANUAL_REVIEW_PHASE2_UI_CONTROL_WARNING_REMEDIATION_CANDIDATE_AFTER_SCOPE_REWORK
-  (with note: 2 copy cleanup tests will fail until separately authorized update)
+  MANUAL_REVIEW_PHASE2_UI_CONTROL_WARNING_REMEDIATION_CANDIDATE_AFTER_TEST_REWORK
 
 final_recommendation:
-  Scope rework complete. Unauthorized file tests/test_phase2_ui_copy_mojibake_cleanup.py restored to base. All authorized Option A features preserved. Two copy cleanup tests now fail because they expect old button text — this is a known consequence requiring separate authorization to update the test expectations. All other 769 tests pass. Candidate ready for manual review with the caveat that the 2 copy cleanup test expectations need authority to update.
+  Test expectation rework complete. Two copy cleanup test expectations updated to match authorized Option A UI. All 771 tests pass. All remediation features preserved: resetBtn neutral style + display-only tooltip, modeBtn converted to read-only badge, Core-A4 panel preserved, order_execution_allowed=FALSE. Zero backend changes. No live toggle remains. Candidate on branch candidate/phase2-ui-control-warning-remediation ready for manual review.
