@@ -41,12 +41,12 @@
   "rotation_readiness_added": true,
   "safe_summary_no_secret_values": true,
   "tests_run": {
-    "r017_secret_manager_tests": "17/17 PASS, 1 skipped (artifact not yet created)",
+    "r017_secret_manager_tests": "18/18 PASS",
     "core_a3_api_contract_tests": "24/24 PASS",
     "core_a2_snapshot_exposure_tests": "17/17 PASS",
     "ui_control_warning_tests": "33/33 PASS",
     "ui_copy_cleanup_tests": "41/41 PASS",
-    "full_clean_subset": "788/788 PASS, 1 skipped, 15 warnings"
+    "full_clean_subset": "789/789 PASS, 15 warnings"
   },
   "all_tests_pass": true,
   "r049_started": false,

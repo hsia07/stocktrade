@@ -121,7 +121,7 @@ secret_values_in_return_to_chatgpt_true_or_false:
   FALSE
 
 r017_tests_summary:
-  17/17 PASS, 1 skipped (artifact directory not yet existent at test time)
+  18/18 PASS
 
 api_contract_secret_tests_summary:
   24/24 PASS (core_a3_api_contract: secret protection, API no secret exposure, order_execution_allowed FALSE)
@@ -133,7 +133,7 @@ ui_secret_tests_summary:
   74/74 PASS (ui_control_warning + ui_copy_cleanup: no secret values in UI, order_execution_allowed stays false)
 
 full_clean_subset_tests_summary:
-  788/788 PASS, 1 skipped, 15 warnings
+  789/789 PASS, 15 warnings
 
 all_tests_pass_true_or_false:
   TRUE
@@ -208,7 +208,8 @@ final_recommendation:
   missing required secret fail-safe, redaction (value/text/mapping),
   access audit log (metadata only), broker credential isolation,
   rotation readiness metadata, safe summary (no values ever exposed).
-  17/17 R017 tests pass. 788/788 full subset pass.
+  18/18 R017 tests pass. 789/789 full subset pass.
   Zero forbidden files modified. No secret values exposed anywhere.
   order_execution_allowed remains FALSE. No broker/live integration.
-  Ready for manual review.
+  Candidate.diff encoding reworked: UTF-16 LE BOM (fffe6400) regenerated
+  as UTF-8 without BOM (64696666). Ready for manual review.
