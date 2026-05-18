@@ -989,6 +989,8 @@ class TradingEngine:
         self._register_r009_handlers()
         # Phase 2 Core-A1 Shadow Aggregator (read-only, fail-closed)
         self.core_a_shadow = CoreAShadowAggregator()
+        # Phase 2 Core-A2: in-memory snapshot storage (read-only exposure)
+        self._core_a_shadow_snapshots: dict = {}
 
     def _map_to_r008_mode(self) -> Mode:
         """Map existing PAPER_TRADE/AUTO_TRADE state to R008 Mode"""
@@ -1150,6 +1152,8 @@ class TradingEngine:
                 if self.core_a_shadow is not None:
                     try:
                         shadow_snap = self.core_a_shadow.evaluate(sym, bars, tick, self.risk.open_positions)
+                        # Phase 2 Core-A2: store snapshot for read-only exposure
+                        self._core_a_shadow_snapshots[sym] = shadow_snap
                         if shadow_snap.shadow_result == "unavailable":
                             log.info("Core-A Shadow unavailable for %s", sym)
                     except Exception:
@@ -1361,6 +1365,46 @@ class TradingEngine:
             state["r009_alerts"] = self.priority_monitor.check_alerts(queue_status)
         except Exception:
             state["r009_queue"] = {"error": "priority_scheduler_not_ready"}
+        # Phase 2 Core-A2: read-only shadow snapshot exposure (no new evaluation)
+        try:
+            if self.core_a_shadow is not None and hasattr(self, '_core_a_shadow_snapshots') and self._core_a_shadow_snapshots:
+                snapshots = {}
+                for sym_key, snap in self._core_a_shadow_snapshots.items():
+                    snapshots[sym_key] = asdict(snap)
+                # Most recent snapshot by timestamp
+                latest_snap = max(self._core_a_shadow_snapshots.values(), key=lambda s: s.timestamp)
+                state["core_a_shadow_snapshot"] = {
+                    "present": True,
+                    "available": True,
+                    "shadow_result": "ok",
+                    "snapshots": snapshots,
+                    "latest_snapshot": asdict(latest_snap),
+                    "no_order_side_effects": True,
+                    "order_execution_allowed": False,
+                    "updated_at": datetime.now().isoformat(),
+                }
+            else:
+                state["core_a_shadow_snapshot"] = {
+                    "present": False,
+                    "available": False,
+                    "shadow_result": "unavailable",
+                    "latest_snapshot": None,
+                    "failure_mode": "shadow_unavailable",
+                    "no_order_side_effects": True,
+                    "order_execution_allowed": False,
+                    "updated_at": datetime.now().isoformat(),
+                }
+        except Exception:
+            state["core_a_shadow_snapshot"] = {
+                "present": False,
+                "available": False,
+                "shadow_result": "unavailable",
+                "latest_snapshot": None,
+                "failure_mode": "shadow_unavailable",
+                "no_order_side_effects": True,
+                "order_execution_allowed": False,
+                "error": "shadow_snapshot_exposure_failed",
+            }
         return state
 
 # FastAPI WebSocket 伺服器
