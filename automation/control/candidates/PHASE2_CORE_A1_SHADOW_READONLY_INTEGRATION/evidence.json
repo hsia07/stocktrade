@@ -1,8 +1,8 @@
 {
-  "round_id": "PHASE2_CORE_A1_CANDIDATE_REFRESH_WITH_CANONICAL_MERGE",
-  "task_type": "phase2_core_a1_candidate_refresh_with_canonical_merge",
+  "round_id": "PHASE2_CORE_A1_CANDIDATE_REFRESH_WITH_CANONICAL_MERGE_AFTER_R032",
+  "task_type": "phase2_core_a1_candidate_refresh_with_canonical_merge_after_r032",
   "law_compliance": "04",
-  "formal_status_code": "PHASE2_CORE_A1_CANDIDATE_REFRESH_PASS",
+  "formal_status_code": "PHASE2_CORE_A1_CANDIDATE_REFRESH_AFTER_R032_PASS",
   "head_before_rework": "4e5141d3f4432b296bb3fda42b27d21a4890bc17",
   "canonical_base": "ee711b95e9ea21195447a1fd162f38bbe2e8820f",
   "construction_branch": "candidate/phase2-core-a1-shadow-readonly-integration",
@@ -71,11 +71,14 @@
   "pr_created": false,
   "secret_values_exposed": false,
   "remaining_blockers": "NONE",
-  "canonical_refresh_head": "fa2449bd3498dc727dd7ce0948df39f2067978a3",
-  "previous_core_a1_head": "b33472735143c1d3c0e93c9caa21e3708eae2f1f",
-  "refreshed_candidate_head": "eea3fd72f4d81255ab0c67289ac503896b775651",
+  "canonical_refresh_head": "2ade1a724bf3ae460d8e2bb1026a6eab2bc9695e",
+  "previous_core_a1_head": "6cccef4fb9f81f7f1970ea03f8feedecf981563e",
+  "refreshed_candidate_head": "5ebcc3f942e1193a621e41f6d3b3836501ddce4a",
   "r029_stabilization_included_true_or_false": true,
   "fill_probability_tests_summary": "17/17 PASSED",
   "failing_test_20x_rerun_summary": "20/20 PASS",
-  "refresh_merge_executed": true
+  "refresh_merge_executed": true,
+  "r032_traceability_stabilization_included_true_or_false": true,
+  "traceability_tests_summary": "16/16 PASSED",
+  "r032_tampered_hash_test_50x_rerun_summary": "50/50 PASS, 0/50 FAIL"
 }

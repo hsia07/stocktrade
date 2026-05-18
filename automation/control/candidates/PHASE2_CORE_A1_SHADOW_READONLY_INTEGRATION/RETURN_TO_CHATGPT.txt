@@ -1,11 +1,11 @@
-round_id: PHASE2_CORE_A1_CANDIDATE_REFRESH_WITH_CANONICAL_MERGE
-task_type: phase2_core_a1_candidate_refresh_with_canonical_merge
+round_id: PHASE2_CORE_A1_CANDIDATE_REFRESH_WITH_CANONICAL_MERGE_AFTER_R032
+task_type: phase2_core_a1_candidate_refresh_with_canonical_merge_after_r032
 status: completed
-formal_status_code: PHASE2_CORE_A1_CANDIDATE_REFRESH_PASS
+formal_status_code: PHASE2_CORE_A1_CANDIDATE_REFRESH_AFTER_R032_PASS
 candidate_branch: candidate/phase2-core-a1-shadow-readonly-integration
-candidate_head_before_refresh: b33472735143c1d3c0e93c9caa21e3708eae2f1f
-canonical_head_merged_into_candidate: fa2449bd3498dc727dd7ce0948df39f2067978a3
-refreshed_candidate_head: eea3fd72f4d81255ab0c67289ac503896b775651
+candidate_head_before_refresh: 6cccef4fb9f81f7f1970ea03f8feedecf981563e
+canonical_head_merged_into_candidate: 2ade1a724bf3ae460d8e2bb1026a6eab2bc9695e
+refreshed_candidate_head: 5ebcc3f942e1193a621e41f6d3b3836501ddce4a
 refresh_merge_executed: TRUE
 merge_conflict_occurred: FALSE
 rebase_executed: FALSE
@@ -13,10 +13,14 @@ push_executed: FALSE
 canonical_merge_executed: FALSE
 
 r029_stabilization_included: TRUE
+r032_traceability_stabilization_included: TRUE
 production_random_removed: TRUE
 same_input_deterministic: TRUE
 large_volume_always_reduces: TRUE
 fill_probability_bounds_preserved: TRUE
+tamper_logic_guaranteed_changes_hash: TRUE
+tampered_hash_not_equal_original_asserted: TRUE
+hash_ending_zero_case_covered: TRUE
 
 core_a1_invariants_preserved:
   server_py_wiring_within_limits: TRUE
@@ -30,7 +34,9 @@ core_a1_invariants_preserved:
 test_results:
   core_a1_targeted: 50/50 PASSED (29 aggregator + 21 server wiring)
   fill_probability: 17/17 PASSED
-  failing_test_20x_rerun: 20/20 PASS
+  r029_failing_test_20x_rerun: 20/20 PASS
+  traceability: 16/16 PASSED
+  r032_tampered_hash_50x_rerun: 50/50 PASS
   decision_prechecklist: 26/26 PASSED
   execution_sizing_guard: 32/32 PASSED
   microstructure_engine: 16/16 PASSED
@@ -38,5 +44,5 @@ test_results:
 
 all_tests_pass: TRUE
 remaining_blockers: NONE
-recommended_next_action: MANUAL_REVIEW_PHASE2_CORE_A1_REFRESHED_CANDIDATE_BEFORE_LOCAL_MERGE
-final_recommendation: PHASE2_CORE_A1_CANDIDATE_REFRESHED_AWAITING_LOCAL_MERGE_DECISION
+recommended_next_action: MANUAL_REVIEW_PHASE2_CORE_A1_REFRESHED_CANDIDATE_AFTER_R032_BEFORE_LOCAL_MERGE
+final_recommendation: PHASE2_CORE_A1_CANDIDATE_REFRESHED_AFTER_R032_AWAITING_LOCAL_MERGE_DECISION
