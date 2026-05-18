@@ -1,0 +1,54 @@
+{
+  "endpoint": "/api/state",
+  "field": "core_a_shadow_snapshot",
+  "description": "Read-only status exposure of Core-A1 shadow evaluation results through the existing /api/state endpoint. This contract does not add runtime behavior, new API endpoints, UI wiring, broker integration, execution integration, or live trading capabilities.",
+  "required_keys": [
+    "present",
+    "available",
+    "shadow_result",
+    "no_order_side_effects",
+    "order_execution_allowed",
+    "updated_at"
+  ],
+  "available_path_keys": [
+    "present",
+    "available",
+    "shadow_result",
+    "snapshots",
+    "latest_snapshot",
+    "no_order_side_effects",
+    "order_execution_allowed",
+    "updated_at"
+  ],
+  "unavailable_path_keys": [
+    "present",
+    "available",
+    "shadow_result",
+    "failure_mode",
+    "no_order_side_effects",
+    "order_execution_allowed",
+    "updated_at"
+  ],
+  "safety_fields": {
+    "order_execution_allowed": false,
+    "no_order_side_effects": true
+  },
+  "forbidden_fields": [
+    "secret",
+    "token",
+    "chat_id",
+    "api_key",
+    "broker_credential",
+    "password",
+    "private_key"
+  ],
+  "unavailable_failure_modes": [
+    "shadow_unavailable",
+    "shadow_error",
+    "aggregator_unavailable"
+  ],
+  "statement": "This contract is read-only status exposure only. It is not trade approval, not broker integration, not execution integration, not live readiness, and does not imply any order placement permission. The core_a_shadow_snapshot field is exposed naturally through the existing /api/state endpoint which directly returns engine.get_state(). No new API endpoint is added. No runtime behavior is modified. No UI wiring is added. No runtime state is written. The snapshot cache is an in-memory read-only exposure cache written only from the existing Core-A1 shadow evaluation loop.",
+  "schema_version": "1.0",
+  "law_compliance": "04",
+  "created_at": "2026-05-18T17:10:00+08:00"
+}
