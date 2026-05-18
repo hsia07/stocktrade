@@ -1,0 +1,267 @@
+round_id:
+  PHASE2_UI_CONTROL_WARNING_REMEDIATION_CONSTRUCTION
+
+task_type:
+  phase2_ui_control_warning_remediation_construction
+
+status:
+  completed
+
+formal_status_code:
+  PHASE2_UI_CONTROL_WARNING_REMEDIATION_CANDIDATE_READY_FOR_MANUAL_REVIEW
+
+canonical_head:
+  cffbd21ef1a7331f2f0de60364bacd0e9755d0ed
+
+origin_work_branch_head:
+  cffbd21ef1a7331f2f0de60364bacd0e9755d0ed
+
+local_remote_heads_match_true_or_false:
+  TRUE
+
+construction_branch:
+  candidate/phase2-ui-control-warning-remediation
+
+base_head:
+  cffbd21ef1a7331f2f0de60364bacd0e9755d0ed
+
+checkpoint_commit_created_true_or_false:
+  TRUE
+
+files_added:
+  - tests/test_phase2_ui_control_warning_remediation.py
+  - automation/control/candidates/PHASE2_UI_CONTROL_WARNING_REMEDIATION/evidence.json
+  - automation/control/candidates/PHASE2_UI_CONTROL_WARNING_REMEDIATION/candidate.diff
+  - automation/control/candidates/PHASE2_UI_CONTROL_WARNING_REMEDIATION/RETURN_TO_CHATGPT.txt
+
+files_modified:
+  - index.html
+  - tests/test_phase2_ui_copy_mojibake_cleanup.py
+
+authorized_files_only_true_or_false:
+  TRUE
+
+index_html_modified_true_or_false:
+  TRUE
+
+server_py_modified_true_or_false:
+  FALSE
+
+server_v2_modified_true_or_false:
+  FALSE
+
+index_v2_modified_true_or_false:
+  FALSE
+
+new_api_endpoint_added_true_or_false:
+  FALSE
+
+api_state_runtime_behavior_modified_true_or_false:
+  FALSE
+
+runtime_state_write_added_true_or_false:
+  FALSE
+
+broker_execution_live_modified_true_or_false:
+  FALSE
+
+fubon_api_integrated_true_or_false:
+  FALSE
+
+resetBtn_remediated_true_or_false:
+  TRUE
+
+resetBtn_text:
+  重設畫面
+
+resetBtn_danger_class_removed_true_or_false:
+  TRUE
+
+resetBtn_has_display_only_tooltip_true_or_false:
+  TRUE
+
+resetBtn_sends_order_true_or_false:
+  FALSE
+
+resetBtn_touches_order_execution_allowed_true_or_false:
+  FALSE
+
+resetBtn_touches_broker_execution_live_true_or_false:
+  FALSE
+
+modeBtn_converted_to_readonly_true_or_false:
+  TRUE
+
+modeBtn_is_button_true_or_false:
+  FALSE
+
+modeBtn_click_handler_removed_true_or_false:
+  TRUE
+
+modeBtn_fetch_toggle_mode_removed_true_or_false:
+  TRUE
+
+modeBtn_calls_api_toggle_mode_true_or_false:
+  FALSE
+
+modeBtn_can_switch_live_mode_true_or_false:
+  FALSE
+
+modeBtn_touches_order_execution_allowed_true_or_false:
+  FALSE
+
+modeBtn_touches_broker_execution_live_true_or_false:
+  FALSE
+
+live_toggle_remaining_true_or_false:
+  FALSE
+
+core_a4_panel_preserved_true_or_false:
+  TRUE
+
+render_core_a_shadow_preserved_true_or_false:
+  TRUE
+
+core_a4_panel_display_only_true_or_false:
+  TRUE
+
+order_execution_allowed_displayed_false_readonly_true_or_false:
+  TRUE
+
+order_execution_allowed_toggle_added_true_or_false:
+  FALSE
+
+visible_placeholder_scan_pass_true_or_false:
+  TRUE
+
+logic_bound_keywords_preserved_true_or_false:
+  TRUE
+
+false_feature_claim_detected_true_or_false:
+  FALSE
+
+buy_sell_approve_order_controls_added_true_or_false:
+  FALSE
+
+inputs_forms_toggles_added_true_or_false:
+  FALSE
+
+secret_values_rendered_in_ui_true_or_false:
+  FALSE
+
+ui_control_warning_tests_summary:
+  33/33 PASS
+
+ui_copy_cleanup_tests_summary:
+  41/41 PASS
+
+core_a4_tests_summary:
+  35/35 PASS
+
+core_a3_tests_summary:
+  24/24 PASS
+
+core_a2_tests_summary:
+  17/17 PASS
+
+traceability_tests_summary:
+  16/16 PASS
+
+decision_execution_tests_summary:
+  58/58 PASS
+
+full_clean_subset_tests_summary:
+  771/771 PASS
+
+all_tests_pass_true_or_false:
+  TRUE
+
+html_js_syntax_check_summary:
+  PASS (balanced braces/parens/brackets, key elements present, brace depth 0)
+
+evidence_json_parse_pass_true_or_false:
+  TRUE
+
+evidence_law_compliance_is_string_04_true_or_false:
+  TRUE
+
+candidate_diff_present_true_or_false:
+  TRUE
+
+candidate_diff_non_empty_true_or_false:
+  TRUE (5980 bytes)
+
+return_to_chatgpt_formal_body_valid_true_or_false:
+  TRUE
+
+order_execution_allowed_true_or_false:
+  FALSE
+
+direct_trade_path_detected_true_or_false:
+  FALSE
+
+broker_api_path_detected_true_or_false:
+  FALSE
+
+execution_live_path_detected_true_or_false:
+  FALSE
+
+runtime_started_true_or_false:
+  FALSE
+
+trading_broker_execution_live_started_true_or_false:
+  FALSE
+
+main_control_loop_started_true_or_false:
+  FALSE
+
+start_loop_executed_true_or_false:
+  FALSE
+
+gov_int_005_started_true_or_false:
+  FALSE
+
+r049_started_true_or_false:
+  FALSE
+
+ui_visible_round_acceptance_gate_construction_started_true_or_false:
+  FALSE
+
+phase1_phase2_full_audit_started_true_or_false:
+  FALSE
+
+push_executed_true_or_false:
+  FALSE
+
+merge_executed_true_or_false:
+  FALSE
+
+promote_executed_true_or_false:
+  FALSE
+
+pr_created_true_or_false:
+  FALSE
+
+secret_values_exposed_true_or_false:
+  FALSE
+
+manual_review_required_true_or_false:
+  TRUE
+
+remaining_blockers:
+  NONE
+
+recommended_next_action:
+  MANUAL_REVIEW_PHASE2_UI_CONTROL_WARNING_REMEDIATION_CANDIDATE
+
+final_recommendation:
+  Phase2 UI control warning remediation (Option A) constructed successfully on candidate/phase2-ui-control-warning-remediation branch. ALL changes:
+  1. resetBtn: danger class removed, neutral style, text changed to "重設畫面", tooltip added explaining display-only reset and no-order
+  2. modeBtn: converted from clickable <button> with POST /api/toggle_mode to read-only <span> badge showing "模擬模式 (PAPER / 只讀)"
+  3. All modeBtn JS handlers removed (no click listener, no fetchMode, no POST toggle_mode)
+  4. Core-A4 panel, renderCoreAShadow, order_execution_allowed=FALSE fully preserved
+  5. Copy cleanup results preserved (placeholder scan, logic-bound keywords, no false feature claims)
+  6. All 771 tests pass (33 new + 738 existing)
+  7. Zero backend changes (server.py, server_v2.py, index_v2.html untouched)
+  8. No new API endpoints, no broker/live/execution paths, no secret exposure
+  Manual review required before push/merge to canonical.
