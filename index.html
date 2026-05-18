@@ -95,7 +95,7 @@ body{
   transition:all .2s;
 }
 .pill-btn:hover{background:var(--panel3);}
-.pill-btn.danger{border-color:rgba(255,82,82,.3);color:#ff9999;}
+.pill-badge{display:inline-block;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:600;border:1px solid var(--border);background:var(--panel2);color:var(--muted);}
 #clock{font-family:var(--mono);font-size:13px;color:var(--muted);}
 
 /* ══ 主佈局 ══ */
@@ -407,8 +407,8 @@ body{
 
   <div id="topbar-right">
     <span id="clock">--:--:--</span>
-    <button class="pill-btn danger" id="resetBtn">重設</button>
-    <button class="pill-btn" id="modeBtn">模擬</button>
+    <button class="pill-btn" id="resetBtn" title="僅重設畫面顯示狀態，不下單">重設畫面</button>
+    <span class="pill-badge" id="modeStatus">模擬模式 (PAPER / 只讀)</span>
   </div>
 </div>
 
@@ -985,38 +985,17 @@ function fmt(n) {
 }
 
 $('resetBtn').addEventListener('click', () => {
-  if (!confirm('確定要重設系統嗎？')) return;
+  if (!confirm('確定要重設畫面狀態嗎？（僅顯示狀態，不下單）')) return;
   if (state.ws?.readyState === WebSocket.OPEN) state.ws.send(JSON.stringify({ cmd: 'reset' }));
   state.signals = [];
   state.sigCount = 0;
   state._lastSigKey = '';
-  addLog('已重設系統', 'warn');
+  addLog('已重設畫面狀態', 'warn');
 });
 
-$('modeBtn').textContent = 'PAPER';
 buildSymPills();
 addLog(`WebSocket 已連線: ${WS_URL}`, 'info');
 connectWS();
-
-async function fetchMode() {
-  try {
-    const res = await fetch('/api/mode');
-    const data = await res.json();
-    $('modeBtn').textContent = data.mode;
-  } catch (e) {}
-}
-fetchMode();
-
-$('modeBtn').addEventListener('click', async () => {
-  try {
-    const res = await fetch('/api/toggle_mode', { method: 'POST' });
-    const data = await res.json();
-    $('modeBtn').textContent = data.mode;
-    addLog(`交易模式切換: ${data.mode}`, data.mode === 'PAPER' ? 'ok' : 'alert');
-  } catch (e) {
-    addLog('切換失敗', 'alert');
-  }
-});
 })();
 </script>
 </body>

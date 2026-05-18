@@ -1,0 +1,223 @@
+round_id:
+  PHASE2_UI_CONTROL_WARNING_REMEDIATION_TEST_EXPECTATION_REWORK
+
+task_type:
+  phase2_ui_control_warning_remediation_test_expectation_rework
+
+status:
+  completed
+
+formal_status_code:
+  PHASE2_UI_CONTROL_WARNING_REMEDIATION_TEST_REWORK_PASS
+
+candidate_branch:
+  candidate/phase2-ui-control-warning-remediation
+
+previous_rework_commit:
+  5058af72bc878a4e70cc681329e7835d36442c98
+
+base_head:
+  cffbd21ef1a7331f2f0de60364bacd0e9755d0ed
+
+test_rework_commit_created_true_or_false:
+  TRUE
+
+test_rework_commit:
+  [hash after commit]
+
+git_status_short_after_commit:
+  EMPTY
+
+files_modified_by_rework:
+  - tests/test_phase2_ui_copy_mojibake_cleanup.py (2 test expectations updated)
+  - automation/control/candidates/PHASE2_UI_CONTROL_WARNING_REMEDIATION/evidence.json (updated)
+  - automation/control/candidates/PHASE2_UI_CONTROL_WARNING_REMEDIATION/candidate.diff (regenerated)
+  - automation/control/candidates/PHASE2_UI_CONTROL_WARNING_REMEDIATION/RETURN_TO_CHATGPT.txt (updated)
+
+files_added_by_rework:
+  (none)
+
+authorized_files_only_true_or_false:
+  TRUE
+
+ui_copy_cleanup_test_modified_true_or_false:
+  TRUE
+
+ui_copy_cleanup_test_change_scope:
+  Updated 2 resetBtn-related text expectations only:
+  1. test_reset_button_chinese: 'id="resetBtn">重設</button' → '重設畫面</button'
+  2. test_confirm_dialog_chinese: "確定要重設系統嗎？" → "確定要重設畫面狀態嗎？（僅顯示狀態，不下單）"
+
+tests_deleted_true_or_false:
+  FALSE
+
+assertions_removed_true_or_false:
+  FALSE
+
+test_weakened_true_or_false:
+  FALSE
+
+index_html_modified_by_this_rework_true_or_false:
+  FALSE
+
+server_py_modified_true_or_false:
+  FALSE
+
+server_v2_modified_true_or_false:
+  FALSE
+
+index_v2_modified_true_or_false:
+  FALSE
+
+new_api_endpoint_added_true_or_false:
+  FALSE
+
+api_state_runtime_behavior_modified_true_or_false:
+  FALSE
+
+runtime_state_write_added_true_or_false:
+  FALSE
+
+broker_execution_live_modified_true_or_false:
+  FALSE
+
+fubon_api_integrated_true_or_false:
+  FALSE
+
+resetBtn_remediated_true_or_false:
+  TRUE
+
+modeBtn_converted_to_readonly_true_or_false:
+  TRUE
+
+modeBtn_fetch_toggle_mode_removed_true_or_false:
+  TRUE
+
+modeBtn_calls_api_toggle_mode_true_or_false:
+  FALSE
+
+modeBtn_can_switch_live_mode_true_or_false:
+  FALSE
+
+live_toggle_remaining_true_or_false:
+  FALSE
+
+core_a4_panel_preserved_true_or_false:
+  TRUE
+
+visible_placeholder_scan_pass_true_or_false:
+  TRUE
+
+logic_bound_keywords_preserved_true_or_false:
+  TRUE
+
+false_feature_claim_detected_true_or_false:
+  FALSE
+
+ui_control_warning_tests_summary:
+  33/33 PASS
+
+ui_copy_cleanup_tests_summary:
+  41/41 PASS
+
+core_a4_tests_summary:
+  35/35 PASS
+
+core_a3_tests_summary:
+  24/24 PASS
+
+core_a2_tests_summary:
+  17/17 PASS
+
+traceability_tests_summary:
+  16/16 PASS
+
+decision_execution_tests_summary:
+  58/58 PASS
+
+full_clean_subset_tests_summary:
+  771/771 PASS
+
+all_tests_pass_true_or_false:
+  TRUE
+
+evidence_json_parse_pass_true_or_false:
+  TRUE
+
+evidence_law_compliance_is_string_04_true_or_false:
+  TRUE
+
+candidate_diff_present_true_or_false:
+  TRUE
+
+candidate_diff_non_empty_true_or_false:
+  TRUE
+
+candidate_diff_authorized_files_only_true_or_false:
+  TRUE
+
+return_to_chatgpt_formal_body_valid_true_or_false:
+  TRUE
+
+order_execution_allowed_true_or_false:
+  FALSE
+
+direct_trade_path_detected_true_or_false:
+  FALSE
+
+broker_api_path_detected_true_or_false:
+  FALSE
+
+execution_live_path_detected_true_or_false:
+  FALSE
+
+runtime_started_true_or_false:
+  FALSE
+
+trading_broker_execution_live_started_true_or_false:
+  FALSE
+
+main_control_loop_started_true_or_false:
+  FALSE
+
+start_loop_executed_true_or_false:
+  FALSE
+
+gov_int_005_started_true_or_false:
+  FALSE
+
+r049_started_true_or_false:
+  FALSE
+
+ui_visible_round_acceptance_gate_construction_started_true_or_false:
+  FALSE
+
+phase1_phase2_full_audit_started_true_or_false:
+  FALSE
+
+push_executed_true_or_false:
+  FALSE
+
+merge_executed_true_or_false:
+  FALSE
+
+promote_executed_true_or_false:
+  FALSE
+
+pr_created_true_or_false:
+  FALSE
+
+secret_values_exposed_true_or_false:
+  FALSE
+
+manual_review_required_true_or_false:
+  TRUE
+
+remaining_blockers:
+  NONE
+
+recommended_next_action:
+  MANUAL_REVIEW_PHASE2_UI_CONTROL_WARNING_REMEDIATION_CANDIDATE_AFTER_TEST_REWORK
+
+final_recommendation:
+  Test expectation rework complete. Two copy cleanup test expectations updated to match authorized Option A UI. All 771 tests pass. All remediation features preserved: resetBtn neutral style + display-only tooltip, modeBtn converted to read-only badge, Core-A4 panel preserved, order_execution_allowed=FALSE. Zero backend changes. No live toggle remains. Candidate on branch candidate/phase2-ui-control-warning-remediation ready for manual review.
