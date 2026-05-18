@@ -361,6 +361,29 @@ body{
 /* ══ 指標 Bar ══ */
 .bar-track{height:4px;background:rgba(255,255,255,.06);border-radius:2px;overflow:hidden;margin-top:4px;}
 .bar-fill{height:100%;border-radius:2px;transition:width .6s ease;}
+
+/* ══ Core-A4 shadow display panel (read-only status) ══ */
+.shadow-panel{
+  background:var(--panel);border:1px solid var(--border);
+  border-radius:var(--r);padding:16px;margin-bottom:14px;
+}
+.shadow-panel .card-title{font-family:var(--sans);font-size:14px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.shadow-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;}
+.shadow-item{display:flex;flex-direction:column;gap:2px;}
+.shadow-label{font-size:10px;color:var(--muted);letter-spacing:.5px;text-transform:uppercase;}
+.shadow-value{font-family:var(--mono);font-size:13px;font-weight:500;}
+.shadow-value.ok{color:var(--accent2);}
+.shadow-value.warn{color:var(--warn);}
+.shadow-value.alert{color:var(--danger);}
+.shadow-value.muted{color:var(--muted);}
+.shadow-badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700;}
+.shadow-badge.ok{background:rgba(27,212,160,.15);color:var(--accent2);}
+.shadow-badge.warn{background:rgba(255,176,32,.15);color:var(--warn);}
+.shadow-badge.alert{background:rgba(255,82,82,.15);color:var(--danger);}
+.shadow-badge.idle{background:rgba(122,144,180,.1);color:var(--muted);}
+.shadow-detail{font-family:var(--mono);font-size:11px;color:var(--muted);line-height:1.6;}
+.shadow-divider{border:none;border-top:1px solid var(--border);margin:10px 0;}
+.shadow-fallback{font-size:12px;color:var(--muted);padding:8px 0;}
 </style>
 </head>
 <body>
@@ -424,6 +447,13 @@ body{
       </div>
 
       <div class="agents-grid" id="dash-agents"></div>
+
+      <div class="card shadow-panel" id="core-a4-shadow-panel">
+        <div class="card-title"><span class="dot" style="background:var(--quant)"></span>Core-A Shadow Snapshot</div>
+        <div id="shadow-body">
+          <div class="shadow-fallback">等待資料…</div>
+        </div>
+      </div>
 
       <div class="g2">
         <div class="card">
@@ -601,6 +631,7 @@ function render(data) {
   renderTrades(data);
   renderSignals();
   renderRisk(data);
+  renderCoreAShadow(data);
   updateNavBadges(data);
   sbEngine.textContent = data.is_halted ? 'SHORT' : 'Entry';
 }
@@ -865,6 +896,54 @@ function renderRisk(data) {
       return `<div class="log-line ${cls}" style="padding:6px 0;border-bottom:1px solid var(--border)">${d}</div>`;
     }).join('');
   }
+}
+
+function renderCoreAShadow(data) {
+  const shadow = data.core_a_shadow_snapshot;
+  const body = $('shadow-body');
+  if (!body) return;
+  if (!shadow) {
+    body.innerHTML = '<div class="shadow-fallback">Core-A Shadow snapshot 不在 state 中</div>';
+    return;
+  }
+  const present = shadow.present;
+  const available = shadow.available;
+  const result = shadow.shadow_result || 'unavailable';
+  const failure = shadow.failure_mode || '';
+  const noSideEffects = shadow.no_order_side_effects;
+  const orderAllowed = shadow.order_execution_allowed;
+  const updated = shadow.updated_at ? new Date(shadow.updated_at).toLocaleTimeString('zh-TW') : '--';
+  const latestSnap = shadow.latest_snapshot;
+  const availBadge = available
+    ? '<span class="shadow-badge ok">available</span>'
+    : '<span class="shadow-badge alert">unavailable</span>';
+  const resultCls = result === 'ok' ? 'ok' : result === 'unavailable' ? 'warn' : 'alert';
+  const resultIcon = result === 'ok' ? 'OK' : result === 'unavailable' ? 'UNAVAILABLE' : 'ERROR';
+  const resultDisp = '<span class="shadow-badge ' + resultCls + '">' + resultIcon + '</span>';
+  const failureDisp = failure ? '<div class="shadow-detail" style="color:var(--warn)">failure_mode: ' + failure + '</div>' : '';
+  let latestHtml = '';
+  if (latestSnap && typeof latestSnap === 'object') {
+    const sym = latestSnap.symbol || '--';
+    const sig = latestSnap.signal || '--';
+    const conf = latestSnap.confidence != null ? (latestSnap.confidence * 100).toFixed(1) + '%' : '--';
+    const dir = latestSnap.direction || '--';
+    const ts = latestSnap.timestamp || '';
+    const dirCls = dir === 'long' ? 'ok' : dir === 'short' ? 'alert' : 'muted';
+    latestHtml = '<div class="shadow-detail">latest: ' + sym + ' / ' + sig + ' / ' +
+      '<span class="shadow-value ' + dirCls + '">' + dir + '</span> / ' + conf + ' / ' +
+      (ts ? new Date(ts).toLocaleTimeString('zh-TW') : '') + '</div>';
+  }
+  body.innerHTML =
+    '<div class="shadow-grid">' +
+      '<div class="shadow-item"><span class="shadow-label">present</span><span class="shadow-value ' + (present ? 'ok' : 'muted') + '">' + (present ? 'TRUE' : 'FALSE') + '</span></div>' +
+      '<div class="shadow-item"><span class="shadow-label">available</span><span class="shadow-value">' + availBadge + '</span></div>' +
+      '<div class="shadow-item"><span class="shadow-label">shadow_result</span><span class="shadow-value">' + resultDisp + '</span></div>' +
+      '<div class="shadow-item"><span class="shadow-label">no_order_side_effects</span><span class="shadow-value ok">' + (noSideEffects ? 'TRUE' : 'FALSE') + '</span></div>' +
+      '<div class="shadow-item"><span class="shadow-label">order_execution_allowed</span><span class="shadow-value muted">' + (orderAllowed ? 'TRUE' : 'FALSE') + '</span></div>' +
+      '<div class="shadow-item"><span class="shadow-label">updated_at</span><span class="shadow-value muted">' + updated + '</span></div>' +
+    '</div>' +
+    failureDisp +
+    (latestHtml ? '<hr class="shadow-divider">' + latestHtml : '');
 }
 
 function updateNavBadges(data) {
