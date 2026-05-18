@@ -119,7 +119,10 @@ def test_verify_detects_tampered_hash():
     )
     link0 = chain._links[0]
     original_hash = link0.link_hash
-    link0.link_hash = link0.link_hash[:-1] + "0"
+    # Guarantee tampering changes the hash (previously flaky if original ended with "0")
+    tampered_last = "1" if original_hash[-1] == "0" else "0"
+    link0.link_hash = original_hash[:-1] + tampered_last
+    assert link0.link_hash != original_hash
     result = chain.verify_chain()
     assert not result.valid
     assert result.total_links == 2
