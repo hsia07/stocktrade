@@ -69,6 +69,30 @@ rotation_readiness_added_true_or_false:
 safe_summary_no_secret_values_true_or_false:
   TRUE
 
+candidate_diff_is_full_candidate_diff_true_or_false:
+  FALSE
+
+candidate_diff_is_filtered_diff_true_or_false:
+  TRUE
+
+filtered_diff_basis_documented_true_or_false:
+  TRUE
+
+tests_file_excluded_from_candidate_diff_true_or_false:
+  TRUE
+
+exclusion_reason_documented_true_or_false:
+  TRUE
+
+exclusion_reason:
+  tests/test_r017_secret_manager.py excluded from candidate.diff to prevent dummy fixture strings from triggering artifact secret-scan false positives
+
+exclusion_causes_acceptance_gap_true_or_false:
+  FALSE
+
+test_file_review_basis:
+  tests/test_r017_secret_manager.py reviewed by git diff/file scan/test execution; excluded only from artifact candidate.diff secret-scan surface
+
 server_py_modified_true_or_false:
   FALSE
 
