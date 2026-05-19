@@ -100,6 +100,18 @@
    - **影響**：現可自動檢測並阻斷治理漂移 ✅
    - **完成階段**：Phase 3（LAW-0416-PHASE-3-GOVERNANCE-DRIFT）✅
 
+## 缺口 9：UI_VISIBLE_ROUND_ACCEPTANCE_GATE 尚未正式治理化
+- **現狀**：✅ **已完成**（本 candidate 合併後生效）
+  - CURRENT_GOVERNANCE_BASELINE.md 已增補 UI_VISIBLE_ROUND_ACCEPTANCE_GATE 條文
+  - 04 修正版已增補 UI visible acceptance gate 正式治理條文（第二十二條）
+  - evidence_checker.py 已將 UI visible surface evidence 列為 required evidence
+  - pre-push.ps1 已檢查 UI panel presence / fake claim / mojibake
+  - round_patch_mapping.md 已納入 UI visible gate（Group 15）
+  - 現有 tests/test_ui_gap*.py 等 130 個 UI 測試已綁定為 governance hard gate
+- **要求**：04 修正版第二十二條規定，所有 UI / user-facing / 首頁 / 新手 / 摘要 / 手機 / dashboard / panel / report / 查詢 / 可視化類 round，必須通過 UI_VISIBLE_ROUND_ACCEPTANCE_GATE
+- **影響**：現可自動驗證 UI 類 candidate 是否符合 visible surface 標準 ✅
+- **完成階段**：UI_VISIBLE_ROUND_ACCEPTANCE_GATE_GOVERNANCE_CONSTRUCTION_CANDIDATE
+
 ## 後續 Phase 2 / Phase 3 施工方向摘要
 
 ### Phase 2：02/03/04 逐段吸收（預計施工項目）

@@ -1,0 +1,205 @@
+round_id:
+  UI_VISIBLE_ROUND_ACCEPTANCE_GATE_GOVERNANCE_CONSTRUCTION_CANDIDATE
+
+task_type:
+  governance_construction_candidate
+
+status:
+  completed
+
+formal_status_code:
+  candidate_ready_awaiting_manual_review
+
+canonical_branch:
+  work/canonical-mainline-repair-001
+
+base_head:
+  22bdd87b9194b4300b53206d57d8bcd49d5fc4c4
+
+local_head_before:
+  22bdd87b9194b4300b53206d57d8bcd49d5fc4c4
+
+origin_work_branch_head_before:
+  22bdd87b9194b4300b53206d57d8bcd49d5fc4c4
+
+local_remote_heads_match_before_true_or_false:
+  TRUE
+
+git_status_short_before:
+  EMPTY
+
+candidate_branch:
+  candidate/ui-visible-round-acceptance-gate-governance-construction
+
+candidate_commit:
+  daba12a2c05a282195f930be1bbc4fe3d77a6c12
+
+files_modified:
+  - _governance/law/CURRENT_GOVERNANCE_BASELINE.md
+  - _governance/law/04_交易系統法典補強版_20260416_修正版.md
+  - _governance/law/readable/04_交易系統法典補強版_20260416_修正版.md
+  - _governance/audit/round_patch_mapping.md
+  - automation/control/evidence_checker.py
+  - .githooks/pre-push.ps1
+  - tests/test_ui_visible_gate_governance.py
+
+current_governance_baseline_updated_true_or_false:
+  TRUE
+
+law_04_updated_true_or_false:
+  TRUE
+
+law_04_readable_updated_true_or_false:
+  TRUE
+
+evidence_checker_updated_true_or_false:
+  TRUE
+
+pre_push_or_equivalent_validator_updated_true_or_false:
+  TRUE
+
+round_patch_mapping_updated_true_or_false:
+  TRUE
+
+ui_visible_gate_formal_article_added_true_or_false:
+  TRUE
+
+ui_visible_gate_required_evidence_defined_true_or_false:
+  TRUE
+
+visible_ui_surface_evidence_required_true_or_false:
+  TRUE
+
+dom_or_screenshot_or_text_evidence_required_true_or_false:
+  TRUE
+
+placeholder_mojibake_scan_required_true_or_false:
+  TRUE
+
+traditional_chinese_label_required_true_or_false:
+  TRUE
+
+no_fake_feature_claim_required_true_or_false:
+  TRUE
+
+no_trading_control_pollution_required_true_or_false:
+  TRUE
+
+no_backend_broker_live_overreach_required_true_or_false:
+  TRUE
+
+contract_only_disclaimer_required_true_or_false:
+  TRUE
+
+order_execution_allowed_false_requirement_preserved_true_or_false:
+  TRUE
+
+evidence_checker_enforces_ui_visible_gate_true_or_false:
+  TRUE
+
+pre_push_or_validator_enforces_ui_visible_gate_true_or_false:
+  TRUE
+
+tests_added_or_updated:
+  - tests/test_ui_visible_gate_governance.py
+
+tests_run:
+  - python -m pytest tests/test_ui_visible_gate_governance.py -v --tb=short
+  - python -m pytest --ignore=automation --ignore=stocktrade --ignore=test_twse.py --ignore=test_twstock_batch.py --tb=no -q
+
+tests_result:
+  22/22 PASS (ui_visible_gate_governance) + 881/881 PASS full subset, 16 warnings
+
+negative_tests_for_missing_visible_evidence_true_or_false:
+  TRUE
+
+negative_tests_for_fake_feature_claim_true_or_false:
+  TRUE
+
+negative_tests_for_mojibake_placeholder_true_or_false:
+  TRUE
+
+negative_tests_for_trading_control_pollution_true_or_false:
+  TRUE
+
+server_py_modified_true_or_false:
+  FALSE
+
+server_v2_modified_true_or_false:
+  FALSE
+
+index_html_modified_true_or_false:
+  FALSE
+
+index_v2_modified_true_or_false:
+  FALSE
+
+modules_modified_true_or_false:
+  FALSE
+
+env_modified_true_or_false:
+  FALSE
+
+env_example_modified_true_or_false:
+  FALSE
+
+new_api_endpoint_added_true_or_false:
+  FALSE
+
+runtime_state_write_added_true_or_false:
+  FALSE
+
+broker_execution_live_modified_true_or_false:
+  FALSE
+
+fubon_api_integrated_true_or_false:
+  FALSE
+
+real_llm_provider_called_true_or_false:
+  FALSE
+
+runtime_started_true_or_false:
+  FALSE
+
+trading_broker_execution_live_started_true_or_false:
+  FALSE
+
+r049_started_true_or_false:
+  FALSE
+
+r031_started_true_or_false:
+  FALSE
+
+order_execution_allowed_true_or_false:
+  FALSE
+
+secret_values_exposed_true_or_false:
+  FALSE
+
+evidence_package_created_true_or_false:
+  TRUE
+
+evidence_package_path:
+  automation/control/candidates/UI_VISIBLE_ROUND_ACCEPTANCE_GATE_GOVERNANCE_CONSTRUCTION_CANDIDATE/
+
+return_to_chatgpt_formal_body_valid_true_or_false:
+  TRUE
+
+remaining_blockers:
+  NONE
+
+recommended_next_action:
+  AWAITING_MANUAL_REVIEW_UI_VISIBLE_GATE_GOVERNANCE_CANDIDATE
+
+final_recommendation:
+  UI_VISIBLE_GATE_GOVERNANCE_CANDIDATE_READY_FOR_MANUAL_REVIEW_DO_NOT_START_R049.
+  UI_VISIBLE_ROUND_ACCEPTANCE_GATE governance construction completed with:
+  1. CURRENT_GOVERNANCE_BASELINE.md updated (缺口 9)
+  2. 04_交易系統法典補強版_20260416_修正版.md updated (正式 + readable) with Chapter 22 (Articles 112-127)
+  3. evidence_checker.py updated with check_ui_visible_gate() method and UI gate indicators
+  4. pre-push.ps1 updated with Check-UIVisibleGate function
+  5. round_patch_mapping.md updated with Group 15
+  6. 22 new governance tests covering all 8 UI visible gate patches
+  All 881 tests pass. No forbidden files modified. order_execution_allowed remains FALSE.
+  R049 NOT started. R031 NOT started. Runtime/trading/broker/execution/live NOT started.
+  Candidate ready for manual review.

@@ -306,6 +306,55 @@ Add to evidence_checker.py validation:
 - `automation/control/evidence_checker.py` (validates evidence)
 - `automation/control/candidate_checker.py` (validates candidates)
 
+### Group 15: UI_VISIBLE_ROUND_ACCEPTANCE_GATE
+**Focus**: UI / user-facing / dashboard / panel / report / query / visualization round governance
+
+#### Required Patches:
+1. **Visible UI Surface Evidence**:
+   - DOM / HTML source scan confirms panel / element exists and readable
+   - Screenshot or equivalent visual evidence (automated screenshot test result)
+   - Text evidence: panel text content scanned as readable Traditional Chinese, no mojibake / placeholder
+
+2. **Placeholder / Mojibake Scan**:
+   - No `placeholder` in visible UI text
+   - No `` (U+FFFD) in visible UI text
+   - No untranslated English technical terms in user-facing blocks unless explicitly allowed by round law
+
+3. **Traditional Chinese Label Requirement**:
+   - All user-facing labels, button text, status descriptions, tooltips, confirm dialogs must be readable Traditional Chinese
+   - No all-English or mixed garbled text
+
+4. **No Fake Feature Claim**:
+   - Must not claim R022/R023/R024/R025/R026/R029/R040 completed in visible UI unless fully implemented and passed full round law review
+   - Must not claim "R049 ready" or equivalent
+
+5. **No Trading Control Pollution**:
+   - No buy / sell / order / approve / reject buttons or controls
+   - No live / broker / execution toggle or switch
+   - No input / form / checkbox / runtime button that triggers backend action
+   - No fetch / POST / PATCH / websocket command added for UI panel
+
+6. **No Backend / Broker / Live Overreach**:
+   - Must not modify server.py / server_v2.py / index_v2.html
+   - Must not modify broker / execution / live source
+   - Must not add new API endpoint
+   - Must not modify /api/state runtime behavior
+   - Must not write runtime state
+   - Must not connect Fubon API or any broker API
+
+7. **order_execution_allowed FALSE Preservation**:
+   - Must maintain order_execution_allowed = FALSE
+   - UI panel must display FALSE, no toggle to TRUE
+
+8. **Contract-Only Disclaimer**:
+   - Contract-only rounds (e.g. R012, R017, R018) must explicitly label "Contract-only (no runtime wiring)" in UI
+   - Must not claim UI completion for contract-only topics
+
+#### Validation:
+- `evidence_checker.py` must check `visible_surface_evidence` and `ui_visible_gate_pass`
+- `pre-push.ps1` must reject UI candidates missing visible evidence
+- Negative tests required for all 8 patches above
+
 ## Maintenance:
 - Update this file when new rounds are finalized
 - Map new rounds to appropriate groups

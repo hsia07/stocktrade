@@ -47,6 +47,26 @@ class EvidenceChecker:
 
     REQUIRED_LAW_COMPLIANCE = "04"  # Law 04 compliance value
 
+    # UI_VISIBLE_ROUND_ACCEPTANCE_GATE indicators (Law 04 Chapter 22)
+    UI_VISIBLE_GATE_INDICATORS = [
+        "ui_visible_gate_pass",
+        "visible_surface_evidence",
+        "ui_panel_present",
+        "dom_scan_pass",
+    ]
+
+    UI_FAKE_CLAIM_INDICATORS = [
+        "fake_feature_claim_detected",
+        "false_completion_claim",
+    ]
+
+    UI_POLLUTION_INDICATORS = [
+        "buy_sell_controls_added",
+        "broker_toggle_added",
+        "trading_control_pollution",
+        "new_api_fetch_post_added",
+    ]
+
     CONTENT_SCHEMA = {
         "task.txt": {
             "type": "text_sections",
@@ -178,7 +198,11 @@ class EvidenceChecker:
                 if evidence.get("merge_decision_ready") is True:
                     if law_compliance != self.REQUIRED_LAW_COMPLIANCE:
                         missing.append("merge_decision_ready:blocked_without_law04_compliance")
-                        
+                
+                # UI_VISIBLE_ROUND_ACCEPTANCE_GATE check (Law 04 Chapter 22)
+                ui_gate_issues = self.check_ui_visible_gate(evidence)
+                missing.extend(ui_gate_issues)
+                
             except Exception as e:
                 missing.append(f"evidence_parse_error:{e}")
         else:
@@ -330,6 +354,69 @@ class EvidenceChecker:
                     issues.append(f"validator_fail:{name}={result}")
 
         return len(issues) == 0, issues
+
+    def check_ui_visible_gate(self, evidence: Dict[str, Any]) -> List[str]:
+        """
+        UI_VISIBLE_ROUND_ACCEPTANCE_GATE check (Law 04 Chapter 22).
+        Returns list of issues (empty if pass).
+        Only applies to UI / user-facing / dashboard / panel / report / query / visualization rounds.
+        """
+        issues = []
+        
+        # Determine if this is a UI round
+        round_id = evidence.get("round_id", "")
+        task_type = evidence.get("task_type", "")
+        is_ui_round = any(kw in (round_id + task_type).lower() for kw in [
+            "ui", "panel", "dashboard", "homepage", "onboarding", "teaching",
+            "summary", "mobile", "emergency", "simulation", "visualization",
+            "query", "report", "display", "index.html", "dom", "css", "js",
+        ])
+        
+        # Check if files_modified includes UI-related files
+        files_modified = evidence.get("files_modified", [])
+        files_added = evidence.get("files_added", [])
+        all_files = files_modified + files_added
+        has_ui_files = any("index.html" in f or "index_v2.html" in f or 
+                          f.endswith(".css") or f.endswith(".js") or
+                          "panel" in f.lower() or "ui" in f.lower()
+                          for f in all_files)
+        
+        # Skip non-UI rounds
+        if not is_ui_round and not has_ui_files:
+            return issues
+        
+        # Check 1: visible surface evidence required
+        has_visible_evidence = any(evidence.get(indicator) is True for indicator in self.UI_VISIBLE_GATE_INDICATORS)
+        if not has_visible_evidence:
+            issues.append("ui_visible_gate:missing_visible_surface_evidence")
+        
+        # Check 2: fake feature claim must be FALSE
+        for indicator in self.UI_FAKE_CLAIM_INDICATORS:
+            if evidence.get(indicator) is True:
+                issues.append(f"ui_visible_gate:fake_feature_claim_detected:{indicator}")
+        
+        # Check 3: trading control pollution must not be present
+        for indicator in self.UI_POLLUTION_INDICATORS:
+            if evidence.get(indicator) is True:
+                issues.append(f"ui_visible_gate:trading_control_pollution:{indicator}")
+        
+        # Check 4: contract-only disclaimer if applicable
+        if evidence.get("contract_only", False) is True:
+            if evidence.get("contract_only_disclaimer_present") is not True:
+                issues.append("ui_visible_gate:contract_only_missing_disclaimer")
+        
+        # Check 5: order_execution_allowed must remain FALSE for UI rounds
+        if evidence.get("order_execution_allowed") is True:
+            issues.append("ui_visible_gate:order_execution_allowed_true_not_allowed")
+        
+        # Check 6: negative tests must exist and pass
+        ui_tests = evidence.get("ui_visible_gate_tests", {})
+        if ui_tests:
+            for test_name, result in ui_tests.items():
+                if result != "PASS":
+                    issues.append(f"ui_visible_gate:test_fail:{test_name}={result}")
+        
+        return issues
 
     # Merge/Push Separation Enforcement (Law-0416 Phase 3)
     MERGE_AUTHORIZED_INDICATORS = [
