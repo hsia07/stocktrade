@@ -3,7 +3,7 @@
   "task_type": "r012_latency_budget_blocker_rework_construction",
   "formal_status_code": "R012_LATENCY_BUDGET_CANDIDATE_READY_FOR_MANUAL_REVIEW",
   "canonical_head": "75bf26a7c9ad1b7b3e4a1ef38f5479fa6b3e718a",
-  "construction_branch": "candidate/r012-latency-budget-blocker-rework",
+  "construction_branch": "work/candidate-R012-latency-budget-blocker-rework",
   "base_head": "75bf26a7c9ad1b7b3e4a1ef38f5479fa6b3e718a",
   "law_compliance": "04",
   "files_added": [
@@ -63,7 +63,7 @@
   "main_control_loop_started": false,
   "start_loop_executed": false,
   "gov_int_005_started": false,
-  "push_executed": false,
+  "push_executed": true,
   "merge_executed": false,
   "promote_executed": false,
   "pr_created": false,
