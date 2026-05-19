@@ -91,6 +91,58 @@ function Check-RuntimeGuard {
     Write-Host "PASS: runtime guard checks passed"
 }
 
+function Check-UIVisibleGate {
+    param([string]$Sha)
+    # UI_VISIBLE_ROUND_ACCEPTANCE_GATE check (Law 04 Chapter 22)
+    # Check if evidence.json in changed files contains UI visible gate evidence
+    $evidenceFiles = Get-ChangedEvidenceFiles -Sha $Sha
+    $uiGateIssues = @()
+    
+    foreach ($evPath in $evidenceFiles) {
+        try {
+            $pythonCmd = "import subprocess, json; result = subprocess.run(['git', 'show', '$($Sha):$($evPath)'], capture_output=True); data = json.loads(result.stdout.decode('utf-8-sig')); round_id = data.get('round_id',''); task_type = data.get('task_type',''); files = data.get('files_modified',[]) + data.get('files_added',[]); is_ui = any(k in (round_id + task_type).lower() for k in ['ui','panel','dashboard','homepage','onboarding','teaching','summary','mobile','emergency','simulation','visualization','query','report','display']); has_ui_files = any('index.html' in f or f.endswith('.css') or f.endswith('.js') or 'panel' in f.lower() or 'ui' in f.lower() for f in files); print('is_ui:', is_ui or has_ui_files); visible = any(data.get(k) for k in ['ui_visible_gate_pass','visible_surface_evidence','ui_panel_present','dom_scan_pass']); fake = any(data.get(k) for k in ['fake_feature_claim_detected','false_completion_claim']); pollution = any(data.get(k) for k in ['buy_sell_controls_added','broker_toggle_added','trading_control_pollution','new_api_fetch_post_added']); order_true = data.get('order_execution_allowed') is True; print('visible:', visible); print('fake:', fake); print('pollution:', pollution); print('order_true:', order_true)"
+            $result = python -c $pythonCmd 2>$null
+            if ($result) {
+                $lines = $result -split "`n"
+                $isUI = $lines | Where-Object { $_ -match "is_ui:\s*True" }
+                $visible = $lines | Where-Object { $_ -match "visible:\s*True" }
+                $fake = $lines | Where-Object { $_ -match "fake:\s*True" }
+                $pollution = $lines | Where-Object { $_ -match "pollution:\s*True" }
+                $orderTrue = $lines | Where-Object { $_ -match "order_true:\s*True" }
+                
+                if ($isUI) {
+                    if (-not $visible) {
+                        $uiGateIssues += "$evPath : missing visible surface evidence"
+                    }
+                    if ($fake) {
+                        $uiGateIssues += "$evPath : fake feature claim detected"
+                    }
+                    if ($pollution) {
+                        $uiGateIssues += "$evPath : trading control pollution detected"
+                    }
+                    if ($orderTrue) {
+                        $uiGateIssues += "$evPath : order_execution_allowed is TRUE"
+                    }
+                }
+            }
+        }
+        catch {
+            Write-Host "WARN: could not check UI visible gate for $evPath"
+        }
+    }
+    
+    if ($uiGateIssues.Count -gt 0) {
+        Write-Host "ERROR: UI_VISIBLE_ROUND_ACCEPTANCE_GATE CHECK FAILED:"
+        foreach ($issue in $uiGateIssues) {
+            Write-Host "  ERROR: $issue"
+        }
+        Write-Host "ERROR: UI / user-facing / dashboard / panel / report / query / visualization rounds"
+        Write-Host "ERROR: must pass UI_VISIBLE_ROUND_ACCEPTANCE_GATE (Law 04 Chapter 22)"
+        exit 1
+    }
+    Write-Host "PASS: UI visible gate checks passed"
+}
+
 function Check-ManifestStateConsistency {
     $stateFile = "automation/control/state.runtime.json"
     $manifestFile = "manifests/current_round.yaml"
