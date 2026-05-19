@@ -1,0 +1,249 @@
+============================= test session starts =============================
+platform win32 -- Python 3.14.4, pytest-9.0.3, pluggy-1.6.0 -- C:\Python314\python.exe
+cachedir: .pytest_cache
+rootdir: C:\Users\richa\OneDrive\桌面\stocktrade
+plugins: anyio-4.13.0
+collecting ... collected 50 items
+
+tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestForceCloseButtonSafety::test_force_close_button_disabled_or_display_only PASSED [  2%]
+tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestForceCloseButtonSafety::test_force_close_no_unsafe_ws_send PASSED [  4%]
+tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestForceCloseButtonSafety::test_force_close_button_cannot_trigger_trade PASSED [  6%]
+tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestOrderExecutionAllowedVisibility::test_api_state_has_order_execution_allowed_false PASSED [  8%]
+tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestOrderExecutionAllowedVisibility::test_index_v2_shows_order_execution_allowed_status PASSED [ 10%]
+tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestOrderExecutionAllowedVisibility::test_order_execution_allowed_never_true_in_ui PASSED [ 12%]
+tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestLiveTransitionSafety::test_api_mode_live_blocked_flag PASSED [ 14%]
+tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestLiveTransitionSafety::test_api_mode_live_blocked_reason PASSED [ 16%]
+tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestLiveTransitionSafety::test_live_button_disabled_in_learning PASSED [ 18%]
+tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestUndefinedPlaceholderCleanup::test_no_literal_undefined_display PASSED [ 20%]
+tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestUndefinedPlaceholderCleanup::test_mode_fallback_not_undefined PASSED [ 22%]
+tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestUndefinedPlaceholderCleanup::test_mode_fallback_covers_all_modebtn2_paths PASSED [ 24%]
+tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestUndefinedPlaceholderCleanup::test_stale_copy_placeholder_awareness PASSED [ 26%]
+tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestUIGapStatusDisclosure::test_ui_gap_panel_exists PASSED [ 28%]
+tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestUIGapStatusDisclosure::test_r022_status_visible PASSED [ 30%]
+tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestUIGapStatusDisclosure::test_r023_status_visible PASSED [ 32%]
+tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestUIGapStatusDisclosure::test_r024_status_visible PASSED [ 34%]
+tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestUIGapStatusDisclosure::test_r025_status_visible PASSED [ 36%]
+tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestUIGapStatusDisclosure::test_r026_status_visible PASSED [ 38%]
+tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestUIGapStatusDisclosure::test_r029_status_visible PASSED [ 40%]
+tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestUIGapStatusDisclosure::test_r040_status_visible PASSED [ 42%]
+tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestUIGapStatusDisclosure::test_not_complete_disclaimer_visible PASSED [ 44%]
+tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestUIGapStatusDisclosure::test_r023_placeholder_scan_consistent PASSED [ 46%]
+tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestReadOnlyDisclaimer::test_read_only_banner_exists PASSED [ 48%]
+tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestReadOnlyDisclaimer::test_not_r049_ready_claim PASSED [ 50%]
+tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestReadOnlyDisclaimer::test_no_runtime_wired_false_claim PASSED [ 52%]
+tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestReadOnlyDisclaimer::test_no_broker_live_execution_enabled_claim PASSED [ 54%]
+tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestWebSocketDisconnectSafety::test_ws_disconnect_shows_offline_demo PASSED [ 56%]
+tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestWebSocketDisconnectSafety::test_ws_disconnect_not_affecting_trading_safety PASSED [ 58%]
+tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestNegativeTestsAndPollution::test_no_fake_r049_ready_claim PASSED [ 60%]
+tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestNegativeTestsAndPollution::test_no_r030_runtime_wired_claim PASSED [ 62%]
+tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestNegativeTestsAndPollution::test_no_buy_sell_controls PASSED [ 64%]
+tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestNegativeTestsAndPollution::test_no_broker_toggle PASSED [ 66%]
+tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestNegativeTestsAndPollution::test_no_new_dangerous_api_endpoint PASSED [ 68%]
+tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestNegativeTestsAndPollution::test_no_unsafe_post_in_html PASSED [ 70%]
+tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestFileModificationBoundary::test_server_py_not_modified PASSED [ 72%]
+tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestFileModificationBoundary::test_index_html_not_modified PASSED [ 74%]
+tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestFileModificationBoundary::test_modules_not_modified PASSED [ 76%]
+tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestFileModificationBoundary::test_env_not_modified PASSED [ 78%]
+tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestServerV2Safety::test_api_mode_safe_allowed_annotations PASSED [ 80%]
+tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestServerV2Safety::test_api_mode_safe_block_reason PASSED [ 82%]
+tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestServerV2Safety::test_order_execution_allowed_false_in_state PASSED [ 84%]
+tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestServerV2Safety::test_ui_safety_disclaimer_in_state PASSED [ 86%]
+tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestManifestGovernanceRegression::test_manifest_has_server_v2_in_forbidden_paths PASSED [ 88%]
+tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestManifestGovernanceRegression::test_manifest_has_index_v2_in_forbidden_paths PASSED [ 90%]
+tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestManifestGovernanceRegression::test_manifest_has_authorized_exceptions PASSED [ 92%]
+tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestManifestGovernanceRegression::test_server_v2_exception_is_round_scoped PASSED [ 94%]
+tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestManifestGovernanceRegression::test_index_v2_exception_is_round_scoped PASSED [ 96%]
+tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestManifestGovernanceRegression::test_exceptions_marked_not_for_future_rounds PASSED [ 98%]
+tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestManifestGovernanceRegression::test_no_permanent_forbidden_path_removal PASSED [100%]
+
+============================= 50 passed in 0.10s ==============================
+
+======================================================================
+
+============================= test session starts =============================
+platform win32 -- Python 3.14.4, pytest-9.0.3, pluggy-1.6.0 -- C:\Python314\python.exe
+cachedir: .pytest_cache
+rootdir: C:\Users\richa\OneDrive\桌面\stocktrade
+plugins: anyio-4.13.0
+collecting ... collected 22 items
+
+tests/test_ui_visible_gate_governance.py::TestUIVisibleGateEvidenceChecker::test_ui_round_without_visible_evidence_fails PASSED [  4%]
+tests/test_ui_visible_gate_governance.py::TestUIVisibleGateEvidenceChecker::test_ui_round_with_visible_evidence_passes PASSED [  9%]
+tests/test_ui_visible_gate_governance.py::TestUIVisibleGateEvidenceChecker::test_non_ui_round_skips_ui_gate PASSED [ 13%]
+tests/test_ui_visible_gate_governance.py::TestUIVisibleGateEvidenceChecker::test_fake_feature_claim_detected_fails PASSED [ 18%]
+tests/test_ui_visible_gate_governance.py::TestUIVisibleGateEvidenceChecker::test_trading_control_pollution_fails PASSED [ 22%]
+tests/test_ui_visible_gate_governance.py::TestUIVisibleGateEvidenceChecker::test_contract_only_without_disclaimer_fails PASSED [ 27%]
+tests/test_ui_visible_gate_governance.py::TestUIVisibleGateEvidenceChecker::test_contract_only_with_disclaimer_passes PASSED [ 31%]
+tests/test_ui_visible_gate_governance.py::TestUIVisibleGateEvidenceChecker::test_order_execution_allowed_true_fails PASSED [ 36%]
+tests/test_ui_visible_gate_governance.py::TestUIVisibleGateEvidenceChecker::test_ui_visible_gate_tests_must_pass PASSED [ 40%]
+tests/test_ui_visible_gate_governance.py::TestUIVisibleGateEvidenceChecker::test_index_html_file_triggers_ui_gate PASSED [ 45%]
+tests/test_ui_visible_gate_governance.py::TestUIVisibleGateEvidenceChecker::test_evidence_checker_integration_blocks_ui_without_gate PASSED [ 50%]
+tests/test_ui_visible_gate_governance.py::TestUIVisibleGateEvidenceChecker::test_evidence_checker_integration_passes_with_gate PASSED [ 54%]
+tests/test_ui_visible_gate_governance.py::TestUIVisibleGateEvidenceChecker::test_negative_test_missing_visible_evidence_must_fail PASSED [ 59%]
+tests/test_ui_visible_gate_governance.py::TestUIVisibleGateEvidenceChecker::test_negative_test_mojibake_placeholder_must_fail PASSED [ 63%]
+tests/test_ui_visible_gate_governance.py::TestUIVisibleGateEvidenceChecker::test_negative_test_broker_toggle_must_fail PASSED [ 68%]
+tests/test_ui_visible_gate_governance.py::TestUIVisibleGateEvidenceChecker::test_no_new_api_endpoint_pollution PASSED [ 72%]
+tests/test_ui_visible_gate_governance.py::TestUIVisibleGateEvidenceChecker::test_formal_04_law_compliance_required PASSED [ 77%]
+tests/test_ui_visible_gate_governance.py::TestUIVisibleGateEvidenceChecker::test_governance_baseline_has_ui_gate_article PASSED [ 81%]
+tests/test_ui_visible_gate_governance.py::TestUIVisibleGateEvidenceChecker::test_04_law_has_ui_gate_chapter PASSED [ 86%]
+tests/test_ui_visible_gate_governance.py::TestUIVisibleGateEvidenceChecker::test_round_patch_mapping_has_ui_gate_group PASSED [ 90%]
+tests/test_ui_visible_gate_governance.py::TestUIVisibleGateEvidenceChecker::test_evidence_checker_has_ui_gate_method PASSED [ 95%]
+tests/test_ui_visible_gate_governance.py::TestUIVisibleGateEvidenceChecker::test_pre_push_has_ui_visible_gate_check PASSED [100%]
+
+============================== warnings summary ===============================
+tests/test_ui_visible_gate_governance.py::TestUIVisibleGateEvidenceChecker::test_evidence_checker_integration_passes_with_gate
+  C:\Users\richa\AppData\Roaming\Python\Python314\site-packages\_pytest\threadexception.py:58: PytestUnhandledThreadExceptionWarning: Exception in thread Thread-2 (_readerthread)
+  
+  Traceback (most recent call last):
+    File "C:\Python314\Lib\threading.py", line 1082, in _bootstrap_inner
+      self._context.run(self.run)
+      ~~~~~~~~~~~~~~~~~^^^^^^^^^^
+    File "C:\Python314\Lib\threading.py", line 1024, in run
+      self._target(*self._args, **self._kwargs)
+      ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    File "C:\Python314\Lib\subprocess.py", line 1614, in _readerthread
+      buffer.append(fh.read())
+                    ~~~~~~~^^
+  UnicodeDecodeError: 'cp950' codec can't decode byte 0x8c in position 154: illegal multibyte sequence
+  
+  Enable tracemalloc to get traceback where the object was allocated.
+  See https://docs.pytest.org/en/stable/how-to/capture-warnings.html#resource-warnings for more info.
+    warnings.warn(pytest.PytestUnhandledThreadExceptionWarning(msg))
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+======================== 22 passed, 1 warning in 0.13s ========================
+
+======================================================================
+
+........................................................................ [  7%]
+........................................................................ [ 15%]
+........................................................................ [ 23%]
+........................................................................ [ 30%]
+........................................................................ [ 38%]
+........................................................................ [ 46%]
+........................................................................ [ 54%]
+........................................................................ [ 61%]
+........................................................................ [ 69%]
+........................................................................ [ 77%]
+........................................................................ [ 85%]
+........................................................................ [ 92%]
+...................................................................      [100%]
+============================== warnings summary ===============================
+server.py:1419
+  C:\Users\richa\OneDrive\桌面\stocktrade\server.py:1419: DeprecationWarning: 
+          on_event is deprecated, use lifespan event handlers instead.
+  
+          Read more about it in the
+          [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
+          
+    @app.on_event("startup")
+
+..\..\..\AppData\Roaming\Python\Python314\site-packages\fastapi\applications.py:4598
+..\..\..\AppData\Roaming\Python\Python314\site-packages\fastapi\applications.py:4598
+  C:\Users\richa\AppData\Roaming\Python\Python314\site-packages\fastapi\applications.py:4598: DeprecationWarning: 
+          on_event is deprecated, use lifespan event handlers instead.
+  
+          Read more about it in the
+          [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
+          
+    return self.router.on_event(event_type)  # ty: ignore[deprecated]
+
+server_v2.py:2350
+  C:\Users\richa\OneDrive\桌面\stocktrade\tests\..\server_v2.py:2350: DeprecationWarning: 
+          on_event is deprecated, use lifespan event handlers instead.
+  
+          Read more about it in the
+          [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
+          
+    @app.on_event("startup")
+
+tests/test_round5_state_machine.py::test_transitions
+  C:\Users\richa\AppData\Roaming\Python\Python314\site-packages\_pytest\python.py:170: PytestReturnNotNoneWarning: Test functions should return None, but tests/test_round5_state_machine.py::test_transitions returned <class 'bool'>.
+  Did you mean to use `assert` instead of `return`?
+  See https://docs.pytest.org/en/stable/how-to/assert.html#return-not-none for more information.
+    warnings.warn(
+
+tests/test_round5_state_machine.py::test_undefined
+  C:\Users\richa\AppData\Roaming\Python\Python314\site-packages\_pytest\python.py:170: PytestReturnNotNoneWarning: Test functions should return None, but tests/test_round5_state_machine.py::test_undefined returned <class 'bool'>.
+  Did you mean to use `assert` instead of `return`?
+  See https://docs.pytest.org/en/stable/how-to/assert.html#return-not-none for more information.
+    warnings.warn(
+
+tests/test_round5_state_machine.py::test_entry
+  C:\Users\richa\AppData\Roaming\Python\Python314\site-packages\_pytest\python.py:170: PytestReturnNotNoneWarning: Test functions should return None, but tests/test_round5_state_machine.py::test_entry returned <class 'bool'>.
+  Did you mean to use `assert` instead of `return`?
+  See https://docs.pytest.org/en/stable/how-to/assert.html#return-not-none for more information.
+    warnings.warn(
+
+tests/test_round6_mode_contract.py::test_pnl_actual_execution
+  C:\Users\richa\AppData\Roaming\Python\Python314\site-packages\_pytest\python.py:170: PytestReturnNotNoneWarning: Test functions should return None, but tests/test_round6_mode_contract.py::test_pnl_actual_execution returned <class 'bool'>.
+  Did you mean to use `assert` instead of `return`?
+  See https://docs.pytest.org/en/stable/how-to/assert.html#return-not-none for more information.
+    warnings.warn(
+
+tests/test_round6_mode_contract.py::test_engine_methods_exist
+  C:\Users\richa\AppData\Roaming\Python\Python314\site-packages\_pytest\python.py:170: PytestReturnNotNoneWarning: Test functions should return None, but tests/test_round6_mode_contract.py::test_engine_methods_exist returned <class 'bool'>.
+  Did you mean to use `assert` instead of `return`?
+  See https://docs.pytest.org/en/stable/how-to/assert.html#return-not-none for more information.
+    warnings.warn(
+
+tests/test_round6_mode_contract.py::test_mode_state_machine
+  C:\Users\richa\AppData\Roaming\Python\Python314\site-packages\_pytest\python.py:170: PytestReturnNotNoneWarning: Test functions should return None, but tests/test_round6_mode_contract.py::test_mode_state_machine returned <class 'bool'>.
+  Did you mean to use `assert` instead of `return`?
+  See https://docs.pytest.org/en/stable/how-to/assert.html#return-not-none for more information.
+    warnings.warn(
+
+tests/test_round6_mode_contract.py::test_pnl_paths_in_code
+  C:\Users\richa\AppData\Roaming\Python\Python314\site-packages\_pytest\python.py:170: PytestReturnNotNoneWarning: Test functions should return None, but tests/test_round6_mode_contract.py::test_pnl_paths_in_code returned <class 'bool'>.
+  Did you mean to use `assert` instead of `return`?
+  See https://docs.pytest.org/en/stable/how-to/assert.html#return-not-none for more information.
+    warnings.warn(
+
+tests/test_round6_mode_contract.py::test_api_endpoints
+  C:\Users\richa\AppData\Roaming\Python\Python314\site-packages\_pytest\python.py:170: PytestReturnNotNoneWarning: Test functions should return None, but tests/test_round6_mode_contract.py::test_api_endpoints returned <class 'bool'>.
+  Did you mean to use `assert` instead of `return`?
+  See https://docs.pytest.org/en/stable/how-to/assert.html#return-not-none for more information.
+    warnings.warn(
+
+tests/test_round6_pnl_calculator.py::test_pnl_calculator_exists_in_production
+  C:\Users\richa\AppData\Roaming\Python\Python314\site-packages\_pytest\python.py:170: PytestReturnNotNoneWarning: Test functions should return None, but tests/test_round6_pnl_calculator.py::test_pnl_calculator_exists_in_production returned <class 'bool'>.
+  Did you mean to use `assert` instead of `return`?
+  See https://docs.pytest.org/en/stable/how-to/assert.html#return-not-none for more information.
+    warnings.warn(
+
+tests/test_round6_pnl_calculator.py::test_pnl_paths_in_production
+  C:\Users\richa\AppData\Roaming\Python\Python314\site-packages\_pytest\python.py:170: PytestReturnNotNoneWarning: Test functions should return None, but tests/test_round6_pnl_calculator.py::test_pnl_paths_in_production returned <class 'bool'>.
+  Did you mean to use `assert` instead of `return`?
+  See https://docs.pytest.org/en/stable/how-to/assert.html#return-not-none for more information.
+    warnings.warn(
+
+tests/test_round6_pnl_calculator.py::test_pnl_calculation_formula
+  C:\Users\richa\AppData\Roaming\Python\Python314\site-packages\_pytest\python.py:170: PytestReturnNotNoneWarning: Test functions should return None, but tests/test_round6_pnl_calculator.py::test_pnl_calculation_formula returned <class 'bool'>.
+  Did you mean to use `assert` instead of `return`?
+  See https://docs.pytest.org/en/stable/how-to/assert.html#return-not-none for more information.
+    warnings.warn(
+
+tests/test_ui_visible_gate_governance.py::TestUIVisibleGateEvidenceChecker::test_evidence_checker_integration_passes_with_gate
+  C:\Users\richa\AppData\Roaming\Python\Python314\site-packages\_pytest\threadexception.py:58: PytestUnhandledThreadExceptionWarning: Exception in thread Thread-47 (_readerthread)
+  
+  Traceback (most recent call last):
+    File "C:\Python314\Lib\threading.py", line 1082, in _bootstrap_inner
+      self._context.run(self.run)
+      ~~~~~~~~~~~~~~~~~^^^^^^^^^^
+    File "C:\Python314\Lib\threading.py", line 1024, in run
+      self._target(*self._args, **self._kwargs)
+      ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    File "C:\Python314\Lib\subprocess.py", line 1614, in _readerthread
+      buffer.append(fh.read())
+                    ~~~~~~~^^
+  UnicodeDecodeError: 'cp950' codec can't decode byte 0x8c in position 154: illegal multibyte sequence
+  
+  Enable tracemalloc to get traceback where the object was allocated.
+  See https://docs.pytest.org/en/stable/how-to/capture-warnings.html#resource-warnings for more info.
+    warnings.warn(pytest.PytestUnhandledThreadExceptionWarning(msg))
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+931 passed, 16 warnings in 5.40s
+
+======================================================================
+
