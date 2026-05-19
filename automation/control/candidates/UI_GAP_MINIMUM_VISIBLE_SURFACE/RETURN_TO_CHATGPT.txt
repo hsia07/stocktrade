@@ -1,0 +1,202 @@
+round_id:
+  UI_GAP_CANDIDATE_DIFF_ENCODING_REWORK
+
+task_type:
+  ui_gap_candidate_diff_encoding_rework
+
+status:
+  completed
+
+formal_status_code:
+  UI_GAP_CANDIDATE_DIFF_ENCODING_REWORK_PASS
+
+previous_candidate_head:
+  2ef1b2d8030c6a79e47e01477dfe35d5fc79d40d
+
+expected_base_head:
+  a5ba1fc28105cb29ee67fd24cb9d9109b593f81a
+
+candidate_branch:
+  candidate/ui-gap-minimum-visible-surface-hardening
+
+candidate_parent_chain_includes_expected_base_true_or_false:
+  TRUE
+
+rework_commit_created_true_or_false:
+  TRUE (see below)
+
+rework_commit:
+  9276c1fb3061e3fd042b5f7c9506ea5ec72bd53d
+
+git_status_short_after_commit:
+  EMPTY
+
+files_modified_by_rework:
+  - automation/control/candidates/UI_GAP_MINIMUM_VISIBLE_SURFACE/candidate.diff
+  - automation/control/candidates/UI_GAP_MINIMUM_VISIBLE_SURFACE/evidence.json
+  - automation/control/candidates/UI_GAP_MINIMUM_VISIBLE_SURFACE/RETURN_TO_CHATGPT.txt
+
+authorized_artifact_files_only_true_or_false:
+  TRUE
+
+source_files_modified_true_or_false:
+  FALSE
+
+tests_modified_true_or_false:
+  FALSE
+
+index_html_modified_this_round_true_or_false:
+  FALSE
+
+candidate_diff_encoding_before:
+  UTF-16
+
+candidate_diff_encoding_after:
+  UTF-8
+
+candidate_diff_utf8_no_bom_true_or_false:
+  TRUE
+
+candidate_diff_non_empty_true_or_false:
+  TRUE
+
+candidate_diff_size_bytes:
+  30488
+
+candidate_diff_includes_index_html_true_or_false:
+  TRUE
+
+candidate_diff_includes_ui_gap_tests_true_or_false:
+  TRUE
+
+candidate_diff_includes_ui_control_warning_test_true_or_false:
+  TRUE
+
+candidate_diff_includes_core_a4_test_true_or_false:
+  TRUE
+
+candidate_diff_includes_evidence_true_or_false:
+  TRUE
+
+candidate_diff_includes_return_to_chatgpt_true_or_false:
+  TRUE
+
+candidate_diff_self_reference_excluded_true_or_false:
+  TRUE
+
+candidate_diff_is_full_candidate_diff_true_or_false:
+  TRUE
+
+candidate_diff_is_filtered_diff_true_or_false:
+  FALSE
+
+secret_values_in_candidate_diff_true_or_false:
+  FALSE
+
+secret_values_in_evidence_true_or_false:
+  FALSE
+
+secret_values_in_return_to_chatgpt_true_or_false:
+  FALSE
+
+server_py_modified_true_or_false:
+  FALSE
+
+server_v2_modified_true_or_false:
+  FALSE
+
+index_v2_modified_true_or_false:
+  FALSE
+
+modules_modified_true_or_false:
+  FALSE
+
+new_api_endpoint_added_true_or_false:
+  FALSE
+
+api_state_runtime_behavior_modified_true_or_false:
+  FALSE
+
+runtime_state_write_added_true_or_false:
+  FALSE
+
+broker_execution_live_modified_true_or_false:
+  FALSE
+
+fubon_api_integrated_true_or_false:
+  FALSE
+
+order_execution_allowed_true_or_false:
+  FALSE
+
+runtime_started_true_or_false:
+  FALSE
+
+trading_broker_execution_live_started_true_or_false:
+  FALSE
+
+r049_started_true_or_false:
+  FALSE
+
+ui_gap_tests_summary:
+  21/21 PASS (panel presence, round status visible but not claimed complete,
+  no buy/sell/order/approve/reject controls, no live/broker toggle,
+  no new API fetch/POST for panel, no Fubon API as active control,
+  no runtime/R049 start controls, no secret values rendered,
+  no placeholder/mojibake, contract-only and partial labels present,
+  UI visible gate disclaimers present, core A4 shadow panel preserved,
+  index_v2 unchanged, HTML/JS syntax sanity)
+
+existing_ui_related_tests_summary:
+  68/68 PASS (33 UI control warning + 35 core A4: no false feature claims,
+  shadow panel preserved, no broker/execution/live path in shadow panel,
+  no order execution toggle, no secrets, no Fubon API)
+
+full_clean_subset_tests_summary:
+  859/859 PASS, 15 warnings
+
+all_tests_pass_true_or_false:
+  TRUE
+
+evidence_json_parse_pass_true_or_false:
+  TRUE
+
+evidence_law_compliance_is_string_04_true_or_false:
+  TRUE
+
+return_to_chatgpt_formal_body_valid_true_or_false:
+  TRUE
+
+push_executed_true_or_false:
+  FALSE
+
+merge_executed_true_or_false:
+  FALSE
+
+promote_executed_true_or_false:
+  FALSE
+
+pr_created_true_or_false:
+  FALSE
+
+manual_review_required_true_or_false:
+  TRUE
+
+recommended_next_action:
+  MANUAL_REVIEW_UI_GAP_MINIMUM_VISIBLE_SURFACE_CANDIDATE_AFTER_SCOPE_APPROVAL_AND_DIFF_ENCODING_REWORK
+
+final_recommendation:
+  UI_GAP_CANDIDATE_DIFF_ENCODING_REWORK_PASS.
+  Candidate.diff was UTF-16 LE BOM (33620 bytes) at previous commit 2ef1b2d;
+  rebuilt via Python binary write as UTF-8 no BOM (30488 bytes), containing
+  the full diff from canonical base a5ba1fc to candidate working tree HEAD,
+  excluding only candidate.diff self-reference.
+  The diff correctly includes: index.html, tests/test_ui_gap_minimum_visible_surface.py,
+  tests/test_phase2_ui_control_warning_remediation.py, tests/test_phase2_core_a4_ui_display_contract.py,
+  evidence.json, and RETURN_TO_CHATGPT.txt.
+  No secret values found. No source or test files modified in this rework round.
+  All safety invariants remain intact: order_execution_allowed FALSE, no real LLM
+  calls, no runtime state write, no broker/live integration, no forbidden files
+  modified. 21/21 UI gap tests pass. 68/68 existing UI tests pass. 859/859 full
+  subset pass. Candidate branch candidate/ui-gap-minimum-visible-surface-hardening
+  ready for manual review after scope approval and diff encoding rework.

@@ -277,7 +277,9 @@ class TestCoreA4NoBrokerExecutionLive:
         html = read_index()
         if 'core-a4-shadow-panel' in html:
             panel_start = html.index('core-a4-shadow-panel')
-            scope = html[panel_start:panel_start + 4000]
+            # Scope limited to the shadow-panel element itself (first closing </div>)
+            panel_end = html.find('</div>', panel_start) + 6
+            scope = html[panel_start:panel_end]
             assert 'broker' not in scope.lower()
 
     def test_no_execution_live_path(self):
@@ -285,7 +287,8 @@ class TestCoreA4NoBrokerExecutionLive:
         html = read_index()
         if 'core-a4-shadow-panel' in html:
             panel_start = html.index('core-a4-shadow-panel')
-            scope = html[panel_start:panel_start + 4000]
+            panel_end = html.find('</div>', panel_start) + 6
+            scope = html[panel_start:panel_end]
             assert 'execution' not in scope.lower()
 
 

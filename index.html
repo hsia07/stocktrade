@@ -465,6 +465,79 @@ body{
           <div id="dash-signals"></div>
         </div>
       </div>
+
+      <div class="card" id="ui-gap-status-panel">
+        <div class="card-title"><span class="dot" style="background:var(--muted)"></span>系統功能狀態揭露（僅供閱覽，不代表功能已完成）</div>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:12px;">
+          以下為各項功能目前狀態的可見揭露，不代表功能已完整實作或已開放使用。
+        </div>
+        <div class="g2">
+          <div>
+            <div class="stat-row" style="padding:6px 0;border-bottom:1px solid var(--border)">
+              <span class="stat-label">R022 新手教學 UI</span>
+              <span class="stat-val" style="color:var(--warn)">尚未完整完成（僅狀態揭露）</span>
+            </div>
+            <div class="stat-row" style="padding:6px 0;border-bottom:1px solid var(--border)">
+              <span class="stat-label">R023 首頁 onboarding</span>
+              <span class="stat-val" style="color:var(--warn)">尚未完整完成（僅狀態揭露）</span>
+            </div>
+            <div class="stat-row" style="padding:6px 0;border-bottom:1px solid var(--border)">
+              <span class="stat-label">R024 智慧摘要層</span>
+              <span class="stat-val" style="color:var(--warn)">Partial（無 runtime summary）</span>
+            </div>
+            <div class="stat-row" style="padding:6px 0;border-bottom:1px solid var(--border)">
+              <span class="stat-label">R025 手機 / Emergency 接管</span>
+              <span class="stat-val" style="color:var(--warn)">尚未完整完成（無緊急控制）</span>
+            </div>
+            <div class="stat-row" style="padding:6px 0;border-bottom:1px solid var(--border)">
+              <span class="stat-label">R026 模擬交易 UI</span>
+              <span class="stat-val" style="color:var(--warn)">尚未完整完成（無下單 / 無 broker）</span>
+            </div>
+            <div class="stat-row" style="padding:6px 0;border-bottom:1px solid var(--border)">
+              <span class="stat-label">R029 成本 / 滑價 / 成交機率</span>
+              <span class="stat-val" style="color:var(--warn)">Partial（主題需複核，含 placeholder）</span>
+            </div>
+            <div class="stat-row" style="padding:6px 0;border-bottom:1px solid var(--border)">
+              <span class="stat-label">R040 市場候選池 / 任意股票查詢</span>
+              <span class="stat-val" style="color:var(--warn)">Backend 模組存在，User-facing 查詢未接入</span>
+            </div>
+          </div>
+          <div>
+            <div class="stat-row" style="padding:6px 0;border-bottom:1px solid var(--border)">
+              <span class="stat-label">order_execution_allowed</span>
+              <span class="stat-val" style="color:var(--danger)">FALSE</span>
+            </div>
+            <div class="stat-row" style="padding:6px 0;border-bottom:1px solid var(--border)">
+              <span class="stat-label">Broker / Live / Execution</span>
+              <span class="stat-val" style="color:var(--danger)">未接入</span>
+            </div>
+            <div class="stat-row" style="padding:6px 0;border-bottom:1px solid var(--border)">
+              <span class="stat-label">富邦 API</span>
+              <span class="stat-val" style="color:var(--danger)">未接入</span>
+            </div>
+            <div class="stat-row" style="padding:6px 0;border-bottom:1px solid var(--border)">
+              <span class="stat-label">R049 整備狀態</span>
+              <span class="stat-val" style="color:var(--danger)">未啟動</span>
+            </div>
+            <div class="stat-row" style="padding:6px 0;border-bottom:1px solid var(--border)">
+              <span class="stat-label">Runtime / Trading</span>
+              <span class="stat-val" style="color:var(--danger)">未啟動</span>
+            </div>
+            <div class="stat-row" style="padding:6px 0;border-bottom:1px solid var(--border)">
+              <span class="stat-label">Contract-only 模組</span>
+              <span class="stat-val" style="color:var(--accent2)">R012, R017, R018（已接受）</span>
+            </div>
+            <div class="stat-row" style="padding:6px 0;border-bottom:1px solid var(--border)">
+              <span class="stat-label">已接受後端模組</span>
+              <span class="stat-val" style="color:var(--accent2)">R030–R048（待 runtime wiring）</span>
+            </div>
+          </div>
+        </div>
+        <div style="margin-top:12px;padding-top:10px;border-top:1px solid var(--border);font-size:11px;color:var(--muted);line-height:1.6;">
+          <strong>下一步建議：</strong>補最小 UI surface / runtime wiring audit / broker-live readiness audit。<br>
+          本區塊僅為可見狀態揭露，不代表任何功能已開放使用或已完成。
+        </div>
+      </div>
     </div>
 
     <div class="page" id="page-agents">
