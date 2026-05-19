@@ -19,6 +19,9 @@ base_head:
 previous_candidate_head:
   5f2525276a77dfdd8a4d33da785486dbff879ebd
 
+new_candidate_head:
+  18c361bd0865bba30e00dff4a8c4735a24cdc9eb
+
 original_blocker:
   "candidate.diff had UTF-16LE BOM (FF FE as first two bytes)"
 
