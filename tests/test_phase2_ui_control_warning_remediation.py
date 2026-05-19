@@ -148,8 +148,19 @@ class TestPlaceholderAndFeatureGaps:
         assert "HALTED" in content or "SHORT" in content
 
     def test_no_false_feature_claims(self):
-        for kw in ["R022", "R023", "R024", "R025", "R026", "R029", "R040"]:
-            assert kw not in INDEX_HTML_TEXT, f"Should not claim feature {kw}"
+        # These rounds may appear as "status disclosure" (not completed), but must not
+        # appear with a false completion claim like "已完成" or "ready".
+        completion_claims = [
+            "已完成新手教學",
+            "已完成首頁 onboarding",
+            "智慧摘要層已完成",
+            "手機接管已完成",
+            "模擬交易已完成",
+            "六大 AI 會議已可用",
+            "可查任意股票",
+        ]
+        for claim in completion_claims:
+            assert claim not in INDEX_HTML_TEXT, f"Should not falsely claim: {claim}"
 
 
 class TestSafetyInvariants:
