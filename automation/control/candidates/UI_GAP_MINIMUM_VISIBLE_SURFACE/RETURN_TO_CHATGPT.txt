@@ -26,7 +26,7 @@ rework_commit_created_true_or_false:
   TRUE (see below)
 
 rework_commit:
-  TBD
+  9276c1fb3061e3fd042b5f7c9506ea5ec72bd53d
 
 git_status_short_after_commit:
   EMPTY
