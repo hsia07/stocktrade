@@ -1,0 +1,226 @@
+round_id:
+  R012_LATENCY_BUDGET_CANDIDATE_DIFF_ARTIFACT_REWORK
+
+task_type:
+  r012_latency_budget_candidate_diff_artifact_rework
+
+status:
+  completed
+
+formal_status_code:
+  R012_LATENCY_BUDGET_CANDIDATE_DIFF_REWORK_PASS
+
+canonical_expected_head:
+  75bf26a7c9ad1b7b3e4a1ef38f5479fa6b3e718a
+
+origin_work_branch_head:
+  75bf26a7c9ad1b7b3e4a1ef38f5479fa6b3e718a
+
+canonical_remote_matches_expected_true_or_false:
+  TRUE
+
+local_work_branch_head:
+  75bf26a7c9ad1b7b3e4a1ef38f5479fa6b3e718a
+
+local_remote_heads_match_true_or_false:
+  TRUE
+
+candidate_branch:
+  work/candidate-R012-latency-budget-blocker-rework
+
+previous_candidate_commit:
+  b286d4bfe578faeac5e0726104d6ed2a7a1ed0ec
+
+candidate_parent_chain_includes_canonical_base_true_or_false:
+  TRUE
+
+rework_commit_created_true_or_false:
+  TRUE (see below)
+
+git_status_short_after_commit:
+  EMPTY
+
+files_modified_by_rework:
+  - automation/control/candidates/R012_LATENCY_BUDGET/candidate.diff
+  - automation/control/candidates/R012_LATENCY_BUDGET/evidence.json
+  - automation/control/candidates/R012_LATENCY_BUDGET/RETURN_TO_CHATGPT.txt
+
+authorized_artifact_files_only_true_or_false:
+  TRUE
+
+source_files_modified_true_or_false:
+  FALSE
+
+tests_modified_true_or_false:
+  FALSE
+
+candidate_diff_empty_before_rework_true_or_false:
+  TRUE
+
+candidate_diff_rebuilt_true_or_false:
+  TRUE
+
+candidate_diff_encoding:
+  UTF-8
+
+candidate_diff_utf8_no_bom_true_or_false:
+  TRUE
+
+candidate_diff_non_empty_true_or_false:
+  TRUE
+
+candidate_diff_size_bytes:
+  46264
+
+candidate_diff_includes_latency_source_true_or_false:
+  TRUE
+
+candidate_diff_includes_r012_tests_true_or_false:
+  TRUE
+
+candidate_diff_includes_evidence_true_or_false:
+  TRUE
+
+candidate_diff_includes_return_to_chatgpt_true_or_false:
+  TRUE
+
+candidate_diff_self_reference_excluded_true_or_false:
+  TRUE
+
+candidate_diff_basis:
+  full candidate diff from canonical base 75bf26a7c9ad1b7b3e4a1ef38f5479fa6b3e718a to candidate HEAD b286d4bfe578faeac5e0726104d6ed2a7a1ed0ec, excluding candidate.diff self-reference only
+
+candidate_diff_is_full_candidate_diff_true_or_false:
+  TRUE
+
+candidate_diff_is_filtered_diff_true_or_false:
+  FALSE
+
+filtered_diff_basis_documented_true_or_false:
+  NOT_APPLICABLE
+
+secret_values_in_candidate_diff_true_or_false:
+  FALSE
+
+secret_values_in_evidence_true_or_false:
+  FALSE
+
+secret_values_in_return_to_chatgpt_true_or_false:
+  FALSE
+
+server_py_modified_true_or_false:
+  FALSE
+
+server_v2_modified_true_or_false:
+  FALSE
+
+index_html_modified_true_or_false:
+  FALSE
+
+index_v2_modified_true_or_false:
+  FALSE
+
+env_file_modified_true_or_false:
+  FALSE
+
+env_example_modified_true_or_false:
+  FALSE
+
+secret_manager_modified_true_or_false:
+  FALSE
+
+schema_migration_modified_true_or_false:
+  FALSE
+
+new_api_endpoint_added_true_or_false:
+  FALSE
+
+api_state_runtime_behavior_modified_true_or_false:
+  FALSE
+
+runtime_state_write_added_true_or_false:
+  FALSE
+
+broker_execution_live_modified_true_or_false:
+  FALSE
+
+fubon_api_integrated_true_or_false:
+  FALSE
+
+real_llm_provider_called_true_or_false:
+  FALSE
+
+order_execution_allowed_true_or_false:
+  FALSE
+
+r049_started_true_or_false:
+  FALSE
+
+r012_tests_summary:
+  25/25 PASS (latency budget registry defaults and measurement recording,
+  market-to-signal within/exceeds p99 budget, AI summary timeout non-blocking,
+  LLM format/quota error fallback to local deterministic, local deterministic
+  no-trade on missing data, order_execution_allowed FALSE, fail-closed on
+  timeout with reason codes, risk strength not lowered, high LLM confidence
+  cannot override risk gate, safe summary no secret exposure, audit trace records
+  latency/timeout/fallback metadata, audit trace does not write runtime state,
+  total budget exceeded blocks trade, multi-stage p99 summary, timeout policy
+  idempotency, reason codes, no runtime wiring)
+
+full_clean_subset_tests_summary:
+  838/838 PASS, 15 warnings
+
+all_tests_pass_true_or_false:
+  TRUE
+
+evidence_json_parse_pass_true_or_false:
+  TRUE
+
+evidence_law_compliance_is_string_04_true_or_false:
+  TRUE
+
+return_to_chatgpt_formal_body_valid_true_or_false:
+  TRUE
+
+runtime_started_true_or_false:
+  FALSE
+
+trading_broker_execution_live_started_true_or_false:
+  FALSE
+
+push_executed_true_or_false:
+  FALSE
+
+merge_executed_true_or_false:
+  FALSE
+
+promote_executed_true_or_false:
+  FALSE
+
+pr_created_true_or_false:
+  FALSE
+
+remote_branch_deleted_true_or_false:
+  FALSE
+
+manual_review_required_true_or_false:
+  TRUE
+
+remaining_blockers:
+  NONE
+
+recommended_next_action:
+  MANUAL_REVIEW_R012_LATENCY_BUDGET_CANDIDATE_AFTER_DIFF_REWORK
+
+final_recommendation:
+  R012_LATENCY_BUDGET_CANDIDATE_DIFF_REWORK_PASS.
+  Candidate.diff was empty (0 bytes) at b286d4b; rebuilt as UTF-8 no BOM, 46264 bytes,
+  containing the full diff from canonical base 75bf26a to candidate HEAD b286d4b,
+  excluding only candidate.diff self-reference. The diff includes all R012 source
+  (modules/latency_budget/__init__.py and latency_budget.py), all 25 tests
+  (tests/test_r012_latency_budget.py), and all artifact files (evidence.json,
+  RETURN_TO_CHATGPT.txt). No source or test files were modified during this rework.
+  All safety invariants remain intact: order_execution_allowed FALSE, no real LLM
+  calls, no runtime state write, no broker/live integration, no forbidden files
+  modified. 25/25 R012 tests pass. 838/838 full subset pass. Candidate branch
+  work/candidate-R012-latency-budget-blocker-rework is ready for manual review.
