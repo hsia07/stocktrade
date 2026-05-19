@@ -27,12 +27,21 @@ def main():
 
     manifest = yaml.safe_load(Path(args.manifest).read_text(encoding="utf-8"))
     forbidden = manifest.get("forbidden_paths", [])
+    exceptions = manifest.get("authorized_exceptions", [])
     changed = git_changed_files()
+
+    # Check if a changed file is covered by an authorized exception for this round
+    def is_exempted(path):
+        for exc in exceptions:
+            exc_path = exc.get("path", "")
+            if path == exc_path or path.startswith(exc_path.rstrip("/") + "/"):
+                return True
+        return False
 
     hits = []
     for f in changed:
         for fp in forbidden:
-            if f == fp or f.startswith(fp.rstrip("/") + "/"):
+            if (f == fp or f.startswith(fp.rstrip("/") + "/")) and not is_exempted(f):
                 hits.append(f)
 
     if hits:

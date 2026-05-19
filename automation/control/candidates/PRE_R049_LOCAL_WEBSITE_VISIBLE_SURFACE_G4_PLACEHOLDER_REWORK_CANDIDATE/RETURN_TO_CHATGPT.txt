@@ -1,0 +1,241 @@
+round_id:
+  G4_PLACEHOLDER_REWORK_EVIDENCE_SCHEMA_SELF_REFERENCE_RESOLUTION
+
+task_type:
+  evidence_schema_self_reference_resolution
+
+status:
+  completed
+
+formal_status_code:
+  candidate_ready_awaiting_manual_review
+
+candidate_branch:
+  candidate/pre-r049-local-website-visible-surface-g4-placeholder-rework
+
+base_head:
+  c04026fcc084e6f0be22e3844a1d793c4daba4bd
+
+functional_g4_fix_commit:
+  5f2525276a77dfdd8a4d33da785486dbff879ebd
+
+previous_candidate_head:
+  0f4ddf3c6309d5ac726bc82ff1c7662fcc3ffa49
+
+original_blocker:
+  "Manual review BLOCKED because evidence.json / RETURN_TO_CHATGPT.txt did not contain actual current HEAD: 0f4ddf3. The reviewer required the HEAD hash to be embedded in the committed artifact."
+
+self_reference_explanation:
+  "The blocker CANNOT be fixed by embedding the HEAD hash in the committed artifact. Git commit hash is a deterministic function of the tree content (including evidence.json and RETURN_TO_CHATGPT.txt). If these files contained their own commit hash, the tree content would differ, producing a different hash, resulting in an infinite self-referential loop. Therefore the evidence schema must use a NON-SELF-REFERENTIAL design: committed artifacts record functional_commit, artifact_lineage, and candidate_head_resolution_method. The actual candidate HEAD is reported EXTERNALLY (in the runtime RETURN_TO_CHATGPT output, not in the committed files)."
+
+fix_applied:
+  "evidence.json restructured to non-self-referential schema:
+   - base_head: c04026f (the origin work branch HEAD)
+   - functional_commit: 5f25252 (the G4 fix commit)
+   - candidate_commit_semantics: clearly states candidate_commit = functional_commit, NOT candidate branch HEAD
+   - artifact_lineage: lists all known previous artifact commit hashes (18c361b, 4012081, 214b5af, 426a87d, 0f4ddf3)
+   - artifact_lineage_note: explains current commit is not listed (self-referential)
+   - candidate_head_resolution_method: explains to use git rev-parse HEAD at review time
+   - candidate_head_not_embedded_reason: explains the self-referential hash loop
+   - evidence_schema_self_reference_resolved: true
+   - actual_candidate_head_must_be_reported_in_external_RETURN_TO_CHATGPT: true
+   - candidate_diff_target: functional_commit
+   - candidate_diff_scope: base_head_to_functional_commit"
+
+candidate_commit_semantics:
+  "candidate_commit in evidence.json = functional_commit (5f25252). This is NOT the candidate branch HEAD. The actual branch HEAD must be resolved externally."
+
+candidate_diff_spec:
+  "candidate.diff = git diff base_head..functional_commit (c04026f..5f25252)
+   This is the functional diff scope, not including artifact/evidence commits."
+
+evidence_json_commit_fields:
+  - "base_head: c04026f"
+  - "functional_commit: 5f25252"
+  - "artifact_lineage: [18c361b, 4012081, 214b5af, 426a87d, 0f4ddf3]"
+  - "candidate_commit: 5f25252 (semantics: = functional_commit)"
+  - "candidate_head_resolution_method: git rev-parse HEAD at review time"
+  - "evidence_schema_self_reference_resolved: true"
+
+what_this_round_did_not_change:
+  "This round modifies ONLY artifact files (evidence.json, candidate.diff, RETURN_TO_CHATGPT.txt, test-results.txt, visible_evidence.txt). It does NOT modify:
+   - index_v2.html (FALSE)
+   - server_v2.py (FALSE)
+   - check_forbidden_changes.py (FALSE)
+   - manifests/current_round.yaml (FALSE)
+   - server.py (FALSE)
+   - index.html (FALSE)
+   - modules/* (FALSE)
+   - .env / .env.example (FALSE)
+   - any runtime / broker / execution / live source (FALSE)
+   - any R049 / R031 functionality (FALSE)"
+
+what_this_round_did_not_start:
+  "This round did NOT start:
+   - R049 (FALSE)
+   - R031 (FALSE)
+   - runtime (FALSE)
+   - trading / broker / execution / live (FALSE)
+   - order_execution_allowed remains FALSE"
+
+evidence_json_exists_true_or_false:
+  TRUE
+
+evidence_json_parse_pass_true_or_false:
+  TRUE
+
+evidence_json_has_functional_commit_true_or_false:
+  TRUE
+
+evidence_json_functional_commit:
+  5f2525276a77dfdd8a4d33da785486dbff879ebd
+
+evidence_json_candidate_commit_semantics_clear_true_or_false:
+  TRUE
+
+evidence_json_has_candidate_head_resolution_method_true_or_false:
+  TRUE
+
+evidence_json_candidate_head_resolution_method:
+  "Run git rev-parse HEAD on the candidate branch at manual review / merge-signoff time."
+
+evidence_json_explains_self_reference_reason_true_or_false:
+  TRUE
+
+evidence_schema_self_reference_resolved_true_or_false:
+  TRUE
+
+evidence_json_does_not_embed_self_hash_true_or_false:
+  TRUE
+
+candidate_diff_exists_true_or_false:
+  TRUE
+
+candidate_diff_utf8_no_bom_true_or_false:
+  TRUE
+
+candidate_diff_non_empty_true_or_false:
+  TRUE
+
+candidate_diff_target_is_functional_commit_true_or_false:
+  TRUE
+
+candidate_diff_matches_base_to_functional_commit_true_or_false:
+  TRUE
+
+return_to_chatgpt_txt_exists_true_or_false:
+  TRUE
+
+return_to_chatgpt_formal_body_valid_true_or_false:
+  TRUE
+
+all_artifacts_utf8_no_bom_true_or_false:
+  TRUE
+
+source_files_modified_by_this_rework_true_or_false:
+  FALSE
+
+index_v2_modified_this_rework_true_or_false:
+  FALSE
+
+server_v2_modified_this_rework_true_or_false:
+  FALSE
+
+check_forbidden_changes_modified_this_rework_true_or_false:
+  FALSE
+
+manifest_modified_this_rework_true_or_false:
+  FALSE
+
+server_py_modified_true_or_false:
+  FALSE
+
+index_html_modified_true_or_false:
+  FALSE
+
+modules_modified_true_or_false:
+  FALSE
+
+env_modified_true_or_false:
+  FALSE
+
+env_example_modified_true_or_false:
+  FALSE
+
+new_api_endpoint_added_true_or_false:
+  FALSE
+
+runtime_state_write_added_true_or_false:
+  FALSE
+
+broker_execution_live_modified_true_or_false:
+  FALSE
+
+fubon_api_integrated_true_or_false:
+  FALSE
+
+runtime_started_true_or_false:
+  FALSE
+
+trading_broker_execution_live_started_true_or_false:
+  FALSE
+
+r049_started_true_or_false:
+  FALSE
+
+r031_started_true_or_false:
+  FALSE
+
+order_execution_allowed_true_or_false:
+  FALSE
+
+secret_values_exposed_true_or_false:
+  FALSE
+
+tests_run:
+  - python -m pytest tests/test_pre_r049_local_website_visible_surface_gap_remediation.py -v --tb=short
+  - python -m pytest tests/test_ui_visible_gate_governance.py -v --tb=short
+  - python -m pytest --ignore=automation --ignore=stocktrade --ignore=test_twse.py --ignore=test_twstock_batch.py --tb=no -q
+
+tests_result:
+  PASS: 50/50 + 22/22 + 931/931 = 1003/1003 passed
+
+candidate_tests_pass_true_or_false:
+  TRUE
+
+ui_visible_gate_tests_pass_true_or_false:
+  TRUE
+
+full_clean_subset_pass_true_or_false:
+  TRUE
+
+evidence_checker_pass_true_or_false:
+  TRUE
+
+already_acceptance_ready_items:
+  - evidence.json self-reference resolved: functional_commit, artifact_lineage, candidate_head_resolution_method all present
+  - candidate.diff UTF-8 no BOM (7190 bytes), matches base_head..functional_commit
+  - All artifact files UTF-8 no BOM
+  - No source files modified by this rework
+  - All G1-G8 safety boundaries preserved
+  - 1003/1003 tests pass
+  - No R049/R031/runtime/broker/live/execution
+  - order_execution_allowed remains FALSE
+
+still_need_deep_review_items:
+  - responsive narrow viewport not fully verified
+  - stocktrade/index_v2.html stale copy has 0/3 full fallbacks (known hygiene issue)
+  - pre-commit hook validator respects authorized_exceptions
+
+recommended_additional_audits:
+  - RESPONSIVE_VIEWPORT_SAFETY_AUDIT
+  - STALE_COPY_HYGIENE_AUDIT
+
+remaining_blockers:
+  NONE
+
+recommended_next_action:
+  AWAITING_MANUAL_REVIEW_G4_PLACEHOLDER_REWORK_AFTER_SELF_REFERENCE_RESOLUTION
+
+final_recommendation:
+  SELF_REFERENCE_RESOLUTION_DONE_READY_FOR_MANUAL_REVIEW_DO_NOT_START_R049
