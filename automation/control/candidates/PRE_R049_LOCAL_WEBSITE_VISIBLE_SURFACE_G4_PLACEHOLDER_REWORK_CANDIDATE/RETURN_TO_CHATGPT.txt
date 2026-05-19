@@ -1,8 +1,8 @@
 round_id:
-  G4_PLACEHOLDER_REWORK_EVIDENCE_SCHEMA_REWORK
+  G4_PLACEHOLDER_REWORK_EVIDENCE_SCHEMA_SELF_REFERENCE_RESOLUTION
 
 task_type:
-  evidence_schema_rework
+  evidence_schema_self_reference_resolution
 
 status:
   completed
@@ -19,27 +19,31 @@ base_head:
 functional_g4_fix_commit:
   5f2525276a77dfdd8a4d33da785486dbff879ebd
 
-artifact_head_before_schema_rework:
-  426a87de778e71232205987bc1fd630e6c84212c
+previous_candidate_head:
+  0f4ddf3c6309d5ac726bc82ff1c7662fcc3ffa49
 
 original_blocker:
-  "evidence.json had only candidate_commit: 5f25252, but actual HEAD was 426a87d.
-   No separate functional_commit or artifact_head field existed, causing commit field ambiguity."
+  "Manual review BLOCKED because evidence.json / RETURN_TO_CHATGPT.txt did not contain actual current HEAD: 0f4ddf3. The reviewer required the HEAD hash to be embedded in the committed artifact."
+
+self_reference_explanation:
+  "The blocker CANNOT be fixed by embedding the HEAD hash in the committed artifact. Git commit hash is a deterministic function of the tree content (including evidence.json and RETURN_TO_CHATGPT.txt). If these files contained their own commit hash, the tree content would differ, producing a different hash, resulting in an infinite self-referential loop. Therefore the evidence schema must use a NON-SELF-REFERENTIAL design: committed artifacts record functional_commit, artifact_lineage, and candidate_head_resolution_method. The actual candidate HEAD is reported EXTERNALLY (in the runtime RETURN_TO_CHATGPT output, not in the committed files)."
 
 fix_applied:
-  "evidence.json restructured with clear field separation:
+  "evidence.json restructured to non-self-referential schema:
+   - base_head: c04026f (the origin work branch HEAD)
    - functional_commit: 5f25252 (the G4 fix commit)
-   - artifact_head_before_schema_rework: 426a87d (previous HEAD before this schema rework)
-   - candidate_commit_semantics: explicitly states candidate_commit = functional_commit
+   - candidate_commit_semantics: clearly states candidate_commit = functional_commit, NOT candidate branch HEAD
+   - artifact_lineage: lists all known previous artifact commit hashes (18c361b, 4012081, 214b5af, 426a87d, 0f4ddf3)
+   - artifact_lineage_note: explains current commit is not listed (self-referential)
+   - candidate_head_resolution_method: explains to use git rev-parse HEAD at review time
+   - candidate_head_not_embedded_reason: explains the self-referential hash loop
+   - evidence_schema_self_reference_resolved: true
+   - actual_candidate_head_must_be_reported_in_external_RETURN_TO_CHATGPT: true
    - candidate_diff_target: functional_commit
-   - candidate_diff_scope: base_head_to_functional_commit
-   - candidate_diff_encoding: UTF-8 no BOM
-   - candidate_head_after_schema_rework_note: self-referential note (cannot precompute)
-   - evidence_schema_rework_completed: true"
+   - candidate_diff_scope: base_head_to_functional_commit"
 
-candidate_head_commit_semantics:
-  "candidate_commit in evidence.json points to functional_commit (5f25252).
-   For artifact HEAD, see artifact_head_before_schema_rework and RETURN_TO_CHATGPT.txt new_candidate_head."
+candidate_commit_semantics:
+  "candidate_commit in evidence.json = functional_commit (5f25252). This is NOT the candidate branch HEAD. The actual branch HEAD must be resolved externally."
 
 candidate_diff_spec:
   "candidate.diff = git diff base_head..functional_commit (c04026f..5f25252)
@@ -48,9 +52,31 @@ candidate_diff_spec:
 evidence_json_commit_fields:
   - "base_head: c04026f"
   - "functional_commit: 5f25252"
-  - "artifact_head_before_schema_rework: 426a87d"
+  - "artifact_lineage: [18c361b, 4012081, 214b5af, 426a87d, 0f4ddf3]"
   - "candidate_commit: 5f25252 (semantics: = functional_commit)"
-  - "candidate_head_after_schema_rework_note: self-referential"
+  - "candidate_head_resolution_method: git rev-parse HEAD at review time"
+  - "evidence_schema_self_reference_resolved: true"
+
+what_this_round_did_not_change:
+  "This round modifies ONLY artifact files (evidence.json, candidate.diff, RETURN_TO_CHATGPT.txt, test-results.txt, visible_evidence.txt). It does NOT modify:
+   - index_v2.html (FALSE)
+   - server_v2.py (FALSE)
+   - check_forbidden_changes.py (FALSE)
+   - manifests/current_round.yaml (FALSE)
+   - server.py (FALSE)
+   - index.html (FALSE)
+   - modules/* (FALSE)
+   - .env / .env.example (FALSE)
+   - any runtime / broker / execution / live source (FALSE)
+   - any R049 / R031 functionality (FALSE)"
+
+what_this_round_did_not_start:
+  "This round did NOT start:
+   - R049 (FALSE)
+   - R031 (FALSE)
+   - runtime (FALSE)
+   - trading / broker / execution / live (FALSE)
+   - order_execution_allowed remains FALSE"
 
 evidence_json_exists_true_or_false:
   TRUE
@@ -64,20 +90,22 @@ evidence_json_has_functional_commit_true_or_false:
 evidence_json_functional_commit:
   5f2525276a77dfdd8a4d33da785486dbff879ebd
 
-evidence_json_has_candidate_head_or_artifact_head_true_or_false:
-  TRUE
-
-evidence_json_candidate_head_or_artifact_head:
-  artifact_head_before_schema_rework: 426a87d
-  candidate_head_after_schema_rework_note: self-referential
-
-evidence_json_candidate_commit:
-  5f2525276a77dfdd8a4d33da785486dbff879ebd (semantics: = functional_commit)
-
 evidence_json_candidate_commit_semantics_clear_true_or_false:
   TRUE
 
-evidence_commit_fields_unambiguous_true_or_false:
+evidence_json_has_candidate_head_resolution_method_true_or_false:
+  TRUE
+
+evidence_json_candidate_head_resolution_method:
+  "Run git rev-parse HEAD on the candidate branch at manual review / merge-signoff time."
+
+evidence_json_explains_self_reference_reason_true_or_false:
+  TRUE
+
+evidence_schema_self_reference_resolved_true_or_false:
+  TRUE
+
+evidence_json_does_not_embed_self_hash_true_or_false:
   TRUE
 
 candidate_diff_exists_true_or_false:
@@ -185,13 +213,14 @@ evidence_checker_pass_true_or_false:
   TRUE
 
 already_acceptance_ready_items:
-  - evidence.json restructured with clear field separation: functional_commit, artifact_head, candidate_commit_semantics
-  - candidate.diff UTF-8 no BOM, non-empty, matches base_head..functional_commit
+  - evidence.json self-reference resolved: functional_commit, artifact_lineage, candidate_head_resolution_method all present
+  - candidate.diff UTF-8 no BOM (7190 bytes), matches base_head..functional_commit
   - All artifact files UTF-8 no BOM
-  - No source files modified
+  - No source files modified by this rework
   - All G1-G8 safety boundaries preserved
   - 1003/1003 tests pass
   - No R049/R031/runtime/broker/live/execution
+  - order_execution_allowed remains FALSE
 
 still_need_deep_review_items:
   - responsive narrow viewport not fully verified
@@ -206,7 +235,7 @@ remaining_blockers:
   NONE
 
 recommended_next_action:
-  AWAITING_MANUAL_REVIEW_G4_PLACEHOLDER_REWORK_AFTER_EVIDENCE_SCHEMA_FIX
+  AWAITING_MANUAL_REVIEW_G4_PLACEHOLDER_REWORK_AFTER_SELF_REFERENCE_RESOLUTION
 
 final_recommendation:
-  EVIDENCE_SCHEMA_REWORK_DONE_READY_FOR_MANUAL_REVIEW_DO_NOT_START_R049
+  SELF_REFERENCE_RESOLUTION_DONE_READY_FOR_MANUAL_REVIEW_DO_NOT_START_R049

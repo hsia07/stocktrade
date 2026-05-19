@@ -1,7 +1,7 @@
 ============================= test session starts =============================
 platform win32 -- Python 3.14.4, pytest-9.0.3, pluggy-1.6.0 -- C:\Python314\python.exe
 cachedir: .pytest_cache
-rootdir: C:\Users\richa\OneDrive\桌面\stocktrade
+rootdir: C:\Users\richa\OneDrive\�ୱ\stocktrade
 plugins: anyio-4.13.0
 collecting ... collected 50 items
 
@@ -56,14 +56,13 @@ tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestManife
 tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestManifestGovernanceRegression::test_exceptions_marked_not_for_future_rounds PASSED [ 98%]
 tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestManifestGovernanceRegression::test_no_permanent_forbidden_path_removal PASSED [100%]
 
-============================= 50 passed in 0.10s ==============================
-
+============================= 50 passed in 0.09s ==============================
 ======================================================================
 
 ============================= test session starts =============================
 platform win32 -- Python 3.14.4, pytest-9.0.3, pluggy-1.6.0 -- C:\Python314\python.exe
 cachedir: .pytest_cache
-rootdir: C:\Users\richa\OneDrive\桌面\stocktrade
+rootdir: C:\Users\richa\OneDrive\�ୱ\stocktrade
 plugins: anyio-4.13.0
 collecting ... collected 22 items
 
@@ -112,7 +111,6 @@ tests/test_ui_visible_gate_governance.py::TestUIVisibleGateEvidenceChecker::test
 
 -- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
 ======================== 22 passed, 1 warning in 0.13s ========================
-
 ======================================================================
 
 ........................................................................ [  7%]
@@ -130,7 +128,7 @@ tests/test_ui_visible_gate_governance.py::TestUIVisibleGateEvidenceChecker::test
 ...................................................................      [100%]
 ============================== warnings summary ===============================
 server.py:1419
-  C:\Users\richa\OneDrive\桌面\stocktrade\server.py:1419: DeprecationWarning: 
+  C:\Users\richa\OneDrive\�ୱ\stocktrade\server.py:1419: DeprecationWarning: 
           on_event is deprecated, use lifespan event handlers instead.
   
           Read more about it in the
@@ -149,7 +147,7 @@ server.py:1419
     return self.router.on_event(event_type)  # ty: ignore[deprecated]
 
 server_v2.py:2350
-  C:\Users\richa\OneDrive\桌面\stocktrade\tests\..\server_v2.py:2350: DeprecationWarning: 
+  C:\Users\richa\OneDrive\�ୱ\stocktrade\tests\..\server_v2.py:2350: DeprecationWarning: 
           on_event is deprecated, use lifespan event handlers instead.
   
           Read more about it in the
@@ -243,7 +241,4 @@ tests/test_ui_visible_gate_governance.py::TestUIVisibleGateEvidenceChecker::test
     warnings.warn(pytest.PytestUnhandledThreadExceptionWarning(msg))
 
 -- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
-931 passed, 16 warnings in 5.84s
-
-======================================================================
-
+931 passed, 16 warnings in 5.47s
