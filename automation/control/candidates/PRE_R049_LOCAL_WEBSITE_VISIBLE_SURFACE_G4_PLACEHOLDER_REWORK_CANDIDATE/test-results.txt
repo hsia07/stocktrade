@@ -243,7 +243,7 @@ tests/test_ui_visible_gate_governance.py::TestUIVisibleGateEvidenceChecker::test
     warnings.warn(pytest.PytestUnhandledThreadExceptionWarning(msg))
 
 -- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
-931 passed, 16 warnings in 5.40s
+931 passed, 16 warnings in 5.84s
 
 ======================================================================
 
