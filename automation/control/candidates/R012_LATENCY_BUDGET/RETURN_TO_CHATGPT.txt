@@ -1,0 +1,254 @@
+round_id:
+  R012_LATENCY_BUDGET_BLOCKER_REWORK_CONSTRUCTION
+
+task_type:
+  r012_latency_budget_blocker_rework_construction
+
+status:
+  completed
+
+formal_status_code:
+  R012_LATENCY_BUDGET_CANDIDATE_READY_FOR_MANUAL_REVIEW
+
+canonical_head:
+  75bf26a7c9ad1b7b3e4a1ef38f5479fa6b3e718a
+
+origin_work_branch_head:
+  75bf26a7c9ad1b7b3e4a1ef38f5479fa6b3e718a
+
+local_remote_heads_match_true_or_false:
+  TRUE
+
+construction_branch:
+  candidate/r012-latency-budget-blocker-rework
+
+base_head:
+  75bf26a7c9ad1b7b3e4a1ef38f5479fa6b3e718a
+
+checkpoint_commit_created_true_or_false:
+  TRUE (see below)
+
+git_status_short_after_commit:
+  EMPTY
+
+files_added:
+  - modules/latency_budget/__init__.py
+  - modules/latency_budget/latency_budget.py
+  - tests/test_r012_latency_budget.py
+  - automation/control/candidates/R012_LATENCY_BUDGET/evidence.json
+  - automation/control/candidates/R012_LATENCY_BUDGET/candidate.diff
+  - automation/control/candidates/R012_LATENCY_BUDGET/RETURN_TO_CHATGPT.txt
+
+files_modified:
+  (none)
+
+authorized_files_only_true_or_false:
+  TRUE
+
+latency_budget_module_added_true_or_false:
+  TRUE
+
+latency_budget_registry_added_true_or_false:
+  TRUE
+
+timeout_policy_added_true_or_false:
+  TRUE
+
+p99_budget_added_true_or_false:
+  TRUE
+
+non_blocking_llm_summary_boundary_added_true_or_false:
+  TRUE
+
+local_deterministic_fallback_added_true_or_false:
+  TRUE
+
+fail_closed_on_timeout_added_true_or_false:
+  TRUE
+
+risk_strength_not_lowered_on_timeout_added_true_or_false:
+  TRUE
+
+safe_summary_no_secret_exposure_added_true_or_false:
+  TRUE
+
+audit_trace_records_latency_timeout_fallback_added_true_or_false:
+  TRUE
+
+audit_trace_does_not_write_runtime_state_added_true_or_false:
+  TRUE
+
+server_py_modified_true_or_false:
+  FALSE
+
+server_v2_modified_true_or_false:
+  FALSE
+
+index_html_modified_true_or_false:
+  FALSE
+
+index_v2_modified_true_or_false:
+  FALSE
+
+env_file_modified_true_or_false:
+  FALSE
+
+env_example_modified_true_or_false:
+  FALSE
+
+secret_manager_modified_true_or_false:
+  FALSE
+
+new_api_endpoint_added_true_or_false:
+  FALSE
+
+api_state_runtime_behavior_modified_true_or_false:
+  FALSE
+
+runtime_state_write_added_true_or_false:
+  FALSE
+
+broker_execution_live_modified_true_or_false:
+  FALSE
+
+fubon_api_integrated_true_or_false:
+  FALSE
+
+order_execution_allowed_true_or_false:
+  FALSE
+
+real_runtime_state_read_or_written_true_or_false:
+  FALSE
+
+real_db_read_or_written_true_or_false:
+  FALSE
+
+real_secret_values_read_true_or_false:
+  FALSE
+
+secret_values_exposed_true_or_false:
+  FALSE
+
+secret_values_in_candidate_diff_true_or_false:
+  FALSE
+
+secret_values_in_evidence_true_or_false:
+  FALSE
+
+secret_values_in_return_to_chatgpt_true_or_false:
+  FALSE
+
+r012_tests_summary:
+  25/25 PASS (latency budget registry defaults and measurement recording,
+  market-to-signal within/exceeds p99 budget, AI summary timeout non-blocking,
+  LLM format/quota error fallback to local deterministic, local deterministic
+  no-trade on missing data, order_execution_allowed FALSE, fail-closed on
+  timeout with reason codes, risk strength not lowered, high LLM confidence
+  cannot override risk gate, safe summary no secret exposure, audit trace records
+  latency/timeout/fallback metadata, audit trace does not write runtime state,
+  total budget exceeded blocks trade, multi-stage p99 summary, timeout policy
+  idempotency, reason codes, no runtime wiring)
+
+r017_tests_summary:
+  18/18 PASS
+
+r018_tests_summary:
+  24/24 PASS
+
+api_contract_secret_tests_summary:
+  24/24 PASS (core_a3_api_contract: secret protection, API no secret exposure,
+  order_execution_allowed FALSE)
+
+snapshot_secret_tests_summary:
+  17/17 PASS (core_a2_snapshot_exposure: snapshot no secret token/chat_id,
+  order_execution_allowed remains false)
+
+ui_secret_tests_summary:
+  74/74 PASS (ui_control_warning + ui_copy_cleanup: no secret values in UI,
+  order_execution_allowed stays false)
+
+full_clean_subset_tests_summary:
+  838/838 PASS, 15 warnings
+
+all_tests_pass_true_or_false:
+  TRUE
+
+evidence_json_parse_pass_true_or_false:
+  TRUE
+
+evidence_law_compliance_is_string_04_true_or_false:
+  TRUE
+
+candidate_diff_present_true_or_false:
+  TRUE
+
+candidate_diff_non_empty_true_or_false:
+  TRUE
+
+candidate_diff_utf8_no_bom_true_or_false:
+  TRUE
+
+candidate_diff_authorized_files_only_true_or_false:
+  TRUE
+
+return_to_chatgpt_formal_body_valid_true_or_false:
+  TRUE
+
+runtime_started_true_or_false:
+  FALSE
+
+trading_broker_execution_live_started_true_or_false:
+  FALSE
+
+main_control_loop_started_true_or_false:
+  FALSE
+
+start_loop_executed_true_or_false:
+  FALSE
+
+gov_int_005_started_true_or_false:
+  FALSE
+
+r049_started_true_or_false:
+  FALSE
+
+push_executed_true_or_false:
+  FALSE
+
+merge_executed_true_or_false:
+  FALSE
+
+promote_executed_true_or_false:
+  FALSE
+
+pr_created_true_or_false:
+  FALSE
+
+manual_review_required_true_or_false:
+  TRUE
+
+remaining_blockers:
+  NONE
+
+recommended_next_action:
+  MANUAL_REVIEW_R012_LATENCY_BUDGET_CANDIDATE
+
+final_recommendation:
+  R012_LATENCY_BUDGET_CANDIDATE_READY_FOR_MANUAL_REVIEW.
+  Latency budget module constructed with: LatencyBudgetRegistry,
+  TimeoutPolicy (enum with PASS, TIMEOUT, FALLBACK, EXCEEDED),
+  p99 budget measurement and enforcement, non-blocking LLM summary boundary
+  (timeout or error triggers local deterministic fallback, not trade blocking),
+  local deterministic fallback (no secret dependency, no real LLM/DB/file I/O,
+  order_execution_allowed remains FALSE), fail-closed on total budget exceeded
+  (blocks trade with reason codes), risk strength never lowered on timeout,
+  safe summary redacts secrets, audit trace records latency/timeout/fallback
+  metadata in append-only in-memory list, does not write runtime state,
+  timeout policy idempotent, comprehensive reason codes
+  (LATENCY_BUDGET_P99_EXCEEDED, TOTAL_LATENCY_BUDGET_EXCEEDED, AI_SUMMARY_TIMEOUT,
+  LLM_FORMAT_ERROR, LLM_PROVIDER_QUOTA_ERROR, LOCAL_DETERMINISTIC_FALLBACK_USED,
+  MISSING_REQUIRED_FALLBACK_DATA, RISK_GATE_UNCHANGED_ON_TIMEOUT,
+  ORDER_EXECUTION_ALLOWED_FALSE), no runtime wiring, no real LLM provider call,
+  no broker/live integration. 25/25 R012 tests pass. 838/838 full subset pass.
+  Zero forbidden files modified. No secret values exposed anywhere.
+  Ready for manual review.
