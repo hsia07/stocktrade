@@ -135,7 +135,38 @@ I. TEST RESULTS
 - Full clean subset: 921/921 PASS, 16 warnings
 
 ============================================================
-J. MODIFIED FILES SUMMARY
+J. MANIFEST GOVERNANCE REWORK (post-manual-review blocker fix)
+============================================================
+Problem identified in manual review:
+  manifests/current_round.yaml hard-deleted server_v2.py and index_v2.html
+  from forbidden_paths, creating future governance gap.
+
+Fix applied:
+  1. Restored server_v2.py to forbidden_paths
+  2. Restored index_v2.html to forbidden_paths
+  3. Added authorized_exceptions section with:
+     - path: server_v2.py
+       reason: PRE_R049 visible safety remediation
+       scope: add display-only safety fields only, no new endpoints
+       expires_after_round: PRE_R049_LOCAL_WEBSITE_VISIBLE_SURFACE_GAP_REMEDIATION_CANDIDATE
+       does_not_apply_to_future_rounds: true
+     - path: index_v2.html
+       reason: PRE_R049 visible safety remediation
+       scope: display-only UI safety hardening only
+       expires_after_round: PRE_R049_LOCAL_WEBSITE_VISIBLE_SURFACE_GAP_REMEDIATION_CANDIDATE
+       does_not_apply_to_future_rounds: true
+
+  4. Added 7 manifest governance regression tests:
+     - test_manifest_has_server_v2_in_forbidden_paths
+     - test_manifest_has_index_v2_in_forbidden_paths
+     - test_manifest_has_authorized_exceptions
+     - test_server_v2_exception_is_round_scoped
+     - test_index_v2_exception_is_round_scoped
+     - test_exceptions_marked_not_for_future_rounds
+     - test_no_permanent_forbidden_path_removal
+
+============================================================
+K. MODIFIED FILES SUMMARY
 ============================================================
 index_v2.html:
   - forceCloseBtn disabled + display-only label
@@ -155,8 +186,10 @@ server_v2.py:
 
 manifests/current_round.yaml:
   - Updated round_id, title, status for this candidate
-  - Removed server_v2.py and index_v2.html from forbidden_paths
+  - Restored server_v2.py and index_v2.html to forbidden_paths
+  - Added authorized_exceptions with expires_after_round and does_not_apply_to_future_rounds
   - Updated required_evidence and required_checks
 
 tests/test_pre_r049_local_website_visible_surface_gap_remediation.py:
-  - 40 new tests covering all safety fixes
+  - 40 original tests covering all safety fixes
+  - 7 manifest governance regression tests (total 47)
