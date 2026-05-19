@@ -20,7 +20,13 @@ previous_candidate_head:
   5f2525276a77dfdd8a4d33da785486dbff879ebd
 
 new_candidate_head:
-  18c361bd0865bba30e00dff4a8c4735a24cdc9eb
+  214b5aff31b14446105eb76bc3ef8af4b4f29839
+
+final_evidence_candidate_commit_note:
+  "evidence.json candidate_commit points to the functional G4 fix commit 5f25252.
+   This is semantically correct: the artifact encoding rework does not change the candidate's
+   functional code. The candidate_commit cannot match the artifact HEAD exactly due to
+   self-referential hash impossibility (hash changes when you include the hash in the file)."
 
 original_blocker:
   "candidate.diff had UTF-16LE BOM (FF FE as first two bytes)"

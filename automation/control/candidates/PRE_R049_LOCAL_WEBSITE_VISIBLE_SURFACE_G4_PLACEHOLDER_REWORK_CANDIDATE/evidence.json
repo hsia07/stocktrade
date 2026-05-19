@@ -5,7 +5,7 @@
   "law_compliance": "04",
   "base_head": "c04026fcc084e6f0be22e3844a1d793c4daba4bd",
   "candidate_branch": "candidate/pre-r049-local-website-visible-surface-g4-placeholder-rework",
-  "candidate_commit": "4012081d562fc4e8bfb80780a980a4dca8e175a2",
+  "candidate_commit": "5f2525276a77dfdd8a4d33da785486dbff879ebd",
   "files_modified": [
     "index_v2.html",
     "manifests/current_round.yaml",
