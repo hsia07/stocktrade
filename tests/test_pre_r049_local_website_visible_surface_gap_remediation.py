@@ -22,6 +22,7 @@ PROJECT_ROOT = Path(__file__).parent.parent
 INDEX_V2_PATH = PROJECT_ROOT / "index_v2.html"
 SERVER_V2_PATH = PROJECT_ROOT / "server_v2.py"
 SERVER_PY_PATH = PROJECT_ROOT / "server.py"
+MANIFEST_PATH = PROJECT_ROOT / "manifests" / "current_round.yaml"
 
 # ── Helpers ──
 
@@ -280,3 +281,56 @@ class TestServerV2Safety:
     def test_ui_safety_disclaimer_in_state(self, server_v2):
         assert '"ui_safety_disclaimer"' in server_v2, \
             "get_state must include ui_safety_disclaimer"
+
+
+# ── K. Manifest governance regression tests ──
+
+class TestManifestGovernanceRegression:
+    def test_manifest_has_server_v2_in_forbidden_paths(self):
+        """server_v2.py must be in forbidden_paths (not hard-deleted)."""
+        manifest = MANIFEST_PATH.read_text(encoding="utf-8")
+        assert '  - "server_v2.py"' in manifest or "- server_v2.py" in manifest, \
+            "manifest must list server_v2.py in forbidden_paths"
+
+    def test_manifest_has_index_v2_in_forbidden_paths(self):
+        """index_v2.html must be in forbidden_paths (not hard-deleted)."""
+        manifest = MANIFEST_PATH.read_text(encoding="utf-8")
+        assert '  - "index_v2.html"' in manifest or "- index_v2.html" in manifest, \
+            "manifest must list index_v2.html in forbidden_paths"
+
+    def test_manifest_has_authorized_exceptions(self):
+        """manifest must have authorized_exceptions section for this round."""
+        manifest = MANIFEST_PATH.read_text(encoding="utf-8")
+        assert "authorized_exceptions:" in manifest, \
+            "manifest must have authorized_exceptions section"
+
+    def test_server_v2_exception_is_round_scoped(self):
+        """server_v2.py authorized exception must expire after this round."""
+        manifest = MANIFEST_PATH.read_text(encoding="utf-8")
+        assert "server_v2.py" in manifest, "server_v2.py must be referenced in manifest"
+        assert "expires_after_round:" in manifest, \
+            "authorized_exceptions must have expires_after_round"
+
+    def test_index_v2_exception_is_round_scoped(self):
+        """index_v2.html authorized exception must expire after this round."""
+        manifest = MANIFEST_PATH.read_text(encoding="utf-8")
+        assert "index_v2.html" in manifest, "index_v2.html must be referenced in manifest"
+        assert "expires_after_round:" in manifest, \
+            "authorized_exceptions must have expires_after_round"
+
+    def test_exceptions_marked_not_for_future_rounds(self):
+        """authorized_exceptions must explicitly state does_not_apply_to_future_rounds: true."""
+        manifest = MANIFEST_PATH.read_text(encoding="utf-8")
+        assert "does_not_apply_to_future_rounds: true" in manifest, \
+            "authorized_exceptions must declare does_not_apply_to_future_rounds: true"
+
+    def test_no_permanent_forbidden_path_removal(self):
+        """manifest must not permanently remove server_v2.py or index_v2.html protection."""
+        manifest = MANIFEST_PATH.read_text(encoding="utf-8")
+        # If both are in forbidden_paths AND also in authorized_exceptions, that's the safe pattern
+        has_server_v2_forbidden = '  - "server_v2.py"' in manifest or "- server_v2.py" in manifest
+        has_index_v2_forbidden = '  - "index_v2.html"' in manifest or "- index_v2.html" in manifest
+        assert has_server_v2_forbidden, \
+            "server_v2.py must remain in forbidden_paths (use authorized_exception, not deletion)"
+        assert has_index_v2_forbidden, \
+            "index_v2.html must remain in forbidden_paths (use authorized_exception, not deletion)"
