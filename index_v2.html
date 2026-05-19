@@ -250,7 +250,7 @@ canvas.ch{width:100%;display:block;}
     <button class="pbtn" id="themeBtn" title="切換主題">🌙</button>
     <button class="pbtn green" id="modeBtn">紙交易</button>
     <button class="pbtn warn" id="notifyTest">🔔 測試通知</button>
-    <button class="pbtn danger" id="forceCloseBtn">強制平倉</button>
+    <button class="pbtn danger" id="forceCloseBtn" disabled title="顯示用 / display-only / 交易執行未開放，無法操作">強制平倉（已停用）</button>
     <button class="pbtn danger" id="resetBtn">重置</button>
   </div>
 </div>
@@ -281,6 +281,7 @@ canvas.ch{width:100%;display:block;}
       <div class="s-row"><span class="s-label">交易次數</span><span class="s-val" id="s-trades">0/6</span></div>
       <div class="s-row"><span class="s-label">持倉數</span><span class="s-val" id="s-pos">0/2</span></div>
       <div class="s-row"><span class="s-label">引擎狀態</span><span class="s-val s-ok" id="s-eng">待機</span></div>
+      <div class="s-row"><span class="s-label">交易執行</span><span class="s-val s-ok" id="s-order-exec">未開放</span></div>
     </div>
   </aside>
 
@@ -289,6 +290,36 @@ canvas.ch{width:100%;display:block;}
 
 <!-- ─ 儀表板 ─ -->
     <div class="page on" id="page-dashboard">
+      <!-- Read-only / display-only safety disclaimer -->
+      <div class="card" style="background:rgba(245,180,0,.08);border-color:rgba(245,180,0,.25);margin-bottom:13px">
+        <div style="display:flex;align-items:center;gap:10px;padding:2px 0">
+          <span style="font-size:20px">⚠️</span>
+          <div style="font-size:12.5px;line-height:1.6">
+            <strong>離線展示 / display-only / read-only</strong> — 本介面為可視狀態展示，
+            <strong>不代表 R049 ready</strong>，<strong>不代表 Phase 2 runtime fully wired</strong>，
+            <strong>不代表 broker / live / execution 已啟用</strong>。
+            交易執行未開放（order_execution_allowed = FALSE）。
+          </div>
+        </div>
+      </div>
+      <!-- UI gap / round status disclosure panel -->
+      <div class="card" style="margin-bottom:13px">
+        <div class="ct"><span class="dot" style="background:var(--accent)"></span>UI Gap / Round 狀態揭露</div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;font-size:11px">
+          <div style="padding:8px;background:var(--p2);border-radius:6px"><strong>R022</strong><br>UI panel visible<br><span style="color:var(--green)">✅ 完成</span></div>
+          <div style="padding:8px;background:var(--p2);border-radius:6px"><strong>R023</strong><br>Placeholder scan<br><span style="color:var(--green)">✅ 完成</span></div>
+          <div style="padding:8px;background:var(--p2);border-radius:6px"><strong>R024</strong><br>Traditional Chinese labels<br><span style="color:var(--green)">✅ 完成</span></div>
+          <div style="padding:8px;background:var(--p2);border-radius:6px"><strong>R025</strong><br>No fake feature claims<br><span style="color:var(--green)">✅ 完成</span></div>
+          <div style="padding:8px;background:var(--p2);border-radius:6px"><strong>R026</strong><br>No trading control pollution<br><span style="color:var(--green)">✅ 完成</span></div>
+          <div style="padding:8px;background:var(--p2);border-radius:6px"><strong>R029</strong><br>No backend/broker/live overreach<br><span style="color:var(--green)">✅ 完成</span></div>
+          <div style="padding:8px;background:var(--p2);border-radius:6px"><strong>R040</strong><br>UI_VISIBLE_GATE governance<br><span style="color:var(--green)">✅ 完成</span></div>
+          <div style="padding:8px;background:var(--p2);border-radius:6px"><strong>整體</strong><br>尚未完整完成<br><span style="color:var(--yellow)">⏳ 進行中</span></div>
+        </div>
+        <div style="margin-top:8px;font-size:11px;color:var(--muted)">
+          以上為 UI gap remediation 與 governance construction 狀態摘要，
+          僅供 display-only 參考，不代表 runtime 已完整接線或交易已放行。
+        </div>
+      </div>
       <div class="g2">
         <div class="card"><div class="ct"><span class="dot" style="background:var(--green)"></span>系統日誌</div><div id="log-box"></div></div>
         <div class="card"><div class="ct"><span class="dot" style="background:var(--yellow)"></span>最新信號</div><div id="dash-sigs"></div></div>
@@ -310,7 +341,7 @@ canvas.ch{width:100%;display:block;}
               <button class="learn-btn" data-mode="disabled" style="padding:8px 15px;background:var(--p3);border:1px solid var(--border);border-radius:6px;cursor:pointer">關閉</button>
               <button class="learn-btn" data-mode="offline" style="padding:8px 15px;background:var(--p3);border:1px solid var(--border);border-radius:6px;cursor:pointer">離線</button>
               <button class="learn-btn" data-mode="paper" style="padding:8px 15px;background:var(--green);border:none;border-radius:6px;cursor:pointer;color:white">模擬</button>
-              <button class="learn-btn" data-mode="live" style="padding:8px 15px;background:var(--red);border:none;border-radius:6px;cursor:pointer;color:white">實盤</button>
+              <button class="learn-btn" data-mode="live" disabled style="padding:8px 15px;background:rgba(255,79,79,.25);border:none;border-radius:6px;cursor:not-allowed;color:#ff9090;opacity:.7" title="實盤模式需正式授權，目前 blocked / requires_formal_authorization">實盤（需授權）</button>
             </div>
           </div>
         </div>
@@ -746,6 +777,13 @@ function wsConnect() {
         if (data.trading_active !== undefined) {
           document.getElementById('sb-eng').textContent = data.trading_active ? '🟢 運行' : '🟡 待機';
         }
+        if (data.order_execution_allowed !== undefined) {
+          const oeEl = document.getElementById('s-order-exec');
+          if (oeEl) {
+            oeEl.textContent = data.order_execution_allowed === true ? '已開放 ⚠️' : '未開放';
+            oeEl.className = 's-val ' + (data.order_execution_allowed === true ? 's-neg' : 's-ok');
+          }
+        }
         if (data.timestamp) {
           document.getElementById('sb-ts').textContent = data.timestamp;
         }
@@ -758,11 +796,11 @@ function wsConnect() {
     S.connected = false;
     if (S.hbTimer) { clearInterval(S.hbTimer); S.hbTimer = null; }
     document.getElementById('wsDot').className = 'ws-dot err';
-    document.getElementById('sb-ws').textContent = '斷線，5s 重連…';
-    addLog('WebSocket 斷線', 'warn');
+    document.getElementById('sb-ws').textContent = '離線展示 / 後端連線未完成';
+    addLog('WebSocket 斷線 — 離線展示模式，不影響交易安全（交易執行未開放）', 'warn');
     setTimeout(wsConnect, 5000);
   };
-  ws.onerror = () => addLog('無法連線後端（請啟動 server_v2.py）', 'alert');
+  ws.onerror = () => addLog('無法連線後端 — 離線展示模式，交易執行未開放，不影響安全', 'alert');
 }
 function wsSend(obj) { if (S.ws?.readyState === 1) S.ws.send(JSON.stringify(obj)); }
 
@@ -832,6 +870,12 @@ function renderSideStats(d) {
   E('s-pos').textContent    = `${Object.keys(d.positions || {}).length}/2`;
   E('s-eng').textContent    = d.is_halted ? '🔴 停機' : d.trading_active ? '🟢 運行' : '🟡 待機';
   E('s-eng').className = 's-val ' + (d.is_halted ? 's-neg' : 's-ok');
+  // order_execution_allowed safety display
+  const oe = d.order_execution_allowed;
+  if (E('s-order-exec')) {
+    E('s-order-exec').textContent = oe === true ? '已開放 ⚠️' : '未開放';
+    E('s-order-exec').className = 's-val ' + (oe === true ? 's-neg' : 's-ok');
+  }
 }
 
 // ── 六角色 ──
@@ -1224,7 +1268,7 @@ document.querySelectorAll('[data-p="agents"]').forEach(el => el.addEventListener
 
 // ── Buttons ──
 E('resetBtn').addEventListener('click', () => { if (!confirm('重置今日統計？')) return; wsSend({cmd:'reset'}); S.sigs=[]; S.sigCnt=0; addLog('重置指令已送出','warn'); });
-E('forceCloseBtn').addEventListener('click', () => { if (!confirm('確定強制平倉所有部位？')) return; wsSend({cmd:'force_close'}); addLog('強制平倉指令已送出','alert'); });
+E('forceCloseBtn').addEventListener('click', () => { addLog('強制平倉為 display-only，交易執行未開放','warn'); });
 E('notifyTest').addEventListener('click', () => { wsSend({cmd:'notify_test'}); addLog('測試通知已送出（Line/Email）','ok'); });
 E('modeBtn').addEventListener('click', async () => {
   try {
@@ -1246,7 +1290,7 @@ function renderRobot(d) {
   if (E('modeBtn2')) {
     const m = d.mode || 'pause';
     const labels = {observe:'觀察中',sim:'模擬',paper:'紙交易',live:'實盤',pause:'暫停',recovery:'恢復中'};
-    E('modeBtn2').textContent = '現在為: ' + (labels[m] || m);
+    E('modeBtn2').textContent = '現在為: ' + (labels[m] || m || '未設定');
   }
   if (E('todayPnl')) {
     const pnl = d.daily_pnl || 0;
@@ -1257,7 +1301,7 @@ function renderRobot(d) {
   if (E('todayPositions')) E('todayPositions').textContent = Object.keys(d.positions || {}).length + ' 個';
   if (E('engineStatus')) {
     const m = d.mode || 'pause';
-    const mtxt = {observe:'觀察中',sim:'模擬',paper:'紙交易',live:'實盤',pause:'暫停',recovery:'恢復中'}[m] || '未知';
+    const mtxt = {observe:'觀察中',sim:'模擬',paper:'紙交易',live:'實盤',pause:'暫停',recovery:'恢復中'}[m] || '未設定';
     E('engineStatus').textContent = mtxt;
     E('engineStatus').style.color = m === 'live' ? 'var(--green)' : m === 'pause' ? 'var(--red)' : 'var(--yellow)';
   }
@@ -1289,7 +1333,7 @@ E('modeBtn2')?.addEventListener('click', async () => {
     const res = await fetch('/api/toggle_mode', { method: 'POST' });
     const data = await res.json();
     const labels = {observe:'觀察中',sim:'模擬',paper:'紙交易',live:'實盤',pause:'暫停',recovery:'恢復中'};
-    E('modeBtn2').textContent = '現在為: ' + (labels[data.mode] || data.mode);
+    E('modeBtn2').textContent = '現在為: ' + (labels[data.mode] || data.mode || '未設定');
     addLog(`交易模式切換：${data.mode}`, data.status === 'ok' ? 'ok' : 'alert');
   } catch (e) { addLog('切換失敗', 'alert'); }
 });
@@ -2274,6 +2318,10 @@ async function loadLearning() {
 // 學習模式切換
 document.querySelectorAll('.learn-btn').forEach(btn => {
   btn.addEventListener('click', async () => {
+    if (btn.disabled) {
+      addLog('實盤模式需正式授權，目前 blocked / requires_formal_authorization', 'warn');
+      return;
+    }
     const mode = btn.dataset.mode;
     try {
       await fetch('/api/learning', {

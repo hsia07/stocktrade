@@ -2293,6 +2293,8 @@ class TradingEngine:
             "signal_history": [],
             "sources": {},
             "source_info": {},
+            "order_execution_allowed": False,
+            "ui_safety_disclaimer": "display-only / read-only / 交易執行未開放",
         }
 
 
@@ -2488,13 +2490,28 @@ def api_toggle_mode():
 
 @app.get("/api/mode")
 def api_mode():
+    raw_allowed = engine.get_allowed_transitions()
+    # UI safety: mark live transitions as blocked regardless of state machine contract
+    safe_allowed = []
+    for t in raw_allowed:
+        if t["to"] == engine.MODE_LIVE:
+            safe_allowed.append({
+                "to": t["to"],
+                "reason": t["reason"],
+                "ui_safety_blocked": True,
+                "ui_safety_block_reason": "requires_formal_authorization",
+            })
+        else:
+            safe_allowed.append(t)
     return {
         "mode": engine.get_current_mode(),
         "is_halted": engine.risk.is_halted,
         "halt_reason": engine.risk.halt_reason,
-        "allowed_transitions": engine.get_allowed_transitions(),
+        "allowed_transitions": safe_allowed,
+        "live_blocked": True,
+        "live_blocked_reason": "requires_formal_authorization",
         "contract": {
-            "allowed": [t["to"] for t in engine.get_allowed_transitions()],
+            "allowed": [t["to"] for t in raw_allowed],
             "current": engine.get_current_mode(),
         },
     }

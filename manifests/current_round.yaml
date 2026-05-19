@@ -1,6 +1,6 @@
-round_id: "STATE-NORMALIZATION"
-title: "Auto-Mode State Normalization"
-status: "candidate_pass"
+round_id: "PRE_R049_LOCAL_WEBSITE_VISIBLE_SURFACE_GAP_REMEDIATION"
+title: "Pre-R049 Local Website Visible Surface Gap Remediation"
+status: "candidate_construction"
 depends_on:
   - "R030"
 allowed_paths:
@@ -10,20 +10,15 @@ allowed_paths:
   - ".githooks/"
   - ".github/"
 forbidden_paths:
-  - "server_v2.py"
-  - "index_v2.html"
   - ".env"
   - ".env.*"
   - "master"
 required_evidence:
-  - "automation/control/candidates/PHASE2-API-AUTOMODE-STATE-NORMALIZATION/evidence.json"
-  - "automation/control/candidates/GOV_INT_003_MANIFEST_STATE_SYNC/evidence.json"
-  - "automation/control/candidates/GOV_INT_003_CHAIN_UNFREEZE_BACKLOG_MERGE/evidence.json"
-  - "automation/control/candidates/TRUE_ROUND_PROGRESS_MAPPING_MANIFEST_REPAIR_R030/evidence.json"
+  - "automation/control/candidates/PRE_R049_LOCAL_WEBSITE_VISIBLE_SURFACE_GAP_REMEDIATION_CANDIDATE/evidence.json"
 required_checks:
   - "py ./scripts/validation/check_branch_workflow.py --repo-root . --all"
-  - "py ./scripts/validation/check_forbidden_changes.py --manifest ./manifests/phase2_entry_hygiene_alignment.yaml"
-  - "py ./scripts/validation/check_required_evidence.py --manifest ./manifests/phase2_entry_hygiene_alignment.yaml"
+  - "py ./scripts/validation/check_forbidden_changes.py --manifest ./manifests/current_round.yaml"
+  - "py ./scripts/validation/check_required_evidence.py --manifest ./manifests/current_round.yaml"
 direct_fail_conditions:
   - "modified forbidden paths"
   - "modified Phase 1 functional main chain files"
