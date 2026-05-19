@@ -1,6 +1,6 @@
-round_id: "STATE-NORMALIZATION"
-title: "Auto-Mode State Normalization"
-status: "candidate_pass"
+round_id: "PRE_R049_LOCAL_WEBSITE_VISIBLE_SURFACE_GAP_REMEDIATION"
+title: "Pre-R049 Local Website Visible Surface Gap Remediation"
+status: "candidate_construction"
 depends_on:
   - "R030"
 allowed_paths:
@@ -15,15 +15,27 @@ forbidden_paths:
   - ".env"
   - ".env.*"
   - "master"
+# ── Round-scoped temporary authorized exceptions ──
+# These exceptions are STRICTLY LIMITED to the current candidate round.
+# They MUST NOT be interpreted as permanent relaxation of forbidden_paths.
+# Future rounds MUST re-declare their own exceptions if needed.
+authorized_exceptions:
+  - path: "server_v2.py"
+    reason: "PRE_R049 visible safety remediation: add display-only safety fields to existing /api/state and /api/mode"
+    scope: "Only add order_execution_allowed: False, ui_safety_disclaimer, live_blocked annotations to existing endpoints. No new endpoints. No trading logic changes. No broker/live imports."
+    expires_after_round: "PRE_R049_LOCAL_WEBSITE_VISIBLE_SURFACE_GAP_REMEDIATION_CANDIDATE"
+    does_not_apply_to_future_rounds: true
+  - path: "index_v2.html"
+    reason: "PRE_R049 visible safety remediation: display-only UI safety hardening (disabled buttons, fallback labels, disclaimer banner, status panel, WS safety messages)"
+    scope: "Only add disabled attributes, display-only labels, fallback strings, disclaimer banners, status panels. No new POST/order/broker/execution/live controls. No new fetch endpoints."
+    expires_after_round: "PRE_R049_LOCAL_WEBSITE_VISIBLE_SURFACE_GAP_REMEDIATION_CANDIDATE"
+    does_not_apply_to_future_rounds: true
 required_evidence:
-  - "automation/control/candidates/PHASE2-API-AUTOMODE-STATE-NORMALIZATION/evidence.json"
-  - "automation/control/candidates/GOV_INT_003_MANIFEST_STATE_SYNC/evidence.json"
-  - "automation/control/candidates/GOV_INT_003_CHAIN_UNFREEZE_BACKLOG_MERGE/evidence.json"
-  - "automation/control/candidates/TRUE_ROUND_PROGRESS_MAPPING_MANIFEST_REPAIR_R030/evidence.json"
+  - "automation/control/candidates/PRE_R049_LOCAL_WEBSITE_VISIBLE_SURFACE_GAP_REMEDIATION_CANDIDATE/evidence.json"
 required_checks:
   - "py ./scripts/validation/check_branch_workflow.py --repo-root . --all"
-  - "py ./scripts/validation/check_forbidden_changes.py --manifest ./manifests/phase2_entry_hygiene_alignment.yaml"
-  - "py ./scripts/validation/check_required_evidence.py --manifest ./manifests/phase2_entry_hygiene_alignment.yaml"
+  - "py ./scripts/validation/check_forbidden_changes.py --manifest ./manifests/current_round.yaml"
+  - "py ./scripts/validation/check_required_evidence.py --manifest ./manifests/current_round.yaml"
 direct_fail_conditions:
   - "modified forbidden paths"
   - "modified Phase 1 functional main chain files"

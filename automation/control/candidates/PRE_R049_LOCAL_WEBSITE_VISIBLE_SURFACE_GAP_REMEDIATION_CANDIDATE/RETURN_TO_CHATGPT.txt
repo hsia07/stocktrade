@@ -1,0 +1,183 @@
+round_id:
+  REWORK_PRE_R049_VISIBLE_SURFACE_REMEDIATION_MANIFEST_GOVERNANCE_BLOCKER
+
+task_type:
+  governance_blocker_rework_candidate
+
+status:
+  completed
+
+formal_status_code:
+  candidate_ready_awaiting_manual_review
+
+canonical_branch:
+  work/canonical-mainline-repair-001
+
+base_head:
+  5c838be50cba7e9044134bc1e0ddd64251786106
+
+previous_candidate_head:
+  15fccfc
+
+new_candidate_head:
+  cb2b469
+
+files_modified:
+  - manifests/current_round.yaml
+  - tests/test_pre_r049_local_website_visible_surface_gap_remediation.py
+  - automation/control/candidates/PRE_R049_LOCAL_WEBSITE_VISIBLE_SURFACE_GAP_REMEDIATION_CANDIDATE/candidate.diff
+  - automation/control/candidates/PRE_R049_LOCAL_WEBSITE_VISIBLE_SURFACE_GAP_REMEDIATION_CANDIDATE/evidence.json
+  - automation/control/candidates/PRE_R049_LOCAL_WEBSITE_VISIBLE_SURFACE_GAP_REMEDIATION_CANDIDATE/RETURN_TO_CHATGPT.txt
+  - automation/control/candidates/PRE_R049_LOCAL_WEBSITE_VISIBLE_SURFACE_GAP_REMEDIATION_CANDIDATE/visible_evidence.txt
+
+server_v2_modified_this_rework_true_or_false:
+  FALSE
+
+index_v2_modified_this_rework_true_or_false:
+  FALSE
+
+server_py_modified_true_or_false:
+  FALSE
+
+index_html_modified_true_or_false:
+  FALSE
+
+modules_modified_true_or_false:
+  FALSE
+
+env_modified_true_or_false:
+  FALSE
+
+env_example_modified_true_or_false:
+  FALSE
+
+manifest_modified_true_or_false:
+  TRUE
+
+server_v2_in_forbidden_paths_true_or_false:
+  TRUE
+
+index_v2_in_forbidden_paths_true_or_false:
+  TRUE
+
+authorized_exceptions_used_true_or_false:
+  TRUE
+
+authorized_exceptions_are_round_scoped_true_or_false:
+  TRUE
+
+authorized_exceptions_expire_after_current_round_true_or_false:
+  TRUE
+
+does_not_apply_to_future_rounds_true_or_false:
+  TRUE
+
+manifest_future_round_protection_preserved_true_or_false:
+  TRUE
+
+hard_deleted_forbidden_paths_true_or_false:
+  FALSE
+
+manifest_governance_blocker_fixed_true_or_false:
+  TRUE
+
+visible_surface_remediation_preserved_true_or_false:
+  TRUE
+
+api_state_order_execution_allowed_false_preserved_true_or_false:
+  TRUE
+
+api_mode_live_block_preserved_true_or_false:
+  TRUE
+
+force_close_disabled_preserved_true_or_false:
+  TRUE
+
+ui_gap_panel_preserved_true_or_false:
+  TRUE
+
+read_only_banner_preserved_true_or_false:
+  TRUE
+
+tests_added_or_updated:
+  - tests/test_pre_r049_local_website_visible_surface_gap_remediation.py (added 7 manifest governance regression tests)
+
+tests_run:
+  - python -m pytest tests/test_pre_r049_local_website_visible_surface_gap_remediation.py -v --tb=short
+  - python -m pytest tests/test_ui_visible_gate_governance.py -v --tb=short
+  - python -m pytest --ignore=automation --ignore=stocktrade --ignore=test_twse.py --ignore=test_twstock_batch.py --tb=no -q
+
+tests_result:
+  47/47 PASS (candidate) + 22/22 PASS (UI gate) + 928/928 PASS (full subset), 16 warnings
+
+manifest_governance_regression_test_pass_true_or_false:
+  TRUE
+
+candidate_tests_pass_true_or_false:
+  TRUE
+
+ui_visible_gate_tests_pass_true_or_false:
+  TRUE
+
+full_clean_subset_pass_true_or_false:
+  TRUE
+
+evidence_checker_pass_true_or_false:
+  TRUE
+
+candidate_diff_exists_true_or_false:
+  TRUE
+
+candidate_diff_utf8_no_bom_true_or_false:
+  TRUE
+
+candidate_diff_non_empty_true_or_false:
+  TRUE
+
+evidence_json_updated_true_or_false:
+  TRUE
+
+return_to_chatgpt_updated_true_or_false:
+  TRUE
+
+new_api_endpoint_added_true_or_false:
+  FALSE
+
+runtime_state_write_added_true_or_false:
+  FALSE
+
+broker_execution_live_modified_true_or_false:
+  FALSE
+
+fubon_api_integrated_true_or_false:
+  FALSE
+
+real_llm_provider_called_true_or_false:
+  FALSE
+
+runtime_started_true_or_false:
+  FALSE
+
+trading_broker_execution_live_started_true_or_false:
+  FALSE
+
+r049_started_true_or_false:
+  FALSE
+
+r031_started_true_or_false:
+  FALSE
+
+order_execution_allowed_true_or_false:
+  FALSE
+
+secret_values_exposed_true_or_false:
+  FALSE
+
+remaining_blockers:
+  NONE
+
+recommended_next_action:
+  AWAITING_MANUAL_REVIEW_PRE_R049_VISIBLE_SURFACE_REMEDIATION_REWORK
+
+final_recommendation:
+  MANIFEST_GOVERNANCE_REWORK_READY_FOR_MANUAL_REVIEW_DO_NOT_START_R049

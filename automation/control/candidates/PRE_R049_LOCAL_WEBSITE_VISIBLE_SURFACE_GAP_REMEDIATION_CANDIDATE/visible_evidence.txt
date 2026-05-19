@@ -1,0 +1,195 @@
+VISIBLE SURFACE EVIDENCE — PRE_R049_LOCAL_WEBSITE_VISIBLE_SURFACE_GAP_REMEDIATION_CANDIDATE
+Generated: 2026-05-20
+
+============================================================
+A. FORCE CLOSE BUTTON — DISABLED / DISPLAY-ONLY
+============================================================
+HTML source (index_v2.html line ~253):
+  <button class="pbtn danger" id="forceCloseBtn" disabled title="顯示用 / display-only / 交易執行未開放，無法操作">強制平倉（已停用）</button>
+
+Event listener (index_v2.html line ~1227):
+  E('forceCloseBtn').addEventListener('click', () => { addLog('強制平倉為 display-only，交易執行未開放','warn'); });
+
+Verification:
+- disabled attribute present
+- title explicitly states "display-only / 交易執行未開放"
+- no wsSend({cmd:'force_close'}) anywhere in file
+- no "強制平倉指令已送出" alert text
+
+============================================================
+B. ORDER_EXECUTION_ALLOWED VISIBLE STATUS
+============================================================
+1. /api/state (server_v2.py get_state):
+   "order_execution_allowed": False,
+   "ui_safety_disclaimer": "display-only / read-only / 交易執行未開放",
+
+2. Sidebar stat (index_v2.html line ~283):
+   <div class="s-row"><span class="s-label">交易執行</span><span class="s-val s-ok" id="s-order-exec">未開放</span></div>
+
+3. Render update (index_v2.html):
+   const oe = d.order_execution_allowed;
+   if (E('s-order-exec')) {
+     E('s-order-exec').textContent = oe === true ? '已開放 ⚠️' : '未開放';
+     E('s-order-exec').className = 's-val ' + (oe === true ? 's-neg' : 's-ok');
+   }
+
+4. WebSocket partial handler also updates s-order-exec on order_execution_allowed change.
+
+============================================================
+C. LIVE TRANSITION SAFETY LABELS
+============================================================
+1. /api/mode (server_v2.py):
+   - "live_blocked": True
+   - "live_blocked_reason": "requires_formal_authorization"
+   - live transitions in safe_allowed get "ui_safety_blocked": True,
+     "ui_safety_block_reason": "requires_formal_authorization"
+
+2. Learning mode live button (index_v2.html line ~344):
+   <button class="learn-btn" data-mode="live" disabled
+     style="...background:rgba(255,79,79,.25);cursor:not-allowed;color:#ff9090;opacity:.7"
+     title="實盤模式需正式授權，目前 blocked / requires_formal_authorization">
+     實盤（需授權）
+   </button>
+
+3. learn-btn click handler guards disabled buttons:
+   if (btn.disabled) {
+     addLog('實盤模式需正式授權，目前 blocked / requires_formal_authorization', 'warn');
+     return;
+   }
+
+============================================================
+D. UNDEFINED PLACEHOLDER CLEANUP
+============================================================
+Mode fallback (index_v2.html):
+   E('modeBtn2').textContent = '現在為: ' + (labels[m] || m || '未設定');
+   E('modeBtn2').textContent = '現在為: ' + (labels[data.mode] || data.mode || '未設定');
+
+engineStatus fallback:
+   const mtxt = {observe:'觀察中',...}[m] || '未設定';
+
+No literal "undefined" visible text patterns found.
+
+============================================================
+E. UI GAP / R022–R040 STATUS DISCLOSURE PANEL
+============================================================
+Dashboard page (index_v2.html) now includes:
+
+<div class="card" style="margin-bottom:13px">
+  <div class="ct"><span class="dot" style="background:var(--accent)"></span>UI Gap / Round 狀態揭露</div>
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;font-size:11px">
+    <div><strong>R022</strong><br>UI panel visible<br><span style="color:var(--green)">✅ 完成</span></div>
+    <div><strong>R023</strong><br>Placeholder scan<br><span style="color:var(--green)">✅ 完成</span></div>
+    <div><strong>R024</strong><br>Traditional Chinese labels<br><span style="color:var(--green)">✅ 完成</span></div>
+    <div><strong>R025</strong><br>No fake feature claims<br><span style="color:var(--green)">✅ 完成</span></div>
+    <div><strong>R026</strong><br>No trading control pollution<br><span style="color:var(--green)">✅ 完成</span></div>
+    <div><strong>R029</strong><br>No backend/broker/live overreach<br><span style="color:var(--green)">✅ 完成</span></div>
+    <div><strong>R040</strong><br>UI_VISIBLE_GATE governance<br><span style="color:var(--green)">✅ 完成</span></div>
+    <div><strong>整體</strong><br>尚未完整完成<br><span style="color:var(--yellow)">⏳ 進行中</span></div>
+  </div>
+  <div style="margin-top:8px;font-size:11px;color:var(--muted)">
+    以上為 UI gap remediation 與 governance construction 狀態摘要，
+    僅供 display-only 參考，不代表 runtime 已完整接線或交易已放行。
+  </div>
+</div>
+
+============================================================
+F. READ-ONLY / DISPLAY-ONLY DISCLAIMER BANNER
+============================================================
+Dashboard page (index_v2.html) now includes a yellow safety banner:
+
+<div class="card" style="background:rgba(245,180,0,.08);border-color:rgba(245,180,0,.25);margin-bottom:13px">
+  <div style="display:flex;align-items:center;gap:10px;padding:2px 0">
+    <span style="font-size:20px">⚠️</span>
+    <div style="font-size:12.5px;line-height:1.6">
+      <strong>離線展示 / display-only / read-only</strong> — 本介面為可視狀態展示，
+      <strong>不代表 R049 ready</strong>，<strong>不代表 Phase 2 runtime fully wired</strong>，
+      <strong>不代表 broker / live / execution 已啟用</strong>。
+      交易執行未開放（order_execution_allowed = FALSE）。
+    </div>
+  </div>
+</div>
+
+============================================================
+G. WEBSOCKET DISCONNECT SAFETY LABEL
+============================================================
+ws.onclose (index_v2.html):
+  document.getElementById('sb-ws').textContent = '離線展示 / 後端連線未完成';
+  addLog('WebSocket 斷線 — 離線展示模式，不影響交易安全（交易執行未開放）', 'warn');
+
+ws.onerror (index_v2.html):
+  addLog('無法連線後端 — 離線展示模式，交易執行未開放，不影響安全', 'alert');
+
+============================================================
+H. NEGATIVE TEST EVIDENCE
+============================================================
+- No affirmative "R049 ready" claim in HTML (only "不代表 R049 ready")
+- No affirmative "runtime fully wired" claim (only "不代表 Phase 2 runtime fully wired")
+- No broker / live / fubon API enable controls
+- No buy / sell ws commands
+- No new dangerous API endpoints added
+
+============================================================
+I. TEST RESULTS
+============================================================
+- tests/test_pre_r049_local_website_visible_surface_gap_remediation.py: 40/40 PASS
+- Full clean subset: 921/921 PASS, 16 warnings
+
+============================================================
+J. MANIFEST GOVERNANCE REWORK (post-manual-review blocker fix)
+============================================================
+Problem identified in manual review:
+  manifests/current_round.yaml hard-deleted server_v2.py and index_v2.html
+  from forbidden_paths, creating future governance gap.
+
+Fix applied:
+  1. Restored server_v2.py to forbidden_paths
+  2. Restored index_v2.html to forbidden_paths
+  3. Added authorized_exceptions section with:
+     - path: server_v2.py
+       reason: PRE_R049 visible safety remediation
+       scope: add display-only safety fields only, no new endpoints
+       expires_after_round: PRE_R049_LOCAL_WEBSITE_VISIBLE_SURFACE_GAP_REMEDIATION_CANDIDATE
+       does_not_apply_to_future_rounds: true
+     - path: index_v2.html
+       reason: PRE_R049 visible safety remediation
+       scope: display-only UI safety hardening only
+       expires_after_round: PRE_R049_LOCAL_WEBSITE_VISIBLE_SURFACE_GAP_REMEDIATION_CANDIDATE
+       does_not_apply_to_future_rounds: true
+
+  4. Added 7 manifest governance regression tests:
+     - test_manifest_has_server_v2_in_forbidden_paths
+     - test_manifest_has_index_v2_in_forbidden_paths
+     - test_manifest_has_authorized_exceptions
+     - test_server_v2_exception_is_round_scoped
+     - test_index_v2_exception_is_round_scoped
+     - test_exceptions_marked_not_for_future_rounds
+     - test_no_permanent_forbidden_path_removal
+
+============================================================
+K. MODIFIED FILES SUMMARY
+============================================================
+index_v2.html:
+  - forceCloseBtn disabled + display-only label
+  - s-order-exec sidebar stat added
+  - mode fallback '未設定' added
+  - UI gap / R022-R040 status panel added
+  - read-only / display-only / not-complete disclaimer banner added
+  - WebSocket disconnect messages updated with offline/demo + safety text
+  - learn-btn live mode disabled with blocked tooltip
+  - learn-btn click handler guards disabled buttons
+  - modeBtn2/modeBtn fallback fixed
+  - engineStatus fallback fixed
+
+server_v2.py:
+  - get_state(): added order_execution_allowed: False + ui_safety_disclaimer
+  - /api/mode: added live_blocked, live_blocked_reason, ui_safety_blocked annotations
+
+manifests/current_round.yaml:
+  - Updated round_id, title, status for this candidate
+  - Restored server_v2.py and index_v2.html to forbidden_paths
+  - Added authorized_exceptions with expires_after_round and does_not_apply_to_future_rounds
+  - Updated required_evidence and required_checks
+
+tests/test_pre_r049_local_website_visible_surface_gap_remediation.py:
+  - 40 original tests covering all safety fixes
+  - 7 manifest governance regression tests (total 47)
