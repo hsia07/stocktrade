@@ -2057,7 +2057,7 @@ async function loadSettings() {
     if (E('tradeEndInput')) E('tradeEndInput').value = s.trade_end || '13:00';
     if (E('modeBtn2')) {
       const labels = {observe:'觀察中',sim:'模擬',paper:'紙交易',live:'實盤',pause:'暫停',recovery:'恢復中'};
-      E('modeBtn2').textContent = '現在為: ' + (labels[s.mode] || s.mode);
+      E('modeBtn2').textContent = '現在為: ' + (labels[s.mode] || s.mode || '未設定');
     }
   } catch (e) { console.log('載入設定失敗', e); }
   loadSimDates();

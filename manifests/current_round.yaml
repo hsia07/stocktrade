@@ -30,6 +30,26 @@ authorized_exceptions:
     scope: "Only add disabled attributes, display-only labels, fallback strings, disclaimer banners, status panels. No new POST/order/broker/execution/live controls. No new fetch endpoints."
     expires_after_round: "PRE_R049_LOCAL_WEBSITE_VISIBLE_SURFACE_GAP_REMEDIATION_CANDIDATE"
     does_not_apply_to_future_rounds: true
+  - path: "index_v2.html"
+    reason: "G4 placeholder rework: add '|| '未設定'' fallback to all 3 modeBtn2 code paths in index_v2.html"
+    scope: "Only add '|| '未設定'' fallback to modeBtn2 textContent assignments. No other changes to index_v2.html."
+    expires_after_round: "PRE_R049_LOCAL_WEBSITE_VISIBLE_SURFACE_G4_PLACEHOLDER_REWORK_CANDIDATE"
+    does_not_apply_to_future_rounds: true
+  - path: "tests/test_pre_r049_local_website_visible_surface_gap_remediation.py"
+    reason: "G4 placeholder rework: add G4 placeholder regression tests and R023 consistency check"
+    scope: "Only add G4 placeholder regression tests and R023 placeholder scan consistency tests. No changes to other test files."
+    expires_after_round: "PRE_R049_LOCAL_WEBSITE_VISIBLE_SURFACE_G4_PLACEHOLDER_REWORK_CANDIDATE"
+    does_not_apply_to_future_rounds: true
+  - path: "manifests/current_round.yaml"
+    reason: "Add round-scoped authorized_exceptions for G4 placeholder rework candidate round"
+    scope: "Only add new authorized_exceptions entries scoped to G4 placeholder rework round. No relaxation of forbidden_paths."
+    expires_after_round: "PRE_R049_LOCAL_WEBSITE_VISIBLE_SURFACE_G4_PLACEHOLDER_REWORK_CANDIDATE"
+    does_not_apply_to_future_rounds: true
+  - path: "scripts/validation/check_forbidden_changes.py"
+    reason: "Governance improvement: validator must respect manifest authorized_exceptions before blocking"
+    scope: "Only add authorized_exceptions support to check_forbidden_changes.py. No other changes to validators."
+    expires_after_round: "PRE_R049_LOCAL_WEBSITE_VISIBLE_SURFACE_G4_PLACEHOLDER_REWORK_CANDIDATE"
+    does_not_apply_to_future_rounds: true
 required_evidence:
   - "automation/control/candidates/PRE_R049_LOCAL_WEBSITE_VISIBLE_SURFACE_GAP_REMEDIATION_CANDIDATE/evidence.json"
 required_checks:

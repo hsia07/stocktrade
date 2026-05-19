@@ -118,8 +118,27 @@ class TestUndefinedPlaceholderCleanup:
 
     def test_mode_fallback_not_undefined(self, html_v2):
         """模式無資料時必須顯示繁中 fallback（如「未設定」）。"""
-        assert "|| '未設定'" in html_v2, \
-            "mode display must have '未設定' fallback"
+        count = html_v2.count("|| '未設定'")
+        assert count >= 3, \
+            f"modeBtn2 must have '未設定' fallback in ALL code paths (found {count}, expected >=3)"
+
+    def test_mode_fallback_covers_all_modebtn2_paths(self, html_v2):
+        """所有 modeBtn2 textContent 賦值路徑都必須有繁中 fallback。"""
+        import re
+        assignments = re.findall(r"modeBtn2\)\.textContent\s*=\s*'[^']*'\s*\+\s*\([^;]+", html_v2)
+        for a in assignments:
+            assert "|| '未設定'" in a or "\u672a\u8a2d\u5b9a" in a, \
+                f"modeBtn2 assignment missing fallback: {a[:80]}"
+
+    def test_stale_copy_placeholder_awareness(self):
+        """記錄 stocktrade/index_v2.html stale copy 的 placeholder fallback 狀態。"""
+        with open("stocktrade/index_v2.html", "r", encoding="utf-8") as f:
+            content = f.read()
+        count = content.count("|| '未設定'")
+        # stale copy is a known hygiene issue; log status but don't hard-fail
+        if count < 3:
+            import logging
+            logging.warning(f"stale copy stocktrade/index_v2.html has only {count}/3 '未設定' fallbacks")
 
 
 # ── E. UI gap / R022–R040 status disclosure ──
@@ -155,6 +174,20 @@ class TestUIGapStatusDisclosure:
         """必須顯示「尚未完整完成」等 disclaimer。"""
         assert "尚未完整完成" in html_v2, \
             "not-complete disclaimer must be visible"
+
+    def test_r023_placeholder_scan_consistent(self, html_v2):
+        """R023 Placeholder scan claim 必須與實際 placeholder 狀態一致。"""
+        r023_claim = "✅ 完成" if "✅ 完成" in html_v2[html_v2.index("R023"):html_v2.index("R023")+200] else ""
+        if r023_claim:
+            # If claimed complete, verify no user-visible undefined/null/NaN
+            import re
+            plain = re.sub(r'<script[^>]*>.*?</script>', '', html_v2, flags=re.DOTALL)
+            plain = re.sub(r'<style[^>]*>.*?</style>', '', plain, flags=re.DOTALL)
+            plain = re.sub(r'<[^>]+>', ' ', plain)
+            plain = re.sub(r'\s+', ' ', plain)
+            assert "undefined" not in plain, "R023 claims complete but undefined still visible"
+            assert "null" not in plain, "R023 claims complete but null still visible"
+            assert "NaN" not in plain, "R023 claims complete but NaN still visible"
 
 
 # ── F. Read-only / display-only disclaimer ──
