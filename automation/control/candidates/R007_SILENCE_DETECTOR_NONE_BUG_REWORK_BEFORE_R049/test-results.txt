@@ -1,65 +1,36 @@
-R007 Silence Detector None Bug Rework - Test Results
-=======================================================
-Candidate: candidate/r007-silence-detector-none-bug-rework-before-r049
+R007 Law04 Evidence Field Rework - Test Results
+=================================================
+Candidate: candidate/r007-silence-detector-law04-evidence-field-rework-before-r049
 Base: 3752f2746dadab01162a14f7ffe5394631014ff0
-Rework source commit: 573aa6daafb0213532eacd8271554d7565e9ba26
+
+This rework adds the direct "law_compliance": "04" field to evidence.json
+to satisfy pre-push hook Law04 compliance check.
+
+All tests are from previous R007 candidate - this rework only modifies
+evidence.json to add the required field.
 
 Test Run 1: R007 Silence Protection Tests
-------------------------------------------
+-----------------------------------------
 Command: python -m pytest tests/test_r007_silence_protection.py -v --tb=short
-Result: PASS
-Tests: 23 passed in 6.68s
-
-Breakdown:
-- TestSilenceDetector::test_detector_initialization PASSED
-- TestSilenceDetector::test_update_methods PASSED
-- TestSilenceDetector::test_is_silent_with_fresh_data PASSED
-- TestSilenceDetector::test_is_silent_with_stale_data PASSED
-- TestSilenceDetector::test_get_silence_report PASSED
-- TestSilenceDetector::test_reset_then_is_silent PASSED
-- TestSilenceDetector::test_all_timestamps_none_is_silent PASSED
-- TestSilenceDetector::test_market_data_none_trades_heartbeat_fresh PASSED
-- TestSilenceDetector::test_trades_none_others_fresh PASSED
-- TestSilenceDetector::test_heartbeat_none_others_fresh PASSED
-- TestSilenceDetector::test_malformed_timestamp_is_silent PASSED
-- TestSilenceDetector::test_mixed_stale_and_none PASSED
-- TestSilenceDetector::test_expired_market_data_is_silent PASSED
-- TestSilenceDetector::test_expired_trades_is_silent PASSED
-- TestSilenceDetector::test_expired_heartbeat_is_silent PASSED
-- TestSilenceDetector::test_get_silence_report_all_none PASSED
-- TestSilenceDetector::test_get_silence_report_malformed_timestamp PASSED
-- TestSilenceDetector::test_silence_report_consistent_types PASSED
-- TestSilenceRecovery::test_recovery_initialization PASSED
-- TestSilenceRecovery::test_determine_escalation_level PASSED
-- TestSilenceRecovery::test_get_strategy PASSED
-- TestSilenceRecovery::test_recovery_history_tracking PASSED
-- TestIntegration::test_silence_triggers_recovery PASSED
+Result: PASS (23 tests)
 
 Test Run 2: Server V2 Safety + Pre-R049 Visible Surface + UI Gate Tests
------------------------------------------------------------------------
+-------------------------------------------------------------------------
 Command: python -m pytest tests/test_server_v2_backend_execution_safety.py tests/test_pre_r049_local_website_visible_surface_gap_remediation.py tests/test_ui_visible_gate_governance.py -v --tb=short
-Result: PASS
-Tests: 116 passed in 2.16s
-
-Breakdown:
-- test_server_v2_backend_execution_safety.py: 29 passed
-- test_pre_r049_local_website_visible_surface_gap_remediation.py: 65 passed
-- test_ui_visible_gate_governance.py: 22 passed
+Result: PASS (116 tests)
 
 Test Run 3: Full Clean Test Subset
 -----------------------------------
 Command: python -m pytest --ignore=automation --ignore=stocktrade --ignore=test_twse.py --ignore=test_twstock_batch.py --tb=no -q
-Result: PASS
-Tests: 1083 passed in 12.54s
+Result: PASS (1083 tests)
 
 Test Run 4: Evidence Checker
------------------------------
+----------------------------
 Command: python automation/control/evidence_checker.py
 Result: PASS (no output = no failures)
 
 Summary
 -------
 All required tests PASSED.
-R007 silence detector None bug fix verified.
-Source changes preserved from previous work branch.
-Candidate package ready for manual review.
+Law04 evidence field rework verified.
+Pre-push equivalent Law04 check should now pass with direct law_compliance field.

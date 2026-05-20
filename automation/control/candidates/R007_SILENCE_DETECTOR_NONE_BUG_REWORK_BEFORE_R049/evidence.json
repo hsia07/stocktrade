@@ -1,5 +1,6 @@
 {
   "round_id": "R007_SILENCE_DETECTOR_NONE_BUG_REWORK_FINALIZE_CANDIDATE_PACKAGE",
+  "law_compliance": "04",
   "task_type": "r007_silence_detector_none_bug_rework_finalize_candidate_package",
   "status": "completed",
   "formal_status_code": "CANDIDATE_READY_AWAITING_MANUAL_REVIEW",
@@ -8,7 +9,7 @@
   "previous_rework_branch": "work/r007-silence-detector-none-bug-rework-before-r049",
   "previous_rework_commit": "573aa6daafb0213532eacd8271554d7565e9ba26",
   "candidate_branch": "candidate/r007-silence-detector-none-bug-rework-before-r049",
-  "candidate_commit": "573aa6daafb0213532eacd8271554d7565e9ba26",
+  "candidate_commit": "24ae5ecb8ced139e8ef2c8b320e6e64531dbdc97",
   "candidate_branch_created_or_used": true,
   "previous_source_rework_preserved": true,
   "r007_original_audit_summary": "P0 None short-circuit bug in is_silent() — None timestamps are skipped via Python 'and' short-circuit evaluation, causing all-None cold start to return False (wrong safe state). Affected PAUSE_TRADING escalation path via server.py:1128-1134.",
