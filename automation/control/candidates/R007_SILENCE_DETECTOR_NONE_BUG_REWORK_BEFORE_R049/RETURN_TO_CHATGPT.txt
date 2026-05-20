@@ -1,14 +1,14 @@
 round_id:
-  R007_SILENCE_DETECTOR_NONE_BUG_REWORK_BEFORE_R049
+  R007_SILENCE_DETECTOR_NONE_BUG_REWORK_FINALIZE_CANDIDATE_PACKAGE
 
 task_type:
-  r007_silence_detector_none_bug_rework_candidate
+  r007_silence_detector_none_bug_rework_finalize_candidate_package
 
 status:
   completed
 
 formal_status_code:
-  candidate_ready_awaiting_manual_review
+  CANDIDATE_READY_AWAITING_MANUAL_REVIEW
 
 canonical_branch:
   work/canonical-mainline-repair-001
@@ -16,16 +16,22 @@ canonical_branch:
 base_head:
   3752f2746dadab01162a14f7ffe5394631014ff0
 
-candidate_branch:
+previous_rework_branch:
   work/r007-silence-detector-none-bug-rework-before-r049
 
+previous_rework_commit:
+  573aa6daafb0213532eacd8271554d7565e9ba26
+
+candidate_branch:
+  candidate/r007-silence-detector-none-bug-rework-before-r049
+
 candidate_commit:
-  8530ccafed170afe22171a1213f8e72e5ff42372
+  573aa6daafb0213532eacd8271554d7565e9ba26
 
-r007_original_audit_summary:
-  P0 None short-circuit bug in is_silent() — None timestamps are skipped via Python 'and' short-circuit evaluation, causing all-None cold start to return False (wrong safe state). Affected PAUSE_TRADING escalation path via server.py:1128-1134.
+candidate_branch_created_or_used_true_or_false:
+  TRUE
 
-none_short_circuit_bug_found_before_true_or_false:
+previous_source_rework_preserved_true_or_false:
   TRUE
 
 none_short_circuit_bug_fixed_true_or_false:
@@ -52,18 +58,109 @@ expired_timestamp_still_silent_true_or_false:
 fresh_all_channels_not_silent_true_or_false:
   TRUE
 
-pause_trading_chain_risk_fixed_or_recorded_true_or_false:
-  TRUE
-
 get_silence_report_mixed_type_handled_or_recorded_true_or_false:
   TRUE
 
 files_modified:
   - monitoring/silence/detector.py
   - tests/test_r007_silence_protection.py
+  - automation/control/candidates/R007_SILENCE_DETECTOR_NONE_BUG_REWORK_BEFORE_R049/evidence.json
+  - automation/control/candidates/R007_SILENCE_DETECTOR_NONE_BUG_REWORK_BEFORE_R049/candidate.diff
+  - automation/control/candidates/R007_SILENCE_DETECTOR_NONE_BUG_REWORK_BEFORE_R049/RETURN_TO_CHATGPT.txt
+  - automation/control/candidates/R007_SILENCE_DETECTOR_NONE_BUG_REWORK_BEFORE_R049/test-results.txt
 
 authorized_files_only_true_or_false:
   TRUE
+
+evidence_json_exists_true_or_false:
+  TRUE
+
+evidence_json_parse_pass_true_or_false:
+  TRUE
+
+law04_compliance_present_true_or_false:
+  TRUE
+
+evidence_json_law_compliance_value:
+  "04"
+
+evidence_json_law_compliance_is_string_true_or_false:
+  TRUE
+
+evidence_json_law_compliance_equals_04_true_or_false:
+  TRUE
+
+candidate_diff_exists_true_or_false:
+  TRUE
+
+candidate_diff_utf8_no_bom_true_or_false:
+  TRUE
+
+candidate_diff_non_empty_true_or_false:
+  TRUE
+
+candidate_diff_matches_base_to_candidate_true_or_false:
+  TRUE
+
+return_to_chatgpt_txt_exists_true_or_false:
+  TRUE
+
+return_to_chatgpt_formal_body_valid_true_or_false:
+  TRUE
+
+test_results_txt_exists_true_or_false:
+  TRUE
+
+tests_added_or_updated:
+  - tests/test_r007_silence_protection.py (11 new behavioral tests)
+
+tests_import_real_source_true_or_false:
+  TRUE
+
+tests_cover_all_none_true_or_false:
+  TRUE
+
+tests_cover_single_none_channel_true_or_false:
+  TRUE
+
+tests_cover_reset_then_is_silent_true_or_false:
+  TRUE
+
+tests_cover_malformed_timestamp_true_or_false:
+  TRUE
+
+tests_cover_expired_and_fresh_paths_true_or_false:
+  TRUE
+
+tests_behavioral_not_string_only_true_or_false:
+  TRUE
+
+tests_run:
+  - python -m pytest tests/test_r007_silence_protection.py -v --tb=short
+  - python -m pytest tests/test_server_v2_backend_execution_safety.py tests/test_pre_r049_local_website_visible_surface_gap_remediation.py tests/test_ui_visible_gate_governance.py -v --tb=short
+  - python -m pytest --ignore=automation --ignore=stocktrade --ignore=test_twse.py --ignore=test_twstock_batch.py --tb=no -q
+  - python automation/control/evidence_checker.py
+
+tests_result:
+  PASS (23 R007 silence tests, 116 combined safety/visible-surface/UI-gate tests, 1083 full clean subset tests)
+
+r007_silence_tests_pass_true_or_false:
+  TRUE
+
+candidate_tests_pass_true_or_false:
+  TRUE
+
+ui_visible_gate_tests_pass_true_or_false:
+  TRUE
+
+full_clean_subset_pass_true_or_false:
+  TRUE
+
+evidence_checker_pass_true_or_false:
+  TRUE
+
+pre_push_equivalent_law04_check_pass_true_or_false:
+  NOT_RUN
 
 server_py_modified_true_or_false:
   FALSE
@@ -125,96 +222,11 @@ order_execution_allowed_true_or_false:
 secret_values_exposed_true_or_false:
   FALSE
 
-tests_added_or_updated:
-  - tests/test_r007_silence_protection.py (11 new tests added)
-
-tests_import_real_source_true_or_false:
-  TRUE
-
-tests_cover_all_none_true_or_false:
-  TRUE
-
-tests_cover_single_none_channel_true_or_false:
-  TRUE
-
-tests_cover_reset_then_is_silent_true_or_false:
-  TRUE
-
-tests_cover_malformed_timestamp_true_or_false:
-  TRUE
-
-tests_cover_expired_and_fresh_paths_true_or_false:
-  TRUE
-
-tests_behavioral_not_string_only_true_or_false:
-  TRUE
-
-mutation_style_none_check_removal_would_fail_tests_true_or_false:
-  TRUE
-
-evidence_json_exists_true_or_false:
-  TRUE
-
-evidence_json_parse_pass_true_or_false:
-  TRUE
-
-law04_compliance_present_true_or_false:
-  TRUE
-
-evidence_json_law_compliance_value:
-  "04"
-
-evidence_json_law_compliance_is_string_true_or_false:
-  TRUE
-
-candidate_diff_exists_true_or_false:
-  TRUE
-
-candidate_diff_utf8_no_bom_true_or_false:
-  TRUE
-
-candidate_diff_non_empty_true_or_false:
-  TRUE
-
-return_to_chatgpt_formal_body_valid_true_or_false:
-  TRUE
-
-tests_run:
-  - python -m pytest tests/test_r007_silence_protection.py -v --tb=short
-  - python -m pytest tests/test_server_v2_backend_execution_safety.py -v --tb=short
-  - python -m pytest tests/test_pre_r049_local_website_visible_surface_gap_remediation.py -v --tb=short
-  - python -m pytest tests/test_ui_visible_gate_governance.py -v --tb=short
-  - python -m pytest --ignore=automation --ignore=stocktrade --ignore=test_twse.py --ignore=test_twstock_batch.py --tb=no -q
-  - python automation/control/evidence_checker.py
-
-tests_result:
-  PASS (23 R007 silence tests, 29 server_v2 safety tests, 65 pre-R049 visible surface tests, 22 UI visible gate tests, 1083 full clean subset tests)
-
-r007_silence_tests_pass_true_or_false:
-  TRUE
-
-candidate_tests_pass_true_or_false:
-  TRUE
-
-ui_visible_gate_tests_pass_true_or_false:
-  TRUE
-
-full_clean_subset_pass_true_or_false:
-  TRUE
-
-evidence_checker_pass_true_or_false:
-  TRUE
-
-pre_push_equivalent_law04_check_pass_true_or_false:
-  NOT_RUN
-
-git_status_short_after:
+git_status_short_after_commit:
   EMPTY
 
-already_acceptance_ready_items:
-  - R007 silence detector None bug fix (monitoring/silence/detector.py)
-  - R007 silence detector tests (11 new behavioral tests)
-  - R007 evidence package (evidence.json + candidate.diff)
+git_status_clean_after_commit_true_or_false:
+  TRUE
 
 remaining_blockers:
   NONE
@@ -233,4 +245,4 @@ recommended_next_action:
   AWAITING_MANUAL_REVIEW_R007_SILENCE_DETECTOR_NONE_BUG_REWORK
 
 final_recommendation:
-  R007_SILENCE_DETECTOR_NONE_BUG_REWORK_READY_FOR_MANUAL_REVIEW_DO_NOT_START_R049
+  R007_SILENCE_DETECTOR_REWORK_CANDIDATE_READY_FOR_MANUAL_REVIEW_DO_NOT_START_R049
