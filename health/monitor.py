@@ -1,31 +1,72 @@
 import os
 import time
-from datetime import datetime
+from datetime import datetime, timedelta
+from typing import Callable, Optional, Dict, Any
+
 
 class HealthCheck:
-    def check_broker_connection(self):
-        # 模擬檢查券商連接
-        status = 'ok' if True else 'critical'
-        details = "Broker connection is OK" if status == 'ok' else "Broker connection failed"
-        timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        return {'status': status, 'details': details, 'timestamp': timestamp}
+    def __init__(
+        self,
+        broker_probe: Optional[Callable[[], bool]] = None,
+        data_feed_probe: Optional[Callable[[], bool]] = None,
+        risk_system_probe: Optional[Callable[[], bool]] = None,
+    ):
+        self._broker_probe = broker_probe
+        self._data_feed_probe = data_feed_probe
+        self._risk_system_probe = risk_system_probe
 
-    def check_data_feed(self):
-        # 模擬檢查數據供應
-        status = 'ok' if True else 'warning'
-        details = "Data feed is OK" if status == 'ok' else "Data feed may be delayed"
+    def check_broker_connection(self) -> Dict[str, Any]:
         timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        return {'status': status, 'details': details, 'timestamp': timestamp}
+        if self._broker_probe is None:
+            return {
+                'status': 'degraded',
+                'details': 'Broker probe not configured — degraded mode',
+                'timestamp': timestamp,
+            }
+        try:
+            result = self._broker_probe()
+            if result is True:
+                return {'status': 'ok', 'details': 'Broker connection OK', 'timestamp': timestamp}
+            else:
+                return {'status': 'critical', 'details': 'Broker probe returned False', 'timestamp': timestamp}
+        except Exception as e:
+            return {'status': 'critical', 'details': f'Broker probe exception: {e}', 'timestamp': timestamp}
 
-    def check_risk_system(self):
-        # 模擬檢查風險系統
-        status = 'ok' if True else 'critical'
-        details = "Risk system is OK" if status == 'ok' else "Risk system detected a problem"
+    def check_data_feed(self) -> Dict[str, Any]:
         timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        return {'status': status, 'details': details, 'timestamp': timestamp}
+        if self._data_feed_probe is None:
+            return {
+                'status': 'degraded',
+                'details': 'Data feed probe not configured — degraded mode',
+                'timestamp': timestamp,
+            }
+        try:
+            result = self._data_feed_probe()
+            if result is True:
+                return {'status': 'ok', 'details': 'Data feed OK', 'timestamp': timestamp}
+            else:
+                return {'status': 'warning', 'details': 'Data feed probe returned False', 'timestamp': timestamp}
+        except Exception as e:
+            return {'status': 'warning', 'details': f'Data feed probe exception: {e}', 'timestamp': timestamp}
 
-    def check_memory_usage(self):
-        # 模擬檢查記憶體使用
+    def check_risk_system(self) -> Dict[str, Any]:
+        timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        if self._risk_system_probe is None:
+            return {
+                'status': 'degraded',
+                'details': 'Risk system probe not configured — degraded mode',
+                'timestamp': timestamp,
+            }
+        try:
+            result = self._risk_system_probe()
+            if result is True:
+                return {'status': 'ok', 'details': 'Risk system OK', 'timestamp': timestamp}
+            else:
+                return {'status': 'critical', 'details': 'Risk system probe returned False', 'timestamp': timestamp}
+        except Exception as e:
+            return {'status': 'critical', 'details': f'Risk system probe exception: {e}', 'timestamp': timestamp}
+
+    def check_memory_usage(self) -> Dict[str, Any]:
         try:
             import psutil
             memory = psutil.virtual_memory()
@@ -40,8 +81,7 @@ class HealthCheck:
                 'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
             }
 
-    def check_disk_space(self):
-        # 模擬檢查磁碟空間
+    def check_disk_space(self) -> Dict[str, Any]:
         import shutil
         disk_usage = shutil.disk_usage("/")
         percent_used = (disk_usage.used / disk_usage.total) * 100
@@ -50,8 +90,10 @@ class HealthCheck:
         timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         return {'status': status, 'details': details, 'timestamp': timestamp}
 
+
 class HealthMonitor:
-    def __init__(self, check_intervals=None, thresholds=None):
+    def __init__(self, check_intervals=None, thresholds=None,
+                 broker_probe=None, data_feed_probe=None, risk_system_probe=None):
         self.check_intervals = check_intervals or {
             'broker_connection': 60,
             'data_feed': 300,
@@ -63,7 +105,11 @@ class HealthMonitor:
             'memory_usage': 80,
             'disk_space': 80
         }
-        self.checker = HealthCheck()
+        self.checker = HealthCheck(
+            broker_probe=broker_probe,
+            data_feed_probe=data_feed_probe,
+            risk_system_probe=risk_system_probe,
+        )
 
     def run_checks(self):
         checks = [
@@ -89,6 +135,7 @@ class HealthMonitor:
         details = f"Total checks: {total_checks}, Critical: {critical_count}, Warning: {warning_count}"
         timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         return {'status': overall_status, 'details': details, 'timestamp': timestamp}
+
 
 if __name__ == '__main__':
     monitor = HealthMonitor()
