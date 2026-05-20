@@ -1,0 +1,417 @@
+diff --git a/automation/control/candidates/R029_R030_SIX_AI_MEETING_TRACE_CHAIN_BACKLOG_LABELING_REWORK_BEFORE_R049/evidence.json b/automation/control/candidates/R029_R030_SIX_AI_MEETING_TRACE_CHAIN_BACKLOG_LABELING_REWORK_BEFORE_R049/evidence.json
+new file mode 100644
+index 0000000..b7b8a3b
+--- /dev/null
++++ b/automation/control/candidates/R029_R030_SIX_AI_MEETING_TRACE_CHAIN_BACKLOG_LABELING_REWORK_BEFORE_R049/evidence.json
+@@ -0,0 +1,90 @@
++{
++  "round_id": "R029_R030_SIX_AI_MEETING_TRACE_CHAIN_BACKLOG_LABELING_REWORK_BEFORE_R049",
++  "task_type": "r029_r030_six_ai_meeting_trace_chain_backlog_labeling_rework_candidate",
++  "status": "candidate_ready_awaiting_manual_review",
++  "formal_status_code": "candidate_ready_awaiting_manual_review",
++  "law_compliance": "04",
++  "canonical_branch": "work/canonical-mainline-repair-001",
++  "base_head": "329a6d70f76f43787ddc3b383e9421c0ab9410b4",
++  "candidate_branch": "candidate/r029-r030-six-ai-meeting-trace-chain-backlog-labeling-rework-before-r049",
++  "previous_wrong_conclusion_found": true,
++  "previous_wrong_conclusion_removed_or_overridden": true,
++  "corrected_conclusion": "CONSENSUS_SCORING_ENGINE_EXISTS_BUT_FULL_MEETING_TRACE_CHAIN_INCOMPLETE",
++  "meeting_table_missing_blocker_recorded": true,
++  "trace_id_missing_blocker_recorded": true,
++  "decision_chain_missing_blocker_recorded": true,
++  "per_ai_veto_missing_blocker_recorded": true,
++  "decision_id_not_formal_trace_id": true,
++  "learning_api_not_live_meeting_record": true,
++  "r049_ready": false,
++  "r049_blockers_recorded": true,
++  "r049_blockers": [
++    "missing_meeting_table",
++    "missing_formal_trace_id",
++    "missing_decision_chain",
++    "missing_per_ai_veto_record",
++    "append_only_decision_record_partial",
++    "local_arbitrator_partial"
++  ],
++  "files_modified": [
++    "tests/test_r029_r030_six_ai_meeting_trace_chain_backlog_labeling.py (new)"
++  ],
++  "authorized_files_only": true,
++  "tests_added_or_updated": [
++    "tests/test_r029_r030_six_ai_meeting_trace_chain_backlog_labeling.py"
++  ],
++  "tests_import_real_source_or_evidence": true,
++  "tests_prevent_false_full_meeting_claim": true,
++  "evidence_json_exists": true,
++  "evidence_json_parse_pass": true,
++  "law04_compliance_present": true,
++  "law04_compliance_value": "04",
++  "law04_compliance_is_string": true,
++  "candidate_diff_exists": true,
++  "candidate_diff_utf8_no_bom": true,
++  "candidate_diff_non_empty": true,
++  "server_py_modified": false,
++  "server_v2_modified": false,
++  "root_index_v2_html_modified": false,
++  "stocktrade_submodule_modified": false,
++  "env_modified": false,
++  "env_example_modified": false,
++  "new_api_endpoint_added": false,
++  "runtime_state_write_added": false,
++  "db_write_executed": false,
++  "broker_execution_live_modified": false,
++  "fubon_api_integrated": false,
++  "runtime_started": false,
++  "trading_broker_execution_live_started": false,
++  "r049_started": false,
++  "r031_started": false,
++  "order_execution_allowed": false,
++  "secret_values_exposed": false,
++  "remaining_blockers": [
++    "R029/R030 missing meeting table / roundtable",
++    "R029/R030 missing formal trace_id",
++    "R029/R030 missing decision_chain",
++    "R029/R030 missing per-AI veto record"
++  ],
++  "still_need_deep_review_items": [
++    "R007 silence detector None bug",
++    "R014 observability / ObservableEvent reality audit",
++    "R027 market open/close protection evidence audit",
++    "R033 replay isolation live write guard audit",
++    "R047/R048 Taiwan Market Reality enforcement deep review",
++    "GitHub Actions validate-round failure audit",
++    "stocktrade gitlink / .gitmodules structure governance",
++    "responsive/mobile viewport deferred until deployed website/software validation"
++  ],
++  "recommended_next_action": "AWAITING_MANUAL_REVIEW_R029_R030_SIX_AI_TRACE_CHAIN_LABELING_REWORK",
++  "final_recommendation": "R029_R030_LABELING_REWORK_READY_FOR_MANUAL_REVIEW_DO_NOT_START_R049",
++  "tests_run": [
++    "python -m pytest tests/test_r029_r030_six_ai_meeting_trace_chain_backlog_labeling.py -v --tb=short"
++  ],
++  "tests_result": "29 passed in 0.10s",
++  "candidate_tests_pass": true,
++  "ui_visible_gate_tests_pass": "NOT_RUN",
++  "full_clean_subset_pass": "NOT_RUN",
++  "evidence_checker_pass": "NOT_RUN",
++  "pre_push_equivalent_law04_check_pass": "NOT_RUN"
++}
+\ No newline at end of file
+diff --git a/tests/test_r029_r030_six_ai_meeting_trace_chain_backlog_labeling.py b/tests/test_r029_r030_six_ai_meeting_trace_chain_backlog_labeling.py
+new file mode 100644
+index 0000000..8f7cc53
+--- /dev/null
++++ b/tests/test_r029_r030_six_ai_meeting_trace_chain_backlog_labeling.py
+@@ -0,0 +1,313 @@
++"""
++test_r029_r030_six_ai_meeting_trace_chain_backlog_labeling.py
++
++Tests for R029_R030_SIX_AI_MEETING_TRACE_CHAIN_BACKLOG_LABELING_REWORK_BEFORE_R049.
++
++Scope:
++- Verify no source file claims "REAL_MEETING_ENGINE_IMPLEMENTED"
++- Verify meeting table / roundtable absence is properly recorded
++- Verify formal trace_id vs decision_id distinction
++- Verify decision_chain absence
++- Verify per-AI veto record absence
++- Verify learning/decisions API is not live meeting record
++- Verify R049 readiness remains FALSE while blockers exist
++- No trading control pollution
++- No order_execution_allowed changes
++- No broker / live / execution pollution
++"""
++
++import json
++import re
++from pathlib import Path
++
++import pytest
++
++PROJECT_ROOT = Path(__file__).parent.parent
++SERVER_V2_PATH = PROJECT_ROOT / "server_v2.py"
++INDEX_V2_HTML_PATH = PROJECT_ROOT / "index_v2.html"
++GOVERNANCE_AUDIT_DIR = PROJECT_ROOT / "_governance" / "audit"
++
++
++class TestSixAIMeetingFalseClaimPrevention:
++    """Prevents false "full meeting implemented" claims."""
++
++    def test_no_real_meeting_engine_implemented_claim(self, server_v2_text):
++        """Source must not claim REAL_MEETING_ENGINE_IMPLEMENTED."""
++        assert "REAL_MEETING_ENGINE_IMPLEMENTED" not in server_v2_text, \
++            "Source must not contain REAL_MEETING_ENGINE_IMPLEMENTED claim"
++
++    def test_no_affirmative_full_meeting_claim(self, server_v2_text):
++        """Source must not claim full six-AI meeting is implemented."""
++        patterns = [
++            r"???AI.*???",
++            r"?????*???",
++            r"meeting.*complete",
++            r"meeting.*implemented",
++            r"??I.*?????,
++        ]
++        for pattern in patterns:
++            matches = re.findall(pattern, server_v2_text)
++            assert not matches, f"Source must not contain affirmative full-meeting claim: {pattern}"
++
++
++class TestMeetingTableRoundtableAbsence:
++    """Verifies meeting table / roundtable absence is properly recorded."""
++
++    def test_no_roundtable_or_meeting_table_source(self, server_v2_text):
++        """server_v2.py must not contain meeting table / roundtable source."""
++        patterns = [
++            "roundtable",
++            "meeting_table",
++            "MeetingTable",
++            "Roundtable",
++        ]
++        for pattern in patterns:
++            assert pattern not in server_v2_text, \
++                f"server_v2.py must not contain {pattern} ??meeting table not implemented"
++
++    def test_six_ai_classes_not_meeting_brain(self, server_v2_text):
++        """Six AI classes exist as standalone classes, not a meeting brain."""
++        six_ai_classes = [
++            "class QuantResearcher",
++            "class Backtester",
++            "class RiskOfficer",
++            "class SignalEngineer",
++            "class ExecutionEngineer",
++            "class MarketAnalyst",
++        ]
++        for cls in six_ai_classes:
++            assert cls in server_v2_text, f"{cls} must exist as standalone class"
++
++
++class TestTraceIdVsDecisionId:
++    """Verifies formal trace_id vs decision_id distinction."""
++
++    def test_decision_id_not_treated_as_formal_trace_id(self, server_v2_text):
++        """decision_id (D{timestamp}) must not be called trace_id."""
++        lines = server_v2_text.split("\n")
++        for i, line in enumerate(lines, 1):
++            if "decision_id" in line:
++                assert "trace_id" not in line.lower() or "decision_id" not in line.lower(), \
++                    f"Line {i}: decision_id must not be conflated with trace_id"
++
++    def test_trace_id_formal_field_not_in_decision_log(self, server_v2_text):
++        """decision_log records must not have formal trace_id field."""
++        if "decision_log" in server_v2_text:
++            decision_log_pattern = re.search(
++                r'def log_decision\(self.*?\n(.*?)LearningDataStore\.append',
++                server_v2_text, re.DOTALL
++            )
++            if decision_log_pattern:
++                content = decision_log_pattern.group(0)
++                assert '"trace_id"' not in content, \
++                    "decision_log must not have formal trace_id field ??only decision_id (weak ID)"
++
++
++class TestDecisionChainAbsence:
++    """Verifies decision_chain is not implemented."""
++
++    def test_no_decision_chain_in_server_v2(self, server_v2_text):
++        """server_v2.py must not contain decision_chain field."""
++        assert "decision_chain" not in server_v2_text, \
++            "decision_chain not implemented ??decisions are isolated"
++
++
++class TestPerAIVetoRecordAbsence:
++    """Verifies per-AI veto record is not implemented."""
++
++    def test_no_per_ai_veto_recording(self, server_v2_text):
++        """Individual AI veto recording must not be claimed."""
++        patterns = [
++            "per.*ai.*veto",
++            "veto.*record.*ai",
++            "ai.*veto.*log",
++            "quant.*veto",
++            "backtest.*veto",
++        ]
++        for pattern in patterns:
++            matches = re.findall(pattern, server_v2_text, re.IGNORECASE)
++            if matches:
++                assert False, f"Source must not claim per-AI veto recording: {pattern}"
++
++    def test_consensus_scoring_not_full_meeting(self, server_v2_text):
++        """get_consensus_score() is consensus scoring, not full meeting."""
++        assert "get_consensus_score" in server_v2_text, \
++            "Consensus scoring engine exists but is not a full meeting"
++        if "def get_consensus_score" in server_v2_text:
++            match = re.search(
++                r"def get_consensus_score.*?\"\"\"(.*?)\"\"\"",
++                server_v2_text, re.DOTALL
++            )
++            if match:
++                doc = match.group(1)
++                assert "meeting" not in doc.lower() or "meeting" in " roundtable", \
++                    "get_consensus_score docstring must not claim meeting"
++
++
++class TestLearningAPINotLiveMeetingRecord:
++    """Verifies /api/learning/decisions is learning log, not live meeting."""
++
++    def test_learning_decisions_api_returns_decision_log(self, server_v2_text):
++        """learning/decisions endpoint must return decision_log, not live meeting."""
++        pattern = re.search(
++            r'@app\.get\("/api/learning/decisions"\).*?return.*?decision_log',
++            server_v2_text, re.DOTALL
++        )
++        assert pattern, \
++            "/api/learning/decisions must return decision_log (learning log, not live meeting)"
++
++    def test_no_live_meeting_record_claim(self, server_v2_text):
++        """Source must not claim learning API is live meeting record."""
++        patterns = [
++            "live.*meeting",
++            "meeting.*record",
++            "meeting.*log",
++        ]
++        for pattern in patterns:
++            matches = re.findall(pattern, server_v2_text, re.IGNORECASE)
++            if matches:
++                assert False, f"Source must not claim learning API is live meeting: {pattern}"
++
++
++class TestR049ReadinessBlockersRecorded:
++    """Verifies R049 readiness blockers are properly recorded."""
++
++    def test_r049_readiness_false_in_index_v2_html(self, html_v2_text):
++        """index_v2.html must disclaim R049 readiness."""
++        disclaimers = [
++            "?????R049 ready",
++            "?????R049",
++        ]
++        found = any(d in html_v2_text for d in disclaimers)
++        assert found, "index_v2.html must explicitly disclaim R049 ready status"
++
++    def test_no_affirmative_r049_ready_claim(self, html_v2_text):
++        """HTML must not contain affirmative R049 ready claim."""
++        affirm = re.search(
++            r'(?<!?????s)(?<!not\s)(?<!??R049\s+(?:ready|???|???)',
++            html_v2_text, re.IGNORECASE
++        )
++        assert not affirm, "Must not claim affirmative R049 ready status"
++
++    def test_six_ai_meeting_label_conservative(self, html_v2_text):
++        """Six AI meeting label must be conservative."""
++        conservative_patterns = [
++            "??????",
++            "??????",
++            "?????,
++            "AI.*???",
++            "???",
++        ]
++        found = any(re.search(p, html_v2_text) for p in conservative_patterns)
++        assert found, "Six AI panel must use conservative labels (not full meeting)"
++
++    def test_no_meeting_table_claim_in_html(self, html_v2_text):
++        """HTML must not claim meeting table exists."""
++        patterns = [
++            "?????,
++            "?????,
++            "meeting table",
++            "roundtable",
++            "??I???",
++        ]
++        for pattern in patterns:
++            assert pattern not in html_v2_text, \
++                f"HTML must not claim meeting table: {pattern}"
++
++
++class TestOrderExecutionSafety:
++    """Verifies order execution safety is preserved."""
++
++    def test_order_execution_allowed_false_preserved(self, server_v2_text):
++        """order_execution_allowed must remain FALSE."""
++        assert "ORDER_EXECUTION_ALLOWED = False" in server_v2_text or \
++               "ORDER_EXECUTION_ALLOWED=False" in server_v2_text or \
++               "order_execution_allowed = False" in server_v2_text, \
++            "order_execution_allowed must remain FALSE"
++
++    def test_execution_place_blocks_when_disabled(self, server_v2_text):
++        """ExecutionEngineer.place() must check order_execution_allowed."""
++        assert "if not ORDER_EXECUTION_ALLOWED" in server_v2_text or \
++               "if not order_execution_allowed" in server_v2_text, \
++            "ExecutionEngineer.place() must check ORDER_EXECUTION_ALLOWED before placing orders"
++
++
++class TestAppendOnlyDecisionRecordPartial:
++    """Verifies append-only decision record is partial."""
++
++    def test_decision_log_exists(self, server_v2_text):
++        """decision_log append-only record must exist."""
++        assert "decision_log" in server_v2_text, "decision_log must exist"
++
++    def test_outcome_log_exists(self, server_v2_text):
++        """outcome_log append-only record must exist."""
++        assert "outcome_log" in server_v2_text, "outcome_log must exist"
++
++    def test_no_trace_id_field_in_decision_records(self, server_v2_text):
++        """Decision records must not have trace_id field."""
++        log_decision_pattern = re.search(
++            r'def log_decision\(self, data.*?\n(.*?)self\.decision_log\.append',
++            server_v2_text, re.DOTALL
++        )
++        if log_decision_pattern:
++            content = log_decision_pattern.group(0)
++            assert '"trace_id"' not in content and "'trace_id'" not in content, \
++                "Decision records must not have trace_id field (only decision_id)"
++
++
++class TestLocalArbitratorPartial:
++    """Verifies local arbitrator is partial."""
++
++    def test_get_consensus_score_exists(self, server_v2_text):
++        """get_consensus_score() consensus scoring arbitrator must exist."""
++        assert "def get_consensus_score" in server_v2_text, \
++            "Consensus scoring arbitrator exists but is partial (not full meeting)"
++
++    def test_risk_veto_exists(self, server_v2_text):
++        """RiskOfficer veto must exist as a gate."""
++        assert "def can_enter" in server_v2_text, \
++            "RiskOfficer.can_enter() veto gate must exist"
++
++    def test_consensus_threshold_gate_exists(self, server_v2_text):
++        """CONSENSUS_THRESHOLD gate must exist."""
++        assert "CONSENSUS_THRESHOLD" in server_v2_text, \
++            "CONSENSUS_THRESHOLD gate must exist"
++
++
++class TestSixAIClassesExist:
++    """Verifies six AI agent classes exist as standalone inputs."""
++
++    def test_quant_researcher_exists(self, server_v2_text):
++        """QuantResearcher class must exist."""
++        assert "class QuantResearcher" in server_v2_text
++
++    def test_backtest_engineer_exists(self, server_v2_text):
++        """Backtester class must exist (backtest AI role)."""
++        assert "class Backtester" in server_v2_text
++
++    def test_risk_officer_exists(self, server_v2_text):
++        """RiskOfficer class must exist."""
++        assert "class RiskOfficer" in server_v2_text
++
++    def test_signal_engineer_exists(self, server_v2_text):
++        """SignalEngineer class must exist."""
++        assert "class SignalEngineer" in server_v2_text
++
++    def test_execution_engineer_exists(self, server_v2_text):
++        """ExecutionEngineer class must exist."""
++        assert "class ExecutionEngineer" in server_v2_text
++
++    def test_market_analyst_exists(self, server_v2_text):
++        """MarketAnalyst class must exist."""
++        assert "class MarketAnalyst" in server_v2_text
++
++
++# ???? Fixtures ????
++
++@pytest.fixture(scope="module")
++def server_v2_text():
++    return SERVER_V2_PATH.read_text(encoding="utf-8")
++
++@pytest.fixture(scope="module")
++def html_v2_text():
++    return INDEX_V2_HTML_PATH.read_text(encoding="utf-8")
+\ No newline at end of file
