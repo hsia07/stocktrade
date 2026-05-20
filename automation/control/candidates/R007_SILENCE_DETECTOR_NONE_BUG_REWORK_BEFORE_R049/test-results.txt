@@ -1,0 +1,46 @@
+R007 Law04 Evidence Field Rework - Package Resync Test Results
+================================================================
+Candidate: candidate/r007-silence-detector-law04-evidence-field-rework-before-r049
+Base: 3752f2746dadab01162a14f7ffe5394631014ff0
+
+This package resync addresses the hash mismatch after commit amendment:
+- Original reported candidate: dfc1da8 (amended)
+- Current HEAD before resync: 0c56b35c9644fdb64e8a45811569a897f21af59f
+- Superseded stale candidate_commit in evidence.json: 24ae5ec
+
+Changes:
+- Removed stale candidate_commit from evidence.json (renamed to superseded_evidence_candidate_commit)
+- Added candidate_commit_recording_policy to avoid self-reference
+- Regenerated candidate.diff from base to current state
+- Updated RETURN_TO_CHATGPT.txt to reflect new policy
+
+Test Run 1: R007 Silence Protection Tests
+-----------------------------------------
+Command: python -m pytest tests/test_r007_silence_protection.py -v --tb=short
+Result: PASS (23 tests)
+
+Test Run 2: Server V2 Safety + Pre-R049 Visible Surface + UI Gate Tests
+-------------------------------------------------------------------------
+Command: python -m pytest tests/test_server_v2_backend_execution_safety.py tests/test_pre_r049_local_website_visible_surface_gap_remediation.py tests/test_ui_visible_gate_governance.py -v --tb=short
+Result: PASS (116 tests)
+
+Test Run 3: Full Clean Test Subset
+-----------------------------------
+Command: python -m pytest --ignore=automation --ignore=stocktrade --ignore=test_twse.py --ignore=test_twstock_batch.py --tb=no -q
+Result: PASS (1083 tests)
+
+Test Run 4: Evidence Checker
+----------------------------
+Command: python automation/control/evidence_checker.py
+Result: PASS (no output = no failures)
+
+Test Run 5: Pre-push Equivalent Law04 Check
+-------------------------------------------
+Verification: evidence.json contains direct "law_compliance": "04" field
+Result: PASS - direct field present
+
+Summary
+-------
+All required tests PASSED.
+Package resync completed - candidate package now reflects actual HEAD.
+No self-referential commit hash mismatch.

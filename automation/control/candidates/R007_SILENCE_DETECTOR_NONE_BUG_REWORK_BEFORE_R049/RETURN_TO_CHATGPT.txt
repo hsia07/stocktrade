@@ -1,0 +1,125 @@
+round_id:
+  R007_LAW04_EVIDENCE_FIELD_REWORK_PACKAGE_RESYNC_CANDIDATE
+
+task_type:
+  r007_law04_evidence_field_rework_package_resync_candidate
+
+status:
+  completed
+
+formal_status_code:
+  candidate_ready_awaiting_manual_review
+
+canonical_branch:
+  work/canonical-mainline-repair-001
+
+remote_canonical_head:
+  3752f2746dadab01162a14f7ffe5394631014ff0
+
+blocked_local_merge_commit:
+  2c6c8bfc9f82dffe8160b40e21807aed7a4c9b42
+
+previous_r007_candidate_head:
+  60ddc42fc72b5bd809d199e8558685249b56686b
+
+superseded_reported_candidate_short_head:
+  dfc1da8
+
+superseded_evidence_candidate_commit:
+  24ae5ecb8ced139e8ef2c8b320e6e64531dbdc97
+
+law04_field_rework_head_before_resync:
+  0c56b35c9644fdb64e8a45811569a897f21af59f
+
+candidate_branch:
+  candidate/r007-silence-detector-law04-evidence-field-rework-before-r049
+
+candidate_commit:
+  8fab8a14c5c9cfed94e89d0c7abaeed575a6cee3
+
+candidate_commit_recording_policy:
+  final candidate HEAD is authoritative in live RETURN_TO_CHATGPT output, not self-embedded inside committed package
+
+candidate_package_self_reference_mismatch_avoided_true_or_false:
+  TRUE
+
+stale_candidate_commit_fields_removed_or_renamed_true_or_false:
+  TRUE
+
+evidence_json_law_compliance_direct_field_present_true_or_false:
+  TRUE
+
+evidence_json_law_compliance_value:
+  "04"
+
+evidence_json_law_compliance_is_string_true_or_false:
+  TRUE
+
+evidence_json_law_compliance_equals_04_true_or_false:
+  TRUE
+
+previous_r007_fix_preserved_true_or_false:
+  TRUE
+
+none_short_circuit_bug_fixed_true_or_false:
+  TRUE
+
+is_silent_none_fail_closed_true_or_false:
+  TRUE
+
+all_none_first_start_silent_true_or_false:
+  TRUE
+
+reset_then_is_silent_silent_true_or_false:
+  TRUE
+
+malformed_timestamp_fail_closed_true_or_false:
+  TRUE
+
+files_modified:
+  - automation/control/candidates/R007_SILENCE_DETECTOR_NONE_BUG_REWORK_BEFORE_R049/evidence.json
+  - automation/control/candidates/R007_SILENCE_DETECTOR_NONE_BUG_REWORK_BEFORE_R049/candidate.diff
+  - automation/control/candidates/R007_SILENCE_DETECTOR_NONE_BUG_REWORK_BEFORE_R049/RETURN_TO_CHATGPT.txt
+  - automation/control/candidates/R007_SILENCE_DETECTOR_NONE_BUG_REWORK_BEFORE_R049/test-results.txt
+
+authorized_files_only_true_or_false:
+  TRUE
+
+source_files_modified_by_this_rework_true_or_false:
+  FALSE
+
+monitoring_silence_detector_modified_by_this_rework_true_or_false:
+  FALSE
+
+tests_test_r007_silence_protection_modified_by_this_rework_true_or_false:
+  FALSE
+
+server_py_modified_true_or_false:
+  FALSE
+
+server_v2_modified_true_or_false:
+  FALSE
+
+root_index_v2_html_modified_true_or_false:
+  FALSE
+
+modules_modified_true_or_false:
+  FALSE
+
+stocktrade_submodule_modified_true_or_false:
+  FALSE
+
+env_modified_true_or_false:
+  FALSE
+
+env_example_modified_true_or_false:
+  FALSE
+
+remaining_blockers:
+  NONE
+
+recommended_next_action:
+  AWAITING_MANUAL_REVIEW_R007_LAW04_EVIDENCE_FIELD_REWORK_RESYNC
+
+final_recommendation:
+  R007_LAW04_EVIDENCE_FIELD_REWORK_RESYNC_READY_FOR_MANUAL_REVIEW_DO_NOT_RETRY_PUSH_YET
