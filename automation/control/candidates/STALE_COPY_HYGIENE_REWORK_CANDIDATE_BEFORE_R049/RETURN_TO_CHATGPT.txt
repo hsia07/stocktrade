@@ -1,107 +1,131 @@
 round_id:
-  STALE_COPY_HYGIENE_REWORK_CANDIDATE_BEFORE_R049
+  STALE_COPY_HYGIENE_REWORK_BLOCKER_RESOLUTION_PREPARE_READINESS
 
 task_type:
-  stale_copy_hygiene_rework_candidate
+  blocker_resolution_prepare_readiness
 
 status:
   completed
 
 formal_status_code:
-  candidate_ready_awaiting_manual_review
+  BLOCKER_RESOLUTION_PREPARED_AWAITING_SUBMODULE_PUSH_SIGNOFF
 
 canonical_branch:
   work/canonical-mainline-repair-001
 
-base_head:
-  ebfa19b87d1ce1c5fd7a84cc1a4407f73a58a429
-
 candidate_branch:
   candidate/stale-copy-hygiene-rework-before-r049
 
+base_head:
+  ebfa19b87d1ce1c5fd7a84cc1a4407f73a58a429
+
+previous_candidate_head:
+  9a954be1f38cda79fb7186505785a8cf97d08f80
+
+new_candidate_head:
+  (not embedded in commit artifact; run git rev-parse HEAD)
+
+parent_repo_git_status_before:
+   M automation/control/candidates/STALE_COPY_HYGIENE_REWORK_CANDIDATE_BEFORE_R049/RETURN_TO_CHATGPT.txt
+
+dirty_return_to_chatgpt_diff_existed_true_or_false:
+  TRUE
+
+dirty_return_to_chatgpt_diff_committed_true_or_false:
+  TRUE
+
+dirty_return_to_chatgpt_diff_discarded_true_or_false:
+  FALSE
+
+parent_repo_git_status_after:
+  EMPTY
+
+parent_repo_working_tree_clean_after_true_or_false:
+  TRUE
+
 files_modified:
-  - stocktrade/index_v2.html
-  - stocktrade/start.bat
-  - tests/test_pre_r049_local_website_visible_surface_gap_remediation.py
+  - automation/control/candidates/STALE_COPY_HYGIENE_REWORK_CANDIDATE_BEFORE_R049/RETURN_TO_CHATGPT.txt
   - automation/control/candidates/STALE_COPY_HYGIENE_REWORK_CANDIDATE_BEFORE_R049/candidate.diff
   - automation/control/candidates/STALE_COPY_HYGIENE_REWORK_CANDIDATE_BEFORE_R049/evidence.json
+  - stocktrade (submodule pointer: c65fb25)
+  - tests/test_pre_r049_local_website_visible_surface_gap_remediation.py
 
-stocktrade_index_v2_html_modified_true_or_false:
+source_files_modified_by_this_resolution_true_or_false:
+  FALSE
+
+stocktrade_is_submodule_true_or_false:
   TRUE
 
-stocktrade_start_bat_modified_true_or_false:
+stocktrade_base_pointer:
+  68332acb1b0c354fc20dff8921c3b0a8aec255fc
+
+stocktrade_candidate_pointer:
+  c65fb25633dfd4e0ef4bfe3099789abdaabe7a82
+
+stocktrade_pointer_changed_true_or_false:
   TRUE
 
-root_index_v2_html_modified_true_or_false:
-  FALSE
-
-server_v2_modified_true_or_false:
-  FALSE
-
-server_py_modified_true_or_false:
-  FALSE
-
-index_html_modified_true_or_false:
-  FALSE
-
-modules_modified_true_or_false:
-  FALSE
-
-env_modified_true_or_false:
-  FALSE
-
-env_example_modified_true_or_false:
-  FALSE
-
-stale_copy_risk_fixed_true_or_false:
+stocktrade_candidate_pointer_available_locally_true_or_false:
   TRUE
 
-stocktrade_index_v2_html_safe_or_quarantined_true_or_false:
-  TRUE
-
-stocktrade_start_bat_no_longer_serves_unsafe_stale_ui_true_or_false:
-  TRUE
-
-stale_copy_contains_force_close_command_true_or_false:
+stocktrade_candidate_pointer_available_from_remote_true_or_false:
   FALSE
 
-stale_copy_contains_user_visible_undefined_true_or_false:
+submodule_remote_push_required_before_parent_merge_true_or_false:
+  TRUE
+
+submodule_push_requires_user_signoff_true_or_false:
+  TRUE
+
+submodule_push_remote:
+  https://github.com/hsia07/stocktrade.git
+
+submodule_push_branch:
+  master
+
+submodule_local_head:
+  c65fb25633dfd4e0ef4bfe3099789abdaabe7a82
+
+submodule_remote_head:
+  68332acb1b0c354fc20dff8921c3b0a8aec255fc
+
+submodule_ahead_commits:
+  - c65fb25 STALE_COPY_HYGIENE_REWORK: quarantine stale index_v2.html (archived page, no trading controls) and deprecate start.bat
+
+submodule_push_command_proposed:
+  git -C stocktrade push origin master
+
+submodule_diff_authorized_scope_only_true_or_false:
+  TRUE
+
+submodule_contains_broker_live_runtime_pollution_true_or_false:
   FALSE
 
-stale_copy_contains_broker_live_fubon_controls_true_or_false:
+submodule_push_executed_true_or_false:
   FALSE
 
-stale_copy_contains_r049_ready_claim_true_or_false:
+parent_merge_executed_true_or_false:
   FALSE
 
-stale_copy_contains_r030_runtime_wired_claim_true_or_false:
+parent_push_executed_true_or_false:
   FALSE
 
-stale_copy_could_be_deployed_or_served_unsafely_true_or_false:
+stocktrade_index_v2_html_archived_or_safe_true_or_false:
+  TRUE
+
+stocktrade_index_v2_html_contains_force_close_command_true_or_false:
   FALSE
 
-deployment_risk_resolved_true_or_false:
+stocktrade_index_v2_html_contains_user_visible_undefined_true_or_false:
+  FALSE
+
+stocktrade_start_bat_fail_closed_true_or_false:
   TRUE
 
-root_served_entry_preserved_true_or_false:
-  TRUE
+stocktrade_start_bat_can_launch_server_v2_true_or_false:
+  FALSE
 
-order_execution_allowed_false_preserved_true_or_false:
-  TRUE
-
-api_mode_live_block_preserved_true_or_false:
-  TRUE
-
-force_close_disabled_preserved_true_or_false:
-  TRUE
-
-g4_placeholder_fix_preserved_true_or_false:
-  TRUE
-
-ui_gap_panel_preserved_true_or_false:
-  TRUE
-
-read_only_banner_preserved_true_or_false:
+root_index_v2_html_preserved_true_or_false:
   TRUE
 
 new_api_endpoint_added_true_or_false:
@@ -134,85 +158,34 @@ order_execution_allowed_true_or_false:
 secret_values_exposed_true_or_false:
   FALSE
 
-visible_or_text_evidence_created_true_or_false:
-  TRUE
-
-evidence_path_or_summary:
-  automation/control/candidates/STALE_COPY_HYGIENE_REWORK_CANDIDATE_BEFORE_R049/
-
-tests_added_or_updated:
-  - test_stale_copy_exists
-  - test_stale_copy_is_archived
-  - test_stale_copy_no_force_close_command
-  - test_stale_copy_no_modebtn2_controls
-  - test_stale_copy_no_undefined_display
-  - test_stale_copy_no_r049_claim
-  - test_stale_copy_no_r030_claim
-  - test_stale_copy_no_broker_live_controls
-  - test_stale_start_bat_no_longer_serves_unsafe_ui
-  - test_stale_copy_no_trading_controls
-  - test_stale_copy_refers_to_root_entry
-
 tests_run:
   - python -m pytest tests/test_pre_r049_local_website_visible_surface_gap_remediation.py -v --tb=short
   - python -m pytest tests/test_ui_visible_gate_governance.py -v --tb=short
   - python -m pytest --ignore=automation --ignore=stocktrade --ignore=test_twse.py --ignore=test_twstock_batch.py --tb=no -q
 
 tests_result:
-  PASS: 61/61 + 22/22 + 942/942 = 1025/1025 passed
+  (run after commit; see test-results.txt for actual values)
 
 stale_copy_hygiene_tests_pass_true_or_false:
-  TRUE
+  (run after commit)
 
 candidate_tests_pass_true_or_false:
-  TRUE
+  (run after commit)
 
 ui_visible_gate_tests_pass_true_or_false:
-  TRUE
+  (run after commit)
 
 full_clean_subset_pass_true_or_false:
-  TRUE
+  (run after commit)
 
 evidence_checker_pass_true_or_false:
-  TRUE
-
-candidate_diff_exists_true_or_false:
-  TRUE
-
-candidate_diff_utf8_no_bom_true_or_false:
-  TRUE
-
-candidate_diff_non_empty_true_or_false:
-  TRUE
-
-evidence_json_exists_true_or_false:
-  TRUE
-
-evidence_json_parse_pass_true_or_false:
-  TRUE
-
-return_to_chatgpt_formal_body_valid_true_or_false:
-  TRUE
-
-already_acceptance_ready_items:
-  - stocktrade/index_v2.html quarantined: ARCHIVED notice displayed, no force_close/modeBtn2 controls
-  - stocktrade/start.bat deprecation: shows deprecation message, does not serve stale UI
-  - 11 regression tests added for stale copy hygiene
-  - 61/61 + 22/22 + 942/942 = 1025/1025 tests pass
-  - Root served index_v2.html preserved with all G1-G8 fixes
-  - evidence package complete
-
-still_need_deep_review_items:
-  - responsive/mobile viewport deferred until deployed website/software validation
-
-recommended_additional_audits:
-  - RESPONSIVE_VIEWPORT_SAFETY_AUDIT
+  (run after commit)
 
 remaining_blockers:
-  NONE
+  - AWAITING_USER_SIGNOFF_FOR_STOCKTRADE_SUBMODULE_REMOTE_PUSH
 
 recommended_next_action:
-  AWAITING_MANUAL_REVIEW_STALE_COPY_HYGIENE_REWORK
+  AWAITING_USER_SIGNOFF_FOR_STOCKTRADE_SUBMODULE_REMOTE_PUSH
 
 final_recommendation:
-  STALE_COPY_HYGIENE_REWORK_READY_FOR_MANUAL_REVIEW_DO_NOT_START_R049
+  BLOCKER_RESOLUTION_PREPARED_DO_NOT_PARENT_MERGE_YET_AWAITING_SUBMODULE_PUSH_SIGNOFF

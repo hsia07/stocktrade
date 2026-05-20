@@ -1,6 +1,6 @@
 {
-  "round_id": "STALE_COPY_HYGIENE_REWORK_CANDIDATE_BEFORE_R049",
-  "task_type": "stale_copy_hygiene_rework_candidate",
+  "round_id": "STALE_COPY_HYGIENE_REWORK_BLOCKER_RESOLUTION_PREPARE_READINESS",
+  "task_type": "blocker_resolution_prepare_readiness",
   "status": "completed",
   "canonical_branch": "work/canonical-mainline-repair-001",
   "base_head": "ebfa19b87d1ce1c5fd7a84cc1a4407f73a58a429",
@@ -36,13 +36,25 @@
   "secret_values_exposed": false,
   "visible_or_text_evidence_created": true,
   "files_modified": [
-    "stocktrade/index_v2.html",
-    "stocktrade/start.bat",
-    "tests/test_pre_r049_local_website_visible_surface_gap_remediation.py",
+    "automation/control/candidates/STALE_COPY_HYGIENE_REWORK_CANDIDATE_BEFORE_R049/RETURN_TO_CHATGPT.txt",
     "automation/control/candidates/STALE_COPY_HYGIENE_REWORK_CANDIDATE_BEFORE_R049/candidate.diff",
-    "automation/control/candidates/STALE_COPY_HYGIENE_REWORK_CANDIDATE_BEFORE_R049/evidence.json"
+    "automation/control/candidates/STALE_COPY_HYGIENE_REWORK_CANDIDATE_BEFORE_R049/evidence.json",
+    "stocktrade (submodule pointer: c65fb25)",
+    "tests/test_pre_r049_local_website_visible_surface_gap_remediation.py"
   ],
-  "remaining_blockers": "NONE",
-  "recommended_next_action": "AWAITING_MANUAL_REVIEW_STALE_COPY_HYGIENE_REWORK",
-  "final_recommendation": "STALE_COPY_HYGIENE_REWORK_READY_FOR_MANUAL_REVIEW_DO_NOT_START_R049"
+  "stocktrade_is_submodule": true,
+  "stocktrade_base_pointer": "68332acb1b0c354fc20dff8921c3b0a8aec255fc",
+  "stocktrade_candidate_pointer": "c65fb25633dfd4e0ef4bfe3099789abdaabe7a82",
+  "stocktrade_pointer_changed": true,
+  "stocktrade_candidate_pointer_available_locally": true,
+  "stocktrade_candidate_pointer_available_from_remote": false,
+  "submodule_remote_push_required_before_parent_merge": true,
+  "submodule_push_remote": "https://github.com/hsia07/stocktrade.git",
+  "submodule_push_branch": "master",
+  "submodule_push_command_proposed": "git -C stocktrade push origin master",
+  "submodule_push_requires_user_signoff": true,
+  "parent_merge_blocked_until_submodule_remote_available": true,
+  "remaining_blockers": "AWAITING_USER_SIGNOFF_FOR_STOCKTRADE_SUBMODULE_REMOTE_PUSH",
+  "recommended_next_action": "AWAITING_USER_SIGNOFF_FOR_STOCKTRADE_SUBMODULE_REMOTE_PUSH",
+  "final_recommendation": "BLOCKER_RESOLUTION_PREPARED_DO_NOT_PARENT_MERGE_YET_AWAITING_SUBMODULE_PUSH_SIGNOFF"
 }
