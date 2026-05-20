@@ -1,0 +1,218 @@
+round_id:
+  STALE_COPY_HYGIENE_REWORK_CANDIDATE_BEFORE_R049
+
+task_type:
+  stale_copy_hygiene_rework_candidate
+
+status:
+  completed
+
+formal_status_code:
+  candidate_ready_awaiting_manual_review
+
+canonical_branch:
+  work/canonical-mainline-repair-001
+
+base_head:
+  ebfa19b87d1ce1c5fd7a84cc1a4407f73a58a429
+
+candidate_branch:
+  candidate/stale-copy-hygiene-rework-before-r049
+
+files_modified:
+  - stocktrade/index_v2.html
+  - stocktrade/start.bat
+  - tests/test_pre_r049_local_website_visible_surface_gap_remediation.py
+  - automation/control/candidates/STALE_COPY_HYGIENE_REWORK_CANDIDATE_BEFORE_R049/candidate.diff
+  - automation/control/candidates/STALE_COPY_HYGIENE_REWORK_CANDIDATE_BEFORE_R049/evidence.json
+
+stocktrade_index_v2_html_modified_true_or_false:
+  TRUE
+
+stocktrade_start_bat_modified_true_or_false:
+  TRUE
+
+root_index_v2_html_modified_true_or_false:
+  FALSE
+
+server_v2_modified_true_or_false:
+  FALSE
+
+server_py_modified_true_or_false:
+  FALSE
+
+index_html_modified_true_or_false:
+  FALSE
+
+modules_modified_true_or_false:
+  FALSE
+
+env_modified_true_or_false:
+  FALSE
+
+env_example_modified_true_or_false:
+  FALSE
+
+stale_copy_risk_fixed_true_or_false:
+  TRUE
+
+stocktrade_index_v2_html_safe_or_quarantined_true_or_false:
+  TRUE
+
+stocktrade_start_bat_no_longer_serves_unsafe_stale_ui_true_or_false:
+  TRUE
+
+stale_copy_contains_force_close_command_true_or_false:
+  FALSE
+
+stale_copy_contains_user_visible_undefined_true_or_false:
+  FALSE
+
+stale_copy_contains_broker_live_fubon_controls_true_or_false:
+  FALSE
+
+stale_copy_contains_r049_ready_claim_true_or_false:
+  FALSE
+
+stale_copy_contains_r030_runtime_wired_claim_true_or_false:
+  FALSE
+
+stale_copy_could_be_deployed_or_served_unsafely_true_or_false:
+  FALSE
+
+deployment_risk_resolved_true_or_false:
+  TRUE
+
+root_served_entry_preserved_true_or_false:
+  TRUE
+
+order_execution_allowed_false_preserved_true_or_false:
+  TRUE
+
+api_mode_live_block_preserved_true_or_false:
+  TRUE
+
+force_close_disabled_preserved_true_or_false:
+  TRUE
+
+g4_placeholder_fix_preserved_true_or_false:
+  TRUE
+
+ui_gap_panel_preserved_true_or_false:
+  TRUE
+
+read_only_banner_preserved_true_or_false:
+  TRUE
+
+new_api_endpoint_added_true_or_false:
+  FALSE
+
+runtime_state_write_added_true_or_false:
+  FALSE
+
+broker_execution_live_modified_true_or_false:
+  FALSE
+
+fubon_api_integrated_true_or_false:
+  FALSE
+
+runtime_started_true_or_false:
+  FALSE
+
+trading_broker_execution_live_started_true_or_false:
+  FALSE
+
+r049_started_true_or_false:
+  FALSE
+
+r031_started_true_or_false:
+  FALSE
+
+order_execution_allowed_true_or_false:
+  FALSE
+
+secret_values_exposed_true_or_false:
+  FALSE
+
+visible_or_text_evidence_created_true_or_false:
+  TRUE
+
+evidence_path_or_summary:
+  automation/control/candidates/STALE_COPY_HYGIENE_REWORK_CANDIDATE_BEFORE_R049/
+
+tests_added_or_updated:
+  - test_stale_copy_exists
+  - test_stale_copy_is_archived
+  - test_stale_copy_no_force_close_command
+  - test_stale_copy_no_modebtn2_controls
+  - test_stale_copy_no_undefined_display
+  - test_stale_copy_no_r049_claim
+  - test_stale_copy_no_r030_claim
+  - test_stale_copy_no_broker_live_controls
+  - test_stale_start_bat_no_longer_serves_unsafe_ui
+  - test_stale_copy_no_trading_controls
+  - test_stale_copy_refers_to_root_entry
+
+tests_run:
+  - python -m pytest tests/test_pre_r049_local_website_visible_surface_gap_remediation.py -v --tb=short
+  - python -m pytest tests/test_ui_visible_gate_governance.py -v --tb=short
+  - python -m pytest --ignore=automation --ignore=stocktrade --ignore=test_twse.py --ignore=test_twstock_batch.py --tb=no -q
+
+tests_result:
+  PASS: 61/61 + 22/22 + 942/942 = 1025/1025 passed
+
+stale_copy_hygiene_tests_pass_true_or_false:
+  TRUE
+
+candidate_tests_pass_true_or_false:
+  TRUE
+
+ui_visible_gate_tests_pass_true_or_false:
+  TRUE
+
+full_clean_subset_pass_true_or_false:
+  TRUE
+
+evidence_checker_pass_true_or_false:
+  TRUE
+
+candidate_diff_exists_true_or_false:
+  TRUE
+
+candidate_diff_utf8_no_bom_true_or_false:
+  TRUE
+
+candidate_diff_non_empty_true_or_false:
+  TRUE
+
+evidence_json_exists_true_or_false:
+  TRUE
+
+evidence_json_parse_pass_true_or_false:
+  TRUE
+
+return_to_chatgpt_formal_body_valid_true_or_false:
+  TRUE
+
+already_acceptance_ready_items:
+  - stocktrade/index_v2.html quarantined: ARCHIVED notice displayed, no force_close/modeBtn2 controls
+  - stocktrade/start.bat deprecation: shows deprecation message, does not serve stale UI
+  - 11 regression tests added for stale copy hygiene
+  - 61/61 + 22/22 + 942/942 = 1025/1025 tests pass
+  - Root served index_v2.html preserved with all G1-G8 fixes
+  - evidence package complete
+
+still_need_deep_review_items:
+  - responsive/mobile viewport deferred until deployed website/software validation
+
+recommended_additional_audits:
+  - RESPONSIVE_VIEWPORT_SAFETY_AUDIT
+
+remaining_blockers:
+  NONE
+
+recommended_next_action:
+  AWAITING_MANUAL_REVIEW_STALE_COPY_HYGIENE_REWORK
+
+final_recommendation:
+  STALE_COPY_HYGIENE_REWORK_READY_FOR_MANUAL_REVIEW_DO_NOT_START_R049

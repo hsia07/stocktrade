@@ -1,0 +1,18 @@
+STALE_COPY_HYGIENE_REWORK_CANDIDATE_BEFORE_R049
+================================================
+
+Files modified:
+  stocktrade/index_v2.html: replaced with archived/disabled page
+  stocktrade/start.bat: no longer serves unsafe stale UI
+  tests/test_pre_r049_local_website_visible_surface_gap_remediation.py: added 11 stale copy hygiene tests
+  evidence package: candidate.diff, evidence.json, RETURN_TO_CHATGPT.txt
+
+Deployment risk resolved:
+  - stocktrade/index_v2.html no longer contains wsSend({cmd:force_close})
+  - stocktrade/index_v2.html no longer contains modeBtn2 controls
+  - stocktrade/index_v2.html shows clear ARCHIVED notice
+  - stocktrade/start.bat exits with deprecation message
+  - root served index_v2.html preserved with all G1-G8 fixes
+  - 61/61 candidate tests PASS (50 original + 11 stale copy)
+  - 22/22 UI gate tests PASS
+  - 942/942 clean subset PASS
