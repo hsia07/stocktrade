@@ -59,6 +59,11 @@ LINE_NOTIFY_ENABLED  = os.getenv("LINE_NOTIFY_ENABLED",  "true").lower() == "tru
 EMAIL_NOTIFY_ENABLED = os.getenv("EMAIL_NOTIFY_ENABLED", "true").lower() == "true"
 NOTIFY_COOLDOWN_SEC  = int(os.getenv("NOTIFY_COOLDOWN_SEC", "300"))
 
+ORDER_EXECUTION_ALLOWED = False
+ORDER_EXECUTION_ALLOWED_REASON = (
+    "requires_formal_authorization_before_R049"
+)
+
 # 全市場掃描（僅顯示排行，不直接把上千檔都丟進前端）
 SCAN_ALL_TW         = os.getenv("SCAN_ALL_TW", "true").lower() == "true"
 MARKET_BOARD_LIMIT  = int(os.getenv("MARKET_BOARD_LIMIT", "80"))
@@ -1021,6 +1026,19 @@ class RiskOfficer:
         self.is_halted        = False
         self.halt_reason      = ""
 
+    def can_trade(self, tick: dict) -> bool:
+        if not ORDER_EXECUTION_ALLOWED:
+            return False
+        if not isinstance(tick, dict):
+            return False
+        if tick.get("price") is None or tick.get("price", 0) <= 0:
+            return False
+        if tick.get("symbol") is None:
+            return False
+        if tick.get("stale", False):
+            return False
+        return True
+
     def reset_daily(self):
         self.daily_pnl, self.daily_trades = 0.0, 0
         self.consecutive_loss = 0
@@ -1318,6 +1336,14 @@ class ExecutionEngineer:
         self._api = api
 
     def place(self, symbol: str, action: str, lots: int, price: float, reason: str) -> dict:
+        if not ORDER_EXECUTION_ALLOWED:
+            rec = dict(id=f"BLOCKED-{symbol}-{int(time.time())}", symbol=symbol,
+                       action=action, lots=lots, price=price, reason=reason,
+                       status="blocked", time=datetime.now().strftime("%H:%M:%S"),
+                       block_reason="order_execution_not_allowed")
+            self.orders.append(rec)
+            log.warning(f"⛔ 下單 blocked：order_execution_allowed=false {action} {symbol} {lots}張 @{price} | {reason}")
+            return rec
         oid = f"{'P' if PAPER_TRADE else 'R'}-{symbol}-{int(time.time())}"
         rec = dict(id=oid, symbol=symbol, action=action, lots=lots,
                    price=price, reason=reason,
@@ -1787,6 +1813,9 @@ class TradingEngine:
 
     # ── Shioaji 連線 ──
     def connect_shioaji(self):
+        if not ORDER_EXECUTION_ALLOWED:
+            log.info("⛔ 券商連線 blocked：order_execution_allowed=false")
+            return
         if PAPER_TRADE:
             log.info("📝 紙交易模式")
             return
@@ -1818,7 +1847,7 @@ class TradingEngine:
                 self.latest_ticks = ticks
                 now_s = datetime.now().strftime("%H:%M")
                 # 測試模式：無視時間限制，確保_auto_trade時會交易
-                self._trading_active = AUTO_TRADE
+                self._trading_active = AUTO_TRADE and ORDER_EXECUTION_ALLOWED
                 self.sync_mode_with_state()
             except Exception as e:
                 log.warning(f"⚠️ 取得報價失敗: {e}")
@@ -2065,6 +2094,7 @@ class TradingEngine:
         entry = pos["entry"]
         mult = 1 if pos["direction"] == Direction.LONG else -1
         act = "Sell" if pos["direction"] == Direction.LONG else "Buy"
+        tick = self.latest_ticks.get(symbol, {})
         
         # 追蹤浮盈浮虧
         unrealized = (price - entry) * mult
@@ -2079,6 +2109,7 @@ class TradingEngine:
             current_pos = self.risk.open_positions.get(symbol)
             if not current_pos:
                 return
+            nonlocal tick
             lots = current_pos["lots"]
             pnl_result = PnLCalculator.calculate_from_position(
                 entry_price=entry,
@@ -2089,7 +2120,6 @@ class TradingEngine:
             net_pnl = pnl_result["net_pnl"]
             gross_pnl = pnl_result["gross_pnl"]
             # SOURCE OF TRUTH: 驗證價格來源有效才能平倉
-            tick = self.latest_ticks.get(symbol, {})
             if not self.risk.can_trade(tick):
                 log.warning(f"⚠️ {symbol} 平倉時價格來源無效，跳過 source={tick.get('source')}")
                 return
@@ -2293,7 +2323,8 @@ class TradingEngine:
             "signal_history": [],
             "sources": {},
             "source_info": {},
-            "order_execution_allowed": False,
+            "order_execution_allowed": ORDER_EXECUTION_ALLOWED,
+            "order_execution_allowed_reason": ORDER_EXECUTION_ALLOWED_REASON,
             "ui_safety_disclaimer": "display-only / read-only / 交易執行未開放",
         }
 
@@ -2468,7 +2499,17 @@ def api_toggle_mode():
     global PAPER_TRADE
     current = engine.get_current_mode()
     new_paper = not PAPER_TRADE
-    target_mode = self.MODE_PAPER if new_paper else self.MODE_LIVE
+    if not new_paper and not ORDER_EXECUTION_ALLOWED:
+        log.warning(f"交易模式切換 blocked：order_execution_allowed=false，無法離開紙交易")
+        return {
+            "status": "blocked",
+            "mode": current,
+            "reason": "order_execution_not_allowed：無法切換至即時模式",
+            "order_execution_allowed": False,
+            "order_execution_allowed_reason": ORDER_EXECUTION_ALLOWED_REASON,
+            "allowed_transitions": engine.get_allowed_transitions(),
+        }
+    target_mode = engine.MODE_PAPER if new_paper else engine.MODE_LIVE
     if engine.can_transition(current, target_mode):
         PAPER_TRADE = new_paper
         engine.sync_mode_with_state()
@@ -2707,12 +2748,22 @@ def api_update_settings(data: dict):
     """更新系統設定"""
     global PAPER_TRADE, AUTO_TRADE, TOTAL_CAPITAL
     
+    if "paper_trade" in data and not bool(data["paper_trade"]) and not ORDER_EXECUTION_ALLOWED:
+        log.warning(f"設定更新 blocked：order_execution_allowed=false，無法停用紙交易")
+        return {
+            "status": "blocked",
+            "paper_trade": PAPER_TRADE,
+            "auto_trade": AUTO_TRADE,
+            "reason": "order_execution_not_allowed：無法停用紙交易",
+            "order_execution_allowed": False,
+            "order_execution_allowed_reason": ORDER_EXECUTION_ALLOWED_REASON,
+        }
+    
     settings = StateStore.load_section("settings")
     
     if "paper_trade" in data:
         PAPER_TRADE = bool(data["paper_trade"])
     if "auto_trade" in data:
-        global AUTO_TRADE
         AUTO_TRADE = bool(data["auto_trade"])
     if "total_capital" in data:
         TOTAL_CAPITAL = float(data["total_capital"])

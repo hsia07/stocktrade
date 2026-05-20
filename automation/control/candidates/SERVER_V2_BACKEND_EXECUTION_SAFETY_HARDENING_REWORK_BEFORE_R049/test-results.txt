@@ -1,0 +1,24 @@
+TEST RESULTS — SERVER_V2_BACKEND_EXECUTION_SAFETY_HARDENING_CANDIDATE_IDENTITY_REWORK
+====================================================================================
+
+Date: 2026-05-20 09:52
+Python: 3.14.4
+Pytest: 9.0.3
+
+Suite 1: Backend Execution Safety Tests (29 tests)
+  python -m pytest tests/test_server_v2_backend_execution_safety.py -v --tb=short
+  Result: 29/29 PASS
+
+Suite 2: Candidate Visible Surface Gap Remediation (65 tests)
+  python -m pytest tests/test_pre_r049_local_website_visible_surface_gap_remediation.py -v --tb=short
+  Result: 65/65 PASS
+
+Suite 3: UI Visible Gate Governance (22 tests)
+  python -m pytest tests/test_ui_visible_gate_governance.py -v --tb=short
+  Result: 22/22 PASS
+
+Suite 4: Full Clean Subset (975 tests)
+  python -m pytest --ignore=automation --ignore=stocktrade --ignore=test_twse.py --ignore=test_twstock_batch.py --tb=no -q
+  Result: 975/975 PASS
+
+TOTAL: 1091/1091 PASS
