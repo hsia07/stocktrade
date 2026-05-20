@@ -1,0 +1,18 @@
+{
+  "round_id": "R006_HEALTH_MONITOR_IF_TRUE_FAKE_IMPLEMENTATION_REWORK_BEFORE_R049",
+  "law_compliance": "04",
+  "r006_if_true_fake_implementation_fixed": true,
+  "health_monitor_no_hardcoded_ok": true,
+  "broker_check_fail_closed": true,
+  "data_feed_check_fail_closed": true,
+  "risk_system_check_fail_closed": true,
+  "probe_based_checks_implemented": true,
+  "reason_codes_present": true,
+  "no_broker_api_called": true,
+  "runtime_started": false,
+  "order_execution_allowed": false,
+  "tests_pass": true,
+  "summary": "R006 health/monitor.py fake if True implementations removed and replaced with probe-based fail-closed checks. broker/data_feed/risk_system now use injected probe functions that return critical/warning/degraded on failure/missing/exception instead of hardcoded ok.",
+  "r006_original_issue": "Three core health checks (check_broker_connection, check_data_feed, check_risk_system) used hardcoded status = ok if True else critical/warning — always returning ok regardless of actual system state.",
+  "r006_fix_applied": "Replaced hardcoded ternary with probe-based pattern: checks accept optional probe functions; returns ok only when probe returns True, critical/warning/degraded on False/exception/missing probe."
+}

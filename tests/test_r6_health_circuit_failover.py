@@ -25,7 +25,7 @@ class TestHealthCheck:
         assert 'status' in result
         assert 'details' in result
         assert 'timestamp' in result
-        assert result['status'] in ['ok', 'warning', 'critical']
+        assert result['status'] in ['ok', 'warning', 'critical', 'degraded']
     
     def test_health_monitor_can_run_checks(self):
         """HealthMonitor can run all component checks"""

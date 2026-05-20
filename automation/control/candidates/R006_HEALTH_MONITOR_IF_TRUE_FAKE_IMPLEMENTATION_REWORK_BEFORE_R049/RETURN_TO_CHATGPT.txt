@@ -1,0 +1,67 @@
+﻿round_id: R006_HEALTH_MONITOR_IF_TRUE_FAKE_IMPLEMENTATION_REWORK_BEFORE_R049
+task_type: r006_health_monitor_if_true_fake_implementation_rework_candidate
+status: completed
+formal_status_code: CANDIDATE_READY_AWAITING_MANUAL_REVIEW
+
+canonical_branch: work/canonical-mainline-repair-001
+base_head: 0af38a10a04bd2abd80456097f18cd6e6d7d3448
+
+candidate_branch: candidate/r006-health-monitor-if-true-rework-before-r049
+candidate_commit: (pending — to be created in this round)
+
+r006_original_issue_summary: health/monitor.py had hardcoded 'if True' ternary in check_broker_connection (line 8), check_data_feed (line 15), and check_risk_system (line 22) — always returning status='ok' regardless of actual system state.
+
+r006_actual_source_reality_before: Lines 8, 15, 22 in health/monitor.py used "status = 'ok' if True else 'critical'" pattern, making all three checks fake implementations that always report ok.
+
+r006_if_true_fake_implementation_found_true_or_false: TRUE
+r006_if_true_fake_implementation_fixed_true_or_false: TRUE
+
+health_monitor_no_hardcoded_ok_true_or_false: TRUE
+
+broker_check_fail_closed_true_or_false: TRUE
+data_feed_check_fail_closed_true_or_false: TRUE
+risk_system_check_fail_closed_true_or_false: TRUE
+
+reason_codes_or_messages_present_true_or_false: TRUE
+
+files_modified:
+  - health/monitor.py (probe-based refactor, removed if True)
+  - tests/test_r6_health_circuit_failover.py (line 28: added 'degraded' to allowed status values)
+  - tests/test_r006_health_monitor_if_true_regression.py (new file, 29 regression tests)
+  - automation/control/candidates/R006_HEALTH_MONITOR_IF_TRUE_FAKE_IMPLEMENTATION_REWORK_BEFORE_R049/evidence.json
+  - automation/control/candidates/R006_HEALTH_MONITOR_IF_TRUE_FAKE_IMPLEMENTATION_REWORK_BEFORE_R049/candidate.diff
+
+authorized_files_only_true_or_false: TRUE
+
+tests_import_real_source_true_or_false: TRUE
+tests_cover_negative_paths_true_or_false: TRUE
+tests_cover_exception_paths_true_or_false: TRUE
+tests_cover_missing_probe_or_unknown_state_true_or_false: TRUE
+
+evidence_json_exists_true_or_false: TRUE
+evidence_json_parse_pass_true_or_false: TRUE
+law04_compliance_present_true_or_false: TRUE
+evidence_json_law_compliance_value: "04"
+
+candidate_diff_exists_true_or_false: TRUE
+candidate_diff_utf8_no_bom_true_or_false: TRUE
+candidate_diff_non_empty_true_or_false: TRUE (13399 bytes)
+
+tests_run:
+  1. python -m pytest tests/test_r006_health_monitor_if_true_regression.py -v --tb=short
+  2. python -m pytest tests/test_r6_health_circuit_failover.py tests/test_r006_health_monitor_if_true_regression.py -v --tb=short
+  3. python -m pytest tests/test_server_v2_backend_execution_safety.py tests/test_pre_r049_local_website_visible_surface_gap_remediation.py tests/test_ui_visible_gate_governance.py -v --tb=short
+  4. python -m pytest --ignore=automation --ignore=stocktrade --ignore=test_twse.py --ignore=test_twstock_batch.py --tb=no -q
+
+tests_result: 29 + 12 + 116 + 1024 = 1181 tests, 0 failures
+
+r049_started_true_or_false: FALSE
+r031_started_true_or_false: FALSE
+runtime_started_true_or_false: FALSE
+trading_broker_execution_live_started_true_or_false: FALSE
+order_execution_allowed_true_or_false: FALSE
+secret_values_exposed_true_or_false: FALSE
+
+recommended_next_action: AWAITING_MANUAL_REVIEW_R006_HEALTH_MONITOR_IF_TRUE_REWORK
+
+final_recommendation: R006_HEALTH_MONITOR_REWORK_READY_FOR_MANUAL_REVIEW_DO_NOT_START_R049
