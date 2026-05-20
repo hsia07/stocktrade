@@ -11,7 +11,6 @@ Taiwan Market Realities:
 """
 
 from typing import Dict
-import random
 
 
 class ArbitrageSlippageModel:
@@ -105,12 +104,15 @@ class ArbitrageSlippageModel:
         
     def _estimate_fill_rate(self, opportunity: 'ArbitrageOpportunity') -> float:
         """
-        Estimate fill rate probability.
-        May not fill 100% of intended arbitrage volume.
+        Estimate fill rate probability (deterministic).
+        Deterministic probability based on volume and lot type only.
+        No random, no time-dependence.
         """
-        # Simplified: 90% to 100% fill rate
-        # In reality, depends on order book depth, market volatility, etc.
-        return random.uniform(0.90, 1.0)
+        if opportunity.volume < 1000:
+            return 0.80
+        if opportunity.volume > 10000:
+            return 0.85
+        return 0.97
         
     def _check_liquidity(self, opportunity: 'ArbitrageOpportunity') -> bool:
         """

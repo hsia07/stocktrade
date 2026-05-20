@@ -1,0 +1,36 @@
+round_id:
+  R028_ESTIMATE_FILL_RATE_DETERMINISM_REWORK_FINALIZE_CANDIDATE
+
+task_type:
+  r028_estimate_fill_rate_determinism_rework_finalize_candidate
+
+status:
+  completed
+
+formal_status_code:
+  CANDIDATE_READY_AWAITING_MANUAL_REVIEW
+
+canonical_branch:
+  work/canonical-mainline-repair-001
+
+base_head:
+  ca9ab29748a45ca502a988210693e900a1c12955
+
+candidate_branch:
+  candidate/r028-estimate-fill-rate-determinism-rework-before-r049
+
+candidate_commit:
+  (pending commit)
+
+candidate_branch_created_or_used_true_or_false:
+  TRUE
+
+dirty_paths_before_stage:
+  - modules/market_reality/arbitrage_slippage_model.py
+  - modules/market_reality/layer.py
+  - tests/test_market_reality_layer.py
+  - tests/test_r028_fill_rate_determinism.py
+  - automation/control/candidates/R028_ESTIMATE_FILL_RATE_DETERMINISM_ALIGNMENT_REWORK_BEFORE_R049/
+
+authorized_dirty_paths_only_true_or_false:
+  TRUE

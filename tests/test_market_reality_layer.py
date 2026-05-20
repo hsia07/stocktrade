@@ -147,6 +147,34 @@ class TestR028CostSlippageFillSchema:
         round_rate = layer.estimate_fill_rate(1000, is_odd_lot=False)
         odd_rate = layer.estimate_fill_rate(500, is_odd_lot=True)
         assert odd_rate < round_rate
+        assert round_rate == 0.97
+        assert odd_rate == 0.80
+
+    def test_fill_rate_large_volume_lower(self):
+        layer = MarketRealityLayer()
+        normal_rate = layer.estimate_fill_rate(1000, is_odd_lot=False)
+        large_rate = layer.estimate_fill_rate(15000, is_odd_lot=False)
+        assert large_rate < normal_rate
+        assert normal_rate == 0.97
+        assert large_rate == 0.85
+
+    def test_fill_rate_repeated_calls_identical(self):
+        layer = MarketRealityLayer()
+        r1 = layer.estimate_fill_rate(5000, is_odd_lot=False)
+        r2 = layer.estimate_fill_rate(5000, is_odd_lot=False)
+        r3 = layer.estimate_fill_rate(5000, is_odd_lot=False)
+        assert r1 == r2 == r3
+
+    def test_fill_rate_deterministic_table(self):
+        layer = MarketRealityLayer()
+        assert layer.estimate_fill_rate(500, is_odd_lot=True) == 0.80
+        assert layer.estimate_fill_rate(999, is_odd_lot=True) == 0.80
+        assert layer.estimate_fill_rate(1000, is_odd_lot=False) == 0.97
+        assert layer.estimate_fill_rate(5000, is_odd_lot=False) == 0.97
+        assert layer.estimate_fill_rate(10000, is_odd_lot=False) == 0.97
+        assert layer.estimate_fill_rate(10001, is_odd_lot=False) == 0.85
+        assert layer.estimate_fill_rate(15000, is_odd_lot=False) == 0.85
+        assert layer.estimate_fill_rate(50000, is_odd_lot=False) == 0.85
 
 
 class TestR028EvaluateOrder:
