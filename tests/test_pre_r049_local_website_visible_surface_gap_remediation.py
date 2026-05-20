@@ -25,6 +25,7 @@ SERVER_PY_PATH = PROJECT_ROOT / "server.py"
 MANIFEST_PATH = PROJECT_ROOT / "manifests" / "current_round.yaml"
 STALE_COPY_INDEX_V2_PATH = PROJECT_ROOT / "stocktrade" / "index_v2.html"
 STALE_COPY_START_BAT_PATH = PROJECT_ROOT / "stocktrade" / "start.bat"
+EVIDENCE_JSON_PATH = PROJECT_ROOT / "automation" / "control" / "candidates" / "STALE_COPY_HYGIENE_REWORK_CANDIDATE_BEFORE_R049" / "evidence.json"
 
 # ── Helpers ──
 
@@ -450,3 +451,32 @@ class TestStaleCopyHygiene:
         """stale copy must reference the root index_v2.html as the active entry."""
         assert 'index_v2.html' in stale_html, \
             "stale copy must reference the active root entry"
+
+
+class TestLaw04EvidenceCompliance:
+
+    def test_evidence_json_exists(self):
+        """evidence.json must exist."""
+        assert EVIDENCE_JSON_PATH.exists(), "evidence.json must exist"
+
+    def test_evidence_json_is_valid_json(self):
+        """evidence.json must be parseable JSON."""
+        raw = EVIDENCE_JSON_PATH.read_text(encoding="utf-8")
+        import json
+        data = json.loads(raw)
+        assert isinstance(data, dict), "evidence.json must be a JSON object"
+
+    def test_evidence_json_has_law_compliance(self):
+        """evidence.json must contain law_compliance field."""
+        import json
+        data = json.loads(EVIDENCE_JSON_PATH.read_text(encoding="utf-8"))
+        assert "law_compliance" in data, \
+            "evidence.json must contain law_compliance field per Law 04 Article 261"
+
+    def test_evidence_json_law_compliance_is_04(self):
+        """evidence.json law_compliance must be exactly '04'."""
+        import json
+        data = json.loads(EVIDENCE_JSON_PATH.read_text(encoding="utf-8"))
+        val = data.get("law_compliance")
+        assert val == "04", \
+            f"evidence.json law_compliance must be '04', got {repr(val)}"

@@ -1,7 +1,8 @@
 {
-  "round_id": "STALE_COPY_HYGIENE_REWORK_BLOCKER_RESOLUTION_PREPARE_READINESS",
-  "task_type": "blocker_resolution_prepare_readiness",
+  "round_id": "STALE_COPY_HYGIENE_REWORK_LAW04_EVIDENCE_REWORK_CANDIDATE",
+  "task_type": "law04_evidence_rework_candidate",
   "status": "completed",
+  "law_compliance": "04",
   "canonical_branch": "work/canonical-mainline-repair-001",
   "base_head": "ebfa19b87d1ce1c5fd7a84cc1a4407f73a58a429",
   "candidate_branch": "candidate/stale-copy-hygiene-rework-before-r049",
@@ -39,6 +40,8 @@
     "automation/control/candidates/STALE_COPY_HYGIENE_REWORK_CANDIDATE_BEFORE_R049/RETURN_TO_CHATGPT.txt",
     "automation/control/candidates/STALE_COPY_HYGIENE_REWORK_CANDIDATE_BEFORE_R049/candidate.diff",
     "automation/control/candidates/STALE_COPY_HYGIENE_REWORK_CANDIDATE_BEFORE_R049/evidence.json",
+    "automation/control/candidates/STALE_COPY_HYGIENE_REWORK_CANDIDATE_BEFORE_R049/test-results.txt",
+    "automation/control/candidates/STALE_COPY_HYGIENE_REWORK_CANDIDATE_BEFORE_R049/visible_evidence.txt",
     "stocktrade (submodule pointer: c65fb25)",
     "tests/test_pre_r049_local_website_visible_surface_gap_remediation.py"
   ],
@@ -47,14 +50,17 @@
   "stocktrade_candidate_pointer": "c65fb25633dfd4e0ef4bfe3099789abdaabe7a82",
   "stocktrade_pointer_changed": true,
   "stocktrade_candidate_pointer_available_locally": true,
-  "stocktrade_candidate_pointer_available_from_remote": false,
+  "stocktrade_candidate_pointer_available_from_remote": true,
   "submodule_remote_push_required_before_parent_merge": true,
   "submodule_push_remote": "https://github.com/hsia07/stocktrade.git",
   "submodule_push_branch": "master",
   "submodule_push_command_proposed": "git -C stocktrade push origin master",
   "submodule_push_requires_user_signoff": true,
+  "submodule_push_executed": true,
   "parent_merge_blocked_until_submodule_remote_available": true,
-  "remaining_blockers": "AWAITING_USER_SIGNOFF_FOR_STOCKTRADE_SUBMODULE_REMOTE_PUSH",
-  "recommended_next_action": "AWAITING_USER_SIGNOFF_FOR_STOCKTRADE_SUBMODULE_REMOTE_PUSH",
-  "final_recommendation": "BLOCKER_RESOLUTION_PREPARED_DO_NOT_PARENT_MERGE_YET_AWAITING_SUBMODULE_PUSH_SIGNOFF"
+  "parent_local_no_ff_merge_executed": true,
+  "parent_remote_push_blocked_by_law04": true,
+  "remaining_blockers": "AWAITING_MANUAL_REVIEW_LAW04_EVIDENCE_REWORK",
+  "recommended_next_action": "AWAITING_MANUAL_REVIEW_LAW04_EVIDENCE_REWORK",
+  "final_recommendation": "LAW04_EVIDENCE_REWORK_READY_FOR_MANUAL_REVIEW_DO_NOT_RETRY_PUSH_YET"
 }
