@@ -1,0 +1,21 @@
+VISIBLE EVIDENCE — SERVER_V2_BACKEND_EXECUTION_SAFETY_HARDENING_CANDIDATE_IDENTITY_REWORK
+=========================================================================================
+
+This round modifies only backend (server_v2.py) + tests. No UI/HTML/visible changes.
+Visible surface (G1–G8, ui_safety_disclaimer) preserved intact.
+
+Backend gating evidence (server_v2.py):
+1. ORDER_EXECUTION_ALLOWED = False                  (line 62)
+2. ORDER_EXECUTION_ALLOWED_REASON constant           (line 63)
+3. RiskOfficer.can_trade() fail-closed               (line 1029)
+4. ExecutionEngineer.place() blocked                 (line 1339)
+5. connect_shioaji() returns early when gate=false   (line 1816)
+6. _trading_active = AUTO_TRADE and ORDER_EXECUTION_ALLOWED (line 1850)
+7. engine.get_state() exposes order_execution_allowed (line 2326)
+8. POST /api/toggle_mode blocked to live             (line 2502)
+9. POST /api/settings blocked disable paper          (line 2751)
+
+API state includes:
+- "order_execution_allowed": false
+- "order_execution_allowed_reason": "requires_formal_authorization_before_R049"
+- "ui_safety_disclaimer": "display-only / read-only / 交易執行未開放"
