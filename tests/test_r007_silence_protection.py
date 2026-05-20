@@ -74,28 +74,174 @@ class TestSilenceDetector:
         detector = SilenceDetector()
         detector.update_market_data()
         detector.update_trades()
-        
+
         report = detector.get_silence_report()
-        
+
         assert 'market_data' in report
         assert 'trades' in report
         assert 'heartbeat' in report
-        assert isinstance(report['market_data'], float) or report['market_data'] == 'Never updated'
-        assert isinstance(report['trades'], float) or report['trades'] == 'Never updated'
+        assert isinstance(report['market_data'], float) or report['market_data'] is None
+        assert isinstance(report['trades'], float) or report['trades'] is None
     
-    def test_reset(self):
-        """reset clears all timestamps"""
+    def test_reset_then_is_silent(self):
+        """After reset(), is_silent() must return True (fail-closed)"""
         detector = SilenceDetector()
-        
         detector.update_market_data()
         detector.update_trades()
         detector.update_heartbeat()
-        
+        assert detector.last_market_data_update is not None
         detector.reset()
-        
+        assert detector.is_silent() == True
+
+    def test_all_timestamps_none_is_silent(self):
+        """All timestamps None → is_silent() must return True (fail-closed)"""
+        detector = SilenceDetector(
+            market_data_timeout=30,
+            trades_timeout=60,
+            heartbeat_timeout=300
+        )
         assert detector.last_market_data_update is None
         assert detector.last_trades_update is None
         assert detector.last_heartbeat_update is None
+        assert detector.is_silent() == True
+
+    def test_market_data_none_trades_heartbeat_fresh(self):
+        """market_data=None, trades+heartbeat fresh → is_silent() must return True"""
+        detector = SilenceDetector(
+            market_data_timeout=30,
+            trades_timeout=60,
+            heartbeat_timeout=300
+        )
+        detector.last_market_data_update = None
+        detector.update_trades()
+        detector.update_heartbeat()
+        assert detector.is_silent() == True
+
+    def test_trades_none_others_fresh(self):
+        """trades=None, market_data+heartbeat fresh → is_silent() must return True"""
+        detector = SilenceDetector(
+            market_data_timeout=30,
+            trades_timeout=60,
+            heartbeat_timeout=300
+        )
+        detector.update_market_data()
+        detector.last_trades_update = None
+        detector.update_heartbeat()
+        assert detector.is_silent() == True
+
+    def test_heartbeat_none_others_fresh(self):
+        """heartbeat=None, market_data+trades fresh → is_silent() must return True"""
+        detector = SilenceDetector(
+            market_data_timeout=30,
+            trades_timeout=60,
+            heartbeat_timeout=300
+        )
+        detector.update_market_data()
+        detector.update_trades()
+        detector.last_heartbeat_update = None
+        assert detector.is_silent() == True
+
+    def test_malformed_timestamp_is_silent(self):
+        """Malformed/non-datetime timestamp → is_silent() must return True (fail-closed)"""
+        detector = SilenceDetector(
+            market_data_timeout=30,
+            trades_timeout=60,
+            heartbeat_timeout=300
+        )
+        detector.last_market_data_update = "not-a-datetime"
+        detector.update_trades()
+        detector.update_heartbeat()
+        assert detector.is_silent() == True
+
+        detector2 = SilenceDetector(market_data_timeout=30, trades_timeout=60, heartbeat_timeout=300)
+        detector2.last_market_data_update = 12345
+        detector2.update_trades()
+        detector2.update_heartbeat()
+        assert detector2.is_silent() == True
+
+    def test_mixed_stale_and_none(self):
+        """One channel stale, another None → is_silent() must return True"""
+        detector = SilenceDetector(
+            market_data_timeout=1,
+            trades_timeout=60,
+            heartbeat_timeout=300
+        )
+        detector.update_market_data()
+        time.sleep(1.1)
+        detector.last_trades_update = None
+        detector.update_heartbeat()
+        assert detector.is_silent() == True
+
+    def test_expired_market_data_is_silent(self):
+        """market_data expired, others fresh → is_silent() returns True"""
+        detector = SilenceDetector(
+            market_data_timeout=1,
+            trades_timeout=60,
+            heartbeat_timeout=300
+        )
+        detector.update_market_data()
+        time.sleep(1.1)
+        detector.update_trades()
+        detector.update_heartbeat()
+        assert detector.is_silent() == True
+
+    def test_expired_trades_is_silent(self):
+        """trades expired, others fresh → is_silent() returns True"""
+        detector = SilenceDetector(
+            market_data_timeout=30,
+            trades_timeout=1,
+            heartbeat_timeout=300
+        )
+        detector.update_market_data()
+        detector.update_trades()
+        time.sleep(1.1)
+        detector.update_heartbeat()
+        assert detector.is_silent() == True
+
+    def test_expired_heartbeat_is_silent(self):
+        """heartbeat expired, others fresh → is_silent() returns True"""
+        detector = SilenceDetector(
+            market_data_timeout=30,
+            trades_timeout=60,
+            heartbeat_timeout=1
+        )
+        detector.update_market_data()
+        detector.update_trades()
+        detector.update_heartbeat()
+        time.sleep(1.1)
+        assert detector.is_silent() == True
+
+    def test_get_silence_report_all_none(self):
+        """get_silence_report() with all None → all fields None (no mixed types)"""
+        detector = SilenceDetector()
+        detector.last_market_data_update = None
+        detector.last_trades_update = None
+        detector.last_heartbeat_update = None
+        report = detector.get_silence_report()
+        assert report['market_data'] is None
+        assert report['trades'] is None
+        assert report['heartbeat'] is None
+
+    def test_get_silence_report_malformed_timestamp(self):
+        """get_silence_report() with malformed timestamp → None (not exception)"""
+        detector = SilenceDetector()
+        detector.last_market_data_update = "bad-value"
+        detector.update_trades()
+        detector.update_heartbeat()
+        report = detector.get_silence_report()
+        assert report['market_data'] is None
+        assert report['trades'] is not None
+
+    def test_silence_report_consistent_types(self):
+        """get_silence_report() returns consistent types when all timestamps valid"""
+        detector = SilenceDetector()
+        detector.update_market_data()
+        detector.update_trades()
+        detector.update_heartbeat()
+        report = detector.get_silence_report()
+        assert isinstance(report['market_data'], float)
+        assert isinstance(report['trades'], float)
+        assert isinstance(report['heartbeat'], float)
 
 
 class TestSilenceRecovery:

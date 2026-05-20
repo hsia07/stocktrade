@@ -19,35 +19,49 @@ class SilenceDetector:
     def update_heartbeat(self):
         self.last_heartbeat_update = datetime.now()
 
+    def _is_channel_expired(self, last_update, timeout):
+        if last_update is None:
+            return True
+        try:
+            return datetime.now() - last_update > timeout
+        except (TypeError, AttributeError):
+            return True
+
     def is_silent(self):
-        if (self.last_market_data_update and
-            datetime.now() - self.last_market_data_update > self.market_data_timeout):
+        if self._is_channel_expired(self.last_market_data_update, self.market_data_timeout):
             return True
-        if (self.last_trades_update and
-            datetime.now() - self.last_trades_update > self.trades_timeout):
+        if self._is_channel_expired(self.last_trades_update, self.trades_timeout):
             return True
-        if (self.last_heartbeat_update and
-            datetime.now() - self.last_heartbeat_update > self.heartbeat_timeout):
+        if self._is_channel_expired(self.last_heartbeat_update, self.heartbeat_timeout):
             return True
         return False
 
     def get_silence_report(self):
         report = {}
-        if self.last_market_data_update:
-            report['market_data'] = (datetime.now() - self.last_market_data_update).total_seconds()
+        if self.last_market_data_update is not None:
+            try:
+                report['market_data'] = (datetime.now() - self.last_market_data_update).total_seconds()
+            except (TypeError, AttributeError):
+                report['market_data'] = None
         else:
-            report['market_data'] = 'Never updated'
-        
-        if self.last_trades_update:
-            report['trades'] = (datetime.now() - self.last_trades_update).total_seconds()
+            report['market_data'] = None
+
+        if self.last_trades_update is not None:
+            try:
+                report['trades'] = (datetime.now() - self.last_trades_update).total_seconds()
+            except (TypeError, AttributeError):
+                report['trades'] = None
         else:
-            report['trades'] = 'Never updated'
-        
-        if self.last_heartbeat_update:
-            report['heartbeat'] = (datetime.now() - self.last_heartbeat_update).total_seconds()
+            report['trades'] = None
+
+        if self.last_heartbeat_update is not None:
+            try:
+                report['heartbeat'] = (datetime.now() - self.last_heartbeat_update).total_seconds()
+            except (TypeError, AttributeError):
+                report['heartbeat'] = None
         else:
-            report['heartbeat'] = 'Never updated'
-        
+            report['heartbeat'] = None
+
         return report
 
     def reset(self):
