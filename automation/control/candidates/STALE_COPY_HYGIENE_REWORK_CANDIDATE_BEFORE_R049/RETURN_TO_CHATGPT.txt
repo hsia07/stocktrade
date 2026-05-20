@@ -1,0 +1,158 @@
+round_id:
+  STALE_COPY_HYGIENE_REWORK_LAW04_EVIDENCE_REWORK_CANDIDATE
+
+task_type:
+  law04_evidence_rework_candidate
+
+status:
+  completed
+
+formal_status_code:
+  candidate_ready_awaiting_manual_review
+
+candidate_branch:
+  candidate/stale-copy-hygiene-rework-before-r049
+
+previous_candidate_head:
+  d32ce4a63abaf124ae74de134a276311cb020a1f
+
+new_candidate_head:
+  (not embedded in commit artifact; run git rev-parse HEAD)
+
+blocked_local_merge_commit:
+  b117809370c56034743f8c1c513e77ae6cb2aa2a
+
+canonical_remote_head:
+  ebfa19b87d1ce1c5fd7a84cc1a4407f73a58a429
+
+push_blocker_description:
+  Pre-push hook rejected push of merge commit b117809:
+  ERROR: LAW 04 COMPLIANCE CHECK FAILED — evidence.json missing law_compliance: "04"
+  Hook requires law_compliance: "04" per Law 04 Article 261.
+  Evidence was present in the merge commit from candidate d32ce4a,
+  but the evidence.json did not include the law_compliance field.
+  This round adds law_compliance: "04" to evidence.json on the candidate branch,
+  along with a regression test. No push retry, no hook bypass, no merge executed.
+
+files_modified:
+  - automation/control/candidates/STALE_COPY_HYGIENE_REWORK_CANDIDATE_BEFORE_R049/evidence.json
+  - automation/control/candidates/STALE_COPY_HYGIENE_REWORK_CANDIDATE_BEFORE_R049/RETURN_TO_CHATGPT.txt
+  - automation/control/candidates/STALE_COPY_HYGIENE_REWORK_CANDIDATE_BEFORE_R049/candidate.diff
+  - tests/test_pre_r049_local_website_visible_surface_gap_remediation.py
+
+source_files_modified_by_this_rework_true_or_false:
+  FALSE
+
+stocktrade_submodule_modified_this_rework_true_or_false:
+  FALSE
+
+stocktrade_submodule_pointer:
+  c65fb25633dfd4e0ef4bfe3099789abdaabe7a82
+
+stocktrade_submodule_pointer_available_from_remote_true_or_false:
+  TRUE
+
+stocktrade_index_v2_html_archived_or_safe_true_or_false:
+  TRUE
+
+stocktrade_index_v2_html_contains_force_close_command_true_or_false:
+  FALSE
+
+stocktrade_index_v2_html_contains_user_visible_undefined_true_or_false:
+  FALSE
+
+stocktrade_start_bat_fail_closed_true_or_false:
+  TRUE
+
+stocktrade_start_bat_can_launch_server_v2_true_or_false:
+  FALSE
+
+root_index_v2_html_preserved_true_or_false:
+  TRUE
+
+new_api_endpoint_added_true_or_false:
+  FALSE
+
+runtime_state_write_added_true_or_false:
+  FALSE
+
+broker_execution_live_modified_true_or_false:
+  FALSE
+
+fubon_api_integrated_true_or_false:
+  FALSE
+
+runtime_started_true_or_false:
+  FALSE
+
+trading_broker_execution_live_started_true_or_false:
+  FALSE
+
+r049_started_true_or_false:
+  FALSE
+
+r031_started_true_or_false:
+  FALSE
+
+order_execution_allowed_true_or_false:
+  FALSE
+
+secret_values_exposed_true_or_false:
+  FALSE
+
+blocked_merge_modified_true_or_false:
+  FALSE
+
+blocked_merge_pushed_true_or_false:
+  FALSE
+
+parent_push_executed_true_or_false:
+  FALSE
+
+submodule_push_executed_true_or_false:
+  FALSE
+
+merge_executed_true_or_false:
+  FALSE
+
+force_push_used_true_or_false:
+  FALSE
+
+no_verify_used_true_or_false:
+  FALSE
+
+tests_run:
+  - python -m pytest tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestLaw04EvidenceCompliance -v
+  - python -m pytest tests/test_pre_r049_local_website_visible_surface_gap_remediation.py -v --tb=short
+  - python -m pytest tests/test_ui_visible_gate_governance.py -v --tb=short
+  - python -m pytest --ignore=automation --ignore=stocktrade --ignore=test_twse.py --ignore=test_twstock_batch.py --tb=no -q
+
+tests_result:
+  (set after re-run)
+
+stale_copy_hygiene_tests_pass_true_or_false:
+  (set after re-run)
+
+candidate_tests_pass_true_or_false:
+  (set after re-run)
+
+ui_visible_gate_tests_pass_true_or_false:
+  (set after re-run)
+
+full_clean_subset_pass_true_or_false:
+  (set after re-run)
+
+evidence_checker_pass_true_or_false:
+  (set after re-run)
+
+pre_push_equivalent_law04_check_pass_true_or_false:
+  (set after check)
+
+remaining_blockers:
+  - AWAITING_MANUAL_REVIEW_LAW04_EVIDENCE_REWORK
+
+recommended_next_action:
+  AWAITING_MANUAL_REVIEW_LAW04_EVIDENCE_REWORK
+
+final_recommendation:
+  LAW04_EVIDENCE_REWORK_READY_FOR_MANUAL_REVIEW_DO_NOT_RETRY_PUSH_YET

@@ -23,6 +23,9 @@ INDEX_V2_PATH = PROJECT_ROOT / "index_v2.html"
 SERVER_V2_PATH = PROJECT_ROOT / "server_v2.py"
 SERVER_PY_PATH = PROJECT_ROOT / "server.py"
 MANIFEST_PATH = PROJECT_ROOT / "manifests" / "current_round.yaml"
+STALE_COPY_INDEX_V2_PATH = PROJECT_ROOT / "stocktrade" / "index_v2.html"
+STALE_COPY_START_BAT_PATH = PROJECT_ROOT / "stocktrade" / "start.bat"
+EVIDENCE_JSON_PATH = PROJECT_ROOT / "automation" / "control" / "candidates" / "STALE_COPY_HYGIENE_REWORK_CANDIDATE_BEFORE_R049" / "evidence.json"
 
 # ── Helpers ──
 
@@ -367,3 +370,113 @@ class TestManifestGovernanceRegression:
             "server_v2.py must remain in forbidden_paths (use authorized_exception, not deletion)"
         assert has_index_v2_forbidden, \
             "index_v2.html must remain in forbidden_paths (use authorized_exception, not deletion)"
+
+
+# ── I. Stale copy hygiene ──
+
+class TestStaleCopyHygiene:
+    """Tests for stocktrade/index_v2.html stale copy quarantine."""
+
+    @pytest.fixture(scope="module")
+    def stale_html(self):
+        return STALE_COPY_INDEX_V2_PATH.read_text(encoding="utf-8")
+
+    @pytest.fixture(scope="module")
+    def stale_start_bat(self):
+        return STALE_COPY_START_BAT_PATH.read_text(encoding="utf-8")
+
+    def test_stale_copy_exists(self):
+        """stocktrade/index_v2.html must exist (not deleted)."""
+        assert STALE_COPY_INDEX_V2_PATH.exists(), "stale copy must exist"
+
+    def test_stale_copy_is_archived(self, stale_html):
+        """stale copy must show ARCHIVED / STALE COPY / NOT IN USE notice."""
+        markers = ["ARCHIVED", "STALE COPY", "NOT IN USE", "stale", "archive"]
+        assert any(m.lower() in stale_html.lower() for m in markers), \
+            "stale copy must display archived/disabled notice"
+
+    def test_stale_copy_no_force_close_command(self, stale_html):
+        """stale copy must NOT contain wsSend({cmd:'force_close'})."""
+        assert "wsSend({cmd:'force_close'})" not in stale_html, \
+            "stale copy must not contain force_close ws command"
+        assert "cmd:'force_close'" not in stale_html, \
+            "stale copy must not contain force_close ws command"
+
+    def test_stale_copy_no_modebtn2_controls(self, stale_html):
+        """stale copy must NOT contain modeBtn2 trading UI controls."""
+        assert 'id="modeBtn2"' not in stale_html, \
+            "stale copy must not contain modeBtn2 interactive control"
+        assert 'modeBtn2' not in stale_html, \
+            "stale copy must not reference modeBtn2"
+
+    def test_stale_copy_no_undefined_display(self, stale_html):
+        """stale copy must not display user-visible undefined/null/NaN/TODO/TBD."""
+        assert '現在為: undefined' not in stale_html, \
+            "stale copy must not display 'undefined' in UI text"
+        for bad in ['lorem ipsum']:
+            assert bad not in stale_html.lower(), \
+                f"stale copy must not contain '{bad}'"
+
+    def test_stale_copy_no_r049_claim(self, stale_html):
+        """stale copy must not contain R049 ready claim."""
+        assert 'R049 ready' not in stale_html and 'R049 ready' not in stale_html.upper(), \
+            "stale copy must not claim R049 ready"
+
+    def test_stale_copy_no_r030_claim(self, stale_html):
+        """stale copy must not contain R030 runtime-wired claim."""
+        assert 'R030' not in stale_html, \
+            "stale copy must not reference R030"
+
+    def test_stale_copy_no_broker_live_controls(self, stale_html):
+        """stale copy must not contain broker/live/Fubon controls."""
+        for keyword in ['broker', 'Fubon', '富邦']:
+            assert keyword not in stale_html, \
+                f"stale copy must not contain '{keyword}'"
+
+    def test_stale_start_bat_no_longer_serves_unsafe_ui(self, stale_start_bat):
+        """stocktrade/start.bat must not serve the stale index_v2.html."""
+        content = stale_start_bat
+        assert 'python server_v2.py' not in content, \
+            "stocktrade/start.bat must not start server_v2.py"
+        assert 'DEPRECATED' in content or 'deprecated' in content, \
+            "stocktrade/start.bat must show deprecation notice"
+
+    def test_stale_copy_no_trading_controls(self, stale_html):
+        """stale copy must not have any interactive trading controls."""
+        for keyword in ['wsSend', 'forceCloseBtn', 'resetBtn', 'orderBtn', 'buyBtn', 'sellBtn']:
+            assert keyword not in stale_html, \
+                f"stale copy must not contain trading control '{keyword}'"
+
+    def test_stale_copy_refers_to_root_entry(self, stale_html):
+        """stale copy must reference the root index_v2.html as the active entry."""
+        assert 'index_v2.html' in stale_html, \
+            "stale copy must reference the active root entry"
+
+
+class TestLaw04EvidenceCompliance:
+
+    def test_evidence_json_exists(self):
+        """evidence.json must exist."""
+        assert EVIDENCE_JSON_PATH.exists(), "evidence.json must exist"
+
+    def test_evidence_json_is_valid_json(self):
+        """evidence.json must be parseable JSON."""
+        raw = EVIDENCE_JSON_PATH.read_text(encoding="utf-8")
+        import json
+        data = json.loads(raw)
+        assert isinstance(data, dict), "evidence.json must be a JSON object"
+
+    def test_evidence_json_has_law_compliance(self):
+        """evidence.json must contain law_compliance field."""
+        import json
+        data = json.loads(EVIDENCE_JSON_PATH.read_text(encoding="utf-8"))
+        assert "law_compliance" in data, \
+            "evidence.json must contain law_compliance field per Law 04 Article 261"
+
+    def test_evidence_json_law_compliance_is_04(self):
+        """evidence.json law_compliance must be exactly '04'."""
+        import json
+        data = json.loads(EVIDENCE_JSON_PATH.read_text(encoding="utf-8"))
+        val = data.get("law_compliance")
+        assert val == "04", \
+            f"evidence.json law_compliance must be '04', got {repr(val)}"

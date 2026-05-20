@@ -1,0 +1,1428 @@
+diff --git a/automation/control/candidates/STALE_COPY_HYGIENE_REWORK_CANDIDATE_BEFORE_R049/RETURN_TO_CHATGPT.txt b/automation/control/candidates/STALE_COPY_HYGIENE_REWORK_CANDIDATE_BEFORE_R049/RETURN_TO_CHATGPT.txt
+new file mode 100644
+index 0000000..06a5581
+--- /dev/null
++++ b/automation/control/candidates/STALE_COPY_HYGIENE_REWORK_CANDIDATE_BEFORE_R049/RETURN_TO_CHATGPT.txt
+@@ -0,0 +1,158 @@
++round_id:
++  STALE_COPY_HYGIENE_REWORK_LAW04_EVIDENCE_REWORK_CANDIDATE
++
++task_type:
++  law04_evidence_rework_candidate
++
++status:
++  completed
++
++formal_status_code:
++  candidate_ready_awaiting_manual_review
++
++candidate_branch:
++  candidate/stale-copy-hygiene-rework-before-r049
++
++previous_candidate_head:
++  d32ce4a63abaf124ae74de134a276311cb020a1f
++
++new_candidate_head:
++  (not embedded in commit artifact; run git rev-parse HEAD)
++
++blocked_local_merge_commit:
++  b117809370c56034743f8c1c513e77ae6cb2aa2a
++
++canonical_remote_head:
++  ebfa19b87d1ce1c5fd7a84cc1a4407f73a58a429
++
++push_blocker_description:
++  Pre-push hook rejected push of merge commit b117809:
++  ERROR: LAW 04 COMPLIANCE CHECK FAILED — evidence.json missing law_compliance: "04"
++  Hook requires law_compliance: "04" per Law 04 Article 261.
++  Evidence was present in the merge commit from candidate d32ce4a,
++  but the evidence.json did not include the law_compliance field.
++  This round adds law_compliance: "04" to evidence.json on the candidate branch,
++  along with a regression test. No push retry, no hook bypass, no merge executed.
++
++files_modified:
++  - automation/control/candidates/STALE_COPY_HYGIENE_REWORK_CANDIDATE_BEFORE_R049/evidence.json
++  - automation/control/candidates/STALE_COPY_HYGIENE_REWORK_CANDIDATE_BEFORE_R049/RETURN_TO_CHATGPT.txt
++  - automation/control/candidates/STALE_COPY_HYGIENE_REWORK_CANDIDATE_BEFORE_R049/candidate.diff
++  - tests/test_pre_r049_local_website_visible_surface_gap_remediation.py
++
++source_files_modified_by_this_rework_true_or_false:
++  FALSE
++
++stocktrade_submodule_modified_this_rework_true_or_false:
++  FALSE
++
++stocktrade_submodule_pointer:
++  c65fb25633dfd4e0ef4bfe3099789abdaabe7a82
++
++stocktrade_submodule_pointer_available_from_remote_true_or_false:
++  TRUE
++
++stocktrade_index_v2_html_archived_or_safe_true_or_false:
++  TRUE
++
++stocktrade_index_v2_html_contains_force_close_command_true_or_false:
++  FALSE
++
++stocktrade_index_v2_html_contains_user_visible_undefined_true_or_false:
++  FALSE
++
++stocktrade_start_bat_fail_closed_true_or_false:
++  TRUE
++
++stocktrade_start_bat_can_launch_server_v2_true_or_false:
++  FALSE
++
++root_index_v2_html_preserved_true_or_false:
++  TRUE
++
++new_api_endpoint_added_true_or_false:
++  FALSE
++
++runtime_state_write_added_true_or_false:
++  FALSE
++
++broker_execution_live_modified_true_or_false:
++  FALSE
++
++fubon_api_integrated_true_or_false:
++  FALSE
++
++runtime_started_true_or_false:
++  FALSE
++
++trading_broker_execution_live_started_true_or_false:
++  FALSE
++
++r049_started_true_or_false:
++  FALSE
++
++r031_started_true_or_false:
++  FALSE
++
++order_execution_allowed_true_or_false:
++  FALSE
++
++secret_values_exposed_true_or_false:
++  FALSE
++
++blocked_merge_modified_true_or_false:
++  FALSE
++
++blocked_merge_pushed_true_or_false:
++  FALSE
++
++parent_push_executed_true_or_false:
++  FALSE
++
++submodule_push_executed_true_or_false:
++  FALSE
++
++merge_executed_true_or_false:
++  FALSE
++
++force_push_used_true_or_false:
++  FALSE
++
++no_verify_used_true_or_false:
++  FALSE
++
++tests_run:
++  - python -m pytest tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestLaw04EvidenceCompliance -v
++  - python -m pytest tests/test_pre_r049_local_website_visible_surface_gap_remediation.py -v --tb=short
++  - python -m pytest tests/test_ui_visible_gate_governance.py -v --tb=short
++  - python -m pytest --ignore=automation --ignore=stocktrade --ignore=test_twse.py --ignore=test_twstock_batch.py --tb=no -q
++
++tests_result:
++  (set after re-run)
++
++stale_copy_hygiene_tests_pass_true_or_false:
++  (set after re-run)
++
++candidate_tests_pass_true_or_false:
++  (set after re-run)
++
++ui_visible_gate_tests_pass_true_or_false:
++  (set after re-run)
++
++full_clean_subset_pass_true_or_false:
++  (set after re-run)
++
++evidence_checker_pass_true_or_false:
++  (set after re-run)
++
++pre_push_equivalent_law04_check_pass_true_or_false:
++  (set after check)
++
++remaining_blockers:
++  - AWAITING_MANUAL_REVIEW_LAW04_EVIDENCE_REWORK
++
++recommended_next_action:
++  AWAITING_MANUAL_REVIEW_LAW04_EVIDENCE_REWORK
++
++final_recommendation:
++  LAW04_EVIDENCE_REWORK_READY_FOR_MANUAL_REVIEW_DO_NOT_RETRY_PUSH_YET
+diff --git a/automation/control/candidates/STALE_COPY_HYGIENE_REWORK_CANDIDATE_BEFORE_R049/candidate.diff b/automation/control/candidates/STALE_COPY_HYGIENE_REWORK_CANDIDATE_BEFORE_R049/candidate.diff
+new file mode 100644
+index 0000000..aeafee6
+--- /dev/null
++++ b/automation/control/candidates/STALE_COPY_HYGIENE_REWORK_CANDIDATE_BEFORE_R049/candidate.diff
+@@ -0,0 +1,765 @@
++diff --git a/automation/control/candidates/STALE_COPY_HYGIENE_REWORK_CANDIDATE_BEFORE_R049/RETURN_TO_CHATGPT.txt b/automation/control/candidates/STALE_COPY_HYGIENE_REWORK_CANDIDATE_BEFORE_R049/RETURN_TO_CHATGPT.txt
++new file mode 100644
++index 0000000..64a0882
++--- /dev/null
+++++ b/automation/control/candidates/STALE_COPY_HYGIENE_REWORK_CANDIDATE_BEFORE_R049/RETURN_TO_CHATGPT.txt
++@@ -0,0 +1,191 @@
+++round_id:
+++  STALE_COPY_HYGIENE_REWORK_BLOCKER_RESOLUTION_PREPARE_READINESS
+++
+++task_type:
+++  blocker_resolution_prepare_readiness
+++
+++status:
+++  completed
+++
+++formal_status_code:
+++  BLOCKER_RESOLUTION_PREPARED_AWAITING_SUBMODULE_PUSH_SIGNOFF
+++
+++canonical_branch:
+++  work/canonical-mainline-repair-001
+++
+++candidate_branch:
+++  candidate/stale-copy-hygiene-rework-before-r049
+++
+++base_head:
+++  ebfa19b87d1ce1c5fd7a84cc1a4407f73a58a429
+++
+++previous_candidate_head:
+++  9a954be1f38cda79fb7186505785a8cf97d08f80
+++
+++new_candidate_head:
+++  (not embedded in commit artifact; run git rev-parse HEAD)
+++
+++parent_repo_git_status_before:
+++   M automation/control/candidates/STALE_COPY_HYGIENE_REWORK_CANDIDATE_BEFORE_R049/RETURN_TO_CHATGPT.txt
+++
+++dirty_return_to_chatgpt_diff_existed_true_or_false:
+++  TRUE
+++
+++dirty_return_to_chatgpt_diff_committed_true_or_false:
+++  TRUE
+++
+++dirty_return_to_chatgpt_diff_discarded_true_or_false:
+++  FALSE
+++
+++parent_repo_git_status_after:
+++  EMPTY
+++
+++parent_repo_working_tree_clean_after_true_or_false:
+++  TRUE
+++
+++files_modified:
+++  - automation/control/candidates/STALE_COPY_HYGIENE_REWORK_CANDIDATE_BEFORE_R049/RETURN_TO_CHATGPT.txt
+++  - automation/control/candidates/STALE_COPY_HYGIENE_REWORK_CANDIDATE_BEFORE_R049/candidate.diff
+++  - automation/control/candidates/STALE_COPY_HYGIENE_REWORK_CANDIDATE_BEFORE_R049/evidence.json
+++  - stocktrade (submodule pointer: c65fb25)
+++  - tests/test_pre_r049_local_website_visible_surface_gap_remediation.py
+++
+++source_files_modified_by_this_resolution_true_or_false:
+++  FALSE
+++
+++stocktrade_is_submodule_true_or_false:
+++  TRUE
+++
+++stocktrade_base_pointer:
+++  68332acb1b0c354fc20dff8921c3b0a8aec255fc
+++
+++stocktrade_candidate_pointer:
+++  c65fb25633dfd4e0ef4bfe3099789abdaabe7a82
+++
+++stocktrade_pointer_changed_true_or_false:
+++  TRUE
+++
+++stocktrade_candidate_pointer_available_locally_true_or_false:
+++  TRUE
+++
+++stocktrade_candidate_pointer_available_from_remote_true_or_false:
+++  FALSE
+++
+++submodule_remote_push_required_before_parent_merge_true_or_false:
+++  TRUE
+++
+++submodule_push_requires_user_signoff_true_or_false:
+++  TRUE
+++
+++submodule_push_remote:
+++  https://github.com/hsia07/stocktrade.git
+++
+++submodule_push_branch:
+++  master
+++
+++submodule_local_head:
+++  c65fb25633dfd4e0ef4bfe3099789abdaabe7a82
+++
+++submodule_remote_head:
+++  68332acb1b0c354fc20dff8921c3b0a8aec255fc
+++
+++submodule_ahead_commits:
+++  - c65fb25 STALE_COPY_HYGIENE_REWORK: quarantine stale index_v2.html (archived page, no trading controls) and deprecate start.bat
+++
+++submodule_push_command_proposed:
+++  git -C stocktrade push origin master
+++
+++submodule_diff_authorized_scope_only_true_or_false:
+++  TRUE
+++
+++submodule_contains_broker_live_runtime_pollution_true_or_false:
+++  FALSE
+++
+++submodule_push_executed_true_or_false:
+++  FALSE
+++
+++parent_merge_executed_true_or_false:
+++  FALSE
+++
+++parent_push_executed_true_or_false:
+++  FALSE
+++
+++stocktrade_index_v2_html_archived_or_safe_true_or_false:
+++  TRUE
+++
+++stocktrade_index_v2_html_contains_force_close_command_true_or_false:
+++  FALSE
+++
+++stocktrade_index_v2_html_contains_user_visible_undefined_true_or_false:
+++  FALSE
+++
+++stocktrade_start_bat_fail_closed_true_or_false:
+++  TRUE
+++
+++stocktrade_start_bat_can_launch_server_v2_true_or_false:
+++  FALSE
+++
+++root_index_v2_html_preserved_true_or_false:
+++  TRUE
+++
+++new_api_endpoint_added_true_or_false:
+++  FALSE
+++
+++runtime_state_write_added_true_or_false:
+++  FALSE
+++
+++broker_execution_live_modified_true_or_false:
+++  FALSE
+++
+++fubon_api_integrated_true_or_false:
+++  FALSE
+++
+++runtime_started_true_or_false:
+++  FALSE
+++
+++trading_broker_execution_live_started_true_or_false:
+++  FALSE
+++
+++r049_started_true_or_false:
+++  FALSE
+++
+++r031_started_true_or_false:
+++  FALSE
+++
+++order_execution_allowed_true_or_false:
+++  FALSE
+++
+++secret_values_exposed_true_or_false:
+++  FALSE
+++
+++tests_run:
+++  - python -m pytest tests/test_pre_r049_local_website_visible_surface_gap_remediation.py -v --tb=short
+++  - python -m pytest tests/test_ui_visible_gate_governance.py -v --tb=short
+++  - python -m pytest --ignore=automation --ignore=stocktrade --ignore=test_twse.py --ignore=test_twstock_batch.py --tb=no -q
+++
+++tests_result:
+++  (run after commit; see test-results.txt for actual values)
+++
+++stale_copy_hygiene_tests_pass_true_or_false:
+++  (run after commit)
+++
+++candidate_tests_pass_true_or_false:
+++  (run after commit)
+++
+++ui_visible_gate_tests_pass_true_or_false:
+++  (run after commit)
+++
+++full_clean_subset_pass_true_or_false:
+++  (run after commit)
+++
+++evidence_checker_pass_true_or_false:
+++  (run after commit)
+++
+++remaining_blockers:
+++  - AWAITING_USER_SIGNOFF_FOR_STOCKTRADE_SUBMODULE_REMOTE_PUSH
+++
+++recommended_next_action:
+++  AWAITING_USER_SIGNOFF_FOR_STOCKTRADE_SUBMODULE_REMOTE_PUSH
+++
+++final_recommendation:
+++  BLOCKER_RESOLUTION_PREPARED_DO_NOT_PARENT_MERGE_YET_AWAITING_SUBMODULE_PUSH_SIGNOFF
++diff --git a/automation/control/candidates/STALE_COPY_HYGIENE_REWORK_CANDIDATE_BEFORE_R049/candidate.diff b/automation/control/candidates/STALE_COPY_HYGIENE_REWORK_CANDIDATE_BEFORE_R049/candidate.diff
++new file mode 100644
++index 0000000..615e072
++--- /dev/null
+++++ b/automation/control/candidates/STALE_COPY_HYGIENE_REWORK_CANDIDATE_BEFORE_R049/candidate.diff
++@@ -0,0 +1,105 @@
+++diff --git a/stocktrade b/stocktrade
+++index 68332ac..c65fb25 160000
+++--- a/stocktrade
++++++ b/stocktrade
+++@@ -1 +1 @@
+++-Subproject commit 68332acb1b0c354fc20dff8921c3b0a8aec255fc
++++Subproject commit c65fb25633dfd4e0ef4bfe3099789abdaabe7a82
+++diff --git a/tests/test_pre_r049_local_website_visible_surface_gap_remediation.py b/tests/test_pre_r049_local_website_visible_surface_gap_remediation.py
+++index 0793839..f9c65e2 100644
+++--- a/tests/test_pre_r049_local_website_visible_surface_gap_remediation.py
++++++ b/tests/test_pre_r049_local_website_visible_surface_gap_remediation.py
+++@@ -23,6 +23,8 @@ INDEX_V2_PATH = PROJECT_ROOT / "index_v2.html"
+++ SERVER_V2_PATH = PROJECT_ROOT / "server_v2.py"
+++ SERVER_PY_PATH = PROJECT_ROOT / "server.py"
+++ MANIFEST_PATH = PROJECT_ROOT / "manifests" / "current_round.yaml"
++++STALE_COPY_INDEX_V2_PATH = PROJECT_ROOT / "stocktrade" / "index_v2.html"
++++STALE_COPY_START_BAT_PATH = PROJECT_ROOT / "stocktrade" / "start.bat"
+++ 
+++ # ── Helpers ──
+++ 
+++@@ -367,3 +369,84 @@ class TestManifestGovernanceRegression:
+++             "server_v2.py must remain in forbidden_paths (use authorized_exception, not deletion)"
+++         assert has_index_v2_forbidden, \
+++             "index_v2.html must remain in forbidden_paths (use authorized_exception, not deletion)"
++++
++++
++++# ── I. Stale copy hygiene ──
++++
++++class TestStaleCopyHygiene:
++++    """Tests for stocktrade/index_v2.html stale copy quarantine."""
++++
++++    @pytest.fixture(scope="module")
++++    def stale_html(self):
++++        return STALE_COPY_INDEX_V2_PATH.read_text(encoding="utf-8")
++++
++++    @pytest.fixture(scope="module")
++++    def stale_start_bat(self):
++++        return STALE_COPY_START_BAT_PATH.read_text(encoding="utf-8")
++++
++++    def test_stale_copy_exists(self):
++++        """stocktrade/index_v2.html must exist (not deleted)."""
++++        assert STALE_COPY_INDEX_V2_PATH.exists(), "stale copy must exist"
++++
++++    def test_stale_copy_is_archived(self, stale_html):
++++        """stale copy must show ARCHIVED / STALE COPY / NOT IN USE notice."""
++++        markers = ["ARCHIVED", "STALE COPY", "NOT IN USE", "stale", "archive"]
++++        assert any(m.lower() in stale_html.lower() for m in markers), \
++++            "stale copy must display archived/disabled notice"
++++
++++    def test_stale_copy_no_force_close_command(self, stale_html):
++++        """stale copy must NOT contain wsSend({cmd:'force_close'})."""
++++        assert "wsSend({cmd:'force_close'})" not in stale_html, \
++++            "stale copy must not contain force_close ws command"
++++        assert "cmd:'force_close'" not in stale_html, \
++++            "stale copy must not contain force_close ws command"
++++
++++    def test_stale_copy_no_modebtn2_controls(self, stale_html):
++++        """stale copy must NOT contain modeBtn2 trading UI controls."""
++++        assert 'id="modeBtn2"' not in stale_html, \
++++            "stale copy must not contain modeBtn2 interactive control"
++++        assert 'modeBtn2' not in stale_html, \
++++            "stale copy must not reference modeBtn2"
++++
++++    def test_stale_copy_no_undefined_display(self, stale_html):
++++        """stale copy must not display user-visible undefined/null/NaN/TODO/TBD."""
++++        assert '現在為: undefined' not in stale_html, \
++++            "stale copy must not display 'undefined' in UI text"
++++        for bad in ['lorem ipsum']:
++++            assert bad not in stale_html.lower(), \
++++                f"stale copy must not contain '{bad}'"
++++
++++    def test_stale_copy_no_r049_claim(self, stale_html):
++++        """stale copy must not contain R049 ready claim."""
++++        assert 'R049 ready' not in stale_html and 'R049 ready' not in stale_html.upper(), \
++++            "stale copy must not claim R049 ready"
++++
++++    def test_stale_copy_no_r030_claim(self, stale_html):
++++        """stale copy must not contain R030 runtime-wired claim."""
++++        assert 'R030' not in stale_html, \
++++            "stale copy must not reference R030"
++++
++++    def test_stale_copy_no_broker_live_controls(self, stale_html):
++++        """stale copy must not contain broker/live/Fubon controls."""
++++        for keyword in ['broker', 'Fubon', '富邦']:
++++            assert keyword not in stale_html, \
++++                f"stale copy must not contain '{keyword}'"
++++
++++    def test_stale_start_bat_no_longer_serves_unsafe_ui(self, stale_start_bat):
++++        """stocktrade/start.bat must not serve the stale index_v2.html."""
++++        content = stale_start_bat
++++        assert 'python server_v2.py' not in content, \
++++            "stocktrade/start.bat must not start server_v2.py"
++++        assert 'DEPRECATED' in content or 'deprecated' in content, \
++++            "stocktrade/start.bat must show deprecation notice"
++++
++++    def test_stale_copy_no_trading_controls(self, stale_html):
++++        """stale copy must not have any interactive trading controls."""
++++        for keyword in ['wsSend', 'forceCloseBtn', 'resetBtn', 'orderBtn', 'buyBtn', 'sellBtn']:
++++            assert keyword not in stale_html, \
++++                f"stale copy must not contain trading control '{keyword}'"
++++
++++    def test_stale_copy_refers_to_root_entry(self, stale_html):
++++        """stale copy must reference the root index_v2.html as the active entry."""
++++        assert 'index_v2.html' in stale_html, \
++++            "stale copy must reference the active root entry"
++diff --git a/automation/control/candidates/STALE_COPY_HYGIENE_REWORK_CANDIDATE_BEFORE_R049/evidence.json b/automation/control/candidates/STALE_COPY_HYGIENE_REWORK_CANDIDATE_BEFORE_R049/evidence.json
++new file mode 100644
++index 0000000..05d3cda
++--- /dev/null
+++++ b/automation/control/candidates/STALE_COPY_HYGIENE_REWORK_CANDIDATE_BEFORE_R049/evidence.json
++@@ -0,0 +1,60 @@
+++{
+++  "round_id": "STALE_COPY_HYGIENE_REWORK_BLOCKER_RESOLUTION_PREPARE_READINESS",
+++  "task_type": "blocker_resolution_prepare_readiness",
+++  "status": "completed",
+++  "canonical_branch": "work/canonical-mainline-repair-001",
+++  "base_head": "ebfa19b87d1ce1c5fd7a84cc1a4407f73a58a429",
+++  "candidate_branch": "candidate/stale-copy-hygiene-rework-before-r049",
+++  "stale_copy_risk_fixed": true,
+++  "stocktrade_index_v2_html_safe_or_quarantined": true,
+++  "stocktrade_start_bat_no_longer_serves_unsafe_stale_ui": true,
+++  "force_close_command_removed_from_stale_copy": true,
+++  "g4_fallback_present_or_archive_page_true": true,
+++  "deployment_risk_resolved": true,
+++  "root_served_entry_preserved": true,
+++  "order_execution_allowed_false_preserved": true,
+++  "api_mode_live_block_preserved": true,
+++  "force_close_disabled_preserved": true,
+++  "g4_placeholder_fix_preserved": true,
+++  "ui_gap_panel_preserved": true,
+++  "read_only_banner_preserved": true,
+++  "stale_copy_contains_force_close_command": false,
+++  "stale_copy_contains_user_visible_undefined": false,
+++  "stale_copy_contains_broker_live_fubon_controls": false,
+++  "stale_copy_contains_r049_ready_claim": false,
+++  "stale_copy_contains_r030_runtime_wired_claim": false,
+++  "stale_copy_could_be_deployed_or_served_unsafely": false,
+++  "new_api_endpoint_added": false,
+++  "runtime_state_write_added": false,
+++  "broker_execution_live_modified": false,
+++  "fubon_api_integrated": false,
+++  "runtime_started": false,
+++  "trading_broker_execution_live_started": false,
+++  "r049_started": false,
+++  "r031_started": false,
+++  "order_execution_allowed": false,
+++  "secret_values_exposed": false,
+++  "visible_or_text_evidence_created": true,
+++  "files_modified": [
+++    "automation/control/candidates/STALE_COPY_HYGIENE_REWORK_CANDIDATE_BEFORE_R049/RETURN_TO_CHATGPT.txt",
+++    "automation/control/candidates/STALE_COPY_HYGIENE_REWORK_CANDIDATE_BEFORE_R049/candidate.diff",
+++    "automation/control/candidates/STALE_COPY_HYGIENE_REWORK_CANDIDATE_BEFORE_R049/evidence.json",
+++    "stocktrade (submodule pointer: c65fb25)",
+++    "tests/test_pre_r049_local_website_visible_surface_gap_remediation.py"
+++  ],
+++  "stocktrade_is_submodule": true,
+++  "stocktrade_base_pointer": "68332acb1b0c354fc20dff8921c3b0a8aec255fc",
+++  "stocktrade_candidate_pointer": "c65fb25633dfd4e0ef4bfe3099789abdaabe7a82",
+++  "stocktrade_pointer_changed": true,
+++  "stocktrade_candidate_pointer_available_locally": true,
+++  "stocktrade_candidate_pointer_available_from_remote": false,
+++  "submodule_remote_push_required_before_parent_merge": true,
+++  "submodule_push_remote": "https://github.com/hsia07/stocktrade.git",
+++  "submodule_push_branch": "master",
+++  "submodule_push_command_proposed": "git -C stocktrade push origin master",
+++  "submodule_push_requires_user_signoff": true,
+++  "parent_merge_blocked_until_submodule_remote_available": true,
+++  "remaining_blockers": "AWAITING_USER_SIGNOFF_FOR_STOCKTRADE_SUBMODULE_REMOTE_PUSH",
+++  "recommended_next_action": "AWAITING_USER_SIGNOFF_FOR_STOCKTRADE_SUBMODULE_REMOTE_PUSH",
+++  "final_recommendation": "BLOCKER_RESOLUTION_PREPARED_DO_NOT_PARENT_MERGE_YET_AWAITING_SUBMODULE_PUSH_SIGNOFF"
+++}
++diff --git a/automation/control/candidates/STALE_COPY_HYGIENE_REWORK_CANDIDATE_BEFORE_R049/test-results.txt b/automation/control/candidates/STALE_COPY_HYGIENE_REWORK_CANDIDATE_BEFORE_R049/test-results.txt
++new file mode 100644
++index 0000000..a3c9267
++--- /dev/null
+++++ b/automation/control/candidates/STALE_COPY_HYGIENE_REWORK_CANDIDATE_BEFORE_R049/test-results.txt
++@@ -0,0 +1,256 @@
+++============================= test session starts =============================
+++platform win32 -- Python 3.14.4, pytest-9.0.3, pluggy-1.6.0 -- C:\Python314\python.exe
+++cachedir: .pytest_cache
+++rootdir: C:\Users\richa\OneDrive\�ୱ\stocktrade
+++plugins: anyio-4.13.0
+++collecting ... collected 61 items
+++
+++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestForceCloseButtonSafety::test_force_close_button_disabled_or_display_only PASSED [  1%]
+++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestForceCloseButtonSafety::test_force_close_no_unsafe_ws_send PASSED [  3%]
+++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestForceCloseButtonSafety::test_force_close_button_cannot_trigger_trade PASSED [  4%]
+++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestOrderExecutionAllowedVisibility::test_api_state_has_order_execution_allowed_false PASSED [  6%]
+++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestOrderExecutionAllowedVisibility::test_index_v2_shows_order_execution_allowed_status PASSED [  8%]
+++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestOrderExecutionAllowedVisibility::test_order_execution_allowed_never_true_in_ui PASSED [  9%]
+++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestLiveTransitionSafety::test_api_mode_live_blocked_flag PASSED [ 11%]
+++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestLiveTransitionSafety::test_api_mode_live_blocked_reason PASSED [ 13%]
+++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestLiveTransitionSafety::test_live_button_disabled_in_learning PASSED [ 14%]
+++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestUndefinedPlaceholderCleanup::test_no_literal_undefined_display PASSED [ 16%]
+++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestUndefinedPlaceholderCleanup::test_mode_fallback_not_undefined PASSED [ 18%]
+++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestUndefinedPlaceholderCleanup::test_mode_fallback_covers_all_modebtn2_paths PASSED [ 19%]
+++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestUndefinedPlaceholderCleanup::test_stale_copy_placeholder_awareness PASSED [ 21%]
+++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestUIGapStatusDisclosure::test_ui_gap_panel_exists PASSED [ 22%]
+++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestUIGapStatusDisclosure::test_r022_status_visible PASSED [ 24%]
+++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestUIGapStatusDisclosure::test_r023_status_visible PASSED [ 26%]
+++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestUIGapStatusDisclosure::test_r024_status_visible PASSED [ 27%]
+++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestUIGapStatusDisclosure::test_r025_status_visible PASSED [ 29%]
+++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestUIGapStatusDisclosure::test_r026_status_visible PASSED [ 31%]
+++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestUIGapStatusDisclosure::test_r029_status_visible PASSED [ 32%]
+++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestUIGapStatusDisclosure::test_r040_status_visible PASSED [ 34%]
+++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestUIGapStatusDisclosure::test_not_complete_disclaimer_visible PASSED [ 36%]
+++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestUIGapStatusDisclosure::test_r023_placeholder_scan_consistent PASSED [ 37%]
+++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestReadOnlyDisclaimer::test_read_only_banner_exists PASSED [ 39%]
+++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestReadOnlyDisclaimer::test_not_r049_ready_claim PASSED [ 40%]
+++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestReadOnlyDisclaimer::test_no_runtime_wired_false_claim PASSED [ 42%]
+++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestReadOnlyDisclaimer::test_no_broker_live_execution_enabled_claim PASSED [ 44%]
+++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestWebSocketDisconnectSafety::test_ws_disconnect_shows_offline_demo PASSED [ 45%]
+++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestWebSocketDisconnectSafety::test_ws_disconnect_not_affecting_trading_safety PASSED [ 47%]
+++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestNegativeTestsAndPollution::test_no_fake_r049_ready_claim PASSED [ 49%]
+++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestNegativeTestsAndPollution::test_no_r030_runtime_wired_claim PASSED [ 50%]
+++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestNegativeTestsAndPollution::test_no_buy_sell_controls PASSED [ 52%]
+++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestNegativeTestsAndPollution::test_no_broker_toggle PASSED [ 54%]
+++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestNegativeTestsAndPollution::test_no_new_dangerous_api_endpoint PASSED [ 55%]
+++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestNegativeTestsAndPollution::test_no_unsafe_post_in_html PASSED [ 57%]
+++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestFileModificationBoundary::test_server_py_not_modified PASSED [ 59%]
+++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestFileModificationBoundary::test_index_html_not_modified PASSED [ 60%]
+++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestFileModificationBoundary::test_modules_not_modified PASSED [ 62%]
+++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestFileModificationBoundary::test_env_not_modified PASSED [ 63%]
+++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestServerV2Safety::test_api_mode_safe_allowed_annotations PASSED [ 65%]
+++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestServerV2Safety::test_api_mode_safe_block_reason PASSED [ 67%]
+++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestServerV2Safety::test_order_execution_allowed_false_in_state PASSED [ 68%]
+++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestServerV2Safety::test_ui_safety_disclaimer_in_state PASSED [ 70%]
+++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestManifestGovernanceRegression::test_manifest_has_server_v2_in_forbidden_paths PASSED [ 72%]
+++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestManifestGovernanceRegression::test_manifest_has_index_v2_in_forbidden_paths PASSED [ 73%]
+++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestManifestGovernanceRegression::test_manifest_has_authorized_exceptions PASSED [ 75%]
+++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestManifestGovernanceRegression::test_server_v2_exception_is_round_scoped PASSED [ 77%]
+++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestManifestGovernanceRegression::test_index_v2_exception_is_round_scoped PASSED [ 78%]
+++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestManifestGovernanceRegression::test_exceptions_marked_not_for_future_rounds PASSED [ 80%]
+++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestManifestGovernanceRegression::test_no_permanent_forbidden_path_removal PASSED [ 81%]
+++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestStaleCopyHygiene::test_stale_copy_exists PASSED [ 83%]
+++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestStaleCopyHygiene::test_stale_copy_is_archived PASSED [ 85%]
+++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestStaleCopyHygiene::test_stale_copy_no_force_close_command PASSED [ 86%]
+++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestStaleCopyHygiene::test_stale_copy_no_modebtn2_controls PASSED [ 88%]
+++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestStaleCopyHygiene::test_stale_copy_no_undefined_display PASSED [ 90%]
+++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestStaleCopyHygiene::test_stale_copy_no_r049_claim PASSED [ 91%]
+++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestStaleCopyHygiene::test_stale_copy_no_r030_claim PASSED [ 93%]
+++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestStaleCopyHygiene::test_stale_copy_no_broker_live_controls PASSED [ 95%]
+++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestStaleCopyHygiene::test_stale_start_bat_no_longer_serves_unsafe_ui PASSED [ 96%]
+++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestStaleCopyHygiene::test_stale_copy_no_trading_controls PASSED [ 98%]
+++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestStaleCopyHygiene::test_stale_copy_refers_to_root_entry PASSED [100%]
+++
+++============================= 61 passed in 0.11s ==============================
+++======================================================================
+++
+++============================= test session starts =============================
+++platform win32 -- Python 3.14.4, pytest-9.0.3, pluggy-1.6.0 -- C:\Python314\python.exe
+++cachedir: .pytest_cache
+++rootdir: C:\Users\richa\OneDrive\�ୱ\stocktrade
+++plugins: anyio-4.13.0
+++collecting ... collected 22 items
+++
+++tests/test_ui_visible_gate_governance.py::TestUIVisibleGateEvidenceChecker::test_ui_round_without_visible_evidence_fails PASSED [  4%]
+++tests/test_ui_visible_gate_governance.py::TestUIVisibleGateEvidenceChecker::test_ui_round_with_visible_evidence_passes PASSED [  9%]
+++tests/test_ui_visible_gate_governance.py::TestUIVisibleGateEvidenceChecker::test_non_ui_round_skips_ui_gate PASSED [ 13%]
+++tests/test_ui_visible_gate_governance.py::TestUIVisibleGateEvidenceChecker::test_fake_feature_claim_detected_fails PASSED [ 18%]
+++tests/test_ui_visible_gate_governance.py::TestUIVisibleGateEvidenceChecker::test_trading_control_pollution_fails PASSED [ 22%]
+++tests/test_ui_visible_gate_governance.py::TestUIVisibleGateEvidenceChecker::test_contract_only_without_disclaimer_fails PASSED [ 27%]
+++tests/test_ui_visible_gate_governance.py::TestUIVisibleGateEvidenceChecker::test_contract_only_with_disclaimer_passes PASSED [ 31%]
+++tests/test_ui_visible_gate_governance.py::TestUIVisibleGateEvidenceChecker::test_order_execution_allowed_true_fails PASSED [ 36%]
+++tests/test_ui_visible_gate_governance.py::TestUIVisibleGateEvidenceChecker::test_ui_visible_gate_tests_must_pass PASSED [ 40%]
+++tests/test_ui_visible_gate_governance.py::TestUIVisibleGateEvidenceChecker::test_index_html_file_triggers_ui_gate PASSED [ 45%]
+++tests/test_ui_visible_gate_governance.py::TestUIVisibleGateEvidenceChecker::test_evidence_checker_integration_blocks_ui_without_gate PASSED [ 50%]
+++tests/test_ui_visible_gate_governance.py::TestUIVisibleGateEvidenceChecker::test_evidence_checker_integration_passes_with_gate PASSED [ 54%]
+++tests/test_ui_visible_gate_governance.py::TestUIVisibleGateEvidenceChecker::test_negative_test_missing_visible_evidence_must_fail PASSED [ 59%]
+++tests/test_ui_visible_gate_governance.py::TestUIVisibleGateEvidenceChecker::test_negative_test_mojibake_placeholder_must_fail PASSED [ 63%]
+++tests/test_ui_visible_gate_governance.py::TestUIVisibleGateEvidenceChecker::test_negative_test_broker_toggle_must_fail PASSED [ 68%]
+++tests/test_ui_visible_gate_governance.py::TestUIVisibleGateEvidenceChecker::test_no_new_api_endpoint_pollution PASSED [ 72%]
+++tests/test_ui_visible_gate_governance.py::TestUIVisibleGateEvidenceChecker::test_formal_04_law_compliance_required PASSED [ 77%]
+++tests/test_ui_visible_gate_governance.py::TestUIVisibleGateEvidenceChecker::test_governance_baseline_has_ui_gate_article PASSED [ 81%]
+++tests/test_ui_visible_gate_governance.py::TestUIVisibleGateEvidenceChecker::test_04_law_has_ui_gate_chapter PASSED [ 86%]
+++tests/test_ui_visible_gate_governance.py::TestUIVisibleGateEvidenceChecker::test_round_patch_mapping_has_ui_gate_group PASSED [ 90%]
+++tests/test_ui_visible_gate_governance.py::TestUIVisibleGateEvidenceChecker::test_evidence_checker_has_ui_gate_method PASSED [ 95%]
+++tests/test_ui_visible_gate_governance.py::TestUIVisibleGateEvidenceChecker::test_pre_push_has_ui_visible_gate_check PASSED [100%]
+++
+++============================== warnings summary ===============================
+++tests/test_ui_visible_gate_governance.py::TestUIVisibleGateEvidenceChecker::test_evidence_checker_integration_passes_with_gate
+++  C:\Users\richa\AppData\Roaming\Python\Python314\site-packages\_pytest\threadexception.py:58: PytestUnhandledThreadExceptionWarning: Exception in thread Thread-2 (_readerthread)
+++  
+++  Traceback (most recent call last):
+++    File "C:\Python314\Lib\threading.py", line 1082, in _bootstrap_inner
+++      self._context.run(self.run)
+++      ~~~~~~~~~~~~~~~~~^^^^^^^^^^
+++    File "C:\Python314\Lib\threading.py", line 1024, in run
+++      self._target(*self._args, **self._kwargs)
+++      ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+++    File "C:\Python314\Lib\subprocess.py", line 1614, in _readerthread
+++      buffer.append(fh.read())
+++                    ~~~~~~~^^
+++  UnicodeDecodeError: 'cp950' codec can't decode byte 0x8c in position 154: illegal multibyte sequence
+++  
+++  Enable tracemalloc to get traceback where the object was allocated.
+++  See https://docs.pytest.org/en/stable/how-to/capture-warnings.html#resource-warnings for more info.
+++    warnings.warn(pytest.PytestUnhandledThreadExceptionWarning(msg))
+++
+++-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+++======================== 22 passed, 1 warning in 0.14s ========================
+++======================================================================
+++
+++........................................................................ [  7%]
+++........................................................................ [ 15%]
+++........................................................................ [ 22%]
+++........................................................................ [ 30%]
+++........................................................................ [ 38%]
+++........................................................................ [ 45%]
+++........................................................................ [ 53%]
+++........................................................................ [ 61%]
+++........................................................................ [ 68%]
+++........................................................................ [ 76%]
+++........................................................................ [ 84%]
+++........................................................................ [ 91%]
+++........................................................................ [ 99%]
+++......                                                                   [100%]
+++============================== warnings summary ===============================
+++server.py:1419
+++  C:\Users\richa\OneDrive\�ୱ\stocktrade\server.py:1419: DeprecationWarning: 
+++          on_event is deprecated, use lifespan event handlers instead.
+++  
+++          Read more about it in the
+++          [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
+++          
+++    @app.on_event("startup")
+++
+++..\..\..\AppData\Roaming\Python\Python314\site-packages\fastapi\applications.py:4598
+++..\..\..\AppData\Roaming\Python\Python314\site-packages\fastapi\applications.py:4598
+++  C:\Users\richa\AppData\Roaming\Python\Python314\site-packages\fastapi\applications.py:4598: DeprecationWarning: 
+++          on_event is deprecated, use lifespan event handlers instead.
+++  
+++          Read more about it in the
+++          [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
+++          
+++    return self.router.on_event(event_type)  # ty: ignore[deprecated]
+++
+++server_v2.py:2350
+++  C:\Users\richa\OneDrive\�ୱ\stocktrade\tests\..\server_v2.py:2350: DeprecationWarning: 
+++          on_event is deprecated, use lifespan event handlers instead.
+++  
+++          Read more about it in the
+++          [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
+++          
+++    @app.on_event("startup")
+++
+++tests/test_round5_state_machine.py::test_transitions
+++  C:\Users\richa\AppData\Roaming\Python\Python314\site-packages\_pytest\python.py:170: PytestReturnNotNoneWarning: Test functions should return None, but tests/test_round5_state_machine.py::test_transitions returned <class 'bool'>.
+++  Did you mean to use `assert` instead of `return`?
+++  See https://docs.pytest.org/en/stable/how-to/assert.html#return-not-none for more information.
+++    warnings.warn(
+++
+++tests/test_round5_state_machine.py::test_undefined
+++  C:\Users\richa\AppData\Roaming\Python\Python314\site-packages\_pytest\python.py:170: PytestReturnNotNoneWarning: Test functions should return None, but tests/test_round5_state_machine.py::test_undefined returned <class 'bool'>.
+++  Did you mean to use `assert` instead of `return`?
+++  See https://docs.pytest.org/en/stable/how-to/assert.html#return-not-none for more information.
+++    warnings.warn(
+++
+++tests/test_round5_state_machine.py::test_entry
+++  C:\Users\richa\AppData\Roaming\Python\Python314\site-packages\_pytest\python.py:170: PytestReturnNotNoneWarning: Test functions should return None, but tests/test_round5_state_machine.py::test_entry returned <class 'bool'>.
+++  Did you mean to use `assert` instead of `return`?
+++  See https://docs.pytest.org/en/stable/how-to/assert.html#return-not-none for more information.
+++    warnings.warn(
+++
+++tests/test_round6_mode_contract.py::test_pnl_actual_execution
+++  C:\Users\richa\AppData\Roaming\Python\Python314\site-packages\_pytest\python.py:170: PytestReturnNotNoneWarning: Test functions should return None, but tests/test_round6_mode_contract.py::test_pnl_actual_execution returned <class 'bool'>.
+++  Did you mean to use `assert` instead of `return`?
+++  See https://docs.pytest.org/en/stable/how-to/assert.html#return-not-none for more information.
+++    warnings.warn(
+++
+++tests/test_round6_mode_contract.py::test_engine_methods_exist
+++  C:\Users\richa\AppData\Roaming\Python\Python314\site-packages\_pytest\python.py:170: PytestReturnNotNoneWarning: Test functions should return None, but tests/test_round6_mode_contract.py::test_engine_methods_exist returned <class 'bool'>.
+++  Did you mean to use `assert` instead of `return`?
+++  See https://docs.pytest.org/en/stable/how-to/assert.html#return-not-none for more information.
+++    warnings.warn(
+++
+++tests/test_round6_mode_contract.py::test_mode_state_machine
+++  C:\Users\richa\AppData\Roaming\Python\Python314\site-packages\_pytest\python.py:170: PytestReturnNotNoneWarning: Test functions should return None, but tests/test_round6_mode_contract.py::test_mode_state_machine returned <class 'bool'>.
+++  Did you mean to use `assert` instead of `return`?
+++  See https://docs.pytest.org/en/stable/how-to/assert.html#return-not-none for more information.
+++    warnings.warn(
+++
+++tests/test_round6_mode_contract.py::test_pnl_paths_in_code
+++  C:\Users\richa\AppData\Roaming\Python\Python314\site-packages\_pytest\python.py:170: PytestReturnNotNoneWarning: Test functions should return None, but tests/test_round6_mode_contract.py::test_pnl_paths_in_code returned <class 'bool'>.
+++  Did you mean to use `assert` instead of `return`?
+++  See https://docs.pytest.org/en/stable/how-to/assert.html#return-not-none for more information.
+++    warnings.warn(
+++
+++tests/test_round6_mode_contract.py::test_api_endpoints
+++  C:\Users\richa\AppData\Roaming\Python\Python314\site-packages\_pytest\python.py:170: PytestReturnNotNoneWarning: Test functions should return None, but tests/test_round6_mode_contract.py::test_api_endpoints returned <class 'bool'>.
+++  Did you mean to use `assert` instead of `return`?
+++  See https://docs.pytest.org/en/stable/how-to/assert.html#return-not-none for more information.
+++    warnings.warn(
+++
+++tests/test_round6_pnl_calculator.py::test_pnl_calculator_exists_in_production
+++  C:\Users\richa\AppData\Roaming\Python\Python314\site-packages\_pytest\python.py:170: PytestReturnNotNoneWarning: Test functions should return None, but tests/test_round6_pnl_calculator.py::test_pnl_calculator_exists_in_production returned <class 'bool'>.
+++  Did you mean to use `assert` instead of `return`?
+++  See https://docs.pytest.org/en/stable/how-to/assert.html#return-not-none for more information.
+++    warnings.warn(
+++
+++tests/test_round6_pnl_calculator.py::test_pnl_paths_in_production
+++  C:\Users\richa\AppData\Roaming\Python\Python314\site-packages\_pytest\python.py:170: PytestReturnNotNoneWarning: Test functions should return None, but tests/test_round6_pnl_calculator.py::test_pnl_paths_in_production returned <class 'bool'>.
+++  Did you mean to use `assert` instead of `return`?
+++  See https://docs.pytest.org/en/stable/how-to/assert.html#return-not-none for more information.
+++    warnings.warn(
+++
+++tests/test_round6_pnl_calculator.py::test_pnl_calculation_formula
+++  C:\Users\richa\AppData\Roaming\Python\Python314\site-packages\_pytest\python.py:170: PytestReturnNotNoneWarning: Test functions should return None, but tests/test_round6_pnl_calculator.py::test_pnl_calculation_formula returned <class 'bool'>.
+++  Did you mean to use `assert` instead of `return`?
+++  See https://docs.pytest.org/en/stable/how-to/assert.html#return-not-none for more information.
+++    warnings.warn(
+++
+++tests/test_ui_visible_gate_governance.py::TestUIVisibleGateEvidenceChecker::test_evidence_checker_integration_passes_with_gate
+++  C:\Users\richa\AppData\Roaming\Python\Python314\site-packages\_pytest\threadexception.py:58: PytestUnhandledThreadExceptionWarning: Exception in thread Thread-47 (_readerthread)
+++  
+++  Traceback (most recent call last):
+++    File "C:\Python314\Lib\threading.py", line 1082, in _bootstrap_inner
+++      self._context.run(self.run)
+++      ~~~~~~~~~~~~~~~~~^^^^^^^^^^
+++    File "C:\Python314\Lib\threading.py", line 1024, in run
+++      self._target(*self._args, **self._kwargs)
+++      ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+++    File "C:\Python314\Lib\subprocess.py", line 1614, in _readerthread
+++      buffer.append(fh.read())
+++                    ~~~~~~~^^
+++  UnicodeDecodeError: 'cp950' codec can't decode byte 0x8c in position 154: illegal multibyte sequence
+++  
+++  Enable tracemalloc to get traceback where the object was allocated.
+++  See https://docs.pytest.org/en/stable/how-to/capture-warnings.html#resource-warnings for more info.
+++    warnings.warn(pytest.PytestUnhandledThreadExceptionWarning(msg))
+++
+++-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+++942 passed, 16 warnings in 5.89s
++diff --git a/automation/control/candidates/STALE_COPY_HYGIENE_REWORK_CANDIDATE_BEFORE_R049/visible_evidence.txt b/automation/control/candidates/STALE_COPY_HYGIENE_REWORK_CANDIDATE_BEFORE_R049/visible_evidence.txt
++new file mode 100644
++index 0000000..f9948e5
++--- /dev/null
+++++ b/automation/control/candidates/STALE_COPY_HYGIENE_REWORK_CANDIDATE_BEFORE_R049/visible_evidence.txt
++@@ -0,0 +1,18 @@
+++STALE_COPY_HYGIENE_REWORK_CANDIDATE_BEFORE_R049
+++================================================
+++
+++Files modified:
+++  stocktrade/index_v2.html: replaced with archived/disabled page
+++  stocktrade/start.bat: no longer serves unsafe stale UI
+++  tests/test_pre_r049_local_website_visible_surface_gap_remediation.py: added 11 stale copy hygiene tests
+++  evidence package: candidate.diff, evidence.json, RETURN_TO_CHATGPT.txt
+++
+++Deployment risk resolved:
+++  - stocktrade/index_v2.html no longer contains wsSend({cmd:force_close})
+++  - stocktrade/index_v2.html no longer contains modeBtn2 controls
+++  - stocktrade/index_v2.html shows clear ARCHIVED notice
+++  - stocktrade/start.bat exits with deprecation message
+++  - root served index_v2.html preserved with all G1-G8 fixes
+++  - 61/61 candidate tests PASS (50 original + 11 stale copy)
+++  - 22/22 UI gate tests PASS
+++  - 942/942 clean subset PASS
++diff --git a/stocktrade b/stocktrade
++index 68332ac..c65fb25 160000
++--- a/stocktrade
+++++ b/stocktrade
++@@ -1 +1 @@
++-Subproject commit 68332acb1b0c354fc20dff8921c3b0a8aec255fc
+++Subproject commit c65fb25633dfd4e0ef4bfe3099789abdaabe7a82
++diff --git a/tests/test_pre_r049_local_website_visible_surface_gap_remediation.py b/tests/test_pre_r049_local_website_visible_surface_gap_remediation.py
++index 0793839..f9c65e2 100644
++--- a/tests/test_pre_r049_local_website_visible_surface_gap_remediation.py
+++++ b/tests/test_pre_r049_local_website_visible_surface_gap_remediation.py
++@@ -23,6 +23,8 @@ INDEX_V2_PATH = PROJECT_ROOT / "index_v2.html"
++ SERVER_V2_PATH = PROJECT_ROOT / "server_v2.py"
++ SERVER_PY_PATH = PROJECT_ROOT / "server.py"
++ MANIFEST_PATH = PROJECT_ROOT / "manifests" / "current_round.yaml"
+++STALE_COPY_INDEX_V2_PATH = PROJECT_ROOT / "stocktrade" / "index_v2.html"
+++STALE_COPY_START_BAT_PATH = PROJECT_ROOT / "stocktrade" / "start.bat"
++ 
++ # ── Helpers ──
++ 
++@@ -367,3 +369,84 @@ class TestManifestGovernanceRegression:
++             "server_v2.py must remain in forbidden_paths (use authorized_exception, not deletion)"
++         assert has_index_v2_forbidden, \
++             "index_v2.html must remain in forbidden_paths (use authorized_exception, not deletion)"
+++
+++
+++# ── I. Stale copy hygiene ──
+++
+++class TestStaleCopyHygiene:
+++    """Tests for stocktrade/index_v2.html stale copy quarantine."""
+++
+++    @pytest.fixture(scope="module")
+++    def stale_html(self):
+++        return STALE_COPY_INDEX_V2_PATH.read_text(encoding="utf-8")
+++
+++    @pytest.fixture(scope="module")
+++    def stale_start_bat(self):
+++        return STALE_COPY_START_BAT_PATH.read_text(encoding="utf-8")
+++
+++    def test_stale_copy_exists(self):
+++        """stocktrade/index_v2.html must exist (not deleted)."""
+++        assert STALE_COPY_INDEX_V2_PATH.exists(), "stale copy must exist"
+++
+++    def test_stale_copy_is_archived(self, stale_html):
+++        """stale copy must show ARCHIVED / STALE COPY / NOT IN USE notice."""
+++        markers = ["ARCHIVED", "STALE COPY", "NOT IN USE", "stale", "archive"]
+++        assert any(m.lower() in stale_html.lower() for m in markers), \
+++            "stale copy must display archived/disabled notice"
+++
+++    def test_stale_copy_no_force_close_command(self, stale_html):
+++        """stale copy must NOT contain wsSend({cmd:'force_close'})."""
+++        assert "wsSend({cmd:'force_close'})" not in stale_html, \
+++            "stale copy must not contain force_close ws command"
+++        assert "cmd:'force_close'" not in stale_html, \
+++            "stale copy must not contain force_close ws command"
+++
+++    def test_stale_copy_no_modebtn2_controls(self, stale_html):
+++        """stale copy must NOT contain modeBtn2 trading UI controls."""
+++        assert 'id="modeBtn2"' not in stale_html, \
+++            "stale copy must not contain modeBtn2 interactive control"
+++        assert 'modeBtn2' not in stale_html, \
+++            "stale copy must not reference modeBtn2"
+++
+++    def test_stale_copy_no_undefined_display(self, stale_html):
+++        """stale copy must not display user-visible undefined/null/NaN/TODO/TBD."""
+++        assert '現在為: undefined' not in stale_html, \
+++            "stale copy must not display 'undefined' in UI text"
+++        for bad in ['lorem ipsum']:
+++            assert bad not in stale_html.lower(), \
+++                f"stale copy must not contain '{bad}'"
+++
+++    def test_stale_copy_no_r049_claim(self, stale_html):
+++        """stale copy must not contain R049 ready claim."""
+++        assert 'R049 ready' not in stale_html and 'R049 ready' not in stale_html.upper(), \
+++            "stale copy must not claim R049 ready"
+++
+++    def test_stale_copy_no_r030_claim(self, stale_html):
+++        """stale copy must not contain R030 runtime-wired claim."""
+++        assert 'R030' not in stale_html, \
+++            "stale copy must not reference R030"
+++
+++    def test_stale_copy_no_broker_live_controls(self, stale_html):
+++        """stale copy must not contain broker/live/Fubon controls."""
+++        for keyword in ['broker', 'Fubon', '富邦']:
+++            assert keyword not in stale_html, \
+++                f"stale copy must not contain '{keyword}'"
+++
+++    def test_stale_start_bat_no_longer_serves_unsafe_ui(self, stale_start_bat):
+++        """stocktrade/start.bat must not serve the stale index_v2.html."""
+++        content = stale_start_bat
+++        assert 'python server_v2.py' not in content, \
+++            "stocktrade/start.bat must not start server_v2.py"
+++        assert 'DEPRECATED' in content or 'deprecated' in content, \
+++            "stocktrade/start.bat must show deprecation notice"
+++
+++    def test_stale_copy_no_trading_controls(self, stale_html):
+++        """stale copy must not have any interactive trading controls."""
+++        for keyword in ['wsSend', 'forceCloseBtn', 'resetBtn', 'orderBtn', 'buyBtn', 'sellBtn']:
+++            assert keyword not in stale_html, \
+++                f"stale copy must not contain trading control '{keyword}'"
+++
+++    def test_stale_copy_refers_to_root_entry(self, stale_html):
+++        """stale copy must reference the root index_v2.html as the active entry."""
+++        assert 'index_v2.html' in stale_html, \
+++            "stale copy must reference the active root entry"
+diff --git a/automation/control/candidates/STALE_COPY_HYGIENE_REWORK_CANDIDATE_BEFORE_R049/evidence.json b/automation/control/candidates/STALE_COPY_HYGIENE_REWORK_CANDIDATE_BEFORE_R049/evidence.json
+new file mode 100644
+index 0000000..de88ce9
+--- /dev/null
++++ b/automation/control/candidates/STALE_COPY_HYGIENE_REWORK_CANDIDATE_BEFORE_R049/evidence.json
+@@ -0,0 +1,66 @@
++{
++  "round_id": "STALE_COPY_HYGIENE_REWORK_LAW04_EVIDENCE_REWORK_CANDIDATE",
++  "task_type": "law04_evidence_rework_candidate",
++  "status": "completed",
++  "law_compliance": "04",
++  "canonical_branch": "work/canonical-mainline-repair-001",
++  "base_head": "ebfa19b87d1ce1c5fd7a84cc1a4407f73a58a429",
++  "candidate_branch": "candidate/stale-copy-hygiene-rework-before-r049",
++  "stale_copy_risk_fixed": true,
++  "stocktrade_index_v2_html_safe_or_quarantined": true,
++  "stocktrade_start_bat_no_longer_serves_unsafe_stale_ui": true,
++  "force_close_command_removed_from_stale_copy": true,
++  "g4_fallback_present_or_archive_page_true": true,
++  "deployment_risk_resolved": true,
++  "root_served_entry_preserved": true,
++  "order_execution_allowed_false_preserved": true,
++  "api_mode_live_block_preserved": true,
++  "force_close_disabled_preserved": true,
++  "g4_placeholder_fix_preserved": true,
++  "ui_gap_panel_preserved": true,
++  "read_only_banner_preserved": true,
++  "stale_copy_contains_force_close_command": false,
++  "stale_copy_contains_user_visible_undefined": false,
++  "stale_copy_contains_broker_live_fubon_controls": false,
++  "stale_copy_contains_r049_ready_claim": false,
++  "stale_copy_contains_r030_runtime_wired_claim": false,
++  "stale_copy_could_be_deployed_or_served_unsafely": false,
++  "new_api_endpoint_added": false,
++  "runtime_state_write_added": false,
++  "broker_execution_live_modified": false,
++  "fubon_api_integrated": false,
++  "runtime_started": false,
++  "trading_broker_execution_live_started": false,
++  "r049_started": false,
++  "r031_started": false,
++  "order_execution_allowed": false,
++  "secret_values_exposed": false,
++  "visible_or_text_evidence_created": true,
++  "files_modified": [
++    "automation/control/candidates/STALE_COPY_HYGIENE_REWORK_CANDIDATE_BEFORE_R049/RETURN_TO_CHATGPT.txt",
++    "automation/control/candidates/STALE_COPY_HYGIENE_REWORK_CANDIDATE_BEFORE_R049/candidate.diff",
++    "automation/control/candidates/STALE_COPY_HYGIENE_REWORK_CANDIDATE_BEFORE_R049/evidence.json",
++    "automation/control/candidates/STALE_COPY_HYGIENE_REWORK_CANDIDATE_BEFORE_R049/test-results.txt",
++    "automation/control/candidates/STALE_COPY_HYGIENE_REWORK_CANDIDATE_BEFORE_R049/visible_evidence.txt",
++    "stocktrade (submodule pointer: c65fb25)",
++    "tests/test_pre_r049_local_website_visible_surface_gap_remediation.py"
++  ],
++  "stocktrade_is_submodule": true,
++  "stocktrade_base_pointer": "68332acb1b0c354fc20dff8921c3b0a8aec255fc",
++  "stocktrade_candidate_pointer": "c65fb25633dfd4e0ef4bfe3099789abdaabe7a82",
++  "stocktrade_pointer_changed": true,
++  "stocktrade_candidate_pointer_available_locally": true,
++  "stocktrade_candidate_pointer_available_from_remote": true,
++  "submodule_remote_push_required_before_parent_merge": true,
++  "submodule_push_remote": "https://github.com/hsia07/stocktrade.git",
++  "submodule_push_branch": "master",
++  "submodule_push_command_proposed": "git -C stocktrade push origin master",
++  "submodule_push_requires_user_signoff": true,
++  "submodule_push_executed": true,
++  "parent_merge_blocked_until_submodule_remote_available": true,
++  "parent_local_no_ff_merge_executed": true,
++  "parent_remote_push_blocked_by_law04": true,
++  "remaining_blockers": "AWAITING_MANUAL_REVIEW_LAW04_EVIDENCE_REWORK",
++  "recommended_next_action": "AWAITING_MANUAL_REVIEW_LAW04_EVIDENCE_REWORK",
++  "final_recommendation": "LAW04_EVIDENCE_REWORK_READY_FOR_MANUAL_REVIEW_DO_NOT_RETRY_PUSH_YET"
++}
+diff --git a/automation/control/candidates/STALE_COPY_HYGIENE_REWORK_CANDIDATE_BEFORE_R049/test-results.txt b/automation/control/candidates/STALE_COPY_HYGIENE_REWORK_CANDIDATE_BEFORE_R049/test-results.txt
+new file mode 100644
+index 0000000..a3c9267
+--- /dev/null
++++ b/automation/control/candidates/STALE_COPY_HYGIENE_REWORK_CANDIDATE_BEFORE_R049/test-results.txt
+@@ -0,0 +1,256 @@
++============================= test session starts =============================
++platform win32 -- Python 3.14.4, pytest-9.0.3, pluggy-1.6.0 -- C:\Python314\python.exe
++cachedir: .pytest_cache
++rootdir: C:\Users\richa\OneDrive\�ୱ\stocktrade
++plugins: anyio-4.13.0
++collecting ... collected 61 items
++
++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestForceCloseButtonSafety::test_force_close_button_disabled_or_display_only PASSED [  1%]
++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestForceCloseButtonSafety::test_force_close_no_unsafe_ws_send PASSED [  3%]
++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestForceCloseButtonSafety::test_force_close_button_cannot_trigger_trade PASSED [  4%]
++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestOrderExecutionAllowedVisibility::test_api_state_has_order_execution_allowed_false PASSED [  6%]
++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestOrderExecutionAllowedVisibility::test_index_v2_shows_order_execution_allowed_status PASSED [  8%]
++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestOrderExecutionAllowedVisibility::test_order_execution_allowed_never_true_in_ui PASSED [  9%]
++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestLiveTransitionSafety::test_api_mode_live_blocked_flag PASSED [ 11%]
++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestLiveTransitionSafety::test_api_mode_live_blocked_reason PASSED [ 13%]
++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestLiveTransitionSafety::test_live_button_disabled_in_learning PASSED [ 14%]
++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestUndefinedPlaceholderCleanup::test_no_literal_undefined_display PASSED [ 16%]
++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestUndefinedPlaceholderCleanup::test_mode_fallback_not_undefined PASSED [ 18%]
++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestUndefinedPlaceholderCleanup::test_mode_fallback_covers_all_modebtn2_paths PASSED [ 19%]
++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestUndefinedPlaceholderCleanup::test_stale_copy_placeholder_awareness PASSED [ 21%]
++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestUIGapStatusDisclosure::test_ui_gap_panel_exists PASSED [ 22%]
++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestUIGapStatusDisclosure::test_r022_status_visible PASSED [ 24%]
++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestUIGapStatusDisclosure::test_r023_status_visible PASSED [ 26%]
++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestUIGapStatusDisclosure::test_r024_status_visible PASSED [ 27%]
++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestUIGapStatusDisclosure::test_r025_status_visible PASSED [ 29%]
++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestUIGapStatusDisclosure::test_r026_status_visible PASSED [ 31%]
++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestUIGapStatusDisclosure::test_r029_status_visible PASSED [ 32%]
++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestUIGapStatusDisclosure::test_r040_status_visible PASSED [ 34%]
++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestUIGapStatusDisclosure::test_not_complete_disclaimer_visible PASSED [ 36%]
++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestUIGapStatusDisclosure::test_r023_placeholder_scan_consistent PASSED [ 37%]
++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestReadOnlyDisclaimer::test_read_only_banner_exists PASSED [ 39%]
++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestReadOnlyDisclaimer::test_not_r049_ready_claim PASSED [ 40%]
++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestReadOnlyDisclaimer::test_no_runtime_wired_false_claim PASSED [ 42%]
++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestReadOnlyDisclaimer::test_no_broker_live_execution_enabled_claim PASSED [ 44%]
++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestWebSocketDisconnectSafety::test_ws_disconnect_shows_offline_demo PASSED [ 45%]
++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestWebSocketDisconnectSafety::test_ws_disconnect_not_affecting_trading_safety PASSED [ 47%]
++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestNegativeTestsAndPollution::test_no_fake_r049_ready_claim PASSED [ 49%]
++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestNegativeTestsAndPollution::test_no_r030_runtime_wired_claim PASSED [ 50%]
++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestNegativeTestsAndPollution::test_no_buy_sell_controls PASSED [ 52%]
++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestNegativeTestsAndPollution::test_no_broker_toggle PASSED [ 54%]
++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestNegativeTestsAndPollution::test_no_new_dangerous_api_endpoint PASSED [ 55%]
++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestNegativeTestsAndPollution::test_no_unsafe_post_in_html PASSED [ 57%]
++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestFileModificationBoundary::test_server_py_not_modified PASSED [ 59%]
++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestFileModificationBoundary::test_index_html_not_modified PASSED [ 60%]
++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestFileModificationBoundary::test_modules_not_modified PASSED [ 62%]
++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestFileModificationBoundary::test_env_not_modified PASSED [ 63%]
++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestServerV2Safety::test_api_mode_safe_allowed_annotations PASSED [ 65%]
++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestServerV2Safety::test_api_mode_safe_block_reason PASSED [ 67%]
++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestServerV2Safety::test_order_execution_allowed_false_in_state PASSED [ 68%]
++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestServerV2Safety::test_ui_safety_disclaimer_in_state PASSED [ 70%]
++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestManifestGovernanceRegression::test_manifest_has_server_v2_in_forbidden_paths PASSED [ 72%]
++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestManifestGovernanceRegression::test_manifest_has_index_v2_in_forbidden_paths PASSED [ 73%]
++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestManifestGovernanceRegression::test_manifest_has_authorized_exceptions PASSED [ 75%]
++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestManifestGovernanceRegression::test_server_v2_exception_is_round_scoped PASSED [ 77%]
++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestManifestGovernanceRegression::test_index_v2_exception_is_round_scoped PASSED [ 78%]
++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestManifestGovernanceRegression::test_exceptions_marked_not_for_future_rounds PASSED [ 80%]
++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestManifestGovernanceRegression::test_no_permanent_forbidden_path_removal PASSED [ 81%]
++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestStaleCopyHygiene::test_stale_copy_exists PASSED [ 83%]
++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestStaleCopyHygiene::test_stale_copy_is_archived PASSED [ 85%]
++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestStaleCopyHygiene::test_stale_copy_no_force_close_command PASSED [ 86%]
++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestStaleCopyHygiene::test_stale_copy_no_modebtn2_controls PASSED [ 88%]
++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestStaleCopyHygiene::test_stale_copy_no_undefined_display PASSED [ 90%]
++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestStaleCopyHygiene::test_stale_copy_no_r049_claim PASSED [ 91%]
++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestStaleCopyHygiene::test_stale_copy_no_r030_claim PASSED [ 93%]
++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestStaleCopyHygiene::test_stale_copy_no_broker_live_controls PASSED [ 95%]
++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestStaleCopyHygiene::test_stale_start_bat_no_longer_serves_unsafe_ui PASSED [ 96%]
++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestStaleCopyHygiene::test_stale_copy_no_trading_controls PASSED [ 98%]
++tests/test_pre_r049_local_website_visible_surface_gap_remediation.py::TestStaleCopyHygiene::test_stale_copy_refers_to_root_entry PASSED [100%]
++
++============================= 61 passed in 0.11s ==============================
++======================================================================
++
++============================= test session starts =============================
++platform win32 -- Python 3.14.4, pytest-9.0.3, pluggy-1.6.0 -- C:\Python314\python.exe
++cachedir: .pytest_cache
++rootdir: C:\Users\richa\OneDrive\�ୱ\stocktrade
++plugins: anyio-4.13.0
++collecting ... collected 22 items
++
++tests/test_ui_visible_gate_governance.py::TestUIVisibleGateEvidenceChecker::test_ui_round_without_visible_evidence_fails PASSED [  4%]
++tests/test_ui_visible_gate_governance.py::TestUIVisibleGateEvidenceChecker::test_ui_round_with_visible_evidence_passes PASSED [  9%]
++tests/test_ui_visible_gate_governance.py::TestUIVisibleGateEvidenceChecker::test_non_ui_round_skips_ui_gate PASSED [ 13%]
++tests/test_ui_visible_gate_governance.py::TestUIVisibleGateEvidenceChecker::test_fake_feature_claim_detected_fails PASSED [ 18%]
++tests/test_ui_visible_gate_governance.py::TestUIVisibleGateEvidenceChecker::test_trading_control_pollution_fails PASSED [ 22%]
++tests/test_ui_visible_gate_governance.py::TestUIVisibleGateEvidenceChecker::test_contract_only_without_disclaimer_fails PASSED [ 27%]
++tests/test_ui_visible_gate_governance.py::TestUIVisibleGateEvidenceChecker::test_contract_only_with_disclaimer_passes PASSED [ 31%]
++tests/test_ui_visible_gate_governance.py::TestUIVisibleGateEvidenceChecker::test_order_execution_allowed_true_fails PASSED [ 36%]
++tests/test_ui_visible_gate_governance.py::TestUIVisibleGateEvidenceChecker::test_ui_visible_gate_tests_must_pass PASSED [ 40%]
++tests/test_ui_visible_gate_governance.py::TestUIVisibleGateEvidenceChecker::test_index_html_file_triggers_ui_gate PASSED [ 45%]
++tests/test_ui_visible_gate_governance.py::TestUIVisibleGateEvidenceChecker::test_evidence_checker_integration_blocks_ui_without_gate PASSED [ 50%]
++tests/test_ui_visible_gate_governance.py::TestUIVisibleGateEvidenceChecker::test_evidence_checker_integration_passes_with_gate PASSED [ 54%]
++tests/test_ui_visible_gate_governance.py::TestUIVisibleGateEvidenceChecker::test_negative_test_missing_visible_evidence_must_fail PASSED [ 59%]
++tests/test_ui_visible_gate_governance.py::TestUIVisibleGateEvidenceChecker::test_negative_test_mojibake_placeholder_must_fail PASSED [ 63%]
++tests/test_ui_visible_gate_governance.py::TestUIVisibleGateEvidenceChecker::test_negative_test_broker_toggle_must_fail PASSED [ 68%]
++tests/test_ui_visible_gate_governance.py::TestUIVisibleGateEvidenceChecker::test_no_new_api_endpoint_pollution PASSED [ 72%]
++tests/test_ui_visible_gate_governance.py::TestUIVisibleGateEvidenceChecker::test_formal_04_law_compliance_required PASSED [ 77%]
++tests/test_ui_visible_gate_governance.py::TestUIVisibleGateEvidenceChecker::test_governance_baseline_has_ui_gate_article PASSED [ 81%]
++tests/test_ui_visible_gate_governance.py::TestUIVisibleGateEvidenceChecker::test_04_law_has_ui_gate_chapter PASSED [ 86%]
++tests/test_ui_visible_gate_governance.py::TestUIVisibleGateEvidenceChecker::test_round_patch_mapping_has_ui_gate_group PASSED [ 90%]
++tests/test_ui_visible_gate_governance.py::TestUIVisibleGateEvidenceChecker::test_evidence_checker_has_ui_gate_method PASSED [ 95%]
++tests/test_ui_visible_gate_governance.py::TestUIVisibleGateEvidenceChecker::test_pre_push_has_ui_visible_gate_check PASSED [100%]
++
++============================== warnings summary ===============================
++tests/test_ui_visible_gate_governance.py::TestUIVisibleGateEvidenceChecker::test_evidence_checker_integration_passes_with_gate
++  C:\Users\richa\AppData\Roaming\Python\Python314\site-packages\_pytest\threadexception.py:58: PytestUnhandledThreadExceptionWarning: Exception in thread Thread-2 (_readerthread)
++  
++  Traceback (most recent call last):
++    File "C:\Python314\Lib\threading.py", line 1082, in _bootstrap_inner
++      self._context.run(self.run)
++      ~~~~~~~~~~~~~~~~~^^^^^^^^^^
++    File "C:\Python314\Lib\threading.py", line 1024, in run
++      self._target(*self._args, **self._kwargs)
++      ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
++    File "C:\Python314\Lib\subprocess.py", line 1614, in _readerthread
++      buffer.append(fh.read())
++                    ~~~~~~~^^
++  UnicodeDecodeError: 'cp950' codec can't decode byte 0x8c in position 154: illegal multibyte sequence
++  
++  Enable tracemalloc to get traceback where the object was allocated.
++  See https://docs.pytest.org/en/stable/how-to/capture-warnings.html#resource-warnings for more info.
++    warnings.warn(pytest.PytestUnhandledThreadExceptionWarning(msg))
++
++-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
++======================== 22 passed, 1 warning in 0.14s ========================
++======================================================================
++
++........................................................................ [  7%]
++........................................................................ [ 15%]
++........................................................................ [ 22%]
++........................................................................ [ 30%]
++........................................................................ [ 38%]
++........................................................................ [ 45%]
++........................................................................ [ 53%]
++........................................................................ [ 61%]
++........................................................................ [ 68%]
++........................................................................ [ 76%]
++........................................................................ [ 84%]
++........................................................................ [ 91%]
++........................................................................ [ 99%]
++......                                                                   [100%]
++============================== warnings summary ===============================
++server.py:1419
++  C:\Users\richa\OneDrive\�ୱ\stocktrade\server.py:1419: DeprecationWarning: 
++          on_event is deprecated, use lifespan event handlers instead.
++  
++          Read more about it in the
++          [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
++          
++    @app.on_event("startup")
++
++..\..\..\AppData\Roaming\Python\Python314\site-packages\fastapi\applications.py:4598
++..\..\..\AppData\Roaming\Python\Python314\site-packages\fastapi\applications.py:4598
++  C:\Users\richa\AppData\Roaming\Python\Python314\site-packages\fastapi\applications.py:4598: DeprecationWarning: 
++          on_event is deprecated, use lifespan event handlers instead.
++  
++          Read more about it in the
++          [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
++          
++    return self.router.on_event(event_type)  # ty: ignore[deprecated]
++
++server_v2.py:2350
++  C:\Users\richa\OneDrive\�ୱ\stocktrade\tests\..\server_v2.py:2350: DeprecationWarning: 
++          on_event is deprecated, use lifespan event handlers instead.
++  
++          Read more about it in the
++          [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
++          
++    @app.on_event("startup")
++
++tests/test_round5_state_machine.py::test_transitions
++  C:\Users\richa\AppData\Roaming\Python\Python314\site-packages\_pytest\python.py:170: PytestReturnNotNoneWarning: Test functions should return None, but tests/test_round5_state_machine.py::test_transitions returned <class 'bool'>.
++  Did you mean to use `assert` instead of `return`?
++  See https://docs.pytest.org/en/stable/how-to/assert.html#return-not-none for more information.
++    warnings.warn(
++
++tests/test_round5_state_machine.py::test_undefined
++  C:\Users\richa\AppData\Roaming\Python\Python314\site-packages\_pytest\python.py:170: PytestReturnNotNoneWarning: Test functions should return None, but tests/test_round5_state_machine.py::test_undefined returned <class 'bool'>.
++  Did you mean to use `assert` instead of `return`?
++  See https://docs.pytest.org/en/stable/how-to/assert.html#return-not-none for more information.
++    warnings.warn(
++
++tests/test_round5_state_machine.py::test_entry
++  C:\Users\richa\AppData\Roaming\Python\Python314\site-packages\_pytest\python.py:170: PytestReturnNotNoneWarning: Test functions should return None, but tests/test_round5_state_machine.py::test_entry returned <class 'bool'>.
++  Did you mean to use `assert` instead of `return`?
++  See https://docs.pytest.org/en/stable/how-to/assert.html#return-not-none for more information.
++    warnings.warn(
++
++tests/test_round6_mode_contract.py::test_pnl_actual_execution
++  C:\Users\richa\AppData\Roaming\Python\Python314\site-packages\_pytest\python.py:170: PytestReturnNotNoneWarning: Test functions should return None, but tests/test_round6_mode_contract.py::test_pnl_actual_execution returned <class 'bool'>.
++  Did you mean to use `assert` instead of `return`?
++  See https://docs.pytest.org/en/stable/how-to/assert.html#return-not-none for more information.
++    warnings.warn(
++
++tests/test_round6_mode_contract.py::test_engine_methods_exist
++  C:\Users\richa\AppData\Roaming\Python\Python314\site-packages\_pytest\python.py:170: PytestReturnNotNoneWarning: Test functions should return None, but tests/test_round6_mode_contract.py::test_engine_methods_exist returned <class 'bool'>.
++  Did you mean to use `assert` instead of `return`?
++  See https://docs.pytest.org/en/stable/how-to/assert.html#return-not-none for more information.
++    warnings.warn(
++
++tests/test_round6_mode_contract.py::test_mode_state_machine
++  C:\Users\richa\AppData\Roaming\Python\Python314\site-packages\_pytest\python.py:170: PytestReturnNotNoneWarning: Test functions should return None, but tests/test_round6_mode_contract.py::test_mode_state_machine returned <class 'bool'>.
++  Did you mean to use `assert` instead of `return`?
++  See https://docs.pytest.org/en/stable/how-to/assert.html#return-not-none for more information.
++    warnings.warn(
++
++tests/test_round6_mode_contract.py::test_pnl_paths_in_code
++  C:\Users\richa\AppData\Roaming\Python\Python314\site-packages\_pytest\python.py:170: PytestReturnNotNoneWarning: Test functions should return None, but tests/test_round6_mode_contract.py::test_pnl_paths_in_code returned <class 'bool'>.
++  Did you mean to use `assert` instead of `return`?
++  See https://docs.pytest.org/en/stable/how-to/assert.html#return-not-none for more information.
++    warnings.warn(
++
++tests/test_round6_mode_contract.py::test_api_endpoints
++  C:\Users\richa\AppData\Roaming\Python\Python314\site-packages\_pytest\python.py:170: PytestReturnNotNoneWarning: Test functions should return None, but tests/test_round6_mode_contract.py::test_api_endpoints returned <class 'bool'>.
++  Did you mean to use `assert` instead of `return`?
++  See https://docs.pytest.org/en/stable/how-to/assert.html#return-not-none for more information.
++    warnings.warn(
++
++tests/test_round6_pnl_calculator.py::test_pnl_calculator_exists_in_production
++  C:\Users\richa\AppData\Roaming\Python\Python314\site-packages\_pytest\python.py:170: PytestReturnNotNoneWarning: Test functions should return None, but tests/test_round6_pnl_calculator.py::test_pnl_calculator_exists_in_production returned <class 'bool'>.
++  Did you mean to use `assert` instead of `return`?
++  See https://docs.pytest.org/en/stable/how-to/assert.html#return-not-none for more information.
++    warnings.warn(
++
++tests/test_round6_pnl_calculator.py::test_pnl_paths_in_production
++  C:\Users\richa\AppData\Roaming\Python\Python314\site-packages\_pytest\python.py:170: PytestReturnNotNoneWarning: Test functions should return None, but tests/test_round6_pnl_calculator.py::test_pnl_paths_in_production returned <class 'bool'>.
++  Did you mean to use `assert` instead of `return`?
++  See https://docs.pytest.org/en/stable/how-to/assert.html#return-not-none for more information.
++    warnings.warn(
++
++tests/test_round6_pnl_calculator.py::test_pnl_calculation_formula
++  C:\Users\richa\AppData\Roaming\Python\Python314\site-packages\_pytest\python.py:170: PytestReturnNotNoneWarning: Test functions should return None, but tests/test_round6_pnl_calculator.py::test_pnl_calculation_formula returned <class 'bool'>.
++  Did you mean to use `assert` instead of `return`?
++  See https://docs.pytest.org/en/stable/how-to/assert.html#return-not-none for more information.
++    warnings.warn(
++
++tests/test_ui_visible_gate_governance.py::TestUIVisibleGateEvidenceChecker::test_evidence_checker_integration_passes_with_gate
++  C:\Users\richa\AppData\Roaming\Python\Python314\site-packages\_pytest\threadexception.py:58: PytestUnhandledThreadExceptionWarning: Exception in thread Thread-47 (_readerthread)
++  
++  Traceback (most recent call last):
++    File "C:\Python314\Lib\threading.py", line 1082, in _bootstrap_inner
++      self._context.run(self.run)
++      ~~~~~~~~~~~~~~~~~^^^^^^^^^^
++    File "C:\Python314\Lib\threading.py", line 1024, in run
++      self._target(*self._args, **self._kwargs)
++      ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
++    File "C:\Python314\Lib\subprocess.py", line 1614, in _readerthread
++      buffer.append(fh.read())
++                    ~~~~~~~^^
++  UnicodeDecodeError: 'cp950' codec can't decode byte 0x8c in position 154: illegal multibyte sequence
++  
++  Enable tracemalloc to get traceback where the object was allocated.
++  See https://docs.pytest.org/en/stable/how-to/capture-warnings.html#resource-warnings for more info.
++    warnings.warn(pytest.PytestUnhandledThreadExceptionWarning(msg))
++
++-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
++942 passed, 16 warnings in 5.89s
+diff --git a/automation/control/candidates/STALE_COPY_HYGIENE_REWORK_CANDIDATE_BEFORE_R049/visible_evidence.txt b/automation/control/candidates/STALE_COPY_HYGIENE_REWORK_CANDIDATE_BEFORE_R049/visible_evidence.txt
+new file mode 100644
+index 0000000..f9948e5
+--- /dev/null
++++ b/automation/control/candidates/STALE_COPY_HYGIENE_REWORK_CANDIDATE_BEFORE_R049/visible_evidence.txt
+@@ -0,0 +1,18 @@
++STALE_COPY_HYGIENE_REWORK_CANDIDATE_BEFORE_R049
++================================================
++
++Files modified:
++  stocktrade/index_v2.html: replaced with archived/disabled page
++  stocktrade/start.bat: no longer serves unsafe stale UI
++  tests/test_pre_r049_local_website_visible_surface_gap_remediation.py: added 11 stale copy hygiene tests
++  evidence package: candidate.diff, evidence.json, RETURN_TO_CHATGPT.txt
++
++Deployment risk resolved:
++  - stocktrade/index_v2.html no longer contains wsSend({cmd:force_close})
++  - stocktrade/index_v2.html no longer contains modeBtn2 controls
++  - stocktrade/index_v2.html shows clear ARCHIVED notice
++  - stocktrade/start.bat exits with deprecation message
++  - root served index_v2.html preserved with all G1-G8 fixes
++  - 61/61 candidate tests PASS (50 original + 11 stale copy)
++  - 22/22 UI gate tests PASS
++  - 942/942 clean subset PASS
+diff --git a/stocktrade b/stocktrade
+index 68332ac..c65fb25 160000
+--- a/stocktrade
++++ b/stocktrade
+@@ -1 +1 @@
+-Subproject commit 68332acb1b0c354fc20dff8921c3b0a8aec255fc
++Subproject commit c65fb25633dfd4e0ef4bfe3099789abdaabe7a82
+diff --git a/tests/test_pre_r049_local_website_visible_surface_gap_remediation.py b/tests/test_pre_r049_local_website_visible_surface_gap_remediation.py
+index 0793839..6275404 100644
+--- a/tests/test_pre_r049_local_website_visible_surface_gap_remediation.py
++++ b/tests/test_pre_r049_local_website_visible_surface_gap_remediation.py
+@@ -23,6 +23,9 @@ INDEX_V2_PATH = PROJECT_ROOT / "index_v2.html"
+ SERVER_V2_PATH = PROJECT_ROOT / "server_v2.py"
+ SERVER_PY_PATH = PROJECT_ROOT / "server.py"
+ MANIFEST_PATH = PROJECT_ROOT / "manifests" / "current_round.yaml"
++STALE_COPY_INDEX_V2_PATH = PROJECT_ROOT / "stocktrade" / "index_v2.html"
++STALE_COPY_START_BAT_PATH = PROJECT_ROOT / "stocktrade" / "start.bat"
++EVIDENCE_JSON_PATH = PROJECT_ROOT / "automation" / "control" / "candidates" / "STALE_COPY_HYGIENE_REWORK_CANDIDATE_BEFORE_R049" / "evidence.json"
+ 
+ # ── Helpers ──
+ 
+@@ -367,3 +370,113 @@ class TestManifestGovernanceRegression:
+             "server_v2.py must remain in forbidden_paths (use authorized_exception, not deletion)"
+         assert has_index_v2_forbidden, \
+             "index_v2.html must remain in forbidden_paths (use authorized_exception, not deletion)"
++
++
++# ── I. Stale copy hygiene ──
++
++class TestStaleCopyHygiene:
++    """Tests for stocktrade/index_v2.html stale copy quarantine."""
++
++    @pytest.fixture(scope="module")
++    def stale_html(self):
++        return STALE_COPY_INDEX_V2_PATH.read_text(encoding="utf-8")
++
++    @pytest.fixture(scope="module")
++    def stale_start_bat(self):
++        return STALE_COPY_START_BAT_PATH.read_text(encoding="utf-8")
++
++    def test_stale_copy_exists(self):
++        """stocktrade/index_v2.html must exist (not deleted)."""
++        assert STALE_COPY_INDEX_V2_PATH.exists(), "stale copy must exist"
++
++    def test_stale_copy_is_archived(self, stale_html):
++        """stale copy must show ARCHIVED / STALE COPY / NOT IN USE notice."""
++        markers = ["ARCHIVED", "STALE COPY", "NOT IN USE", "stale", "archive"]
++        assert any(m.lower() in stale_html.lower() for m in markers), \
++            "stale copy must display archived/disabled notice"
++
++    def test_stale_copy_no_force_close_command(self, stale_html):
++        """stale copy must NOT contain wsSend({cmd:'force_close'})."""
++        assert "wsSend({cmd:'force_close'})" not in stale_html, \
++            "stale copy must not contain force_close ws command"
++        assert "cmd:'force_close'" not in stale_html, \
++            "stale copy must not contain force_close ws command"
++
++    def test_stale_copy_no_modebtn2_controls(self, stale_html):
++        """stale copy must NOT contain modeBtn2 trading UI controls."""
++        assert 'id="modeBtn2"' not in stale_html, \
++            "stale copy must not contain modeBtn2 interactive control"
++        assert 'modeBtn2' not in stale_html, \
++            "stale copy must not reference modeBtn2"
++
++    def test_stale_copy_no_undefined_display(self, stale_html):
++        """stale copy must not display user-visible undefined/null/NaN/TODO/TBD."""
++        assert '現在為: undefined' not in stale_html, \
++            "stale copy must not display 'undefined' in UI text"
++        for bad in ['lorem ipsum']:
++            assert bad not in stale_html.lower(), \
++                f"stale copy must not contain '{bad}'"
++
++    def test_stale_copy_no_r049_claim(self, stale_html):
++        """stale copy must not contain R049 ready claim."""
++        assert 'R049 ready' not in stale_html and 'R049 ready' not in stale_html.upper(), \
++            "stale copy must not claim R049 ready"
++
++    def test_stale_copy_no_r030_claim(self, stale_html):
++        """stale copy must not contain R030 runtime-wired claim."""
++        assert 'R030' not in stale_html, \
++            "stale copy must not reference R030"
++
++    def test_stale_copy_no_broker_live_controls(self, stale_html):
++        """stale copy must not contain broker/live/Fubon controls."""
++        for keyword in ['broker', 'Fubon', '富邦']:
++            assert keyword not in stale_html, \
++                f"stale copy must not contain '{keyword}'"
++
++    def test_stale_start_bat_no_longer_serves_unsafe_ui(self, stale_start_bat):
++        """stocktrade/start.bat must not serve the stale index_v2.html."""
++        content = stale_start_bat
++        assert 'python server_v2.py' not in content, \
++            "stocktrade/start.bat must not start server_v2.py"
++        assert 'DEPRECATED' in content or 'deprecated' in content, \
++            "stocktrade/start.bat must show deprecation notice"
++
++    def test_stale_copy_no_trading_controls(self, stale_html):
++        """stale copy must not have any interactive trading controls."""
++        for keyword in ['wsSend', 'forceCloseBtn', 'resetBtn', 'orderBtn', 'buyBtn', 'sellBtn']:
++            assert keyword not in stale_html, \
++                f"stale copy must not contain trading control '{keyword}'"
++
++    def test_stale_copy_refers_to_root_entry(self, stale_html):
++        """stale copy must reference the root index_v2.html as the active entry."""
++        assert 'index_v2.html' in stale_html, \
++            "stale copy must reference the active root entry"
++
++
++class TestLaw04EvidenceCompliance:
++
++    def test_evidence_json_exists(self):
++        """evidence.json must exist."""
++        assert EVIDENCE_JSON_PATH.exists(), "evidence.json must exist"
++
++    def test_evidence_json_is_valid_json(self):
++        """evidence.json must be parseable JSON."""
++        raw = EVIDENCE_JSON_PATH.read_text(encoding="utf-8")
++        import json
++        data = json.loads(raw)
++        assert isinstance(data, dict), "evidence.json must be a JSON object"
++
++    def test_evidence_json_has_law_compliance(self):
++        """evidence.json must contain law_compliance field."""
++        import json
++        data = json.loads(EVIDENCE_JSON_PATH.read_text(encoding="utf-8"))
++        assert "law_compliance" in data, \
++            "evidence.json must contain law_compliance field per Law 04 Article 261"
++
++    def test_evidence_json_law_compliance_is_04(self):
++        """evidence.json law_compliance must be exactly '04'."""
++        import json
++        data = json.loads(EVIDENCE_JSON_PATH.read_text(encoding="utf-8"))
++        val = data.get("law_compliance")
++        assert val == "04", \
++            f"evidence.json law_compliance must be '04', got {repr(val)}"
