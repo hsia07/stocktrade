@@ -13,7 +13,6 @@ Taiwan Market Constraints (±10%, T+2, 集合竞价, 零股/整股):
 
 from typing import Dict, Optional, Tuple
 from datetime import datetime, time, timedelta
-import random
 
 
 class MarketRealityLayer:
@@ -90,17 +89,16 @@ class MarketRealityLayer:
         
     def estimate_fill_rate(self, volume: int, is_odd_lot: bool = False) -> float:
         """
-        Estimate fill rate probability.
-        Odd lots have lower fill rates.
-        Large volumes may have partial fills.
+        Estimate fill rate probability (deterministic).
+        Odd lots have lower fill rates. Large volumes may have partial fills.
+        Returns deterministic probability based on volume and lot type only.
+        No random, no time-dependence.
         """
         if is_odd_lot:
-            return random.uniform(0.75, 0.95)  # Lower fill rate for odd lots
-        
-        if volume > self.round_lot_size * 10:  # Large volume
-            return random.uniform(0.85, 0.98)  # Partial fill likely
-            
-        return random.uniform(0.95, 1.0)  # Normal fill rate
+            return 0.80
+        if volume > self.round_lot_size * 10:
+            return 0.85
+        return 0.97
         
     def check_liquidity(self, volume: int, avg_daily_volume: int) -> Tuple[bool, str]:
         """

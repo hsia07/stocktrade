@@ -1,0 +1,305 @@
+diff --git a/modules/market_reality/arbitrage_slippage_model.py b/modules/market_reality/arbitrage_slippage_model.py
+index 25aa185..02f6705 100644
+--- a/modules/market_reality/arbitrage_slippage_model.py
++++ b/modules/market_reality/arbitrage_slippage_model.py
+@@ -11,7 +11,6 @@ Taiwan Market Realities:
+ """
+ 
+ from typing import Dict
+-import random
+ 
+ 
+ class ArbitrageSlippageModel:
+@@ -105,12 +104,15 @@ class ArbitrageSlippageModel:
+
+     def _estimate_fill_rate(self, opportunity: 'ArbitrageOpportunity') -> float:
+         """
+-        Estimate fill rate probability.
+-        May not fill 100% of intended arbitrage volume.
++        Estimate fill rate probability (deterministic).
++        Deterministic probability based on volume and lot type only.
++        No random, no time-dependence.
+         """
+-        # Simplified: 90% to 100% fill rate
+-        # In reality, depends on order book depth, market volatility, etc.
+-        return random.uniform(0.90, 1.0)
++        if opportunity.volume < 1000:
++            return 0.80
++        if opportunity.volume > 10000:
++            return 0.85
++        return 0.97
+
+     def _check_liquidity(self, opportunity: 'ArbitrageOpportunity') -> bool:
+         """
+diff --git a/modules/market_reality/layer.py b/modules/market_reality/layer.py
+index 0e249a3..afc22b6 100644
+--- a/modules/market_reality/layer.py
++++ b/modules/market_reality/layer.py
+@@ -13,7 +13,6 @@ Taiwan Market Constraints (±10%, T+2, 集合竞价, 零股/整股):
+ 
+ from typing import Dict, Optional, Tuple
+ from datetime import datetime, time, timedelta
+-import random
+
+
+ class MarketRealityLayer:
+@@ -90,17 +89,16 @@ class MarketRealityLayer:
+
+     def estimate_fill_rate(self, volume: int, is_odd_lot: bool = False) -> float:
+         """
+-        Estimate fill rate probability.
+-        Odd lots have lower fill rates.
+-        Large volumes may have partial fills.
++        Estimate fill rate probability (deterministic).
++        Odd lots have lower fill rates. Large volumes may have partial fills.
++        Returns deterministic probability based on volume and lot type only.
++        No random, no time-dependence.
+         """
+         if is_odd_lot:
+-            return random.uniform(0.75, 0.95)  # Lower fill rate for odd lots
+-
+-        if volume > self.round_lot_size * 10:  # Large volume
+-            return random.uniform(0.85, 0.98)  # Partial fill likely
+-
+-        return random.uniform(0.95, 1.0)  # Normal fill rate
++            return 0.80
++        if volume > self.round_lot_size * 10:
++            return 0.85
++        return 0.97
+
+     def check_liquidity(self, volume: int, avg_daily_volume: int) -> Tuple[bool, str]:
+         """
+diff --git a/tests/test_market_reality_layer.py b/tests/test_market_reality_layer.py
+index c99a1ea..805c50d 100644
+--- a/tests/test_market_reality_layer.py
++++ b/tests/test_market_reality_layer.py
+@@ -147,6 +147,34 @@ class TestR028CostSlippageFillSchema:
+         round_rate = layer.estimate_fill_rate(1000, is_odd_lot=False)
+         odd_rate = layer.estimate_fill_rate(500, is_odd_lot=True)
+         assert odd_rate < round_rate
++        assert round_rate == 0.97
++        assert odd_rate == 0.80
++
++    def test_fill_rate_large_volume_lower(self):
++        layer = MarketRealityLayer()
++        normal_rate = layer.estimate_fill_rate(1000, is_odd_lot=False)
++        large_rate = layer.estimate_fill_rate(15000, is_odd_lot=False)
++        assert large_rate < normal_rate
++        assert normal_rate == 0.97
++        assert large_rate == 0.85
++
++    def test_fill_rate_repeated_calls_identical(self):
++        layer = MarketRealityLayer()
++        r1 = layer.estimate_fill_rate(5000, is_odd_lot=False)
++        r2 = layer.estimate_fill_rate(5000, is_odd_lot=False)
++        r3 = layer.estimate_fill_rate(5000, is_odd_lot=False)
++        assert r1 == r2 == r3
++
++    def test_fill_rate_deterministic_table(self):
++        layer = MarketRealityLayer()
++        assert layer.estimate_fill_rate(500, is_odd_lot=True) == 0.80
++        assert layer.estimate_fill_rate(999, is_odd_lot=True) == 0.80
++        assert layer.estimate_fill_rate(1000, is_odd_lot=False) == 0.97
++        assert layer.estimate_fill_rate(5000, is_odd_lot=False) == 0.97
++        assert layer.estimate_fill_rate(10000, is_odd_lot=False) == 0.97
++        assert layer.estimate_fill_rate(10001, is_odd_lot=False) == 0.85
++        assert layer.estimate_fill_rate(15000, is_odd_lot=False) == 0.85
++        assert layer.estimate_fill_rate(50000, is_odd_lot=False) == 0.85
+
+
+diff --git a/tests/test_r028_fill_rate_determinism.py b/tests/test_r028_fill_rate_determinism.py
+new file mode 100644
+--- /dev/null
++++ b/tests/test_r028_fill_rate_determinism.py
+@@ -0,0 +1,175 @@
++"""
++R028: Fill Rate Determinism Tests (填充率确定性测试)
++Tests R028 deterministic rework: random.uniform removed from fill-rate paths.
++
++This file tests the deterministic fill-rate/probability rework:
++1. layer.py:estimate_fill_rate is now deterministic (no random.uniform)
++2. arbitrage_slippage_model.py:_estimate_fill_rate is now deterministic (no random.uniform)
++3. Same input repeated calls produce identical output
++4. Arbitrage net_profit is deterministic
++5. Protection veto is deterministic
++"""
++
++import sys, os
++sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
++
++import pytest
++from modules.market_reality.layer import MarketRealityLayer
++from modules.market_reality.arbitrage_slippage_model import ArbitrageSlippageModel
++from modules.strategy.arbitrage_protection import (
++    ArbitrageProtection, ArbitrageOpportunity, ArbitrageType, ProtectionDecision
++)
++from modules.risk.arbitrage_risk_gate import ArbitrageRiskGate
++
++
++class TestR028FillRateDeterminism:
++    """Test R028 estimate_fill_rate determinism."""
++
++    def test_estimate_fill_rate_repeated_identical_odd_lot(self):
++        layer = MarketRealityLayer()
++        r1 = layer.estimate_fill_rate(500, is_odd_lot=True)
++        r2 = layer.estimate_fill_rate(500, is_odd_lot=True)
++        r3 = layer.estimate_fill_rate(500, is_odd_lot=True)
++        assert r1 == r2 == r3
++
++    def test_estimate_fill_rate_repeated_identical_board_lot(self):
++        layer = MarketRealityLayer()
++        r1 = layer.estimate_fill_rate(1000, is_odd_lot=False)
++        r2 = layer.estimate_fill_rate(1000, is_odd_lot=False)
++        r3 = layer.estimate_fill_rate(1000, is_odd_lot=False)
++        assert r1 == r2 == r3
++
++    def test_estimate_fill_rate_repeated_identical_large_volume(self):
++        layer = MarketRealityLayer()
++        r1 = layer.estimate_fill_rate(15000, is_odd_lot=False)
++        r2 = layer.estimate_fill_rate(15000, is_odd_lot=False)
++        r3 = layer.estimate_fill_rate(15000, is_odd_lot=False)
++        assert r1 == r2 == r3
++
++    def test_estimate_fill_rate_deterministic_values(self):
++        layer = MarketRealityLayer()
++        assert layer.estimate_fill_rate(500, is_odd_lot=True) == 0.80
++        assert layer.estimate_fill_rate(999, is_odd_lot=True) == 0.80
++        assert layer.estimate_fill_rate(1000, is_odd_lot=False) == 0.97
++        assert layer.estimate_fill_rate(5000, is_odd_lot=False) == 0.97
++        assert layer.estimate_fill_rate(10000, is_odd_lot=False) == 0.97
++        assert layer.estimate_fill_rate(10001, is_odd_lot=False) == 0.85
++        assert layer.estimate_fill_rate(50000, is_odd_lot=False) == 0.85
++
++    def test_estimate_fill_rate_odd_lot_lower_than_board_lot(self):
++        layer = MarketRealityLayer()
++        odd = layer.estimate_fill_rate(500, is_odd_lot=True)
++        board = layer.estimate_fill_rate(1000, is_odd_lot=False)
++        assert odd < board
++
++    def test_estimate_fill_rate_large_volume_lower_than_normal(self):
++        layer = MarketRealityLayer()
++        normal = layer.estimate_fill_rate(1000, is_odd_lot=False)
++        large = layer.estimate_fill_rate(15000, is_odd_lot=False)
++        assert large < normal
++
++
++class TestR028ArbitrageFillRateDeterminism:
++    """Test arbitrage_slippage_model _estimate_fill_rate determinism."""
++
++    def _make_opp(self, volume):
++        return ArbitrageOpportunity(
++            arbitrage_type=ArbitrageType.SPOT_FUTURES,
++            security_a="2330.TW",
++            security_b="TXF.TF",
++            gross_profit=10000.0,
++            volume=volume,
++            price_a=500.0,
++            price_b=505.0,
++            price_limit_upper=550.0,
++            price_limit_lower=450.0,
++            settlement_date="2026-05-08"
++        )
++
++    def test_estimate_fill_rate_repeated_identical_odd_lot(self):
++        model = ArbitrageSlippageModel()
++        opp = self._make_opp(500)
++        r1 = model._estimate_fill_rate(opp)
++        r2 = model._estimate_fill_rate(opp)
++        r3 = model._estimate_fill_rate(opp)
++        assert r1 == r2 == r3
++
++    def test_estimate_fill_rate_repeated_identical_board_lot(self):
++        model = ArbitrageSlippageModel()
++        opp = self._make_opp(1000)
++        r1 = model._estimate_fill_rate(opp)
++        r2 = model._estimate_fill_rate(opp)
++        r3 = model._estimate_fill_rate(opp)
++        assert r1 == r2 == r3
++
++    def test_estimate_fill_rate_repeated_identical_large_volume(self):
++        model = ArbitrageSlippageModel()
++        opp = self._make_opp(15000)
++        r1 = model._estimate_fill_rate(opp)
++        r2 = model._estimate_fill_rate(opp)
++        r3 = model._estimate_fill_rate(opp)
++        assert r1 == r2 == r3
++
++    def test_estimate_fill_rate_deterministic_values(self):
++        model = ArbitrageSlippageModel()
++        assert model._estimate_fill_rate(self._make_opp(500)) == 0.80
++        assert model._estimate_fill_rate(self._make_opp(999)) == 0.80
++        assert model._estimate_fill_rate(self._make_opp(1000)) == 0.97
++        assert model._estimate_fill_rate(self._make_opp(5000)) == 0.97
++        assert model._estimate_fill_rate(self._make_opp(10000)) == 0.97
++        assert model._estimate_fill_rate(self._make_opp(10001)) == 0.85
++        assert model._estimate_fill_rate(self._make_opp(50000)) == 0.85
++
++
++class TestR028ArbitrageNetProfitDeterminism:
++    """Test arbitrage net_profit determinism (depends on fill_rate)."""
++
++    def _make_opp(self, volume, gross_profit=10000.0):
++        return ArbitrageOpportunity(
++            arbitrage_type=ArbitrageType.SPOT_FUTURES,
++            security_a="2330.TW",
++            security_b="TXF.TF",
++            gross_profit=gross_profit,
++            volume=volume,
++            price_a=500.0,
++            price_b=505.0,
++            price_limit_upper=550.0,
++            price_limit_lower=450.0,
++            settlement_date="2026-05-08"
++        )
++
++    def test_net_profit_repeated_identical(self):
++        model = ArbitrageSlippageModel()
++        opp = self._make_opp(5000, gross_profit=10000.0)
++        r1 = model.evaluate_arbitrage(opp)
++        r2 = model.evaluate_arbitrage(opp)
++        r3 = model.evaluate_arbitrage(opp)
++        assert r1['net_profit'] == r2['net_profit'] == r3['net_profit']
++
++    def test_fill_rate_repeated_identical(self):
++        model = ArbitrageSlippageModel()
++        opp = self._make_opp(5000, gross_profit=10000.0)
++        r1 = model.evaluate_arbitrage(opp)
++        r2 = model.evaluate_arbitrage(opp)
++        r3 = model.evaluate_arbitrage(opp)
++        assert r1['fill_rate'] == r2['fill_rate'] == r3['fill_rate']
++
++    def test_protection_veto_repeated_identical(self):
++        gate = ArbitrageRiskGate()
++        model = ArbitrageSlippageModel()
++        protection = ArbitrageProtection(gate, model)
++        opp = self._make_opp(5000, gross_profit=10000.0)
++        r1 = protection.evaluate_opportunity(opp)
++        r2 = protection.evaluate_opportunity(opp)
++        r3 = protection.evaluate_opportunity(opp)
++        assert r1.net_profit_after_costs == r2.net_profit_after_costs == r3.net_profit_after_costs
++        assert r1.decision == r2.decision == r3.decision
++        assert r1.fill_rate_estimate == r2.fill_rate_estimate == r3.fill_rate_estimate
+
+
+diff --git a/tests/test_r028_fill_rate_determinism.py b/tests/test_r028_fill_rate_determinism.py
+new file mode 100644
+--- /dev/null
++++ b/tests/test_r028_fill_rate_determinism.py
++
++
++class TestR028NoRandomInFillPaths:
++    """Source scan: no random in fill-rate decision paths."""
++
++    def test_no_random_import_in_layer(self):
++        with open("modules/market_reality/layer.py", encoding="utf-8") as f:
++            content = f.read()
++        assert "import random" not in content
++        assert "random.uniform" not in content
++        assert "random.random" not in content
++
++    def test_no_random_import_in_arbitrage_slippage(self):
++        with open("modules/market_reality/arbitrage_slippage_model.py", encoding="utf-8") as f:
++            content = f.read()
++        assert "import random" not in content
++        assert "random.uniform" not in content
++        assert "random.random" not in content
