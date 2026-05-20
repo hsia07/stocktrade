@@ -1,0 +1,56 @@
+R014 ObservableEvent Reality Rework - Test Results
+===================================================
+Candidate: candidate/r014-observability-observable-event-rework-before-r049
+Base: ccd7f3d82d8f24a7da0518b90d566f592c52ab0c
+
+This rework addresses R014 false-pass by:
+1. Adding dedicated ObservableEvent behavioral tests (21 tests)
+2. Creating evidence.json with law_compliance=04
+3. Verifying source behavior without broker/live pollution
+4. Documenting that formal trace_id / decision_chain not yet integrated
+
+Test Run 1: R014 ObservableEvent Behavioral Tests
+--------------------------------------------------
+Command: python -m pytest tests/test_r014_observable_event_reality.py -v --tb=short
+Result: PASS (21 tests)
+
+Tests cover:
+- Import real source (ObservableEvent from server.py)
+- emit() positive event write
+- Event fields completeness (event_id, timestamp, event_type, source, status, message, details)
+- Event ID unique/non-empty
+- Event ID not claimed as formal trace_id
+- Timestamp parseable
+- emit_trade, emit_signal, emit_risk_alert, emit_error, emit_recovery, emit_audit behaviors
+- Append-only invariant
+- Malformed/unusual details handling
+- get_events() filtering
+- validate_schema()
+- No broker API called (negative: no Fubon, no Shioaji)
+- In-memory log not durable persistence
+
+Test Run 2: R007 Silence Protection Tests
+-----------------------------------------
+Command: python -m pytest tests/test_r007_silence_protection.py -v --tb=short
+Result: PASS (23 tests)
+
+Test Run 3: Candidate Safety + UI Visible Gate Tests
+-------------------------------------------------------
+Command: python -m pytest tests/test_server_v2_backend_execution_safety.py tests/test_pre_r049_local_website_visible_surface_gap_remediation.py tests/test_ui_visible_gate_governance.py -v --tb=short
+Result: PASS (116 tests)
+
+Test Run 4: Full Clean Test Subset
+-----------------------------------
+Command: python -m pytest --ignore=automation --ignore=stocktrade --ignore=test_twse.py --ignore=test_twstock_batch.py --tb=no -q
+Result: PASS (1104 tests)
+
+Test Run 5: Evidence Checker
+-----------------------------
+Command: python automation/control/evidence_checker.py
+Result: PASS (no output = no failures)
+
+Summary
+-------
+All test suites PASS.
+Law04 evidence field present (law_compliance: "04").
+R014 NOT R049 ready - formal trace_id / decision_chain integration pending.
