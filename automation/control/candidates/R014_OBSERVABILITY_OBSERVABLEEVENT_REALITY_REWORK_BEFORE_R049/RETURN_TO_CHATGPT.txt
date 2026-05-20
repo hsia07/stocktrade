@@ -1,0 +1,222 @@
+round_id:
+  R014_OBSERVABILITY_OBSERVABLEEVENT_REALITY_REWORK_BEFORE_R049
+
+task_type:
+  r014_observability_observableevent_rework_candidate
+
+status:
+  completed
+
+formal_status_code:
+  candidate_ready_awaiting_manual_review
+
+canonical_branch:
+  work/canonical-mainline-repair-001
+
+base_head:
+  ccd7f3d82d8f24a7da0518b90d566f592c52ab0c
+
+candidate_branch:
+  candidate/r014-observability-observable-event-rework-before-r049
+
+candidate_commit:
+  893d71219166df9802fd9faa34ff86b209b21645
+
+r014_false_pass_confirmed_before_true_or_false:
+  TRUE
+
+observable_event_source_exists_true_or_false:
+  TRUE
+
+observable_event_runtime_behavior_exists_true_or_false:
+  TRUE
+
+observable_event_dedicated_tests_added_true_or_false:
+  TRUE
+
+tests_import_real_source_true_or_false:
+  TRUE
+
+tests_behavioral_not_string_only_true_or_false:
+  TRUE
+
+tests_cover_positive_event_write_true_or_false:
+  TRUE
+
+tests_cover_event_fields_true_or_false:
+  TRUE
+
+tests_cover_append_only_invariant_true_or_false:
+  TRUE
+
+tests_cover_malformed_or_unusual_details_true_or_false:
+  TRUE
+
+tests_cover_no_runtime_broker_live_pollution_true_or_false:
+  TRUE
+
+event_id_or_trace_id_exists_true_or_false:
+  TRUE
+
+event_id_not_formal_trace_id_true_or_false:
+  TRUE
+
+formal_trace_id_complete_true_or_false:
+  FALSE
+
+decision_chain_integration_complete_true_or_false:
+  FALSE
+
+veto_tracking_integration_complete_true_or_false:
+  FALSE
+
+in_memory_log_not_durable_persistence_true_or_false:
+  TRUE
+
+r014_not_r049_ready_true_or_false:
+  TRUE
+
+files_modified:
+  - tests/test_r014_observable_event_reality.py
+  - automation/control/candidates/R014_OBSERVABILITY_OBSERVABLEEVENT_REALITY_REWORK_BEFORE_R049/evidence.json
+  - automation/control/candidates/R014_OBSERVABILITY_OBSERVABLEEVENT_REALITY_REWORK_BEFORE_R049/candidate.diff
+  - automation/control/candidates/R014_OBSERVABILITY_OBSERVABLEEVENT_REALITY_REWORK_BEFORE_R049/RETURN_TO_CHATGPT.txt
+  - automation/control/candidates/R014_OBSERVABILITY_OBSERVABLEEVENT_REALITY_REWORK_BEFORE_R049/test-results.txt
+
+authorized_files_only_true_or_false:
+  TRUE
+
+server_py_modified_true_or_false:
+  FALSE
+
+server_v2_modified_true_or_false:
+  FALSE
+
+root_index_v2_html_modified_true_or_false:
+  FALSE
+
+index_html_modified_true_or_false:
+  FALSE
+
+modules_modified_true_or_false:
+  FALSE
+
+stocktrade_submodule_modified_true_or_false:
+  FALSE
+
+env_modified_true_or_false:
+  FALSE
+
+env_example_modified_true_or_false:
+  FALSE
+
+new_api_endpoint_added_true_or_false:
+  FALSE
+
+runtime_state_write_added_true_or_false:
+  FALSE
+
+db_write_executed_true_or_false:
+  FALSE
+
+broker_execution_live_modified_true_or_false:
+  FALSE
+
+fubon_api_integrated_true_or_false:
+  FALSE
+
+broker_api_called_true_or_false:
+  FALSE
+
+runtime_started_true_or_false:
+  FALSE
+
+trading_broker_execution_live_started_true_or_false:
+  FALSE
+
+r049_started_true_or_false:
+  FALSE
+
+r031_started_true_or_false:
+  FALSE
+
+order_execution_allowed_true_or_false:
+  FALSE
+
+secret_values_exposed_true_or_false:
+  FALSE
+
+evidence_json_exists_true_or_false:
+  TRUE
+
+evidence_json_parse_pass_true_or_false:
+  TRUE
+
+law04_compliance_present_true_or_false:
+  TRUE
+
+evidence_json_law_compliance_value:
+  "04"
+
+evidence_json_law_compliance_is_string_true_or_false:
+  TRUE
+
+evidence_json_law_compliance_equals_04_true_or_false:
+  TRUE
+
+candidate_diff_exists_true_or_false:
+  TRUE
+
+candidate_diff_utf8_no_bom_true_or_false:
+  TRUE
+
+candidate_diff_non_empty_true_or_false:
+  TRUE
+
+return_to_chatgpt_txt_exists_true_or_false:
+  TRUE
+
+return_to_chatgpt_formal_body_valid_true_or_false:
+  TRUE
+
+test_results_txt_exists_true_or_false:
+  TRUE
+
+tests_run:
+  - python -m pytest tests/test_r014_observable_event_reality.py -v --tb=short
+  - python -m pytest tests/test_r007_silence_protection.py -v --tb=short
+  - python -m pytest tests/test_server_v2_backend_execution_safety.py tests/test_pre_r049_local_website_visible_surface_gap_remediation.py tests/test_ui_visible_gate_governance.py -v --tb=short
+  - python -m pytest --ignore=automation --ignore=stocktrade --ignore=test_twse.py --ignore=test_twstock_batch.py --tb=no -q
+  - python automation/control/evidence_checker.py
+
+tests_result:
+  PASS
+
+r014_observable_event_tests_pass_true_or_false:
+  TRUE
+
+candidate_tests_pass_true_or_false:
+  TRUE
+
+ui_visible_gate_tests_pass_true_or_false:
+  TRUE
+
+full_clean_subset_pass_true_or_false:
+  TRUE
+
+evidence_checker_pass_true_or_false:
+  TRUE
+
+pre_push_equivalent_law04_check_pass_true_or_false:
+  TRUE
+
+remaining_blockers:
+  - R014 formal trace_id / decision_chain / veto tracking integration incomplete
+  - R014 durable persistence not implemented
+  - R029/R030 full meeting table / trace_id / decision_chain / per-AI veto rework
+
+recommended_next_action:
+  AWAITING_MANUAL_REVIEW_R014_OBSERVABILITY_OBSERVABLEEVENT_REALITY_REWORK
+
+final_recommendation:
+  R014_OBSERVABILITY_REWORK_READY_FOR_MANUAL_REVIEW_DO_NOT_START_R049
