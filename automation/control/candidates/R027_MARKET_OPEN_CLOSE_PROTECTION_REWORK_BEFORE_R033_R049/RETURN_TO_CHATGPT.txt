@@ -29,7 +29,7 @@ stale_candidate_commit_recorded_before:
   8e1fd57
 
 candidate_commit:
-  3e5b16ac4b75f63c31139cda4dcc04b908c747c2
+  49c73e711026586f686171300c7c761c906ba2b3
 
 candidate_package_resynced_true_or_false:
   TRUE
