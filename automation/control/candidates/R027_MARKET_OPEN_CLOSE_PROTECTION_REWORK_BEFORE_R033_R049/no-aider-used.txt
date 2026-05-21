@@ -1,0 +1,24 @@
+No aider used in this implementation task.
+Tool: opencode (CLI tool)
+Evidence package fix: Manual creation of task.txt, report.json, no-aider-used.txt
+Source code: Already implemented in 8e1fd57, not modified by this fix
+Execution: NOT included
+Broker integration: NOT included
+Order placement: NOT included
+Runtime modifications: NOT included
+
+Single commit structure: YES (source changes in 8e1fd57)
+Evidence package is complete and ready for manual review.
+User signoff required: YES (before merge)
+
+Taiwan Market Constraints Enforced:
+- Weekend (Sat/Sun) blocked as NON_TRADING_DAY
+- Holiday hook available (consumer-managed holiday_dates set)
+- None/malformed timestamps fail-closed SESSION_UNKNOWN
+- evaluate_order passes current_time through, no wall-clock dependency
+- Opening auction (08:30-09:00) = PRE_MARKET_AUCTION
+- Closing auction (13:30-13:35) = CLOSING_AUCTION
+- 13:35-13:40 gap = OUTSIDE_TRADING_HOURS
+- ArbitrageSlippageModel delegates to MarketRealityLayer
+- ±10% price limit enforced
+- T+2 settlement modeled
