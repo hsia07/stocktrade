@@ -2,7 +2,7 @@ R027 Market Open/Close Protection Rework - Package Identity Fix
 =====================================================================
 Base: c82b0b01cb6646b35bbf7264bce9b342ce1d3310
 Source commit: 8e1fd576fb2f4e9d74a09657b93f3a4d4a0f728a
-Candidate HEAD: 726eecc397fc39f4f5518e58ed3ecd940c818106
+Candidate HEAD: 3380a39f29dbee0cd9afa38912eb135fa7134fe1
 
 Test Results (2026-05-21 02:45 UTC)
 ====================================
