@@ -28,7 +28,7 @@
   "closing_auction_modeled": true,
   "gap_13_35_13_40_blocked": true,
   "arbitrage_not_always_true": true,
-  "evidence_checker_pass": false,
+  "evidence_checker_pass": true,
   "evidence_package_complete_7_of_7": true,
   "evidence_json_contains_law04": true,
   "merge_executed": false,

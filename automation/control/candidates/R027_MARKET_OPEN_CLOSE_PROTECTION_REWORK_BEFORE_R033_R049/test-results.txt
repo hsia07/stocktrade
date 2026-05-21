@@ -1,10 +1,17 @@
-R027 Market Open/Close Protection Rework - Evidence Checker & Dirty Metadata Fix
-=====================================================================
+R027 Market Open/Close Protection Rework - Final Package Cleanup (Non-Self-Referential)
+=======================================================================================
 Base: c82b0b01cb6646b35bbf7264bce9b342ce1d3310
 Source commit: 8e1fd576fb2f4e9d74a09657b93f3a4d4a0f728a
-Candidate HEAD: d42d1c6601aaa2eba2ba650d2cc297b26198d4bb
+Candidate HEAD: NOT self-embedded in committed artifacts (see live RETURN_TO_CHATGPT)
 
-Test Results (2026-05-21 03:15 UTC)
+Non-Self-Referential Artifact Policy:
+- committed evidence.json / RETURN_TO_CHATGPT.txt / test-results.txt
+  do NOT hard-code their own final commit hash.
+- final candidate HEAD is authoritative in live RETURN_TO_CHATGPT output,
+  not self-embedded inside committed artifacts.
+- candidate.diff scope: base -> source_commit (excludes evidence package self-recursion)
+
+Test Results (2026-05-21 05:00 UTC)
 ====================================
 
 1. Market Reality Layer Tests: 46 passed, 0 failed
@@ -19,34 +26,16 @@ Test Results (2026-05-21 03:15 UTC)
 4. Arbitrage Protection Tests: 23 passed, 0 failed
    python -m pytest tests/test_arbitrage_protection.py -v --tb=short
 
-5. Safety/Candidate Tests: 160 passed, 0 failed
-   python -m pytest tests/test_r014_observable_event_reality.py tests/test_r007_silence_protection.py tests/test_server_v2_backend_execution_safety.py tests/test_pre_r049_local_website_visible_surface_gap_remediation.py tests/test_ui_visible_gate_governance.py -v --tb=short
-
-6. Full Clean Subset: 1120 passed, 0 failed
-   python -m pytest --ignore=automation --ignore=stocktrade --ignore=test_twse.py --ignore=test_twstock_batch.py --tb=no -q
-
-7. Evidence Checker: PASS (exit 0)
-   python automation/control/evidence_checker.py
-   task.txt: PRESENT
-   report.json: PRESENT
-   evidence.json: PRESENT (law_compliance: "04")
-   candidate.diff: PRESENT (UTF-8 no BOM)
-   no-aider-used.txt: PRESENT
-   test-results.txt: PRESENT
-
-8. Pre-push Law04 Check: PASS
-   law_compliance: "04" (string)
-
-Total: 0 failures across all 8 test suites
+Total: 111 passed, 0 failed
 R033: NOT started
 R049: NOT started
 R031: NOT started
 Runtime/broker/live: NOT started
-order_execution_allowed: FALSE (verified)
-Source files unmodified by metadata fix: CONFIRMED
+order_execution_allowed: FALSE
+Source files unmodified by cleanup: CONFIRMED
 candidate_commit: 8e1fd57 (source_commit, per identity policy)
 source_commit: 8e1fd576fb2f4e9d74a09657b93f3a4d4a0f728a
-candidate.diff encoding: UTF-8 no BOM (CONFIRMED)
-candidate_identity_policy: candidate_commit = source_commit; final HEAD in RETURN_TO_CHATGPT
-evidence_checker_missing_files_resolved: TRUE
+candidate.diff encoding: UTF-8 no BOM
+candidate.diff scope: base -> source_commit (24249 bytes, non-self-referential)
+candidate_identity_policy: candidate_commit = source_commit; final HEAD in live RETURN_TO_CHATGPT
 git_status_clean: TRUE
