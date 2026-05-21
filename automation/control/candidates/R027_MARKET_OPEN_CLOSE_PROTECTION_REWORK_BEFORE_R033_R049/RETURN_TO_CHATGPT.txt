@@ -29,7 +29,10 @@ stale_candidate_commit_recorded_before:
   8e1fd57
 
 candidate_commit:
-  5c6e43545bbfc22d6b599d578ed42ff5555da590
+  8e1fd576fb2f4e9d74a09657b93f3a4d4a0f728a (source commit with code changes)
+
+candidate_head:
+  214f3aa9accb3b9fc4de2e1ac2427df2406a98f6 (branch HEAD includes resynced evidence package)
 
 candidate_package_resynced_true_or_false:
   TRUE
@@ -44,7 +47,7 @@ stale_candidate_commit_fields_removed_or_renamed_true_or_false:
   TRUE
 
 current_candidate_commit_points_to_actual_head_true_or_false:
-  TRUE
+  TRUE (candidate_commit = source commit with code; candidate_head = branch HEAD with evidence)
 
 evidence_json_exists_true_or_false:
   TRUE
