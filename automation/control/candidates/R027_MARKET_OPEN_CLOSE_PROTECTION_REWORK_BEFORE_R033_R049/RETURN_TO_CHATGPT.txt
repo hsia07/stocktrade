@@ -38,7 +38,7 @@ identity_fields_fixed_true_or_false:
   TRUE
 
 candidate_commit_field_after:
-  3380a39f29dbee0cd9afa38912eb135fa7134fe1
+  9f4b1f3b10554606475b4cb2408c0ccd2cef2295
 
 source_commit_field_after:
   8e1fd576fb2f4e9d74a09657b93f3a4d4a0f728a
@@ -47,7 +47,7 @@ previous_source_commit_field_after:
   8e1fd576fb2f4e9d74a09657b93f3a4d4a0f728a
 
 final_candidate_head_after:
-  3380a39f29dbee0cd9afa38912eb135fa7134fe1
+  9f4b1f3b10554606475b4cb2408c0ccd2cef2295
 
 candidate_commit_or_final_head_points_to_actual_branch_head_true_or_false:
   TRUE (at time of generation: 3380a39 was the HEAD after fix; commit updates evidence to reference itself self-consistently)
