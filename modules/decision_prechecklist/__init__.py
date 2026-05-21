@@ -26,6 +26,8 @@ from .replay_isolation import (
     IsolationCheckResult,
     ExecutionMode,
     ISOLATED_STORE_NAMES,
+    NON_LIVE_MODES,
+    validate_mode,
 )
 from .verification_framework import (
     VerificationRunner,
@@ -111,6 +113,8 @@ __all__ = [
     "IsolationCheckResult",
     "ExecutionMode",
     "ISOLATED_STORE_NAMES",
+    "NON_LIVE_MODES",
+    "validate_mode",
     "VerificationRunner",
     "VerificationCheck",
     "VerificationSuiteResult",

@@ -1,0 +1,26 @@
+{
+  "schema": "report_v1",
+  "round_id": "R033_R034_REPLAY_ISOLATION_REWORK_FINALIZE_CANDIDATE",
+  "task_type": "r033_r034_replay_isolation_rework_finalize_candidate",
+  "status": "completed",
+  "canonical_head": "decff5ece56d03ef4401bacda41b87685779f7ed",
+  "candidate_branch": "candidate/r033-r034-replay-isolation-live-write-guard-rework-before-r049",
+  "files_modified": [
+    "modules/decision_prechecklist/__init__.py",
+    "modules/decision_prechecklist/replay_isolation.py",
+    "server_v2.py",
+    "tests/test_replay_isolation.py"
+  ],
+  "files_added": [
+    "tests/test_r033_replay_live_write_guard.py"
+  ],
+  "total_tests": 423,
+  "tests_passed": 423,
+  "tests_failed": 0,
+  "evidence_checker": "PASS",
+  "law04": "PASS",
+  "order_execution_allowed": false,
+  "no_broker_live_started": true,
+  "no_runtime_started": true,
+  "r049_ready": false
+}
