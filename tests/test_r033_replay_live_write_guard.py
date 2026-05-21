@@ -360,13 +360,152 @@ def test_server_v2_engine_resolve_execution_mode():
     assert mode in set(ExecutionMode)
 
 
-def test_server_v2_engine_check_pre_trade():
+def test_server_v2_check_pre_trade_blocks_replay_mode():
     from server_v2 import engine
+    from modules.decision_prechecklist.replay_isolation import ExecutionMode
+    engine._replay_isolation_gate.clear()
+    engine._replay_isolation_gate.enter_replay("test_trace")
     result = engine.check_pre_trade_isolation("2330.TW", "Buy")
-    assert isinstance(result, IsolationCheckResult)
-    assert hasattr(result, "allowed")
-    assert hasattr(result, "reason_code")
-    assert hasattr(result, "mode")
+    assert not result.allowed, f"replay mode should block order, got allowed={result.allowed}"
+    assert result.reason_code == "ORDER_PLACEMENT_BLOCKED_BY_MODE"
+    engine._replay_isolation_gate.clear()
+
+
+def test_server_v2_check_pre_trade_blocks_backtest_mode():
+    from server_v2 import engine
+    from modules.decision_prechecklist.replay_isolation import ExecutionMode
+    engine._replay_isolation_gate.clear()
+    engine._replay_isolation_gate.enter_backtest()
+    result = engine.check_pre_trade_isolation("2330.TW", "Sell")
+    assert not result.allowed, f"backtest mode should block order, got allowed={result.allowed}"
+    assert result.reason_code == "ORDER_PLACEMENT_BLOCKED_BY_MODE"
+    engine._replay_isolation_gate.clear()
+
+
+def test_server_v2_check_pre_trade_blocks_audit_mode():
+    from server_v2 import engine
+    engine._replay_isolation_gate.clear()
+    engine._replay_isolation_gate.enter_audit()
+    result = engine.check_pre_trade_isolation("2330.TW", "Buy")
+    assert not result.allowed, f"audit mode should block order, got allowed={result.allowed}"
+    assert result.reason_code == "ORDER_PLACEMENT_BLOCKED_BY_MODE"
+    engine._replay_isolation_gate.clear()
+
+
+def test_server_v2_check_pre_trade_blocks_simulation_mode():
+    from server_v2 import engine
+    engine._replay_isolation_gate.clear()
+    engine._replay_isolation_gate.enter_simulation()
+    result = engine.check_pre_trade_isolation("2330.TW", "Buy")
+    assert not result.allowed, f"simulation mode should block order, got allowed={result.allowed}"
+    assert result.reason_code == "ORDER_PLACEMENT_BLOCKED_BY_MODE"
+    engine._replay_isolation_gate.clear()
+
+
+def test_server_v2_check_pre_trade_allows_live_mode():
+    from server_v2 import engine
+    engine._replay_isolation_gate.clear()
+    engine._replay_isolation_gate.enter_live()
+    result = engine.check_pre_trade_isolation("2330.TW", "Buy")
+    assert result.allowed, f"live mode should allow order, got allowed={result.allowed}"
+    engine._replay_isolation_gate.clear()
+
+
+def test_server_v2_check_pre_trade_blocks_no_context():
+    from server_v2 import engine
+    engine._replay_isolation_gate.clear()
+    result = engine.check_pre_trade_isolation("2330.TW", "Buy")
+    assert not result.allowed, f"no context should fail-closed, got allowed={result.allowed}"
+    assert result.reason_code == "ORDER_PLACEMENT_MODE_CONTEXT_MISSING"
+
+
+def test_server_v2_check_broker_blocks_replay_mode():
+    from server_v2 import engine
+    engine._replay_isolation_gate.clear()
+    engine._replay_isolation_gate.enter_replay("test_trace_broker")
+    result = engine.check_broker_isolation("shioaji")
+    assert not result.allowed, f"replay mode should block broker call, got allowed={result.allowed}"
+    assert result.reason_code == "BROKER_CALL_BLOCKED_BY_MODE"
+    engine._replay_isolation_gate.clear()
+
+
+def test_server_v2_check_broker_blocks_backtest_mode():
+    from server_v2 import engine
+    engine._replay_isolation_gate.clear()
+    engine._replay_isolation_gate.enter_backtest()
+    result = engine.check_broker_isolation("fubon")
+    assert not result.allowed, f"backtest mode should block broker call, got allowed={result.allowed}"
+    assert result.reason_code == "BROKER_CALL_BLOCKED_BY_MODE"
+    engine._replay_isolation_gate.clear()
+
+
+def test_server_v2_check_broker_allows_live_mode():
+    from server_v2 import engine
+    engine._replay_isolation_gate.clear()
+    engine._replay_isolation_gate.enter_live()
+    result = engine.check_broker_isolation("shioaji")
+    assert result.allowed, f"live mode should allow broker call, got allowed={result.allowed}"
+    engine._replay_isolation_gate.clear()
+
+
+def test_server_v2_check_broker_blocks_no_context():
+    from server_v2 import engine
+    engine._replay_isolation_gate.clear()
+    result = engine.check_broker_isolation()
+    assert not result.allowed, f"no context should fail-closed for broker, got allowed={result.allowed}"
+    assert result.reason_code == "BROKER_CALL_MODE_CONTEXT_MISSING"
+
+
+def test_server_v2_execution_engineer_place_blocks_replay():
+    from server_v2 import engine
+    engine._replay_isolation_gate.clear()
+    engine._replay_isolation_gate.enter_replay("test_place")
+    rec = engine.execution.place("2330", "Buy", 1, 500.0, "test")
+    assert rec.get("status") == "blocked", f"replay place should be blocked, got {rec.get('status')}"
+    block_reason = rec.get("block_reason", "")
+    assert block_reason == "ORDER_PLACEMENT_BLOCKED_BY_MODE", f"expected IsolationGate reason, got {block_reason}"
+    engine._replay_isolation_gate.clear()
+
+
+def test_server_v2_execution_engineer_place_blocks_no_context():
+    from server_v2 import engine
+    engine._replay_isolation_gate.clear()
+    rec = engine.execution.place("2330", "Buy", 1, 500.0, "test")
+    assert rec.get("status") == "blocked", f"no-context place should be blocked, got {rec.get('status')}"
+    block_reason = rec.get("block_reason", "")
+    assert block_reason == "ORDER_PLACEMENT_MODE_CONTEXT_MISSING", f"expected IsolationGate reason, got {block_reason}"
+
+
+def test_server_v2_execution_engineer_place_still_blocked_by_order_execution_allowed():
+    from server_v2 import engine
+    from server_v2 import ORDER_EXECUTION_ALLOWED
+    engine._replay_isolation_gate.clear()
+    engine._replay_isolation_gate.enter_live()
+    rec = engine.execution.place("2330", "Buy", 1, 500.0, "test")
+    assert rec.get("status") == "blocked", "live context but order_execution_allowed=False should still block"
+    block_reason = rec.get("block_reason", "")
+    assert block_reason == "order_execution_not_allowed", f"expected order_execution_not_allowed, got {block_reason}"
+    engine._replay_isolation_gate.clear()
+
+
+def test_server_v2_bridge_returns_isolation_gate_result_not_hardcoded():
+    from server_v2 import engine
+    engine._replay_isolation_gate.clear()
+    engine._replay_isolation_gate.enter_replay("bridge_test")
+    result = engine.check_pre_trade_isolation("2330.TW", "Buy")
+    assert result.mode == "replay", f"expected mode=replay from gate, got mode={result.mode}"
+    assert result.target == "order:2330.TW:Buy", f"expected target with order: prefix, got {result.target}"
+    engine._replay_isolation_gate.clear()
+
+
+def test_server_v2_bridge_check_broker_returns_gate_result():
+    from server_v2 import engine
+    engine._replay_isolation_gate.clear()
+    engine._replay_isolation_gate.enter_backtest()
+    result = engine.check_broker_isolation("fubon_api")
+    assert result.mode == "backtest", f"expected mode=backtest from gate, got mode={result.mode}"
+    assert "blocked" in result.reason.lower() or not result.allowed, f"backtest should block broker"
+    engine._replay_isolation_gate.clear()
 
 
 # ═══════════════════════════════════════════════════════════════

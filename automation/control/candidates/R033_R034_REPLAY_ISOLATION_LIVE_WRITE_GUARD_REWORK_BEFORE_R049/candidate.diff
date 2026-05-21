@@ -1,1046 +1,199 @@
-diff --git a/modules/decision_prechecklist/__init__.py b/modules/decision_prechecklist/__init__.py
-index f7c871d..687832a 100644
---- a/modules/decision_prechecklist/__init__.py
-+++ b/modules/decision_prechecklist/__init__.py
-@@ -26,6 +26,8 @@ from .replay_isolation import (
-     IsolationCheckResult,
-     ExecutionMode,
-     ISOLATED_STORE_NAMES,
-+    NON_LIVE_MODES,
-+    validate_mode,
- )
- from .verification_framework import (
-     VerificationRunner,
-@@ -111,6 +113,8 @@ __all__ = [
-     "IsolationCheckResult",
-     "ExecutionMode",
-     "ISOLATED_STORE_NAMES",
-+    "NON_LIVE_MODES",
-+    "validate_mode",
-     "VerificationRunner",
-     "VerificationCheck",
-     "VerificationSuiteResult",
-diff --git a/modules/decision_prechecklist/replay_isolation.py b/modules/decision_prechecklist/replay_isolation.py
-index e8fa971..89c89f1 100644
---- a/modules/decision_prechecklist/replay_isolation.py
-+++ b/modules/decision_prechecklist/replay_isolation.py
-@@ -8,6 +8,33 @@ class ExecutionMode(Enum):
-     LIVE = "live"
-     REPLAY = "replay"
-     SIMULATION = "simulation"
-+    BACKTEST = "backtest"
-+    AUDIT = "audit"
-+
-+    @classmethod
-+    def _missing_(cls, value: object) -> ExecutionMode | None:
-+        return None
-+
-+
-+def validate_mode(value: Any) -> ExecutionMode | None:
-+    if isinstance(value, ExecutionMode):
-+        return value
-+    if isinstance(value, str):
-+        try:
-+            return ExecutionMode(value.lower())
-+        except (ValueError, AttributeError):
-+            return None
-+    if value is None:
-+        return None
-+    return None
-+
-+
-+NON_LIVE_MODES = frozenset({
-+    ExecutionMode.REPLAY,
-+    ExecutionMode.SIMULATION,
-+    ExecutionMode.BACKTEST,
-+    ExecutionMode.AUDIT,
-+})
- 
- 
- @dataclass
-@@ -26,11 +53,19 @@ class IsolationContext:
-     def is_replay(self) -> bool:
-         return self.mode == ExecutionMode.REPLAY
- 
-+    @property
-+    def is_non_live(self) -> bool:
-+        return self.mode in NON_LIVE_MODES
-+
- 
- @dataclass
- class IsolationCheckResult:
-     allowed: bool
-     reason: str = ""
-+    reason_code: str = ""
-+    mode: str = ""
-+    target: str = ""
-+    isolation_violation_reason: str = ""
- 
- 
- ISOLATED_STORE_NAMES = frozenset({
-@@ -68,36 +103,182 @@ class ReplayIsolationGate:
-         self._context_stack.append(ctx)
-         return ctx
- 
-+    def enter_backtest(self) -> IsolationContext:
-+        ctx = IsolationContext(mode=ExecutionMode.BACKTEST, isolated=True)
-+        self._context_stack.append(ctx)
-+        return ctx
-+
-+    def enter_audit(self) -> IsolationContext:
-+        ctx = IsolationContext(mode=ExecutionMode.AUDIT, isolated=True)
-+        self._context_stack.append(ctx)
-+        return ctx
-+
-+    def enter_simulation(self) -> IsolationContext:
-+        ctx = IsolationContext(mode=ExecutionMode.SIMULATION, isolated=True)
-+        self._context_stack.append(ctx)
-+        return ctx
-+
-     def exit(self) -> None:
-         if self._context_stack:
-             self._context_stack.pop()
- 
--    def check_store_access(self, store_name: str) -> IsolationCheckResult:
-+    def _current_mode(self) -> ExecutionMode | None:
-         ctx = self.current_context
--        if ctx is None or ctx.is_live:
--            return IsolationCheckResult(allowed=True)
-+        if ctx is None:
-+            return None
-+        return ctx.mode
-+
-+    def _blocked_result(self, reason: str, reason_code: str, target: str) -> IsolationCheckResult:
-+        mode_str = self._current_mode().value if self._current_mode() else "NONE"
-+        return IsolationCheckResult(
-+            allowed=False,
-+            reason=reason,
-+            reason_code=reason_code,
-+            mode=mode_str,
-+            target=target,
-+            isolation_violation_reason=f"mode={mode_str} target={target} reason={reason_code}",
-+        )
-+
-+    def _allowed_result(self, target: str = "") -> IsolationCheckResult:
-+        mode_str = self._current_mode().value if self._current_mode() else "NONE"
-+        return IsolationCheckResult(
-+            allowed=True,
-+            reason="allowed",
-+            reason_code="ALLOWED",
-+            mode=mode_str,
-+            target=target,
-+            isolation_violation_reason="",
-+        )
- 
-+    def check_store_access(self, store_name: str) -> IsolationCheckResult:
-+        mode = self._current_mode()
-+        if mode is None:
-+            return self._blocked_result(
-+                "no active context ??fail-closed",
-+                "MODE_CONTEXT_MISSING",
-+                f"store:{store_name}",
-+            )
-+        if mode == ExecutionMode.LIVE:
-+            return self._allowed_result(target=f"store:{store_name}")
-         if store_name in ISOLATED_STORE_NAMES:
--            return IsolationCheckResult(
--                allowed=False,
--                reason=(
--                    f"replay mode blocked access to live store '{store_name}'. "
--                    f"Use replay-isolated store instead."
--                ),
-+            return self._blocked_result(
-+                f"{mode.value} mode blocked access to live store '{store_name}'. "
-+                f"Use {mode.value}-isolated store instead.",
-+                "ISOLATED_STORE_BLOCKED",
-+                f"store:{store_name}",
-             )
--
--        return IsolationCheckResult(allowed=True)
-+        return self._allowed_result(target=f"store:{store_name}")
- 
-     def isolate_store_name(self, store_name: str) -> str:
-         ctx = self.current_context
--        if ctx and ctx.is_replay and store_name in ISOLATED_STORE_NAMES:
--            return f"replay_{store_name}"
-+        if ctx and ctx.is_non_live and store_name in ISOLATED_STORE_NAMES:
-+            return f"{ctx.mode.value}_{store_name}"
-         return store_name
- 
-     def is_in_replay(self) -> bool:
-         ctx = self.current_context
-         return ctx is not None and ctx.is_replay
- 
-+    def is_non_live_mode(self) -> bool:
-+        ctx = self.current_context
-+        return ctx is not None and ctx.is_non_live
-+
-+    def assert_can_call_broker(self, target: str = "") -> IsolationCheckResult:
-+        mode = self._current_mode()
-+        if mode is None:
-+            return self._blocked_result(
-+                "no active context ??fail-closed, broker call blocked",
-+                "BROKER_CALL_MODE_CONTEXT_MISSING",
-+                f"broker:{target}",
-+            )
-+        if mode == ExecutionMode.LIVE:
-+            return self._allowed_result(target=f"broker:{target}")
-+        return self._blocked_result(
-+            f"{mode.value} mode blocked broker API call to '{target}'",
-+            "BROKER_CALL_BLOCKED_BY_MODE",
-+            f"broker:{target}",
-+        )
-+
-+    def assert_can_place_order(self, target: str = "") -> IsolationCheckResult:
-+        mode = self._current_mode()
-+        if mode is None:
-+            return self._blocked_result(
-+                "no active context ??fail-closed, order placement blocked",
-+                "ORDER_PLACEMENT_MODE_CONTEXT_MISSING",
-+                f"order:{target}",
-+            )
-+        if mode == ExecutionMode.LIVE:
-+            return self._allowed_result(target=f"order:{target}")
-+        return self._blocked_result(
-+            f"{mode.value} mode blocked order placement for '{target}'",
-+            "ORDER_PLACEMENT_BLOCKED_BY_MODE",
-+            f"order:{target}",
-+        )
-+
-+    def assert_can_write_runtime_state(self, path: str = "") -> IsolationCheckResult:
-+        mode = self._current_mode()
-+        if mode is None:
-+            return self._blocked_result(
-+                "no active context ??fail-closed, runtime state write blocked",
-+                "RUNTIME_STATE_WRITE_MODE_CONTEXT_MISSING",
-+                f"runtime_state:{path}",
-+            )
-+        if mode == ExecutionMode.LIVE:
-+            return self._allowed_result(target=f"runtime_state:{path}")
-+        return self._blocked_result(
-+            f"{mode.value} mode blocked runtime state write to '{path}'",
-+            "RUNTIME_STATE_WRITE_BLOCKED_BY_MODE",
-+            f"runtime_state:{path}",
-+        )
-+
-+    def assert_can_write_live_db(self, table: str = "") -> IsolationCheckResult:
-+        mode = self._current_mode()
-+        if mode is None:
-+            return self._blocked_result(
-+                "no active context ??fail-closed, live DB write blocked",
-+                "DB_LIVE_WRITE_MODE_CONTEXT_MISSING",
-+                f"db:{table}",
-+            )
-+        if mode == ExecutionMode.LIVE:
-+            return self._allowed_result(target=f"db:{table}")
-+        return self._blocked_result(
-+            f"{mode.value} mode blocked live DB write to '{table}'",
-+            "DB_LIVE_WRITE_BLOCKED_BY_MODE",
-+            f"db:{table}",
-+        )
-+
-+    def assert_can_write_fill(self, fill_context: str = "") -> IsolationCheckResult:
-+        mode = self._current_mode()
-+        if mode is None:
-+            return self._blocked_result(
-+                "no active context ??fail-closed, fill write blocked",
-+                "FILL_WRITE_MODE_CONTEXT_MISSING",
-+                f"fill:{fill_context}",
-+            )
-+        if mode == ExecutionMode.LIVE:
-+            return self._allowed_result(target=f"fill:{fill_context}")
-+        return self._blocked_result(
-+            f"{mode.value} mode blocked fill write for '{fill_context}'",
-+            "FILL_WRITE_BLOCKED_BY_MODE",
-+            f"fill:{fill_context}",
-+        )
-+
-+    def assert_can_start_live_from_replay(self) -> IsolationCheckResult:
-+        mode = self._current_mode()
-+        if mode is None:
-+            return self._blocked_result(
-+                "no active context ??fail-closed, cannot start live from unknown mode",
-+                "LIVE_START_FROM_UNKNOWN_MODE",
-+                "live_start",
-+            )
-+        if mode == ExecutionMode.LIVE:
-+            return self._allowed_result(target="live_start")
-+        return self._blocked_result(
-+            f"{mode.value} mode cannot start live execution ??replay error must not fallback to live",
-+            "LIVE_START_BLOCKED_BY_NON_LIVE_MODE",
-+            "live_start",
-+        )
-+
-     def clear(self) -> None:
-         self._context_stack.clear()
- 
-diff --git a/server_v2.py b/server_v2.py
-index df3f2c9..91f72bd 100644
---- a/server_v2.py
-+++ b/server_v2.py
-@@ -33,6 +33,11 @@ from fastapi import FastAPI, WebSocket, WebSocketDisconnect
- from fastapi.middleware.cors import CORSMiddleware
- from fastapi.responses import JSONResponse
- from dotenv import load_dotenv
-+from modules.decision_prechecklist.replay_isolation import (
-+    ReplayIsolationGate,
-+    ExecutionMode,
-+    IsolationCheckResult,
-+)
- 
- load_dotenv()
- 
-@@ -1336,6 +1341,15 @@ class ExecutionEngineer:
-         self._api = api
- 
-     def place(self, symbol: str, action: str, lots: int, price: float, reason: str) -> dict:
-+        isolation = engine.check_pre_trade_isolation(symbol, action)
-+        if not isolation.allowed:
-+            rec = dict(id=f"ISOLATED-{symbol}-{int(time.time())}", symbol=symbol,
-+                       action=action, lots=lots, price=price, reason=reason,
-+                       status="blocked", time=datetime.now().strftime("%H:%M:%S"),
-+                       block_reason=isolation.reason_code)
-+            self.orders.append(rec)
-+            log.warning(f"???靽風 blocked {action} {symbol} {lots}撘?@{price} | {isolation.reason_code} | {isolation.reason}")
-+            return rec
-         if not ORDER_EXECUTION_ALLOWED:
-             rec = dict(id=f"BLOCKED-{symbol}-{int(time.time())}", symbol=symbol,
-                        action=action, lots=lots, price=price, reason=reason,
-@@ -1767,10 +1781,10 @@ class TradingEngine:
-         self.trades_log:     list[TradeRecord] = []
-         self._api                 = None
-         self._running             = False
--        self._trading_active      = False
-         self._mode              = self.MODE_PAUSE  # ?桐??祕璅∪?靘?嚗????批
-+        self._trading_active      = False
-         self._latest_decision_ids: dict = {}
--
-+        self._replay_isolation_gate = ReplayIsolationGate()
-         self.names = dict(SYM_NAMES)
-         self.universe_rows = TaiwanMarketUniverse.load() if SCAN_ALL_TW else [{"symbol": s, "name": SYM_NAMES.get(s, s), "market": "tse"} for s in self.detail_symbols]
-         for row in self.universe_rows:
-@@ -1780,6 +1794,28 @@ class TradingEngine:
-         self._scan_task = None
-         self._scan_last_request = 0.0
- 
-+    def _resolve_execution_mode(self) -> ExecutionMode:
-+        if self._mode == self.MODE_LIVE:
-+            return ExecutionMode.LIVE
-+        if self._mode == self.MODE_SIM:
-+            return ExecutionMode.SIMULATION
-+        if self._mode in (self.MODE_PAPER, self.MODE_OBSERVE, self.MODE_PAUSE, self.MODE_RECOVERY):
-+            return ExecutionMode.SIMULATION
-+        return ExecutionMode.SIMULATION
-+
-+    def check_pre_trade_isolation(self, symbol: str, action: str) -> IsolationCheckResult:
-+        exec_mode = self._resolve_execution_mode()
-+        if exec_mode != ExecutionMode.LIVE:
-+            # Non-live modes: allow through to ORDER_EXECUTION_ALLOWED gate
-+            return IsolationCheckResult(allowed=True, mode=exec_mode.value, target=f"order:{symbol}:{action}")
-+        return self._replay_isolation_gate.assert_can_place_order(target=f"{symbol}:{action}")
-+
-+    def check_broker_isolation(self, target: str = "") -> IsolationCheckResult:
-+        exec_mode = self._resolve_execution_mode()
-+        if exec_mode != ExecutionMode.LIVE:
-+            return IsolationCheckResult(allowed=True, mode=exec_mode.value, target=target or "broker")
-+        return self._replay_isolation_gate.assert_can_call_broker(target=target)
-+
-     def refresh_market_scan(self):
-         if not self.market_scanner:
-             self.market_board = []
-@@ -1974,6 +2010,13 @@ class TradingEngine:
-                             log.warning(f"?? {sym} ?寞靘??⊥?嚗歲?漱??source={tick.get('source')}")
-                         elif lots > 0:
-                             act = "Buy" if sig.direction == Direction.LONG else "Sell"
-+                            isolation = self.check_pre_trade_isolation(sym, act)
-+                            if not isolation.allowed:
-+                                log.warning(
-+                                    f"???靽風 blocked {sym} {act} {lots}撘?"
-+                                    f"@ {tick['price']} | {isolation.reason_code} | {isolation.reason}"
-+                                )
-+                                continue
-                             self.execution.place(sym, act, lots, tick["price"], sig.reason)
-                             self.risk.on_entry(sig, lots, tick["price"], ai_scores, regime)
-                             log.info(f"??隞脰??? {sym} {sig.direction} {lots}撘?@{tick['price']} ?梯?{consensus_score:.0f}%")
-diff --git a/tests/test_replay_isolation.py b/tests/test_replay_isolation.py
-index 8a3563e..6097d92 100644
---- a/tests/test_replay_isolation.py
-+++ b/tests/test_replay_isolation.py
-@@ -9,6 +9,8 @@ from modules.decision_prechecklist.replay_isolation import (
-     IsolationCheckResult,
-     ExecutionMode,
-     ISOLATED_STORE_NAMES,
-+    NON_LIVE_MODES,
-+    validate_mode,
- )
- 
- 
-@@ -16,6 +18,7 @@ def test_gate_initialization():
-     gate = ReplayIsolationGate()
-     assert gate.current_context is None
-     assert not gate.is_in_replay()
-+    assert not gate.is_non_live_mode()
- 
- 
- def test_enter_replay():
-@@ -25,6 +28,7 @@ def test_enter_replay():
-     assert ctx.isolated
-     assert ctx.replay_trace_id == "replay-001"
-     assert gate.is_in_replay()
-+    assert gate.is_non_live_mode()
- 
- 
- def test_enter_live():
-@@ -33,6 +37,34 @@ def test_enter_live():
-     assert ctx.mode == ExecutionMode.LIVE
-     assert ctx.isolated
-     assert not gate.is_in_replay()
-+    assert not gate.is_non_live_mode()
-+
-+
-+def test_enter_backtest():
-+    gate = ReplayIsolationGate()
-+    ctx = gate.enter_backtest()
-+    assert ctx.mode == ExecutionMode.BACKTEST
-+    assert ctx.isolated
-+    assert not gate.is_in_replay()
-+    assert gate.is_non_live_mode()
-+
-+
-+def test_enter_audit():
-+    gate = ReplayIsolationGate()
-+    ctx = gate.enter_audit()
-+    assert ctx.mode == ExecutionMode.AUDIT
-+    assert ctx.isolated
-+    assert not gate.is_in_replay()
-+    assert gate.is_non_live_mode()
-+
-+
-+def test_enter_simulation():
-+    gate = ReplayIsolationGate()
-+    ctx = gate.enter_simulation()
-+    assert ctx.mode == ExecutionMode.SIMULATION
-+    assert ctx.isolated
-+    assert not gate.is_in_replay()
-+    assert gate.is_non_live_mode()
- 
- 
- def test_exit():
-@@ -41,6 +73,7 @@ def test_exit():
-     assert gate.is_in_replay()
-     gate.exit()
-     assert gate.current_context is None
-+    assert not gate.is_non_live_mode()
- 
- 
- def test_exit_stack():
-@@ -60,6 +93,7 @@ def test_check_store_access_live():
-     for store in ISOLATED_STORE_NAMES:
-         result = gate.check_store_access(store)
-         assert result.allowed, f"store {store} should be allowed in live mode"
-+        assert result.reason_code == "ALLOWED"
- 
- 
- def test_check_store_access_replay_blocks_isolated():
-@@ -68,7 +102,9 @@ def test_check_store_access_replay_blocks_isolated():
-     for store in ISOLATED_STORE_NAMES:
-         result = gate.check_store_access(store)
-         assert not result.allowed, f"store {store} should be blocked in replay mode"
--        assert "replay mode blocked" in result.reason
-+        assert "blocked" in result.reason
-+        assert result.reason_code == "ISOLATED_STORE_BLOCKED"
-+        assert result.isolation_violation_reason
- 
- 
- def test_check_store_access_replay_allows_other():
-@@ -76,6 +112,7 @@ def test_check_store_access_replay_allows_other():
-     gate.enter_replay(replay_trace_id="replay-001")
-     result = gate.check_store_access("market_data_cache")
-     assert result.allowed
-+    assert result.reason_code == "ALLOWED"
- 
- 
- def test_isolate_store_name_replay():
-@@ -85,6 +122,20 @@ def test_isolate_store_name_replay():
-     assert isolated == "replay_trades_log"
- 
- 
-+def test_isolate_store_name_backtest():
-+    gate = ReplayIsolationGate()
-+    gate.enter_backtest()
-+    isolated = gate.isolate_store_name("trades_log")
-+    assert isolated == "backtest_trades_log"
-+
-+
-+def test_isolate_store_name_audit():
-+    gate = ReplayIsolationGate()
-+    gate.enter_audit()
-+    isolated = gate.isolate_store_name("trades_log")
-+    assert isolated == "audit_trades_log"
-+
-+
- def test_isolate_store_name_live():
-     gate = ReplayIsolationGate()
-     gate.enter_live()
-@@ -123,21 +174,34 @@ def test_clear():
-     gate.enter_live()
-     gate.clear()
-     assert gate.current_context is None
-+    assert not gate.is_non_live_mode()
- 
- 
- def test_isolation_context_properties():
-     ctx = IsolationContext(mode=ExecutionMode.REPLAY, isolated=True)
-     assert ctx.is_replay
-     assert not ctx.is_live
-+    assert ctx.is_non_live
-     ctx_live = IsolationContext(mode=ExecutionMode.LIVE, isolated=True)
-     assert ctx_live.is_live
-     assert not ctx_live.is_replay
-+    assert not ctx_live.is_non_live
-+    ctx_bt = IsolationContext(mode=ExecutionMode.BACKTEST, isolated=True)
-+    assert ctx_bt.is_non_live
-+    assert not ctx_bt.is_live
-+    ctx_au = IsolationContext(mode=ExecutionMode.AUDIT, isolated=True)
-+    assert ctx_au.is_non_live
-+    assert not ctx_au.is_live
-+    ctx_sim = IsolationContext(mode=ExecutionMode.SIMULATION, isolated=True)
-+    assert ctx_sim.is_non_live
-+    assert not ctx_sim.is_live
- 
- 
- def test_isolation_check_result():
--    result = IsolationCheckResult(allowed=False, reason="blocked")
-+    result = IsolationCheckResult(allowed=False, reason="blocked", reason_code="BLOCKED")
-     assert not result.allowed
-     assert result.reason == "blocked"
-+    assert result.reason_code == "BLOCKED"
- 
- 
- def test_enter_replay_with_original():
-@@ -147,6 +211,146 @@ def test_enter_replay_with_original():
-     assert ctx.replay_trace_id == "replay-002"
- 
- 
-+def test_validate_mode():
-+    assert validate_mode(ExecutionMode.LIVE) == ExecutionMode.LIVE
-+    assert validate_mode(ExecutionMode.REPLAY) == ExecutionMode.REPLAY
-+    assert validate_mode("live") == ExecutionMode.LIVE
-+    assert validate_mode("replay") == ExecutionMode.REPLAY
-+    assert validate_mode("backtest") == ExecutionMode.BACKTEST
-+    assert validate_mode("audit") == ExecutionMode.AUDIT
-+    assert validate_mode("simulation") == ExecutionMode.SIMULATION
-+    assert validate_mode("UNKNOWN") is None
-+    assert validate_mode("") is None
-+    assert validate_mode(None) is None
-+    assert validate_mode(123) is None
-+
-+
-+def test_non_live_modes():
-+    assert ExecutionMode.REPLAY in NON_LIVE_MODES
-+    assert ExecutionMode.SIMULATION in NON_LIVE_MODES
-+    assert ExecutionMode.BACKTEST in NON_LIVE_MODES
-+    assert ExecutionMode.AUDIT in NON_LIVE_MODES
-+    assert ExecutionMode.LIVE not in NON_LIVE_MODES
-+
-+
-+def test_assert_can_place_order_replay_blocked():
-+    gate = ReplayIsolationGate()
-+    gate.enter_replay(replay_trace_id="replay-001")
-+    result = gate.assert_can_place_order(target="2330.TW:Buy")
-+    assert not result.allowed
-+    assert result.reason_code == "ORDER_PLACEMENT_BLOCKED_BY_MODE"
-+    assert "replay" in result.reason
-+    assert result.mode == "replay"
-+    assert result.target == "order:2330.TW:Buy"
-+    assert result.isolation_violation_reason
-+
-+
-+def test_assert_can_place_order_backtest_blocked():
-+    gate = ReplayIsolationGate()
-+    gate.enter_backtest()
-+    result = gate.assert_can_place_order(target="2330.TW:Sell")
-+    assert not result.allowed
-+    assert result.reason_code == "ORDER_PLACEMENT_BLOCKED_BY_MODE"
-+
-+
-+def test_assert_can_place_order_audit_blocked():
-+    gate = ReplayIsolationGate()
-+    gate.enter_audit()
-+    result = gate.assert_can_place_order(target="2330.TW:Buy")
-+    assert not result.allowed
-+
-+
-+def test_assert_can_place_order_simulation_blocked():
-+    gate = ReplayIsolationGate()
-+    gate.enter_simulation()
-+    result = gate.assert_can_place_order(target="2330.TW:Buy")
-+    assert not result.allowed
-+
-+
-+def test_assert_can_place_order_live_allowed():
-+    gate = ReplayIsolationGate()
-+    gate.enter_live()
-+    result = gate.assert_can_place_order(target="2330.TW:Buy")
-+    assert result.allowed
-+    assert result.reason_code == "ALLOWED"
-+
-+
-+def test_assert_can_call_broker_blocked():
-+    gate = ReplayIsolationGate()
-+    gate.enter_replay(replay_trace_id="replay-001")
-+    result = gate.assert_can_call_broker(target="shioaji")
-+    assert not result.allowed
-+    assert result.reason_code == "BROKER_CALL_BLOCKED_BY_MODE"
-+    assert result.mode == "replay"
-+
-+
-+def test_assert_can_call_broker_live_allowed():
-+    gate = ReplayIsolationGate()
-+    gate.enter_live()
-+    result = gate.assert_can_call_broker(target="shioaji")
-+    assert result.allowed
-+
-+
-+def test_assert_can_write_runtime_state_blocked():
-+    gate = ReplayIsolationGate()
-+    gate.enter_replay(replay_trace_id="replay-001")
-+    result = gate.assert_can_write_runtime_state(path="positions")
-+    assert not result.allowed
-+    assert result.reason_code == "RUNTIME_STATE_WRITE_BLOCKED_BY_MODE"
-+
-+
-+def test_assert_can_write_runtime_state_live_allowed():
-+    gate = ReplayIsolationGate()
-+    gate.enter_live()
-+    result = gate.assert_can_write_runtime_state(path="positions")
-+    assert result.allowed
-+
-+
-+def test_assert_can_write_live_db_blocked():
-+    gate = ReplayIsolationGate()
-+    gate.enter_replay(replay_trace_id="replay-001")
-+    result = gate.assert_can_write_live_db(table="trades_log")
-+    assert not result.allowed
-+    assert result.reason_code == "DB_LIVE_WRITE_BLOCKED_BY_MODE"
-+
-+
-+def test_assert_can_write_live_db_live_allowed():
-+    gate = ReplayIsolationGate()
-+    gate.enter_live()
-+    result = gate.assert_can_write_live_db(table="trades_log")
-+    assert result.allowed
-+
-+
-+def test_assert_can_write_fill_blocked():
-+    gate = ReplayIsolationGate()
-+    gate.enter_replay(replay_trace_id="replay-001")
-+    result = gate.assert_can_write_fill(fill_context="FILL-001")
-+    assert not result.allowed
-+    assert result.reason_code == "FILL_WRITE_BLOCKED_BY_MODE"
-+
-+
-+def test_assert_can_write_fill_live_allowed():
-+    gate = ReplayIsolationGate()
-+    gate.enter_live()
-+    result = gate.assert_can_write_fill(fill_context="FILL-001")
-+    assert result.allowed
-+
-+
-+def test_assert_can_start_live_from_replay_blocked():
-+    gate = ReplayIsolationGate()
-+    gate.enter_replay(replay_trace_id="replay-001")
-+    result = gate.assert_can_start_live_from_replay()
-+    assert not result.allowed
-+    assert result.reason_code == "LIVE_START_BLOCKED_BY_NON_LIVE_MODE"
-+
-+
-+def test_assert_can_start_live_from_live_allowed():
-+    gate = ReplayIsolationGate()
-+    gate.enter_live()
-+    result = gate.assert_can_start_live_from_replay()
-+    assert result.allowed
-+
-+
- if __name__ == "__main__":
-     import pytest
-     sys.exit(pytest.main([__file__, "-v"]))
-
-# === new file: tests/test_r033_replay_live_write_guard.py ===
-
-import sys
-import os
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
-
-import pytest
-from modules.decision_prechecklist.replay_isolation import (
-    ReplayIsolationGate,
-    ReplayStoreIsolator,
-    IsolationCheckResult,
-    ExecutionMode,
-    validate_mode,
-)
-
-
-# ????????????????????????????????????????????????????????????????# A. Missing / Unknown / Malformed mode fail-closed
-# ????????????????????????????????????????????????????????????????
-def test_no_context_order_placement_blocked():
-    gate = ReplayIsolationGate()
-    assert gate.current_context is None
-    result = gate.assert_can_place_order(target="2330.TW:Buy")
-    assert not result.allowed
-    assert result.reason_code == "ORDER_PLACEMENT_MODE_CONTEXT_MISSING"
-    assert result.isolation_violation_reason
-
-
-def test_no_context_broker_call_blocked():
-    gate = ReplayIsolationGate()
-    result = gate.assert_can_call_broker(target="shioaji")
-    assert not result.allowed
-    assert result.reason_code == "BROKER_CALL_MODE_CONTEXT_MISSING"
-
-
-def test_no_context_runtime_write_blocked():
-    gate = ReplayIsolationGate()
-    result = gate.assert_can_write_runtime_state(path="positions")
-    assert not result.allowed
-    assert result.reason_code == "RUNTIME_STATE_WRITE_MODE_CONTEXT_MISSING"
-
-
-def test_no_context_db_write_blocked():
-    gate = ReplayIsolationGate()
-    result = gate.assert_can_write_live_db(table="trades_log")
-    assert not result.allowed
-    assert result.reason_code == "DB_LIVE_WRITE_MODE_CONTEXT_MISSING"
-
-
-def test_no_context_fill_write_blocked():
-    gate = ReplayIsolationGate()
-    result = gate.assert_can_write_fill(fill_context="FILL-001")
-    assert not result.allowed
-    assert result.reason_code == "FILL_WRITE_MODE_CONTEXT_MISSING"
-
-
-def test_no_context_live_start_blocked():
-    gate = ReplayIsolationGate()
-    result = gate.assert_can_start_live_from_replay()
-    assert not result.allowed
-    assert result.reason_code == "LIVE_START_FROM_UNKNOWN_MODE"
-
-
-def test_no_context_store_access_blocked():
-    gate = ReplayIsolationGate()
-    result = gate.check_store_access("trades_log")
-    assert not result.allowed
-    assert result.reason_code == "MODE_CONTEXT_MISSING"
-
-
-def test_validate_mode_rejects_invalid():
-    assert validate_mode("INVALID") is None
-    assert validate_mode("") is None
-    assert validate_mode(None) is None
-    assert validate_mode(123) is None
-    assert validate_mode([]) is None
-
-
-def test_execution_mode_missing_returns_none():
-    try:
-        m = ExecutionMode("nonexistent")
-        assert m is None
-    except ValueError:
-        pass
-
-
-# ????????????????????????????????????????????????????????????????# B. Replay / Backtest / Audit / Simulation mode guards
-# ????????????????????????????????????????????????????????????????
-@pytest.mark.parametrize("mode_name,enter_method,kwargs", [
-    ("replay", "enter_replay", {"replay_trace_id": "t1"}),
-    ("backtest", "enter_backtest", {}),
-    ("audit", "enter_audit", {}),
-    ("simulation", "enter_simulation", {}),
-])
-def test_all_non_live_modes_block_broker_call(mode_name, enter_method, kwargs):
-    gate = ReplayIsolationGate()
-    getattr(gate, enter_method)(**kwargs)
-    result = gate.assert_can_call_broker(target="shioaji")
-    assert not result.allowed, f"{mode_name} should block broker call"
-    assert result.reason_code == "BROKER_CALL_BLOCKED_BY_MODE"
-
-
-@pytest.mark.parametrize("mode_name,enter_method,kwargs", [
-    ("replay", "enter_replay", {"replay_trace_id": "t1"}),
-    ("backtest", "enter_backtest", {}),
-    ("audit", "enter_audit", {}),
-    ("simulation", "enter_simulation", {}),
-])
-def test_all_non_live_modes_block_order_placement(mode_name, enter_method, kwargs):
-    gate = ReplayIsolationGate()
-    getattr(gate, enter_method)(**kwargs)
-    result = gate.assert_can_place_order(target="2330.TW:Buy")
-    assert not result.allowed, f"{mode_name} should block order placement"
-    assert result.reason_code == "ORDER_PLACEMENT_BLOCKED_BY_MODE"
-
-
-@pytest.mark.parametrize("mode_name,enter_method,kwargs", [
-    ("replay", "enter_replay", {"replay_trace_id": "t1"}),
-    ("backtest", "enter_backtest", {}),
-    ("audit", "enter_audit", {}),
-    ("simulation", "enter_simulation", {}),
-])
-def test_all_non_live_modes_block_runtime_write(mode_name, enter_method, kwargs):
-    gate = ReplayIsolationGate()
-    getattr(gate, enter_method)(**kwargs)
-    result = gate.assert_can_write_runtime_state(path="positions")
-    assert not result.allowed, f"{mode_name} should block runtime write"
-    assert result.reason_code == "RUNTIME_STATE_WRITE_BLOCKED_BY_MODE"
-
-
-@pytest.mark.parametrize("mode_name,enter_method,kwargs", [
-    ("replay", "enter_replay", {"replay_trace_id": "t1"}),
-    ("backtest", "enter_backtest", {}),
-    ("audit", "enter_audit", {}),
-    ("simulation", "enter_simulation", {}),
-])
-def test_all_non_live_modes_block_db_write(mode_name, enter_method, kwargs):
-    gate = ReplayIsolationGate()
-    getattr(gate, enter_method)(**kwargs)
-    result = gate.assert_can_write_live_db(table="execution_orders")
-    assert not result.allowed, f"{mode_name} should block db write"
-    assert result.reason_code == "DB_LIVE_WRITE_BLOCKED_BY_MODE"
-
-
-@pytest.mark.parametrize("mode_name,enter_method,kwargs", [
-    ("replay", "enter_replay", {"replay_trace_id": "t1"}),
-    ("backtest", "enter_backtest", {}),
-    ("audit", "enter_audit", {}),
-    ("simulation", "enter_simulation", {}),
-])
-def test_all_non_live_modes_block_fill_write(mode_name, enter_method, kwargs):
-    gate = ReplayIsolationGate()
-    getattr(gate, enter_method)(**kwargs)
-    result = gate.assert_can_write_fill(fill_context="FILL-001")
-    assert not result.allowed, f"{mode_name} should block fill write"
-    assert result.reason_code == "FILL_WRITE_BLOCKED_BY_MODE"
-
-
-@pytest.mark.parametrize("mode_name,enter_method,kwargs", [
-    ("replay", "enter_replay", {"replay_trace_id": "t1"}),
-    ("backtest", "enter_backtest", {}),
-    ("audit", "enter_audit", {}),
-    ("simulation", "enter_simulation", {}),
-])
-def test_all_non_live_modes_block_live_start(mode_name, enter_method, kwargs):
-    gate = ReplayIsolationGate()
-    getattr(gate, enter_method)(**kwargs)
-    result = gate.assert_can_start_live_from_replay()
-    assert not result.allowed, f"{mode_name} should block live start"
-    assert result.reason_code == "LIVE_START_BLOCKED_BY_NON_LIVE_MODE"
-
-
-# ????????????????????????????????????????????????????????????????# C. Live mode respects guards (allowed)
-# ????????????????????????????????????????????????????????????????
-def test_live_mode_allows_broker_call():
-    gate = ReplayIsolationGate()
-    gate.enter_live()
-    result = gate.assert_can_call_broker(target="shioaji")
-    assert result.allowed
-    assert result.reason_code == "ALLOWED"
-
-
-def test_live_mode_allows_order_placement():
-    gate = ReplayIsolationGate()
-    gate.enter_live()
-    result = gate.assert_can_place_order(target="2330.TW:Buy")
-    assert result.allowed
-
-
-def test_live_mode_allows_runtime_write():
-    gate = ReplayIsolationGate()
-    gate.enter_live()
-    result = gate.assert_can_write_runtime_state(path="positions")
-    assert result.allowed
-
-
-def test_live_mode_allows_db_write():
-    gate = ReplayIsolationGate()
-    gate.enter_live()
-    result = gate.assert_can_write_live_db(table="trades_log")
-    assert result.allowed
-
-
-def test_live_mode_allows_fill_write():
-    gate = ReplayIsolationGate()
-    gate.enter_live()
-    result = gate.assert_can_write_fill(fill_context="FILL-001")
-    assert result.allowed
-
-
-def test_live_mode_allows_live_start():
-    gate = ReplayIsolationGate()
-    gate.enter_live()
-    result = gate.assert_can_start_live_from_replay()
-    assert result.allowed
-
-
-# ????????????????????????????????????????????????????????????????# D. IsolationCheckResult has reason_code / block_reason
-# ????????????????????????????????????????????????????????????????
-def test_isolation_result_all_fields():
-    gate = ReplayIsolationGate()
-    gate.enter_replay(replay_trace_id="t1")
-    result = gate.assert_can_place_order(target="2330.TW:Buy")
-    assert hasattr(result, "allowed")
-    assert hasattr(result, "reason")
-    assert hasattr(result, "reason_code")
-    assert hasattr(result, "mode")
-    assert hasattr(result, "target")
-    assert hasattr(result, "isolation_violation_reason")
-    assert result.mode == "replay"
-    assert result.target == "order:2330.TW:Buy"
-
-
-def test_isolation_result_reason_code_present():
-    gate = ReplayIsolationGate()
-    gate.enter_replay(replay_trace_id="t1")
-    for result in [
-        gate.assert_can_call_broker(target="x"),
-        gate.assert_can_place_order(target="x"),
-        gate.assert_can_write_runtime_state(path="x"),
-        gate.assert_can_write_live_db(table="x"),
-        gate.assert_can_write_fill(fill_context="x"),
-        gate.assert_can_start_live_from_replay(),
-    ]:
-        assert result.reason_code and not result.allowed, f"missing reason_code for {result}"
-
-
-# ????????????????????????????????????????????????????????????????# E. Store isolation behavior with new modes
-# ????????????????????????????????????????????????????????????????
-def test_backtest_store_access_blocked():
-    gate = ReplayIsolationGate()
-    gate.enter_backtest()
-    for store in ["trades_log", "execution_orders", "pnl_records", "positions", "decision_log", "signal_history"]:
-        result = gate.check_store_access(store)
-        assert not result.allowed
-        assert result.reason_code == "ISOLATED_STORE_BLOCKED"
-
-
-def test_audit_store_access_blocked():
-    gate = ReplayIsolationGate()
-    gate.enter_audit()
-    for store in ["trades_log", "execution_orders", "pnl_records", "positions", "decision_log", "signal_history"]:
-        result = gate.check_store_access(store)
-        assert not result.allowed
-        assert result.reason_code == "ISOLATED_STORE_BLOCKED"
-
-
-def test_simulation_store_access_blocked():
-    gate = ReplayIsolationGate()
-    gate.enter_simulation()
-    for store in ["trades_log", "execution_orders", "pnl_records", "positions", "decision_log", "signal_history"]:
-        result = gate.check_store_access(store)
-        assert not result.allowed
-        assert result.reason_code == "ISOLATED_STORE_BLOCKED"
-
-
-def test_non_isolated_store_allowed_in_non_live():
-    gate = ReplayIsolationGate()
-    gate.enter_replay(replay_trace_id="t1")
-    result = gate.check_store_access("market_data_cache")
-    assert result.allowed
-
-
-# ????????????????????????????????????????????????????????????????# F. Mutation-style: removing the guard should fail tests
-# ????????????????????????????????????????????????????????????????
-def test_mutation_guard_removal_broker_block_would_fail():
-    gate = ReplayIsolationGate()
-    gate.enter_replay(replay_trace_id="t1")
-    result = gate.assert_can_call_broker(target="shioaji")
-    assert not result.allowed
-    assert result.reason_code == "BROKER_CALL_BLOCKED_BY_MODE"
-
-
-def test_mutation_guard_removal_order_block_would_fail():
-    gate = ReplayIsolationGate()
-    gate.enter_replay(replay_trace_id="t1")
-    with_non_live = gate.assert_can_place_order(target="2330.TW:Buy")
-    assert not with_non_live.allowed
-    gate.exit()
-    gate.enter_live()
-    with_live = gate.assert_can_place_order(target="2330.TW:Buy")
-    assert with_live.allowed
-    assert with_non_live.reason_code != with_live.reason_code
-
-
-# ????????????????????????????????????????????????????????????????# G. ReplayStoreIsolator works with all modes
-# ????????????????????????????????????????????????????????????????
-def test_isolator_backtest():
-    isolator = ReplayStoreIsolator()
-    isolator.gate.enter_backtest()
-    assert isolator.isolate_store("trades_log") == "backtest_trades_log"
-    assert isolator.isolate_store("market_data") == "market_data"
-
-
-def test_isolator_audit():
-    isolator = ReplayStoreIsolator()
-    isolator.gate.enter_audit()
-    assert isolator.isolate_store("trades_log") == "audit_trades_log"
-
-
-def test_isolator_simulation():
-    isolator = ReplayStoreIsolator()
-    isolator.gate.enter_simulation()
-    assert isolator.isolate_store("trades_log") == "simulation_trades_log"
-
-
-# ????????????????????????????????????????????????????????????????# H. Server_v2 integration: check_pre_trade_isolation
-# ????????????????????????????????????????????????????????????????
-def test_server_v2_imports_replay_isolation():
-    from modules.decision_prechecklist.replay_isolation import (
-        ReplayIsolationGate, ExecutionMode, IsolationCheckResult,
-    )
-    gate = ReplayIsolationGate()
-    assert isinstance(gate, ReplayIsolationGate)
-
-
-def test_server_v2_trading_engine_has_isolation_gate():
-    from server_v2 import engine
-    assert hasattr(engine, "_replay_isolation_gate")
-    assert hasattr(engine, "check_pre_trade_isolation")
-    assert hasattr(engine, "check_broker_isolation")
-
-
-def test_server_v2_engine_resolve_execution_mode():
-    from server_v2 import engine
-    mode = engine._resolve_execution_mode()
-    assert mode in set(ExecutionMode)
-
-
-def test_server_v2_engine_check_pre_trade():
-    from server_v2 import engine
-    result = engine.check_pre_trade_isolation("2330.TW", "Buy")
-    assert isinstance(result, IsolationCheckResult)
-    assert hasattr(result, "allowed")
-    assert hasattr(result, "reason_code")
-    assert hasattr(result, "mode")
-
-
-# ????????????????????????????????????????????????????????????????# I. No real broker / live API called
-# ????????????????????????????????????????????????????????????????
-def test_no_broker_import_in_isolation_module():
-    import modules.decision_prechecklist.replay_isolation as ri
-    with open(ri.__file__, encoding="utf-8", errors="replace") as f:
-        source = f.read()
-    assert "shioaji" not in source.lower()
-    assert "fubon" not in source.lower()
-    assert "import shioaji" not in source.lower()
-    assert "import fubon" not in source.lower()
-    assert "def place_order" not in source
-    assert "_api.place_order" not in source
-    assert "broker" not in source.lower() or "assert_can_call_broker" in source
-
-
-if __name__ == "__main__":
-    import pytest
-    sys.exit(pytest.main([__file__, "-v"]))
-diff --git a/candidate.diff b/candidate.diff
-index cef1feb..e46e555 100644
-Binary files a/candidate.diff and b/candidate.diff differ
+diff --git a/automation/control/candidates/R033_R034_REPLAY_ISOLATION_LIVE_WRITE_GUARD_REWORK_BEFORE_R049/evidence.json b/automation/control/candidates/R033_R034_REPLAY_ISOLATION_LIVE_WRITE_GUARD_REWORK_BEFORE_R049/evidence.json
+index 093091c..2819c60 100644
+--- a/automation/control/candidates/R033_R034_REPLAY_ISOLATION_LIVE_WRITE_GUARD_REWORK_BEFORE_R049/evidence.json
++++ b/automation/control/candidates/R033_R034_REPLAY_ISOLATION_LIVE_WRITE_GUARD_REWORK_BEFORE_R049/evidence.json
+@@ -22,6 +22,12 @@
+   "total_tests": 423,
+   "tests_passed": 423,
+   "tests_failed": 0,
++  "manual_review_block_confirmed": true,
++  "bridge_bypass_fixed": true,
++  "check_pre_trade_isolation_delegates_to_gate": true,
++  "check_broker_isolation_delegates_to_gate": true,
++  "non_live_pre_trade_allowed_true_removed": true,
++  "server_v2_bridge_tests_cover_non_live_block": true,
+   "order_execution_allowed": false,
+   "no_broker_live_started": true,
+   "no_runtime_started": true,
+diff --git a/server_v2.py b/server_v2.py
+index 91f72bd..c53639c 100644
+--- a/server_v2.py
++++ b/server_v2.py
+@@ -1805,15 +1805,10 @@ class TradingEngine:
+ 
+     def check_pre_trade_isolation(self, symbol: str, action: str) -> IsolationCheckResult:
+         exec_mode = self._resolve_execution_mode()
+-        if exec_mode != ExecutionMode.LIVE:
+-            # Non-live modes: allow through to ORDER_EXECUTION_ALLOWED gate
+-            return IsolationCheckResult(allowed=True, mode=exec_mode.value, target=f"order:{symbol}:{action}")
+         return self._replay_isolation_gate.assert_can_place_order(target=f"{symbol}:{action}")
+ 
+     def check_broker_isolation(self, target: str = "") -> IsolationCheckResult:
+         exec_mode = self._resolve_execution_mode()
+-        if exec_mode != ExecutionMode.LIVE:
+-            return IsolationCheckResult(allowed=True, mode=exec_mode.value, target=target or "broker")
+         return self._replay_isolation_gate.assert_can_call_broker(target=target)
+ 
+     def refresh_market_scan(self):
+diff --git a/tests/test_r033_replay_live_write_guard.py b/tests/test_r033_replay_live_write_guard.py
+index cbb99b5..e6c707f 100644
+--- a/tests/test_r033_replay_live_write_guard.py
++++ b/tests/test_r033_replay_live_write_guard.py
+@@ -360,13 +360,152 @@ def test_server_v2_engine_resolve_execution_mode():
+     assert mode in set(ExecutionMode)
+ 
+ 
+-def test_server_v2_engine_check_pre_trade():
++def test_server_v2_check_pre_trade_blocks_replay_mode():
+     from server_v2 import engine
++    from modules.decision_prechecklist.replay_isolation import ExecutionMode
++    engine._replay_isolation_gate.clear()
++    engine._replay_isolation_gate.enter_replay("test_trace")
+     result = engine.check_pre_trade_isolation("2330.TW", "Buy")
+-    assert isinstance(result, IsolationCheckResult)
+-    assert hasattr(result, "allowed")
+-    assert hasattr(result, "reason_code")
+-    assert hasattr(result, "mode")
++    assert not result.allowed, f"replay mode should block order, got allowed={result.allowed}"
++    assert result.reason_code == "ORDER_PLACEMENT_BLOCKED_BY_MODE"
++    engine._replay_isolation_gate.clear()
++
++
++def test_server_v2_check_pre_trade_blocks_backtest_mode():
++    from server_v2 import engine
++    from modules.decision_prechecklist.replay_isolation import ExecutionMode
++    engine._replay_isolation_gate.clear()
++    engine._replay_isolation_gate.enter_backtest()
++    result = engine.check_pre_trade_isolation("2330.TW", "Sell")
++    assert not result.allowed, f"backtest mode should block order, got allowed={result.allowed}"
++    assert result.reason_code == "ORDER_PLACEMENT_BLOCKED_BY_MODE"
++    engine._replay_isolation_gate.clear()
++
++
++def test_server_v2_check_pre_trade_blocks_audit_mode():
++    from server_v2 import engine
++    engine._replay_isolation_gate.clear()
++    engine._replay_isolation_gate.enter_audit()
++    result = engine.check_pre_trade_isolation("2330.TW", "Buy")
++    assert not result.allowed, f"audit mode should block order, got allowed={result.allowed}"
++    assert result.reason_code == "ORDER_PLACEMENT_BLOCKED_BY_MODE"
++    engine._replay_isolation_gate.clear()
++
++
++def test_server_v2_check_pre_trade_blocks_simulation_mode():
++    from server_v2 import engine
++    engine._replay_isolation_gate.clear()
++    engine._replay_isolation_gate.enter_simulation()
++    result = engine.check_pre_trade_isolation("2330.TW", "Buy")
++    assert not result.allowed, f"simulation mode should block order, got allowed={result.allowed}"
++    assert result.reason_code == "ORDER_PLACEMENT_BLOCKED_BY_MODE"
++    engine._replay_isolation_gate.clear()
++
++
++def test_server_v2_check_pre_trade_allows_live_mode():
++    from server_v2 import engine
++    engine._replay_isolation_gate.clear()
++    engine._replay_isolation_gate.enter_live()
++    result = engine.check_pre_trade_isolation("2330.TW", "Buy")
++    assert result.allowed, f"live mode should allow order, got allowed={result.allowed}"
++    engine._replay_isolation_gate.clear()
++
++
++def test_server_v2_check_pre_trade_blocks_no_context():
++    from server_v2 import engine
++    engine._replay_isolation_gate.clear()
++    result = engine.check_pre_trade_isolation("2330.TW", "Buy")
++    assert not result.allowed, f"no context should fail-closed, got allowed={result.allowed}"
++    assert result.reason_code == "ORDER_PLACEMENT_MODE_CONTEXT_MISSING"
++
++
++def test_server_v2_check_broker_blocks_replay_mode():
++    from server_v2 import engine
++    engine._replay_isolation_gate.clear()
++    engine._replay_isolation_gate.enter_replay("test_trace_broker")
++    result = engine.check_broker_isolation("shioaji")
++    assert not result.allowed, f"replay mode should block broker call, got allowed={result.allowed}"
++    assert result.reason_code == "BROKER_CALL_BLOCKED_BY_MODE"
++    engine._replay_isolation_gate.clear()
++
++
++def test_server_v2_check_broker_blocks_backtest_mode():
++    from server_v2 import engine
++    engine._replay_isolation_gate.clear()
++    engine._replay_isolation_gate.enter_backtest()
++    result = engine.check_broker_isolation("fubon")
++    assert not result.allowed, f"backtest mode should block broker call, got allowed={result.allowed}"
++    assert result.reason_code == "BROKER_CALL_BLOCKED_BY_MODE"
++    engine._replay_isolation_gate.clear()
++
++
++def test_server_v2_check_broker_allows_live_mode():
++    from server_v2 import engine
++    engine._replay_isolation_gate.clear()
++    engine._replay_isolation_gate.enter_live()
++    result = engine.check_broker_isolation("shioaji")
++    assert result.allowed, f"live mode should allow broker call, got allowed={result.allowed}"
++    engine._replay_isolation_gate.clear()
++
++
++def test_server_v2_check_broker_blocks_no_context():
++    from server_v2 import engine
++    engine._replay_isolation_gate.clear()
++    result = engine.check_broker_isolation()
++    assert not result.allowed, f"no context should fail-closed for broker, got allowed={result.allowed}"
++    assert result.reason_code == "BROKER_CALL_MODE_CONTEXT_MISSING"
++
++
++def test_server_v2_execution_engineer_place_blocks_replay():
++    from server_v2 import engine
++    engine._replay_isolation_gate.clear()
++    engine._replay_isolation_gate.enter_replay("test_place")
++    rec = engine.execution.place("2330", "Buy", 1, 500.0, "test")
++    assert rec.get("status") == "blocked", f"replay place should be blocked, got {rec.get('status')}"
++    block_reason = rec.get("block_reason", "")
++    assert block_reason == "ORDER_PLACEMENT_BLOCKED_BY_MODE", f"expected IsolationGate reason, got {block_reason}"
++    engine._replay_isolation_gate.clear()
++
++
++def test_server_v2_execution_engineer_place_blocks_no_context():
++    from server_v2 import engine
++    engine._replay_isolation_gate.clear()
++    rec = engine.execution.place("2330", "Buy", 1, 500.0, "test")
++    assert rec.get("status") == "blocked", f"no-context place should be blocked, got {rec.get('status')}"
++    block_reason = rec.get("block_reason", "")
++    assert block_reason == "ORDER_PLACEMENT_MODE_CONTEXT_MISSING", f"expected IsolationGate reason, got {block_reason}"
++
++
++def test_server_v2_execution_engineer_place_still_blocked_by_order_execution_allowed():
++    from server_v2 import engine
++    from server_v2 import ORDER_EXECUTION_ALLOWED
++    engine._replay_isolation_gate.clear()
++    engine._replay_isolation_gate.enter_live()
++    rec = engine.execution.place("2330", "Buy", 1, 500.0, "test")
++    assert rec.get("status") == "blocked", "live context but order_execution_allowed=False should still block"
++    block_reason = rec.get("block_reason", "")
++    assert block_reason == "order_execution_not_allowed", f"expected order_execution_not_allowed, got {block_reason}"
++    engine._replay_isolation_gate.clear()
++
++
++def test_server_v2_bridge_returns_isolation_gate_result_not_hardcoded():
++    from server_v2 import engine
++    engine._replay_isolation_gate.clear()
++    engine._replay_isolation_gate.enter_replay("bridge_test")
++    result = engine.check_pre_trade_isolation("2330.TW", "Buy")
++    assert result.mode == "replay", f"expected mode=replay from gate, got mode={result.mode}"
++    assert result.target == "order:2330.TW:Buy", f"expected target with order: prefix, got {result.target}"
++    engine._replay_isolation_gate.clear()
++
++
++def test_server_v2_bridge_check_broker_returns_gate_result():
++    from server_v2 import engine
++    engine._replay_isolation_gate.clear()
++    engine._replay_isolation_gate.enter_backtest()
++    result = engine.check_broker_isolation("fubon_api")
++    assert result.mode == "backtest", f"expected mode=backtest from gate, got mode={result.mode}"
++    assert "blocked" in result.reason.lower() or not result.allowed, f"backtest should block broker"
++    engine._replay_isolation_gate.clear()
+ 
+ 
+ # ═══════════════════════════════════════════════════════════════

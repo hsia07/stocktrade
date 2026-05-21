@@ -1805,15 +1805,10 @@ class TradingEngine:
 
     def check_pre_trade_isolation(self, symbol: str, action: str) -> IsolationCheckResult:
         exec_mode = self._resolve_execution_mode()
-        if exec_mode != ExecutionMode.LIVE:
-            # Non-live modes: allow through to ORDER_EXECUTION_ALLOWED gate
-            return IsolationCheckResult(allowed=True, mode=exec_mode.value, target=f"order:{symbol}:{action}")
         return self._replay_isolation_gate.assert_can_place_order(target=f"{symbol}:{action}")
 
     def check_broker_isolation(self, target: str = "") -> IsolationCheckResult:
         exec_mode = self._resolve_execution_mode()
-        if exec_mode != ExecutionMode.LIVE:
-            return IsolationCheckResult(allowed=True, mode=exec_mode.value, target=target or "broker")
         return self._replay_isolation_gate.assert_can_call_broker(target=target)
 
     def refresh_market_scan(self):
