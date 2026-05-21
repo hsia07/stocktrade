@@ -32,7 +32,7 @@ candidate_commit:
   8e1fd576fb2f4e9d74a09657b93f3a4d4a0f728a (source commit with code changes)
 
 candidate_head:
-  214f3aa9accb3b9fc4de2e1ac2427df2406a98f6 (branch HEAD includes resynced evidence package)
+  39c8fab065b16df0997c8791253aae0a5b8c439b (branch HEAD includes resynced evidence package)
 
 candidate_package_resynced_true_or_false:
   TRUE
