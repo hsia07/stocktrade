@@ -1,0 +1,54 @@
+R027 Market Open/Close Protection Rework - Test Results
+Canonical base: c82b0b01cb6646b35bbf7264bce9b342ce1d3310
+Candidate: 8e1fd576fb2f4e9d74a09657b93f3a4d4a0f728a
+
+=== Test Suites ===
+
+1. tests/test_market_reality_layer.py (46 tests)
+   - 46 passed, 0 failed
+   - NEW: 17 session enforcement tests (weekend, holiday, None, malformed, closing auction, etc.)
+   - NEW: 3 evaluate_order current_time injection tests
+
+2. tests/test_market_reality_integration.py (9 tests)
+   - 9 passed, 0 failed
+
+3. tests/test_execution_sizing_guard.py (30 tests)
+   - 30 passed, 0 failed
+
+4. tests/test_arbitrage_protection.py (23 tests)
+   - 23 passed, 0 failed
+
+5. Key safety/candidate tests (160 tests)
+   - R014 ObservableEvent tests: PASS
+   - R007 Silence protection tests: PASS
+   - server_v2 backend execution safety: PASS
+   - pre-R049 local website visible surface: PASS
+   - UI visible gate governance: PASS
+
+6. Full clean subset (1120 tests)
+   - 1120 passed, 0 failed
+
+=== Key Test Coverage ===
+
+Weekend enforcement:
+  test_saturday_10_00_blocked_non_trading_day: PASS
+  test_sunday_10_00_blocked_non_trading_day: PASS
+
+Holiday enforcement:
+  test_injected_holiday_blocked: PASS
+
+Fail-closed:
+  test_none_current_time_fail_closed: PASS (SESSION_UNKNOWN)
+  test_malformed_current_time_fail_closed: PASS (SESSION_UNKNOWN)
+
+Opening/closing auction:
+  test_opening_auction_08_30_is_auction_not_continuous: PASS (PRE_MARKET_AUCTION)
+  test_closing_auction_13_32_is_auction_not_continuous: PASS (CLOSING_AUCTION)
+
+evaluate_order current_time injection:
+  test_evaluate_order_with_saturday_current_time_blocked: PASS
+  test_evaluate_order_with_none_current_time_fail_closed: PASS
+  test_evaluate_order_with_weekday_trading_hour_passes: PASS
+
+=== Total ===
+All 1261 tests pass. 0 failures. 17 new behavioral tests added to test_market_reality_layer.py.

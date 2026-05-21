@@ -1,0 +1,124 @@
+=== R027 MARKET OPEN/CLOSE PROTECTION REWORK — COMPLETE ===
+
+round_id:
+  R027_MARKET_OPEN_CLOSE_PROTECTION_REWORK_BEFORE_R033_R049
+
+task_type:
+  r027_market_open_close_protection_rework_candidate
+
+status:
+  completed
+
+formal_status_code:
+  CANDIDATE_READY_AWAITING_MANUAL_REVIEW
+
+=== PRE-PUSH CHECKLIST ===
+
+Baseline verification:
+  canonical_branch: work/canonical-mainline-repair-001
+  base_head: c82b0b01cb6646b35bbf7264bce9b342ce1d3310
+  candidate_branch: candidate/r027-market-open-close-protection-rework-before-r033-r049
+  candidate_commit: 8e1fd576fb2f4e9d74a09657b93f3a4d4a0f728a
+  current_branch: work/canonical-mainline-repair-001
+
+P0 blockers fixed:
+  1. Weekend not blocked → FIXED (Saturday/Sunday return NON_TRADING_DAY)
+  2. validate_trading_session(None) safe pass → FIXED (returns SESSION_UNKNOWN fail-closed)
+  3. evaluate_order no current_time param → FIXED (added current_time parameter)
+  4. No closing auction → FIXED (added CLOSING_AUCTION 13:30-13:35)
+  5. ArbitrageSlippageModel._check_trading_session always True → FIXED (delegates to MarketRealityLayer)
+
+P1 items addressed:
+  - Holiday calendar hook added (add_holiday / holiday_dates set)
+  - Malformed timestamp fail-closed (non-datetime types return SESSION_UNKNOWN)
+  - Opening/closing auction not treated as CONTINUOUS_TRADING
+
+=== SOURCE CHANGES ===
+
+modules/market_reality/layer.py:
+  - __init__ now accepts holiday_dates set
+  - add_holiday() method for injecting Taiwan holidays
+  - _is_non_trading_day() checks weekday() >= 5 + holiday_dates
+  - validate_trading_session() now fail-closed for None/malformed
+  - validate_trading_session() returns NON_TRADING_DAY for weekends/holidays
+  - validate_trading_session() adds CLOSING_AUCTION session (13:30-13:35)
+  - validate_trading_session() continuous ends at 13:30 (exclusive), not 13:35
+  - evaluate_order() now accepts current_time parameter
+  - evaluate_order() passes current_time to validate_trading_session
+  - Reordered methods for logical grouping (no behavior change)
+
+modules/market_reality/arbitrage_slippage_model.py:
+  - Added datetime import
+  - _check_trading_session now delegates to MarketRealityLayer.validate_trading_session
+  - Returns False when opportunity.trading_time is None or non-datetime
+  - _validate_session() internal method does safe import of MarketRealityLayer
+
+tests/test_market_reality_layer.py:
+  - Added 17 new behavioral tests for session enforcement
+  - Added 3 new tests for evaluate_order current_time injection
+  - Removed patch-based TestR028EvaluateOrder._during_trading_hours helper
+  - All evaluate_order tests now inject explicit current_time
+  - TestR028EvaluateOrder now has _weekday_trading_dt() helper
+
+=== TEST RESULTS ===
+
+1. tests/test_market_reality_layer.py: 46 passed (was 22)
+   - 17 new session enforcement tests
+   - 3 new evaluate_order current_time tests
+
+2. tests/test_market_reality_integration.py: 9 passed
+
+3. tests/test_execution_sizing_guard.py: 30 passed
+
+4. tests/test_arbitrage_protection.py: 23 passed
+
+5. Key safety/candidate tests: 160 passed
+
+6. Full clean subset: 1120 passed
+
+Total: 1261 tests pass, 0 failures
+
+=== AUTHORIZED FILES ONLY ===
+
+Confirmed modified:
+  - modules/market_reality/layer.py (MarketRealityLayer)
+  - modules/market_reality/arbitrage_slippage_model.py (_check_trading_session placeholder fix)
+  - tests/test_market_reality_layer.py (behavioral tests)
+
+Confirmed NOT modified:
+  - server.py, server_v2.py, root index_v2.html, index.html
+  - modules/strategy/*, modules/risk/*
+  - stocktrade submodule, .env, .env.example, .gitmodules
+  - GitHub Actions workflow
+  - R033/R049/R031 files
+
+=== LAW 04 COMPLIANCE ===
+
+- evidence.json contains law_compliance: "04" (string)
+- All modified source files are in authorized scope
+- No broker/live/execution/broker API integration
+- No runtime state write, no DB write
+- No new API endpoint
+
+=== EVIDENCE PACKAGE ===
+
+automation/control/candidates/R027_MARKET_OPEN_CLOSE_PROTECTION_REWORK_BEFORE_R033_R049/
+  evidence.json (52 fields, law_compliance: "04")
+  candidate.diff (13093 bytes, UTF-8 no BOM)
+  RETURN_TO_CHATGPT.txt (this file)
+  test-results.txt (1261 tests, 0 failures)
+
+=== REMAINING BLOCKERS (for reference) ===
+
+- Trading session validation not yet connected to server_v2.py pre-trade gates
+  (R027 market session is enforcement-only, not integrated into live trading flow)
+- R014 formal trace_id / decision_chain / veto tracking integration incomplete
+- R014 durable persistence not implemented
+- R029/R030 full meeting table / trace_id / decision_chain / per-AI veto rework
+
+=== NEXT ===
+
+awaiting_user_signoff_for_r027_remote_merge_and_push
+
+final_recommendation:
+  R027_MARKET_OPEN_CLOSE_REWORK_READY_FOR_MANUAL_REVIEW_DO_NOT_START_R049
