@@ -58,5 +58,14 @@
     "root_candidate_diff_working_tree_hash": "cef1febe24f9d585cbaf75cf36bcc01e5b9d0e3d",
     "note": "Git index (HEAD) still references modified blob. Working tree restored to base. Windows CRLF pipeline prevents zero-diff without index write. Root candidate.diff is a legacy artifact pre-existing from base. The authorized candidate artifact is automation/control/candidates/.../candidate.diff.",
     "authorized_candidate_artifact": "automation/control/candidates/R033_R034_REPLAY_ISOLATION_LIVE_WRITE_GUARD_REWORK_BEFORE_R049/candidate.diff"
+  },
+  "evidence_package_candidate_diff_encoding_cleanup": {
+    "evidence_package_candidate_diff_utf16le_detected": true,
+    "evidence_package_candidate_diff_utf8_no_bom_before": false,
+    "evidence_package_candidate_diff_utf8_no_bom_after": true,
+    "evidence_package_candidate_diff_utf16le_removed": true,
+    "root_candidate_diff_modified_by_this_cleanup": false,
+    "root_candidate_diff_removed_from_base_to_head_diff": true,
+    "scope_violation_detected": false
   }
 }
