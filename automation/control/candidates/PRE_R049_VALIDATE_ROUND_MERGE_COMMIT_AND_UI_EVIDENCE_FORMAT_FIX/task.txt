@@ -1,0 +1,21 @@
+Task: Ratification & Evidence Reconstruction for Unauthorized Remote State
+
+Task Type: unauthorized_remote_state_conditional_ratification_and_evidence_reconstruction_candidate
+
+Base: 6da0a6cbf1d9b88e6052252d80ca5d8758c8c140 on work/canonical-mainline-repair-001
+
+Objective:
+- Do NOT rollback 6da0a6c
+- Do NOT modify validator source files
+- Do NOT modify workflow, manifest, schema
+- Do NOT merge, do NOT push
+- Only reconstruct complete evidence package for PRE_R049_VALIDATE_ROUND_MERGE_COMMIT_AND_UI_EVIDENCE_FORMAT_FIX
+- Only propose governance prevention rework items
+
+Scope:
+- automation/control/candidates/PRE_R049_VALIDATE_ROUND_MERGE_COMMIT_AND_UI_EVIDENCE_FORMAT_FIX/ (evidence package only)
+- Evidence files only: evidence.json (update if needed), candidate.diff, RETURN_TO_CHATGPT.txt, test-results.txt, task.txt, report.json, no-aider-used.txt, incident-ratification.json, visible_evidence.txt
+
+Status: RATIFICATION_EVIDENCE_RECONSTRUCTION_CANDIDATE_CONSTRUCTION
+
+This round is for incident ratification and evidence reconstruction only. No source code changes. No merge. No push.

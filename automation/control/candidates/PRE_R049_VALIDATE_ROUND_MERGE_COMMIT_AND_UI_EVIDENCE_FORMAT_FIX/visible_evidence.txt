@@ -1,0 +1,26 @@
+## Validation Results Summary
+
+### validate_round.py
+PASS: manifest schema valid
+
+### check_forbidden_changes.py
+PASS: no forbidden path modified
+
+### check_required_evidence.py
+PASS: required evidence present and content valid
+PASS: law_compliance exact string '04'
+PASS: prohibited_actions_verified complete
+PASS: evidence path in authorized scope
+PASS: candidate.diff present
+PASS: secret scan passed
+
+### check_commit_message.py
+PASS: merge commit - round-id check skipped
+
+### evidence_checker.py
+(EXIT 0 - passed)
+
+### UI Gate Tests
+23 passed in 0.18s
+
+All validators PASS. All tests PASS.
