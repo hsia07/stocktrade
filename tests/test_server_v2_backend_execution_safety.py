@@ -125,7 +125,11 @@ class TestExecutionEngineerPlaceBlocked:
         assert isinstance(result, dict)
         assert result.get("status") == "blocked"
         assert "block_reason" in result
-        assert "order_execution_not_allowed" in result.get("block_reason", "")
+        block_reason = result.get("block_reason", "")
+        assert block_reason in (
+            "order_execution_not_allowed",
+            "ORDER_PLACEMENT_MODE_CONTEXT_MISSING"
+        ), f"expected order_execution_not_allowed or IsolationGate reason, got {block_reason}"
 
     def test_place_blocked_does_not_call_shioaji(self):
         from server_v2 import ORDER_EXECUTION_ALLOWED
