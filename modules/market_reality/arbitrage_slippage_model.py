@@ -10,7 +10,8 @@ Taiwan Market Realities:
 - 流动性不足: wide bid/ask spread, low volume
 """
 
-from typing import Dict
+from typing import Dict, Optional
+from datetime import datetime
 
 
 class ArbitrageSlippageModel:
@@ -126,12 +127,23 @@ class ArbitrageSlippageModel:
     def _check_trading_session(self, opportunity: 'ArbitrageOpportunity') -> bool:
         """
         Check if arbitrage is in valid Taiwan market trading session.
-        - 集合竞价: 08:30-09:00
-        - 盘中交易: 09:00-13:30
-        - 零股交易: 13:40-14:30
+        Delegates to MarketRealityLayer.validate_trading_session for enforcement.
+        Returns False (blocked) when session is unknown/invalid/non-trading-day.
+        No broker/live integration.
         """
-        # Simplified: assume all arbitrage happens during continuous trading
-        return True
+        opportunity_time = getattr(opportunity, 'trading_time', None)
+        if opportunity_time is None:
+            return False
+        if not isinstance(opportunity_time, datetime):
+            return False
+        valid, _ = self._validate_session(opportunity_time)
+        return valid
+
+    def _validate_session(self, current_time: datetime) -> tuple[bool, str]:
+        """Internal session validation. Safe import, no broker/live."""
+        from modules.market_reality.layer import MarketRealityLayer
+        layer = MarketRealityLayer()
+        return layer.validate_trading_session(current_time)
         
     def _is_odd_lot(self, opportunity: 'ArbitrageOpportunity') -> bool:
         """Check if arbitrage involves odd lots (零股)."""

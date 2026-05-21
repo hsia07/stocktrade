@@ -2,7 +2,7 @@ import sys, os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
 import pytest
-from datetime import datetime, time, timedelta
+from datetime import datetime, time, timedelta, date
 from modules.market_reality.layer import MarketRealityLayer
 
 
@@ -64,6 +64,95 @@ class TestR028TradingSession:
         valid, session = layer.validate_trading_session(dt)
         assert valid is False
         assert session == "OUTSIDE_TRADING_HOURS"
+
+    def test_pre_open_07_00_blocked(self):
+        layer = MarketRealityLayer()
+        dt = datetime(2026, 5, 18, 7, 0, 0)
+        valid, session = layer.validate_trading_session(dt)
+        assert valid is False
+        assert session == "OUTSIDE_TRADING_HOURS"
+
+    def test_opening_auction_08_30_is_auction_not_continuous(self):
+        layer = MarketRealityLayer()
+        dt = datetime(2026, 5, 18, 8, 30, 0)
+        valid, session = layer.validate_trading_session(dt)
+        assert valid is True
+        assert session == "PRE_MARKET_AUCTION"
+        assert session != "CONTINUOUS_TRADING"
+
+    def test_closing_auction_13_32_is_auction_not_continuous(self):
+        layer = MarketRealityLayer()
+        dt = datetime(2026, 5, 18, 13, 32, 0)
+        valid, session = layer.validate_trading_session(dt)
+        assert valid is True
+        assert session == "CLOSING_AUCTION"
+        assert session != "CONTINUOUS_TRADING"
+
+    def test_after_close_15_00_blocked(self):
+        layer = MarketRealityLayer()
+        dt = datetime(2026, 5, 18, 15, 0, 0)
+        valid, session = layer.validate_trading_session(dt)
+        assert valid is False
+
+    def test_saturday_10_00_blocked_non_trading_day(self):
+        layer = MarketRealityLayer()
+        dt = datetime(2026, 5, 23, 10, 0, 0)
+        valid, session = layer.validate_trading_session(dt)
+        assert valid is False
+        assert session == "NON_TRADING_DAY"
+
+    def test_sunday_10_00_blocked_non_trading_day(self):
+        layer = MarketRealityLayer()
+        dt = datetime(2026, 5, 24, 10, 0, 0)
+        valid, session = layer.validate_trading_session(dt)
+        assert valid is False
+        assert session == "NON_TRADING_DAY"
+
+    def test_injected_holiday_blocked(self):
+        layer = MarketRealityLayer()
+        layer.add_holiday(datetime(2026, 5, 20).date())
+        dt = datetime(2026, 5, 20, 10, 0, 0)
+        valid, session = layer.validate_trading_session(dt)
+        assert valid is False
+        assert session == "NON_TRADING_DAY"
+
+    def test_none_current_time_fail_closed(self):
+        layer = MarketRealityLayer()
+        valid, session = layer.validate_trading_session(None)
+        assert valid is False
+        assert session == "SESSION_UNKNOWN"
+
+    def test_malformed_current_time_fail_closed(self):
+        layer = MarketRealityLayer()
+        valid, session = layer.validate_trading_session("not a datetime")
+        assert valid is False
+        assert session == "SESSION_UNKNOWN"
+
+    def test_continuous_trading_09_30(self):
+        layer = MarketRealityLayer()
+        dt = datetime(2026, 5, 18, 9, 30, 0)
+        valid, session = layer.validate_trading_session(dt)
+        assert valid is True
+        assert session == "CONTINUOUS_TRADING"
+
+    def test_continuous_trading_10_30(self):
+        layer = MarketRealityLayer()
+        dt = datetime(2026, 5, 18, 10, 30, 0)
+        valid, session = layer.validate_trading_session(dt)
+        assert valid is True
+        assert session == "CONTINUOUS_TRADING"
+
+    def test_weekday_evening_blocked(self):
+        layer = MarketRealityLayer()
+        dt = datetime(2026, 5, 18, 19, 0, 0)
+        valid, session = layer.validate_trading_session(dt)
+        assert valid is False
+
+    def test_gap_between_continuous_and_odd_lot_blocked(self):
+        layer = MarketRealityLayer()
+        dt = datetime(2026, 5, 18, 13, 36, 0)
+        valid, session = layer.validate_trading_session(dt)
+        assert valid is False
 
 
 class TestR028TPlus2:
@@ -178,17 +267,12 @@ class TestR028CostSlippageFillSchema:
 
 
 class TestR028EvaluateOrder:
-    def _during_trading_hours(self, layer):
-        """Patch datetime.now to return a time during continuous trading."""
-        from unittest.mock import patch
-        import datetime as dt
-        fake_now = dt.datetime(2026, 5, 18, 10, 30, 0)
-        with patch.object(layer, 'validate_trading_session', return_value=(True, "CONTINUOUS_TRADING")):
-            return layer
+    def _weekday_trading_dt(self):
+        return datetime(2026, 5, 18, 10, 30, 0)
 
     def test_evaluate_order_successful(self):
         layer = MarketRealityLayer()
-        result = layer.evaluate_order(100.0, 2000, 100.0)
+        result = layer.evaluate_order(100.0, 2000, 100.0, current_time=self._weekday_trading_dt())
         assert 'costs' in result
         assert 'slippage' in result
         assert 'fill_rate' in result
@@ -197,25 +281,47 @@ class TestR028EvaluateOrder:
 
     def test_evaluate_order_reports_failure_on_price_breach(self):
         layer = MarketRealityLayer()
-        result = layer.evaluate_order(120.0, 2000, 100.0)
+        result = layer.evaluate_order(120.0, 2000, 100.0, current_time=self._weekday_trading_dt())
         assert result['passed'] is False
         reasons = " ".join(result['reasons'])
         assert "PRICE_EXCEEDS_LIMIT_UP" in reasons
 
     def test_evaluate_order_reports_failure_on_liquidity(self):
         layer = MarketRealityLayer()
-        result = layer.evaluate_order(100.0, 500, 100.0)
+        result = layer.evaluate_order(100.0, 500, 100.0, current_time=self._weekday_trading_dt())
         assert result['passed'] is False
         reasons = " ".join(result['reasons'])
         assert "LIQUIDITY_INSUFFICIENT" in reasons
 
     def test_evaluate_order_no_warning_only_pass(self):
         layer = MarketRealityLayer()
-        result = layer.evaluate_order(100.0, 2000, 100.0)
+        result = layer.evaluate_order(100.0, 2000, 100.0, current_time=self._weekday_trading_dt())
         assert result['liquidity_sufficient'] is True
 
     def test_fail_safe_not_warning_only(self):
         layer = MarketRealityLayer()
-        result = layer.evaluate_order(80.0, 500, 100.0)
+        result = layer.evaluate_order(80.0, 500, 100.0, current_time=self._weekday_trading_dt())
         assert result['passed'] is False
         assert len(result['reasons']) >= 1
+
+    def test_evaluate_order_with_saturday_current_time_blocked(self):
+        layer = MarketRealityLayer()
+        saturday = datetime(2026, 5, 23, 10, 0, 0)
+        result = layer.evaluate_order(100.0, 2000, 100.0, current_time=saturday)
+        assert result['passed'] is False
+        reasons = " ".join(result['reasons'])
+        assert "NON_TRADING_DAY" in reasons
+
+    def test_evaluate_order_with_none_current_time_fail_closed(self):
+        layer = MarketRealityLayer()
+        result = layer.evaluate_order(100.0, 2000, 100.0, current_time=None)
+        assert result['passed'] is False
+        reasons = " ".join(result['reasons'])
+        assert "SESSION_UNKNOWN" in reasons
+
+    def test_evaluate_order_with_weekday_trading_hour_passes(self):
+        layer = MarketRealityLayer()
+        result = layer.evaluate_order(100.0, 2000, 100.0, current_time=self._weekday_trading_dt())
+        session = result['constraints']['trading_session']
+        assert session['passed'] is True
+        assert session['reason'] == "CONTINUOUS_TRADING"
