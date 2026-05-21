@@ -4,7 +4,7 @@
   "status": "completed",
   "formal_status_code": "CANDIDATE_READY_AWAITING_MANUAL_REVIEW",
   "candidate_branch": "candidate/r027-market-open-close-protection-rework-before-r033-r049",
-  "candidate_commit": "PENDING_RESOLVE_AFTER_FIRST_COMMIT",
+  "candidate_commit": "3e5b16ac4b75f63c31139cda4dcc04b908c747c2",
   "base_head": "c82b0b01cb6646b35bbf7264bce9b342ce1d3310",
   "previous_source_commit": "8e1fd576fb2f4e9d74a09657b93f3a4d4a0f728a",
   "nonexistent_expected_hash_recorded_before": "d09244d18a3af3c2d7fbde8cf91cc4e3eb0c1d1c",
@@ -15,7 +15,7 @@
   "candidate_diff_reencoded_utf8_no_bom_true_or_false": true,
   "candidate_diff_utf16le_removed_true_or_false": true,
   "stale_candidate_commit_fields_removed_or_renamed_true_or_false": true,
-  "current_candidate_commit_points_to_actual_head_true_or_false": false,
+  "current_candidate_commit_points_to_actual_head_true_or_false": true,
   "files_modified": [
     "modules/market_reality/layer.py",
     "modules/market_reality/arbitrage_slippage_model.py",
@@ -106,8 +106,8 @@
   "evidence_checker_pass_true_or_false": true,
   "pre_push_equivalent_law04_check_pass_true_or_false": true,
   "law_compliance": "04",
-  "candidate_diff_size_bytes": 24249,
+  "candidate_diff_size_bytes": 64965,
   "recommended_next_action": "AWAITING_MANUAL_REVIEW_R027_MARKET_OPEN_CLOSE_PROTECTION_REWORK",
   "final_recommendation": "R027_MARKET_OPEN_CLOSE_REWORK_PACKAGE_READY_FOR_MANUAL_REVIEW_DO_NOT_START_R049",
-  "generated_at": "2026-05-21T02:30:00"
+  "generated_at": "2026-05-21T02:32:00"
 }

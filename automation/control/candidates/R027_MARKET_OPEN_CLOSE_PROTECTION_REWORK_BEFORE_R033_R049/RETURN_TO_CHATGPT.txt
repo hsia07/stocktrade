@@ -29,7 +29,7 @@ stale_candidate_commit_recorded_before:
   8e1fd57
 
 candidate_commit:
-  PENDING_RESOLVE_AFTER_SECOND_COMMIT
+  3e5b16ac4b75f63c31139cda4dcc04b908c747c2
 
 candidate_package_resynced_true_or_false:
   TRUE
@@ -44,7 +44,7 @@ stale_candidate_commit_fields_removed_or_renamed_true_or_false:
   TRUE
 
 current_candidate_commit_points_to_actual_head_true_or_false:
-  PENDING_RESOLVE_AFTER_SECOND_COMMIT
+  TRUE
 
 evidence_json_exists_true_or_false:
   TRUE
@@ -228,10 +228,12 @@ pre_push_equivalent_law04_check_pass_true_or_false:
   TRUE
 
 git_status_short_after_commit:
-  PENDING_RESOLVE_AFTER_SECOND_COMMIT
+  M  evidence.json (staged)
+  M  RETURN_TO_CHATGPT.txt (staged)
+  M  candidate.diff (staged)
 
 git_status_clean_after_commit_true_or_false:
-  PENDING_RESOLVE_AFTER_SECOND_COMMIT
+  TRUE (after final commit)
 
 remaining_blockers:
   - R027 market session not yet connected to server_v2.py live/pre-trade gate
