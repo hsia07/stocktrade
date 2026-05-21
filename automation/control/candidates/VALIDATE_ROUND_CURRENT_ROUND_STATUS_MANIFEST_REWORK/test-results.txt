@@ -1,0 +1,10 @@
+validate_round.py: PASS
+check_forbidden_changes.py: PASS
+check_required_evidence.py: FAIL
+check_commit_message.py: FAIL
+evidence_checker.py: PASS (local run)
+
+Total: 2 PASS, 2 FAIL, 1 local PASS
+Next validator failures exposed (NEXT_VALIDATOR_FAILURE_EXPOSED):
+  - check_required_evidence.py: PRE_R049 evidence.json has no work_done field
+  - check_commit_message.py: merge commit message does not contain PRE_R049 round_id

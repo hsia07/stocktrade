@@ -1,0 +1,46 @@
+{
+  "schema": "evidence_package_v1",
+  "law_compliance": "04",
+  "canonical_branch": "work/canonical-mainline-repair-001",
+  "base_head": "790079bce14868de27e245b3851cb5a85d4b5597",
+  "round_id": "VALIDATE_ROUND_CURRENT_ROUND_STATUS_MANIFEST_REWORK",
+  "task_type": "validate_round_current_round_status_manifest_rework_candidate",
+  "status": "candidate_pass",
+  "files_modified": [
+    "manifests/current_round.yaml"
+  ],
+  "files_added": [
+    "automation/control/candidates/VALIDATE_ROUND_CURRENT_ROUND_STATUS_MANIFEST_REWORK/"
+  ],
+  "status_before": "candidate_construction",
+  "status_after": "candidate_pass",
+  "schema_modified": false,
+  "workflow_modified": false,
+  "round_id_modified": false,
+  "required_evidence_modified": false,
+  "candidate_construction_classification": "opencode_generated_status",
+  "classification_source": "VALIDATE_ROUND_STATUS_VOCABULARY_GOVERNANCE_AUDIT_READONLY",
+  "validate_round_command_pass": true,
+  "check_forbidden_changes_pass": true,
+  "check_required_evidence_next_failure_exposed": true,
+  "check_commit_message_next_failure_exposed": true,
+  "next_validator_failures": {
+    "check_required_evidence": {
+      "exit_code": 1,
+      "stdout": "FAIL: evidence content validation failed - automation/control/candidates/PRE_R049_LOCAL_WEBSITE_VISIBLE_SURFACE_GAP_REMEDIATION_CANDIDATE/evidence.json: NO_WORK_DONE_ITEMS",
+      "root_cause": "PRE_R049 evidence.json has no work_done field. current_round.yaml required_evidence points to PRE_R049 candidate, but canonical HEAD is R033/R034 merge. Manifest routing mismatch."
+    },
+    "check_commit_message": {
+      "exit_code": 1,
+      "stdout": "FAIL: last commit message must include round id: PRE_R049_LOCAL_WEBSITE_VISIBLE_SURFACE_GAP_REMEDIATION",
+      "root_cause": "Merge commit message does not contain PRE_R049 round_id. current_round.yaml round_id mismatch with actual commit history."
+    }
+  },
+  "evidence_checker_pass": true,
+  "pre_push_law04_check_pass": true,
+  "candidate_diff_utf8_no_bom": true,
+  "next_validator_failure_exposed": true,
+  "evidence_package_path": "automation/control/candidates/VALIDATE_ROUND_CURRENT_ROUND_STATUS_MANIFEST_REWORK/",
+  "recommended_next_action": "NEXT_VALIDATE_ROUND_FAILURE_DIAGNOSTIC_OR_REWORK_REQUIRED",
+  "final_recommendation": "DO_NOT_START_R049"
+}

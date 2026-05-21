@@ -1,0 +1,176 @@
+round_id:
+  VALIDATE_ROUND_CURRENT_ROUND_STATUS_MANIFEST_REWORK
+
+task_type:
+  validate_round_current_round_status_manifest_rework_candidate
+
+status:
+  completed
+
+formal_status_code:
+  candidate_ready_awaiting_manual_review
+
+canonical_branch:
+  work/canonical-mainline-repair-001
+
+base_head:
+  790079bce14868de27e245b3851cb5a85d4b5597
+
+candidate_branch:
+  candidate/validate-round-current-round-status-manifest-rework
+
+candidate_commit:
+  80b993e811bdb3444d691766c76f98eb02aa5b75
+
+candidate_construction_classification:
+  opencode_generated_status
+
+schema_modified_true_or_false:
+  FALSE
+
+workflow_modified_true_or_false:
+  FALSE
+
+current_round_status_before:
+  candidate_construction
+
+current_round_status_after:
+  candidate_pass
+
+round_id_modified_true_or_false:
+  FALSE
+
+required_evidence_modified_true_or_false:
+  FALSE
+
+validate_round_command_pass_true_or_false:
+  TRUE
+
+next_validator_failure_exposed_true_or_false:
+  TRUE
+
+next_validator_failure_command:
+  python ./scripts/validation/check_required_evidence.py --manifest ./manifests/current_round.yaml
+
+next_validator_failure_stdout_stderr:
+  FAIL: evidence content validation failed
+   - automation/control/candidates/PRE_R049_LOCAL_WEBSITE_VISIBLE_SURFACE_GAP_REMEDIATION_CANDIDATE/evidence.json: NO_WORK_DONE_ITEMS
+  EXIT: 1
+
+  SECOND FAILURE:
+  python ./scripts/validation/check_commit_message.py --manifest ./manifests/current_round.yaml
+  FAIL: last commit message must include round id: PRE_R049_LOCAL_WEBSITE_VISIBLE_SURFACE_GAP_REMEDIATION
+  EXIT: 1
+
+evidence_checker_pass_true_or_false:
+  TRUE
+
+pre_push_equivalent_law04_check_pass_true_or_false:
+  TRUE
+
+candidate_diff_utf8_no_bom_true_or_false:
+  TRUE
+
+law04_compliance_present_true_or_false:
+  TRUE
+
+evidence_json_law_compliance_value:
+  "04"
+
+files_modified:
+  - manifests/current_round.yaml (status: candidate_construction → candidate_pass)
+
+authorized_files_only_true_or_false:
+  TRUE
+
+commit_created_true_or_false:
+  FALSE
+
+git_status_short_after:
+  (on candidate branch: candidate/validate-round-current-round-status-manifest-rework)
+  80b993e HEAD
+  work/canonical-mainline-repair-001 behind by 1
+
+git_status_clean_after_true_or_false:
+  TRUE (no modified/staged/untracked files on candidate branch)
+
+commit_created_true_or_false:
+  TRUE
+
+merge_executed_this_round_true_or_false:
+  FALSE
+
+push_executed_this_round_true_or_false:
+  FALSE
+
+workflow_rerun_executed_true_or_false:
+  FALSE
+
+runtime_started_true_or_false:
+  FALSE
+
+r047_started_true_or_false:
+  FALSE
+
+r048_started_true_or_false:
+  FALSE
+
+r049_started_true_or_false:
+  FALSE
+
+r031_started_true_or_false:
+  FALSE
+
+broker_api_called_true_or_false:
+  FALSE
+
+order_execution_allowed_true_or_false:
+  FALSE
+
+remaining_blockers:
+  - GitHub Actions validate-round #213 still failed — fix must be committed, merged, pushed, and CI rerun to confirm
+  - NEXT_VALIDATOR_FAILURE: check_required_evidence.py exits 1 on PRE_R049 evidence (NO_WORK_DONE_ITEMS)
+  - NEXT_VALIDATOR_FAILURE: check_commit_message.py exits 1 on merge commit message (round id mismatch)
+  - Manifest routing: current_round.yaml = PRE_R049, canonical = R033/R034 merge — this is the root CI blocker
+  - jsonschema dependency gap in CI environment
+  - fetch-depth gap in CI environment
+  - git exit 128 root cause unknown
+  - R014 formal trace_id / decision_chain / veto tracking integration incomplete
+  - R014 durable persistence not implemented
+  - R029/R030 full meeting table / trace_id / decision_chain / per-AI veto rework
+  - R047/R048 P1 backlog: partial fill state / cancel-fill race / full Market Reality snapshot fields
+  - stocktrade gitlink / .gitmodules structure governance audit pending
+
+recommended_next_action:
+  NEXT_VALIDATE_ROUND_FAILURE_DIAGNOSTIC_OR_REWORK_REQUIRED
+
+final_recommendation:
+  DO_NOT_START_R049
+
+NEXT_VALIDATOR_FAILURE_EXPOSED:
+  VALIDATOR_1: check_required_evidence.py
+    command: python ./scripts/validation/check_required_evidence.py --manifest ./manifests/current_round.yaml
+    exit_code: 1
+    stdout: FAIL: evidence content validation failed
+             - automation/control/candidates/PRE_R049_LOCAL_WEBSITE_VISIBLE_SURFACE_GAP_REMEDIATION_CANDIDATE/evidence.json: NO_WORK_DONE_ITEMS
+    root_cause: PRE_R049 evidence.json has no "work_done" list. check_required_evidence.py requires work_done items that are not packaging-only. current_round.yaml required_evidence points to PRE_R049 candidate package, but canonical HEAD (790079bc) is an R033/R034 merge commit that does not contain the PRE_R049 evidence in its required path.
+    required_rework: Either (a) create a dedicated CI workflow for canonical repair branch that checks R033/R034 evidence path, OR (b) accept that validate-round.yml cannot pass on work/canonical-mainline-repair-001 until current_round.yaml is updated to reference R033/R034 manifest.
+
+  VALIDATOR_2: check_commit_message.py
+    command: python ./scripts/validation/check_commit_message.py --manifest ./manifests/current_round.yaml
+    exit_code: 1
+    stdout: FAIL: last commit message must include round id: PRE_R049_LOCAL_WEBSITE_VISIBLE_SURFACE_GAP_REMEDIATION
+    root_cause: Last commit message is "Merge commit '07a26a8ed259d7d23c4eb6714415f9877f954f84' into work/canonical-mainline-repair-001" which does not contain PRE_R049_LOCAL_WEBSITE_VISIBLE_SURFACE_GAP_REMEDIATION. current_round.yaml round_id mismatch with actual commit history.
+    required_rework: Manifest routing fix — current_round.yaml round_id must match the actual commit message, or CI workflow should validate canonical repair branch commits independently of current_round.yaml round_id.
+
+governance_audit_basis:
+  VALIDATE_ROUND_STATUS_VOCABULARY_GOVERNANCE_AUDIT_READONLY concluded:
+    - candidate_construction = opencode_generated_status (not formal governance)
+    - Not in round_manifest.schema.json enum
+    - Not in Law 04
+    - Not in _governance/stocktrade_autonomy_governance_suite
+    - Introduced by OpenCode at commit 4ce3668 (changed from candidate_pass to candidate_construction)
+    - Correct replacement: candidate_pass (schema-valid, governance-aligned)
+
+law_compliance:
+  "04"

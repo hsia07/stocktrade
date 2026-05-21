@@ -1,0 +1,5 @@
+Fix GitHub Actions validate-round #213 status schema mismatch.
+Change current_round.yaml status from "candidate_construction" (not in schema enum)
+to "candidate_pass" (schema-valid status per governance audit).
+
+Scope: manifests/current_round.yaml line 3 only.
