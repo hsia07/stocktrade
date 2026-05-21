@@ -4,7 +4,7 @@
   "status": "completed",
   "formal_status_code": "CANDIDATE_READY_AWAITING_MANUAL_REVIEW",
   "candidate_branch": "candidate/r027-market-open-close-protection-rework-before-r033-r049",
-  "candidate_commit": "49c73e711026586f686171300c7c761c906ba2b3",
+  "candidate_commit": "ab1dbfb94d35182e19922482b98e747349c11bb2",
   "base_head": "c82b0b01cb6646b35bbf7264bce9b342ce1d3310",
   "previous_source_commit": "8e1fd576fb2f4e9d74a09657b93f3a4d4a0f728a",
   "nonexistent_expected_hash_recorded_before": "d09244d18a3af3c2d7fbde8cf91cc4e3eb0c1d1c",
