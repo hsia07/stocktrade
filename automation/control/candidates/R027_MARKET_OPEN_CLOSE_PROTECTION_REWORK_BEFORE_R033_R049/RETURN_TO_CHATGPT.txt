@@ -1,261 +1,106 @@
-round_id:
-  R027_MARKET_OPEN_CLOSE_REWORK_PACKAGE_RESYNC_IDENTITY_FIELD_FIX_OR_FORMAL_REPORT
+========================================
+R027 MARKET OPEN/CLOSE PROTECTION REWORK
+FINAL EVIDENCE PACKAGE REPORT
+========================================
 
-task_type:
-  r027_market_open_close_package_identity_field_fix_or_formal_report
+ROUND ID:
+  R027_MARKET_OPEN_CLOSE_PROTECTION_REWORK
 
-status:
-  completed
+STATUS:
+  CANDIDATE_READY_AWAITING_MANUAL_REVIEW
 
-formal_status_code:
-  candidate_ready_awaiting_manual_review
-
-canonical_branch:
+CANONICAL BRANCH:
   work/canonical-mainline-repair-001
 
-base_head:
-  c82b0b01cb6646b35bbf7264bce9b342ce1d3310
-
-candidate_branch:
+CANDIDATE BRANCH:
   candidate/r027-market-open-close-protection-rework-before-r033-r049
 
-branch_head_before_fix:
-  726eecc397fc39f4f5518e58ed3ecd940c818106
-
-candidate_commit_field_before:
-  8e1fd576fb2f4e9d74a09657b93f3a4d4a0f728a (wrongly pointed to source commit)
-
-source_commit_field_before:
-  NOT_PRESENT
-
-candidate_head_field_before:
-  f927189fcb8df7a00ffdf12fdaeb00c9761be103 (stale, not current HEAD)
-
-candidate_commit_field_points_to_branch_head_before_true_or_false:
-  FALSE
-
-identity_fields_fixed_true_or_false:
-  TRUE
-
-candidate_commit_field_after:
-  9f4b1f3b10554606475b4cb2408c0ccd2cef2295
-
-source_commit_field_after:
+SOURCE COMMIT:
   8e1fd576fb2f4e9d74a09657b93f3a4d4a0f728a
 
-previous_source_commit_field_after:
-  8e1fd576fb2f4e9d74a09657b93f3a4d4a0f728a
-
-final_candidate_head_after:
-  9f4b1f3b10554606475b4cb2408c0ccd2cef2295
-
-candidate_commit_or_final_head_points_to_actual_branch_head_true_or_false:
-  TRUE (at time of generation: 3380a39 was the HEAD after fix; commit updates evidence to reference itself self-consistently)
-
-stale_8e1fd57_not_used_as_current_candidate_commit_true_or_false:
-  TRUE
-
-nonexistent_d09244d18_not_used_as_current_head_true_or_false:
-  TRUE
-
-candidate_diff_reencoded_utf8_no_bom_true_or_false:
-  TRUE
-
-candidate_diff_utf16le_removed_true_or_false:
-  TRUE
-
-candidate_diff_exists_true_or_false:
-  TRUE
-
-candidate_diff_utf8_no_bom_true_or_false:
-  TRUE
-
-candidate_diff_non_empty_true_or_false:
-  TRUE
-
-candidate_diff_matches_base_to_candidate_true_or_false:
-  TRUE
-
-evidence_json_exists_true_or_false:
-  TRUE
-
-evidence_json_parse_pass_true_or_false:
-  TRUE
-
-law04_compliance_present_true_or_false:
-  TRUE
-
-evidence_json_law_compliance_value:
-  04
-
-evidence_json_law_compliance_is_string_true_or_false:
-  TRUE
-
-evidence_json_law_compliance_equals_04_true_or_false:
-  TRUE
-
-return_to_chatgpt_txt_exists_true_or_false:
-  TRUE
-
-return_to_chatgpt_formal_body_valid_true_or_false:
-  TRUE
-
-test_results_txt_exists_true_or_false:
-  TRUE
-
-weekend_non_trading_day_blocked_true_or_false:
-  TRUE
-
-holiday_non_trading_day_blocked_or_hooked_true_or_false:
-  TRUE
-
-none_current_time_fail_closed_true_or_false:
-  TRUE
-
-malformed_timestamp_fail_closed_true_or_false:
-  TRUE
-
-evaluate_order_accepts_current_time_true_or_false:
-  TRUE
-
-evaluate_order_no_wall_clock_session_dependency_true_or_false:
-  TRUE
-
-closing_auction_modeled_true_or_false:
-  TRUE
-
-arbitrage_slippage_trading_session_not_always_true_true_or_false:
-  TRUE
-
-files_modified:
-  - modules/market_reality/layer.py
-  - modules/market_reality/arbitrage_slippage_model.py
-  - tests/test_market_reality_layer.py
-  - automation/control/candidates/R027_MARKET_OPEN_CLOSE_PROTECTION_REWORK_BEFORE_R033_R049/evidence.json (identity fix)
-  - automation/control/candidates/R027_MARKET_OPEN_CLOSE_PROTECTION_REWORK_BEFORE_R033_R049/candidate.diff (regenerated base->HEAD)
-  - automation/control/candidates/R027_MARKET_OPEN_CLOSE_PROTECTION_REWORK_BEFORE_R033_R049/RETURN_TO_CHATGPT.txt (identity fix)
-  - automation/control/candidates/R027_MARKET_OPEN_CLOSE_PROTECTION_REWORK_BEFORE_R033_R049/test-results.txt (fresh)
-
-authorized_files_only_true_or_false:
-  TRUE
-
-source_files_modified_by_this_fix_true_or_false:
-  FALSE
-
-market_reality_layer_modified_by_this_fix_true_or_false:
-  FALSE
-
-arbitrage_slippage_model_modified_by_this_fix_true_or_false:
-  FALSE
-
-tests_test_market_reality_layer_modified_by_this_fix_true_or_false:
-  FALSE
-
-server_py_modified_true_or_false:
-  FALSE
-
-server_v2_modified_true_or_false:
-  FALSE
-
-modules_strategy_modified_true_or_false:
-  FALSE
-
-modules_risk_modified_true_or_false:
-  FALSE
-
-stocktrade_submodule_modified_true_or_false:
-  FALSE
-
-env_modified_true_or_false:
-  FALSE
-
-env_example_modified_true_or_false:
-  FALSE
-
-new_api_endpoint_added_true_or_false:
-  FALSE
-
-runtime_state_write_added_true_or_false:
-  FALSE
-
-db_write_executed_true_or_false:
-  FALSE
-
-broker_execution_live_modified_true_or_false:
-  FALSE
-
-fubon_api_integrated_true_or_false:
-  FALSE
-
-broker_api_called_true_or_false:
-  FALSE
-
-runtime_started_true_or_false:
-  FALSE
-
-r033_started_true_or_false:
-  FALSE
-
-r049_started_true_or_false:
-  FALSE
-
-r031_started_true_or_false:
-  FALSE
-
-order_execution_allowed_true_or_false:
-  FALSE
-
-secret_values_exposed_true_or_false:
-  FALSE
-
-tests_run:
-  - python -m pytest tests/test_market_reality_layer.py -v --tb=short
-  - python -m pytest tests/test_market_reality_integration.py -v --tb=short
-  - python -m pytest tests/test_execution_sizing_guard.py -v --tb=short
-  - python -m pytest tests/test_arbitrage_protection.py -v --tb=short
-  - python -m pytest tests/test_r014_observable_event_reality.py tests/test_r007_silence_protection.py tests/test_server_v2_backend_execution_safety.py tests/test_pre_r049_local_website_visible_surface_gap_remediation.py tests/test_ui_visible_gate_governance.py -v --tb=short
-  - python -m pytest --ignore=automation --ignore=stocktrade --ignore=test_twse.py --ignore=test_twstock_batch.py --tb=no -q
-  - python automation/control/evidence_checker.py
-  - Law04 compliance check (inline python)
-
-tests_result:
-  PASS
-
-market_reality_tests_pass_true_or_false:
-  TRUE
-
-arbitrage_protection_tests_pass_true_or_false:
-  TRUE
-
-candidate_tests_pass_true_or_false:
-  TRUE
-
-ui_visible_gate_tests_pass_true_or_false:
-  TRUE
-
-full_clean_subset_pass_true_or_false:
-  TRUE
-
-evidence_checker_pass_true_or_false:
-  TRUE
-
-pre_push_equivalent_law04_check_pass_true_or_false:
-  TRUE
-
-git_status_short_after:
-  EMPTY
-
-git_status_clean_after_true_or_false:
-  TRUE
-
-remaining_blockers:
+CANDIDATE HEAD (at generation):
+  01cf0a2ba7fccf56f7cf27d986cfbd784cd2bbc9
+
+BASE HEAD:
+  c82b0b01cb6646b35bbf7264bce9b342ce1d3310
+
+CANDIDATE IDENTITY POLICY:
+  candidate_commit in committed evidence.json = source_commit (code changes commit).
+  Final candidate HEAD is authoritative in this live RETURN_TO_CHATGPT output,
+  not self-embedded inside committed evidence.json.
+
+EVIDENCE PACKAGE FILES:
+  - evidence.json (law_compliance: "04")
+  - candidate.diff (UTF-8 no BOM, base -> HEAD, 108353 bytes)
+  - RETURN_TO_CHATGPT.txt (this file)
+  - test-results.txt
+
+SOURCE FILES MODIFIED:
+  - modules/market_reality/layer.py (weekend/holiday enforcement, closing auction,
+    evaluate_order current_time parameter, None/malformed fail-closed)
+  - modules/market_reality/arbitrage_slippage_model.py (_check_trading_session
+    delegates to MarketRealityLayer, not always True)
+  - tests/test_market_reality_layer.py (+24 tests: 17 session + 3 evaluate_order
+    current_time injection + 4 existing improvements)
+
+AUTHORIZED FILES ONLY: TRUE
+SOURCE FILES MODIFIED BY METADATA COMMITS: FALSE
+NO MERGE / NO PUSH: CONFIRMED
+R033 NOT STARTED: CONFIRMED
+R049 NOT STARTED: CONFIRMED
+R031 NOT STARTED: CONFIRMED
+RUNTIME / BROKER / LIVE: NOT STARTED
+order_execution_allowed: FALSE
+
+KEY FEATURES CONFIRMED:
+  - Weekend (Sat/Sun) -> NON_TRADING_DAY (blocked)
+  - Holiday (injected) -> NON_TRADING_DAY (blocked)
+  - None current_time -> SESSION_UNKNOWN (fail-closed)
+  - Malformed current_time -> SESSION_UNKNOWN (fail-closed)
+  - evaluate_order accepts current_time parameter
+  - evaluate_order no wall-clock datetime.now() dependency
+  - Opening auction (08:30-09:00) modeled, not CONTINUOUS_TRADING
+  - Closing auction (13:30-13:35) modeled, not CONTINUOUS_TRADING
+  - Gap between continuous and odd-lot (13:35-13:40) -> OUTSIDE_TRADING_HOURS
+  - ArbitrageSlippageModel._check_trading_session not always True
+
+TEST RESULTS:
+  - Market Reality Layer: 46 passed, 0 failed
+  - Market Reality Integration: 10 passed, 0 failed
+  - Execution Sizing Guard: 32 passed, 0 failed
+  - Arbitrage Protection: 23 passed, 0 failed
+  - Safety/Candidate: 160 passed, 0 failed
+  - Full Clean Subset: 1120 passed, 0 failed
+  - Evidence Checker: PASS
+  - Law04 Check: PASS
+  Total: 0 failures, all suites pass
+
+EVIDENCE JSON:
+  - law_compliance: "04" (string)
+  - candidate_commit: 8e1fd576fb2f4e9d74a09657b93f3a4d4a0f728a (source_commit)
+  - candidate_identity_policy present
+  - candidate_diff_size_bytes: 108353
+
+GIT STATUS:
+  CLEAN (after commit, working tree clean)
+
+CANDIDATE.DIFF:
+  - UTF-8 no BOM: CONFIRMED
+  - Range: base (c82b0b0) -> HEAD (01cf0a2)
+  - Non-empty: CONFIRMED
+
+REMAINING BLOCKERS (for R049, not blocking R027 review):
   - R027 market session not yet connected to server_v2.py live/pre-trade gate
   - R014 formal trace_id / decision_chain / veto tracking integration incomplete
   - R014 durable persistence not implemented
   - R029/R030 full meeting table / trace_id / decision_chain / per-AI veto rework
 
-recommended_next_action:
+RECOMMENDED NEXT ACTION:
   AWAITING_MANUAL_REVIEW_R027_MARKET_OPEN_CLOSE_PROTECTION_REWORK
 
-final_recommendation:
-  R027_MARKET_OPEN_CLOSE_REWORK_PACKAGE_IDENTITY_READY_FOR_MANUAL_REVIEW_DO_NOT_START_R049
+FINAL RECOMMENDATION:
+  R027_MARKET_OPEN_CLOSE_PROTECTION_REWORK_PACKAGE_READY_FOR_MANUAL_REVIEW
+  DO NOT START R049
+
+GENERATED AT:
+  2026-05-21T02:55:00 UTC
