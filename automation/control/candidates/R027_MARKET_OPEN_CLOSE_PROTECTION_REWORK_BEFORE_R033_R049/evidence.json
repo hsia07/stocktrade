@@ -103,7 +103,7 @@
   "evidence_checker_pass_true_or_false": true,
   "pre_push_equivalent_law04_check_pass_true_or_false": true,
   "law_compliance": "04",
-  "candidate_diff_size_bytes": 197484,
+  "candidate_diff_size_bytes": 246878,
   "recommended_next_action": "AWAITING_MANUAL_REVIEW_R027_MARKET_OPEN_CLOSE_PROTECTION_REWORK",
   "final_recommendation": "R027_MARKET_OPEN_CLOSE_REWORK_EVIDENCE_PACKAGE_READY_FOR_MANUAL_REVIEW_DO_NOT_START_R049",
   "generated_at": "2026-05-21T03:10:00"
