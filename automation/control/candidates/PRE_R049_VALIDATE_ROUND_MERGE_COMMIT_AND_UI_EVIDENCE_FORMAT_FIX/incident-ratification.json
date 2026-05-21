@@ -35,5 +35,12 @@
   "do_not_push": true,
   "do_not_modify_validators": true,
   "do_not_modify_workflow": true,
-  "do_not_modify_manifest": true
+  "do_not_modify_manifest": true,
+  "evidence_package_completeness": {
+    "test-results.txt": true,
+    "test_output_txt_deleted": true,
+    "total_files": 14
+  },
+  "test_results_file_path": "automation/control/candidates/PRE_R049_VALIDATE_ROUND_MERGE_COMMIT_AND_UI_EVIDENCE_FORMAT_FIX/test-results.txt",
+  "filename_cleanup_completed": true
 }

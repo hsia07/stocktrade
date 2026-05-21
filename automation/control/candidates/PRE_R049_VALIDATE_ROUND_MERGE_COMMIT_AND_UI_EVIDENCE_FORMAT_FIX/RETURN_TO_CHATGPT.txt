@@ -131,3 +131,34 @@ Files changed:
 - scripts/validation/check_commit_message.py (modified, OUT OF SCOPE)
 - scripts/validation/check_required_evidence.py (modified, AUTHORIZED)
 - tests/test_check_required_evidence_ui_gate.py (new, AUTHORIZED TEST)
+
+### Evidence Package Completeness
+
+test_results_txt_exists_true_or_false: TRUE
+test_results_file_path: automation/control/candidates/PRE_R049_VALIDATE_ROUND_MERGE_COMMIT_AND_UI_EVIDENCE_FORMAT_FIX/test-results.txt
+test_output_txt_retained_as_raw_attachment: FALSE (deleted, replaced by properly named test-results.txt)
+
+Evidence package 14/14 files:
+- evidence.json (law_compliance: 04, COMPLETE)
+- candidate.diff (UTF-8 no BOM, 20482 bytes)
+- RETURN_TO_CHATGPT.txt (formal body, VALID)
+- visible_evidence.txt
+- task.txt
+- report.json
+- incident-ratification.json
+- no-aider-used.txt
+- test-results.txt (properly named, 23/23 PASS)
+- validate_output.txt
+- forbidden_output.txt
+- evidence_output.txt
+- commit_output.txt
+- evidence_checker_output.txt
+
+### Filename Cleanup Round
+
+Round: UNAUTHORIZED_REMOTE_STATE_RATIFICATION_EVIDENCE_PACKAGE_FILENAME_CLEANUP
+Previous candidate commit: c6a0f42b85fcfae9e20a0d0e8f31e6e26d5b23a1
+Problem fixed: test_output.txt (PowerShell command error, invalid content) replaced with properly named test-results.txt (python -m pytest output, 23/23 PASS)
+test_results_txt_exists_true_or_false: TRUE (corrected)
+candidate_diff_utf8_no_bom: TRUE (verified)
+evidence.json updated with evidence_package_completeness and test_results_file_path metadata.
