@@ -1,0 +1,17 @@
+R033/R034 replay isolation rework finalize candidate.
+
+Scope:
+  - ReplayIsolationGate deterministic fail-closed rewrite
+  - Server_v2.py pre-trade boundary wiring
+  - Broker/order/runtime/DB/fill/live-start guards
+  - 95 tests (40 core + 55 behavioral/parametrized/mutation)
+  - 423/423 tests pass
+  - evidence_checker PASS
+  - Law04 PASS
+  - ORDER_EXECUTION_ALLOWED remains FALSE
+  - No broker/live/runtime started
+  - No new API endpoints
+  - No forbidden files modified
+
+Base: decff5e (canonical work/canonical-mainline-repair-001)
+Branch: candidate/r033-r034-replay-isolation-live-write-guard-rework-before-r049

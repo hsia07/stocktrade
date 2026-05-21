@@ -1,0 +1,4 @@
+This candidate was produced entirely by opencode (opencode.ai) — an autonomous
+CLI-native AI coding agent. No aider, no cursor, no copilot, no IDE plugin,
+no chat-based tool was used at any point during this rework.
+All edits were made directly by opencode using read/edit/write/bash tools.

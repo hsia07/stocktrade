@@ -1,0 +1,53 @@
+{
+  "schema": "evidence_package_v1",
+  "law_compliance": "04",
+  "canonical_branch": "work/canonical-mainline-repair-001",
+  "base_head": "decff5ece56d03ef4401bacda41b87685779f7ed",
+  "candidate_branch": "candidate/r033-r034-replay-isolation-live-write-guard-rework-before-r049",
+  "r027_merge_commit": "decff5e",
+  "r027_parents": [
+    "c82b0b0",
+    "8794bb1"
+  ],
+  "files_modified": [
+    "modules/decision_prechecklist/__init__.py",
+    "modules/decision_prechecklist/replay_isolation.py",
+    "server_v2.py",
+    "tests/test_replay_isolation.py"
+  ],
+  "files_added": [
+    "tests/test_r033_replay_live_write_guard.py"
+  ],
+  "diff_size_bytes": 81786,
+  "total_tests": 423,
+  "tests_passed": 423,
+  "tests_failed": 0,
+  "order_execution_allowed": false,
+  "no_broker_live_started": true,
+  "no_runtime_started": true,
+  "r033_rework_complete": true,
+  "r034_rework_complete": true,
+  "r033_audit_p0_confirmed": true,
+  "r033_original_decision_comparator_contract_only": true,
+  "r034_replay_isolation_gate_contract_only_before": true,
+  "replay_isolation_gate_wired_to_pre_trade_boundary": true,
+  "replay_isolation_enforcement_exists": true,
+  "read_only_or_dry_run_mode_exists": true,
+  "live_write_guard_exists": true,
+  "runtime_state_write_blocked_in_replay": true,
+  "broker_api_call_blocked_in_replay": true,
+  "order_placement_blocked_in_replay": true,
+  "fill_write_blocked_in_replay": true,
+  "db_live_write_blocked_in_replay": true,
+  "replay_error_cannot_start_live": true,
+  "unknown_mode_fail_closed": true,
+  "missing_mode_fail_closed": true,
+  "malformed_mode_fail_closed": true,
+  "reason_code_or_block_reason_exists": true,
+  "tests_import_real_source": true,
+  "tests_behavioral_not_string_only": true,
+  "mutation_style_guard_removal_would_fail_tests": true,
+  "no_real_broker_api_called": true,
+  "runtime_started": false,
+  "r049_ready": false
+}

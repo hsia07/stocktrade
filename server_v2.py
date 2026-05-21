@@ -33,6 +33,11 @@ from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from dotenv import load_dotenv
+from modules.decision_prechecklist.replay_isolation import (
+    ReplayIsolationGate,
+    ExecutionMode,
+    IsolationCheckResult,
+)
 
 load_dotenv()
 
@@ -1336,6 +1341,15 @@ class ExecutionEngineer:
         self._api = api
 
     def place(self, symbol: str, action: str, lots: int, price: float, reason: str) -> dict:
+        isolation = engine.check_pre_trade_isolation(symbol, action)
+        if not isolation.allowed:
+            rec = dict(id=f"ISOLATED-{symbol}-{int(time.time())}", symbol=symbol,
+                       action=action, lots=lots, price=price, reason=reason,
+                       status="blocked", time=datetime.now().strftime("%H:%M:%S"),
+                       block_reason=isolation.reason_code)
+            self.orders.append(rec)
+            log.warning(f"⛔ 隔離保護 blocked {action} {symbol} {lots}張 @{price} | {isolation.reason_code} | {isolation.reason}")
+            return rec
         if not ORDER_EXECUTION_ALLOWED:
             rec = dict(id=f"BLOCKED-{symbol}-{int(time.time())}", symbol=symbol,
                        action=action, lots=lots, price=price, reason=reason,
@@ -1767,10 +1781,10 @@ class TradingEngine:
         self.trades_log:     list[TradeRecord] = []
         self._api                 = None
         self._running             = False
-        self._trading_active      = False
         self._mode              = self.MODE_PAUSE  # 單一真實模式來源，由狀態機控制
+        self._trading_active      = False
         self._latest_decision_ids: dict = {}
-
+        self._replay_isolation_gate = ReplayIsolationGate()
         self.names = dict(SYM_NAMES)
         self.universe_rows = TaiwanMarketUniverse.load() if SCAN_ALL_TW else [{"symbol": s, "name": SYM_NAMES.get(s, s), "market": "tse"} for s in self.detail_symbols]
         for row in self.universe_rows:
@@ -1779,6 +1793,28 @@ class TradingEngine:
         self.market_board: list[dict] = []
         self._scan_task = None
         self._scan_last_request = 0.0
+
+    def _resolve_execution_mode(self) -> ExecutionMode:
+        if self._mode == self.MODE_LIVE:
+            return ExecutionMode.LIVE
+        if self._mode == self.MODE_SIM:
+            return ExecutionMode.SIMULATION
+        if self._mode in (self.MODE_PAPER, self.MODE_OBSERVE, self.MODE_PAUSE, self.MODE_RECOVERY):
+            return ExecutionMode.SIMULATION
+        return ExecutionMode.SIMULATION
+
+    def check_pre_trade_isolation(self, symbol: str, action: str) -> IsolationCheckResult:
+        exec_mode = self._resolve_execution_mode()
+        if exec_mode != ExecutionMode.LIVE:
+            # Non-live modes: allow through to ORDER_EXECUTION_ALLOWED gate
+            return IsolationCheckResult(allowed=True, mode=exec_mode.value, target=f"order:{symbol}:{action}")
+        return self._replay_isolation_gate.assert_can_place_order(target=f"{symbol}:{action}")
+
+    def check_broker_isolation(self, target: str = "") -> IsolationCheckResult:
+        exec_mode = self._resolve_execution_mode()
+        if exec_mode != ExecutionMode.LIVE:
+            return IsolationCheckResult(allowed=True, mode=exec_mode.value, target=target or "broker")
+        return self._replay_isolation_gate.assert_can_call_broker(target=target)
 
     def refresh_market_scan(self):
         if not self.market_scanner:
@@ -1974,6 +2010,13 @@ class TradingEngine:
                             log.warning(f"⚠️ {sym} 價格來源無效，跳過交易 source={tick.get('source')}")
                         elif lots > 0:
                             act = "Buy" if sig.direction == Direction.LONG else "Sell"
+                            isolation = self.check_pre_trade_isolation(sym, act)
+                            if not isolation.allowed:
+                                log.warning(
+                                    f"⛔ 隔離保護 blocked {sym} {act} {lots}張 "
+                                    f"@ {tick['price']} | {isolation.reason_code} | {isolation.reason}"
+                                )
+                                continue
                             self.execution.place(sym, act, lots, tick["price"], sig.reason)
                             self.risk.on_entry(sig, lots, tick["price"], ai_scores, regime)
                             log.info(f"✅ 仲裁通過 {sym} {sig.direction} {lots}張 @{tick['price']} 共識{consensus_score:.0f}%")

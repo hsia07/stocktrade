@@ -1,0 +1,345 @@
+round_id:
+  R033_R034_REPLAY_ISOLATION_REWORK_FINALIZE_CANDIDATE
+
+task_type:
+  r033_r034_replay_isolation_rework_finalize_candidate
+
+status:
+  completed
+
+formal_status_code:
+  candidate_ready_awaiting_manual_review
+
+canonical_branch:
+  work/canonical-mainline-repair-001
+
+base_head:
+  decff5ece56d03ef4401bacda41b87685779f7ed
+
+candidate_branch:
+  candidate/r033-r034-replay-isolation-live-write-guard-rework-before-r049
+
+candidate_commit:
+  TO_BE_SET_AFTER_COMMIT
+
+dirty_paths_before_stage:
+  - M candidate.diff
+  - M modules/decision_prechecklist/__init__.py
+  - M modules/decision_prechecklist/replay_isolation.py
+  - M server_v2.py
+  - M tests/test_replay_isolation.py
+  - ?? RETURN_TO_CHATGPT.txt
+  - ?? evidence.json
+  - ?? no-aider-used.txt
+  - ?? report.json
+  - ?? task.txt
+  - ?? test-results.txt
+  - ?? tests/test_r033_replay_live_write_guard.py
+
+dirty_paths_authorized_true_or_false:
+  TRUE
+
+files_modified:
+  - modules/decision_prechecklist/__init__.py
+  - modules/decision_prechecklist/replay_isolation.py
+  - server_v2.py
+  - tests/test_replay_isolation.py
+
+authorized_files_only_true_or_false:
+  TRUE
+
+replay_isolation_modified_true_or_false:
+  TRUE
+
+server_v2_modified_true_or_false:
+  TRUE
+
+server_v2_modification_scope:
+  pre_trade_boundary_only
+
+server_py_modified_true_or_false:
+  FALSE
+
+root_index_v2_html_modified_true_or_false:
+  FALSE
+
+index_html_modified_true_or_false:
+  FALSE
+
+modules_strategy_modified_true_or_false:
+  FALSE
+
+modules_risk_modified_true_or_false:
+  FALSE
+
+modules_market_reality_modified_true_or_false:
+  FALSE
+
+stocktrade_submodule_modified_true_or_false:
+  FALSE
+
+env_modified_true_or_false:
+  FALSE
+
+env_example_modified_true_or_false:
+  FALSE
+
+new_api_endpoint_added_true_or_false:
+  FALSE
+
+runtime_state_write_added_true_or_false:
+  FALSE
+
+db_write_executed_true_or_false:
+  FALSE
+
+broker_execution_live_modified_true_or_false:
+  FALSE
+
+fubon_api_integrated_true_or_false:
+  FALSE
+
+broker_api_called_true_or_false:
+  FALSE
+
+runtime_started_true_or_false:
+  FALSE
+
+trading_broker_execution_live_started_true_or_false:
+  FALSE
+
+r047_started_true_or_false:
+  FALSE
+
+r049_started_true_or_false:
+  FALSE
+
+r031_started_true_or_false:
+  FALSE
+
+order_execution_allowed_true_or_false:
+  FALSE
+
+secret_values_exposed_true_or_false:
+  FALSE
+
+r033_audit_p0_confirmed_before_true_or_false:
+  TRUE
+
+r033_original_decision_comparator_contract_only_true_or_false:
+  TRUE
+
+r034_replay_isolation_gate_contract_only_before_true_or_false:
+  TRUE
+
+replay_isolation_gate_wired_to_pre_trade_boundary_true_or_false:
+  TRUE
+
+replay_isolation_enforcement_exists_true_or_false:
+  TRUE
+
+read_only_or_dry_run_mode_exists_true_or_false:
+  TRUE
+
+live_write_guard_exists_true_or_false:
+  TRUE
+
+runtime_state_write_blocked_true_or_false:
+  TRUE
+
+broker_api_call_blocked_true_or_false:
+  TRUE
+
+order_placement_blocked_true_or_false:
+  TRUE
+
+fill_write_blocked_true_or_false:
+  TRUE
+
+db_live_write_blocked_true_or_false:
+  TRUE
+
+unknown_mode_fail_closed_true_or_false:
+  TRUE
+
+missing_mode_fail_closed_true_or_false:
+  TRUE
+
+malformed_mode_fail_closed_true_or_false:
+  TRUE
+
+replay_error_cannot_start_live_true_or_false:
+  TRUE
+
+reason_code_or_block_reason_exists_true_or_false:
+  TRUE
+
+order_execution_allowed_stays_false_true_or_false:
+  TRUE
+
+direct_broker_live_pollution_detected_true_or_false:
+  FALSE
+
+tests_added_or_updated:
+  - tests/test_replay_isolation.py (updated: 40 tests)
+  - tests/test_r033_replay_live_write_guard.py (new: 55 tests)
+
+tests_import_real_source_true_or_false:
+  TRUE
+
+tests_behavioral_not_string_only_true_or_false:
+  TRUE
+
+tests_cover_replay_no_live_write_true_or_false:
+  TRUE
+
+tests_cover_backtest_no_live_write_true_or_false:
+  TRUE
+
+tests_cover_audit_no_live_write_true_or_false:
+  TRUE
+
+tests_cover_missing_mode_fail_closed_true_or_false:
+  TRUE
+
+tests_cover_malformed_mode_fail_closed_true_or_false:
+  TRUE
+
+tests_cover_unknown_mode_fail_closed_true_or_false:
+  TRUE
+
+tests_cover_broker_call_blocked_true_or_false:
+  TRUE
+
+tests_cover_order_placement_blocked_true_or_false:
+  TRUE
+
+tests_cover_runtime_state_write_blocked_true_or_false:
+  TRUE
+
+tests_cover_db_live_write_blocked_true_or_false:
+  TRUE
+
+tests_cover_fill_write_blocked_true_or_false:
+  TRUE
+
+tests_cover_replay_error_no_live_start_true_or_false:
+  TRUE
+
+tests_cover_no_broker_live_pollution_true_or_false:
+  TRUE
+
+mutation_style_guard_removal_would_fail_tests_true_or_false:
+  TRUE
+
+evidence_json_exists_true_or_false:
+  TRUE
+
+evidence_json_parse_pass_true_or_false:
+  TRUE
+
+law04_compliance_present_true_or_false:
+  TRUE
+
+evidence_json_law_compliance_value:
+  "04"
+
+evidence_json_law_compliance_is_string_true_or_false:
+  TRUE
+
+evidence_json_law_compliance_equals_04_true_or_false:
+  TRUE
+
+candidate_diff_exists_true_or_false:
+  TRUE
+
+candidate_diff_utf8_no_bom_true_or_false:
+  TRUE
+
+candidate_diff_non_empty_true_or_false:
+  TRUE
+
+return_to_chatgpt_formal_body_valid_true_or_false:
+  TRUE
+
+test_results_txt_exists_true_or_false:
+  TRUE
+
+task_txt_exists_true_or_false:
+  TRUE
+
+report_json_exists_true_or_false:
+  TRUE
+
+no_aider_used_txt_exists_true_or_false:
+  TRUE
+
+tests_run:
+  - python -m pytest tests/test_replay_isolation.py -v --tb=short
+  - python -m pytest tests/test_r033_replay_live_write_guard.py -v --tb=short
+  - python -m pytest tests/test_decision_prechecklist.py tests/test_traceability_chain.py tests/test_decision_comparator.py -v --tb=short
+  - python -m pytest tests/test_server_v2_backend_execution_safety.py -v --tb=short
+  - python -m pytest tests/test_market_reality_layer.py tests/test_market_reality_integration.py tests/test_execution_sizing_guard.py tests/test_arbitrage_protection.py -v --tb=short
+  - python -m pytest tests/test_r014_observable_event_reality.py tests/test_r007_silence_protection.py tests/test_pre_r049_local_website_visible_surface_gap_remediation.py tests/test_ui_visible_gate_governance.py -v --tb=short
+  - python -m pytest --ignore=automation --ignore=stocktrade --ignore=test_twse.py --ignore=test_twstock_batch.py --ignore=test-results.txt --tb=no -q
+  - python automation/control/evidence_checker.py
+  - python -m pytest tests/test_pre_r049_local_website_visible_surface_gap_remediation.py -k "Law04" -v --tb=short
+
+tests_result:
+  PASS — All 423/423 tests pass across 14 suites (0 fail, 0 skip)
+  Evidence checker: PASS (exit code 0)
+  Law04: 4/4 PASS
+
+replay_isolation_tests_pass_true_or_false:
+  TRUE
+
+r033_live_write_guard_tests_pass_true_or_false:
+  TRUE
+
+decision_prechecklist_tests_pass_true_or_false:
+  TRUE
+
+server_v2_safety_tests_pass_true_or_false:
+  TRUE
+
+market_reality_regression_tests_pass_true_or_false:
+  TRUE
+
+candidate_tests_pass_true_or_false:
+  TRUE
+
+full_clean_subset_pass_true_or_false:
+  TRUE
+
+evidence_checker_pass_true_or_false:
+  TRUE
+
+pre_push_equivalent_law04_check_pass_true_or_false:
+  TRUE
+
+commit_created_true_or_false:
+  TO_BE_SET_AFTER_COMMIT
+
+git_status_short_after_commit:
+  TO_BE_SET_AFTER_COMMIT
+
+git_status_clean_after_commit_true_or_false:
+  TO_BE_SET_AFTER_COMMIT
+
+remaining_blockers:
+  - R014 formal trace_id / decision_chain / veto tracking integration incomplete
+  - R014 durable persistence not implemented
+  - R029/R030 full meeting table / trace_id / decision_chain / per-AI veto rework
+
+still_need_deep_review_items:
+  - R047/R048 Taiwan Market Reality enforcement deep review
+  - GitHub Actions validate-round failure audit
+  - stocktrade gitlink / .gitmodules structure governance
+  - responsive/mobile viewport deferred until deployed website/software validation
+  - R029/R030 full meeting table / trace_id / decision_chain / per-AI veto rework
+
+recommended_next_action:
+  AWAITING_MANUAL_REVIEW_R033_R034_REPLAY_ISOLATION_LIVE_WRITE_GUARD_REWORK
+
+final_recommendation:
+  R033_R034_REPLAY_ISOLATION_REWORK_CANDIDATE_READY_FOR_MANUAL_REVIEW_DO_NOT_START_R049
