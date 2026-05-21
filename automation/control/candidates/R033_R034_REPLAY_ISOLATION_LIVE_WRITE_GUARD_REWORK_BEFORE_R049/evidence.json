@@ -49,5 +49,14 @@
   "mutation_style_guard_removal_would_fail_tests": true,
   "no_real_broker_api_called": true,
   "runtime_started": false,
-  "r049_ready": false
+  "r049_ready": false,
+  "scope_violation_cleanup": {
+    "root_candidate_diff_violation_detected": true,
+    "root_candidate_diff_restore_attempted": true,
+    "root_candidate_diff_working_tree_matches_base": true,
+    "root_candidate_diff_base_blob_hash": "cef1febe24f9d585cbaf75cf36bcc01e5b9d0e3d",
+    "root_candidate_diff_working_tree_hash": "cef1febe24f9d585cbaf75cf36bcc01e5b9d0e3d",
+    "note": "Git index (HEAD) still references modified blob. Working tree restored to base. Windows CRLF pipeline prevents zero-diff without index write. Root candidate.diff is a legacy artifact pre-existing from base. The authorized candidate artifact is automation/control/candidates/.../candidate.diff.",
+    "authorized_candidate_artifact": "automation/control/candidates/R033_R034_REPLAY_ISOLATION_LIVE_WRITE_GUARD_REWORK_BEFORE_R049/candidate.diff"
+  }
 }
