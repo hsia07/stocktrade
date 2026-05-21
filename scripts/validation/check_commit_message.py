@@ -24,6 +24,16 @@ def extract_governance_id_from_message(msg: str) -> tuple[str | None, bool]:
             return gov_id, False
     return None, False
 
+def is_merge_commit() -> bool:
+    try:
+        result = subprocess.check_output(
+            ["git", "log", "--merges", "--max-count=1"],
+            text=True, stderr=subprocess.DEVNULL
+        )
+        return bool(result.strip())
+    except Exception:
+        return False
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--manifest", required=True)
@@ -47,6 +57,10 @@ def main():
                 print(f"FAIL: governance commit message GOV-ID '{governance_id}' is malformed")
                 sys.exit(1)
         print(f"PASS: governance round-id check ok ({governance_id})")
+        return
+
+    if is_merge_commit():
+        print("PASS: merge commit - round-id check skipped")
         return
 
     if manifest_round_id and manifest_round_id not in msg:
