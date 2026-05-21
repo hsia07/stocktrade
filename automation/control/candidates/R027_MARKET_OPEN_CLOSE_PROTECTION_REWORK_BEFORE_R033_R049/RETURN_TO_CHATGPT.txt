@@ -1,10 +1,10 @@
 ========================================
-R027 MARKET OPEN/CLOSE PROTECTION REWORK
+R027 EVIDENCE CHECKER & DIRTY METADATA FIX
 FINAL EVIDENCE PACKAGE REPORT
 ========================================
 
 ROUND ID:
-  R027_MARKET_OPEN_CLOSE_PROTECTION_REWORK
+  R027_MARKET_OPEN_CLOSE_REWORK_EVIDENCE_CHECKER_AND_DIRTY_METADATA_FIX
 
 STATUS:
   CANDIDATE_READY_AWAITING_MANUAL_REVIEW
@@ -18,8 +18,8 @@ CANDIDATE BRANCH:
 SOURCE COMMIT:
   8e1fd576fb2f4e9d74a09657b93f3a4d4a0f728a
 
-CANDIDATE HEAD (at generation):
-  01cf0a2ba7fccf56f7cf27d986cfbd784cd2bbc9
+CANDIDATE HEAD (at report generation):
+  d42d1c6601aaa2eba2ba650d2cc297b26198d4bb
 
 BASE HEAD:
   c82b0b01cb6646b35bbf7264bce9b342ce1d3310
@@ -29,22 +29,24 @@ CANDIDATE IDENTITY POLICY:
   Final candidate HEAD is authoritative in this live RETURN_TO_CHATGPT output,
   not self-embedded inside committed evidence.json.
 
-EVIDENCE PACKAGE FILES:
+EVIDENCE PACKAGE FILES (7/7 complete):
+  - task.txt
+  - report.json
   - evidence.json (law_compliance: "04")
-  - candidate.diff (UTF-8 no BOM, base -> HEAD, 108353 bytes)
+  - candidate.diff (UTF-8 no BOM, base -> HEAD, 149095 bytes)
+  - no-aider-used.txt
   - RETURN_TO_CHATGPT.txt (this file)
   - test-results.txt
 
-SOURCE FILES MODIFIED:
+SOURCE FILES MODIFIED (not modified by this fix round):
   - modules/market_reality/layer.py (weekend/holiday enforcement, closing auction,
     evaluate_order current_time parameter, None/malformed fail-closed)
   - modules/market_reality/arbitrage_slippage_model.py (_check_trading_session
     delegates to MarketRealityLayer, not always True)
-  - tests/test_market_reality_layer.py (+24 tests: 17 session + 3 evaluate_order
-    current_time injection + 4 existing improvements)
+  - tests/test_market_reality_layer.py (+24 tests)
 
 AUTHORIZED FILES ONLY: TRUE
-SOURCE FILES MODIFIED BY METADATA COMMITS: FALSE
+SOURCES UNMODIFIED BY THIS FIX: CONFIRMED
 NO MERGE / NO PUSH: CONFIRMED
 R033 NOT STARTED: CONFIRMED
 R049 NOT STARTED: CONFIRMED
@@ -52,9 +54,9 @@ R031 NOT STARTED: CONFIRMED
 RUNTIME / BROKER / LIVE: NOT STARTED
 order_execution_allowed: FALSE
 
-KEY FEATURES CONFIRMED:
+P0 FIXES CONFIRMED:
   - Weekend (Sat/Sun) -> NON_TRADING_DAY (blocked)
-  - Holiday (injected) -> NON_TRADING_DAY (blocked)
+  - Holiday (injected) -> NON_TRADING_DAY (blocked), consumer-managed, no false calendar claim
   - None current_time -> SESSION_UNKNOWN (fail-closed)
   - Malformed current_time -> SESSION_UNKNOWN (fail-closed)
   - evaluate_order accepts current_time parameter
@@ -71,36 +73,39 @@ TEST RESULTS:
   - Arbitrage Protection: 23 passed, 0 failed
   - Safety/Candidate: 160 passed, 0 failed
   - Full Clean Subset: 1120 passed, 0 failed
-  - Evidence Checker: PASS
+  - Evidence Checker: PASS (7/7 files, law_compliance="04")
   - Law04 Check: PASS
-  Total: 0 failures, all suites pass
+  Total: 0 failures
 
 EVIDENCE JSON:
   - law_compliance: "04" (string)
   - candidate_commit: 8e1fd576fb2f4e9d74a09657b93f3a4d4a0f728a (source_commit)
   - candidate_identity_policy present
-  - candidate_diff_size_bytes: 108353
+  - evidence_checker_missing_files_resolved: true
 
 GIT STATUS:
   CLEAN (after commit, working tree clean)
 
 CANDIDATE.DIFF:
   - UTF-8 no BOM: CONFIRMED
-  - Range: base (c82b0b0) -> HEAD (01cf0a2)
+  - Range: base (c82b0b0) -> candidate HEAD
   - Non-empty: CONFIRMED
 
-REMAINING BLOCKERS (for R049, not blocking R027 review):
+BLOCKERS RESOLVED BY THIS FIX:
+  1. git_status_clean: TRUE (was FALSE — dirty RETURN_TO_CHATGPT.txt and test-results.txt committed)
+  2. evidence_checker_pass: TRUE (was FALSE — task.txt, report.json, no-aider-used.txt created)
+
+REMAINING BLOCKERS (not blocking for merge signoff):
   - R027 market session not yet connected to server_v2.py live/pre-trade gate
   - R014 formal trace_id / decision_chain / veto tracking integration incomplete
   - R014 durable persistence not implemented
   - R029/R030 full meeting table / trace_id / decision_chain / per-AI veto rework
 
 RECOMMENDED NEXT ACTION:
-  AWAITING_MANUAL_REVIEW_R027_MARKET_OPEN_CLOSE_PROTECTION_REWORK
+  AWAITING_USER_SIGNOFF_FOR_R027_MARKET_OPEN_CLOSE_PROTECTION_REWORK_LOCAL_NO_FF_MERGE
 
 FINAL RECOMMENDATION:
-  R027_MARKET_OPEN_CLOSE_PROTECTION_REWORK_PACKAGE_READY_FOR_MANUAL_REVIEW
-  DO NOT START R049
+  R027_MARKET_OPEN_CLOSE_REWORK_EVIDENCE_PACKAGE_READY_FOR_MANUAL_REVIEW_DO_NOT_START_R049
 
 GENERATED AT:
-  2026-05-21T02:55:00 UTC
+  2026-05-21T03:10:00 UTC
