@@ -20,7 +20,7 @@ candidate_branch:
   candidate/r033-r034-replay-isolation-live-write-guard-rework-before-r049
 
 candidate_commit:
-  TO_BE_SET_AFTER_COMMIT
+  1df58288e13a0fa15cc07ffedac4f25eb2a44d56
 
 dirty_paths_before_stage:
   - M candidate.diff
@@ -318,13 +318,13 @@ pre_push_equivalent_law04_check_pass_true_or_false:
   TRUE
 
 commit_created_true_or_false:
-  TO_BE_SET_AFTER_COMMIT
+  TRUE
 
 git_status_short_after_commit:
-  TO_BE_SET_AFTER_COMMIT
+  EMPTY
 
 git_status_clean_after_commit_true_or_false:
-  TO_BE_SET_AFTER_COMMIT
+  TRUE
 
 remaining_blockers:
   - R014 formal trace_id / decision_chain / veto tracking integration incomplete
