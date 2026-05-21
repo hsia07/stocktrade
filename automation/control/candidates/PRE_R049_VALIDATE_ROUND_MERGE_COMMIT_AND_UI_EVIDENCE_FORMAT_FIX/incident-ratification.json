@@ -38,6 +38,7 @@
   "do_not_modify_manifest": true,
   "evidence_package_completeness": {
     "test-results.txt": true,
+    "test_output_txt_exists_in_final_tree": false,
     "test_output_txt_deleted": true,
     "total_files": 14
   },

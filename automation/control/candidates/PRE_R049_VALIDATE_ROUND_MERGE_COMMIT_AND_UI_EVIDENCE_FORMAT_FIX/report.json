@@ -121,6 +121,7 @@
     "round_id": "UNAUTHORIZED_REMOTE_STATE_RATIFICATION_EVIDENCE_PACKAGE_FILENAME_CLEANUP",
     "problem": "test_output.txt (PowerShell command error, invalid content) replaced with properly named test-results.txt (python -m pytest output, 23/23 PASS)",
     "test_results_txt_exists": true,
+    "test_output_txt_exists_in_final_tree": false,
     "test_output_txt_deleted": true
   }
 }

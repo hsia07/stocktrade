@@ -136,7 +136,9 @@ Files changed:
 
 test_results_txt_exists_true_or_false: TRUE
 test_results_file_path: automation/control/candidates/PRE_R049_VALIDATE_ROUND_MERGE_COMMIT_AND_UI_EVIDENCE_FORMAT_FIX/test-results.txt
-test_output_txt_retained_as_raw_attachment: FALSE (deleted, replaced by properly named test-results.txt)
+test_output_txt_exists_in_final_tree_true_or_false: FALSE
+test_output_txt_deleted: TRUE
+test_output_txt_used_as_substitute: FALSE
 
 Evidence package 14/14 files:
 - evidence.json (law_compliance: 04, COMPLETE)
@@ -162,3 +164,12 @@ Problem fixed: test_output.txt (PowerShell command error, invalid content) repla
 test_results_txt_exists_true_or_false: TRUE (corrected)
 candidate_diff_utf8_no_bom: TRUE (verified)
 evidence.json updated with evidence_package_completeness and test_results_file_path metadata.
+
+### Evidence Tree Cleanup Round
+
+Round: UNAUTHORIZED_REMOTE_STATE_RATIFICATION_EVIDENCE_TREE_CLEANUP
+Previous candidate commit: 37788166158536e0dc2cf866562c51ecbad14fab
+Problem: Readonly audit confirmed test_output.txt still existed in HEAD tree despite metadata claiming deleted. Evidence tree was inconsistent.
+Fix: git rm test_output.txt executed. Final tree now has 14 files (test_output.txt removed). Metadata updated to accurately reflect final tree state.
+test_output_txt_exists_in_final_tree: FALSE (corrected)
+test_output_txt_deleted: TRUE (verified)
