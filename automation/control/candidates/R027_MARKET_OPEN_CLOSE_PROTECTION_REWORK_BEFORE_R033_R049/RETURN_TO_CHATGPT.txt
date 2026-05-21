@@ -33,7 +33,7 @@ EVIDENCE PACKAGE FILES (7/7 complete):
   - task.txt
   - report.json
   - evidence.json (law_compliance: "04")
-  - candidate.diff (UTF-8 no BOM, base -> HEAD, 149095 bytes)
+  - candidate.diff (UTF-8 no BOM, base -> HEAD, 197484 bytes)
   - no-aider-used.txt
   - RETURN_TO_CHATGPT.txt (this file)
   - test-results.txt
