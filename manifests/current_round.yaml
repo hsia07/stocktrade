@@ -1,6 +1,6 @@
 round_id: "PRE_R049_LOCAL_WEBSITE_VISIBLE_SURFACE_GAP_REMEDIATION"
 title: "Pre-R049 Local Website Visible Surface Gap Remediation"
-status: "candidate_construction"
+status: "candidate_pass"
 depends_on:
   - "R030"
 allowed_paths:
