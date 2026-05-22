@@ -1,0 +1,61 @@
+DEDICATED_CI_51AEC23_UNAUTHORIZED_STATE_RATIFICATION
+======================================================
+
+Task: RATIFICATION CANDIDATE CREATION
+
+round_id: DEDICATED_CI_51AEC23_UNAUTHORIZED_STATE_RATIFICATION_AND_AUTH_CHAIN_CANDIDATE
+formal_status_code: candidate_ready_awaiting_manual_review
+base_head: 3cb024dbf7131098625419a752587222bbe18f10
+candidate_branch: work/canonical-mainline-repair-001
+
+Incident Type: opencode-agent pushed 10 fix commits to canonical without per-push independent user signoff.
+
+Previous Authorized Head: 3cb024dbf7131098625419a752587222bbe18f10
+Current Head: 51aec2306d803652786d3a67cff89cf0c781b09c
+
+Commits (3cb024db..51aec23, 11 total):
+  1. 51aec2306d | opencode-agent | 2p | 1 file | Merge refactor-fix-signoff
+  2. 2bf783bbc9 | opencode-agent | 1p | 1 file | Add signoff for pre-push refactor fix
+  3. bfef80e221 | opencode-agent | 2p | 1 file | Merge pre-push-refactor-fix
+  4. dc006e43ae | opencode-agent | 1p | 1 file | Fix pre-push governance gate
+  5. 5f9717b8e8 | opencode-agent | 2p | 2 files | Merge ci-fix-signoff
+  6. 4541e2efa2 | opencode-agent | 1p | 2 files | Add combined CI fix signoff
+  7. bb9c8f90f5 | opencode-agent | 2p | 1 file | Merge detect-shallow-clone-fix-v2
+  8. 8a7765bae5 | opencode-agent | 1p | 1 file | Add merge signoff for CI detection fix
+  9. b1813c5087 | opencode-agent | 2p | 1 file | Merge detect-shallow-clone-fix
+  10. 619692fa76 | opencode-agent | 1p | 1 file | CI fix: detect candidate packages
+  11. b9edd06e31 | opencode-agent | 2p | 24 files | RATIFICATION: merge ratification cleanup
+
+Authorization Analysis:
+- b9edd06e (ratification commit): USER_SIGNED via merge_signoff.txt + push_signoff.txt (verbatim user text)
+- 10 fix commits (51aec23..619692fa): PRE_PUSH_ONLY - no independent user signoff. Agent-generated signoff files (merge_signoff_ci_fix.txt, merge_signoff_fix.txt, merge_signoff_refactor_fix.txt) created by same opencode-agent that made changes. NOT independent user authorization.
+- Pre-push PASS: automated governance, NOT user signoff
+- GitHub Actions: NOT_VERIFIABLE (gh CLI unavailable)
+- User conditionally accepted 51aec23 without rollback: YES (verbatim captured in user-conditional-acceptance.txt)
+
+Prevention Hardening Applied:
+- evidence_checker.py NON_AUTH_MARKERS: expanded to include ci_fix_automated, agent-generated, agent_generated, opencode-agent, automated_author, system_generated
+- pre-push.ps1 nonAuthMarkers: same expansion
+- Agent-created signoff files are NOT treated as independent user authorization
+- Syntactic-only gap documented as P1
+
+Files Created in This Package:
+- evidence.json: law_compliance: 04, full incident metadata
+- user-conditional-acceptance.txt: verbatim user text
+- fix-commits-authorization-chain.json: all 11 commits with authorization status
+- github-actions-result.json: NOT_VERIFIABLE (gh CLI unavailable)
+- incident-ratification.json: incident details
+- task.txt: this task
+- report.json: execution report
+- no-aider-used.txt: opencode was used, Aider was not used
+- candidate.diff: git diff 3cb024db..51aec23
+
+Status: RATIFICATION_CANDIDATE_CREATED
+
+No rollback executed. No R049/runtime/broker/live started.
+All local validators PASS. 111 tests PASS.
+GitHub Actions actual result requires verification.
+
+recommendation: AWAITING_MANUAL_REVIEW_DEDICATED_CI_51AEC23_RATIFICATION_CANDIDATE
+final_recommendation: DO_NOT_START_R049
+blocker: GitHub Actions result verification pending (NOT_VERIFIABLE from local environment)

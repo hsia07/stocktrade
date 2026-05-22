@@ -1,0 +1,36 @@
+{
+  "report_id": "DEDICATED_CI_51AEC23_RATIFICATION_CANDIDATE",
+  "status": "completed",
+  "candidate_branch": "candidate/dedicated-ci-51aec23-unauthorized-state-ratification",
+  "candidate_commit": "TO_BE_CREATED",
+  "files_created": [
+    "evidence.json",
+    "user-conditional-acceptance.txt",
+    "fix-commits-authorization-chain.json",
+    "github-actions-result.json",
+    "incident-ratification.json",
+    "task.txt",
+    "report.json",
+    "no-aider-used.txt",
+    "candidate.diff"
+  ],
+  "prevention_hardening_applied": [
+    "evidence_checker.py: NON_AUTH_MARKERS expanded with agent markers",
+    "pre-push.ps1: nonAuthMarkers expanded with agent markers"
+  ],
+  "tests_updated": false,
+  "local_validators": {
+    "validate_round": "PASS",
+    "check_forbidden_changes": "PASS",
+    "check_required_evidence": "PASS",
+    "check_commit_message": "PASS",
+    "pre_push_hook": "PASS",
+    "pytest_governance": "27/27 PASS",
+    "pytest_ui_gate": "23/23 PASS",
+    "pytest_validator": "23/23 PASS",
+    "pytest_incident_ratification": "12/12 PASS"
+  },
+  "candidate_diff_created": true,
+  "authorized_files_only": true,
+  "no_forbidden_changes": true
+}

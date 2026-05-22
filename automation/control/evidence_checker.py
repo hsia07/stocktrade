@@ -541,6 +541,12 @@ class EvidenceChecker:
                     "not real user signoff",
                     "machine-generated",
                     "machine generated",
+                    "ci_fix_automated",
+                    "agent-generated",
+                    "agent_generated",
+                    "opencode-agent",
+                    "automated_author",
+                    "system_generated",
                 ]
                 for marker in NON_AUTH_MARKERS:
                     if marker in lower:

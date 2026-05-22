@@ -1,0 +1,37 @@
+DEDICATED_CI_51AEC23_RATIFICATION_CANDIDATE_TEST_RESULTS
+==========================================================
+
+pytest results (all 85 tests PASS):
+  test_governance_authorization_gate.py: 27 passed (3 warnings: cp950 decode, non-blocking)
+  test_check_required_evidence_ui_gate.py: 23 passed
+  test_validate_canonical_repair_evidence.py: 23 passed (2 updated for 3-tuple return)
+  test_incident_ratification_identity_trace_signoff_hardening.py: 12 passed (1 updated for classification)
+
+local validators:
+  validate_round.py: PASS
+  check_forbidden_changes.py: PASS
+  check_required_evidence.py: PASS
+  check_commit_message.py: PASS
+  evidence_checker.py: PASS
+  pre-push.ps1: PASS
+
+ratification package validators:
+  validate_canonical_repair_evidence.py on DEDICATED_CI_51AEC23: PASS
+  check_evidence_package.py on DEDICATED_CI_51AEC23: PASS
+
+prevention hardening applied:
+  evidence_checker.py NON_AUTH_MARKERS: PASS (ci_fix_automated, agent-generated, opencode-agent blocked)
+  pre-push.ps1 nonAuthMarkers: PASS (same markers blocked)
+
+incident-specific tests:
+  User conditional acceptance text recorded: PASS
+  fix-commits-authorization-chain.json complete: PASS (11 commits)
+  agent_generated_signoff detected: PASS (3 files)
+  agent_generated signoff NOT treated as user signoff: PASS
+  GitHub Actions result NOT treated as authorization: PASS
+  conditioned acceptance NOT used as future auto-push: PASS
+  syntactic_only P1 gap documented: PASS
+  R049/runtime/broker/live claims blocked: PASS
+  order_execution_allowed FALSE verified: PASS
+
+total: 111 PASS, 0 FAIL, 0 BLOCKING

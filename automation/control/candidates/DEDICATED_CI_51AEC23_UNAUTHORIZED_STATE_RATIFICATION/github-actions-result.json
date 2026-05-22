@@ -1,0 +1,16 @@
+{
+  "query_attempted": true,
+  "query_method": "gh_cli",
+  "gh_cli_available": false,
+  "status": "NOT_VERIFIABLE",
+  "conclusion": "NOT_VERIFIABLE",
+  "commit": "51aec2306d803652786d3a67cff89cf0c781b09c",
+  "not_verifiable_reason": "gh CLI not available on this Windows system. PowerShell reported 'gh' command not found. Cannot query GitHub Actions API without gh or direct HTTPS calls.",
+  "ci_result_treated_as_authorization": false,
+  "local_validators_result": "PASS",
+  "local_test_result": "85 passed",
+  "pre_push_hook_result": "PASS",
+  "manual_verification_note": "Local reproduction of validators confirms all scripts work correctly. RATIFICATION package passes all checks. FIX_YAML_SYNTAX correctly classified as EXPECTED_INVALID_SUPERSEDED. But GitHub Actions actual CI run result for 51aec23 cannot be confirmed from this environment.",
+  "user_decision_needed": true,
+  "user_decision_note": "GitHub Actions status for 51aec23 must be confirmed before this ratification can be considered fully verified. If CI failed, the fixes may need further work."
+}

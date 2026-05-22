@@ -1,0 +1,1 @@
+我同意條件式接受目前 origin/work/canonical-mainline-repair-001 的未授權遠端狀態 51aec2306d803652786d3a67cff89cf0c781b09c，不立即 rollback；下一步只允許補做 51aec23 事故追認、GitHub Actions 結果確認、fix commits 授權鏈補強與防再犯治理，不得啟動 R049/runtime/broker/live。
