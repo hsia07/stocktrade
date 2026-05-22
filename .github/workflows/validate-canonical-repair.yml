@@ -51,19 +51,7 @@ jobs:
           DIRS="${{ steps.detect.outputs.candidate_dirs }}"
           if [ "$DIRS" != "NONE" ]; then
             for d in $DIRS; do
-              python -c "
-import sys
-sys.path.insert(0, '.')
-from automation.control.evidence_checker import EvidenceChecker
-from pathlib import Path
-checker = EvidenceChecker(repo_root=Path('.').resolve())
-ok, issues = checker.check_completeness(Path('$d'))
-if not ok:
-    print(f'FAIL: {d} evidence_checker issues: {issues}')
-    sys.exit(1)
-else:
-    print(f'PASS: {d} evidence_checker')
-"
+              python scripts/validation/check_evidence_package.py "$d"
             done
           fi
 
