@@ -43,6 +43,18 @@ class EvidenceChecker:
         "candidate.diff",
         "no-aider-used.txt",
         "test-results.txt",
+        "RETURN_TO_CHATGPT.txt",
+    ]
+
+    # Governance gate triggers — only applies when any match
+    GOVERNANCE_GATE_TRIGGERS = [
+        "governance",
+        "prevention",
+        "ratification",
+        "canonical",
+        "merge_push",
+        "unauthorized",
+        "rework",
     ]
 
     REQUIRED_LAW_COMPLIANCE = "04"  # Law 04 compliance value
@@ -122,6 +134,22 @@ class EvidenceChecker:
                 "failed",
             ],
         },
+        "RETURN_TO_CHATGPT.txt": {
+            "type": "text_sections",
+            "required_patterns": [
+                r"(?i)round_id",
+                r"(?i)formal_status_code",
+                r"(?i)base_head",
+                r"(?i)candidate_branch",
+                r"(?i)candidate_commit",
+            ],
+            "required_substrings": [
+                "formal",
+                "recommendation",
+                "blocker",
+                "remaining",
+            ],
+        },
     }
 
     def __init__(self, repo_root: Path = None):
@@ -139,6 +167,12 @@ class EvidenceChecker:
             file_path = candidate_dir / filename
             if not file_path.exists():
                 missing.append(f"missing:{filename}")
+
+        # RETURN_TO_CHATGPT.txt content validation (formal body required)
+        rtcg_path = candidate_dir / "RETURN_TO_CHATGPT.txt"
+        if rtcg_path.exists():
+            rtcg_issues = self._check_return_to_chatgpt_content(rtcg_path)
+            missing.extend(rtcg_issues)
 
         # Check report.json for validation results
         report_path = candidate_dir / "report.json"
@@ -202,7 +236,14 @@ class EvidenceChecker:
                 # UI_VISIBLE_ROUND_ACCEPTANCE_GATE check (Law 04 Chapter 22)
                 ui_gate_issues = self.check_ui_visible_gate(evidence)
                 missing.extend(ui_gate_issues)
-                
+
+                # Governance Authorization Gate (unauthorized merge/push prevention)
+                # Only applies when round_id or evidence_type contains governance trigger keywords
+                # or evidence explicitly requests authorization gate
+                if self._is_governance_candidate(evidence):
+                    gov_gate_issues = self._check_governance_authorization_gate(evidence, candidate_dir)
+                    missing.extend(gov_gate_issues)
+
             except Exception as e:
                 missing.append(f"evidence_parse_error:{e}")
         else:
@@ -416,6 +457,104 @@ class EvidenceChecker:
                 if result != "PASS":
                     issues.append(f"ui_visible_gate:test_fail:{test_name}={result}")
         
+        return issues
+
+    def _check_return_to_chatgpt_content(self, file_path: Path) -> List[str]:
+        """
+        Validate RETURN_TO_CHATGPT.txt content.
+        Must be a formal body (not just summary).
+        Returns list of issues (empty = pass).
+        """
+        issues = []
+        try:
+            content = file_path.read_text(encoding="utf-8-sig").strip()
+            if len(content) < 100:
+                issues.append("evidence_invalid:return_to_chatgpt_formal_body:too_short")
+                return issues
+
+            lower = content.lower()
+            required_markers = ["round_id", "formal_status_code", "base_head", "candidate_branch"]
+            for marker in required_markers:
+                if marker not in lower:
+                    issues.append(f"evidence_invalid:return_to_chatgpt_formal_body:missing_{marker}")
+                    return issues
+
+            if "recommendation" not in lower and "blocker" not in lower:
+                issues.append("evidence_invalid:return_to_chatgpt_formal_body:missing_recommendation_or_blocker")
+
+        except Exception as e:
+            issues.append(f"evidence_invalid:return_to_chatgpt_formal_body:read_error:{e}")
+        return issues
+
+    def _is_governance_candidate(self, evidence: Dict[str, Any]) -> bool:
+        """Check if this evidence package requires the governance authorization gate."""
+        if evidence.get("requires_authorization_gate") is True:
+            return True
+
+        round_id = (evidence.get("round_id") or "").lower()
+        task_type = (evidence.get("task_type") or "").lower()
+        evidence_type = (evidence.get("evidence_type") or "").lower()
+        combined = f"{round_id} {task_type} {evidence_type}"
+
+        return any(trigger in combined for trigger in self.GOVERNANCE_GATE_TRIGGERS)
+
+    def _check_governance_authorization_gate(self, evidence: Dict[str, Any], candidate_dir: Path) -> List[str]:
+        """
+        Check that merge/push authorization is properly evidenced.
+        Returns list of issues (empty = pass).
+
+        Each signoff must contain:
+          - action type (merge or push)
+          - target branch (work/canonical-*)
+          - authorized 40hex hash
+          - explicit user authorization language
+        """
+        import re
+
+        issues = []
+        candidate_dir = Path(candidate_dir)
+
+        merge_signoff = candidate_dir / "merge_signoff.txt"
+        push_signoff = candidate_dir / "push_signoff.txt"
+
+        has_merge_signoff = merge_signoff.exists() and merge_signoff.stat().st_size > 0
+        has_push_signoff = push_signoff.exists() and push_signoff.stat().st_size > 0
+
+        if not has_merge_signoff and not has_push_signoff:
+            issues.append("governance_gate:no_authorization_files_found")
+
+        def _validate_signoff(file_path: Path, action_type: str) -> List[str]:
+            sig_issues = []
+            try:
+                content = file_path.read_text(encoding="utf-8-sig").strip()
+                if len(content) < 20:
+                    sig_issues.append(f"governance_gate:{action_type}_signoff_too_short")
+                    return sig_issues
+
+                lower = content.lower()
+
+                if action_type not in lower:
+                    sig_issues.append(f"governance_gate:{action_type}_signoff_missing_action_type")
+
+                if not re.search(r'(?:work/canonical|origin/work/canonical)', lower):
+                    sig_issues.append(f"governance_gate:{action_type}_signoff_missing_target_branch")
+
+                if not re.search(r'[0-9a-fA-F]{40}', content):
+                    sig_issues.append(f"governance_gate:{action_type}_signoff_missing_hash")
+
+                if "authorized" not in lower and "signoff" not in lower and "consent" not in lower:
+                    sig_issues.append(f"governance_gate:{action_type}_signoff_missing_authorization_text")
+
+            except Exception as e:
+                sig_issues.append(f"governance_gate:{action_type}_signoff_read_error:{e}")
+            return sig_issues
+
+        if has_merge_signoff:
+            issues.extend(_validate_signoff(merge_signoff, "merge"))
+
+        if has_push_signoff:
+            issues.extend(_validate_signoff(push_signoff, "push"))
+
         return issues
 
     # Merge/Push Separation Enforcement (Law-0416 Phase 3)

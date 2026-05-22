@@ -1,0 +1,518 @@
+diff --git a/automation/control/evidence_checker.py b/automation/control/evidence_checker.py
+index 5b22be7..8b78da7 100644
+--- a/automation/control/evidence_checker.py
++++ b/automation/control/evidence_checker.py
+@@ -43,6 +43,18 @@ class EvidenceChecker:
+         "candidate.diff",
+         "no-aider-used.txt",
+         "test-results.txt",
++        "RETURN_TO_CHATGPT.txt",
++    ]
++
++    # Governance gate triggers — only applies when any match
++    GOVERNANCE_GATE_TRIGGERS = [
++        "governance",
++        "prevention",
++        "ratification",
++        "canonical",
++        "merge_push",
++        "unauthorized",
++        "rework",
+     ]
+ 
+     REQUIRED_LAW_COMPLIANCE = "04"  # Law 04 compliance value
+@@ -122,6 +134,22 @@ class EvidenceChecker:
+                 "failed",
+             ],
+         },
++        "RETURN_TO_CHATGPT.txt": {
++            "type": "text_sections",
++            "required_patterns": [
++                r"(?i)round_id",
++                r"(?i)formal_status_code",
++                r"(?i)base_head",
++                r"(?i)candidate_branch",
++                r"(?i)candidate_commit",
++            ],
++            "required_substrings": [
++                "formal",
++                "recommendation",
++                "blocker",
++                "remaining",
++            ],
++        },
+     }
+ 
+     def __init__(self, repo_root: Path = None):
+@@ -140,6 +168,12 @@ class EvidenceChecker:
+             if not file_path.exists():
+                 missing.append(f"missing:{filename}")
+ 
++        # RETURN_TO_CHATGPT.txt content validation (formal body required)
++        rtcg_path = candidate_dir / "RETURN_TO_CHATGPT.txt"
++        if rtcg_path.exists():
++            rtcg_issues = self._check_return_to_chatgpt_content(rtcg_path)
++            missing.extend(rtcg_issues)
++
+         # Check report.json for validation results
+         report_path = candidate_dir / "report.json"
+         if report_path.exists():
+@@ -204,8 +238,11 @@ class EvidenceChecker:
+                 missing.extend(ui_gate_issues)
+ 
+                 # Governance Authorization Gate (unauthorized merge/push prevention)
+-                gov_gate_issues = self._check_governance_authorization_gate(evidence, candidate_dir)
+-                missing.extend(gov_gate_issues)
++                # Only applies when round_id or evidence_type contains governance trigger keywords
++                # or evidence explicitly requests authorization gate
++                if self._is_governance_candidate(evidence):
++                    gov_gate_issues = self._check_governance_authorization_gate(evidence, candidate_dir)
++                    missing.extend(gov_gate_issues)
+ 
+             except Exception as e:
+                 missing.append(f"evidence_parse_error:{e}")
+@@ -422,6 +459,45 @@ class EvidenceChecker:
+         
+         return issues
+ 
++    def _check_return_to_chatgpt_content(self, file_path: Path) -> List[str]:
++        """
++        Validate RETURN_TO_CHATGPT.txt content.
++        Must be a formal body (not just summary).
++        Returns list of issues (empty = pass).
++        """
++        issues = []
++        try:
++            content = file_path.read_text(encoding="utf-8-sig").strip()
++            if len(content) < 100:
++                issues.append("evidence_invalid:return_to_chatgpt_formal_body:too_short")
++                return issues
++
++            lower = content.lower()
++            required_markers = ["round_id", "formal_status_code", "base_head", "candidate_branch"]
++            for marker in required_markers:
++                if marker not in lower:
++                    issues.append(f"evidence_invalid:return_to_chatgpt_formal_body:missing_{marker}")
++                    return issues
++
++            if "recommendation" not in lower and "blocker" not in lower:
++                issues.append("evidence_invalid:return_to_chatgpt_formal_body:missing_recommendation_or_blocker")
++
++        except Exception as e:
++            issues.append(f"evidence_invalid:return_to_chatgpt_formal_body:read_error:{e}")
++        return issues
++
++    def _is_governance_candidate(self, evidence: Dict[str, Any]) -> bool:
++        """Check if this evidence package requires the governance authorization gate."""
++        if evidence.get("requires_authorization_gate") is True:
++            return True
++
++        round_id = (evidence.get("round_id") or "").lower()
++        task_type = (evidence.get("task_type") or "").lower()
++        evidence_type = (evidence.get("evidence_type") or "").lower()
++        combined = f"{round_id} {task_type} {evidence_type}"
++
++        return any(trigger in combined for trigger in self.GOVERNANCE_GATE_TRIGGERS)
++
+     def _check_governance_authorization_gate(self, evidence: Dict[str, Any], candidate_dir: Path) -> List[str]:
+         """
+         Check that merge/push authorization is properly evidenced.
+diff --git a/tests/test_governance_authorization_gate.py b/tests/test_governance_authorization_gate.py
+index 984a9bf..8b69309 100644
+--- a/tests/test_governance_authorization_gate.py
++++ b/tests/test_governance_authorization_gate.py
+@@ -18,6 +18,45 @@ VALID_PUSH_SIGNOFF = (
+ )
+ CANONICAL_HASH = "904f4604b85800194725ad3fe8abd3ee71ec45a9"
+ 
++FORMAL_RTCG = (
++    "round_id: GOVERNANCE_PREVENTION_GATE_TEST\n"
++    "formal_status_code: test\n"
++    "base_head: 904f4604b85800194725ad3fe8abd3ee71ec45a9\n"
++    "candidate_branch: test\n"
++    "candidate_commit: test\n"
++    "recommendation: test candidate\n"
++    "remaining blockers: none\n"
++)
++
++SUMMARY_ONLY_RTCG = "This is just a short summary without formal fields."
++
++
++def _write_standard_evidence(candidate_dir, evidence_overrides=None):
++    """Create standard evidence files in candidate_dir. Returns evidence dict."""
++    ev = {
++        "round_id": "test", "trace_id": "trace-001",
++        "law_compliance": "04", "evidence_type": "test",
++        "round": "1", "phase": "1", "append_only_audit": True,
++        "candidate_commit": CANONICAL_HASH,
++    }
++    if evidence_overrides:
++        ev.update(evidence_overrides)
++    (candidate_dir / "evidence.json").write_text(json.dumps(ev, indent=2), encoding="utf-8")
++    (candidate_dir / "task.txt").write_text(
++        "task_id: TEST\ntask_type: test\nphase: 1\nlaw_compliance: 04\nseverity: medium",
++        encoding="utf-8",
++    )
++    (candidate_dir / "report.json").write_text(json.dumps({
++        "round_id": "test", "status": "completed",
++        "canonical_branch": "origin/work/canonical-mainline-repair-001",
++        "canonical_head": CANONICAL_HASH,
++        "test_count": 1, "tests_passed": 1,
++    }, indent=2), encoding="utf-8")
++    (candidate_dir / "candidate.diff").write_text("dummy diff", encoding="utf-8")
++    (candidate_dir / "no-aider-used.txt").write_text("No aider used", encoding="utf-8")
++    (candidate_dir / "test-results.txt").write_text("TEST RESULTS\npassed: 1\nfailed: 0", encoding="utf-8")
++    return ev
++
+ 
+ class TestGovernanceAuthorizationGate:
+     """Tests for _check_governance_authorization_gate (Law 04 Chapter 22)."""
+@@ -37,31 +76,107 @@ class TestGovernanceAuthorizationGate:
+             json.dumps(evidence, indent=2), encoding="utf-8"
+         )
+ 
+-    # --- No signoff files ---
++    # --- Governance gate applicability (_is_governance_candidate) ---
+ 
+-    def test_no_files_returns_issue(self, checker, candidate_dir):
+-        self._write_evidence(candidate_dir, {"round_id": "test"})
+-        issues = checker._check_governance_authorization_gate({}, candidate_dir)
++    def test_non_governance_candidate_not_blocked_by_gate(self, checker, candidate_dir):
++        """Non-governance round should NOT trigger governance signoff gate."""
++        ev = _write_standard_evidence(candidate_dir, {
++            "round_id": "R031_test",  # NOT a governance trigger word
++        })
++        (candidate_dir / "RETURN_TO_CHATGPT.txt").write_text(FORMAL_RTCG, encoding="utf-8")
++        checker.repo_root = Path(r"C:\Users\richa\OneDrive\桌面\stocktrade")
++
++        assert not checker._is_governance_candidate(ev)
++        complete, missing = checker.check_completeness(candidate_dir)
++        assert complete, f"Non-governance candidate should pass, got missing: {missing}"
++        assert not any("governance_gate" in m for m in missing)
++
++    def test_governance_trigger_by_keyword(self, checker, candidate_dir):
++        """governance keyword in round_id triggers gate."""
++        ev = _write_standard_evidence(candidate_dir, {"round_id": "governance_test"})
++        assert checker._is_governance_candidate(ev)
++
++    def test_governance_trigger_by_requires_flag(self, checker, candidate_dir):
++        """requires_authorization_gate=true triggers gate."""
++        ev = _write_standard_evidence(candidate_dir, {"requires_authorization_gate": True})
++        assert checker._is_governance_candidate(ev)
++
++    def test_governance_trigger_by_round_keyword_rework(self, checker, candidate_dir):
++        """rework keyword triggers gate."""
++        ev = _write_standard_evidence(candidate_dir, {"round_id": "test_rework"})
++        assert checker._is_governance_candidate(ev)
++
++    # --- RETURN_TO_CHATGPT.txt checks ---
++
++    def test_missing_return_to_chatgpt_fails(self, checker, candidate_dir):
++        """Missing RETURN_TO_CHATGPT.txt should fail."""
++        _write_standard_evidence(candidate_dir, {
++            "round_id": "governance_test", "requires_authorization_gate": True,
++        })
++        checker.repo_root = Path(r"C:\Users\richa\OneDrive\桌面\stocktrade")
++        complete, missing = checker.check_completeness(candidate_dir)
++        assert not complete
++        assert any("missing:RETURN_TO_CHATGPT.txt" in m for m in missing)
++
++    def test_summary_only_return_to_chatgpt_fails(self, checker, candidate_dir):
++        """Summary-only RETURN_TO_CHATGPT.txt content should fail."""
++        _write_standard_evidence(candidate_dir, {
++            "round_id": "governance_test", "requires_authorization_gate": True,
++        })
++        (candidate_dir / "RETURN_TO_CHATGPT.txt").write_text(SUMMARY_ONLY_RTCG, encoding="utf-8")
++        checker.repo_root = Path(r"C:\Users\richa\OneDrive\桌面\stocktrade")
++        complete, missing = checker.check_completeness(candidate_dir)
++        assert not complete
++        assert any("evidence_invalid:return_to_chatgpt_formal_body" in m for m in missing)
++
++    def test_formal_return_to_chatgpt_passes(self, checker, candidate_dir):
++        """Formal RETURN_TO_CHATGPT.txt should pass validation (non-governance candidate)."""
++        _write_standard_evidence(candidate_dir, {
++            "round_id": "R031_test",  # NOT a governance trigger
++        })
++        (candidate_dir / "RETURN_TO_CHATGPT.txt").write_text(FORMAL_RTCG, encoding="utf-8")
++        checker.repo_root = Path(r"C:\Users\richa\OneDrive\桌面\stocktrade")
++        complete, missing = checker.check_completeness(candidate_dir)
++        assert complete, f"Expected complete, got missing: {missing}"
++
++    # --- No signoff files (governance candidate only) ---
++
++    def test_no_signoff_files_blocked_for_governance(self, checker, candidate_dir):
++        """Governance candidate without signoff files should be blocked."""
++        ev = _write_standard_evidence(candidate_dir, {
++            "round_id": "governance_test", "requires_authorization_gate": True,
++        })
++        (candidate_dir / "RETURN_TO_CHATGPT.txt").write_text(FORMAL_RTCG, encoding="utf-8")
++        checker.repo_root = Path(r"C:\Users\richa\OneDrive\桌面\stocktrade")
++        issues = checker._check_governance_authorization_gate(ev, candidate_dir)
+         assert any("governance_gate:no_authorization_files_found" in i for i in issues)
+ 
++    def test_governance_candidate_without_signoff_fails_check_completeness(self, checker, candidate_dir):
++        """Governance candidate via check_completeness without signoff should fail."""
++        _write_standard_evidence(candidate_dir, {
++            "round_id": "governance_test", "requires_authorization_gate": True,
++        })
++        (candidate_dir / "RETURN_TO_CHATGPT.txt").write_text(FORMAL_RTCG, encoding="utf-8")
++        checker.repo_root = Path(r"C:\Users\richa\OneDrive\桌面\stocktrade")
++        complete, missing = checker.check_completeness(candidate_dir)
++        assert not complete
++        assert any("governance_gate:no_authorization_files_found" in m for m in missing)
++
+     # --- Valid signoffs ---
+ 
+     def test_merge_signoff_valid_passes(self, checker, candidate_dir):
+         (candidate_dir / "merge_signoff.txt").write_text(VALID_MERGE_SIGNOFF, encoding="utf-8")
+-        self._write_evidence(candidate_dir, {"round_id": "test"})
+         issues = checker._check_governance_authorization_gate({}, candidate_dir)
+         assert not any(i.startswith("governance_gate:") for i in issues)
+ 
+     def test_push_signoff_valid_passes(self, checker, candidate_dir):
+         (candidate_dir / "push_signoff.txt").write_text(VALID_PUSH_SIGNOFF, encoding="utf-8")
+-        self._write_evidence(candidate_dir, {"round_id": "test"})
+         issues = checker._check_governance_authorization_gate({}, candidate_dir)
+         assert not any(i.startswith("governance_gate:") for i in issues)
+ 
+     def test_both_signoffs_valid_passes(self, checker, candidate_dir):
+         (candidate_dir / "merge_signoff.txt").write_text(VALID_MERGE_SIGNOFF, encoding="utf-8")
+         (candidate_dir / "push_signoff.txt").write_text(VALID_PUSH_SIGNOFF, encoding="utf-8")
+-        self._write_evidence(candidate_dir, {"round_id": "test"})
+         issues = checker._check_governance_authorization_gate({}, candidate_dir)
+         assert not any(i.startswith("governance_gate:") for i in issues)
+ 
+@@ -69,13 +184,11 @@ class TestGovernanceAuthorizationGate:
+ 
+     def test_merge_signoff_too_short(self, checker, candidate_dir):
+         (candidate_dir / "merge_signoff.txt").write_text("ok", encoding="utf-8")
+-        self._write_evidence(candidate_dir, {"round_id": "test"})
+         issues = checker._check_governance_authorization_gate({}, candidate_dir)
+         assert any("governance_gate:merge_signoff_too_short" in i for i in issues)
+ 
+     def test_push_signoff_too_short(self, checker, candidate_dir):
+         (candidate_dir / "push_signoff.txt").write_text("no", encoding="utf-8")
+-        self._write_evidence(candidate_dir, {"round_id": "test"})
+         issues = checker._check_governance_authorization_gate({}, candidate_dir)
+         assert any("governance_gate:push_signoff_too_short" in i for i in issues)
+ 
+@@ -86,7 +199,6 @@ class TestGovernanceAuthorizationGate:
+             "merge for work/canonical-mainline-repair-001 "
+             "at 904f4604b85800194725ad3fe8abd3ee71ec45a9 no auth"
+         )
+-        self._write_evidence(candidate_dir, {"round_id": "test"})
+         issues = checker._check_governance_authorization_gate({}, candidate_dir)
+         assert any("governance_gate:merge_signoff_missing_authorization_text" in i for i in issues)
+ 
+@@ -95,7 +207,6 @@ class TestGovernanceAuthorizationGate:
+             "push for work/canonical-mainline-repair-001 "
+             "at 904f4604b85800194725ad3fe8abd3ee71ec45a9 no auth"
+         )
+-        self._write_evidence(candidate_dir, {"round_id": "test"})
+         issues = checker._check_governance_authorization_gate({}, candidate_dir)
+         assert any("governance_gate:push_signoff_missing_authorization_text" in i for i in issues)
+ 
+@@ -103,7 +214,6 @@ class TestGovernanceAuthorizationGate:
+ 
+     def test_empty_file_treated_as_missing(self, checker, candidate_dir):
+         (candidate_dir / "merge_signoff.txt").write_text("", encoding="utf-8")
+-        self._write_evidence(candidate_dir, {"round_id": "test"})
+         issues = checker._check_governance_authorization_gate({}, candidate_dir)
+         assert any("governance_gate:no_authorization_files_found" in i for i in issues)
+ 
+@@ -114,7 +224,6 @@ class TestGovernanceAuthorizationGate:
+             "Authorized for work/canonical-mainline-repair-001 "
+             "at 904f4604b85800194725ad3fe8abd3ee71ec45a9 consent"
+         )
+-        self._write_evidence(candidate_dir, {"round_id": "test"})
+         issues = checker._check_governance_authorization_gate({}, candidate_dir)
+         assert any("governance_gate:merge_signoff_missing_action_type" in i for i in issues)
+ 
+@@ -123,7 +232,6 @@ class TestGovernanceAuthorizationGate:
+             "Authorized for work/canonical-mainline-repair-001 "
+             "at 904f4604b85800194725ad3fe8abd3ee71ec45a9 consent"
+         )
+-        self._write_evidence(candidate_dir, {"round_id": "test"})
+         issues = checker._check_governance_authorization_gate({}, candidate_dir)
+         assert any("governance_gate:push_signoff_missing_action_type" in i for i in issues)
+ 
+@@ -133,7 +241,6 @@ class TestGovernanceAuthorizationGate:
+         (candidate_dir / "merge_signoff.txt").write_text(
+             "Merge authorized at 904f4604b85800194725ad3fe8abd3ee71ec45a9 consent"
+         )
+-        self._write_evidence(candidate_dir, {"round_id": "test"})
+         issues = checker._check_governance_authorization_gate({}, candidate_dir)
+         assert any("governance_gate:merge_signoff_missing_target_branch" in i for i in issues)
+ 
+@@ -141,7 +248,6 @@ class TestGovernanceAuthorizationGate:
+         (candidate_dir / "push_signoff.txt").write_text(
+             "Push authorized at 904f4604b85800194725ad3fe8abd3ee71ec45a9 consent"
+         )
+-        self._write_evidence(candidate_dir, {"round_id": "test"})
+         issues = checker._check_governance_authorization_gate({}, candidate_dir)
+         assert any("governance_gate:push_signoff_missing_target_branch" in i for i in issues)
+ 
+@@ -151,7 +257,6 @@ class TestGovernanceAuthorizationGate:
+         (candidate_dir / "merge_signoff.txt").write_text(
+             "Merge authorized for work/canonical-mainline-repair-001 by consent"
+         )
+-        self._write_evidence(candidate_dir, {"round_id": "test"})
+         issues = checker._check_governance_authorization_gate({}, candidate_dir)
+         assert any("governance_gate:merge_signoff_missing_hash" in i for i in issues)
+ 
+@@ -159,129 +264,50 @@ class TestGovernanceAuthorizationGate:
+         (candidate_dir / "push_signoff.txt").write_text(
+             "Push authorized for work/canonical-mainline-repair-001 by consent"
+         )
+-        self._write_evidence(candidate_dir, {"round_id": "test"})
+         issues = checker._check_governance_authorization_gate({}, candidate_dir)
+         assert any("governance_gate:push_signoff_missing_hash" in i for i in issues)
+ 
+-    # --- check_completeness integration ---
+-
+-    def test_check_completeness_includes_gate(self, checker, candidate_dir):
+-        (candidate_dir / "merge_signoff.txt").write_text(VALID_MERGE_SIGNOFF, encoding="utf-8")
+-        (candidate_dir / "push_signoff.txt").write_text(VALID_PUSH_SIGNOFF, encoding="utf-8")
+-        (candidate_dir / "task.txt").write_text("task_id: TEST\ntask_type: test\nphase: 1\nlaw_compliance: 04\nseverity: medium", encoding="utf-8")
+-        (candidate_dir / "report.json").write_text(json.dumps({
+-            "round_id": "test", "status": "completed",
+-            "canonical_branch": "origin/work/canonical-mainline-repair-001",
+-            "canonical_head": CANONICAL_HASH,
+-            "test_count": 1, "tests_passed": 1
+-        }, indent=2), encoding="utf-8")
+-        (candidate_dir / "evidence.json").write_text(json.dumps({
+-            "round_id": "test", "trace_id": "trace-001",
+-            "law_compliance": "04", "evidence_type": "test",
+-            "round": "1", "phase": "1", "append_only_audit": True,
+-            "candidate_commit": CANONICAL_HASH
+-        }, indent=2), encoding="utf-8")
+-        (candidate_dir / "candidate.diff").write_text("dummy diff", encoding="utf-8")
+-        (candidate_dir / "no-aider-used.txt").write_text("No aider used", encoding="utf-8")
+-        (candidate_dir / "test-results.txt").write_text("TEST RESULTS\npassed: 1\nfailed: 0", encoding="utf-8")
+-
+-        checker.repo_root = Path(r"C:\Users\richa\OneDrive\桌面\stocktrade")
+-        complete, missing = checker.check_completeness(candidate_dir)
+-        assert complete, f"Expected complete but missing: {missing}"
+-        assert not any("governance_gate" in m for m in missing)
+-
+-    def test_check_completeness_fails_without_signoff(self, checker, candidate_dir):
+-        (candidate_dir / "task.txt").write_text("task_id: TEST\ntask_type: test\nphase: 1\nlaw_compliance: 04\nseverity: medium", encoding="utf-8")
+-        (candidate_dir / "report.json").write_text(json.dumps({
+-            "round_id": "test", "status": "completed",
+-            "canonical_branch": "origin/work/canonical-mainline-repair-001",
+-            "canonical_head": CANONICAL_HASH,
+-            "test_count": 1, "tests_passed": 1
+-        }, indent=2), encoding="utf-8")
+-        (candidate_dir / "evidence.json").write_text(json.dumps({
+-            "round_id": "test", "trace_id": "trace-001",
+-            "law_compliance": "04", "evidence_type": "test",
+-            "round": "1", "phase": "1", "append_only_audit": True,
+-            "candidate_commit": CANONICAL_HASH
+-        }, indent=2), encoding="utf-8")
+-        (candidate_dir / "candidate.diff").write_text("dummy diff", encoding="utf-8")
+-        (candidate_dir / "no-aider-used.txt").write_text("No aider used", encoding="utf-8")
+-        (candidate_dir / "test-results.txt").write_text("TEST RESULTS\npassed: 1\nfailed: 0", encoding="utf-8")
+-        checker.repo_root = Path(r"C:\Users\richa\OneDrive\桌面\stocktrade")
+-
+-        complete, missing = checker.check_completeness(candidate_dir)
+-        assert not complete
+-        assert any("governance_gate:no_authorization_files_found" in m for m in missing)
+-
+-    # --- Incomplete evidence package (missing candidate.diff) ---
++    # --- Incomplete evidence ---
+ 
+     def test_incomplete_evidence_missing_candidate_diff(self, checker, candidate_dir):
+-        (candidate_dir / "merge_signoff.txt").write_text(VALID_MERGE_SIGNOFF, encoding="utf-8")
+-        (candidate_dir / "push_signoff.txt").write_text(VALID_PUSH_SIGNOFF, encoding="utf-8")
+-        (candidate_dir / "task.txt").write_text("task_id: TEST\ntask_type: test\nphase: 1\nlaw_compliance: 04\nseverity: medium", encoding="utf-8")
+-        (candidate_dir / "report.json").write_text(json.dumps({
+-            "round_id": "test", "status": "completed",
+-            "canonical_branch": "origin/work/canonical-mainline-repair-001",
+-            "canonical_head": CANONICAL_HASH,
+-            "test_count": 1, "tests_passed": 1
+-        }, indent=2), encoding="utf-8")
+-        (candidate_dir / "evidence.json").write_text(json.dumps({
+-            "round_id": "test", "trace_id": "trace-001",
+-            "law_compliance": "04", "evidence_type": "test",
+-            "round": "1", "phase": "1", "append_only_audit": True,
+-            "candidate_commit": CANONICAL_HASH
+-        }, indent=2), encoding="utf-8")
+-        (candidate_dir / "no-aider-used.txt").write_text("No aider used", encoding="utf-8")
+-        (candidate_dir / "test-results.txt").write_text("TEST RESULTS\npassed: 1\nfailed: 0", encoding="utf-8")
++        _write_standard_evidence(candidate_dir, {"round_id": "test"})
++        (candidate_dir / "RETURN_TO_CHATGPT.txt").write_text(FORMAL_RTCG, encoding="utf-8")
++        (candidate_dir / "candidate.diff").unlink(missing_ok=True)
+         checker.repo_root = Path(r"C:\Users\richa\OneDrive\桌面\stocktrade")
+-
+         complete, missing = checker.check_completeness(candidate_dir)
+         assert not complete
+         assert any("missing:candidate.diff" in m for m in missing)
+ 
+-    # --- Incomplete evidence package (missing test-results.txt) ---
+-
+     def test_incomplete_evidence_missing_test_results(self, checker, candidate_dir):
+-        (candidate_dir / "merge_signoff.txt").write_text(VALID_MERGE_SIGNOFF, encoding="utf-8")
+-        (candidate_dir / "push_signoff.txt").write_text(VALID_PUSH_SIGNOFF, encoding="utf-8")
+-        (candidate_dir / "task.txt").write_text("task_id: TEST\ntask_type: test\nphase: 1\nlaw_compliance: 04\nseverity: medium", encoding="utf-8")
+-        (candidate_dir / "report.json").write_text(json.dumps({
+-            "round_id": "test", "status": "completed",
+-            "canonical_branch": "origin/work/canonical-mainline-repair-001",
+-            "canonical_head": CANONICAL_HASH,
+-            "test_count": 1, "tests_passed": 1
+-        }, indent=2), encoding="utf-8")
+-        (candidate_dir / "evidence.json").write_text(json.dumps({
+-            "round_id": "test", "trace_id": "trace-001",
+-            "law_compliance": "04", "evidence_type": "test",
+-            "round": "1", "phase": "1", "append_only_audit": True,
+-            "candidate_commit": CANONICAL_HASH
+-        }, indent=2), encoding="utf-8")
+-        (candidate_dir / "candidate.diff").write_text("dummy diff", encoding="utf-8")
+-        (candidate_dir / "no-aider-used.txt").write_text("No aider used", encoding="utf-8")
++        _write_standard_evidence(candidate_dir, {"round_id": "test"})
++        (candidate_dir / "RETURN_TO_CHATGPT.txt").write_text(FORMAL_RTCG, encoding="utf-8")
++        (candidate_dir / "test-results.txt").unlink(missing_ok=True)
+         checker.repo_root = Path(r"C:\Users\richa\OneDrive\桌面\stocktrade")
+-
+         complete, missing = checker.check_completeness(candidate_dir)
+         assert not complete
+         assert any("missing:test-results.txt" in m for m in missing)
+ 
+-    # --- Incomplete evidence package (missing evidence.json) ---
+-
+     def test_incomplete_evidence_missing_evidence_json(self, checker, candidate_dir):
+-        (candidate_dir / "merge_signoff.txt").write_text(VALID_MERGE_SIGNOFF, encoding="utf-8")
+-        (candidate_dir / "push_signoff.txt").write_text(VALID_PUSH_SIGNOFF, encoding="utf-8")
+-        (candidate_dir / "task.txt").write_text("task_id: TEST\ntask_type: test\nphase: 1\nlaw_compliance: 04\nseverity: medium", encoding="utf-8")
+-        (candidate_dir / "report.json").write_text(json.dumps({
+-            "round_id": "test", "status": "completed",
+-            "canonical_branch": "origin/work/canonical-mainline-repair-001",
+-            "canonical_head": CANONICAL_HASH,
+-            "test_count": 1, "tests_passed": 1
+-        }, indent=2), encoding="utf-8")
+-        (candidate_dir / "candidate.diff").write_text("dummy diff", encoding="utf-8")
+-        (candidate_dir / "no-aider-used.txt").write_text("No aider used", encoding="utf-8")
+-        (candidate_dir / "test-results.txt").write_text("TEST RESULTS\npassed: 1\nfailed: 0", encoding="utf-8")
++        _write_standard_evidence(candidate_dir, {"round_id": "test"})
++        (candidate_dir / "RETURN_TO_CHATGPT.txt").write_text(FORMAL_RTCG, encoding="utf-8")
++        (candidate_dir / "evidence.json").unlink(missing_ok=True)
+         checker.repo_root = Path(r"C:\Users\richa\OneDrive\桌面\stocktrade")
+-
+         complete, missing = checker.check_completeness(candidate_dir)
+         assert not complete
+         assert any("missing:evidence.json" in m for m in missing)
++
++    # --- Positive authorized complete case ---
++
++    def test_authorized_governance_complete_passes(self, checker, candidate_dir):
++        """Full governance candidate with all evidence + signoffs should pass."""
++        _write_standard_evidence(candidate_dir, {
++            "round_id": "governance_prevention_gate_test",
++            "requires_authorization_gate": True,
++        })
++        (candidate_dir / "RETURN_TO_CHATGPT.txt").write_text(FORMAL_RTCG, encoding="utf-8")
++        (candidate_dir / "merge_signoff.txt").write_text(VALID_MERGE_SIGNOFF, encoding="utf-8")
++        (candidate_dir / "push_signoff.txt").write_text(VALID_PUSH_SIGNOFF, encoding="utf-8")
++        checker.repo_root = Path(r"C:\Users\richa\OneDrive\桌面\stocktrade")
++        complete, missing = checker.check_completeness(candidate_dir)
++        assert complete, f"Expected complete, got missing: {missing}"
++        assert not any("governance_gate" in m for m in missing)

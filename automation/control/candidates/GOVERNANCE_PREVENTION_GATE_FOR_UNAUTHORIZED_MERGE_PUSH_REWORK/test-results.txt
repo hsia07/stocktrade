@@ -1,0 +1,24 @@
+TEST RESULTS
+Round: GOVERNANCE_PREVENTION_GATE_TEST_ALIGNMENT_AND_PRE_PUSH_SOURCE_REWORK_CANDIDATE
+Base: 904f4604b85800194725ad3fe8abd3ee71ec45a9
+Branch: candidate/governance-prevention-gate-unauthorized-merge-push-rework
+
+test suite: test_governance_authorization_gate.py
+total tests: 27
+passed: 27
+failed: 0
+coverage: _is_governance_candidate triggers, missing RTCG, summary-only RTCG, formal RTCG,
+          missing signoff, empty signoff, too short, missing auth text, missing action type,
+          missing branch, missing hash, incomplete evidence, non-governance not blocked,
+          governance candidate full pass, integration via check_completeness
+
+validators:
+- validate_round.py: PASS
+- check_forbidden_changes.py: PASS
+- check_required_evidence.py: PASS
+- check_commit_message.py: PASS
+- evidence_checker.py: PASS
+- pre-push.ps1: PASS
+
+Pre-push signoff enforcement: Get-ChangedSignoffFiles + Check-SignoffContent present
+Signoff files: template_only, NOT real user signoffs

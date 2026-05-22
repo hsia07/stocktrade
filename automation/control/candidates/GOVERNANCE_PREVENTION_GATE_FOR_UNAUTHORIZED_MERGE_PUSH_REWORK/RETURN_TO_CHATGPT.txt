@@ -1,0 +1,35 @@
+round_id:
+  GOVERNANCE_PREVENTION_GATE_TEST_ALIGNMENT_AND_PRE_PUSH_SOURCE_REWORK_CANDIDATE
+
+task_type:
+  governance_prevention_gate_test_alignment_and_pre_push_source_rework_candidate
+
+formal_status_code:
+  candidate_ready_awaiting_manual_review
+
+base_head:
+  904f4604b85800194725ad3fe8abd3ee71ec45a9
+
+candidate_branch:
+  candidate/governance-prevention-gate-unauthorized-merge-push-rework
+
+recommendation:
+  AWAITING MANUAL REVIEW. DO NOT START R049.
+
+remaining blockers:
+  - Governance prevention gate requires manual review before merge
+  - Dedicated canonical repair CI workflow pending
+  - GitHub Actions latest CI result NOT_VERIFIABLE
+  - R014 formal trace_id / decision_chain / veto tracking incomplete
+  - R014 durable persistence not implemented
+  - R029/R030 full meeting table / trace_id / decision_chain / per-AI veto rework
+  - R047/R048 P1 backlog
+  - stocktrade gitlink / .gitmodules governance audit pending
+
+This round fixed:
+  - test_formal_return_to_chatgpt_passes: changed to non-governance round_id so it tests only RTCG formal body validation
+  - Added test_governance_candidate_without_signoff_fails_check_completeness integration test
+  - Verified pre-push.ps1 already has Get-ChangedSignoffFiles and Check-SignoffContent (no gap)
+  - All 27 governance prevention tests PASS
+  - candidate.diff regenerated as UTF-8 no BOM
+  - Signoff files in package: template_only — NOT real user signoffs
