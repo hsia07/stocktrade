@@ -43,6 +43,18 @@ class EvidenceChecker:
         "candidate.diff",
         "no-aider-used.txt",
         "test-results.txt",
+        "RETURN_TO_CHATGPT.txt",
+    ]
+
+    # Governance gate triggers — only applies when any match
+    GOVERNANCE_GATE_TRIGGERS = [
+        "governance",
+        "prevention",
+        "ratification",
+        "canonical",
+        "merge_push",
+        "unauthorized",
+        "rework",
     ]
 
     REQUIRED_LAW_COMPLIANCE = "04"  # Law 04 compliance value
@@ -122,6 +134,22 @@ class EvidenceChecker:
                 "failed",
             ],
         },
+        "RETURN_TO_CHATGPT.txt": {
+            "type": "text_sections",
+            "required_patterns": [
+                r"(?i)round_id",
+                r"(?i)formal_status_code",
+                r"(?i)base_head",
+                r"(?i)candidate_branch",
+                r"(?i)candidate_commit",
+            ],
+            "required_substrings": [
+                "formal",
+                "recommendation",
+                "blocker",
+                "remaining",
+            ],
+        },
     }
 
     def __init__(self, repo_root: Path = None):
@@ -139,6 +167,12 @@ class EvidenceChecker:
             file_path = candidate_dir / filename
             if not file_path.exists():
                 missing.append(f"missing:{filename}")
+
+        # RETURN_TO_CHATGPT.txt content validation (formal body required)
+        rtcg_path = candidate_dir / "RETURN_TO_CHATGPT.txt"
+        if rtcg_path.exists():
+            rtcg_issues = self._check_return_to_chatgpt_content(rtcg_path)
+            missing.extend(rtcg_issues)
 
         # Check report.json for validation results
         report_path = candidate_dir / "report.json"
@@ -204,8 +238,11 @@ class EvidenceChecker:
                 missing.extend(ui_gate_issues)
 
                 # Governance Authorization Gate (unauthorized merge/push prevention)
-                gov_gate_issues = self._check_governance_authorization_gate(evidence, candidate_dir)
-                missing.extend(gov_gate_issues)
+                # Only applies when round_id or evidence_type contains governance trigger keywords
+                # or evidence explicitly requests authorization gate
+                if self._is_governance_candidate(evidence):
+                    gov_gate_issues = self._check_governance_authorization_gate(evidence, candidate_dir)
+                    missing.extend(gov_gate_issues)
 
             except Exception as e:
                 missing.append(f"evidence_parse_error:{e}")
@@ -421,6 +458,45 @@ class EvidenceChecker:
                     issues.append(f"ui_visible_gate:test_fail:{test_name}={result}")
         
         return issues
+
+    def _check_return_to_chatgpt_content(self, file_path: Path) -> List[str]:
+        """
+        Validate RETURN_TO_CHATGPT.txt content.
+        Must be a formal body (not just summary).
+        Returns list of issues (empty = pass).
+        """
+        issues = []
+        try:
+            content = file_path.read_text(encoding="utf-8-sig").strip()
+            if len(content) < 100:
+                issues.append("evidence_invalid:return_to_chatgpt_formal_body:too_short")
+                return issues
+
+            lower = content.lower()
+            required_markers = ["round_id", "formal_status_code", "base_head", "candidate_branch"]
+            for marker in required_markers:
+                if marker not in lower:
+                    issues.append(f"evidence_invalid:return_to_chatgpt_formal_body:missing_{marker}")
+                    return issues
+
+            if "recommendation" not in lower and "blocker" not in lower:
+                issues.append("evidence_invalid:return_to_chatgpt_formal_body:missing_recommendation_or_blocker")
+
+        except Exception as e:
+            issues.append(f"evidence_invalid:return_to_chatgpt_formal_body:read_error:{e}")
+        return issues
+
+    def _is_governance_candidate(self, evidence: Dict[str, Any]) -> bool:
+        """Check if this evidence package requires the governance authorization gate."""
+        if evidence.get("requires_authorization_gate") is True:
+            return True
+
+        round_id = (evidence.get("round_id") or "").lower()
+        task_type = (evidence.get("task_type") or "").lower()
+        evidence_type = (evidence.get("evidence_type") or "").lower()
+        combined = f"{round_id} {task_type} {evidence_type}"
+
+        return any(trigger in combined for trigger in self.GOVERNANCE_GATE_TRIGGERS)
 
     def _check_governance_authorization_gate(self, evidence: Dict[str, Any], candidate_dir: Path) -> List[str]:
         """

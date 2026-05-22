@@ -1,12 +1,12 @@
 {
-  "round_id": "GOVERNANCE_PREVENTION_GATE_MANIFEST_SCOPE_CLEANUP_AND_REFREEZE_CANDIDATE",
+  "round_id": "GOVERNANCE_PREVENTION_GATE_TEST_ALIGNMENT_AND_PRE_PUSH_SOURCE_REWORK_CANDIDATE",
   "candidate_branch": "candidate/governance-prevention-gate-unauthorized-merge-push-rework",
   "canonical_branch": "work/canonical-mainline-repair-001",
   "canonical_head": "904f4604b85800194725ad3fe8abd3ee71ec45a9",
   "status": "completed",
-  "test_count": 20,
-  "tests_passed": 20,
-  "validators_passed": 8,
+  "test_count": 27,
+  "tests_passed": 27,
+  "validators_passed": 6,
   "evidence_complete": true,
   "governance_gate_enforced": true,
   "pre_push_signoff_enforcement": true,
@@ -19,6 +19,6 @@
   "negative_tests_include_incomplete_evidence": true,
   "negative_tests_include_missing_branch_or_hash": true,
   "positive_tests_include_authorized_complete": true,
-  "manifest_restored_to_base": true,
-  "diff_against_base_manifests_round_yaml": "NONE"
+  "test_alignment_source_methods_verified": true,
+  "pre_push_symbols_verified": true
 }

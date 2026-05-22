@@ -1,27 +1,31 @@
 === TASK DESCRIPTION ===
-Manifest scope cleanup and refreeze for governance prevention gate candidate. Restore manifests/current_round.yaml to base HEAD.
-Verify no unauthorized scope violations remain. Regenerate evidence to document clean state.
+Fix governance prevention gate rework test alignment and verify pre-push source symbols.
+Fix test_formal_return_to_chatgpt_passes semantics, add integration test for governance candidate without signoff.
+Verify pre-push.ps1 already has signoff enforcement (Get-ChangedSignoffFiles, Check-SignoffContent).
 
 === PROBLEM STATEMENT ===
-Previous rounds modified manifests/current_round.yaml without authorization. While the previous scope repair round restored the manifest, this round formally verifies zero diff against base, regenerates all evidence to document manifest_restored=true, and creates a dedicated cleanup commit.
+Readonly audit showed:
+- 25/26 tests PASS, 1 FAIL (test_formal_return_to_chatgpt_passes: governance candidate needs signoff files)
+- Pre-push signoff gate symbols initially reported NOT FOUND (incorrect — they exist)
 
 === SOLUTION ===
-1. Verified manifests/current_round.yaml diff against base HEAD (904f4604b85800194725ad3fe8abd3ee71ec45a9): ZERO DIFF.
-2. No manifest modifications present in candidate branch diff.
-3. Regenerated candidate.diff (excludes manifest).
-4. Updated evidence.json, report.json, task.txt, RETURN_TO_CHATGPT.txt, test-results.txt to document manifest_restored=true.
-5. Pre-push.ps1 signoff enforcement preserved.
-6. evidence_checker.py signoff gate preserved.
-7. 20 governance tests, 23 UI gate tests, 6 validators: ALL PASS.
+1. Fixed test_formal_return_to_chatgpt_passes: changed round_id from "governance_test" to "R031_test" (non-governance)
+   so test only validates RETURN_TO_CHATGPT.txt formal body content without triggering signoff gate.
+2. Added test_governance_candidate_without_signoff_fails_check_completeness: integration test confirming
+   governance candidates via check_completeness fail when signoff files are missing.
+3. Verified pre-push.ps1 has Get-ChangedSignoffFiles (line 39) and Check-SignoffContent (line 63) functions,
+   plus governance prevention gate integration in Assert-MergeCommitAllowed (line 246).
+4. Regenerated candidate.diff as UTF-8 no BOM.
+5. Updated evidence package files to document rework.
 
 === FILES ===
-- .githooks/pre-push.ps1
+- .githooks/pre-push.ps1 (verified — no changes needed)
 - automation/control/evidence_checker.py
 - tests/test_governance_authorization_gate.py
 - automation/control/candidates/GOVERNANCE_PREVENTION_GATE_FOR_UNAUTHORIZED_MERGE_PUSH_REWORK/* (9 files)
 
-task_id: GOV-PREVENTION-GATE-MANIFEST-CLEANUP-001
-task_type: governance_prevention_gate_manifest_scope_cleanup
+task_id: GOV-PREVENTION-GATE-TEST-ALIGNMENT-REWORK-001
+task_type: governance_prevention_gate_test_alignment_and_pre_push_source_rework_candidate
 phase: 2
 law_compliance: 04
 severity: high

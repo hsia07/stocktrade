@@ -1,3 +1,1 @@
-Push authorized for origin/work/canonical-mainline-repair-001
-at 904f4604b85800194725ad3fe8abd3ee71ec45a9 by user consent.
-Action: push. Authorization: confirmed.
+template_only: Push authorized for origin/work/canonical-mainline-repair-001 at 904f4604b85800194725ad3fe8abd3ee71ec45a9 by user consent. Template only — NOT a real user signoff.

@@ -1,29 +1,35 @@
-This is the formal RETURN_TO_CHATGPT for the governance prevention gate manifest scope cleanup and refreeze round.
+round_id:
+  GOVERNANCE_PREVENTION_GATE_TEST_ALIGNMENT_AND_PRE_PUSH_SOURCE_REWORK_CANDIDATE
 
-Current state:
-- manifests/current_round.yaml: RESTORED to base HEAD (904f460). Zero diff. manifest_modified=FALSE.
-- The previous candidate commit (9851b51) already excluded the manifest. This round formally verifies and documents the clean state.
-- pre-push.ps1: signoff enforcement active. Get-ChangedSignoffFiles + Check-SignoffContent integrated in Assert-MergeCommitAllowed.
-- evidence_checker.py: _check_governance_authorization_gate validates action type, target branch, 40hex hash, authorization text, minimum 20 chars.
-- tests/test_governance_authorization_gate.py: 20 tests covering all negative and positive cases. All PASS.
-- Signoff files in evidence package: merge_signoff.txt and push_signoff.txt. These contain action type, target branch, hash, and user authorization text — but are machine-generated, NOT real human signoffs. They serve as format validation targets, not actual authorization. Real authorization requires ChatGPT instruction + user approval during manual review.
-- No workflow, schema, server_v2, modules, stocktrade, .gitmodules modified.
+task_type:
+  governance_prevention_gate_test_alignment_and_pre_push_source_rework_candidate
 
-Prevention gate status: IMPLEMENTED AND MACHINE-ENFORCED
-  - evidence_checker.py: signoff content validation (action/branch/hash/auth text)
-  - pre-push.ps1: push-time signoff file enforcement on canonical pushes
-  - Tests: 20 negative/positive tests all PASS
-  - Manifest: restored to base, zero diff
+formal_status_code:
+  candidate_ready_awaiting_manual_review
 
-Blockers:
-- Governance prevention gate requires manual review before merge
-- Signoff files in package are format templates, NOT real user signoffs — real authorization required during review
-- Dedicated canonical repair CI workflow pending
-- GitHub Actions latest CI result NOT_VERIFIABLE
-- R014 trace_id / decision_chain / veto tracking incomplete
-- R014 durable persistence not implemented
-- R029/R030 full meeting table / page_id / decision_chain / per-AI veto rework
-- R047/R048 P1 backlog
-- stocktrade gitlink / .gitmodules governance audit pending
+base_head:
+  904f4604b85800194725ad3fe8abd3ee71ec45a9
 
-Recommendation: AWAITING MANUAL REVIEW. DO NOT START R049.
+candidate_branch:
+  candidate/governance-prevention-gate-unauthorized-merge-push-rework
+
+recommendation:
+  AWAITING MANUAL REVIEW. DO NOT START R049.
+
+remaining blockers:
+  - Governance prevention gate requires manual review before merge
+  - Dedicated canonical repair CI workflow pending
+  - GitHub Actions latest CI result NOT_VERIFIABLE
+  - R014 formal trace_id / decision_chain / veto tracking incomplete
+  - R014 durable persistence not implemented
+  - R029/R030 full meeting table / trace_id / decision_chain / per-AI veto rework
+  - R047/R048 P1 backlog
+  - stocktrade gitlink / .gitmodules governance audit pending
+
+This round fixed:
+  - test_formal_return_to_chatgpt_passes: changed to non-governance round_id so it tests only RTCG formal body validation
+  - Added test_governance_candidate_without_signoff_fails_check_completeness integration test
+  - Verified pre-push.ps1 already has Get-ChangedSignoffFiles and Check-SignoffContent (no gap)
+  - All 27 governance prevention tests PASS
+  - candidate.diff regenerated as UTF-8 no BOM
+  - Signoff files in package: template_only — NOT real user signoffs
