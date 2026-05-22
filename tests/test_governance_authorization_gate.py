@@ -1,5 +1,6 @@
 import pytest
 import json
+import subprocess
 from pathlib import Path
 import tempfile
 import shutil
@@ -8,20 +9,25 @@ import shutil
 from automation.control.evidence_checker import EvidenceChecker
 
 
+def _git_head():
+    return subprocess.run(["git", "rev-parse", "HEAD"], capture_output=True, text=True).stdout.strip()
+
+HEAD_HASH = _git_head()
+
 VALID_MERGE_SIGNOFF = (
     "Merge authorized for work/canonical-mainline-repair-001 "
-    "at 904f4604b85800194725ad3fe8abd3ee71ec45a9 by user consent"
+    f"at {HEAD_HASH} by user consent"
 )
 VALID_PUSH_SIGNOFF = (
     "Push authorized for work/canonical-mainline-repair-001 "
-    "at 904f4604b85800194725ad3fe8abd3ee71ec45a9 by user consent"
+    f"at {HEAD_HASH} by user consent"
 )
-CANONICAL_HASH = "904f4604b85800194725ad3fe8abd3ee71ec45a9"
+CANONICAL_HASH = HEAD_HASH
 
 FORMAL_RTCG = (
     "round_id: GOVERNANCE_PREVENTION_GATE_TEST\n"
     "formal_status_code: test\n"
-    "base_head: 904f4604b85800194725ad3fe8abd3ee71ec45a9\n"
+    f"base_head: {HEAD_HASH}\n"
     "candidate_branch: test\n"
     "candidate_commit: test\n"
     "recommendation: test candidate\n"
@@ -84,7 +90,7 @@ class TestGovernanceAuthorizationGate:
             "round_id": "R031_test",  # NOT a governance trigger word
         })
         (candidate_dir / "RETURN_TO_CHATGPT.txt").write_text(FORMAL_RTCG, encoding="utf-8")
-        checker.repo_root = Path(r"C:\Users\richa\OneDrive\桌面\stocktrade")
+        checker.repo_root = Path(".").resolve()
 
         assert not checker._is_governance_candidate(ev)
         complete, missing = checker.check_completeness(candidate_dir)
@@ -113,7 +119,7 @@ class TestGovernanceAuthorizationGate:
         _write_standard_evidence(candidate_dir, {
             "round_id": "governance_test", "requires_authorization_gate": True,
         })
-        checker.repo_root = Path(r"C:\Users\richa\OneDrive\桌面\stocktrade")
+        checker.repo_root = Path(".").resolve()
         complete, missing = checker.check_completeness(candidate_dir)
         assert not complete
         assert any("missing:RETURN_TO_CHATGPT.txt" in m for m in missing)
@@ -124,7 +130,7 @@ class TestGovernanceAuthorizationGate:
             "round_id": "governance_test", "requires_authorization_gate": True,
         })
         (candidate_dir / "RETURN_TO_CHATGPT.txt").write_text(SUMMARY_ONLY_RTCG, encoding="utf-8")
-        checker.repo_root = Path(r"C:\Users\richa\OneDrive\桌面\stocktrade")
+        checker.repo_root = Path(".").resolve()
         complete, missing = checker.check_completeness(candidate_dir)
         assert not complete
         assert any("evidence_invalid:return_to_chatgpt_formal_body" in m for m in missing)
@@ -135,7 +141,7 @@ class TestGovernanceAuthorizationGate:
             "round_id": "R031_test",  # NOT a governance trigger
         })
         (candidate_dir / "RETURN_TO_CHATGPT.txt").write_text(FORMAL_RTCG, encoding="utf-8")
-        checker.repo_root = Path(r"C:\Users\richa\OneDrive\桌面\stocktrade")
+        checker.repo_root = Path(".").resolve()
         complete, missing = checker.check_completeness(candidate_dir)
         assert complete, f"Expected complete, got missing: {missing}"
 
@@ -147,7 +153,7 @@ class TestGovernanceAuthorizationGate:
             "round_id": "governance_test", "requires_authorization_gate": True,
         })
         (candidate_dir / "RETURN_TO_CHATGPT.txt").write_text(FORMAL_RTCG, encoding="utf-8")
-        checker.repo_root = Path(r"C:\Users\richa\OneDrive\桌面\stocktrade")
+        checker.repo_root = Path(".").resolve()
         issues = checker._check_governance_authorization_gate(ev, candidate_dir)
         assert any("governance_gate:no_authorization_files_found" in i for i in issues)
 
@@ -157,7 +163,7 @@ class TestGovernanceAuthorizationGate:
             "round_id": "governance_test", "requires_authorization_gate": True,
         })
         (candidate_dir / "RETURN_TO_CHATGPT.txt").write_text(FORMAL_RTCG, encoding="utf-8")
-        checker.repo_root = Path(r"C:\Users\richa\OneDrive\桌面\stocktrade")
+        checker.repo_root = Path(".").resolve()
         complete, missing = checker.check_completeness(candidate_dir)
         assert not complete
         assert any("governance_gate:no_authorization_files_found" in m for m in missing)
@@ -273,7 +279,7 @@ class TestGovernanceAuthorizationGate:
         _write_standard_evidence(candidate_dir, {"round_id": "test"})
         (candidate_dir / "RETURN_TO_CHATGPT.txt").write_text(FORMAL_RTCG, encoding="utf-8")
         (candidate_dir / "candidate.diff").unlink(missing_ok=True)
-        checker.repo_root = Path(r"C:\Users\richa\OneDrive\桌面\stocktrade")
+        checker.repo_root = Path(".").resolve()
         complete, missing = checker.check_completeness(candidate_dir)
         assert not complete
         assert any("missing:candidate.diff" in m for m in missing)
@@ -282,7 +288,7 @@ class TestGovernanceAuthorizationGate:
         _write_standard_evidence(candidate_dir, {"round_id": "test"})
         (candidate_dir / "RETURN_TO_CHATGPT.txt").write_text(FORMAL_RTCG, encoding="utf-8")
         (candidate_dir / "test-results.txt").unlink(missing_ok=True)
-        checker.repo_root = Path(r"C:\Users\richa\OneDrive\桌面\stocktrade")
+        checker.repo_root = Path(".").resolve()
         complete, missing = checker.check_completeness(candidate_dir)
         assert not complete
         assert any("missing:test-results.txt" in m for m in missing)
@@ -291,7 +297,7 @@ class TestGovernanceAuthorizationGate:
         _write_standard_evidence(candidate_dir, {"round_id": "test"})
         (candidate_dir / "RETURN_TO_CHATGPT.txt").write_text(FORMAL_RTCG, encoding="utf-8")
         (candidate_dir / "evidence.json").unlink(missing_ok=True)
-        checker.repo_root = Path(r"C:\Users\richa\OneDrive\桌面\stocktrade")
+        checker.repo_root = Path(".").resolve()
         complete, missing = checker.check_completeness(candidate_dir)
         assert not complete
         assert any("missing:evidence.json" in m for m in missing)
@@ -307,7 +313,7 @@ class TestGovernanceAuthorizationGate:
         (candidate_dir / "RETURN_TO_CHATGPT.txt").write_text(FORMAL_RTCG, encoding="utf-8")
         (candidate_dir / "merge_signoff.txt").write_text(VALID_MERGE_SIGNOFF, encoding="utf-8")
         (candidate_dir / "push_signoff.txt").write_text(VALID_PUSH_SIGNOFF, encoding="utf-8")
-        checker.repo_root = Path(r"C:\Users\richa\OneDrive\桌面\stocktrade")
+        checker.repo_root = Path(".").resolve()
         complete, missing = checker.check_completeness(candidate_dir)
         assert complete, f"Expected complete, got missing: {missing}"
         assert not any("governance_gate" in m for m in missing)

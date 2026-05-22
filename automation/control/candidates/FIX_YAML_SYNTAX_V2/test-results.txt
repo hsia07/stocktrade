@@ -4,3 +4,6 @@ PASS: automation/control/candidates/DEDICATED_CANONICAL_REPAIR_CI_WORKFLOW_REWOR
 # All existing tests still pass
 python -m pytest tests/test_validate_canonical_repair_evidence.py -q
 23 passed in 0.19s
+# Governance tests (fix: dynamic HEAD hash, no hardcoded paths)
+python -m pytest tests/test_governance_authorization_gate.py -q
+27 passed in 3.23s
