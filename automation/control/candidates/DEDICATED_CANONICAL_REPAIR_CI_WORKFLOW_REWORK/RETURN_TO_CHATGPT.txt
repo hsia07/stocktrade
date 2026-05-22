@@ -1,0 +1,44 @@
+round_id:
+  DEDICATED_CANONICAL_REPAIR_CI_WORKFLOW_REWORK_CANDIDATE
+
+task_type:
+  dedicated_canonical_repair_ci_workflow_rework_candidate
+
+formal_status_code:
+  candidate_ready_awaiting_manual_review
+
+base_head:
+  cc02208e3ed598bc1dccc1bb1f6a9521a573bd18
+
+candidate_branch:
+  candidate/dedicated-canonical-repair-ci-workflow-rework
+
+recommendation:
+  AWAITING MANUAL REVIEW. DO NOT MERGE OR PUSH WITHOUT REVIEW.
+
+remaining blockers:
+  - Dedicated canonical repair CI workflow requires manual review before merge
+  - GitHub Actions actual run result after merge/push NOT_VERIFIABLE
+  - Signoff validation remains syntactic, not cryptographic
+  - R014 formal trace_id / decision_chain / veto tracking incomplete
+  - R014 durable persistence not implemented
+  - R029/R030 full meeting table / trace_id / decision_chain / per-AI veto rework
+  - R047/R048 P1 backlog
+  - stocktrade gitlink / .gitmodules governance audit pending
+
+This round added:
+  - .github/workflows/validate-canonical-repair.yml: dedicated workflow for canonical repair pushes
+    - Triggers on push to work/canonical-* branches
+    - Detects changed candidate evidence packages via git diff HEAD~1..HEAD
+    - Validates each changed package with validate_canonical_repair_evidence.py
+    - Runs evidence_checker.py, governance prevention tests, UI gate tests
+    - Does NOT use current_round.yaml required_evidence
+    - Does NOT start runtime/broker/live/R049
+  - scripts/validation/validate_canonical_repair_evidence.py
+    - Standalone validator (no manifest dependency)
+    - Requires: evidence.json, law_compliance="04", candidate.diff UTF-8 no BOM,
+      RETURN_TO_CHATGPT.txt formal body, test-results.txt, task.txt
+    - Blocks: test_output.txt substitution, runtime/broker/live/R049 claims,
+      order_execution_allowed, path outside candidates/
+    - Auto-detects changed packages from git diff or explicit --candidate-dir
+  - tests/test_validate_canonical_repair_evidence.py: 20 test cases

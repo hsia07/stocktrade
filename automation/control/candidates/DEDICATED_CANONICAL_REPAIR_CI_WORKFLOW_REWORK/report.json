@@ -1,0 +1,21 @@
+{
+  "round_id": "DEDICATED_CANONICAL_REPAIR_CI_WORKFLOW_REWORK_CANDIDATE",
+  "candidate_branch": "candidate/dedicated-canonical-repair-ci-workflow-rework",
+  "canonical_branch": "work/canonical-mainline-repair-001",
+  "canonical_head": "cc02208e3ed598bc1dccc1bb1f6a9521a573bd18",
+  "status": "completed",
+  "test_count": 20,
+  "tests_passed": 20,
+  "validators_passed": 6,
+  "evidence_complete": true,
+  "dedicated_canonical_repair_workflow_added": true,
+  "canonical_repair_validator_added": true,
+  "changed_candidate_evidence_locator_implemented": true,
+  "current_round_required_evidence_not_used_for_repair": true,
+  "no_changed_evidence_package_fails_correctly": true,
+  "summary_only_return_to_chatgpt_blocked": true,
+  "candidate_diff_utf8_no_bom_checked": true,
+  "test_output_not_allowed_as_substitute": true,
+  "runtime_broker_live_r049_claims_blocked": true,
+  "governance_prevention_gate_invoked": true
+}

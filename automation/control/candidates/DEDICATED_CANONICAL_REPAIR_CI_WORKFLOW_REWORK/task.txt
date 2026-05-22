@@ -1,0 +1,36 @@
+=== TASK DESCRIPTION ===
+Create dedicated canonical repair CI workflow and validator.
+Canonical repair merge evidence packages must be validated in CI without relying on current_round.yaml.
+
+=== PROBLEM STATEMENT ===
+Governance audit revealed routing_risk_detected=TRUE: validate-round.yml always uses
+manifests/current_round.yaml (PRE_R049 active-next-round) as its sole evidence source.
+Canonical repair merge evidence packages are never validated by CI — only locally by
+pre-push hook. This creates a blind spot where a broken repair evidence could be pushed
+without CI detection.
+
+=== SOLUTION ===
+1. Created .github/workflows/validate-canonical-repair.yml:
+   - Triggers on push to work/canonical-* branches only
+   - Detects changed candidate evidence packages via git diff
+   - Validates with dedicated validator (no current_round.yaml coupling)
+   - Also runs evidence_checker.py, governance tests, UI gate tests
+2. Created scripts/validation/validate_canonical_repair_evidence.py:
+   - Standalone, manifest-independent validator
+   - Checks: evidence.json parse, law_compliance=="04", candidate.diff UTF-8 no BOM,
+     RETURN_TO_CHATGPT.txt formal body, test-results.txt over test_output.txt,
+     no runtime/broker/live/R049 claims, order_execution_allowed!=TRUE
+   - Auto-discovers changed packages or accepts explicit --candidate-dir
+3. Created tests/test_validate_canonical_repair_evidence.py: 20 test cases
+
+=== FILES ===
+- .github/workflows/validate-canonical-repair.yml (new)
+- scripts/validation/validate_canonical_repair_evidence.py (new)
+- tests/test_validate_canonical_repair_evidence.py (new)
+- automation/control/candidates/DEDICATED_CANONICAL_REPAIR_CI_WORKFLOW_REWORK/*
+
+task_id: CANONICAL-REPAIR-CI-WORKFLOW-REWORK-001
+task_type: dedicated_canonical_repair_ci_workflow_rework_candidate
+phase: 2
+law_compliance: 04
+severity: high

@@ -1,0 +1,108 @@
+name: validate-canonical-repair
+
+on:
+  push:
+    branches:
+      - 'work/canonical-*'
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install pyyaml jsonschema
+
+      - name: Detect changed candidate evidence packages
+        id: detect
+        run: |
+          if git rev-parse HEAD~1 >/dev/null 2>&1; then
+            BASE="HEAD~1"
+          else
+            BASE="$(git rev-list --max-parents=0 HEAD)"
+          fi
+          DIRS=$(python -c "
+import subprocess, sys
+result = subprocess.run(['git', 'diff', '--name-only', '${BASE}..HEAD', '--', 'automation/control/candidates/'], capture_output=True, text=True)
+dirs = set()
+for line in result.stdout.strip().splitlines():
+    line = line.strip()
+    if not line:
+        continue
+    from pathlib import Path
+    p = Path(line)
+    parent = p.parent
+    while parent.name:
+        if (parent / 'evidence.json').exists():
+            dirs.add(parent.as_posix())
+            break
+        parent = parent.parent
+if dirs:
+    print(' '.join(sorted(dirs)))
+else:
+    print('NONE')
+          ")
+          echo "candidate_dirs=$DIRS" >> $GITHUB_OUTPUT
+
+      - name: Validate canonical repair evidence
+        run: |
+          DIRS="${{ steps.detect.outputs.candidate_dirs }}"
+          if [ "$DIRS" = "NONE" ]; then
+            echo "FAIL: no changed candidate evidence package found in diff"
+            echo "Checked: automation/control/candidates/"
+            exit 1
+          fi
+          for d in $DIRS; do
+            python scripts/validation/validate_canonical_repair_evidence.py --candidate-dir "$d"
+          done
+
+      - name: Evidence checker
+        run: |
+          DIRS="${{ steps.detect.outputs.candidate_dirs }}"
+          if [ "$DIRS" != "NONE" ]; then
+            for d in $DIRS; do
+              python -c "
+import sys
+sys.path.insert(0, '.')
+from automation.control.evidence_checker import EvidenceChecker
+from pathlib import Path
+checker = EvidenceChecker(repo_root=Path('.').resolve())
+ok, issues = checker.check_completeness(Path('$d'))
+if not ok:
+    print(f'FAIL: {d} evidence_checker issues: {issues}')
+    sys.exit(1)
+else:
+    print(f'PASS: {d} evidence_checker')
+"
+            done
+          fi
+
+      - name: Run governance prevention tests
+        run: |
+          python -m pytest tests/test_governance_authorization_gate.py -q
+
+      - name: Run UI gate tests
+        run: |
+          python -m pytest tests/test_check_required_evidence_ui_gate.py -q
+
+      - name: Validate round manifest
+        run: |
+          python scripts/validation/validate_round.py --manifest manifests/current_round.yaml
+
+      - name: Check forbidden changes
+        run: |
+          python scripts/validation/check_forbidden_changes.py --manifest manifests/current_round.yaml
+
+      - name: Check commit message
+        run: |
+          python scripts/validation/check_commit_message.py --manifest manifests/current_round.yaml

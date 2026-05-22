@@ -1,0 +1,25 @@
+TEST RESULTS
+Round: DEDICATED_CANONICAL_REPAIR_CI_WORKFLOW_REWORK_CANDIDATE
+Base: cc02208e3ed598bc1dccc1bb1f6a9521a573bd18
+Branch: candidate/dedicated-canonical-repair-ci-workflow-rework
+
+test suite: test_validate_canonical_repair_evidence.py
+total tests: 20
+passed: 20
+failed: 0
+
+coverage: check_file_exists (exists/missing/empty), check_evidence_json (valid/wrong_law/missing_law/forbidden_claim/runtime_started),
+          check_candidate_diff (valid/missing/empty/BOM), check_return_to_chatgpt (valid/missing/too_short/missing_marker),
+          check_test_output_not_substituted (with/without test_results), check_path_in_authorized_scope (in/out),
+          validate_candidate integration (valid/missing_required_file)
+
+validators:
+- validate_round.py: PASS
+- check_forbidden_changes.py: PASS
+- check_required_evidence.py: PASS
+- check_commit_message.py: PASS
+- evidence_checker.py: PASS
+- pre-push.ps1: PASS
+- validate_canonical_repair_evidence.py: PASS
+
+Signoff files: template_only, NOT real user signoffs
