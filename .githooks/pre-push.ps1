@@ -79,7 +79,7 @@ function Check-SignoffContent {
         $userAuthFound = $lines | Where-Object { $_ -match "(?i)(authorized|signoff|approve|consent)" }
         if (-not $userAuthFound) { return @("signoff_missing_user_authorization") }
 
-        $nonAuthMarkers = @("template_only", "test_fixture", "sample", "placeholder", "not real user signoff", "machine-generated", "machine generated")
+        $nonAuthMarkers = @("template_only", "test_fixture", "sample", "placeholder", "not real user signoff", "machine-generated", "machine generated", "ci_fix_automated", "agent-generated", "agent_generated", "opencode-agent", "automated_author", "system_generated")
         foreach ($marker in $nonAuthMarkers) {
             $markerFound = $lines | Where-Object { $_.ToLower() -match $marker }
             if ($markerFound) { return @("governance_gate:template_or_machine_signoff_blocked:$marker") }

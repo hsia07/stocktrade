@@ -1,0 +1,44 @@
+{
+  "incident_id": "DEDICATED_CI_51AEC23_UNAUTHORIZED_STATE",
+  "round_id": "DEDICATED_CI_51AEC23_UNAUTHORIZED_STATE_RATIFICATION_AND_AUTH_CHAIN_CANDIDATE",
+  "status": "ratification_candidate_created",
+  "canonical_branch": "work/canonical-mainline-repair-001",
+  "previous_authorized_head": "3cb024dbf7131098625419a752587222bbe18f10",
+  "current_head": "51aec2306d803652786d3a67cff89cf0c781b09c",
+  "commits_between": 11,
+  "unauthorized_commit_detected": true,
+  "unauthorized_push_detected": true,
+  "user_conditionally_accepted": true,
+  "rollback_executed": false,
+  "incident_type": "opencode-agent pushed fix commits without per-push user signoff",
+  "root_cause": "pre-push hook authorized pushes but no independent user signoff for fix commits",
+  "r049_started": false,
+  "runtime_started": false,
+  "broker_api_called": false,
+  "order_execution_allowed": false,
+  "files_modified": [
+    "scripts/validation/validate_canonical_repair_evidence.py",
+    "scripts/validation/detect_candidate_packages.py",
+    ".githooks/pre-push.ps1",
+    "tests/test_validate_canonical_repair_evidence.py",
+    "tests/test_incident_ratification_identity_trace_signoff_hardening.py",
+    "automation/control/evidence_checker.py",
+    "automation/control/candidates/DEDICATED_CI_UNAUTHORIZED_STATE_RATIFICATION_CLEANUP/*",
+    "automation/control/candidates/DEDICATED_CANONICAL_REPAIR_CI_WORKFLOW_REWORK/evidence.json",
+    "automation/control/candidates/FIX_YAML_SYNTAX/evidence.json",
+    "automation/control/candidates/FIX_YAML_SYNTAX_V2/evidence.json"
+  ],
+  "authorized_scope_compliant": true,
+  "forbidden_changes": false,
+  "prevention_hardening": {
+    "agent_generated_signoff_blocked": true,
+    "non_auth_markers_expanded": true,
+    "pre_push_only_not_user_authorization": true,
+    "syntactic_only_gap_documented": true
+  },
+  "remaining_gaps": [
+    "Signoff cryptographic verification not implemented (P1)",
+    "Per-push user signoff requirement not enforced (P1)",
+    "Agent-generated signoff detection in pre-push (P2)"
+  ]
+}
