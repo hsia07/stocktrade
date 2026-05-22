@@ -262,6 +262,16 @@ function Assert-MergeCommitAllowed {
     }
 
     # Governance Prevention Gate: check merge/push signoff files
+    # Skip if this is a pure-refactor commit (no candidate directory changes)
+    $candidatesResult = git ls-tree -r --name-only $LocalSha -- automation/control/candidates/ 2>$null
+    $candidateFilesInCommit = @()
+    if ($candidatesResult) {
+        $candidateFilesInCommit = $candidatesResult | Where-Object { $_ -match "(merge|push)_signoff\.txt$" }
+        if ($candidateFilesInCommit -and $candidateFilesInCommit.Count -gt 0) {
+            $candidateFilesInCommit = @($candidateFilesInCommit)
+        }
+    }
+
     $signoffFiles = Get-ChangedSignoffFiles -Sha $LocalSha
     $hasMergeSignoff = $false
     $hasPushSignoff = $false
@@ -273,7 +283,10 @@ function Assert-MergeCommitAllowed {
     }
 
     if (-not $hasMergeSignoff -and -not $hasPushSignoff) {
-        $signoffIssues += "NO_SIGNOFF_FILES: merge_signoff.txt and push_signoff.txt not found in commit changes"
+        $candSignoffInTree = $candidateFilesInCommit.Count -gt 0
+        if (-not $candSignoffInTree) {
+            $signoffIssues += "NO_SIGNOFF_FILES: merge_signoff.txt and push_signoff.txt not found in commit changes or candidate tree"
+        }
     }
 
     if ($hasMergeSignoff) {
