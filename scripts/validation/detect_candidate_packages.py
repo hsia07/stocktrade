@@ -34,23 +34,6 @@ def find_changed_candidate_dirs(base_ref: str = "HEAD~1", head_ref: str = "HEAD"
                     break
                 parent = parent.parent
 
-    merge_adds_result = subprocess.run(
-        ["git", "log", "--first-parent", "-m", "--name-only", "--pretty=format:", head_ref, "--", CANDIDATE_DIR_PREFIX],
-        capture_output=True, text=True, timeout=30,
-    )
-    if merge_adds_result.returncode == 0:
-        for line in merge_adds_result.stdout.strip().splitlines():
-            line = line.strip()
-            if not line:
-                continue
-            p = Path(line)
-            parent = p.parent
-            while parent.name:
-                if (parent / "evidence.json").exists():
-                    changed_dirs.add(parent)
-                    break
-                parent = parent.parent
-
     return sorted(changed_dirs)
 
 
