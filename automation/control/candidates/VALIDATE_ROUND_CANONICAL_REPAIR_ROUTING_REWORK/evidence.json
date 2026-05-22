@@ -1,0 +1,32 @@
+{
+  "candidate_name": "VALIDATE_ROUND_CANONICAL_REPAIR_ROUTING_REWORK",
+  "candidate_commit": "TO_BE_CREATED",
+  "law_compliance": "04",
+  "round_id": "VALIDATE_ROUND_CANONICAL_REPAIR_ROUTING_REWORK_CANDIDATE",
+  "formal_status_code": "candidate_ready_awaiting_manual_review",
+  "base_head": "f072bd8a53ea2c5a7f000e1b50ebe884fa3cf4b9",
+  "canonical_branch": "work/canonical-mainline-repair-001",
+  "github_actions_failure_observed": "validate-round workflow failure on f072bd8a commit",
+  "github_actions_failure_root_cause": "check_commit_message.py is_merge_commit() failed to detect no-ff merge commit (canonical repair ratification) because git log --merges --max-count=1 only finds merge commits recorded in reflog, not all commits. Canonical repair no-ff merge 573e8bd was not a merge commit in the reflog sense, so is_merge_commit() returned False, causing PRE_R049 round-id gate to block the repair merge.",
+  "fix_applied": "is_merge_commit() in check_commit_message.py now uses 3-layer detection: (1) git log --merges --max-count=1, (2) git rev-parse HEAD^1 + HEAD^2 to detect two-parent commits, (3) git cat-file -t + git rev-list --parents to detect non-first-parent commits. All detection methods run independently; any True returns True. Active round commit message gate (PRE_R049) preserved for non-merge commits.",
+  "validate_round_current_round_yaml_coupled": true,
+  "canonical_repair_routing_gap_fixed": true,
+  "chosen_solution": "commit_message_context_split",
+  "active_round_round_id_gate_preserved": true,
+  "canonical_repair_merge_not_blocked_by_PRE_R049": true,
+  "normal_commit_cannot_bypass_round_id_gate": true,
+  "validate_canonical_repair_workflow_required": true,
+  "validate_canonical_repair_evidence_still_enforced": true,
+  "current_round_yaml_modified": false,
+  "r049_started": false,
+  "runtime_started": false,
+  "r047_started": false,
+  "r048_started": false,
+  "r031_started": false,
+  "broker_api_called": false,
+  "order_execution_allowed": false,
+  "final_recommendation": "DO_NOT_START_R049",
+  "files_modified": [
+    "scripts/validation/check_commit_message.py (is_merge_commit() 3-layer detection fix)"
+  ]
+}

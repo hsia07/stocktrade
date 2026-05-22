@@ -1,0 +1,23 @@
+VALIDATE_ROUND_CANONICAL_REPAIR_ROUTING_REWORK
+=============================================
+
+Task: Fix validate-round workflow failure on canonical repair / ratification merge.
+
+Root Cause: GitHub Actions validate-round failure on f072bd8a was caused by check_commit_message.py is_merge_commit() failing to detect the canonical repair no-ff merge commit. The original function only used git log --merges --max-count=1, which doesn't detect all merge commits, causing PRE_R049 round-id gate to incorrectly block the repair merge.
+
+Fix Applied: is_merge_commit() in scripts/validation/check_commit_message.py now uses 3-layer detection:
+  Layer 1: git log --merges --max-count=1 (original method)
+  Layer 2: git rev-parse HEAD^1 + HEAD^2 (detect two-parent commits)
+  Layer 3: git cat-file -t + git rev-list --parents (detect non-first-parent commits)
+  Any layer returning True = merge commit detected → round-id check skipped.
+
+Key Principles Preserved:
+  - Active round commits (non-merge) still require PRE_R049 round_id in commit message
+  - Normal non-repair commits cannot bypass round_id gate by falsely claiming merge
+  - Canonical repair merges are handled by validate-canonical-repair.yml, not validate-round
+  - current_round.yaml NOT modified
+
+round_id: VALIDATE_ROUND_CANONICAL_REPAIR_ROUTING_REWORK_CANDIDATE
+formal_status_code: candidate_ready_awaiting_manual_review
+base_head: f072bd8a53ea2c5a7f000e1b50ebe884fa3cf4b9
+final_recommendation: DO_NOT_START_R049

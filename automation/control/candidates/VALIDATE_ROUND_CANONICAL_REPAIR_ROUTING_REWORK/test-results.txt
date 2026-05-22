@@ -1,0 +1,14 @@
+test_results:
+  test_meta_ratification_routing.py: 8 passed
+  test_github_actions_573e8bd_unauthorized_state_ratification.py: 11 passed
+  test_validate_canonical_repair_evidence.py: 20 passed
+  test_dedicated_ci_51aec23_ratification.py: 26 passed
+  test_governance_authorization_gate.py: 27 passed (3 non-blocking threading warnings)
+  test_check_required_evidence_ui_gate.py: 30 passed
+  test_incident_ratification_identity_trace_signoff_hardening.py: 8 passed
+  local validators: all PASS
+  check_commit_message fix: PASS on f072bd8a merge commit
+
+test_count: 130
+tests_passed: 130
+blocking_failures: 0
