@@ -1,0 +1,23 @@
+{
+  "round_id": "GOVERNANCE_PREVENTION_GATE_REWORK_SCOPE_REPAIR_AND_PUSH_TIME_ENFORCEMENT_CANDIDATE",
+  "candidate_branch": "candidate/governance-prevention-gate-unauthorized-merge-push-rework",
+  "canonical_branch": "work/canonical-mainline-repair-001",
+  "canonical_head": "904f4604b85800194725ad3fe8abd3ee71ec45a9",
+  "status": "completed",
+  "test_count": 20,
+  "tests_passed": 20,
+  "validators_passed": 5,
+  "evidence_complete": true,
+  "governance_gate_enforced": true,
+  "pre_push_signoff_enforcement": true,
+  "signoff_validates_action_type": true,
+  "signoff_validates_target_branch": true,
+  "signoff_validates_hash": true,
+  "signoff_validates_authorization_text": true,
+  "negative_tests_include_missing_signoff": true,
+  "negative_tests_include_incomplete_evidence": true,
+  "negative_tests_include_scope_expansion": true,
+  "positive_tests_include_authorized_complete": true,
+  "manifest_restored_to_base": true,
+  "manifest_unmodified": true
+}

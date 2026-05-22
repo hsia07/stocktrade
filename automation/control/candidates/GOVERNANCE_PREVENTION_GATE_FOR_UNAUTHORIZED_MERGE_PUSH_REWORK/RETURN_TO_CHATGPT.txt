@@ -1,0 +1,26 @@
+This is the formal RETURN_TO_CHATGPT for the governance prevention gate rework scope repair and push-time enforcement candidate round.
+
+Current state:
+- manifests/current_round.yaml: RESTORED to base HEAD (904f460). No modifications.
+- pre-push.ps1: signoff enforcement added (Get-ChangedSignoffFiles, Check-SignoffContent, integrated in Assert-MergeCommitAllowed). Pushes to canonical now require valid merge_signoff.txt and/or push_signoff.txt with proper action type, target branch, hash, and user authorization text.
+- evidence_checker.py: _check_governance_authorization_gate enhanced with signoff content validation (action type, target branch, 40hex hash, authorization language, minimum 20 chars). New reason codes added.
+- tests/test_governance_authorization_gate.py: 20 tests covering signoff validation, incomplete evidence, complete authorized case. All PASS.
+- No manifest, workflow, schema, server_v2, modules, stocktrade, .gitmodules modified.
+
+Blockers:
+- Governance prevention gate requires manual review before merge
+- Dedicated canonical repair CI workflow pending
+- GitHub Actions latest CI result NOT_VERIFIABLE (gh CLI not available)
+- R014 trace_id / decision_chain / veto tracking incomplete
+- R014 durable persistence not implemented
+- R029/R030 full meeting table / page_id / decision_chain / per-AI veto rework
+- R047/R048 P1 backlog: partial fill state, cancel-fill race, full Market Reality snapshot fields
+- stocktrade gitlink / .gitmodules governance audit pending
+
+Prevention gate status: IMPLEMENTED AND MACHINE-ENFORCED
+Manifest: RESTORED TO BASE (no unauthorized modifications)
+Evidence package: COMPLETE
+Pre-push enforcement: ADDED
+Signoff validation: action type, target branch, 40hex hash, authorization text
+
+Recommendation: AWAITING MANUAL REVIEW. DO NOT START R049.

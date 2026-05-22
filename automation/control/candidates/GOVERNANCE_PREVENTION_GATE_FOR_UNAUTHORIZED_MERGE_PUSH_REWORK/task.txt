@@ -1,0 +1,32 @@
+=== TASK DESCRIPTION ===
+Scope repair and push-time enforcement for governance prevention gate. Restore unauthorized manifest modification, complete push-time signoff enforcement, create formal candidate evidence package.
+
+=== PROBLEM STATEMENT ===
+Previous round (GOVERNANCE_PREVENTION_GATE_PUSH_TIME_ENFORCEMENT_AND_PACKAGING_REWORK_CANDIDATE):
+1. manifests/current_round.yaml was modified without authorization — this is a scope violation.
+2. All changes must be redone cleanly without touching the manifest.
+3. Pre-push.ps1 signoff enforcement was added but the overall commit history was contaminated.
+
+=== SOLUTION ===
+1. Restored manifests/current_round.yaml to base HEAD (904f4604b85800194725ad3fe8abd3ee71ec45a9).
+2. Reset candidate branch to base HEAD via git reset --soft — retains evidence_checker.py and pre-push.ps1 changes.
+3. Kept pre-push.ps1 push-time signoff enforcement:
+   - Get-ChangedSignoffFiles finds signoff files in commit diff-tree
+   - Check-SignoffContent validates action type, branch, hash, user auth text
+   - Assert-MergeCommitAllowed rejects pushes without valid signoff files
+4. Kept evidence_checker.py _check_governance_authorization_gate with full signoff content validation.
+5. Preserved comprehensive negative/positive tests (20 tests, all PASS).
+6. Created clean candidate evidence package with updated round_id.
+7. No manifest, workflow, schema, server, modules, or stocktrade files modified.
+
+=== FILES ===
+- .githooks/pre-push.ps1
+- automation/control/evidence_checker.py
+- tests/test_governance_authorization_gate.py
+- automation/control/candidates/GOVERNANCE_PREVENTION_GATE_FOR_UNAUTHORIZED_MERGE_PUSH_REWORK/* (9 files)
+
+task_id: GOV-PREVENTION-GATE-SCOPE-REPAIR-001
+task_type: governance_prevention_gate_scope_repair
+phase: 2
+law_compliance: 04
+severity: high

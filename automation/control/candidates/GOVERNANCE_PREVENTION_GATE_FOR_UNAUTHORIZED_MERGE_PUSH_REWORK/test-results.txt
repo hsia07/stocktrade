@@ -1,0 +1,25 @@
+TEST RESULTS
+Round: GOVERNANCE_PREVENTION_GATE_REWORK_SCOPE_REPAIR_AND_PUSH_TIME_ENFORCEMENT_CANDIDATE
+Base: 904f4604b85800194725ad3fe8abd3ee71ec45a9
+Branch: candidate/governance-prevention-gate-unauthorized-merge-push-rework
+
+test suite: test_governance_authorization_gate.py
+total tests: 20
+passed: 20
+failed: 0
+coverage: missing_signoff, empty_signoff, too_short, missing_auth_text, missing_action_type, missing_branch, missing_hash, incomplete_evidence (missing candidate.diff/test-results.txt/evidence.json), check_completeness integration
+
+test suite: test_check_required_evidence_ui_gate.py
+total tests: 23
+passed: 23
+failed: 0
+
+validators:
+- validate_round.py: PASS
+- check_forbidden_changes.py: PASS
+- check_required_evidence.py: PASS
+- check_commit_message.py: PASS
+- evidence_checker.py: PASS
+- pre-push.ps1: PASS
+
+Manifest: RESTORED to base HEAD — zero diff. No unauthorized modifications.

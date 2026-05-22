@@ -36,6 +36,17 @@ function Get-ChangedEvidenceFiles {
     return @($evidenceFiles)
 }
 
+function Get-ChangedSignoffFiles {
+    param([string]$Sha)
+    if ($Sha -eq "0000000000000000000000000000000000000") { return @() }
+    $files = git diff-tree --no-commit-id -r -m --diff-filter=AM --name-only $Sha 2>$null
+    if (-not $files) { return @() }
+    $signoffFiles = $files | Where-Object { $_ -match "(merge|push)_signoff\.txt$" }
+    if (-not $signoffFiles) { return @() }
+    if ($signoffFiles -is [array]) { return $signoffFiles }
+    return @($signoffFiles)
+}
+
 function Check-Law04Compliance {
     param([string]$Sha, [string]$EvidencePath)
     try {
@@ -46,6 +57,32 @@ function Check-Law04Compliance {
     }
     catch {
         return $false
+    }
+}
+
+function Check-SignoffContent {
+    param([string]$Sha, [string]$SignoffPath, [string]$ExpectedAction)
+    try {
+        $content = git show $("$($Sha):$($SignoffPath)") 2>$null
+        if (-not $content) { return @("signoff_file_empty_or_missing") }
+        $lines = @($content -split "`n")
+
+        $actionFound = $lines | Where-Object { $_ -match "(?i)$ExpectedAction" }
+        if (-not $actionFound) { return @("signoff_missing_action_type:$ExpectedAction") }
+
+        $branchFound = $lines | Where-Object { $_ -match "(?i)(work/canonical|origin/work/canonical)" }
+        if (-not $branchFound) { return @("signoff_missing_target_branch") }
+
+        $hashFound = $lines | Where-Object { $_ -match "([0-9a-fA-F]{40})" }
+        if (-not $hashFound) { return @("signoff_missing_authorized_hash") }
+
+        $userAuthFound = $lines | Where-Object { $_ -match "(?i)(authorized|signoff|approve|consent)" }
+        if (-not $userAuthFound) { return @("signoff_missing_user_authorization") }
+
+        return @()
+    }
+    catch {
+        return @("signoff_check_error:$($_.Exception.Message)")
     }
 }
 
@@ -205,12 +242,54 @@ function Assert-MergeCommitAllowed {
     }
 
     Write-Host "PASS: Law 04 compliance verified (law_compliance: 04 in all evidence.json files changed in this commit)"
-    Write-Host "PASS: merge authorization evidence verified"
-    Write-Host "PASS: all branch workflow checks passed"
+
+    # Governance Prevention Gate: check merge/push signoff files
+    $signoffFiles = Get-ChangedSignoffFiles -Sha $LocalSha
+    $hasMergeSignoff = $false
+    $hasPushSignoff = $false
+    $signoffIssues = @()
+
+    foreach ($sf in $signoffFiles) {
+        if ($sf -match "merge_signoff") { $hasMergeSignoff = $true }
+        if ($sf -match "push_signoff") { $hasPushSignoff = $true }
+    }
+
+    if (-not $hasMergeSignoff -and -not $hasPushSignoff) {
+        $signoffIssues += "NO_SIGNOFF_FILES: merge_signoff.txt and push_signoff.txt not found in commit changes"
+    }
+
+    if ($hasMergeSignoff) {
+        $mergeSf = $signoffFiles | Where-Object { $_ -match "merge_signoff" } | Select-Object -First 1
+        $mergeIssues = Check-SignoffContent -Sha $LocalSha -SignoffPath $mergeSf -ExpectedAction "merge"
+        foreach ($issue in $mergeIssues) {
+            $signoffIssues += "merge_signoff:$issue"
+        }
+    }
+
+    if ($hasPushSignoff) {
+        $pushSf = $signoffFiles | Where-Object { $_ -match "push_signoff" } | Select-Object -First 1
+        $pushIssues = Check-SignoffContent -Sha $LocalSha -SignoffPath $pushSf -ExpectedAction "push"
+        foreach ($issue in $pushIssues) {
+            $signoffIssues += "push_signoff:$issue"
+        }
+    }
+
+    if ($signoffIssues.Count -gt 0) {
+        Write-Host "ERROR: GOVERNANCE PREVENTION GATE FAILED:"
+        foreach ($issue in $signoffIssues) {
+            Write-Host "  ERROR: $issue"
+        }
+        Write-Host "ERROR: Push to canonical requires authorized merge_signoff.txt and/or push_signoff.txt"
+        Write-Host "ERROR: Signoff must contain: action type (merge/push), target branch, hash, user authorization text"
+        exit 1
+    }
+
+    Write-Host "PASS: governance prevention gate: signoff authorization verified"
 
     # Enhanced checks integrated into merge commit validation
     Check-DirtyTree
     Check-RuntimeGuard
+    Check-UIVisibleGate -Sha $LocalSha
     Check-ManifestStateConsistency
 
     Write-Host "[pre-push] ok"

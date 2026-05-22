@@ -202,7 +202,11 @@ class EvidenceChecker:
                 # UI_VISIBLE_ROUND_ACCEPTANCE_GATE check (Law 04 Chapter 22)
                 ui_gate_issues = self.check_ui_visible_gate(evidence)
                 missing.extend(ui_gate_issues)
-                
+
+                # Governance Authorization Gate (unauthorized merge/push prevention)
+                gov_gate_issues = self._check_governance_authorization_gate(evidence, candidate_dir)
+                missing.extend(gov_gate_issues)
+
             except Exception as e:
                 missing.append(f"evidence_parse_error:{e}")
         else:
@@ -416,6 +420,65 @@ class EvidenceChecker:
                 if result != "PASS":
                     issues.append(f"ui_visible_gate:test_fail:{test_name}={result}")
         
+        return issues
+
+    def _check_governance_authorization_gate(self, evidence: Dict[str, Any], candidate_dir: Path) -> List[str]:
+        """
+        Check that merge/push authorization is properly evidenced.
+        Returns list of issues (empty = pass).
+
+        Each signoff must contain:
+          - action type (merge or push)
+          - target branch (work/canonical-*)
+          - authorized 40hex hash
+          - explicit user authorization language
+        """
+        import re
+
+        issues = []
+        candidate_dir = Path(candidate_dir)
+
+        merge_signoff = candidate_dir / "merge_signoff.txt"
+        push_signoff = candidate_dir / "push_signoff.txt"
+
+        has_merge_signoff = merge_signoff.exists() and merge_signoff.stat().st_size > 0
+        has_push_signoff = push_signoff.exists() and push_signoff.stat().st_size > 0
+
+        if not has_merge_signoff and not has_push_signoff:
+            issues.append("governance_gate:no_authorization_files_found")
+
+        def _validate_signoff(file_path: Path, action_type: str) -> List[str]:
+            sig_issues = []
+            try:
+                content = file_path.read_text(encoding="utf-8-sig").strip()
+                if len(content) < 20:
+                    sig_issues.append(f"governance_gate:{action_type}_signoff_too_short")
+                    return sig_issues
+
+                lower = content.lower()
+
+                if action_type not in lower:
+                    sig_issues.append(f"governance_gate:{action_type}_signoff_missing_action_type")
+
+                if not re.search(r'(?:work/canonical|origin/work/canonical)', lower):
+                    sig_issues.append(f"governance_gate:{action_type}_signoff_missing_target_branch")
+
+                if not re.search(r'[0-9a-fA-F]{40}', content):
+                    sig_issues.append(f"governance_gate:{action_type}_signoff_missing_hash")
+
+                if "authorized" not in lower and "signoff" not in lower and "consent" not in lower:
+                    sig_issues.append(f"governance_gate:{action_type}_signoff_missing_authorization_text")
+
+            except Exception as e:
+                sig_issues.append(f"governance_gate:{action_type}_signoff_read_error:{e}")
+            return sig_issues
+
+        if has_merge_signoff:
+            issues.extend(_validate_signoff(merge_signoff, "merge"))
+
+        if has_push_signoff:
+            issues.extend(_validate_signoff(push_signoff, "push"))
+
         return issues
 
     # Merge/Push Separation Enforcement (Law-0416 Phase 3)

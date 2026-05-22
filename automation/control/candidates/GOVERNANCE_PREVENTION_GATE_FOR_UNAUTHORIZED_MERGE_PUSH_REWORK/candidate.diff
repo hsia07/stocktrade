@@ -1,0 +1,195 @@
+﻿diff --git a/.githooks/pre-push.ps1 b/.githooks/pre-push.ps1
+index 0f063e3..15b5b76 100644
+--- a/.githooks/pre-push.ps1
++++ b/.githooks/pre-push.ps1
+@@ -36,6 +36,17 @@ function Get-ChangedEvidenceFiles {
+     return @($evidenceFiles)
+ }
+ 
++function Get-ChangedSignoffFiles {
++    param([string]$Sha)
++    if ($Sha -eq "0000000000000000000000000000000000000") { return @() }
++    $files = git diff-tree --no-commit-id -r -m --diff-filter=AM --name-only $Sha 2>$null
++    if (-not $files) { return @() }
++    $signoffFiles = $files | Where-Object { $_ -match "(merge|push)_signoff\.txt$" }
++    if (-not $signoffFiles) { return @() }
++    if ($signoffFiles -is [array]) { return $signoffFiles }
++    return @($signoffFiles)
++}
++
+ function Check-Law04Compliance {
+     param([string]$Sha, [string]$EvidencePath)
+     try {
+@@ -49,6 +60,32 @@ function Check-Law04Compliance {
+     }
+ }
+ 
++function Check-SignoffContent {
++    param([string]$Sha, [string]$SignoffPath, [string]$ExpectedAction)
++    try {
++        $content = git show $("$($Sha):$($SignoffPath)") 2>$null
++        if (-not $content) { return @("signoff_file_empty_or_missing") }
++        $lines = @($content -split "`n")
++
++        $actionFound = $lines | Where-Object { $_ -match "(?i)$ExpectedAction" }
++        if (-not $actionFound) { return @("signoff_missing_action_type:$ExpectedAction") }
++
++        $branchFound = $lines | Where-Object { $_ -match "(?i)(work/canonical|origin/work/canonical)" }
++        if (-not $branchFound) { return @("signoff_missing_target_branch") }
++
++        $hashFound = $lines | Where-Object { $_ -match "([0-9a-fA-F]{40})" }
++        if (-not $hashFound) { return @("signoff_missing_authorized_hash") }
++
++        $userAuthFound = $lines | Where-Object { $_ -match "(?i)(authorized|signoff|approve|consent)" }
++        if (-not $userAuthFound) { return @("signoff_missing_user_authorization") }
++
++        return @()
++    }
++    catch {
++        return @("signoff_check_error:$($_.Exception.Message)")
++    }
++}
++
+ function Check-DirtyTree {
+     $status = git status --porcelain 2>$null
+     if ($status) {
+@@ -205,12 +242,54 @@ function Assert-MergeCommitAllowed {
+     }
+ 
+     Write-Host "PASS: Law 04 compliance verified (law_compliance: 04 in all evidence.json files changed in this commit)"
+-    Write-Host "PASS: merge authorization evidence verified"
+-    Write-Host "PASS: all branch workflow checks passed"
++
++    # Governance Prevention Gate: check merge/push signoff files
++    $signoffFiles = Get-ChangedSignoffFiles -Sha $LocalSha
++    $hasMergeSignoff = $false
++    $hasPushSignoff = $false
++    $signoffIssues = @()
++
++    foreach ($sf in $signoffFiles) {
++        if ($sf -match "merge_signoff") { $hasMergeSignoff = $true }
++        if ($sf -match "push_signoff") { $hasPushSignoff = $true }
++    }
++
++    if (-not $hasMergeSignoff -and -not $hasPushSignoff) {
++        $signoffIssues += "NO_SIGNOFF_FILES: merge_signoff.txt and push_signoff.txt not found in commit changes"
++    }
++
++    if ($hasMergeSignoff) {
++        $mergeSf = $signoffFiles | Where-Object { $_ -match "merge_signoff" } | Select-Object -First 1
++        $mergeIssues = Check-SignoffContent -Sha $LocalSha -SignoffPath $mergeSf -ExpectedAction "merge"
++        foreach ($issue in $mergeIssues) {
++            $signoffIssues += "merge_signoff:$issue"
++        }
++    }
++
++    if ($hasPushSignoff) {
++        $pushSf = $signoffFiles | Where-Object { $_ -match "push_signoff" } | Select-Object -First 1
++        $pushIssues = Check-SignoffContent -Sha $LocalSha -SignoffPath $pushSf -ExpectedAction "push"
++        foreach ($issue in $pushIssues) {
++            $signoffIssues += "push_signoff:$issue"
++        }
++    }
++
++    if ($signoffIssues.Count -gt 0) {
++        Write-Host "ERROR: GOVERNANCE PREVENTION GATE FAILED:"
++        foreach ($issue in $signoffIssues) {
++            Write-Host "  ERROR: $issue"
++        }
++        Write-Host "ERROR: Push to canonical requires authorized merge_signoff.txt and/or push_signoff.txt"
++        Write-Host "ERROR: Signoff must contain: action type (merge/push), target branch, hash, user authorization text"
++        exit 1
++    }
++
++    Write-Host "PASS: governance prevention gate: signoff authorization verified"
+ 
+     # Enhanced checks integrated into merge commit validation
+     Check-DirtyTree
+     Check-RuntimeGuard
++    Check-UIVisibleGate -Sha $LocalSha
+     Check-ManifestStateConsistency
+ 
+     Write-Host "[pre-push] ok"
+diff --git a/automation/control/evidence_checker.py b/automation/control/evidence_checker.py
+index 67819a6..5b22be7 100644
+--- a/automation/control/evidence_checker.py
++++ b/automation/control/evidence_checker.py
+@@ -202,7 +202,11 @@ class EvidenceChecker:
+                 # UI_VISIBLE_ROUND_ACCEPTANCE_GATE check (Law 04 Chapter 22)
+                 ui_gate_issues = self.check_ui_visible_gate(evidence)
+                 missing.extend(ui_gate_issues)
+-                
++
++                # Governance Authorization Gate (unauthorized merge/push prevention)
++                gov_gate_issues = self._check_governance_authorization_gate(evidence, candidate_dir)
++                missing.extend(gov_gate_issues)
++
+             except Exception as e:
+                 missing.append(f"evidence_parse_error:{e}")
+         else:
+@@ -418,6 +422,65 @@ class EvidenceChecker:
+         
+         return issues
+ 
++    def _check_governance_authorization_gate(self, evidence: Dict[str, Any], candidate_dir: Path) -> List[str]:
++        """
++        Check that merge/push authorization is properly evidenced.
++        Returns list of issues (empty = pass).
++
++        Each signoff must contain:
++          - action type (merge or push)
++          - target branch (work/canonical-*)
++          - authorized 40hex hash
++          - explicit user authorization language
++        """
++        import re
++
++        issues = []
++        candidate_dir = Path(candidate_dir)
++
++        merge_signoff = candidate_dir / "merge_signoff.txt"
++        push_signoff = candidate_dir / "push_signoff.txt"
++
++        has_merge_signoff = merge_signoff.exists() and merge_signoff.stat().st_size > 0
++        has_push_signoff = push_signoff.exists() and push_signoff.stat().st_size > 0
++
++        if not has_merge_signoff and not has_push_signoff:
++            issues.append("governance_gate:no_authorization_files_found")
++
++        def _validate_signoff(file_path: Path, action_type: str) -> List[str]:
++            sig_issues = []
++            try:
++                content = file_path.read_text(encoding="utf-8-sig").strip()
++                if len(content) < 20:
++                    sig_issues.append(f"governance_gate:{action_type}_signoff_too_short")
++                    return sig_issues
++
++                lower = content.lower()
++
++                if action_type not in lower:
++                    sig_issues.append(f"governance_gate:{action_type}_signoff_missing_action_type")
++
++                if not re.search(r'(?:work/canonical|origin/work/canonical)', lower):
++                    sig_issues.append(f"governance_gate:{action_type}_signoff_missing_target_branch")
++
++                if not re.search(r'[0-9a-fA-F]{40}', content):
++                    sig_issues.append(f"governance_gate:{action_type}_signoff_missing_hash")
++
++                if "authorized" not in lower and "signoff" not in lower and "consent" not in lower:
++                    sig_issues.append(f"governance_gate:{action_type}_signoff_missing_authorization_text")
++
++            except Exception as e:
++                sig_issues.append(f"governance_gate:{action_type}_signoff_read_error:{e}")
++            return sig_issues
++
++        if has_merge_signoff:
++            issues.extend(_validate_signoff(merge_signoff, "merge"))
++
++        if has_push_signoff:
++            issues.extend(_validate_signoff(push_signoff, "push"))
++
++        return issues
++
+     # Merge/Push Separation Enforcement (Law-0416 Phase 3)
+     MERGE_AUTHORIZED_INDICATORS = [
+         "merge_decision_ready",
