@@ -1,0 +1,36 @@
+GITHUB_ACTIONS_AD529DEA_META_RATIFICATION_EVIDENCE_ROUTING_REWORK
+=============================================================
+
+Task: Fix GitHub Actions Step 7 failure for meta-ratification packages.
+
+Incident: GitHub Actions run #26302656903 on commit ad529dea (validate-canonical-repair
+workflow) failed at Step 7 (Evidence checker). check_evidence_package.py returned
+governance_gate:no_authorization_files_found for DEDICATED_CI_51AEC23_UNAUTHORIZED_STATE_RATIFICATION.
+
+Root Cause: The 51aec23 RATIFICATION package is a meta-ratification about accepting
+an existing remote state (51aec23). It contains user-conditional-acceptance.txt
+(verbatim user text) but not merge_signoff.txt/push_signoff.txt. The evidence_checker.py
+_check_governance_authorization_gate() did not distinguish between normal governance
+packages (which require signoff files) and meta-ratification packages (which are
+authorized by user conditional acceptance).
+
+Fix Applied: _check_governance_authorization_gate() in evidence_checker.py now
+detects meta-ratification packages by checking:
+  - evidence.json has user_conditionally_accepted_remote_state = true
+  - evidence.json has accepted_remote_head field
+  - user-conditional-acceptance.txt exists and is non-empty
+
+For meta-ratification packages, merge_signoff.txt/push_signoff.txt requirement is
+skipped. The gate still enforces forbidden claims (order_execution_allowed, R049,
+runtime, etc.) and validates the user-conditional-acceptance.txt presence.
+
+Normal governance packages (without meta-ratification indicators) continue to require
+merge_signoff.txt/push_signoff.txt. Active invalid/superceded packages continue to fail.
+
+Verification: check_evidence_package.py now PASS on DEDICATED_CI_51AEC23_UNAUTHORIZED_STATE_RATIFICATION.
+Dedicated validator validate_canonical_repair_evidence.py continues to PASS.
+FIX_YAML_SYNTAX (normal package without signoff) still correctly FAILS.
+
+round_id: GITHUB_ACTIONS_AD529DEA_META_RATIFICATION_EVIDENCE_ROUTING_REWORK_CANDIDATE
+formal_status_code: candidate_ready_awaiting_manual_review
+final_recommendation: DO_NOT_START_R049
