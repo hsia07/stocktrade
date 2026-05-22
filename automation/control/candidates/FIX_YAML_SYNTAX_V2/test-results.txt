@@ -1,0 +1,6 @@
+# Test results for FIX_YAML_SYNTAX_V2
+python scripts/validation/check_evidence_package.py automation/control/candidates/DEDICATED_CANONICAL_REPAIR_CI_WORKFLOW_REWORK
+PASS: automation/control/candidates/DEDICATED_CANONICAL_REPAIR_CI_WORKFLOW_REWORK evidence_checker
+# All existing tests still pass
+python -m pytest tests/test_validate_canonical_repair_evidence.py -q
+23 passed in 0.19s

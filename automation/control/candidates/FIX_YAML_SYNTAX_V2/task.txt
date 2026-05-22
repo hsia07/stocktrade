@@ -1,0 +1,9 @@
+Extract remaining inline Python from evidence checker step
+
+The evidence checker step in validate-canonical-repair.yml had inline
+Python code starting at column 0 (unindented), causing GitHub YAML
+parser rejection. Extract into scripts/validation/check_evidence_package.py.
+
+Files modified:
+  .github/workflows/validate-canonical-repair.yml (inline Python removed)
+  scripts/validation/check_evidence_package.py (34 lines, new file)
