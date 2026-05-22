@@ -1,0 +1,22 @@
+user_conditional_acceptance_text:
+
+我同意條件式接受目前 origin/work/canonical-mainline-repair-001 的未授權遠端狀態 0d54d0ffa4ea533f9c535c3e0690d183add7cd22，不立即 rollback；下一步只允許補做 dedicated CI 事故追認、invalid evidence cleanup、candidate identity trace 補強與防再犯治理，不得啟動 R049/runtime/broker/live。
+
+acceptance_scope:
+  ratification_only_not_future_authorization
+  not_a_real_merge_signoff
+  not_a_real_push_signoff
+  does_not_authorize_future_candidate_advances
+
+prohibited_after_acceptance:
+  R049
+  runtime
+  broker
+  live
+  automated_merge_without_user_signoff
+
+recorded_at:
+  round_id: DEDICATED_CI_UNAUTHORIZED_STATE_RATIFICATION_CLEANUP
+  canonical_branch: work/canonical-mainline-repair-001
+  accepted_remote_head: 0d54d0ffa4ea533f9c535c3e0690d183add7cd22
+  rollback_executed: false

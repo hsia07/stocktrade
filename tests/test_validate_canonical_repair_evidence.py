@@ -214,7 +214,7 @@ class TestValidateCanonicalRepairEvidence:
         # Re-copy to target
         for f in candidate_dir.iterdir():
             shutil.copy2(f, target / f.name)
-        ok, issues = validate_candidate(target)
+        ok, issues, _ = validate_candidate(target)
         assert ok, f"Expected PASS, got {issues}"
 
     def test_missing_required_files_fails(self, candidate_dir):
@@ -223,6 +223,6 @@ class TestValidateCanonicalRepairEvidence:
         for f in candidate_dir.iterdir():
             shutil.copy2(f, target / f.name)
         (target / "RETURN_TO_CHATGPT.txt").unlink()
-        ok, issues = validate_candidate(target)
+        ok, issues, _ = validate_candidate(target)
         assert not ok
         assert any("missing:RETURN_TO_CHATGPT.txt" in i for i in issues)

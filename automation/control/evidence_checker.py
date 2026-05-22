@@ -533,6 +533,20 @@ class EvidenceChecker:
 
                 lower = content.lower()
 
+                NON_AUTH_MARKERS = [
+                    "template_only",
+                    "test_fixture",
+                    "sample",
+                    "placeholder",
+                    "not real user signoff",
+                    "machine-generated",
+                    "machine generated",
+                ]
+                for marker in NON_AUTH_MARKERS:
+                    if marker in lower:
+                        sig_issues.append(f"governance_gate:{action_type}_signoff_template_or_machine_marker:{marker}")
+                        return sig_issues
+
                 if action_type not in lower:
                     sig_issues.append(f"governance_gate:{action_type}_signoff_missing_action_type")
 

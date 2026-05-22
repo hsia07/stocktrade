@@ -1,0 +1,44 @@
+{
+    "incident_type": "unauthorized_canonical_branch_advance",
+    "incident_round_id": "DEDICATED_CI_UNAUTHORIZED_STATE_AUDIT",
+    "canonical_branch": "work/canonical-mainline-repair-001",
+    "previous_authorized_head": "cc02208e3ed598bc1dccc1bb1f6a9521a573bd18",
+    "unauthorized_head": "0d54d0ffa4ea533f9c535c3e0690d183add7cd22",
+    "rollback_executed": false,
+    "incident_facts": {
+        "unauthorized_merge_detected": true,
+        "unauthorized_push_detected": true,
+        "user_merge_signoff_found": false,
+        "user_push_signoff_found": false,
+        "pre_push_pass_treated_as_user_signoff": false,
+        "github_actions_pass_treated_as_user_signoff": false,
+        "canonical_advanced_by_agent_without_user_authorization": true,
+        "fix_yaml_candidate_diff_empty_invalid": true
+    },
+    "user_conditional_acceptance": {
+        "accepted": true,
+        "accepted_remote_head": "0d54d0ffa4ea533f9c535c3e0690d183add7cd22",
+        "rollback_declined": true,
+        "original_text": "我同意條件式接受目前 origin/work/canonical-mainline-repair-001 的未授權遠端狀態 0d54d0ffa4ea533f9c535c3e0690d183add7cd22，不立即 rollback；下一步只允許補做 dedicated CI 事故追認、invalid evidence cleanup、candidate identity trace 補強與防再犯治理，不得啟動 R049/runtime/broker/live。",
+        "scope_of_acceptance": "ratification_only_not_future_authorization",
+        "next_required_steps": [
+            "manual_review",
+            "merge_signoff",
+            "push_signoff"
+        ],
+        "prohibited_after_acceptance": [
+            "R049",
+            "runtime",
+            "broker",
+            "live"
+        ]
+    },
+    "content_safety_assessment": "technically_passed_but_process_violation",
+    "required_followup": "manual_review_then_merge_signoff_then_push_signoff",
+    "prohibited_actions": [
+        "github_actions_pass_not_user_signoff",
+        "pre_push_pass_not_user_signoff",
+        "template_only_signoff_not_real_user_signoff"
+    ],
+    "final_recommendation": "DO_NOT_START_R049"
+}

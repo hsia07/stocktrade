@@ -1,0 +1,39 @@
+diff --git a/automation/control/candidates/DEDICATED_CI_UNAUTHORIZED_STATE_RATIFICATION_CLEANUP/evidence.json b/automation/control/candidates/DEDICATED_CI_UNAUTHORIZED_STATE_RATIFICATION_CLEANUP/evidence.json
+new file mode 100644
+--- /dev/null
++++ b/automation/control/candidates/DEDICATED_CI_UNAUTHORIZED_STATE_RATIFICATION_CLEANUP/evidence.json
+@@ -0,0 +1,51 @@
++{
++    "law_compliance": "04",
++    "round_id": "DEDICATED_CI_UNAUTHORIZED_STATE_RATIFICATION_CLEANUP",
++    "formal_status_code": "04",
++    "evidence_type": "incident_ratification_cleanup_traceability",
++    "user_conditionally_accepted_remote_state": true,
++    "accepted_remote_head": "0d54d0ffa4ea533f9c535c3e0690d183add7cd22",
++    "rollback_executed": false,
++    "previous_authorized_head": "cc02208e3ed598bc1dccc1bb1f6a9521a573bd18",
++    "unauthorized_merge_detected": true,
++    "unauthorized_push_detected": true,
++    "user_merge_signoff_found": false,
++    "user_push_signoff_found": false,
++    "pre_push_pass_treated_as_user_signoff": false,
++    "github_actions_pass_treated_as_user_signoff": false,
++    "canonical_merge_commit": "0d54d0ffa4ea533f9c535c3e0690d183add7cd22",
++    "merge_parent_1": "f35530d7ad1e8cc81c0bb9e9c22280c0ad077551",
++    "merge_parent_2": "bc3d149dd2cc3443e990d5ea67beaa04943c43c2",
++    "candidate_head": "bc3d149dd2cc3443e990d5ea67beaa04943c43c2",
++    "identity_trace": { ... },
++    "signoff_hardening": { ... }
++}
+diff --git a/automation/control/candidates/DEDICATED_CI_UNAUTHORIZED_STATE_RATIFICATION_CLEANUP/incident-ratification.json b/automation/control/candidates/DEDICATED_CI_UNAUTHORIZED_STATE_RATIFICATION_CLEANUP/incident-ratification.json
+new file mode 100644
+diff --git a/automation/control/candidates/DEDICATED_CI_UNAUTHORIZED_STATE_RATIFICATION_CLEANUP/user-conditional-acceptance.txt b/automation/control/candidates/DEDICATED_CI_UNAUTHORIZED_STATE_RATIFICATION_CLEANUP/user-conditional-acceptance.txt
+new file mode 100644
+diff --git a/automation/control/candidates/DEDICATED_CI_UNAUTHORIZED_STATE_RATIFICATION_CLEANUP/candidate.diff b/automation/control/candidates/DEDICATED_CI_UNAUTHORIZED_STATE_RATIFICATION_CLEANUP/candidate.diff
+new file mode 100644
+diff --git a/automation/control/candidates/DEDICATED_CI_UNAUTHORIZED_STATE_RATIFICATION_CLEANUP/task.txt b/automation/control/candidates/DEDICATED_CI_UNAUTHORIZED_STATE_RATIFICATION_CLEANUP/task.txt
+new file mode 100644
+diff --git a/automation/control/candidates/DEDICATED_CI_UNAUTHORIZED_STATE_RATIFICATION_CLEANUP/report.json b/automation/control/candidates/DEDICATED_CI_UNAUTHORIZED_STATE_RATIFICATION_CLEANUP/report.json
+new file mode 100644
+diff --git a/automation/control/candidates/DEDICATED_CI_UNAUTHORIZED_STATE_RATIFICATION_CLEANUP/no-aider-used.txt b/automation/control/candidates/DEDICATED_CI_UNAUTHORIZED_STATE_RATIFICATION_CLEANUP/no-aider-used.txt
+new file mode 100644

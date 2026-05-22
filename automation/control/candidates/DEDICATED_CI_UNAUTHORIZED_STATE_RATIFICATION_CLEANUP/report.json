@@ -1,0 +1,16 @@
+{
+    "round_id": "DEDICATED_CI_UNAUTHORIZED_STATE_RATIFICATION_CLEANUP",
+    "status": "completed",
+    "canonical_branch": "work/canonical-mainline-repair-001",
+    "canonical_head": "0d54d0ffa4ea533f9c535c3e0690d183add7cd22",
+    "previous_authorized_head": "cc02208e3ed598bc1dccc1bb1f6a9521a573bd18",
+    "accepted_remote_head": "0d54d0ffa4ea533f9c535c3e0690d183add7cd22",
+    "rollback_executed": false,
+    "user_conditional_acceptance": true,
+    "incident_ratification": true,
+    "invalid_evidence_handled": true,
+    "identity_trace_strengthened": true,
+    "signoff_hardening_implemented": true,
+    "test_count": 1,
+    "tests_passed": 1
+}

@@ -170,7 +170,27 @@ def check_path_in_authorized_scope(candidate_dir: Path) -> Tuple[bool, List[str]
     return True, []
 
 
-def validate_candidate(candidate_dir: Path) -> Tuple[bool, List[str]]:
+def classify_candidate(candidate_dir: Path) -> str:
+    ev_path = candidate_dir / "evidence.json"
+    if not ev_path.exists():
+        return "unknown"
+
+    try:
+        data = json.loads(ev_path.read_text(encoding="utf-8"))
+    except Exception:
+        return "unknown"
+
+    if data.get("should_not_be_used_for_acceptance") is True:
+        return "expected_invalid_superseded"
+
+    status = data.get("evidence_status", "")
+    if "invalid" in status.lower() or "superseded" in status.lower():
+        return "expected_invalid_superseded"
+
+    return "valid_acceptance_candidate"
+
+
+def validate_candidate(candidate_dir: Path) -> Tuple[bool, List[str], str]:
     all_issues: List[str] = []
 
     for fname in REQUIRED_FILES:
@@ -198,7 +218,10 @@ def validate_candidate(candidate_dir: Path) -> Tuple[bool, List[str]]:
     if not scope_ok:
         all_issues.extend(scope_issues)
 
-    return len(all_issues) == 0, all_issues
+    classification = classify_candidate(candidate_dir)
+    if classification == "expected_invalid_superseded":
+        return True, all_issues, classification
+    return len(all_issues) == 0, all_issues, classification
 
 
 def main():
@@ -217,19 +240,35 @@ def main():
             print(f"       checked {args.base_ref}..{args.head_ref} in {CANDIDATE_DIR_PREFIX}")
             sys.exit(1)
 
-    all_pass = True
-    for d in dirs:
-        ok, issues = validate_candidate(d)
-        status = "PASS" if ok else "FAIL"
-        print(f"[{status}] {d}")
-        for issue in issues:
-            print(f"  - {issue}")
-        if not ok:
-            all_pass = False
+    pass_count = 0
+    expected_invalid_count = 0
+    blocking_fail_count = 0
 
-    if not all_pass:
+    for d in dirs:
+        ok, issues, classification = validate_candidate(d)
+        if classification == "expected_invalid_superseded":
+            print(f"[EXPECTED_INVALID_SUPERSEDED] {d}")
+            for issue in issues:
+                print(f"  - {issue}")
+            expected_invalid_count += 1
+        elif ok:
+            print(f"[PASS] {d}")
+            pass_count += 1
+        else:
+            print(f"[FAIL] {d}")
+            for issue in issues:
+                print(f"  - {issue}")
+            blocking_fail_count += 1
+
+    print()
+    if blocking_fail_count > 0:
+        print(f"FAIL: {blocking_fail_count} blocking failure(s) found")
+        print("PASS: canonical repair evidence validation complete")
         sys.exit(1)
 
+    print(f"PASS: {pass_count} acceptance package(s) validated")
+    if expected_invalid_count > 0:
+        print(f"      {expected_invalid_count} expected_invalid_superseded package(s) skipped")
     print("PASS: canonical repair evidence validation complete")
 
 

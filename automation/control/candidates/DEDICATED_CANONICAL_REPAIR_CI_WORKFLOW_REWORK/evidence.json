@@ -22,5 +22,18 @@
   "test_output_not_allowed_as_substitute": true,
   "runtime_broker_live_r049_claims_blocked": true,
   "governance_prevention_gate_invoked_in_workflow": true,
-  "workflow_does_not_start_runtime_broker_live": true
+  "workflow_does_not_start_runtime_broker_live": true,
+  "identity_trace": {
+    "previous_authorized_head": "cc02208e3ed598bc1dccc1bb1f6a9521a573bd18",
+    "accepted_remote_head": "0d54d0ffa4ea533f9c535c3e0690d183add7cd22",
+    "canonical_merge_commit": "0d54d0ffa4ea533f9c535c3e0690d183add7cd22",
+    "base_head": "cc02208e3ed598bc1dccc1bb1f6a9521a573bd18",
+    "evidence_scope_commit": "cc02208e3ed598bc1dccc1bb1f6a9521a573bd18",
+    "candidate_head": null,
+    "evidence_status": "valid",
+    "identity_collapse_detected": true,
+    "not_candidate_identity": true,
+    "identity_gap_reason": "candidate_commit == base_head == cc02208e3ed598...; no separate candidate HEAD preserved in this package",
+    "traceability_sufficient": false
+  }
 }

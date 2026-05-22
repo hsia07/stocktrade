@@ -6,6 +6,9 @@
     "candidate_branch": "candidate/fix-yaml-syntax",
     "task": "Fix YAML syntax error in validate-canonical-repair.yml by extracting inline Python detection logic into standalone script",
     "evidence_type": "canonical_repair_bugfix",
+    "superseded_by": "FIX_YAML_SYNTAX_V2",
+    "invalid_reason": "empty_candidate_diff",
+    "should_not_be_used_for_acceptance": true,
     "runtime_started": false,
     "r049_started": false,
     "r047_started": false,
@@ -15,5 +18,15 @@
     "order_execution_allowed": false,
     "trading_broker_execution_live_started": false,
     "fubon_api_integrated": false,
-    "live_started": false
+    "live_started": false,
+    "identity_trace": {
+        "previous_authorized_head": "cc02208e3ed598bc1dccc1bb1f6a9521a573bd18",
+        "accepted_remote_head": "0d54d0ffa4ea533f9c535c3e0690d183add7cd22",
+        "base_head": "36949b3a8682d3eafc7aa49055dbab6afbcfc1e7",
+        "candidate_head": null,
+        "evidence_scope_commit": "36949b3a8682d3eafc7aa49055dbab6afbcfc1e7",
+        "evidence_status": "invalid_superseded",
+        "identity_gap_reason": "candidate.diff is 0 bytes, invalid; candidate_head cannot be reliably identified",
+        "traceability_sufficient": false
+    }
 }

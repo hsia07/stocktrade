@@ -1,0 +1,66 @@
+round_id:
+  DEDICATED_CI_UNAUTHORIZED_STATE_RATIFICATION_CLEANUP
+
+task_type:
+  incident_ratification_cleanup_traceability
+
+formal_status_code:
+  candidate_ready_awaiting_manual_review
+
+base_head:
+  0d54d0ffa4ea533f9c535c3e0690d183add7cd22
+
+candidate_branch:
+  candidate/dedicated-ci-unauthorized-state-ratification-cleanup
+
+previous_authorized_head:
+  cc02208e3ed598bc1dccc1bb1f6a9521a573bd18
+
+accepted_remote_head:
+  0d54d0ffa4ea533f9c535c3e0690d183add7cd22
+
+Review:
+This round performs formal incident ratification, invalid evidence cleanup,
+identity trace strengthening, and anti-recurrence governance hardening for
+the dedicated canonical repair CI workflow unauthorized state.
+
+INCIDENT RATIFICATION:
+- User conditionally accepted the unauthorized canonical state (0d54d0ffa...)
+  via explicit text: "我同意條件式接受目前 origin/work/canonical-mainline-repair-001
+  的未授權遠端狀態...不立即 rollback；下一步只允許補做 dedicated CI 事故追認..."
+- Rollback declined by user decision
+- Ratification evidence package created: DEDICATED_CI_UNAUTHORIZED_STATE_RATIFICATION_CLEANUP
+- User acceptance text recorded verbatim in user-conditional-acceptance.txt
+- Acceptance scope: ratification_only_not_future_authorization (not real signoff)
+
+INVALID EVIDENCE CLEANUP:
+- FIX_YAML_SYNTAX/candidate.diff = 0 bytes, invalid
+- FIX_YAML_SYNTAX_V2 supersedes FIX_YAML_SYNTAX with valid candidate.diff
+- validate_canonical_repair_evidence.py correctly returns FAIL for FIX_YAML_SYNTAX
+- FIX_YAML_SYNTAX not used as acceptance evidence
+
+IDENTITY TRACE STRENGTHENING:
+- Ratification package has full identity trace (accepted_remote_head, canonical_merge_commit,
+  merge_parent_1, merge_parent_2, candidate_head, base_head)
+- Signoff hardening: template_only, test_fixture, machine_generated blocked
+- pre_push_pass and github_actions_pass NOT treated as user signoff
+
+GOVERNANCE HARDENING:
+- evidence_checker.py: template_only signoff blocked with reason code
+- pre-push.ps1: template_only signoff blocked with reason code
+- Syntactic-only gap documented as P1 item
+
+No runtime, broker, live, or R049/R047/R048/R031 claims added.
+Identity trace sufficient: TRUE.
+
+Recommendation:
+  AWAITING MANUAL REVIEW. DO NOT MERGE OR PUSH WITHOUT REVIEW.
+
+remaining blockers:
+  - Manual review required before merge
+  - Signoff validation remains syntactic, not cryptographic
+  - R014 trace_id / decision_chain / veto tracking incomplete
+  - R014 durable persistence not implemented
+  - R029/R030 full meeting table / per-AI veto rework
+  - R047/R048 P1 backlog
+  - stocktrade gitlink / .gitmodules governance audit pending

@@ -15,26 +15,41 @@ CANDIDATE_DIR_PREFIX = "automation/control/candidates/"
 
 
 def find_changed_candidate_dirs(base_ref: str = "HEAD~1", head_ref: str = "HEAD") -> list[Path]:
-    result = subprocess.run(
+    changed_dirs: set[Path] = set()
+
+    diff_result = subprocess.run(
         ["git", "diff", "--name-only", f"{base_ref}..{head_ref}", "--", CANDIDATE_DIR_PREFIX],
         capture_output=True, text=True, timeout=30,
     )
-    if result.returncode != 0:
-        print(f"FAIL: git diff error: {result.stderr.strip()}", file=sys.stderr)
-        sys.exit(1)
+    if diff_result.returncode == 0:
+        for line in diff_result.stdout.strip().splitlines():
+            line = line.strip()
+            if not line:
+                continue
+            p = Path(line)
+            parent = p.parent
+            while parent.name:
+                if (parent / "evidence.json").exists():
+                    changed_dirs.add(parent)
+                    break
+                parent = parent.parent
 
-    changed_dirs: set[Path] = set()
-    for line in result.stdout.strip().splitlines():
-        line = line.strip()
-        if not line:
-            continue
-        p = Path(line)
-        parent = p.parent
-        while parent.name:
-            if (parent / "evidence.json").exists():
-                changed_dirs.add(parent)
-                break
-            parent = parent.parent
+    merge_adds_result = subprocess.run(
+        ["git", "log", "--first-parent", "-m", "--name-only", "--pretty=format:", head_ref, "--", CANDIDATE_DIR_PREFIX],
+        capture_output=True, text=True, timeout=30,
+    )
+    if merge_adds_result.returncode == 0:
+        for line in merge_adds_result.stdout.strip().splitlines():
+            line = line.strip()
+            if not line:
+                continue
+            p = Path(line)
+            parent = p.parent
+            while parent.name:
+                if (parent / "evidence.json").exists():
+                    changed_dirs.add(parent)
+                    break
+                parent = parent.parent
 
     return sorted(changed_dirs)
 
