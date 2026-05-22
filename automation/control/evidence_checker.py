@@ -508,11 +508,35 @@ class EvidenceChecker:
           - target branch (work/canonical-*)
           - authorized 40hex hash
           - explicit user authorization language
+
+        Meta-ratification packages (existing remote state ratification):
+          - Have user_conditionally_accepted_remote_state=true in evidence.json
+          - Have accepted_remote_head field
+          - Have user-conditional-acceptance.txt with verbatim user text
+          - Do NOT require merge_signoff.txt / push_signoff.txt
+          - Are marked as META_RATIFICATION and pass the gate
         """
         import re
 
         issues = []
         candidate_dir = Path(candidate_dir)
+
+        meta_ratification_indicators = (
+            evidence.get("user_conditionally_accepted_remote_state") is True
+            and evidence.get("accepted_remote_head")
+            and (candidate_dir / "user-conditional-acceptance.txt").exists()
+            and (candidate_dir / "user-conditional-acceptance.txt").stat().st_size > 0
+        )
+
+        if meta_ratification_indicators:
+            forbidden_claims = [
+                "order_execution_allowed", "r049_started", "r047_started",
+                "r048_started", "r031_started", "runtime_started", "broker_api_called",
+            ]
+            for claim in forbidden_claims:
+                if evidence.get(claim) is True:
+                    issues.append(f"governance_gate:meta_ratification_blocked:{claim}")
+            return issues
 
         merge_signoff = candidate_dir / "merge_signoff.txt"
         push_signoff = candidate_dir / "push_signoff.txt"

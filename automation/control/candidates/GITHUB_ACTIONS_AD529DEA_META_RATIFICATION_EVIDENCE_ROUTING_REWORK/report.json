@@ -1,0 +1,24 @@
+{
+  "report_id": "GITHUB_ACTIONS_AD529DEA_META_RATIFICATION_FIX",
+  "status": "completed",
+  "candidate_branch": "TO_BE_CREATED",
+  "candidate_commit": "TO_BE_CREATED",
+  "files_created": [
+    "evidence.json",
+    "RETURN_TO_CHATGPT.txt",
+    "task.txt",
+    "report.json",
+    "no-aider-used.txt",
+    "candidate.diff"
+  ],
+  "fix_applied": "evidence_checker.py _check_governance_authorization_gate() meta-ratification routing",
+  "test_results": {
+    "check_evidence_package_on_51aec23_ratification": "PASS",
+    "validate_canonical_repair_evidence_on_51aec23_ratification": "PASS",
+    "check_evidence_package_on_FIX_YAML_SYNTAX": "FAIL (expected - normal package without signoff)",
+    "check_evidence_package_on_RATIFICATION_CLEANUP": "PASS",
+    "validate_canonical_repair_evidence_on_RATIFICATION_CLEANUP": "PASS"
+  },
+  "meta_ratification_routing_implemented": true,
+  "normal_governance_signoff_gate_preserved": true
+}

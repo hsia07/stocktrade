@@ -1,0 +1,14 @@
+Fix GitHub Actions Step 7 failure for meta-ratification packages.
+
+Root cause: check_evidence_package.py returned governance_gate:no_authorization_files_found
+for DEDICATED_CI_51AEC23_UNAUTHORIZED_STATE_RATIFICATION (meta-ratification package).
+
+Fix: evidence_checker.py _check_governance_authorization_gate() now skips merge_signoff.txt/
+push_signoff.txt requirement for meta-ratification packages detected via
+user_conditionally_accepted_remote_state + accepted_remote_head + user-conditional-acceptance.txt.
+
+Verification: check_evidence_package.py PASS on 51aec23 RATIFICATION. FIX_YAML_SYNTAX (normal
+package) still correctly FAILS without signoff.
+
+candidate_branch: candidate/github-actions-ad529dea-meta-ratification-evidence-routing-rework
+base_head: ad529dea42b91b546b764afd56a00cb89eb74e51
