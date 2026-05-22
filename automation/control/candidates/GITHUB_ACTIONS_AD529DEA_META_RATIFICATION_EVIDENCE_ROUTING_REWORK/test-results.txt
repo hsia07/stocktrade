@@ -1,0 +1,38 @@
+GITHUB_ACTIONS_AD529DEA_META_RATIFICATION_EVIDENCE_ROUTING_REWORK
+================================================================
+
+Local test results for meta-ratification routing fix verification:
+
+test_meta_ratification_routing.py: 8 passed
+  - test_meta_ratification_package_passes_without_merge_signoff: PASS
+  - test_meta_ratification_requires_user_conditional_acceptance: PASS
+  - test_meta_ratification_still_blocks_order_execution_allowed: PASS
+  - test_meta_ratification_blocks_r049_claims: PASS
+  - test_normal_governance_package_still_requires_signoff: PASS
+  - test_ratification_cleanup_still_passes: PASS
+  - test_meta_ratification_not_used_as_future_auto_push_authorization: PASS
+  - test_check_evidence_package_script_passes_on_meta_ratification: PASS
+
+test_dedicated_ci_51aec23_ratification.py: 26 passed
+
+test_governance_authorization_gate.py: 27 passed (3 non-blocking threading warnings)
+
+test_check_required_evidence_ui_gate.py: 30 passed
+test_validate_canonical_repair_evidence.py: 20 passed
+test_incident_ratification_identity_trace_signoff_hardening.py: 8 passed
+
+Total: 119 passed in 5.38s (3 non-blocking warnings)
+
+Validators:
+  - validate_round.py: PASS
+  - check_forbidden_changes.py: PASS
+  - check_required_evidence.py: PASS
+  - check_commit_message.py: PASS
+
+Note: GitHub Actions actual result for 573e8bd is NOT_VERIFIABLE (no .git/token).
+This is an audit documentation package, not an acceptance package.
+check_evidence_package.py classification: EXPECTED_NOT_ACCEPTANCE_PACKAGE
+
+test_count: 119
+tests_passed: 119
+blocking_failures: 0

@@ -1,0 +1,19 @@
+{
+  "query_attempted": false,
+  "query_method": "none_available",
+  "status": "NOT_VERIFIABLE",
+  "conclusion": "NOT_VERIFIABLE",
+  "commit": "573e8bd92677186e04f30653f04fd581f7b5e4be",
+  "not_verifiable_reason": "No .git/token file available to query GitHub API. Cannot confirm GitHub Actions actual result for 573e8bd92677186e04f30653f04fd581f7b5e4be.",
+  "ci_result_treated_as_authorization": false,
+  "not_verifiable_claimed_as_success": false,
+  "prior_run_on_ad529dea": {
+    "run_id": "26302656903",
+    "commit": "ad529dea42b91b546b764afd56a00cb89eb74e51",
+    "workflow": "validate-canonical-repair",
+    "conclusion": "failure",
+    "failed_step": "Step 7: Evidence checker"
+  },
+  "fix_applied_before_573e8bd": "meta-ratification routing in evidence_checker.py should fix Step 7 failure, but actual result cannot be verified without API access",
+  "expected_outcome_after_fix": "Step 7 should pass, but NOT claimed as success without verification"
+}

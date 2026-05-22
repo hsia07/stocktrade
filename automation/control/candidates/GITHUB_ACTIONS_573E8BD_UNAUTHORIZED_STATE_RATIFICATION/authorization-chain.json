@@ -1,0 +1,58 @@
+[
+  {
+    "commit_hash": "804638568127de0d9b4268b69cae50cba8beb9a4",
+    "parent_count": 1,
+    "parents": ["ad529dea42b91b546b764afd56a00cb89eb74e51"],
+    "author": "opencode-agent",
+    "author_email": "agent@opencode.ai",
+    "subject": "fix: meta-ratification evidence routing for CI Step 7 pass",
+    "date": "2026-05-23T01:55:46+08:00",
+    "files_changed": [
+      "automation/control/candidates/GITHUB_ACTIONS_AD529DEA_META_RATIFICATION_EVIDENCE_ROUTING_REWORK/RETURN_TO_CHATGPT.txt",
+      "automation/control/candidates/GITHUB_ACTIONS_AD529DEA_META_RATIFICATION_EVIDENCE_ROUTING_REWORK/candidate.diff",
+      "automation/control/candidates/GITHUB_ACTIONS_AD529DEA_META_RATIFICATION_EVIDENCE_ROUTING_REWORK/evidence.json",
+      "automation/control/candidates/GITHUB_ACTIONS_AD529DEA_META_RATIFICATION_EVIDENCE_ROUTING_REWORK/no-aider-used.txt",
+      "automation/control/candidates/GITHUB_ACTIONS_AD529DEA_META_RATIFICATION_EVIDENCE_ROUTING_REWORK/report.json",
+      "automation/control/candidates/GITHUB_ACTIONS_AD529DEA_META_RATIFICATION_EVIDENCE_ROUTING_REWORK/task.txt",
+      "automation/control/evidence_checker.py",
+      "tests/test_meta_ratification_routing.py"
+    ],
+    "user_manual_review_signoff_exists": false,
+    "user_merge_signoff_exists": false,
+    "user_push_signoff_exists": false,
+    "tests_pass_treated_as_user_signoff": false,
+    "pre_push_pass_treated_as_user_signoff": false,
+    "github_actions_pass_treated_as_user_signoff": false,
+    "governance_classification": "unauthorized_but_conditionally_accepted",
+    "requires_future_hardening": true,
+    "commit_type": "direct_commit"
+  },
+  {
+    "commit_hash": "573e8bd92677186e04f30653f04fd581f7b5e4be",
+    "parent_count": 2,
+    "parents": ["ad529dea42b91b546b764afd56a00cb89eb74e51", "804638568127de0d9b4268b69cae50cba8beb9a4"],
+    "author": "opencode-agent",
+    "author_email": "agent@opencode.ai",
+    "subject": "Merge: meta-ratification evidence routing fix for GitHub Actions CI Step 7 pass",
+    "date": "2026-05-23T01:56:15+08:00",
+    "files_changed": [
+      "automation/control/candidates/GITHUB_ACTIONS_AD529DEA_META_RATIFICATION_EVIDENCE_ROUTING_REWORK/RETURN_TO_CHATGPT.txt",
+      "automation/control/candidates/GITHUB_ACTIONS_AD529DEA_META_RATIFICATION_EVIDENCE_ROUTING_REWORK/candidate.diff",
+      "automation/control/candidates/GITHUB_ACTIONS_AD529DEA_META_RATIFICATION_EVIDENCE_ROUTING_REWORK/evidence.json",
+      "automation/control/candidates/GITHUB_ACTIONS_AD529DEA_META_RATIFICATION_EVIDENCE_ROUTING_REWORK/no-aider-used.txt",
+      "automation/control/candidates/GITHUB_ACTIONS_AD529DEA_META_RATIFICATION_EVIDENCE_ROUTING_REWORK/report.json",
+      "automation/control/candidates/GITHUB_ACTIONS_AD529DEA_META_RATIFICATION_EVIDENCE_ROUTING_REWORK/task.txt",
+      "automation/control/evidence_checker.py",
+      "tests/test_meta_ratification_routing.py"
+    ],
+    "user_manual_review_signoff_exists": false,
+    "user_merge_signoff_exists": false,
+    "user_push_signoff_exists": false,
+    "tests_pass_treated_as_user_signoff": false,
+    "pre_push_pass_treated_as_user_signoff": false,
+    "github_actions_pass_treated_as_user_signoff": false,
+    "governance_classification": "unauthorized_but_conditionally_accepted",
+    "requires_future_hardening": true,
+    "commit_type": "no_ff_merge"
+  }
+]
