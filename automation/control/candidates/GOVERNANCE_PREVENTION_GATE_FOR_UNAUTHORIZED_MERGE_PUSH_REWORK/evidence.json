@@ -1,5 +1,5 @@
 {
-  "round_id": "GOVERNANCE_PREVENTION_GATE_REWORK_SCOPE_REPAIR_AND_PUSH_TIME_ENFORCEMENT_CANDIDATE",
+  "round_id": "GOVERNANCE_PREVENTION_GATE_MANIFEST_SCOPE_CLEANUP_AND_REFREEZE_CANDIDATE",
   "trace_id": "trace-gov-prevention-gate-001",
   "law_compliance": "04",
   "evidence_type": "governance_prevention_gate_candidate",
@@ -8,6 +8,8 @@
   "append_only_audit": true,
   "candidate_commit": "904f4604b85800194725ad3fe8abd3ee71ec45a9",
   "governance_gate_applied": true,
+  "manifest_restored_to_base": true,
+  "manifest_modified": false,
   "merge_signoff_required": true,
   "push_signoff_required": true,
   "signoff_validator_action_type": true,

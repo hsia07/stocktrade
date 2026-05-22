@@ -1,23 +1,18 @@
 === TASK DESCRIPTION ===
-Scope repair and push-time enforcement for governance prevention gate. Restore unauthorized manifest modification, complete push-time signoff enforcement, create formal candidate evidence package.
+Manifest scope cleanup and refreeze for governance prevention gate candidate. Restore manifests/current_round.yaml to base HEAD.
+Verify no unauthorized scope violations remain. Regenerate evidence to document clean state.
 
 === PROBLEM STATEMENT ===
-Previous round (GOVERNANCE_PREVENTION_GATE_PUSH_TIME_ENFORCEMENT_AND_PACKAGING_REWORK_CANDIDATE):
-1. manifests/current_round.yaml was modified without authorization — this is a scope violation.
-2. All changes must be redone cleanly without touching the manifest.
-3. Pre-push.ps1 signoff enforcement was added but the overall commit history was contaminated.
+Previous rounds modified manifests/current_round.yaml without authorization. While the previous scope repair round restored the manifest, this round formally verifies zero diff against base, regenerates all evidence to document manifest_restored=true, and creates a dedicated cleanup commit.
 
 === SOLUTION ===
-1. Restored manifests/current_round.yaml to base HEAD (904f4604b85800194725ad3fe8abd3ee71ec45a9).
-2. Reset candidate branch to base HEAD via git reset --soft — retains evidence_checker.py and pre-push.ps1 changes.
-3. Kept pre-push.ps1 push-time signoff enforcement:
-   - Get-ChangedSignoffFiles finds signoff files in commit diff-tree
-   - Check-SignoffContent validates action type, branch, hash, user auth text
-   - Assert-MergeCommitAllowed rejects pushes without valid signoff files
-4. Kept evidence_checker.py _check_governance_authorization_gate with full signoff content validation.
-5. Preserved comprehensive negative/positive tests (20 tests, all PASS).
-6. Created clean candidate evidence package with updated round_id.
-7. No manifest, workflow, schema, server, modules, or stocktrade files modified.
+1. Verified manifests/current_round.yaml diff against base HEAD (904f4604b85800194725ad3fe8abd3ee71ec45a9): ZERO DIFF.
+2. No manifest modifications present in candidate branch diff.
+3. Regenerated candidate.diff (excludes manifest).
+4. Updated evidence.json, report.json, task.txt, RETURN_TO_CHATGPT.txt, test-results.txt to document manifest_restored=true.
+5. Pre-push.ps1 signoff enforcement preserved.
+6. evidence_checker.py signoff gate preserved.
+7. 20 governance tests, 23 UI gate tests, 6 validators: ALL PASS.
 
 === FILES ===
 - .githooks/pre-push.ps1
@@ -25,8 +20,8 @@ Previous round (GOVERNANCE_PREVENTION_GATE_PUSH_TIME_ENFORCEMENT_AND_PACKAGING_R
 - tests/test_governance_authorization_gate.py
 - automation/control/candidates/GOVERNANCE_PREVENTION_GATE_FOR_UNAUTHORIZED_MERGE_PUSH_REWORK/* (9 files)
 
-task_id: GOV-PREVENTION-GATE-SCOPE-REPAIR-001
-task_type: governance_prevention_gate_scope_repair
+task_id: GOV-PREVENTION-GATE-MANIFEST-CLEANUP-001
+task_type: governance_prevention_gate_manifest_scope_cleanup
 phase: 2
 law_compliance: 04
 severity: high
