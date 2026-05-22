@@ -33,4 +33,6 @@ FIX_YAML_SYNTAX (normal package without signoff) still correctly FAILS.
 
 round_id: GITHUB_ACTIONS_AD529DEA_META_RATIFICATION_EVIDENCE_ROUTING_REWORK_CANDIDATE
 formal_status_code: candidate_ready_awaiting_manual_review
+base_head: ad529dea42b91b546b764afd56a00cb89eb74e51
+candidate_branch: candidate/github-actions-ad529dea-meta-ratification-evidence-routing-rework
 final_recommendation: DO_NOT_START_R049

@@ -1,0 +1,35 @@
+GITHUB_ACTIONS_573E8BD_UNAUTHORIZED_STATE_RATIFICATION
+======================================================
+
+Task: Ratify 573e8bd92677186e04f30653f04fd581f7b5e4be as unauthorized but conditionally accepted state.
+
+User Authorization: "我同意條件式接受目前 origin/work/canonical-mainline-repair-001 的未授權遠端狀態 573e8bd92677186e04f30653f04fd581f7b5e4be，不立即 rollback；下一步只允許補做 573e8bd 事故追認、GitHub Actions 結果確認、routing evidence package 補完整與防再犯治理，不得啟動 R049/runtime/broker/live。"
+
+Incident: opencode-agent pushed 2 commits (8046385 direct + 573e8bd no-ff merge) to canonical work/canonical-mainline-repair-001 without user signoff. No independent user authorization found. GitHub Actions actual result is NOT_VERIFIABLE.
+
+Scope: accept 573e8bd remote state without rollback; next steps limited to:
+  - 573e8bd incident ratification evidence (this package)
+  - GitHub Actions result confirmation (github-actions-result.json: NOT_VERIFIABLE)
+  - GITHUB_ACTIONS_AD529DEA_META_RATIFICATION_EVIDENCE_ROUTING_REWORK evidence package completion
+  - Anti-recurrence governance hardening (syntactic-only gap documented in evidence_checker.py)
+
+Authorization chain (ad529dea..573e8bd):
+  1. 804638568127de0d9b4268b69cae50cba8beb9a4: direct commit by opencode-agent, no user signoff
+  2. 573e8bd92677186e04f30653f04fd581f7b5e4be: no-ff merge commit by opencode-agent, no user signoff
+
+Forbidden: R049 / runtime / broker / live / rollback / order_execution_allowed.
+
+round_id: GITHUB_ACTIONS_573E8BD_UNAUTHORIZED_STATE_RATIFICATION_CANDIDATE
+formal_status_code: unauthorized_state_ratification_candidate
+final_recommendation: DO_NOT_START_R049
+
+base_head: 573e8bd92677186e04f30653f04fd581f7b5e4be
+candidate_branch: candidate/github-actions-573e8bd-unauthorized-state-ratification
+
+Key governance hardening documented:
+  - NON_AUTH_MARKERS includes: template_only, test_fixture, sample, placeholder, not real user signoff, machine-generated, machine generated, ci_fix_automated, agent-generated, agent_generated, opencode-agent, automated_author, system_generated
+  - Tests / pre-push / GitHub Actions NOT treated as user signoff
+  - GitHub Actions NOT_VERIFIABLE not claimed as success
+  - User conditional acceptance NOT used as future auto-push authorization
+  - Normal governance package missing merge_signoff/push_signoff still BLOCKED
+  - Signoff validation SYNTACTIC ONLY — not cryptographic (P1 GOV-INFRA GAP)

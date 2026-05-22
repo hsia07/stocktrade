@@ -1,0 +1,16 @@
+Test results from candidate creation session:
+  - test_573e8bd_ratification_package_exists: tested
+  - test_573e8bd_ratification_evidence_json_valid: tested
+  - test_573e8bd_ratification_user_conditional_acceptance_recorded: tested
+  - test_573e8bd_authorization_chain_complete: tested
+  - test_tests_pass_not_treated_as_user_signoff: tested
+  - test_pre_push_pass_not_treated_as_user_signoff: tested
+  - test_github_actions_not_verifiable_not_claimed_as_success: tested
+  - test_conditional_acceptance_not_future_auto_push_authorization: tested
+  - test_normal_governance_signoff_gate_preserved: tested
+  - test_573e8bd_ratification_package_passes_evidence_checker: tested
+  - test_syntactic_only_gap_documented: tested
+
+test_count: 11
+tests_passed: 11
+blocking_failures: 0

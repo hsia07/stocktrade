@@ -1,0 +1,22 @@
+{
+  "report_id": "GITHUB_ACTIONS_573E8BD_UNAUTHORIZED_STATE_RATIFICATION",
+  "status": "completed",
+  "round_id": "GITHUB_ACTIONS_573E8BD_UNAUTHORIZED_STATE_RATIFICATION_CANDIDATE",
+  "canonical_branch": "work/canonical-mainline-repair-001",
+  "base_head": "573e8bd92677186e04f30653f04fd581f7b5e4be",
+  "previous_authorized_head": "ad529dea42b91b546b764afd56a00cb89eb74e51",
+  "commits_after_previous_authorized_head_count": 2,
+  "unauthorized_incident_type": "unauthorized push to canonical by opencode-agent without independent user authorization",
+  "user_conditional_acceptance_recorded": true,
+  "rollback_executed": false,
+  "github_actions_actual_result": "NOT_VERIFIABLE",
+  "r049_started": false,
+  "runtime_started": false,
+  "broker_api_called": false,
+  "order_execution_allowed": false,
+  "final_recommendation": "DO_NOT_START_R049",
+  "syntactic_only_gap_documented": true,
+  "signoff_cryptographic_verification": false,
+  "conditioned_acceptance_used_as_future_auto_push_authorization": false,
+  "anti_recurrence_hardening_applied": true
+}

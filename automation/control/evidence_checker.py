@@ -515,6 +515,12 @@ class EvidenceChecker:
           - Have user-conditional-acceptance.txt with verbatim user text
           - Do NOT require merge_signoff.txt / push_signoff.txt
           - Are marked as META_RATIFICATION and pass the gate
+
+        P1 GOV-INFRA GAP: Signoff validation is SYNTACTIC ONLY — not cryptographic.
+        Files are plain text, no signature, no HMAC, no PKI. Agent can generate
+        files that appear to be user signoffs. True authorization requires
+        cryptographic verification (GPG-signed tags, SSH keys, hardware tokens).
+        This gap must be addressed before relying on signoff files for high-stakes decisions.
         """
         import re
 

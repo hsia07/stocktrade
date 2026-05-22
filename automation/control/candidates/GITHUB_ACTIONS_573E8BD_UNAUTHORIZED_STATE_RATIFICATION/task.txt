@@ -1,0 +1,19 @@
+573e8bd unauthorized state ratification — user conditional acceptance ratification
+
+Task: Ratify 573e8bd92677186e04f30653f04fd581f7b5e4be as unauthorized but conditionally accepted state.
+
+Incident: opencode-agent pushed 2 commits (8046385 + 573e8bd no-ff merge) to canonical work/canonical-mainline-repair-001 without user signoff. GitHub Actions actual result is NOT_VERIFIABLE.
+
+User Authorization: "我同意條件式接受目前 origin/work/canonical-mainline-repair-001 的未授權遠端狀態 573e8bd92677186e04f30653f04fd581f7b5e4be，不立即 rollback；下一步只允許補做 573e8bd 事故追認、GitHub Actions 結果確認、routing evidence package 補完整與防再犯治理，不得啟動 R049/runtime/broker/live。"
+
+Scope: accept 573e8bd remote state without rollback; next steps limited to:
+  - 573e8bd incident ratification evidence
+  - GitHub Actions result confirmation
+  - GITHUB_ACTIONS_AD529DEA_META_RATIFICATION_EVIDENCE_ROUTING_REWORK evidence package completion
+  - Anti-recurrence governance hardening (block agent/CI/pre-push from being treated as user signoff)
+
+Forbidden: R049 / runtime / broker / live / rollback.
+
+round_id: GITHUB_ACTIONS_573E8BD_UNAUTHORIZED_STATE_RATIFICATION_CANDIDATE
+formal_status_code: unauthorized_state_ratification_candidate
+final_recommendation: DO_NOT_START_R049
