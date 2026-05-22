@@ -1,0 +1,1 @@
+ratification_evidence: Push authorized for origin/work/canonical-mainline-repair-001 at 0d54d0ffa4ea533f9c535c3e0690d183add7cd22 by user conditional acceptance. This is RATIFICATION evidence, NOT a real user signoff. User accepted unauthorized state via explicit text, not cryptographic signoff.

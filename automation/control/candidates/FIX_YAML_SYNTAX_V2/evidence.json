@@ -16,5 +16,18 @@
     "order_execution_allowed": false,
     "trading_broker_execution_live_started": false,
     "fubon_api_integrated": false,
-    "live_started": false
+    "live_started": false,
+    "identity_trace": {
+        "previous_authorized_head": "cc02208e3ed598bc1dccc1bb1f6a9521a573bd18",
+        "accepted_remote_head": "0d54d0ffa4ea533f9c535c3e0690d183add7cd22",
+        "canonical_merge_commit": "0d54d0ffa4ea533f9c535c3e0690d183add7cd22",
+        "base_head": "f36b00dc2b85ccfcbbf439c39ff97e7c762d7c2b",
+        "candidate_head": "bc3d149dd2cc3443e990d5ea67beaa04943c43c2",
+        "evidence_scope_commit": "f36b00dc2b85ccfcbbf439c39ff97e7c762d7c2b",
+        "evidence_status": "valid",
+        "identity_collapse_detected": false,
+        "supersedes": "FIX_YAML_SYNTAX",
+        "superseded_invalid_reason": "FIX_YAML_SYNTAX/candidate.diff = 0 bytes",
+        "traceability_sufficient": true
+    }
 }

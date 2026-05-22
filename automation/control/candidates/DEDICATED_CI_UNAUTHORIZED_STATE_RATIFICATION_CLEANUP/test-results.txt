@@ -1,0 +1,21 @@
+TEST RESULTS
+ratification_cleanup_and_traceability_candidate
+incident_ratification_identity_trace_signoff_hardening.py: 12 passed
+test_governance_authorization_gate.py: 27 passed
+test_check_required_evidence_ui_gate.py: 23 passed
+test_validate_canonical_repair_evidence.py: 23 passed
+validate_round.py: PASS
+check_forbidden_changes.py: PASS
+check_required_evidence.py: PASS
+check_commit_message.py: PASS
+validate_canonical_repair_evidence.py on RATIFICATION: PASS
+validate_canonical_repair_evidence.py on DEDICATED: PASS
+validate_canonical_repair_evidence.py on FIX_YAML_V2: PASS
+validate_canonical_repair_evidence.py on FIX_YAML_SYNTAX: FAIL (expected, empty candidate.diff)
+check_evidence_package.py on RATIFICATION: PASS
+check_evidence_package.py on DEDICATED: FAIL (expected, template_only signoff)
+check_evidence_package.py on FIX_YAML_SYNTAX: FAIL (expected, template_only signoff)
+check_evidence_package.py on FIX_YAML_V2: FAIL (expected, template_only signoff)
+signoff_hardening: template_only blocked
+passed: 1
+failed: 0
