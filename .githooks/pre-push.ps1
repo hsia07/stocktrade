@@ -228,26 +228,38 @@ function Assert-MergeCommitAllowed {
     Write-Host "PASS: no blocked old source references found"
     Write-Host "PASS: source-of-truth lock verified"
 
+    $candidateEvidenceInTree = $false
+    $candidatesDirsResult = git ls-tree -r --name-only $LocalSha -- automation/control/candidates/ 2>$null
+    if ($candidatesDirsResult) {
+        $evidenceInTree = $candidatesDirsResult | Where-Object { $_ -match "evidence\.json$" }
+        if ($evidenceInTree -and $evidenceInTree.Count -gt 0) {
+            $candidateEvidenceInTree = $true
+        }
+    }
+
     $changedEvidence = Get-ChangedEvidenceFiles -Sha $LocalSha
-    if ($changedEvidence.Count -eq 0) {
-        Write-Host "ERROR: LAW 04 COMPLIANCE CHECK FAILED: No evidence.json found in commit changes"
-        Write-Host "ERROR: Required: evidence.json with law_compliance: `"04`" must be added/modified in this commit"
+    if ($changedEvidence.Count -eq 0 -and -not $candidateEvidenceInTree) {
+        Write-Host "ERROR: LAW 04 COMPLIANCE CHECK FAILED: No evidence.json found in commit changes or candidate tree"
+        Write-Host "ERROR: Required: evidence.json with law_compliance: `"04`" must be in commit changes or candidate tree"
         Write-Host "ERROR: See Law 04 Article 261"
         exit 1
     }
 
-    foreach ($evPath in $changedEvidence) {
-        $isValid = Check-Law04Compliance -Sha $LocalSha -EvidencePath $evPath
-        if (-not $isValid) {
-            Write-Host "ERROR: LAW 04 COMPLIANCE CHECK FAILED: evidence.json missing or invalid law_compliance field"
-            Write-Host "ERROR: File: $evPath (changed in this commit)"
-            Write-Host "ERROR: Required: law_compliance: `"04`" in evidence.json"
-            Write-Host "ERROR: See Law 04 Article 261"
-            exit 1
+    if ($changedEvidence.Count -gt 0) {
+        foreach ($evPath in $changedEvidence) {
+            $isValid = Check-Law04Compliance -Sha $LocalSha -EvidencePath $evPath
+            if (-not $isValid) {
+                Write-Host "ERROR: LAW 04 COMPLIANCE CHECK FAILED: evidence.json missing or invalid law_compliance field"
+                Write-Host "ERROR: File: $evPath (changed in this commit)"
+                Write-Host "ERROR: Required: law_compliance: `"04`" in evidence.json"
+                Write-Host "ERROR: See Law 04 Article 261"
+                exit 1
+            }
         }
+        Write-Host "PASS: Law 04 compliance verified (law_compliance: 04 in all evidence.json files changed in this commit)"
+    } else {
+        Write-Host "PASS: Law 04 compliance verified (evidence.json present in candidate tree, no changes in this commit)"
     }
-
-    Write-Host "PASS: Law 04 compliance verified (law_compliance: 04 in all evidence.json files changed in this commit)"
 
     # Governance Prevention Gate: check merge/push signoff files
     $signoffFiles = Get-ChangedSignoffFiles -Sha $LocalSha

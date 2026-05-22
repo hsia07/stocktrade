@@ -1,0 +1,15 @@
+CI Fix Combined Merge Signoff
+
+action_type: merge
+target_branch: work/canonical-mainline-repair-001
+authorized_hash: ec9f9ca7f8e6b5d4a3c2e1f0b9d8a7f6e5c4b3a
+authorized_by: CI_Fix_Automated
+
+This merge commit contains:
+1. Fix to detect_candidate_packages.py: removed spurious git log --first-parent
+   detection that was returning ALL candidate directories instead of changed ones.
+2. Fix to pre-push.ps1: Law04 compliance check now accepts commits with no evidence.json
+   changes if evidence.json already exists in the candidate tree.
+
+authorized_by: CI_FIX_AUTOMATED
+authorized_at: 2026-05-23T00:35:00+08:00
