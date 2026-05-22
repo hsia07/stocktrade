@@ -1,0 +1,13 @@
+Fix YAML syntax error in validate-canonical-repair.yml
+
+The GitHub YAML parser rejected line 35 of the workflow file because
+inline Python code inside the run: block had inconsistent indentation
+(10 spaces on line 34, 0 spaces on line 35).
+
+Solution: Extract candidate detection logic into
+scripts/validation/detect_candidate_packages.py and call it from the
+workflow.
+
+Files modified:
+  .github/workflows/validate-canonical-repair.yml (22 lines removed, 1 replaced)
+  scripts/validation/detect_candidate_packages.py (53 lines added, new file)
