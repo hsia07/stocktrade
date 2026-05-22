@@ -1,1 +1,1 @@
-template_only: Push authorized for origin/work/canonical-mainline-repair-001 at fbc7ed44f817f92b922a9c79bec82dca6057e3af by user consent. Template only -- NOT a real user signoff. Fix: add pytest to CI install deps.
+template_only: Push authorized for origin/work/canonical-mainline-repair-001 at f36b00dc2b85ccfcbbf439c39ff97e7c762d7c2b by user consent. Template only -- NOT a real user signoff. Fix: candidate.diff UTF-16 encoding issue.

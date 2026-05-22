@@ -1,3 +1,39 @@
 diff --git a/automation/control/candidates/FIX_YAML_SYNTAX_V2/candidate.diff b/automation/control/candidates/FIX_YAML_SYNTAX_V2/candidate.diff
-index e5c8c27..bc5cf23 100644
+index e5c8c27..a09725b 100644
 Binary files a/automation/control/candidates/FIX_YAML_SYNTAX_V2/candidate.diff and b/automation/control/candidates/FIX_YAML_SYNTAX_V2/candidate.diff differ
+diff --git a/automation/control/candidates/FIX_YAML_SYNTAX_V2/evidence.json b/automation/control/candidates/FIX_YAML_SYNTAX_V2/evidence.json
+index 93fbe75..a906fbe 100644
+--- a/automation/control/candidates/FIX_YAML_SYNTAX_V2/evidence.json
++++ b/automation/control/candidates/FIX_YAML_SYNTAX_V2/evidence.json
+@@ -2,10 +2,10 @@
+     "law_compliance": "04",
+     "round_id": "FIX_YAML_SYNTAX_V2",
+     "formal_status_code": "04",
+-    "ci_round": 4,
+-    "base_head": "fbc7ed44f817f92b922a9c79bec82dca6057e3af",
++    "ci_round": 5,
++    "base_head": "f36b00dc2b85ccfcbbf439c39ff97e7c762d7c2b",
+     "candidate_branch": "candidate/fix-yaml-syntax-v2",
+-    "task": "Add pytest to CI install deps. The governance prevention tests (step 8) fail because pytest is not installed in the CI runner. Add pip install pytest to the install deps step.",
++    "task": "Add pytest to CI install deps; fix candidate.diff UTF-16 encoding issue. The validate-canonical-repair CI step 6 rejects candidate.diff with UTF-16 encoding (PowerShell default) and UTF-8 BOM. Generate candidate.diff without BOM using Python.",
+     "evidence_type": "canonical_repair_bugfix",
+     "runtime_started": false,
+     "r049_started": false,
+diff --git a/automation/control/candidates/FIX_YAML_SYNTAX_V2/merge_signoff.txt b/automation/control/candidates/FIX_YAML_SYNTAX_V2/merge_signoff.txt
+index 4dcadbc..58ee5a6 100644
+--- a/automation/control/candidates/FIX_YAML_SYNTAX_V2/merge_signoff.txt
++++ b/automation/control/candidates/FIX_YAML_SYNTAX_V2/merge_signoff.txt
+@@ -1 +1 @@
+-template_only: Merge authorized for work/canonical-mainline-repair-001 at fbc7ed44f817f92b922a9c79bec82dca6057e3af by user consent. Template only -- NOT a real user signoff. Fix: add pytest to CI install deps.
+\ No newline at end of file
++template_only: Merge authorized for work/canonical-mainline-repair-001 at f36b00dc2b85ccfcbbf439c39ff97e7c762d7c2b by user consent. Template only -- NOT a real user signoff. Fix: candidate.diff UTF-16 encoding issue.
+\ No newline at end of file
+diff --git a/automation/control/candidates/FIX_YAML_SYNTAX_V2/push_signoff.txt b/automation/control/candidates/FIX_YAML_SYNTAX_V2/push_signoff.txt
+index 5043352..be80bcd 100644
+--- a/automation/control/candidates/FIX_YAML_SYNTAX_V2/push_signoff.txt
++++ b/automation/control/candidates/FIX_YAML_SYNTAX_V2/push_signoff.txt
+@@ -1 +1 @@
+-template_only: Push authorized for origin/work/canonical-mainline-repair-001 at fbc7ed44f817f92b922a9c79bec82dca6057e3af by user consent. Template only -- NOT a real user signoff. Fix: add pytest to CI install deps.
+\ No newline at end of file
++template_only: Push authorized for origin/work/canonical-mainline-repair-001 at f36b00dc2b85ccfcbbf439c39ff97e7c762d7c2b by user consent. Template only -- NOT a real user signoff. Fix: candidate.diff UTF-16 encoding issue.
+\ No newline at end of file
