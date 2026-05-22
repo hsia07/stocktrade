@@ -1,0 +1,1 @@
+No aider used. This round was executed by OpenCode as part of dedicated canonical repair CI workflow rework.
