@@ -1,0 +1,21 @@
+round_id: FIX_YAML_SYNTAX
+formal_status_code: 04
+base_head: 36949b3a8682d3eafc7aa49055dbab6afbcfc1e7
+candidate_branch: candidate/fix-yaml-syntax
+
+Review:
+The validate-canonical-repair.yml workflow had a YAML syntax error on line 35
+caused by inline Python code with inconsistent indentation inside the run: block.
+The fix extracts the candidate detection logic into
+scripts/validation/detect_candidate_packages.py, a standalone script with clean
+command-line interface. The workflow now calls this script directly.
+
+The validator (validate_canonical_repair_evidence.py) already had the
+find_changed_candidate_dirs() function — the detect script is a thin CLI wrapper
+that re-exports this function's output as space-separated paths.
+
+No runtime, broker, live, or R049/R047/R048/R031 claims added.
+All governance prevention tests (27/27), UI gate tests (23/23), and
+canonical repair CI tests (23/23) pass.
+
+Recommendation: apply and push

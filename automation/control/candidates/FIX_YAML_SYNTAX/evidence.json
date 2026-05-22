@@ -1,0 +1,19 @@
+{
+    "law_compliance": "04",
+    "round_id": "FIX_YAML_SYNTAX",
+    "formal_status_code": "04",
+    "base_head": "36949b3a8682d3eafc7aa49055dbab6afbcfc1e7",
+    "candidate_branch": "candidate/fix-yaml-syntax",
+    "task": "Fix YAML syntax error in validate-canonical-repair.yml by extracting inline Python detection logic into standalone script",
+    "evidence_type": "canonical_repair_bugfix",
+    "runtime_started": false,
+    "r049_started": false,
+    "r047_started": false,
+    "r048_started": false,
+    "r031_started": false,
+    "broker_api_called": false,
+    "order_execution_allowed": false,
+    "trading_broker_execution_live_started": false,
+    "fubon_api_integrated": false,
+    "live_started": false
+}

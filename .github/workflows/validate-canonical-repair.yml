@@ -31,27 +31,7 @@ jobs:
           else
             BASE="$(git rev-list --max-parents=0 HEAD)"
           fi
-          DIRS=$(python -c "
-import subprocess, sys
-result = subprocess.run(['git', 'diff', '--name-only', '${BASE}..HEAD', '--', 'automation/control/candidates/'], capture_output=True, text=True)
-dirs = set()
-for line in result.stdout.strip().splitlines():
-    line = line.strip()
-    if not line:
-        continue
-    from pathlib import Path
-    p = Path(line)
-    parent = p.parent
-    while parent.name:
-        if (parent / 'evidence.json').exists():
-            dirs.add(parent.as_posix())
-            break
-        parent = parent.parent
-if dirs:
-    print(' '.join(sorted(dirs)))
-else:
-    print('NONE')
-          ")
+          DIRS=$(python scripts/validation/detect_candidate_packages.py "$BASE")
           echo "candidate_dirs=$DIRS" >> $GITHUB_OUTPUT
 
       - name: Validate canonical repair evidence
