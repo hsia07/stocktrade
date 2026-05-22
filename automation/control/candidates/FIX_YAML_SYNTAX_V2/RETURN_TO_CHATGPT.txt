@@ -1,0 +1,20 @@
+round_id: FIX_YAML_SYNTAX_V2
+formal_status_code: 04
+base_head: 7f6f71aad2c6f4fe0d56d1a403f338c78333e46c
+candidate_branch: candidate/fix-yaml-syntax-v2
+
+Review:
+The first fix (FIX_YAML_SYNTAX) extracted the detection inline Python
+but missed the evidence checker step, which also had unindented inline
+Python. This round extracts the evidence checker inline Python into
+scripts/validation/check_evidence_package.py, a standalone script that
+imports EvidenceChecker and runs check_completeness.
+
+Both inline Python blocks in validate-canonical-repair.yml are now
+replaced by script calls, eliminating YAML indentation issues.
+
+No runtime, broker, live, or R049/R047/R048/R031 claims added.
+All governance prevention tests (27/27), UI gate tests (23/23),
+and canonical repair CI tests (23/23) continue to pass.
+
+Recommendation: apply and push
