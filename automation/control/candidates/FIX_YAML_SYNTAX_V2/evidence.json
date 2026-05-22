@@ -1,0 +1,20 @@
+{
+    "law_compliance": "04",
+    "round_id": "FIX_YAML_SYNTAX_V2",
+    "formal_status_code": "04",
+    "base_head": "7f6f71aad2c6f4fe0d56d1a403f338c78333e46c",
+    "candidate_branch": "candidate/fix-yaml-syntax-v2",
+    "candidate_commit": "6cf1c87a497afe208e62d7e4fa8c155a33aa45cc",
+    "task": "Extract remaining inline Python from evidence checker step in validate-canonical-repair.yml into standalone script",
+    "evidence_type": "canonical_repair_bugfix",
+    "runtime_started": false,
+    "r049_started": false,
+    "r047_started": false,
+    "r048_started": false,
+    "r031_started": false,
+    "broker_api_called": false,
+    "order_execution_allowed": false,
+    "trading_broker_execution_live_started": false,
+    "fubon_api_integrated": false,
+    "live_started": false
+}
