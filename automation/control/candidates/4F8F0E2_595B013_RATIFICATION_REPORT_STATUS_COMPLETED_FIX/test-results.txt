@@ -1,0 +1,45 @@
+4F8F0E2_595B013_RATIFICATION_REPORT_STATUS_COMPLETED_FIX - Local Validator Results
+====================================================================================
+
+Base head: 4f8f0e2d7992cda2e8e00e57db1e6c71a556e6b5
+Target: Fix evidence_checker report_status_not_completed in 595B013 ratification package
+
+Local validator results after fix applied:
+
+evidence_checker.py:
+  PASS (no output = all checks passed)
+
+validate_canonical_repair_evidence.py on 595B013 ratification package:
+  [PASS] automation\control\candidates\595B013_UNAUTHORIZED_STATE_RATIFICATION_AND_MARKER_FIX_EVIDENCE_COMPLETION
+  PASS: 1 acceptance package(s) validated
+
+validate_canonical_repair_evidence.py on marker fix package:
+  [PASS] automation\control\candidates\DD83582_ROLLBACK_REWORK_RTCG_FORMAL_STATUS_CODE_MARKER_FIX
+  PASS: 1 acceptance package(s) validated
+
+check_commit_message.py --manifest manifests/current_round.yaml:
+  PASS: merge commit - round-id check skipped
+
+validate_round.py --manifest manifests/current_round.yaml:
+  PASS: manifest schema valid
+
+check_forbidden_changes.py --manifest manifests/current_round.yaml:
+  PASS: no forbidden path modified
+
+check_required_evidence.py --manifest manifests/current_round.yaml:
+  PASS: required evidence present and content valid
+  PASS: law_compliance exact string '04'
+  PASS: prohibited_actions_verified complete
+  PASS: evidence path in authorized scope
+  PASS: candidate.diff present
+  PASS: secret scan passed
+
+pre-push hook (.githooks/pre-push.ps1):
+  [pre-push] ok
+
+Fix summary:
+  - Changed 595B013_UNAUTHORIZED_STATE_RATIFICATION_AND_MARKER_FIX_EVIDENCE_COMPLETION/report.json
+    status from "candidate_ready" to "completed"
+  - evidence_checker report_status_not_completed error RESOLVED
+
+total: 8/8 local validators PASS
