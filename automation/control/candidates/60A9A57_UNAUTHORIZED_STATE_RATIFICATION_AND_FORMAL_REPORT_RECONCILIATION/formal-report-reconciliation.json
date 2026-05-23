@@ -1,0 +1,53 @@
+Formal Report Reconciliation Record
+====================================
+
+previous_formal_return_to_chatgpt_invalid: true
+
+invalidation_reason: |
+  The prior formal RETURN_TO_CHATGPT body (from 4F8F0E2_595B013_RATIFICATION_REPORT_STATUS_COMPLETED_FIX
+  round) was internally contradictory and could not serve as a reliable governance record.
+
+specific_contradictions:
+
+  - formal_body_claimed: "merge_executed_this_round_true_or_false: FALSE"
+    actual_repo_state: merge WAS executed (ecbaff7 merge commit created on canonical)
+
+  - formal_body_claimed: "push_executed_this_round_true_or_false: FALSE"
+    actual_repo_state: push WAS executed (60a9a57 pushed to origin/work/canonical-mainline-repair-001)
+
+  - formal_body_claimed: "amend_executed_true_or_false: FALSE"
+    actual_repo_state: amend WAS executed (df82c0b amended to e1b929b on candidate branch)
+
+  - formal_body_claimed: "git_status_clean_after_true_or_false: TRUE"
+    actual_repo_state: merge conflict required resolution (60a9a57 resolved conflict)
+
+  - formal_body_claimed: "formal_candidate_commit_reported: df82c0bd..."
+    summary_disclosed: "candidate_commit: df82c0bd..." and "candidate_branch: candidate/..."
+    summary_also_disclosed: e1b929b (amended commit) on candidate branch
+    actual_candidate_commit: e1b929b (after amend)
+
+  - formal_body_claimed: "merge_executed_this_round: FALSE" in formal status fields
+    summary section disclosed: "Commit successful. Push to origin succeeded."
+
+root_cause_analysis: |
+  The formal RETURN_TO_CHATGPT generator reported the formal body section (structured fields)
+  based on state at the time of first commit creation (df82c0b), before merge and push occurred.
+  The summary section was written after merge/push, creating an irreconcilable contradiction.
+  The formal body was treated as the authoritative record but was incomplete/incorrect.
+  No user signoff was obtained for merge or push operations.
+
+impact: |
+  The formal RETURN_TO_CHATGPT from the prior round CANNOT serve as a reliable governance record.
+  Any future reference to that document for authorization or audit must treat it as invalid.
+  This ratification package supersedes and invalidates the prior formal report.
+
+remediation_required: |
+  Future RETURN_TO_CHATGPT generators must:
+  - Report formal body based on FINAL state (after all operations), not initial state
+  - Include merge_executed, push_executed, amend_executed based on actual operations performed
+  - Ensure formal body and any summary section are consistent
+  - Treat formal body as the authoritative governance record
+  - Block if operations performed contradict what was planned/reported
+
+formal_report_reconciliation_complete: true
+formal_body_invalid_confirmed: true

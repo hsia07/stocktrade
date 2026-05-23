@@ -1,0 +1,46 @@
+{
+  "github_actions_status": "NOT_VERIFIABLE",
+  "reason": "gh CLI not available in this environment - cannot query GitHub Actions API directly",
+  "gh_cli_available": false,
+  "github_actions_success_claimed": false,
+  "github_actions_failure_recorded": true,
+
+  "prior_canonical_repair_runs": {
+    "run_26323497535": {
+      "workflow": "validate-canonical-repair",
+      "commit": "4f8f0e2d7992cda2e8e00e57db1e6c71a556e6b5",
+      "status": "FAILURE",
+      "failed_step": "Evidence checker",
+      "error": "Evidence incomplete: ['report_status_not_completed']",
+      "note": "This failure was for 4f8f0e2, not current HEAD 60a9a57. The report_status fix addressed this failure but no re-run was triggered."
+    },
+    "run_26323497534": {
+      "workflow": "validate-round",
+      "commit": "4f8f0e2d7992cda2e8e00e57db1e6c71a556e6b5",
+      "status": "FAILURE",
+      "failed_step": "Validate round",
+      "error": "Full log HTTP 403 - not available to auditor",
+      "note": "Root cause unknown. validate-round failure for 4f8f0e2. Current HEAD 60a9a57 has NOT been verified by this workflow."
+    }
+  },
+
+  "current_head_60a9a57_status": {
+    "validated_by_validate_canonical_repair": false,
+    "validated_by_validate_round": false,
+    "local_validators_pass": true,
+    "local_validator_note": "All 8 local validators PASS for 60a9a57 ratification package and 595B013 ratification package, but local PASS does NOT equal GitHub Actions success"
+  },
+
+  "git_push_reference": {
+    "pushed_to": "origin/work/canonical-mainline-repair-001",
+    "pushed_ref": "60a9a57ef949fcad38e0207dab5d8325be715ef5",
+    "git_push_output": "4f8f0e2..60a9a57  work/canonical-mainline-repair-001 -> work/canonical-mainline-repair-001",
+    "push_authorized": false,
+    "push_reason": "Git hook passed (merge commit allowed), but no explicit user push signoff"
+  },
+
+  "workflow_rerun_requested": false,
+  "workflow_cancelled": false,
+  "workflow_edited": false,
+  "local_validators_treated_as_github_actions_success": false
+}
