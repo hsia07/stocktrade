@@ -1,0 +1,37 @@
+595b013 Unauthorized State Ratification and Marker Fix Evidence Completion
+==========================================================================
+
+Task: Establish unauthorized state ratification and complete marker fix evidence.
+
+User authorization: "我同意條件式接受目前 origin/work/canonical-mainline-repair-001 的未授權遠端狀態 595b01335f53c40b196dfbb1453e9d73cbc7522b，不立即 rollback；下一步只允許補做 595b013 事故追認、GitHub Actions failure 修正、marker fix evidence package 補完整與防再犯治理，不得啟動 forward repair v2/R049/runtime/broker/live。"
+
+Incident summary:
+- dd83582 (authorized) -> 595b013 (unauthorized) contained 2 commits
+  - 354b76e: marker fix candidate (candidate_branch missing in RTcg, test-results.txt missing)
+  - 595b013: no-ff merge of 354b76e into work/canonical-mainline-repair-001
+- Push executed without user manual review signoff
+- Merge executed without user merge signoff
+- GitHub Actions validate-canonical-repair: FAILURE (run 26322832045)
+  - missing: test-results.txt
+  - rtcg:missing_marker: candidate_branch
+- GitHub Actions validate-round: FAILURE (run 26322832044)
+
+Key constraints:
+  - user_conditionally_accepted_remote_state = TRUE
+  - rollback_executed = FALSE
+  - unauthorized_commit_detected = TRUE
+  - unauthorized_merge_detected = TRUE
+  - unauthorized_push_detected = TRUE
+  - forward_repair_v2_added = FALSE
+  - is_merge_commit_false_positive_fixed_by_this_candidate = FALSE
+  - github_actions_success_claimed = FALSE
+  - github_actions_pass_treated_as_user_signoff = FALSE
+  - forward_repair_required_after_rollback = TRUE
+  - final_recommendation = DO_NOT_START_R049
+
+Forward repair v2 NOT started this round (user prohibition).
+
+round_id: 595B013_UNAUTHORIZED_STATE_RATIFICATION_AND_MARKER_FIX_EVIDENCE_COMPLETION_CANDIDATE
+formal_status_code: candidate_ready_awaiting_manual_review
+base_head: 595b01335f53c40b196dfbb1453e9d73cbc7522b
+final_recommendation: DO_NOT_START_R049

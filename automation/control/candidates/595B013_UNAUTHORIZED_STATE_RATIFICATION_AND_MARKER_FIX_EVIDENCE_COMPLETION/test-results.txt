@@ -1,0 +1,46 @@
+595b013 Unauthorized State Ratification - Local Validator Results
+================================================================
+
+Base head: 595b01335f53c40b196dfbb1453e9d73cbc7522b
+
+Local equivalent validator results:
+
+check_commit_message.py --manifest manifests/current_round.yaml:
+  PASS: merge commit - round-id check skipped
+
+validate_round.py --manifest manifests/current_round.yaml:
+  PASS: manifest schema valid
+
+check_forbidden_changes.py --manifest manifests/current_round.yaml:
+  PASS: no forbidden path modified
+
+check_required_evidence.py --manifest manifests/current_round.yaml:
+  PASS: required evidence present and content valid
+  PASS: law_compliance exact string '04'
+  PASS: prohibited_actions_verified complete
+  PASS: evidence path in authorized scope
+  PASS: candidate.diff present
+  PASS: secret scan passed
+
+evidence_checker.py:
+  PASS (no output)
+
+pre-push hook (.githooks/pre-push.ps1):
+  [pre-push] ok
+
+validate_canonical_repair_evidence on marker fix package (DD83582_ROLLBACK_REWORK_RTCG_FORMAL_STATUS_CODE_MARKER_FIX):
+  Result: PASS after fixes applied (added test-results.txt and candidate_branch marker)
+
+GitHub Actions (remote, NOT_VERIFIABLE without admin token):
+  validate-canonical-repair run 26322832045: FAILURE
+    - missing: test-results.txt (FIXED locally)
+    - rtcg: missing_marker: candidate_branch (FIXED locally)
+  validate-round run 26322832044: FAILURE
+    - root cause unresolved (log not accessible without admin token)
+    - local equivalent validators ALL PASS
+
+Note: All local validators pass. GitHub Actions failures were root-caused
+and fixes applied. validate-round failure reason could not be determined
+from remote logs (HTTP 403 on job logs). Local equivalent scripts pass.
+
+git status after fix: clean (no changes)

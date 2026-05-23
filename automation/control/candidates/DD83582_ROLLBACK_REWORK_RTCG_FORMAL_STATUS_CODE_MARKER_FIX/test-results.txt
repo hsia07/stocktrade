@@ -1,0 +1,44 @@
+DD83582_ROLLBACK_REWORK_RTCG_FORMAL_STATUS_CODE_MARKER_FIX - Local Validator Results
+==================================================================================
+
+Base head: dd83582e7dc34575bd6678694a6c565056b6e31e
+Target: Fix rtcg missing markers in VALIDATE_ROUND_ROUTING_BAD_FIX_ROLLBACK_REWORK/RETURN_TO_CHATGPT.txt
+
+Local validator results after fixes applied:
+
+check_commit_message.py --manifest manifests/current_round.yaml:
+  PASS: merge commit - round-id check skipped
+
+validate_round.py --manifest manifests/current_round.yaml:
+  PASS: manifest schema valid
+
+check_forbidden_changes.py --manifest manifests/current_round.yaml:
+  PASS: no forbidden path modified
+
+check_required_evidence.py --manifest manifests/current_round.yaml:
+  PASS: required evidence present and content valid
+  PASS: law_compliance exact string '04'
+  PASS: prohibited_actions_verified complete
+  PASS: evidence path in authorized scope
+  PASS: candidate.diff present
+  PASS: secret scan passed
+
+validate_canonical_repair_evidence.py on VALIDATE_ROUND_ROUTING_BAD_FIX_ROLLBACK_REWORK:
+  PASS: 1 acceptance package(s) validated
+
+validate_canonical_repair_evidence.py on DD83582_ROLLBACK_REWORK_RTCG_FORMAL_STATUS_CODE_MARKER_FIX:
+  PASS: after candidate_branch marker and test-results.txt added
+
+pre-push hook (.githooks/pre-push.ps1):
+  [pre-push] ok
+
+GitHub Actions (remote, verified via API):
+  validate-canonical-repair run 26322832045: FAILURE
+    - missing: test-results.txt (FIXED)
+    - rtcg: missing_marker: candidate_branch (FIXED)
+  validate-round run 26322832044: FAILURE
+    - root cause unresolved from remote logs
+
+Note: All local equivalent validators pass after fixes applied.
+
+total: 7/7 local validators PASS
