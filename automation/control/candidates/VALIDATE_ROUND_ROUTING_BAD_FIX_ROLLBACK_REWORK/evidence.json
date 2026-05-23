@@ -1,0 +1,36 @@
+{
+  "candidate_name": "VALIDATE_ROUND_ROUTING_BAD_FIX_ROLLBACK_REWORK",
+  "law_compliance": "04",
+  "round_id": "VALIDATE_ROUND_ROUTING_BAD_FIX_ROLLBACK_REWORK_CANDIDATE",
+  "formal_status_code": "candidate_ready_awaiting_manual_review",
+  "rollback_candidate": true,
+  "bad_commit_reverted": "8d95e58d4326c089b8935c932b4db92559b4be1b",
+  "last_safe_authorized_head": "f072bd8a53ea2c5a7f000e1b50ebe884fa3cf4b9",
+  "user_rollback_authorization_recorded": true,
+  "rollback_reason": "remove unauthorized bad fix from canonical",
+  "unauthorized_commit_detected": true,
+  "unauthorized_push_detected": true,
+  "is_merge_commit_false_positive_fixed_by_this_rollback": false,
+  "forward_repair_required_after_rollback": true,
+  "forward_repair_note": "rollback restores prior state only; forward repair v2 must use HEAD parent-count structural detection (git rev-list --parents -n 1 HEAD)",
+  "prohibited_actions_verified": {
+    "reset_used": false,
+    "force_push_used": false,
+    "direct_canonical_history_modified": false,
+    "r049_started": false,
+    "runtime_started": false,
+    "r047_started": false,
+    "r048_started": false,
+    "r031_started": false,
+    "broker_api_called": false,
+    "order_execution_allowed": false
+  },
+  "files_reverted": [
+    "scripts/validation/check_commit_message.py (is_merge_commit restored to f072bd8a state)"
+  ],
+  "files_deleted": [
+    "tests/test_validate_round_canonical_repair_routing.py",
+    "automation/control/candidates/VALIDATE_ROUND_CANONICAL_REPAIR_ROUTING_REWORK/"
+  ],
+  "final_recommendation": "DO_NOT_START_R049"
+}

@@ -1,0 +1,13 @@
+{
+  "report_id": "VALIDATE_ROUND_ROUTING_BAD_FIX_ROLLBACK_REWORK",
+  "status": "candidate_ready",
+  "bad_commit_reverted": "8d95e58d4326c089b8935c932b4db92559b4be1b",
+  "last_safe_authorized_head": "f072bd8a53ea2c5a7f000e1b50ebe884fa3cf4b9",
+  "rollback_method": "git_revert_no_commit",
+  "reset_used": false,
+  "force_push_used": false,
+  "bad_fix_removed": true,
+  "is_merge_commit_false_positive_fixed_by_rollback": false,
+  "forward_repair_required": true,
+  "final_recommendation": "DO_NOT_START_R049"
+}

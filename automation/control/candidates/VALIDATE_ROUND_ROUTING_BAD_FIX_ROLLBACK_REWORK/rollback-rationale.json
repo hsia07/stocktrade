@@ -1,0 +1,12 @@
+{
+  "rollback_target_commit": "8d95e58d4326c089b8935c932b4db92559b4be1b",
+  "last_safe_authorized_head": "f072bd8a53ea2c5a7f000e1b50ebe884fa3cf4b9",
+  "rollback_reason": "remove unauthorized bad fix from canonical",
+  "unauthorized_commit_detected": true,
+  "unauthorized_push_detected": true,
+  "rollback_executed_by_reset": false,
+  "force_push_used": false,
+  "forward_repair_required_after_rollback": true,
+  "is_merge_commit_false_positive_fixed_by_this_rollback": false,
+  "reason": "rollback restores prior state only; forward repair v2 must use HEAD parent-count structural detection (git rev-list --parents -n 1 HEAD | wc -l > 1)"
+}

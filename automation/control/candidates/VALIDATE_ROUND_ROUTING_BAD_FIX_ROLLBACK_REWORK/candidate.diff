@@ -1,0 +1,301 @@
+﻿diff --git a/automation/control/candidates/VALIDATE_ROUND_CANONICAL_REPAIR_ROUTING_REWORK/RETURN_TO_CHATGPT.txt b/automation/control/candidates/VALIDATE_ROUND_CANONICAL_REPAIR_ROUTING_REWORK/RETURN_TO_CHATGPT.txt
+deleted file mode 100644
+index c53fc78..0000000
+--- a/automation/control/candidates/VALIDATE_ROUND_CANONICAL_REPAIR_ROUTING_REWORK/RETURN_TO_CHATGPT.txt
++++ /dev/null
+@@ -1,23 +0,0 @@
+-VALIDATE_ROUND_CANONICAL_REPAIR_ROUTING_REWORK
+-=============================================
+-
+-Task: Fix validate-round workflow failure on canonical repair / ratification merge.
+-
+-Root Cause: GitHub Actions validate-round failure on f072bd8a was caused by check_commit_message.py is_merge_commit() failing to detect the canonical repair no-ff merge commit. The original function only used git log --merges --max-count=1, which doesn't detect all merge commits, causing PRE_R049 round-id gate to incorrectly block the repair merge.
+-
+-Fix Applied: is_merge_commit() in scripts/validation/check_commit_message.py now uses 3-layer detection:
+-  Layer 1: git log --merges --max-count=1 (original method)
+-  Layer 2: git rev-parse HEAD^1 + HEAD^2 (detect two-parent commits)
+-  Layer 3: git cat-file -t + git rev-list --parents (detect non-first-parent commits)
+-  Any layer returning True = merge commit detected ??round-id check skipped.
+-
+-Key Principles Preserved:
+-  - Active round commits (non-merge) still require PRE_R049 round_id in commit message
+-  - Normal non-repair commits cannot bypass round_id gate by falsely claiming merge
+-  - Canonical repair merges are handled by validate-canonical-repair.yml, not validate-round
+-  - current_round.yaml NOT modified
+-
+-round_id: VALIDATE_ROUND_CANONICAL_REPAIR_ROUTING_REWORK_CANDIDATE
+-formal_status_code: candidate_ready_awaiting_manual_review
+-base_head: f072bd8a53ea2c5a7f000e1b50ebe884fa3cf4b9
+-final_recommendation: DO_NOT_START_R049
+\ No newline at end of file
+diff --git a/automation/control/candidates/VALIDATE_ROUND_CANONICAL_REPAIR_ROUTING_REWORK/candidate.diff b/automation/control/candidates/VALIDATE_ROUND_CANONICAL_REPAIR_ROUTING_REWORK/candidate.diff
+deleted file mode 100644
+index 103f547..0000000
+--- a/automation/control/candidates/VALIDATE_ROUND_CANONICAL_REPAIR_ROUTING_REWORK/candidate.diff
++++ /dev/null
+@@ -1 +0,0 @@
+-嚜盥iff --git a/scripts/validation/check_commit_message.py b/scripts/validation/check_commit_message.pyindex 883b229..70ae8ff 100644--- a/scripts/validation/check_commit_message.py+++ b/scripts/validation/check_commit_message.py@@ -30,9 +30,31 @@ def is_merge_commit() -> bool:             ["git", "log", "--merges", "--max-count=1"],             text=True, stderr=subprocess.DEVNULL         )-        return bool(result.strip())+        if result.strip():+            return True     except Exception:-        return False+        pass+    try:+        p1 = subprocess.check_output(["git", "rev-parse", "HEAD^1"], text=True, stderr=subprocess.DEVNULL).strip()+        p2 = subprocess.check_output(["git", "rev-parse", "HEAD^2"], text=True, stderr=subprocess.DEVNULL).strip()+        if p1 and p2 and p1 != p2:+            return True+    except Exception:+        pass+    try:+        commit_type = subprocess.check_output(+            ["git", "cat-file", "-t", "HEAD"], text=True, stderr=subprocess.DEVNULL+        ).strip()+        if commit_type == "commit":+            parent_count = subprocess.check_output(+                ["git", "rev-list", "--parents", "-n", "1", "HEAD"],+                text=True, stderr=subprocess.DEVNULL+            ).strip().split()+            if len(parent_count) > 2:+                return True+    except Exception:+        pass+    return False  def main():     ap = argparse.ArgumentParser()
+\ No newline at end of file
+diff --git a/automation/control/candidates/VALIDATE_ROUND_CANONICAL_REPAIR_ROUTING_REWORK/evidence.json b/automation/control/candidates/VALIDATE_ROUND_CANONICAL_REPAIR_ROUTING_REWORK/evidence.json
+deleted file mode 100644
+index 8e3a856..0000000
+--- a/automation/control/candidates/VALIDATE_ROUND_CANONICAL_REPAIR_ROUTING_REWORK/evidence.json
++++ /dev/null
+@@ -1,32 +0,0 @@
+-{
+-  "candidate_name": "VALIDATE_ROUND_CANONICAL_REPAIR_ROUTING_REWORK",
+-  "candidate_commit": "TO_BE_CREATED",
+-  "law_compliance": "04",
+-  "round_id": "VALIDATE_ROUND_CANONICAL_REPAIR_ROUTING_REWORK_CANDIDATE",
+-  "formal_status_code": "candidate_ready_awaiting_manual_review",
+-  "base_head": "f072bd8a53ea2c5a7f000e1b50ebe884fa3cf4b9",
+-  "canonical_branch": "work/canonical-mainline-repair-001",
+-  "github_actions_failure_observed": "validate-round workflow failure on f072bd8a commit",
+-  "github_actions_failure_root_cause": "check_commit_message.py is_merge_commit() failed to detect no-ff merge commit (canonical repair ratification) because git log --merges --max-count=1 only finds merge commits recorded in reflog, not all commits. Canonical repair no-ff merge 573e8bd was not a merge commit in the reflog sense, so is_merge_commit() returned False, causing PRE_R049 round-id gate to block the repair merge.",
+-  "fix_applied": "is_merge_commit() in check_commit_message.py now uses 3-layer detection: (1) git log --merges --max-count=1, (2) git rev-parse HEAD^1 + HEAD^2 to detect two-parent commits, (3) git cat-file -t + git rev-list --parents to detect non-first-parent commits. All detection methods run independently; any True returns True. Active round commit message gate (PRE_R049) preserved for non-merge commits.",
+-  "validate_round_current_round_yaml_coupled": true,
+-  "canonical_repair_routing_gap_fixed": true,
+-  "chosen_solution": "commit_message_context_split",
+-  "active_round_round_id_gate_preserved": true,
+-  "canonical_repair_merge_not_blocked_by_PRE_R049": true,
+-  "normal_commit_cannot_bypass_round_id_gate": true,
+-  "validate_canonical_repair_workflow_required": true,
+-  "validate_canonical_repair_evidence_still_enforced": true,
+-  "current_round_yaml_modified": false,
+-  "r049_started": false,
+-  "runtime_started": false,
+-  "r047_started": false,
+-  "r048_started": false,
+-  "r031_started": false,
+-  "broker_api_called": false,
+-  "order_execution_allowed": false,
+-  "final_recommendation": "DO_NOT_START_R049",
+-  "files_modified": [
+-    "scripts/validation/check_commit_message.py (is_merge_commit() 3-layer detection fix)"
+-  ]
+-}
+\ No newline at end of file
+diff --git a/automation/control/candidates/VALIDATE_ROUND_CANONICAL_REPAIR_ROUTING_REWORK/no-aider-used.txt b/automation/control/candidates/VALIDATE_ROUND_CANONICAL_REPAIR_ROUTING_REWORK/no-aider-used.txt
+deleted file mode 100644
+index 03d0fc1..0000000
+--- a/automation/control/candidates/VALIDATE_ROUND_CANONICAL_REPAIR_ROUTING_REWORK/no-aider-used.txt
++++ /dev/null
+@@ -1 +0,0 @@
+-No Aider was used for this task. This fix was created by opencode (the current AI agent), without the Aider coding assistant.
+\ No newline at end of file
+diff --git a/automation/control/candidates/VALIDATE_ROUND_CANONICAL_REPAIR_ROUTING_REWORK/report.json b/automation/control/candidates/VALIDATE_ROUND_CANONICAL_REPAIR_ROUTING_REWORK/report.json
+deleted file mode 100644
+index dccbd50..0000000
+--- a/automation/control/candidates/VALIDATE_ROUND_CANONICAL_REPAIR_ROUTING_REWORK/report.json
++++ /dev/null
+@@ -1,12 +0,0 @@
+-{
+-  "report_id": "VALIDATE_ROUND_CANONICAL_REPAIR_ROUTING_REWORK",
+-  "status": "completed",
+-  "base_head": "f072bd8a53ea2c5a7f000e1b50ebe884fa3cf4b9",
+-  "canonical_branch": "work/canonical-mainline-repair-001",
+-  "fix_description": "is_merge_commit() 3-layer detection: git log --merges + git rev-parse HEAD^1/HEAD^2 + git cat-file + git rev-list --parents",
+-  "active_round_round_id_gate_preserved": true,
+-  "canonical_repair_merge_not_blocked_by_PRE_R049": true,
+-  "normal_commit_cannot_bypass_round_id_gate": true,
+-  "current_round_yaml_modified": false,
+-  "final_recommendation": "DO_NOT_START_R049"
+-}
+\ No newline at end of file
+diff --git a/automation/control/candidates/VALIDATE_ROUND_CANONICAL_REPAIR_ROUTING_REWORK/task.txt b/automation/control/candidates/VALIDATE_ROUND_CANONICAL_REPAIR_ROUTING_REWORK/task.txt
+deleted file mode 100644
+index acf4bc3..0000000
+--- a/automation/control/candidates/VALIDATE_ROUND_CANONICAL_REPAIR_ROUTING_REWORK/task.txt
++++ /dev/null
+@@ -1 +0,0 @@
+-Fix validate-round canonical repair routing. is_merge_commit() 3-layer detection.
+\ No newline at end of file
+diff --git a/automation/control/candidates/VALIDATE_ROUND_CANONICAL_REPAIR_ROUTING_REWORK/test-results.txt b/automation/control/candidates/VALIDATE_ROUND_CANONICAL_REPAIR_ROUTING_REWORK/test-results.txt
+deleted file mode 100644
+index c75bf25..0000000
+--- a/automation/control/candidates/VALIDATE_ROUND_CANONICAL_REPAIR_ROUTING_REWORK/test-results.txt
++++ /dev/null
+@@ -1,14 +0,0 @@
+-test_results:
+-  test_meta_ratification_routing.py: 8 passed
+-  test_github_actions_573e8bd_unauthorized_state_ratification.py: 11 passed
+-  test_validate_canonical_repair_evidence.py: 20 passed
+-  test_dedicated_ci_51aec23_ratification.py: 26 passed
+-  test_governance_authorization_gate.py: 27 passed (3 non-blocking threading warnings)
+-  test_check_required_evidence_ui_gate.py: 30 passed
+-  test_incident_ratification_identity_trace_signoff_hardening.py: 8 passed
+-  local validators: all PASS
+-  check_commit_message fix: PASS on f072bd8a merge commit
+-
+-test_count: 130
+-tests_passed: 130
+-blocking_failures: 0
+\ No newline at end of file
+diff --git a/scripts/validation/check_commit_message.py b/scripts/validation/check_commit_message.py
+index 70ae8ff..883b229 100644
+--- a/scripts/validation/check_commit_message.py
++++ b/scripts/validation/check_commit_message.py
+@@ -30,31 +30,9 @@ def is_merge_commit() -> bool:
+             ["git", "log", "--merges", "--max-count=1"],
+             text=True, stderr=subprocess.DEVNULL
+         )
+-        if result.strip():
+-            return True
++        return bool(result.strip())
+     except Exception:
+-        pass
+-    try:
+-        p1 = subprocess.check_output(["git", "rev-parse", "HEAD^1"], text=True, stderr=subprocess.DEVNULL).strip()
+-        p2 = subprocess.check_output(["git", "rev-parse", "HEAD^2"], text=True, stderr=subprocess.DEVNULL).strip()
+-        if p1 and p2 and p1 != p2:
+-            return True
+-    except Exception:
+-        pass
+-    try:
+-        commit_type = subprocess.check_output(
+-            ["git", "cat-file", "-t", "HEAD"], text=True, stderr=subprocess.DEVNULL
+-        ).strip()
+-        if commit_type == "commit":
+-            parent_count = subprocess.check_output(
+-                ["git", "rev-list", "--parents", "-n", "1", "HEAD"],
+-                text=True, stderr=subprocess.DEVNULL
+-            ).strip().split()
+-            if len(parent_count) > 2:
+-                return True
+-    except Exception:
+-        pass
+-    return False
++        return False
+ 
+ def main():
+     ap = argparse.ArgumentParser()
+diff --git a/tests/test_validate_round_canonical_repair_routing.py b/tests/test_validate_round_canonical_repair_routing.py
+deleted file mode 100644
+index 19254c0..0000000
+--- a/tests/test_validate_round_canonical_repair_routing.py
++++ /dev/null
+@@ -1,123 +0,0 @@
+-#!/usr/bin/env python3
+-"""
+-Tests for validate-round canonical repair routing fix in check_commit_message.py.
+-"""
+-import json, pytest, subprocess, tempfile, shutil
+-from pathlib import Path
+-
+-
+-class TestValidateRoundCanonicalRepairRouting:
+-    """Test that validate-round correctly routes canonical repair merges vs active round commits."""
+-
+-    def test_is_merge_commit_detects_all_merge_commits(self):
+-        """is_merge_commit() detects both reflog merge commits and all no-ff merge commits."""
+-        from scripts.validation.check_commit_message import is_merge_commit
+-        result = is_merge_commit()
+-        assert result is True, "f072bd8a is a no-ff merge commit, is_merge_commit() must return True"
+-
+-    def test_active_round_commit_round_id_gate_preserved_for_non_merge(self):
+-        """Non-merge commit without current_round PRE_R049 round_id must FAIL."""
+-        from scripts.validation.check_commit_message import get_last_commit_message, is_merge_commit
+-        import subprocess, sys
+-        msg = get_last_commit_message()
+-        is_merge = is_merge_commit()
+-        manifest_round_id = "PRE_R049_LOCAL_WEBSITE_VISIBLE_SURFACE_GAP_REMEDIATION"
+-        if not is_merge and manifest_round_id not in msg:
+-            pytest.fail("Active round non-merge commit without round_id should be blocked")
+-
+-    def test_canonical_repair_merge_not_blocked_by_PRE_R049(self):
+-        """Canonical repair no-ff merge commit without PRE_R049 round_id must NOT be blocked."""
+-        from scripts.validation.check_commit_message import is_merge_commit
+-        is_merge = is_merge_commit()
+-        assert is_merge is True, "Canonical repair merge must be detected as merge, not blocked by PRE_R049 round-id gate"
+-
+-    def test_check_commit_message_passes_on_no_ff_merge(self):
+-        """check_commit_message.py must PASS on no-ff merge commit without PRE_R049 round_id."""
+-        result = subprocess.run(
+-            ["python", "scripts/validation/check_commit_message.py", "--manifest", "manifests/current_round.yaml"],
+-            capture_output=True, text=True, cwd=Path(".").resolve()
+-        )
+-        assert result.returncode == 0, f"check_commit_message should PASS on no-ff merge, got: {result.stderr}"
+-        assert "merge commit" in result.stdout.lower() or "PASS" in result.stdout, f"Expected merge skip or PASS, got: {result.stdout}"
+-
+-    def test_normal_commit_cannot_bypass_round_id_gate_by_false_merge_claim(self):
+-        """Normal non-merge commit cannot fake a merge detection to bypass round_id gate."""
+-        from scripts.validation.check_commit_message import is_merge_commit
+-        is_merge = is_merge_commit()
+-        if is_merge:
+-            commit_type = subprocess.check_output(
+-                ["git", "cat-file", "-t", "HEAD"], text=True, stderr=subprocess.DEVNULL
+-            ).strip()
+-            if commit_type == "commit":
+-                try:
+-                    parent_count = subprocess.check_output(
+-                        ["git", "rev-list", "--parents", "-n", "1", "HEAD"],
+-                        text=True, stderr=subprocess.DEVNULL
+-                    ).strip().split()
+-                    assert len(parent_count) <= 2, "Normal single-parent commit cannot be detected as merge"
+-                except Exception:
+-                    pass
+-
+-    def test_validate_canonical_repair_workflow_required(self):
+-        """Canonical repair merges must be validated by validate-canonical-repair.yml, not validate-round."""
+-        from pathlib import Path
+-        wf = Path(".github/workflows/validate-canonical-repair.yml")
+-        assert wf.exists(), "validate-canonical-repair.yml must exist to validate canonical repair merges"
+-
+-    def test_active_round_round_id_gate_not_invalidate(self):
+-        """Active round commit (non-merge) with correct PRE_R049 round_id must still PASS."""
+-        import subprocess
+-        try:
+-            result = subprocess.run(
+-                ["git", "show", "-s", "--format=%B", "HEAD"],
+-                capture_output=True, text=True, cwd=Path(".").resolve()
+-            )
+-            msg = result.stdout.strip()
+-            if "PRE_R049_LOCAL_WEBSITE_VISIBLE_SURFACE_GAP_REMEDIATION" not in msg:
+-                pass
+-        except Exception:
+-            pass
+-
+-    def test_is_merge_commit_three_layer_detection(self):
+-        """is_merge_commit() uses 3-layer detection: git log --merges, HEAD^1/HEAD^2, git cat-file+rev-list."""
+-        from scripts.validation.check_commit_message import is_merge_commit
+-        import inspect, subprocess
+-        src = inspect.getsource(is_merge_commit)
+-        assert "git" in src and "log" in src, "Layer 1: git log --merges required"
+-        assert "HEAD^1" in src and "HEAD^2" in src, "Layer 2: HEAD^1/HEAD^2 detection required"
+-        assert "cat-file" in src or "rev-list" in src, "Layer 3: cat-file or rev-list detection required"
+-        result = is_merge_commit()
+-        assert result is True, "is_merge_commit() must return True for f072bd8a no-ff merge"
+-
+-    def test_current_round_yaml_not_modified(self):
+-        """current_round.yaml must not be modified to pass the fix."""
+-        from pathlib import Path
+-        import subprocess
+-        result = subprocess.run(
+-            ["git", "diff", "f072bd8a", "--", "manifests/current_round.yaml"],
+-            capture_output=True, text=True, cwd=Path(".").resolve()
+-        )
+-        assert not result.stdout.strip(), "manifests/current_round.yaml must not be modified"
+-
+-    def test_validate_canonical_repair_evidence_still_enforced(self):
+-        """Canonical repair evidence validation must still be enforced by validate-canonical-repair.yml."""
+-        from pathlib import Path
+-        wf = Path(".github/workflows/validate-canonical-repair.yml").read_text(encoding="utf-8")
+-        assert "validate_canonical_repair_evidence" in wf, "validate-canonical-repair.yml must validate canonical repair evidence"
+-
+-    def test_validate_round_workflow_exists(self):
+-        """validate-round.yml must still exist for active round validation."""
+-        from pathlib import Path
+-        wf = Path(".github/workflows/validate-round.yml")
+-        assert wf.exists(), "validate-round.yml must exist for active round validation"
+-
+-    def test_direct_commit_still_detected_correctly(self):
+-        """Direct (non-merge) commits must still be detected correctly."""
+-        from scripts.validation.check_commit_message import is_merge_commit
+-        parent_count = subprocess.check_output(
+-            ["git", "rev-list", "--parents", "-n", "1", "HEAD"],
+-            text=True, stderr=subprocess.DEVNULL
+-        ).strip().split()
+-        if len(parent_count) <= 2:
+-            result = is_merge_commit()
+-            assert result is False, "Single-parent direct commit must not be detected as merge"
+\ No newline at end of file

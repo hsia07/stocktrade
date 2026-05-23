@@ -1,0 +1,32 @@
+VALIDATE_ROUND_ROUTING_BAD_FIX_ROLLBACK_REWORK
+================================================
+
+Task: Rework rollback candidate for 8d95e58d4326c089b8935c932b4db92559b4be1b.
+
+Previous invalid candidate (rejected):
+  Branch: candidate/validate-round-routing-bad-fix-rollback
+  Commit: 92d8dcd9980add81a47cfee2b65a9deb7faa2e7d
+  Rejected because: orphan branch, dirty git status, FAIL validators, contradictory false-positive claim
+
+Root cause of bad fix 8d95e58:
+  is_merge_commit() used git log --merges --max-count=1 without HEAD scope.
+  This returned the most recent merge commit in repo history (f072bd8a),
+  not the current commit's merge status.
+  Caused: single-parent direct commit 8d95e58 detected as merge (false positive),
+  active round PRE_R049 round_id gate weakened.
+
+User authorization (recorded verbatim):
+  "我同意優先走 rollback-first，先建立 VALIDATE_ROUND_ROUTING_BAD_FIX_ROLLBACK candidate，受控撤銷 8d95e58 的錯誤修補，不得 reset / force push，不得啟動 R049/runtime/broker/live。"
+
+Rollback method: git revert --no-commit (no orphan branch, clean revert).
+rollback restores f072bd8a state.
+
+Key constraints:
+  - is_merge_commit_false_positive_fixed_by_this_rollback = FALSE
+  - rollback restores prior state only
+  - forward repair v2 still required (must use HEAD parent-count structural detection)
+
+round_id: VALIDATE_ROUND_ROUTING_BAD_FIX_ROLLBACK_REWORK_CANDIDATE
+base_head: 8d95e58d4326c089b8935c932b4db92559b4be1b
+last_safe_authorized_head: f072bd8a53ea2c5a7f000e1b50ebe884fa3cf4b9
+final_recommendation: DO_NOT_START_R049
