@@ -6,7 +6,7 @@
   "canonical_branch": "work/canonical-mainline-repair-001",
   "base_head": "f1737cb48a0f856908e750bf537be107769c7c30",
   "candidate_branch": "candidate/r031-confidence-source-decomposer",
-  "candidate_commit": "6ae580e8bed396b7bda33e6f41e9eb0a0faa573b",
+  "candidate_commit": "d67016a596fd2c7f7aebda9e3ec60c98b1e2f7e3",
   "r031_official_topic": "信心來源拆解",
   "confidence_source_decomposer_file": "modules/decision_prechecklist/confidence_decomposition.py",
   "confidence_source_decomposer_reality_before": "partial",

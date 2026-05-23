@@ -46,7 +46,21 @@
   "tests_added_updated": [
     "tests/test_confidence_decomposition.py"
   ],
+  "evidence_package_complete": true,
+  "evidence_files": [
+    "RETURN_TO_CHATGPT.txt",
+    "candidate.diff",
+    "evidence.json",
+    "no-aider-used.txt",
+    "report.json",
+    "safety-boundary-review.json",
+    "source-reality-review.json",
+    "task.txt",
+    "test-coverage-matrix.json",
+    "test-results.txt"
+  ],
   "tests_pass": true,
   "validators_pass": true,
-  "prohibited_actions_verified": true
+  "prohibited_actions_verified": true,
+  "no_aider_used": true
 }
