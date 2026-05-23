@@ -1,0 +1,51 @@
+Prevention Governance Notes
+===========================
+
+GOVERNANCE_RULES_APPLIED_IN_THIS_FIX:
+
+  1. UI KEYWORD SCOPE CONTROL
+     - 'report', 'state', 'display', 'summary' too broad for UI detection
+     - Only actual user-facing keywords should trigger UI_VISIBLE_ROUND_ACCEPTANCE_GATE
+     - Governance packages legitimately use 'report'/'state' in non-UI context
+     - Rule: Keywords must be UI-specific, not general English words
+
+  2. GOVERNANCE EXCLUSION PATTERNS
+     - Governance/ratification/reconciliation/evidence-only packages
+       should be explicitly excluded from UI gate
+     - These packages don't modify UI files or produce user-facing output
+     - Pattern list: unauthorized_state, incident_ratification, formal_report_reconciliation,
+       marker_fix, evidence_completion, canonical_repair, governance_prevention,
+       rollback_rework, etc.
+     - Rule: Governance packages are not UI rounds
+
+  3. TRUE UI GATE PRESERVATION
+     - Real UI rounds (ui, panel, dashboard, homepage, mobile, visualization, etc.)
+       still require visible surface evidence
+     - Missing evidence still blocks push
+     - Rule: True UI rounds cannot bypass UI_VISIBLE_ROUND_ACCEPTANCE_GATE
+
+  4. NO NO-VERIFY BYPASS
+     - Pre-push hook must pass legitimately; cannot use --no-verify
+     - Rule: Fix the gate, don't bypass the gate
+
+  5. NO FAKE EVIDENCE
+     - Cannot add fake ui_visible_gate_pass to bypass the gate
+     - Rule: Evidence must be genuine
+
+PREVENTION_RULES_FOR_FUTURE:
+
+  A. When adding UI gate keywords, ensure they are UI-specific
+     - Avoid general English words that appear in governance context
+     - Test against known governance packages before adding keywords
+
+  B. When adding governance exclusion patterns, ensure true UI rounds
+     are not excluded
+     - Pattern 'ui_visible_gate_' must not exclude genuine UI rounds
+     - Pattern '_governance_' must not exclude UI governance rounds
+
+  C. Pre-push hook changes must be tested against:
+     - Known governance/ratification packages (should pass)
+     - Known UI packages without visible evidence (should fail)
+     - Known UI packages with visible evidence (should pass)
+
+prevention_notes_created: true

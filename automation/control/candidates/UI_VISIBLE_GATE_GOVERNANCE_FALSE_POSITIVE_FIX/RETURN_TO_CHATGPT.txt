@@ -1,0 +1,37 @@
+UI_VISIBLE_GATE_GOVERNANCE_FALSE_POSITIVE_FIX
+==============================================
+
+Task: Fix pre-push hook UI_VISIBLE_ROUND_ACCEPTANCE_GATE false-positive.
+
+Problem:
+- .githooks/pre-push.ps1 Check-UIVisibleGate() treated 'report' and 'state' keywords
+  as UI round indicators
+- 60A9A57_UNAUTHORIZED_STATE_RATIFICATION_AND_FORMAL_REPORT_RECONCILIATION/evidence.json
+  was blocked because task_type="60a9a57_unauthorized_state_ratification_and_formal_report_reconciliation"
+  contained 'report' and 'state'
+- This is a governance incident ratification, NOT a UI/user-facing round
+
+Fix applied:
+- Removed 'report', 'state', 'display', 'summary' from UI keywords in python command
+- Added governance_exclusion_patterns: unauthorized_state, incident_ratification,
+  formal_report_reconciliation, marker_fix, evidence_completion, canonical_repair,
+  governance_prevention, rollback_rework, evidence_tree, conflict_resolution,
+  ratification_and, formal_report, governance_.*_fix, _rework$, _reratification,
+  _marker_, ui_visible_gate_, _governance_, _incident_
+- True UI keywords preserved: ui, panel, dashboard, homepage, onboarding, teaching,
+  mobile, emergency, simulation, visualization, query, user-facing, visible_surface,
+  dom, screenshot
+
+Key constraints preserved:
+- No --no-verify used
+- No fake UI evidence added
+- True UI round gate still enforced
+- forward_repair_v2 NOT started
+- r049 NOT started
+- order_execution_allowed = FALSE
+
+round_id: UI_VISIBLE_GATE_GOVERNANCE_FALSE_POSITIVE_FIX_CANDIDATE
+candidate_branch: candidate/ui-visible-gate-governance-false-positive-fix
+formal_status_code: candidate_ready_awaiting_manual_review
+base_head: f4e6a7bbc3e2c4c01e61679819ee83a28d199ac0
+final_recommendation: DO_NOT_START_R049

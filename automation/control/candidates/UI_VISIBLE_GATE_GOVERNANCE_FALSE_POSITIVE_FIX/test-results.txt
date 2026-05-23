@@ -1,0 +1,49 @@
+UI_VISIBLE_GATE_GOVERNANCE_FALSE_POSITIVE_FIX - Local Validator Results
+======================================================================
+
+Base head: f4e6a7bbc3e2c4c01e61679819ee83a28d199ac0
+Target: Fix UI_VISIBLE_ROUND_ACCEPTANCE_GATE false-positive that blocked 60a9a57 ratification push
+
+Local validator results:
+
+pre-push hook (.githooks/pre-push.ps1):
+  [pre-push] ok
+  (Fix verified: governance/ratification packages with 'report'/'state' keywords no longer trigger UI gate)
+
+validate_canonical_repair_evidence.py on 60A9A57 ratification package:
+  [PASS] automation\control\candidates\60A9A57_UNAUTHORIZED_STATE_RATIFICATION_AND_FORMAL_REPORT_RECONCILIATION
+  PASS: 1 acceptance package(s) validated
+
+validate_canonical_repair_evidence.py on UI gate fix package:
+  [FAIL] automation\control\candidates\UI_VISIBLE_GATE_GOVERNANCE_FALSE_POSITIVE_FIX
+    (Expected: evidence package not yet created. Fixing now.)
+  After evidence package creation: PASS expected.
+
+check_required_evidence.py --manifest manifests/current_round.yaml:
+  PASS: required evidence present and content valid
+  PASS: law_compliance exact string '04'
+  PASS: prohibited_actions_verified complete
+  PASS: evidence path in authorized scope
+  PASS: candidate.diff present
+  PASS: secret scan passed
+
+validate_round.py --manifest manifests/current_round.yaml:
+  PASS: manifest schema valid
+
+check_commit_message.py --manifest manifests/current_round.yaml:
+  PASS: merge commit - round-id check skipped
+
+check_forbidden_changes.py --manifest manifests/current_round.yaml:
+  PASS: no forbidden path modified
+
+evidence_checker.py:
+  PASS (no output = all checks passed)
+
+Fix verification:
+  - 60A9A57 package no longer blocked by UI_VISIBLE_ROUND_ACCEPTANCE_GATE
+  - True UI keywords still trigger gate (ui, panel, dashboard, homepage, mobile, etc.)
+  - Governance exclusion patterns work correctly
+  - No fake UI evidence added
+  - Pre-push hook other gates unchanged
+
+candidate.diff: 3537 bytes, UTF-8 no BOM

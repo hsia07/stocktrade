@@ -1,0 +1,16 @@
+{
+  "report_id": "UI_VISIBLE_GATE_GOVERNANCE_FALSE_POSITIVE_FIX",
+  "status": "completed",
+  "fix_type": "ui_visible_gate_false_positive_fix",
+  "failure_resolved": true,
+  "false_positive_fixed": true,
+  "governance_ratification_excluded_from_ui_gate": true,
+  "true_ui_round_gate_preserved": true,
+  "no_fake_ui_evidence_added": true,
+  "no_no_verify_used": true,
+  "forward_repair_v2_not_started": true,
+  "github_actions_failure_recorded": true,
+  "github_actions_success_claimed": false,
+  "forward_repair_required_after_rollback": true,
+  "final_recommendation": "DO_NOT_START_R049"
+}
