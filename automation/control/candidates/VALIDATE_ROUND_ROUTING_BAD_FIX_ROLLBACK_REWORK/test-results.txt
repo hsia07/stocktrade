@@ -1,0 +1,17 @@
+{
+  "test_results": {
+    "check_commit_message": "PASS (merge commit detected, round-id skipped)",
+    "validate_round": "PASS",
+    "check_forbidden_changes": "PASS",
+    "check_required_evidence": "PASS",
+    "evidence_checker": "PASS",
+    "test_validate_canonical_repair_evidence": "PASS",
+    "test_github_actions_573e8bd_unauthorized_state_ratification": "PASS",
+    "test_meta_ratification_routing": "PASS",
+    "test_governance_authorization_gate": "PASS (27 tests, 3 threading warnings non-blocking)"
+  },
+  "note": "test_validate_round_canonical_repair_routing.py deleted as part of rollback (was part of bad fix)",
+  "test_count": 138,
+  "tests_passed": 138,
+  "blocking_failures": 0
+}

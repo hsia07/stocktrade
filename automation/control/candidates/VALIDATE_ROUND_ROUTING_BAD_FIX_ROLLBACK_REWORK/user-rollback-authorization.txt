@@ -1,0 +1,1 @@
+我同意優先走 rollback-first，先建立 VALIDATE_ROUND_ROUTING_BAD_FIX_ROLLBACK candidate，受控撤銷 8d95e58 的錯誤修補，不得 reset / force push，不得啟動 R049/runtime/broker/live。
