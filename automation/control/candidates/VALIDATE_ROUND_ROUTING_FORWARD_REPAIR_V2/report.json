@@ -1,0 +1,8 @@
+{
+  "round_id": "VALIDATE_ROUND_ROUTING_FORWARD_REPAIR_V2_CANDIDATE",
+  "trace_id": "forward-repair-v2-001",
+  "status": "completed",
+  "candidate_commit": null,
+  "base_head": "54476036dd6226cad17ab482e972cf7858d4c06c",
+  "description": "Forward repair v2 for is_merge_commit() false-positive on single-parent HEAD"
+}

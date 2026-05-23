@@ -1,0 +1,69 @@
+round_id: VALIDATE_ROUND_ROUTING_FORWARD_REPAIR_V2_CANDIDATE
+task_type: validate_round_routing_forward_repair_v2_candidate
+status: completed
+formal_status_code: candidate_ready_awaiting_manual_review
+base_head: 54476036dd6226cad17ab482e972cf7858d4c06c
+candidate_branch: candidate/validate-round-routing-forward-repair-v2
+candidate_commit: null (candidate not yet committed)
+is_merge_commit_implementation_file: scripts/validation/check_commit_message.py
+old_git_log_merges_detection_found_true_or_false: TRUE
+old_git_log_merges_detection_removed_true_or_false: TRUE
+head_scoped_structural_detection_implemented_true_or_false: TRUE
+uses_git_rev_list_parents_head_true_or_false: TRUE
+commit_message_based_detection_used_true_or_false: FALSE
+history_merge_search_used_true_or_false: FALSE
+single_parent_with_historical_merge_false_positive_blocked_true_or_false: TRUE
+merge_head_positive_case_passed_true_or_false: TRUE
+single_parent_merge_word_negative_case_passed_true_or_false: TRUE
+git_failure_fail_closed_true_or_false: TRUE
+rollback_conclusion_changed_true_or_false: FALSE
+github_actions_success_claimed_true_or_false: FALSE
+forward_repair_v2_started_true_or_false: TRUE
+forward_repair_v2_added_true_or_false: TRUE
+r049_started_true_or_false: FALSE
+runtime_started_true_or_false: FALSE
+broker_api_called_true_or_false: FALSE
+order_execution_allowed_true_or_false: FALSE
+source_files_modified_true_or_false: TRUE
+workflow_modified_true_or_false: FALSE
+current_round_yaml_modified_true_or_false: FALSE
+server_v2_modified_true_or_false: FALSE
+modules_modified_true_or_false: FALSE
+stocktrade_gitlink_modified_true_or_false: FALSE
+gitmodules_modified_true_or_false: FALSE
+tests_added_or_updated:
+  - tests/test_is_merge_commit.py (new)
+pytest_result: 9 passed in 0.46s
+validate_round_pass_true_or_false: TRUE
+check_commit_message_pass_true_or_false: TRUE
+check_forbidden_changes_pass_true_or_false: TRUE
+check_required_evidence_pass_true_or_false: TRUE
+validate_canonical_repair_evidence_on_forward_repair_package_pass_true_or_false: FALSE (missing files, to be added)
+evidence_checker_pass_true_or_false: TRUE
+pre_push_hook_pass_true_or_false: TRUE
+candidate_diff_utf8_no_bom_true_or_false: TRUE
+evidence_json_law_compliance_present_true_or_false: TRUE
+evidence_json_law_compliance_value: "04"
+files_modified:
+  - scripts/validation/check_commit_message.py
+  - tests/test_is_merge_commit.py
+authorized_files_only_true_or_false: TRUE
+commit_created_true_or_false: FALSE
+amend_executed_true_or_false: FALSE
+git_status_short_after: M  scripts/validation/check_commit_message.py; ?? tests/test_is_merge_commit.py; ?? automation/control/candidates/VALIDATE_ROUND_ROUTING_FORWARD_REPAIR_V2/
+git_status_porcelain_after: see git_status_short
+git_status_clean_after_true_or_false: FALSE
+merge_executed_this_round_true_or_false: FALSE
+push_executed_this_round_true_or_false: FALSE
+workflow_rerun_executed_true_or_false: FALSE
+remaining_blockers:
+  - forward repair v2 candidate requires manual review before merge
+  - GitHub Actions actual success unresolved until candidate is merged/pushed and CI rechecked
+  - Signoff validation remains syntactic, not cryptographic
+  - R014 formal trace_id / decision_chain / veto tracking incomplete
+  - R014 durable persistence not implemented
+  - R029/R030 full meeting table / trace_id / decision_chain / per-AI veto rework
+  - R047/R048 P1 backlog
+  - stocktrade gitlink / .gitmodules governance audit pending
+recommended_next_action: AWAITING_MANUAL_REVIEW_VALIDATE_ROUND_ROUTING_FORWARD_REPAIR_V2_CANDIDATE
+final_recommendation: DO_NOT_START_R049

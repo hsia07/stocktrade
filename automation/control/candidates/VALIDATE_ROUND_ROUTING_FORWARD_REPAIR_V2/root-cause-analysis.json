@@ -1,0 +1,47 @@
+bad_logic: git log --merges --max-count=1 is NOT HEAD-scoped
+  - It searches the git log history (reflog + commit history) for the most recent merge commit anywhere
+  - If the repo has ANY merge commit in history, git log --merges --max-count=1 returns that commit
+  - Even if current HEAD is single-parent (non-merge), the command still returns the last merge from history
+  - This caused single-parent commit 8d95e58 to be incorrectly flagged as a merge commit
+
+why false positive happened:
+  - is_merge_commit() called git log --merges --max-count=1
+  - Repository history contained merge commit f072bd8a
+  - Command returned "commit f072bd8a" regardless of current HEAD state
+  - is_merge_commit() returned True even though HEAD (8d95e58) was single-parent
+  - This caused PRE_R049 round-id gate to incorrectly skip validation for single-parent HEAD
+  - The 8d95e58 rollback detected this and rolled back to e1b929b (single-parent state)
+
+corrected logic:
+  - git rev-list --parents -n 1 HEAD returns EXACTLY the current HEAD commit and its parents
+  - Output format: "<commit_hash> <parent1> <parent2> ..." (space-separated)
+  - tokens = result.strip().split()
+  - parent_count = len(tokens) - 1
+  - parent_count >= 2 → merge commit (True)
+  - parent_count <= 1 → non-merge commit (False)
+  - No history search, no reflog, no message inspection
+
+why corrected logic is safe:
+  - Completely scoped to HEAD: only queries the current commit's parent list
+  - Single-parent HEAD returns ["hash"] → parent_count=0 → False
+  - Two-parent HEAD returns ["hash", "p1", "p2"] → parent_count=2 → True
+  - Octopus merge returns ["hash", "p1", "p2", "p3", ...] → parent_count≥3 → True
+  - git failure → except block → return False (fail-closed)
+  - No reliance on commit message text
+  - No reliance on history traversal
+  - Works with shallow clones (fetch-depth=1) because it only reads the local commit object
+
+relation to 8d95e58 rollback:
+  - 8d95e58 was a single-parent commit on canonical
+  - is_merge_commit() returned True due to history containing f072bd8a merge
+  - Rollback detected this and restored HEAD to e1b929b (single-parent state)
+  - Rollback detected the bug but could not fix it (only rollback)
+  - Forward repair v2 now properly fixes the root cause: HEAD-scoped structural detection
+  - Rollback conclusion remains unchanged (e1b929b state was correct)
+  - Forward repair v2 confirms the rollback was correct and fixes the underlying detection bug
+
+confirmation:
+  - Rollback itself did NOT fix is_merge_commit()
+  - Rollback was necessary and correct (single-parent HEAD should not be flagged)
+  - Forward repair v2 provides the permanent fix by replacing the broken detection method
+  - The fix is minimal (single function, single file) and targeted

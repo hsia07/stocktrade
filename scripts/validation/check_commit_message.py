@@ -27,10 +27,12 @@ def extract_governance_id_from_message(msg: str) -> tuple[str | None, bool]:
 def is_merge_commit() -> bool:
     try:
         result = subprocess.check_output(
-            ["git", "log", "--merges", "--max-count=1"],
+            ["git", "rev-list", "--parents", "-n", "1", "HEAD"],
             text=True, stderr=subprocess.DEVNULL
         )
-        return bool(result.strip())
+        tokens = result.strip().split()
+        parent_count = len(tokens) - 1
+        return parent_count >= 2
     except Exception:
         return False
 

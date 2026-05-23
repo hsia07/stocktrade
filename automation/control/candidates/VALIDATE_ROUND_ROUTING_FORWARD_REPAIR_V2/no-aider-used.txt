@@ -1,0 +1,11 @@
+Aider was NOT used for this forward repair v2 candidate.
+
+All work performed by:
+- opencode (minimax-m2.5 model)
+- Human-orchestrated workflow
+- Manual review and signoff
+
+Code changes:
+- scripts/validation/check_commit_message.py: is_merge_commit() fix
+- tests/test_is_merge_commit.py: new test file (9 tests, all passed)
+- automation/control/candidates/VALIDATE_ROUND_ROUTING_FORWARD_REPAIR_V2/: evidence package

@@ -1,0 +1,25 @@
+test_id: VALIDATE_ROUND_ROUTING_FORWARD_REPAIR_V2_CANDIDATE
+task_type: validate_round_routing_forward_repair_v2_candidate
+phase: 1
+law_compliance: 04
+severity: medium
+target: scripts/validation/check_commit_message.py is_merge_commit() function
+description: Replace git log --merges (history-scoped, false positive on single-parent HEAD) with HEAD-scoped git rev-list --parents -n 1 HEAD structural detection
+expected_outcome: is_merge_commit() returns True only when HEAD has 2+ parents; single-parent HEAD with historical merges returns False
+blocking_criteria:
+  - Old git log --merges still in code: BLOCK
+  - Commit message text used for detection: BLOCK
+  - History-scoped search: BLOCK
+  - single-parent HEAD with historical merge returns True: BLOCK
+  - merge HEAD returns False: BLOCK
+  - git failure returns True: BLOCK
+  - Source modification beyond is_merge_commit / validate_round: BLOCK
+  - workflow modified: BLOCK
+  - .gitmodules / stocktrade gitlink modified: BLOCK
+  - Evidence package incomplete: BLOCK
+  - candidate.diff has BOM: BLOCK
+  - validators fail: BLOCK
+  - git status non-empty after commit: BLOCK
+  - merge / push / workflow rerun: BLOCK
+  - R049 / runtime / broker / live: BLOCK
+  - order_execution_allowed TRUE: BLOCK
