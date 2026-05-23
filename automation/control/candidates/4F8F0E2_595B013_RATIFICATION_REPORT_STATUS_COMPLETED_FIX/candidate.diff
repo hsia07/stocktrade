@@ -1,0 +1,13 @@
+diff --git a/automation/control/candidates/4F8F0E2_595B013_RATIFICATION_REPORT_STATUS_COMPLETED_FIX/RETURN_TO_CHATGPT.txt b/automation/control/candidates/4F8F0E2_595B013_RATIFICATION_REPORT_STATUS_COMPLETED_FIX/RETURN_TO_CHATGPT.txt
+index dcdf049..af94684 100644
+--- a/automation/control/candidates/4F8F0E2_595B013_RATIFICATION_REPORT_STATUS_COMPLETED_FIX/RETURN_TO_CHATGPT.txt
++++ b/automation/control/candidates/4F8F0E2_595B013_RATIFICATION_REPORT_STATUS_COMPLETED_FIX/RETURN_TO_CHATGPT.txt
+@@ -23,6 +23,7 @@ Key constraints preserved:
+   - final_recommendation = DO_NOT_START_R049
+ 
+ round_id: 4F8F0E2_595B013_RATIFICATION_REPORT_STATUS_COMPLETED_FIX_CANDIDATE
++candidate_branch: candidate/4f8f0e2-595b013-ratification-report-status-completed-fix
+ formal_status_code: candidate_ready_awaiting_manual_review
+ base_head: 4f8f0e2d7992cda2e8e00e57db1e6c71a556e6b5
+ final_recommendation: DO_NOT_START_R049
+\ No newline at end of file
