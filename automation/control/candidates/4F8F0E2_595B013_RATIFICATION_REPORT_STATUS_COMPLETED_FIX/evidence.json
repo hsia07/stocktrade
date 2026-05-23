@@ -1,0 +1,23 @@
+{
+  "candidate_name": "4F8F0E2_595B013_RATIFICATION_REPORT_STATUS_COMPLETED_FIX",
+  "law_compliance": "04",
+  "round_id": "4F8F0E2_595B013_RATIFICATION_REPORT_STATUS_COMPLETED_FIX_CANDIDATE",
+  "formal_status_code": "candidate_ready_awaiting_manual_review",
+  "base_head": "4f8f0e2d7992cda2e8e00e57db1e6c71a556e6b5",
+  "task_type": "report_status_fix_candidate",
+  "fix_description": "Fix evidence_checker report_status_not_completed in 595B013 ratification package",
+  "failure_type": "evidence_checker:report_status_not_completed",
+  "failure_package": "automation/control/candidates/595B013_UNAUTHORIZED_STATE_RATIFICATION_AND_MARKER_FIX_EVIDENCE_COMPLETION",
+  "failure_cause": "report.json status field was 'candidate_ready' but evidence_checker requires 'completed' for non-superseded acceptance candidates",
+  "fix_applied": "Changed report.json status from 'candidate_ready' to 'completed'",
+  "github_actions_success_claimed": false,
+  "forward_repair_v2_started": false,
+  "forward_repair_v2_added": false,
+  "is_merge_commit_false_positive_fixed_by_this_candidate": false,
+  "forward_repair_required_after_rollback": true,
+  "r049_started": false,
+  "runtime_started": false,
+  "broker_api_called": false,
+  "order_execution_allowed": false,
+  "final_recommendation": "DO_NOT_START_R049"
+}

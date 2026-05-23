@@ -1,0 +1,10 @@
+{
+  "report_id": "4F8F0E2_595B013_RATIFICATION_REPORT_STATUS_COMPLETED_FIX",
+  "status": "completed",
+  "fix_type": "report_status_completed",
+  "failure_resolved": true,
+  "forward_repair_v2_not_started": true,
+  "github_actions_failure_recorded": true,
+  "forward_repair_required_after_rollback": true,
+  "final_recommendation": "DO_NOT_START_R049"
+}

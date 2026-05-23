@@ -1,0 +1,28 @@
+4F8F0E2_595B013_RATIFICATION_REPORT_STATUS_COMPLETED_FIX
+==================================================
+
+Task: Fix evidence_checker report_status_not_completed in 595B013 ratification package.
+
+GitHub Actions failure on 4f8f0e2:
+  [FAIL] validate-canonical-repair run 26323497535
+    - Evidence checker step FAILURE
+    - Error: "Evidence incomplete: ['report_status_not_completed']"
+
+Root cause: 595B013_UNAUTHORIZED_STATE_RATIFICATION_AND_MARKER_FIX_EVIDENCE_COMPLETION/report.json
+had status="candidate_ready" but evidence_checker.py check_completeness() requires
+status="completed" for acceptance candidates (not superseded/expected_invalid).
+
+Fix applied: Changed report.json status from "candidate_ready" to "completed".
+
+Key constraints preserved:
+  - github_actions_success_claimed = FALSE
+  - forward_repair_v2_started = FALSE
+  - forward_repair_v2_added = FALSE
+  - is_merge_commit_false_positive_fixed_by_this_candidate = FALSE
+  - forward_repair_required_after_rollback = TRUE
+  - final_recommendation = DO_NOT_START_R049
+
+round_id: 4F8F0E2_595B013_RATIFICATION_REPORT_STATUS_COMPLETED_FIX_CANDIDATE
+formal_status_code: candidate_ready_awaiting_manual_review
+base_head: 4f8f0e2d7992cda2e8e00e57db1e6c71a556e6b5
+final_recommendation: DO_NOT_START_R049
