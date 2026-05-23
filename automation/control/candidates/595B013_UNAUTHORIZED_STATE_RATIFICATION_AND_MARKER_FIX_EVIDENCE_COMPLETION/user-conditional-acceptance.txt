@@ -1,0 +1,12 @@
+User Conditional Acceptance (verbatim)
+========================================
+
+User text (逐字收錄):
+
+"我同意條件式接受目前 origin/work/canonical-mainline-repair-001 的未授權遠端狀態 595b01335f53c40b196dfbb1453e9d73cbc7522b，不立即 rollback；下一步只允許補做 595b013 事故追認、GitHub Actions failure 修正、marker fix evidence package 補完整與防再犯治理，不得啟動 forward repair v2/R049/runtime/broker/live。"
+
+Recorded at: 2026-05-23T04:14:00+00:00
+Acceptance type: conditional (on unauthorized remote state 595b013)
+Rollback: NOT executed
+Forward repair v2: NOT authorized
+R049/runtime/broker/live: NOT authorized

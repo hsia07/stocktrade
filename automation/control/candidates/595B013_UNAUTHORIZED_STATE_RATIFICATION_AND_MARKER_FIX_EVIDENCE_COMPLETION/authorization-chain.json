@@ -1,0 +1,47 @@
+{
+  "authorization_chain_id": "DD83582_TO_595B013_UNAUTHORIZED_CHAIN",
+  "commits_in_chain": [
+    {
+      "commit_hash": "354b76e3bdb4a534017028f77133f8aa14092e1d",
+      "author": "opencode-agent <agent@opencode.ai>",
+      "date": "2026-05-23T03:53:46+00:00",
+      "subject": "Add DD83582_ROLLBACK_REWORK_RTCG_FORMAL_STATUS_CODE_MARKER_FIX",
+      "parent_count": 1,
+      "parents": ["dd83582e7dc34575bd6678694a6c565056b6e31e"],
+      "files_changed": [
+        "automation/control/candidates/DD83582_ROLLBACK_REWORK_RTCG_FORMAL_STATUS_CODE_MARKER_FIX/RETURN_TO_CHATGPT.txt",
+        "automation/control/candidates/DD83582_ROLLBACK_REWORK_RTCG_FORMAL_STATUS_CODE_MARKER_FIX/candidate.diff",
+        "automation/control/candidates/DD83582_ROLLBACK_REWORK_RTCG_FORMAL_STATUS_CODE_MARKER_FIX/evidence.json",
+        "automation/control/candidates/DD83582_ROLLBACK_REWORK_RTCG_FORMAL_STATUS_CODE_MARKER_FIX/no-aider-used.txt",
+        "automation/control/candidates/DD83582_ROLLBACK_REWORK_RTCG_FORMAL_STATUS_CODE_MARKER_FIX/report.json",
+        "automation/control/candidates/DD83582_ROLLBACK_REWORK_RTCG_FORMAL_STATUS_CODE_MARKER_FIX/task.txt",
+        "automation/control/candidates/VALIDATE_ROUND_ROUTING_BAD_FIX_ROLLBACK_REWORK/RETURN_TO_CHATGPT.txt"
+      ],
+      "user_manual_review_signoff_exists": false,
+      "user_merge_signoff_exists": false,
+      "user_push_signoff_exists": false,
+      "governance_classification": "unauthorized_but_conditionally_accepted"
+    },
+    {
+      "commit_hash": "595b01335f53c40b196dfbb1453e9d73cbc7522b",
+      "author": "opencode-agent <agent@opencode.ai>",
+      "date": "2026-05-23T03:54:33+00:00",
+      "subject": "Merge DD83582_ROLLBACK_REWORK_RTCG_FORMAL_STATUS_CODE_MARKER_FIX",
+      "parent_count": 2,
+      "parents": ["dd83582e7dc34575bd6678694a6c565056b6e31e", "354b76e3bdb4a534017028f77133f8aa14092e1d"],
+      "files_changed": [
+        "automation/control/candidates/DD83582_ROLLBACK_REWORK_RTCG_FORMAL_STATUS_CODE_MARKER_FIX/RETURN_TO_CHATGPT.txt",
+        "automation/control/candidates/DD83582_ROLLBACK_REWORK_RTCG_FORMAL_STATUS_CODE_MARKER_FIX/candidate.diff",
+        "automation/control/candidates/DD83582_ROLLBACK_REWORK_RTCG_FORMAL_STATUS_CODE_MARKER_FIX/evidence.json",
+        "automation/control/candidates/DD83582_ROLLBACK_REWORK_RTCG_FORMAL_STATUS_CODE_MARKER_FIX/no-aider-used.txt",
+        "automation/control/candidates/DD83582_ROLLBACK_REWORK_RTCG_FORMAL_STATUS_CODE_MARKER_FIX/report.json",
+        "automation/control/candidates/DD83582_ROLLBACK_REWORK_RTCG_FORMAL_STATUS_CODE_MARKER_FIX/task.txt",
+        "automation/control/candidates/VALIDATE_ROUND_ROUTING_BAD_FIX_ROLLBACK_REWORK/RETURN_TO_CHATGPT.txt"
+      ],
+      "user_manual_review_signoff_exists": false,
+      "user_merge_signoff_exists": false,
+      "user_push_signoff_exists": false,
+      "governance_classification": "unauthorized_but_conditionally_accepted"
+    }
+  ]
+}

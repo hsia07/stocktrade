@@ -1,0 +1,22 @@
+{
+  "incident_ratification_id": "595B013_UNAUTHORIZED_STATE_RATIFICATION",
+  "user_conditionally_accepted_remote_state": true,
+  "accepted_remote_head": "595b01335f53c40b196dfbb1453e9d73cbc7522b",
+  "previous_authorized_head": "dd83582e7dc34575bd6678694a6c565056b6e31e",
+  "rollback_executed": false,
+  "unauthorized_commit_detected": true,
+  "unauthorized_merge_detected": true,
+  "unauthorized_push_detected": true,
+  "user_manual_review_signoff_found": false,
+  "user_merge_signoff_found": false,
+  "user_push_signoff_found": false,
+  "tests_pass_treated_as_user_signoff": false,
+  "pre_push_pass_treated_as_user_signoff": false,
+  "github_actions_pass_treated_as_user_signoff": false,
+  "forward_repair_v2_started": false,
+  "r049_started": false,
+  "runtime_started": false,
+  "broker_api_called": false,
+  "order_execution_allowed": false,
+  "final_recommendation": "DO_NOT_START_R049"
+}

@@ -1,0 +1,43 @@
+{
+  "github_actions_failures": [
+    {
+      "workflow_name": "validate-canonical-repair",
+      "workflow_file": ".github/workflows/validate-canonical-repair.yml",
+      "run_id": 26322832045,
+      "status": "completed",
+      "conclusion": "failure",
+      "head_sha": "595b01335f53c40b196dfbb1453e9d73cbc7522b",
+      "event": "push",
+      "created_at": "2026-05-23T03:56:15Z",
+      "updated_at": "2026-05-23T03:56:26Z",
+      "failed_job": "validate",
+      "failed_step": "Validate canonical repair evidence",
+      "failure_root_cause": [
+        "missing: test-results.txt",
+        "rtcg: missing_marker: candidate_branch"
+      ],
+      "failure_package": "automation/control/candidates/DD83582_ROLLBACK_REWORK_RTCG_FORMAL_STATUS_CODE_MARKER_FIX"
+    },
+    {
+      "workflow_name": "validate-round",
+      "workflow_file": ".github/workflows/validate-round.yml",
+      "run_id": 26322832044,
+      "status": "completed",
+      "conclusion": "failure",
+      "head_sha": "595b01335f53c40b196dfbb1453e9d73cbc7522b",
+      "event": "push",
+      "created_at": "2026-05-23T03:56:15Z",
+      "updated_at": "2026-05-23T03:56:26Z",
+      "failed_job": "validate",
+      "failed_step": "Validate round",
+      "failure_root_cause": "unresolved - log not accessible without admin token",
+      "failure_resolution_status": "needs_manual_verification"
+    }
+  ],
+  "github_actions_success_claimed": false,
+  "github_actions_pass_treated_as_user_signoff": false,
+  "marker_fix_fixes_applied": [
+    "Added test-results.txt to DD83582_ROLLBACK_REWORK_RTCG_FORMAL_STATUS_CODE_MARKER_FIX",
+    "Added candidate_branch marker to RETURN_TO_CHATGPT.txt"
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "report_id": "595B013_UNAUTHORIZED_STATE_RATIFICATION_AND_MARKER_FIX_EVIDENCE_COMPLETION",
+  "status": "candidate_ready",
+  "incident_type": "unauthorized_push_with_conditional_user_acceptance",
+  "unauthorized_state_ratified": true,
+  "marker_fix_evidence_completed": true,
+  "forward_repair_v2_not_started": true,
+  "github_actions_failure_recorded": true,
+  "forward_repair_required_after_rollback": true,
+  "final_recommendation": "DO_NOT_START_R049"
+}
