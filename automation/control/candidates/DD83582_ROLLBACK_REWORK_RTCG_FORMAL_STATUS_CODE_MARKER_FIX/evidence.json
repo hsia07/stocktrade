@@ -1,0 +1,32 @@
+{
+  "candidate_name": "DD83582_ROLLBACK_REWORK_RTCG_FORMAL_STATUS_CODE_MARKER_FIX",
+  "law_compliance": "04",
+  "round_id": "DD83582_ROLLBACK_REWORK_RTCG_FORMAL_STATUS_CODE_MARKER_FIX_CANDIDATE",
+  "formal_status_code": "candidate_ready_awaiting_manual_review",
+  "base_head": "dd83582e7dc34575bd6678694a6c565056b6e31e",
+  "failure_type": "rtcg:missing_marker:formal_status_code",
+  "failure_package": "automation/control/candidates/VALIDATE_ROUND_ROUTING_BAD_FIX_ROLLBACK_REWORK",
+  "failure_file": "automation/control/candidates/VALIDATE_ROUND_ROUTING_BAD_FIX_ROLLBACK_REWORK/RETURN_TO_CHATGPT.txt",
+  "fix_description": "Add formal_status_code marker to RETURN_TO_CHATGPT.txt",
+  "rtcg_marker_added": "formal_status_code: MANUAL_REVIEW_PASS_AWAITING_MERGE_SIGNOFF",
+  "rollback_conclusion_unchanged": true,
+  "is_merge_commit_false_positive_fixed_by_this_fix": false,
+  "forward_repair_required_after_rollback": true,
+  "github_actions_success_claimed": false,
+  "prohibited_actions_verified": {
+    "reset_used": false,
+    "force_push_used": false,
+    "r049_started": false,
+    "runtime_started": false,
+    "r047_started": false,
+    "r048_started": false,
+    "r031_started": false,
+    "broker_api_called": false,
+    "order_execution_allowed": false,
+    "forward_repair_v2_added": false,
+    "workflow_modified": false,
+    "source_modified": false,
+    "current_round_yaml_modified": false
+  },
+  "final_recommendation": "DO_NOT_START_R049"
+}
