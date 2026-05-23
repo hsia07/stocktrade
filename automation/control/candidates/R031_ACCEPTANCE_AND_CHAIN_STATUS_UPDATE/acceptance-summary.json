@@ -1,0 +1,48 @@
+{
+  "r031_topic": "信心來源拆解",
+  "accepted_merge_commit": "fb28a158f9a469d0ca15cfe8c24d277e5f79c907",
+  "candidate_commit": "270c6ce676c014cb9df162bc4f52d3b2cd698d05",
+  "ci_runs": {
+    "validate_canonical_repair": {
+      "run_id": 26340016777,
+      "status": "success",
+      "conclusion": "success"
+    },
+    "validate_round": {
+      "run_id": 26340016776,
+      "status": "success",
+      "conclusion": "success"
+    }
+  },
+  "validators_summary": {
+    "validate_round": "PASS",
+    "check_commit_message": "PASS",
+    "check_forbidden_changes": "PASS",
+    "check_required_evidence": "PASS",
+    "evidence_checker": "PASS",
+    "pre_push_hook": "PASS"
+  },
+  "safety_boundary_summary": {
+    "raw_confidence_direct_buy_sell": false,
+    "raw_confidence_direct_position_sizing": false,
+    "raw_confidence_can_bypass_risk_gate": false,
+    "broker_live_order_wiring_added": false,
+    "runtime_started": false,
+    "order_execution_allowed": false
+  },
+  "confidence_source_decomposer": {
+    "implemented": true,
+    "source_keys": 7,
+    "structured_breakdown": true,
+    "negative_cases_covered": true
+  },
+  "p1_backlog_items": [
+    "R014: trace_id/decision_chain/veto/durable persistence",
+    "R029/R030: per-AI veto rework",
+    "R047/R048: P1 backlog",
+    "Signoff validation syntactic not cryptographic",
+    "GitHub Actions CI environment discrepancy",
+    "Legacy UI evidence work_done=null normalization",
+    "validate-round workflow BOM file-level inconsistency"
+  ]
+}

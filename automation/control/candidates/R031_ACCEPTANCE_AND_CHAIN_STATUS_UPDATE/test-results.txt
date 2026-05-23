@@ -1,0 +1,10 @@
+69 passed in 0.15s
+
+No new tests required for governance state update.
+All existing tests continue to pass.
+
+Existing R031 tests (69 total):
+- tests/test_confidence_decomposition.py: 43 passed
+- tests/test_decision_prechecklist.py: 26 passed
+
+Manifest update only — no source or test changes.

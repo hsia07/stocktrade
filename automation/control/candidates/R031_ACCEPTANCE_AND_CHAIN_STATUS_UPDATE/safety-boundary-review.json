@@ -1,0 +1,16 @@
+{
+  "raw_confidence_direct_buy_sell": false,
+  "raw_confidence_direct_position_sizing": false,
+  "raw_confidence_can_bypass_risk_gate": false,
+  "llm_api_can_directly_approve_trade": false,
+  "broker_live_order_wiring_added": false,
+  "runtime_started": false,
+  "r031_runtime_started": false,
+  "r049_started": false,
+  "order_execution_allowed": false,
+  "source_files_modified": false,
+  "tests_modified": false,
+  "workflow_modified": false,
+  "server_v2_modified": false,
+  "no_state_confidence_trade_authority": "final_confidence_is_trade_authority = FALSE on all code paths in R031 source"
+}

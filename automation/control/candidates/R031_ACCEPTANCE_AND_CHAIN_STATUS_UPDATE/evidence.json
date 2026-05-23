@@ -1,0 +1,21 @@
+{
+  "round_id": "R031_ACCEPTANCE_AND_CHAIN_STATUS_UPDATE",
+  "topic": "R031 Acceptance and Chain Status Update",
+  "law_compliance": "04",
+  "candidate_branch": "candidate/r031-acceptance-chain-status-update",
+  "base_head": "fb28a158f9a469d0ca15cfe8c24d277e5f79c907",
+  "candidate_commit": "2ae49896ce6faf0d20e99fc6c7b22d08c76a40f6",
+  "status": "candidate_awaiting_review",
+  "r031_acceptance_recorded": true,
+  "r031_accepted_commit": "fb28a158f9a469d0ca15cfe8c24d277e5f79c907",
+  "r031_candidate_head": "270c6ce676c014cb9df162bc4f52d3b2cd698d05",
+  "r031_topic": "信心來源拆解",
+  "next_round_to_dispatch": "R032",
+  "r032_topic": "交易日誌可追責鏈",
+  "r049_started": false,
+  "runtime_started": false,
+  "broker_api_called": false,
+  "order_execution_allowed": false,
+  "p1_backlog_deferred_not_completed": true,
+  "prohibited_actions_verified": true
+}

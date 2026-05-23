@@ -1,0 +1,12 @@
+{
+  "previous_chain_status": "r030_accepted_ready_for_r031_readiness_or_scope_audit",
+  "new_chain_status": "r031_accepted_ready_for_r032_readiness_or_scope_audit",
+  "previous_next_round_to_dispatch": "R031",
+  "new_next_round_to_dispatch": "R032",
+  "last_completed_round_before": "R030",
+  "last_completed_round_after": "R031",
+  "last_completed_topic": "信心來源拆解",
+  "last_completed_commit": "fb28a158f9a469d0ca15cfe8c24d277e5f79c907",
+  "reason_for_update": "R031 (信心來源拆解 / ConfidenceSourceDecomposer) has been fully accepted: candidate 270c6ce merged as fb28a15, pushed to origin, GitHub Actions SUCCESS. Chain status must advance to reflect completion.",
+  "why_r049_not_allowed": "R049 has no manifest entry, no scope definition, no authorized dispatch path. next_round_to_dispatch is R032. R049 jump is prohibited per governance chain."
+}
