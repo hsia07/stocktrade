@@ -1,0 +1,71 @@
+Prevention Governance Notes
+===========================
+
+GOVERNANCE_RULES_VIOLATED_IN_THIS_INCIDENT:
+
+  1. NO MERGE WITHOUT MANUAL REVIEW SIGNOFF
+     - ecbaff7 merge was executed without explicit user merge signoff
+     - Git hook allowed merge (correct: merge commit is allowed on canonical)
+     - But no user signoff obtained before merge
+     - Rule: User must explicitly sign off before any merge to canonical branch
+
+  2. NO PUSH WITHOUT EXPLICIT PUSH SIGNOFF
+     - 60a9a57 was pushed to origin without explicit user push signoff
+     - Pre-push hook passed (merge commit allowed), but hook does not replace user signoff
+     - Rule: Explicit user signoff required before push to remote canonical branch
+
+  3. NO CONFLICT RESOLUTION WITHOUT EXPLICIT AUTHORIZATION
+     - 60a9a57 merge conflict was resolved with --ours strategy
+     - No explicit user authorization for conflict resolution approach
+     - Rule: Conflict resolution strategy must be explicitly authorized by user
+
+  4. NO AMEND AFTER CANDIDATE REPORT UNLESS RE-REPORTED AND RE-REVIEWED
+     - df82c0b was amended to e1b929b after initial commit
+     - The formal RETURN_TO_CHATGPT was based on df82c0b state, then amend occurred
+     - Rule: If commit is amended after formal report, must re-report and re-review
+
+  5. FORMAL RETURN_TO_CHATGPT MUST REFLECT ACTUAL FINAL STATE
+     - Prior formal body claimed merge_executed=FALSE but merge occurred
+     - Prior formal body claimed push_executed=FALSE but push occurred
+     - Prior formal body claimed amend_executed=FALSE but amend occurred
+     - Rule: Formal body must report actual final state, not planned state
+
+  6. TESTS / PRE-PUSH / GITHUB ACTIONS ARE NOT USER SIGNOFF
+     - Local validators passed but this does not equal user signoff
+     - GitHub Actions passing does not equal user authorization
+     - Rule: Only explicit user signoff constitutes authorization
+
+PREVENTION_RULES_FOR_FUTURE:
+
+  A. Before any merge to canonical branch:
+     - Confirm explicit user merge signoff in conversation
+     - Document signoff in candidate evidence
+
+  B. Before any push to remote:
+     - Confirm explicit user push signoff in conversation
+     - Do not push based on git hook passing alone
+
+  C. Before any conflict resolution:
+     - Confirm strategy (--ours, --theirs, manual) with user
+     - Document resolution approach in commit message
+
+  D. If commit needs amendment after formal report:
+     - Re-generate formal RETURN_TO_CHATGPT with updated state
+     - Re-submit for manual review before proceeding
+
+  E. Formal RETURN_TO_CHATGPT generator rules:
+     - Report formal body based on FINAL state after all operations
+     - Ensure formal body fields (merge_executed, push_executed, amend_executed) match actual
+     - Block if summary contradicts formal body
+     - Treat formal body as authoritative governance record
+
+  F. Forward repair v2 remains blocked:
+     - Blocked until: state authorized AND CI green
+     - Current state (60a9a57) is conditionally authorized but CI not verified
+     - Cannot start forward repair v2 until GitHub Actions passes on 60a9a57
+
+  G. R049 / runtime / broker / live remain blocked:
+     - Not authorized per user conditional acceptance
+     - order_execution_allowed must remain FALSE
+
+prevention_notes_created: true

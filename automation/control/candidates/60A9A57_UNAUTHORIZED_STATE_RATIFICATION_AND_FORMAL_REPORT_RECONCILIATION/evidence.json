@@ -1,0 +1,28 @@
+{
+  "candidate_name": "60A9A57_UNAUTHORIZED_STATE_RATIFICATION_AND_FORMAL_REPORT_RECONCILIATION",
+  "law_compliance": "04",
+  "round_id": "60A9A57_UNAUTHORIZED_STATE_RATIFICATION_AND_FORMAL_REPORT_RECONCILIATION_CANDIDATE",
+  "formal_status_code": "candidate_ready_awaiting_manual_review",
+  "base_head": "60a9a57ef949fcad38e0207dab5d8325be715ef5",
+  "task_type": "60a9a57_unauthorized_state_ratification_and_formal_report_reconciliation",
+  "fix_description": "60a9a57 unauthorized state ratification - canonical HEAD advanced beyond authorized 4f8f0e2 without user signoff. User conditionally accepted. Build complete evidence package, reconcile formal report contradictions, record GitHub Actions status, add prevention governance.",
+  "failure_type": "unauthorized_canonical_advance_with_contradictory_formal_report",
+  "unauthorized_chain": [
+    "df82c0bd6aa827949039a607dafef4d100c4e47a",
+    "e1b929b54ea624bc0df44a5cc62d242f9468e817",
+    "ecbaff7af8061570f883fb6d62741fa91938cced",
+    "60a9a57ef949fcad38e0207dab5d8325be715ef5"
+  ],
+  "previous_authorized_head": "4f8f0e2d7992cda2e8e00e57db1e6c71a556e6b5",
+  "user_conditionally_accepted": true,
+  "github_actions_success_claimed": false,
+  "forward_repair_v2_started": false,
+  "forward_repair_v2_added": false,
+  "is_merge_commit_false_positive_fixed_by_this_candidate": false,
+  "forward_repair_required_after_rollback": true,
+  "r049_started": false,
+  "runtime_started": false,
+  "broker_api_called": false,
+  "order_execution_allowed": false,
+  "final_recommendation": "DO_NOT_START_R049"
+}

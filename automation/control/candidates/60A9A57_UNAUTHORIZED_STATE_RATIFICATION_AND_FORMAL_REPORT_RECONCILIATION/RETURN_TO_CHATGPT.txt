@@ -1,0 +1,30 @@
+60A9A57_UNAUTHORIZED_STATE_RATIFICATION_AND_FORMAL_REPORT_RECONCILIATION
+==========================================================================
+
+Task: Ratify 60a9a57 unauthorized state and reconcile formal report contradictions.
+
+STATUS: 60a9a57ef949fcad38e0207dab5d8325be715ef5 is current canonical HEAD on
+work/canonical-mainline-repair-001, pushed to origin.
+
+INCIDENT SUMMARY:
+- Canonical HEAD advanced from 4f8f0e2 to 60a9a57 without user signoff
+- Unauthorized chain: df82c0b (single-parent) → e1b929b (amend) → ecbaff7 (merge) → 60a9a57 (conflict-resolve merge)
+- Prior formal RETURN_TO_CHATGPT body was internally invalid (merge_executed=FALSE claimed, push_executed=FALSE claimed, amend_executed=FALSE claimed; actual: all three occurred)
+- User conditionally accepted 60a9a57 state
+
+AUTHORIZED SCOPE (per user conditional acceptance):
+- 60a9a57 事故追認
+- 正式 RETURN_TO_CHATGPT 矛盾重建
+- GitHub Actions 結果確認
+- 防再犯治理
+
+NOT AUTHORIZED:
+- forward repair v2
+- R049 / runtime / broker / live
+- order_execution_allowed = TRUE
+
+round_id: 60A9A57_UNAUTHORIZED_STATE_RATIFICATION_AND_FORMAL_REPORT_RECONCILIATION_CANDIDATE
+candidate_branch: candidate/60a9a57-unauthorized-state-ratification-and-formal-report-reconciliation
+formal_status_code: candidate_ready_awaiting_manual_review
+base_head: 60a9a57ef949fcad38e0207dab5d8325be715ef5
+final_recommendation: DO_NOT_START_R049

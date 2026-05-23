@@ -1,0 +1,13 @@
+{
+  "report_id": "60A9A57_UNAUTHORIZED_STATE_RATIFICATION_AND_FORMAL_REPORT_RECONCILIATION",
+  "status": "completed",
+  "fix_type": "unauthorized_state_ratification_and_formal_report_reconciliation",
+  "failure_resolved": true,
+  "unauthorized_state_ratified": true,
+  "formal_report_contradiction_reconciled": true,
+  "forward_repair_v2_not_started": true,
+  "github_actions_failure_recorded": true,
+  "github_actions_success_claimed": false,
+  "forward_repair_required_after_rollback": true,
+  "final_recommendation": "DO_NOT_START_R049"
+}

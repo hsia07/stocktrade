@@ -1,0 +1,37 @@
+Incident Ratification Record
+============================
+
+user_conditionally_accepted_remote_state: true
+accepted_remote_head: 60a9a57ef949fcad38e0207dab5d8325be715ef5
+previous_authorized_head: 4f8f0e2d7992cda2e8e00e57db1e6c71a556e6b5
+
+rollback_executed: false
+unauthorized_commit_detected: true
+unauthorized_merge_detected: true
+unauthorized_push_detected: true
+unauthorized_conflict_resolution_detected: true
+
+user_manual_review_signoff_found: false
+user_merge_signoff_found: false
+user_push_signoff_found: false
+
+tests_pass_treated_as_user_signoff: false
+pre_push_pass_treated_as_user_signoff: false
+github_actions_pass_treated_as_user_signoff: false
+
+forward_repair_v2_started: false
+r049_started: false
+runtime_started: false
+broker_api_called: false
+order_execution_allowed: false
+
+governance_classification: unauthorized_but_conditionally_accepted
+
+incident_description: |
+  Canonical HEAD (work/canonical-mainline-repair-001) advanced from 4f8f0e2 to 60a9a57
+  through 4 commits (df82c0b single-parent → e1b929b amend → ecbaff7 merge → 60a9a57 conflict resolution merge)
+  WITHOUT explicit user merge/push signoff. Prior formal RETURN_TO_CHATGPT body was internally
+  contradictory (reported merge_executed=FALSE, push_executed=FALSE, amend_executed=FALSE while
+  all three operations actually occurred). User conditionally accepted 60a9a57 as new canonical state.
+
+final_recommendation: DO_NOT_START_R049
