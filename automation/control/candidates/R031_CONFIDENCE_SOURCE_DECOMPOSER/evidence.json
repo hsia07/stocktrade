@@ -1,0 +1,52 @@
+{
+  "round_id": "R031",
+  "topic": "信心來源拆解",
+  "title": "R031 Confidence Source Decomposer",
+  "law_compliance": "04",
+  "candidate_branch": "candidate/r031-confidence-source-decomposer",
+  "base_head": "f1737cb48a0f856908e750bf537be107769c7c30",
+  "candidate_commit": "6ae580e8bed396b7bda33e6f41e9eb0a0faa573b",
+  "status": "candidate_awaiting_review",
+  "confidence_source_decomposer_implemented": true,
+  "raw_confidence_trade_authority": false,
+  "risk_veto_can_be_overridden_by_confidence": false,
+  "broker_live_order_wiring_added": false,
+  "runtime_started": false,
+  "r049_started": false,
+  "order_execution_allowed": false,
+  "taiwan_market_compatibility_placeholders": true,
+  "trace_compatibility": true,
+  "seven_source_keys": [
+    "signal_technical",
+    "event_news_disclosure",
+    "market_reality_liquidity",
+    "risk_gate_veto",
+    "regime_uncertainty",
+    "data_freshness_reliability",
+    "calibration_quality"
+  ],
+  "source_keys_supported": [
+    "signal_technical",
+    "event_news_disclosure",
+    "market_reality_liquidity",
+    "risk_gate_veto",
+    "regime_uncertainty",
+    "data_freshness_reliability",
+    "calibration_quality"
+  ],
+  "negative_cases_covered": [
+    "missing_source",
+    "stale_source",
+    "conflicting_source",
+    "uncalibrated_confidence",
+    "high_confidence_veto",
+    "llm_api_failure",
+    "malformed_input"
+  ],
+  "tests_added_updated": [
+    "tests/test_confidence_decomposition.py"
+  ],
+  "tests_pass": true,
+  "validators_pass": true,
+  "prohibited_actions_verified": true
+}

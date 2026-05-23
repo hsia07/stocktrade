@@ -1,0 +1,36 @@
+R031_CONFIDENCE_SOURCE_DECOMPOSER
+==================================
+
+Task: Implement R031 Confidence Source Decomposer (信心來源拆解) on candidate branch.
+
+Goal: Enhance ConfidenceSourceDecomposer with structured source breakdown, negative cases, trace/audit compatibility, Taiwan market placeholders, and trade authority protection. NOT construction — only candidate preparation.
+
+Constraints:
+- No R049 / runtime / broker / live / order execution
+- order_execution_allowed must remain FALSE
+- No forbidden path modifications
+- No merge, no push, no workflow rerun
+
+Files modified:
+- modules/decision_prechecklist/confidence_decomposition.py (full reimplementation)
+- modules/decision_prechecklist/__init__.py (export additions)
+- tests/test_confidence_decomposition.py (updated with 43 tests)
+
+Key changes:
+1. New 7 source keys aligned with R031 topic requirements
+2. ConfidenceSource dataclass enhanced with flags, reason_codes, trace/audit fields
+3. ConfidenceDecompositionReport enhanced with trade_authority protection, trace fields, Taiwan markers
+4. Negative cases: missing, stale, conflicting, uncalibrated, high+vetos
+5. Taiwan market compatibility placeholders
+6. final_confidence_is_trade_authority = FALSE protection on all outputs
+
+Tests: 43 tests in test_confidence_decomposition.py + 26 in test_decision_prechecklist.py = 69 total, all PASS.
+
+Validators: All PASS (validate_round, check_commit_message, check_forbidden_changes, check_required_evidence, evidence_checker, pre-push).
+
+No runtime / broker / live / order execution started.
+No forbidden paths modified.
+No merge / push executed.
+Order_execution_allowed = FALSE maintained.
+
+Status: candidate_ready_awaiting_manual_review

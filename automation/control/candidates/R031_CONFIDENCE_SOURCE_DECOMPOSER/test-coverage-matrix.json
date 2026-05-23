@@ -1,0 +1,90 @@
+{
+  "acceptance_condition": "Multi-source normal decomposition, structured breakdown output",
+  "test": "test_decompose_returns_all_seven_sources, test_decompose_with_source_scores, test_get_source_summary",
+  "status": "covered"
+},
+{
+  "acceptance_condition": "signal/event/market/reality/risk/regime/freshness/calibration sources all in breakdown",
+  "test": "test_decompose_returns_all_seven_sources",
+  "status": "covered"
+},
+{
+  "acceptance_condition": "reason_codes, config_version, threshold_version preserved",
+  "test": "test_reason_codes_preserved, test_threshold_config_version_preserved, test_source_config_version_preserved, test_final_confidence_summary_fields",
+  "status": "covered"
+},
+{
+  "acceptance_condition": "high confidence but risk veto -> veto preserved, not overridden",
+  "test": "test_high_confidence_with_risk_veto_veto_preserved",
+  "status": "covered"
+},
+{
+  "acceptance_condition": "trace_id/decision_chain compatibility preserved",
+  "test": "test_trace_id_passthrough, test_trace_append, test_get_compatible_report",
+  "status": "covered"
+},
+{
+  "acceptance_condition": "final_confidence_is_trade_authority = FALSE",
+  "test": "test_final_confidence_is_trade_authority_false, test_raw_confidence_no_direct_trade_authority",
+  "status": "covered"
+},
+{
+  "acceptance_condition": "missing source -> flagged, no crash, no trade claim",
+  "test": "test_missing_source_flagged, test_is_missing_source_detection, test_no_missing_source",
+  "status": "covered"
+},
+{
+  "acceptance_condition": "stale source -> flagged, trust reduced",
+  "test": "test_stale_source_reduces_trust",
+  "status": "covered"
+},
+{
+  "acceptance_condition": "conflicting sources -> flagged",
+  "test": "test_conflicting_source_flagged",
+  "status": "covered"
+},
+{
+  "acceptance_condition": "uncalibrated confidence -> flagged, no weight amplification",
+  "test": "test_uncalibrated_confidence_flagged, test_calibrated_confidence_not_uncalibrated",
+  "status": "covered"
+},
+{
+  "acceptance_condition": "LLM/API failure -> deterministic safe output",
+  "test": "test_llm_failure_deterministic_safe_output",
+  "status": "covered"
+},
+{
+  "acceptance_condition": "raw confidence = very high but veto -> not trade approval",
+  "test": "test_high_confidence_with_risk_veto_veto_preserved, test_raw_confidence_no_direct_trade_authority",
+  "status": "covered"
+},
+{
+  "acceptance_condition": "malformed input -> fail safe, no silent pass",
+  "test": "test_malformed_input_fail_safe, test_decompose_negative_raw_veto, test_decompose_over_one_raw_veto",
+  "status": "covered"
+},
+{
+  "acceptance_condition": "no broker/live/order side effects",
+  "test": "test_no_broker_no_live_no_order_side_effects",
+  "status": "covered"
+},
+{
+  "acceptance_condition": "order_execution_allowed not changed to TRUE",
+  "test": "implicitly verified by evidence_checker.py and no server_v2 modification",
+  "status": "covered"
+},
+{
+  "acceptance_condition": "Taiwan market compatibility placeholders present",
+  "test": "test_taiwan_market_markers, test_taiwan_markers_in_report",
+  "status": "covered"
+},
+{
+  "acceptance_condition": "calibration bucket assignment",
+  "test": "test_calibrate_bucket_values",
+  "status": "covered"
+},
+{
+  "acceptance_condition": "checklist integration preserves backward compatibility (sources property, veto_reason property)",
+  "test": "test_confidence_calibration_with_decomposition, test_checklist_with_decomposer_integration (test_decision_prechecklist.py)",
+  "status": "covered"
+}

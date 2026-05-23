@@ -1,0 +1,23 @@
+{
+  "raw_confidence_trade_authority": false,
+  "no_broker_api": true,
+  "no_live_execution": true,
+  "no_order_sending": true,
+  "no_position_sizing": true,
+  "no_capital_allocation": true,
+  "order_execution_allowed": false,
+  "confidence_source_decomposer_pure_decomposition": true,
+  "no_llm_api_trade_approval": true,
+  "high_confidence_veto_protection": true,
+  "backward_compatibility_properties": [
+    "ConfidenceDecompositionReport.sources (property -> confidence_source_breakdown)",
+    "ConfidenceDecompositionReport.veto_reason (property -> join vetoes)"
+  ],
+  "safety_verification": "final_confidence_is_trade_authority is False on all code paths",
+  "assertions": [
+    "confidence_calibration.py and checklist.py integration tests pass",
+    "69 tests pass with no broker/live/order side effects",
+    "no server_v2.py modification",
+    "no broker/live/execution wiring added"
+  ]
+}
