@@ -1,0 +1,18 @@
+{
+  "round_id": "R031_ACCEPTANCE_AND_CHAIN_STATUS_UPDATE",
+  "task_type": "r031_acceptance_and_chain_status_update_candidate",
+  "status": "completed",
+  "formal_status_code": "candidate_ready_awaiting_manual_review",
+  "candidate_commit": "556a9307fbc37e1cec7075d225ca629f3ac66657",
+  "base_head": "fb28a158f9a469d0ca15cfe8c24d277e5f79c907",
+  "r031_acceptance_recorded": true,
+  "r049_can_start_now": false,
+  "p1_backlog_deferred_not_completed": true,
+  "validate_round_pass": true,
+  "check_forbidden_changes_pass": true,
+  "check_required_evidence_pass": true,
+  "evidence_checker_pass": true,
+  "pre_push_hook_pass": true,
+  "recommended_next_action": "AWAITING_MANUAL_REVIEW_R031_ACCEPTANCE_AND_CHAIN_STATUS_UPDATE_CANDIDATE",
+  "final_recommendation": "DO_NOT_START_R049"
+}

@@ -1,0 +1,23 @@
+R031_ACCEPTANCE_AND_CHAIN_STATUS_UPDATE
+=========================================
+
+Task: Update manifest chain status after R031 acceptance.
+
+R031 (信心來源拆解 / ConfidenceSourceDecomposer) has been:
+- Completed on candidate branch (270c6ce)
+- Local no-ff merged into work/canonical-mainline-repair-001 (fb28a15)
+- Pushed to origin
+- GitHub Actions validate-canonical-repair #22 + validate-round #240 both SUCCESS
+
+Manifest updates:
+- last_completed_round: R030 → R031
+- last_completed_topic: 信心來源拆解
+- last_completed_commit: fb28a158f9a469d0ca15cfe8c24d277e5f79c907
+- next_round_to_dispatch: R031 → R032
+- chain_status: r030_accepted_ready_for_r031_readiness_or_scope_audit → r031_accepted_ready_for_r032_readiness_or_scope_audit
+- Backlog entry added for r031
+
+No source / tests / runtime / broker / live modifications.
+order_execution_allowed = FALSE maintained.
+R049 remains blocked.
+P1 backlog still deferred.

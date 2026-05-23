@@ -1,0 +1,77 @@
+R031_ACCEPTANCE_AND_CHAIN_STATUS_UPDATE_CANDIDATE
+================================================
+
+round_id: R031_ACCEPTANCE_AND_CHAIN_STATUS_UPDATE_CANDIDATE
+task_type: r031_acceptance_and_chain_status_update_candidate
+status: completed
+formal_status_code: candidate_ready_awaiting_manual_review
+
+base_head: fb28a158f9a469d0ca15cfe8c24d277e5f79c907
+candidate_branch: candidate/r031-acceptance-chain-status-update
+candidate_commit: (pending commit)
+r031_accepted_commit: fb28a158f9a469d0ca15cfe8c24d277e5f79c907
+r031_candidate_head: 270c6ce676c014cb9df162bc4f52d3b2cd698d05
+
+r031_acceptance_ready_true_or_false: TRUE
+validate_canonical_repair_success_recorded_true_or_false: TRUE
+validate_canonical_repair_run_id: 26340016777
+validate_round_success_recorded_true_or_false: TRUE
+validate_round_run_id: 26340016776
+
+manifest_current_round_before: "NONE"
+manifest_next_round_to_dispatch_before: "R031"
+chain_status_before: "r030_accepted_ready_for_r031_readiness_or_scope_audit"
+last_completed_round_before: "R030"
+
+manifest_next_round_to_dispatch_after: "R032"
+chain_status_after: "r031_accepted_ready_for_r032_readiness_or_scope_audit"
+last_completed_round_after: "R031"
+
+r032_readiness_preflight_needed_true_or_false: TRUE
+r049_can_start_now_true_or_false: FALSE
+r049_blocking_reason: "R049 has no manifest entry, no scope, no dispatch path. next is R032."
+
+p1_backlog_deferred_not_completed_true_or_false: TRUE
+deferred_p1_items:
+  - R014: trace_id/decision_chain/veto/durable persistence
+  - R029/R030: per-AI veto rework
+  - R047/R048: P1 backlog
+  - Signoff validation syntactic not cryptographic
+  - GitHub Actions CI environment discrepancy
+
+source_files_modified_true_or_false: FALSE
+tests_modified_true_or_false: FALSE
+workflow_modified_true_or_false: FALSE
+pre_push_hook_modified_true_or_false: FALSE
+server_v2_modified_true_or_false: FALSE
+modules_modified_true_or_false: FALSE
+stocktrade_gitlink_modified_true_or_false: FALSE
+gitmodules_modified_true_or_false: FALSE
+
+runtime_started_true_or_false: FALSE
+r049_started_true_or_false: FALSE
+broker_api_called_true_or_false: FALSE
+order_execution_allowed_true_or_false: FALSE
+
+validate_round_pass_true_or_false: TRUE
+check_commit_message_pass_true_or_false: TRUE
+check_forbidden_changes_pass_true_or_false: TRUE
+check_required_evidence_pass_true_or_false: TRUE
+evidence_checker_pass_true_or_false: TRUE
+pre_push_hook_pass_true_or_false: TRUE
+
+files_modified:
+  - manifests/current_round.yaml (governance state update only)
+
+authorized_files_only_true_or_false: TRUE
+commit_created_true_or_false: FALSE (pending)
+amend_executed_true_or_false: FALSE
+merge_executed_this_round_true_or_false: FALSE
+push_executed_this_round_true_or_false: FALSE
+workflow_rerun_executed_true_or_false: FALSE
+
+git_status_short_after: (pending commit)
+git_status_clean_after_true_or_false: FALSE (pending commit)
+
+recommended_next_action: AWAITING_MANUAL_REVIEW_R031_ACCEPTANCE_AND_CHAIN_STATUS_UPDATE_CANDIDATE
+final_recommendation: DO_NOT_START_R049
