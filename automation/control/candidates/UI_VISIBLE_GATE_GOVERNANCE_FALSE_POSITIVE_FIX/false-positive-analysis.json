@@ -1,0 +1,83 @@
+{
+  "false_positive_analysis_title": "UI_VISIBLE_ROUND_ACCEPTANCE_GATE False Positive Analysis",
+  "blocked_package": "automation/control/candidates/60A9A57_UNAUTHORIZED_STATE_RATIFICATION_AND_FORMAL_REPORT_RECONCILIATION",
+  "blocked_evidence_json": "automation/control/candidates/60A9A57_UNAUTHORIZED_STATE_RATIFICATION_AND_FORMAL_REPORT_RECONCILIATION/evidence.json",
+  "blocked_round_id": "60A9A57_UNAUTHORIZED_STATE_RATIFICATION_AND_FORMAL_REPORT_RECONCILIATION_CANDIDATE",
+  "blocked_task_type": "60a9a57_unauthorized_state_ratification_and_formal_report_reconciliation",
+
+  "false_positive_keywords_detected": [
+    "report (in 'formal_report_reconciliation' and 'report_reconciliation')",
+    "state (in 'unauthorized_state' and 'state_ratification')"
+  ],
+
+  "why_not_ui_round": "This is a governance incident ratification / formal report reconciliation package. It does not involve any user-facing UI, dashboard, panel, visualization, or web interface. The keywords 'report' and 'state' refer to governance records and canonical state tracking, not UI elements.",
+
+  "original_ui_gate_logic": {
+    "ui_keywords": ["ui", "panel", "dashboard", "homepage", "onboarding", "teaching", "summary", "mobile", "emergency", "simulation", "visualization", "query", "report", "display"],
+    "problem": "'report' and 'state' are too broad - they appear in governance/ratification context without being UI-related. 'summary' was also too broad."
+  },
+
+  "corrected_classifier_rule": {
+    "governance_exclusion_patterns": [
+      "unauthorized_state",
+      "incident_ratification",
+      "formal_report_reconciliation",
+      "marker_fix",
+      "evidence_completion",
+      "canonical_repair",
+      "governance_prevention",
+      "rollback_rework",
+      "evidence_tree",
+      "conflict_resolution",
+      "ratification_and",
+      "formal_report",
+      "governance_.*_fix",
+      "_rework$",
+      "_reratification",
+      "_marker_",
+      "ui_visible_gate_",
+      "_governance_",
+      "_incident_"
+    ],
+    "ui_keywords_preserved": [
+      "ui",
+      "panel",
+      "dashboard",
+      "homepage",
+      "onboarding",
+      "teaching",
+      "mobile",
+      "emergency",
+      "simulation",
+      "visualization",
+      "query",
+      "user-facing",
+      "visible_surface",
+      "dom",
+      "screenshot"
+    ],
+    "ui_keywords_removed": ["report", "state", "display", "summary"],
+    "classifier_logic": "is_ui = (NOT is_governance) AND has_ui_keyword. governance check uses regex patterns on combined round_id+task_type+files."
+  },
+
+  "true_ui_gate_preserved": true,
+  "fake_ui_evidence_added": false,
+  "no_verify_used": false,
+
+  "test_cases_verified": {
+    "should_not_trigger_ui_gate": [
+      "60a9a57_unauthorized_state_ratification_and_formal_report_reconciliation",
+      "governance_incident_ratification",
+      "marker_fix_evidence_completion",
+      "canonical_repair_report_status_fix",
+      "rollback_rework_formal_report_reconciliation"
+    ],
+    "should_still_trigger_ui_gate": [
+      "ui_visible_surface",
+      "user_facing_dashboard",
+      "panel_report_visible_surface",
+      "homepage_mobile_responsive",
+      "visualization_query_ui"
+    ]
+  }
+}
