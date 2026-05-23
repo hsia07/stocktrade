@@ -8,6 +8,9 @@ from .confidence_decomposition import (
     ConfidenceDecompositionReport,
     ConfidenceSource,
     CONFIDENCE_SOURCE_KEYS,
+    DEFAULT_SOURCE_CONFIG,
+    TaiwanMarketCompatibilityMarkers,
+    get_compatible_report,
 )
 from .traceability_chain import (
     TraceabilityChain,
@@ -101,6 +104,9 @@ __all__ = [
     "ConfidenceDecompositionReport",
     "ConfidenceSource",
     "CONFIDENCE_SOURCE_KEYS",
+    "DEFAULT_SOURCE_CONFIG",
+    "TaiwanMarketCompatibilityMarkers",
+    "get_compatible_report",
     "TraceabilityChain",
     "TraceabilityLink",
     "ChainVerificationResult",

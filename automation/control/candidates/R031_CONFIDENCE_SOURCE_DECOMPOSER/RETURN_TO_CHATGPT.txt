@@ -1,0 +1,122 @@
+R031_CONFIDENCE_SOURCE_DECOMPOSER
+==================================
+
+round_id: R031_CANDIDATE_CONSTRUCTION_CONFIDENCE_SOURCE_DECOMPOSER
+task_type: r031_candidate_construction_confidence_source_decomposer
+status: completed
+formal_status_code: candidate_ready_awaiting_manual_review
+
+canonical_branch: work/canonical-mainline-repair-001
+base_head: f1737cb48a0f856908e750bf537be107769c7c30
+candidate_branch: candidate/r031-confidence-source-decomposer
+candidate_commit: 9d0d9d2f085dc92f2fa171172da04b31803b7df4
+r031_official_topic: 信心來源拆解
+
+confidence_source_decomposer_file: modules/decision_prechecklist/confidence_decomposition.py
+confidence_source_decomposer_reality_before: partial
+confidence_source_decomposer_reality_after: implemented
+
+functional_implementation_complete_claimed_true_or_false: TRUE
+structured_source_breakdown_implemented_true_or_false: TRUE
+source_keys_supported:
+  - signal_technical
+  - event_news_disclosure
+  - market_reality_liquidity
+  - risk_gate_veto
+  - regime_uncertainty
+  - data_freshness_reliability
+  - calibration_quality
+
+reason_codes_preserved_true_or_false: TRUE
+trace_compatibility_preserved_true_or_false: TRUE
+threshold_config_version_preserved_true_or_false: TRUE
+missing_source_negative_case_supported_true_or_false: TRUE
+stale_source_negative_case_supported_true_or_false: TRUE
+conflicting_source_negative_case_supported_true_or_false: TRUE
+uncalibrated_confidence_negative_case_supported_true_or_false: TRUE
+high_confidence_veto_override_blocked_true_or_false: TRUE
+
+raw_confidence_direct_buy_sell_true_or_false: FALSE
+raw_confidence_direct_position_sizing_true_or_false: FALSE
+raw_confidence_can_bypass_risk_gate_true_or_false: FALSE
+llm_api_can_directly_approve_trade_true_or_false: FALSE
+broker_live_order_wiring_added_true_or_false: FALSE
+runtime_started_true_or_false: FALSE
+r049_started_true_or_false: FALSE
+order_execution_allowed_true_or_false: FALSE
+
+taiwan_market_compatibility_placeholders_true_or_false: TRUE
+market_reality_compatibility_placeholders_true_or_false: TRUE
+
+tests_added_or_updated: [tests/test_confidence_decomposition.py]
+tests_import_real_source_true_or_false: TRUE
+tests_use_fake_duplicate_function_true_or_false: FALSE
+
+pytest_confidence_decomposition_result: 43 passed
+pytest_decision_prechecklist_result: 26 passed
+
+validate_round_pass_true_or_false: TRUE
+check_commit_message_pass_true_or_false: TRUE
+check_forbidden_changes_pass_true_or_false: TRUE
+check_required_evidence_pass_true_or_false: TRUE
+validate_canonical_repair_evidence_on_r031_package_pass_true_or_false: TRUE
+evidence_checker_pass_true_or_false: TRUE
+pre_push_hook_pass_true_or_false: TRUE
+
+candidate_diff_utf8_no_bom_true_or_false: TRUE
+evidence_json_law_compliance_present_true_or_false: TRUE
+evidence_json_law_compliance_value: "04"
+
+files_modified:
+  - modules/decision_prechecklist/confidence_decomposition.py
+  - modules/decision_prechecklist/__init__.py
+  - tests/test_confidence_decomposition.py
+
+authorized_files_only_true_or_false: TRUE
+source_files_modified_true_or_false: TRUE
+workflow_modified_true_or_false: FALSE
+current_round_yaml_modified_true_or_false: FALSE
+pre_push_hook_modified_true_or_false: FALSE
+server_v2_modified_true_or_false: FALSE
+modules_modified_true_or_false: TRUE
+stocktrade_gitlink_modified_true_or_false: FALSE
+gitmodules_modified_true_or_false: FALSE
+
+commit_created_true_or_false: FALSE
+amend_executed_true_or_false: FALSE
+git_status_clean_after_true_or_false: FALSE (staged changes exist)
+merge_executed_this_round_true_or_false: FALSE
+push_executed_this_round_true_or_false: FALSE
+workflow_rerun_executed_true_or_false: FALSE
+
+already_acceptance_ready_items:
+  - 43 tests in test_confidence_decomposition.py
+  - 26 tests in test_decision_prechecklist.py
+  - 69 total pytest PASS
+  - 7 source keys mapped to R031 topic
+  - backward compatibility (sources property, veto_reason property)
+  - Taiwan market compatibility markers
+  - trace/audit compatibility fields
+  - final_confidence_is_trade_authority = FALSE on all paths
+  - all validators PASS
+
+still_need_deep_review_items:
+  - R031 candidate requires manual review before merge
+  - Need source logic correctness audit (semantic correctness of weight/penalty calculations)
+  - Need test coverage gap audit (are all edge cases covered?)
+  - Need post-merge validators and GitHub Actions after merge/push
+  - P1 backlog deferred but not completed
+  - R014 trace_id/decision_chain/veto/durable persistence incomplete
+  - R029/R030 per-AI veto rework pending
+  - R047/R048 P1 backlog pending
+  - R049 remains blocked
+
+remaining_blockers:
+  - R031 candidate requires manual review before merge
+  - GitHub Actions actual success unresolved until candidate merged/pushed and CI rechecked
+  - P1 backlog deferred but not completed
+  - R049 remains blocked indefinitely (no manifest, no dispatch path)
+
+recommended_next_action: AWAITING_MANUAL_REVIEW_R031_CONFIDENCE_SOURCE_DECOMPOSER_CANDIDATE
+
+final_recommendation: DO_NOT_START_R049

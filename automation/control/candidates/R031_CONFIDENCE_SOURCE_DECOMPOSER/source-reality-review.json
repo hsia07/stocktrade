@@ -1,0 +1,48 @@
+R031 Confidence Source Decomposer - Source Reality Review
+===========================================================
+
+File: modules/decision_prechecklist/confidence_decomposition.py
+Lines: 457
+
+1. TODO / pass-only / fake pass?
+   NO. Full implementation with actual decomposition logic. No TODO, no pass-only, no fake pass.
+
+2. Actual function/class/method list:
+   - CONFIDENCE_SOURCE_KEYS (frozenset, 7 keys)
+   - CONFIDENCE_SOURCE_LABELS (dict)
+   - DEFAULT_SOURCE_CONFIG (dict)
+   - SOURCE_CATEGORY_MAPPING (dict)
+   - ConfidenceSource (dataclass)
+   - TaiwanMarketCompatibilityMarkers (dataclass)
+   - ConfidenceDecompositionReport (dataclass with properties sources, veto_reason)
+   - _calibrate_bucket (internal function)
+   - ConfidenceSourceDecomposer (class)
+     - __init__(source_config, brier_penalty_threshold, low_experience_threshold, default_regime_uncertainty_penalty, config_version, threshold_version)
+     - _validate_config()
+     - _build_reason_codes()
+     - decompose(raw_confidence, source_scores, historical_brier_score, num_past_decisions, regime_uncertainty, trace_id, source_metadata, taiwan_market_markers)
+   - get_compatible_report()
+
+3. Runtime / broker / live / order wiring?
+   NO. Class is pure decomposition logic. No broker API calls, no live execution, no order sending.
+
+4. Enum/field only or actual decomposition logic?
+   ACTUAL DECOMPOSITION LOGIC. Full implementation with:
+   - Weight-based calibrated score computation
+   - Brier penalty, experience penalty, regime penalty
+   - Missing/stale/conflicting/uncalibrated flags
+   - Veto detection per source with min_raw
+   - Stale/conflicting reduce calibrated_score by 0.7 factor
+   - Taiwan market compatibility markers
+   - Trace/audit payload compatibility
+   - final_confidence_is_trade_authority = FALSE
+
+5. How missing/stale/conflicting/uncalibrated/veto handled:
+   - missing: is_missing=True, source_reliability=0.5, weight=0
+   - stale: is_stale=True, calibrated_score *= 0.7
+   - conflicting: is_conflicting=True, calibrated_score *= 0.7
+   - uncalibrated: is_uncalibrated=True (when historical_brier_score is None)
+   - veto: veto_reason set, contribution=0, is_veto_related=True
+   - high confidence + veto: veto preserved, final_confidence_is_trade_authority=False
+
+Conclusion: source is a genuine implementation, not a stub. No broker/live/order wiring. No TODO/pass-only.

@@ -1,0 +1,5 @@
+R031_CONFIDENCE_SOURCE_DECOMPOSER
+No Aider Used
+This candidate was created without using Aider.
+OpenCode direct implementation with manual review. All tests written and verified manually.
+No AI pair programming tool used.

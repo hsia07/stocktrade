@@ -1,0 +1,81 @@
+R031 Confidence Source Decomposer - Test Results
+=================================================
+
+test_confidence_decomposition.py: 43 tests
+test_decision_prechecklist.py: 26 tests
+Total: 69 tests, 69 PASSED
+
+---
+tests/test_confidence_decomposition.py:
+  test_decomposer_initializes_with_default_config PASSED
+  test_decomposer_rejects_bad_weights PASSED
+  test_decomposer_rejects_missing_keys PASSED
+  test_decomposer_rejects_extra_keys PASSED
+  test_decompose_returns_all_seven_sources PASSED
+  test_decompose_with_source_scores PASSED
+  test_decompose_low_raw_still_decomposes PASSED
+  test_decompose_negative_raw_veto PASSED
+  test_decompose_over_one_raw_veto PASSED
+  test_decompose_brier_penalty PASSED
+  test_decompose_experience_penalty PASSED
+  test_decompose_regime_penalty PASSED
+  test_decompose_individual_source_veto PASSED
+  test_get_source_summary PASSED
+  test_get_source_found PASSED
+  test_get_source_not_found PASSED
+  test_overall_calibrated_is_weighted_sum PASSED
+  test_confidence_source_dataclass PASSED
+  test_confidence_decomposition_report_defaults PASSED
+  test_final_confidence_is_trade_authority_false PASSED
+  test_high_confidence_with_risk_veto_veto_preserved PASSED
+  test_trace_id_passthrough PASSED
+  test_trace_append PASSED
+  test_reason_codes_preserved PASSED
+  test_threshold_config_version_preserved PASSED
+  test_missing_source_flagged PASSED
+  test_stale_source_reduces_trust PASSED
+  test_conflicting_source_flagged PASSED
+  test_uncalibrated_confidence_flagged PASSED
+  test_calibrated_confidence_not_uncalibrated PASSED
+  test_llm_failure_deterministic_safe_output PASSED
+  test_malformed_input_fail_safe PASSED
+  test_get_compatible_report PASSED
+  test_taiwan_market_markers PASSED
+  test_taiwan_markers_in_report PASSED
+  test_raw_confidence_no_direct_trade_authority PASSED
+  test_calibrate_bucket_values PASSED
+  test_source_config_version_preserved PASSED
+  test_final_confidence_summary_fields PASSED
+  test_risk_gate_veto_category PASSED
+  test_is_missing_source_detection PASSED
+  test_no_missing_source PASSED
+  test_no_broker_no_live_no_order_side_effects PASSED
+
+---
+tests/test_decision_prechecklist.py:
+  test_single_signal_technical_indicator_blocked PASSED
+  test_event_news_social_blocked PASSED
+  test_social_sentiment_blocked PASSED
+  test_single_signal_ai_score_blocked PASSED
+  test_llm_source_blocked PASSED
+  test_normal_strategy_passes PASSED
+  test_taiwan_suspended_blocked PASSED
+  test_taiwan_disposition_stock_blocked PASSED
+  test_taiwan_near_limit_up_blocked PASSED
+  test_taiwan_liquidity_insufficient_blocked PASSED
+  test_nea_edge_below_minimum_blocked PASSED
+  test_nea_fill_probability_low_blocked PASSED
+  test_confidence_calibration_low_raw PASSED
+  test_confidence_calibration_high_brier PASSED
+  test_position_sizing_respects_all_limits PASSED
+  test_replay_trace_fields PASSED
+  test_extra_veto_hook PASSED
+  test_non_taiwan_stock_no_taiwan_checks PASSED
+  test_confidence_raw_used_directly_not_above_calibrated PASSED
+  test_confidence_calibration_with_decomposition PASSED
+  test_confidence_calibration_with_decomposition_veto PASSED
+  test_confidence_calibration_with_decomposition_no_veto_at_zero PASSED
+  test_checklist_with_decomposer_integration PASSED
+  test_checklist_decomposer_source_scores_affect_result PASSED
+  test_decomposition_adds_trace_step PASSED
+  test_placeholder_for_order_fill_pnl_schema PASSED
