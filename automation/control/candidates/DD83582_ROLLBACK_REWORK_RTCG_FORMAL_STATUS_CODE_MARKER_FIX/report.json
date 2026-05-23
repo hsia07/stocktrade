@@ -1,0 +1,8 @@
+{
+  "report_id": "DD83582_ROLLBACK_REWORK_RTCG_FORMAL_STATUS_CODE_MARKER_FIX",
+  "status": "candidate_ready",
+  "failure_type": "rtcg:missing_marker:formal_status_code",
+  "failure_fixed": true,
+  "rollback_conclusion_unchanged": true,
+  "final_recommendation": "DO_NOT_START_R049"
+}

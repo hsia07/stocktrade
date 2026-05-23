@@ -1,0 +1,13 @@
+diff --git a/automation/control/candidates/VALIDATE_ROUND_ROUTING_BAD_FIX_ROLLBACK_REWORK/RETURN_TO_CHATGPT.txt b/automation/control/candidates/VALIDATE_ROUND_ROUTING_BAD_FIX_ROLLBACK_REWORK/RETURN_TO_CHATGPT.txt
+index 1ff6822..4f3c11a 100644
+--- a/automation/control/candidates/VALIDATE_ROUND_ROUTING_BAD_FIX_ROLLBACK_REWORK/RETURN_TO_CHATGPT.txt
++++ b/automation/control/candidates/VALIDATE_ROUND_ROUTING_BAD_FIX_ROLLBACK_REWORK/RETURN_TO_CHATGPT.txt
+@@ -27,6 +27,7 @@ Key constraints:
+   - forward repair v2 still required (must use HEAD parent-count structural detection)
+ 
+ round_id: VALIDATE_ROUND_ROUTING_BAD_FIX_ROLLBACK_REWORK_CANDIDATE
++formal_status_code: MANUAL_REVIEW_PASS_AWAITING_MERGE_SIGNOFF
+ base_head: 8d95e58d4326c089b8935c932b4db92559b4be1b
+ last_safe_authorized_head: f072bd8a53ea2c5a7f000e1b50ebe884fa3cf4b9
+ final_recommendation: DO_NOT_START_R049
+\ No newline at end of file

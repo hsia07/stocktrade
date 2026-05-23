@@ -1,0 +1,28 @@
+DD83582_ROLLBACK_REWORK_RTCG_FORMAL_STATUS_CODE_MARKER_FIX
+=======================================================
+
+Task: Fix rtcg missing formal_status_code marker in rollback evidence package.
+
+GitHub Actions failure on dd83582:
+  [FAIL] automation/control/candidates/VALIDATE_ROUND_ROUTING_BAD_FIX_ROLLBACK_REWORK
+    - rtcg:missing_marker:formal_status_code
+
+Root cause: RETURN_TO_CHATGPT.txt in rollback evidence package was missing
+the formal_status_code marker in its RETURN_TO_CHATGPT formal body section.
+
+Fix applied: Added formal_status_code: MANUAL_REVIEW_PASS_AWAITING_MERGE_SIGNOFF
+to the RETURN_TO_CHATGPT.txt formal body section (after round_id, before base_head).
+
+Key constraints preserved:
+  - rollback_conclusion_unchanged = true
+  - is_merge_commit_false_positive_fixed_by_this_fix = FALSE
+  - forward_repair_required_after_rollback = TRUE
+  - github_actions_success_claimed = FALSE
+  - No forward repair v2 added
+  - No source files modified
+  - No workflow modified
+
+round_id: DD83582_ROLLBACK_REWORK_RTCG_FORMAL_STATUS_CODE_MARKER_FIX_CANDIDATE
+formal_status_code: candidate_ready_awaiting_manual_review
+base_head: dd83582e7dc34575bd6678694a6c565056b6e31e
+final_recommendation: DO_NOT_START_R049
