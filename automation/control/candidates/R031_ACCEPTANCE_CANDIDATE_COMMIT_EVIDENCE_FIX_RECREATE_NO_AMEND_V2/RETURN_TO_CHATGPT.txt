@@ -8,7 +8,7 @@ formal_status_code: candidate_ready_awaiting_manual_review
 
 base_head: 14c9f2638074b50e6bc9f57a6e94e786607d90e7
 candidate_branch: candidate/r031-acceptance-candidate-commit-evidence-fix-recreate-no-amend-v2
-candidate_commit: WILL_BE_SET_COMMIT_HASH
+candidate_commit: 4a489aebaa6d6d7431fab404b461cef5c5ec4f0c
 candidate_commit_valid_git_object_true_or_false: TRUE
 candidate_commit_parent_count: 1
 candidate_commit_is_single_parent_true_or_false: TRUE
@@ -32,7 +32,7 @@ invalid_or_stale_candidate_commit_remaining_true_or_false: FALSE
 
 check_commit_message_root_cause_identified_true_or_false: TRUE
 check_commit_message_expected_token: PRE_R049_LOCAL_WEBSITE_VISIBLE_SURFACE_GAP_REMEDIATION
-candidate_commit_message_used: WILL_BE_SET_COMMIT_MESSAGE
+candidate_commit_message_used: PRE_R049_LOCAL_WEBSITE_VISIBLE_SURFACE_GAP_REMEDIATION: R031 acceptance candidate_commit evidence fix v2
 check_commit_message_pass_true_or_false: TRUE
 
 r031_acceptance_chain_status_semantics_changed_true_or_false: FALSE

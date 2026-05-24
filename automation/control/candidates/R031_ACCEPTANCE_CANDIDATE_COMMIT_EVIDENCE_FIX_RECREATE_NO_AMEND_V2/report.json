@@ -7,7 +7,7 @@
   "canonical_head": "14c9f2638074b50e6bc9f57a6e94e786607d90e7",
   "test_count": 0,
   "tests_passed": 0,
-  "candidate_commit": "14c9f2638074b50e6bc9f57a6e94e786607d90e7",
+  "candidate_commit": "4a489aebaa6d6d7431fab404b461cef5c5ec4f0c",
   "base_head": "14c9f2638074b50e6bc9f57a6e94e786607d90e7",
   "evidence_fix_applied": true,
   "r049_can_start_now": false,

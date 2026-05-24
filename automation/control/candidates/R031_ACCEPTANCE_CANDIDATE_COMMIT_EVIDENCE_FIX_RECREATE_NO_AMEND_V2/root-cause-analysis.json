@@ -10,7 +10,7 @@
   "previous_v1_candidate_commit_message": "R031_ACCEPTANCE_CANDIDATE_COMMIT_EVIDENCE_FIX_RECREATE_NO_AMEND",
   "previous_v1_fail_reason": "Commit message did not include manifest_round_id (PRE_R049_LOCAL_WEBSITE_VISIBLE_SURFACE_GAP_REMEDIATION). check_commit_message.py requires exact substring match for non-merge commits.",
   "this_v2_commit_message_strategy": "Use manifest_round_id as prefix/token in commit message so check_commit_message.py finds the required substring, while keeping human-readable R031 evidence fix context.",
-  "this_v2_commit_message_used": "WILL_BE_SET_AFTER_COMMIT",
+  "this_v2_commit_message_used": "PRE_R049_LOCAL_WEBSITE_VISIBLE_SURFACE_GAP_REMEDIATION: R031 acceptance candidate_commit evidence fix v2",
   "invalid_candidate_commit_values_before": [
     {
       "file": "evidence.json",
