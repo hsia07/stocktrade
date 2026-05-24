@@ -1,0 +1,26 @@
+{
+  "round_id": "R031_ACCEPTANCE_EVIDENCE_FIX_CI_COMMIT_MESSAGE_COMPATIBILITY",
+  "safety_boundary_review": {
+    "source_files_modified": false,
+    "tests_modified": false,
+    "manifest_modified": false,
+    "validator_modified": false,
+    "workflow_modified": false,
+    "pre_push_hook_modified": false,
+    "server_v2_modified": false,
+    "modules_modified": false,
+    "broker_files_modified": false,
+    "live_files_modified": false,
+    "order_files_modified": false,
+    "runtime_started": false,
+    "r032_started": false,
+    "r032_functional_construction_started": false,
+    "r049_started": false,
+    "broker_api_called": false,
+    "order_execution_allowed": false,
+    "secret_values_exposed": false,
+    "stocktrade_gitlink_modified": false,
+    "gitmodules_modified": false,
+    "db_state_modified": false
+  }
+}

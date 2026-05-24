@@ -1,0 +1,18 @@
+R031_ACCEPTANCE_EVIDENCE_FIX_CI_COMMIT_MESSAGE_COMPATIBILITY - Test Results
+==========================================================================
+Date: 2026-05-24
+Commit: pending (to be created)
+Branch: candidate/r031-acceptance-ci-commit-message-compatibility
+
+This is a governance/evidence-only candidate. No source or test code was modified.
+Validation will be performed post-commit via validators listed below:
+
+- python scripts/validation/validate_round.py --manifest manifests/current_round.yaml
+- python scripts/validation/check_commit_message.py --manifest manifests/current_round.yaml
+- python scripts/validation/check_forbidden_changes.py --manifest manifests/current_round.yaml
+- python scripts/validation/check_required_evidence.py --manifest manifests/current_round.yaml
+- python scripts/validation/validate_canonical_repair_evidence.py
+- python automation/control/evidence_checker.py
+- powershell -File .githooks/pre-push.ps1
+
+All validators expected to PASS.

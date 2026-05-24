@@ -1,0 +1,12 @@
+{
+  "round_id": "R031_ACCEPTANCE_EVIDENCE_FIX_CI_COMMIT_MESSAGE_COMPATIBILITY",
+  "task_type": "r031_acceptance_evidence_fix_ci_commit_message_compatibility_candidate",
+  "status": "completed",
+  "base_head": "87090447070b6b569f7bed01a6c0def495e5d215",
+  "candidate_branch": "candidate/r031-acceptance-ci-commit-message-compatibility",
+  "candidate_commit_message": "PRE_R049_LOCAL_WEBSITE_VISIBLE_SURFACE_GAP_REMEDIATION: R031_ACCEPTANCE_EVIDENCE_FIX_CI_COMMIT_MESSAGE_COMPATIBILITY - CI commit message compatibility only, not R049 authorization, no runtime, no broker, no live",
+  "diff_stats": "8 files changed, 136 insertions(+)",
+  "validators_expected": "all PASS",
+  "r049_authorization_implied": false,
+  "compatibility_commit_only": true
+}

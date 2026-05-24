@@ -1,0 +1,18 @@
+{
+  "round_id": "R031_ACCEPTANCE_EVIDENCE_FIX_CI_COMMIT_MESSAGE_COMPATIBILITY",
+  "analysis_type": "root_cause_analysis",
+  "ci_failure_commit": "87090447070b6b569f7bed01a6c0def495e5d215",
+  "ci_failure_log_summary": "Run python ./scripts/validation/validate_round.py --manifest ./manifests/current_round.yaml ... FAIL: last commit message must include round id: PRE_R049_LOCAL_WEBSITE_VISIBLE_SURFACE_GAP_REMEDIATION",
+  "local_behavior": "check_commit_message.py locally PASSES because is_merge_commit() correctly detects 2 parents and skips the round-id check. Output: 'PASS: merge commit - round-id check skipped'",
+  "ci_behavior": "check_commit_message.py on CI FAILS because is_merge_commit() returns FALSE. On actions/checkout@v4 with default fetch-depth=1 (shallow clone), the merge commit parent detection fails. The script falls through to message content check, which requires manifest round_id PRE_R049_LOCAL_WEBSITE_VISIBLE_SURFACE_GAP_REMEDIATION. The auto-generated merge message 'Merge commit ...' does not contain this token.",
+  "is_merge_commit_reality": "HEAD 87090447 is a no-ff merge commit with 2 parents: 14c9f263 (parent 1) and 0105cd3 (parent 2)",
+  "candidate_commits_contain_token": true,
+  "merge_commit_message_lacks_token": true,
+  "evidence_packages_all_pass": true,
+  "no_amend_reason": "87090447 is already pushed and shared. Amending would require force push, which is prohibited per governance.",
+  "no_force_push_reason": "Force push would rewrite shared history and is strictly prohibited by governance chain.",
+  "no_validator_change_reason": "check_commit_message.py is a governance validator. Modifying it for CI environment compatibility would weaken the governance check for non-merge commits.",
+  "no_manifest_change_reason": "manifest round_id is authoritative. Changing it to work around CI would corrupt the governance chain.",
+  "pre_r049_token_validator_compatibility_only": true,
+  "pre_r049_token_not_r049_authorization_reason": "The PRE_R049_LOCAL_WEBSITE_VISIBLE_SURFACE_GAP_REMEDIATION token is the manifest round_id for a pre-R049 governance round. It is used here solely to satisfy check_commit_message.py CI compatibility. It does not authorize R049 construction, dispatch, or any runtime/broker/live operations."
+}

@@ -1,0 +1,21 @@
+{
+  "round_id": "R031_ACCEPTANCE_EVIDENCE_FIX_CI_COMMIT_MESSAGE_COMPATIBILITY",
+  "prevention_notes": [
+    {
+      "item": "future_merge_commit_message",
+      "note": "When performing local no-ff merge of this candidate, the merge commit message MUST include PRE_R049_LOCAL_WEBSITE_VISIBLE_SURFACE_GAP_REMEDIATION to satisfy CI check_commit_message.py on shallow clones. Use: git merge --no-ff -m 'PRE_R049_LOCAL_WEBSITE_VISIBLE_SURFACE_GAP_REMEDIATION: R031 acceptance evidence fix CI commit message compatibility' <candidate_sha>"
+    },
+    {
+      "item": "long_term_governance_backlog",
+      "note": "Open separate governance round to fix CI shallow-clone merge detection. Options: (a) set fetch-depth: 2 in validate-round.yml, (b) harden is_merge_commit() to try alternate detection methods (e.g., check GITHUB_REF or count parents from git cat-file -p HEAD), (c) add explicit CI-only merge-commit bypass."
+    },
+    {
+      "item": "validator_fail_not_success",
+      "note": "GitHub Actions failure on 87090447 is a real CI failure. It must NOT be claimed as success or ignored. The fix is creating a new commit with correct message, NOT hiding/rewriting the failure."
+    },
+    {
+      "item": "pre_r049_token_scope",
+      "note": "PRE_R049_LOCAL_WEBSITE_VISIBLE_SURFACE_GAP_REMEDIATION is used here ONLY for check_commit_message.py validator compatibility. It does NOT authorize R049 construction, R049 dispatch, runtime start, broker API calls, live trading, position sizing, or fund allocation."
+    }
+  ]
+}

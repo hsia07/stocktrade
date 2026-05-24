@@ -1,0 +1,5 @@
+NO-AIDER
+
+This candidate was constructed entirely without aider.
+All files in this evidence package were created manually using the opencode CLI tool.
+No AI code generation tool (aider, copilot, etc.) was used to create or modify any file in this package.

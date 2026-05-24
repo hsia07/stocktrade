@@ -1,0 +1,15 @@
+R031_ACCEPTANCE_EVIDENCE_FIX_CI_COMMIT_MESSAGE_COMPATIBILITY_CANDIDATE
+
+Background:
+GitHub Actions on remote HEAD 87090447070b6b569f7bed01a6c0def495e5d215 failed because check_commit_message.py on CI (actions/checkout@v4 shallow clone, fetch-depth=1) could not detect the merge commit and required the manifest round_id token in the commit message.
+
+Root cause:
+- validate_round.yml runs check_commit_message.py on shallow clone
+- is_merge_commit() returns FALSE/fails in shallow clone
+- HEAD 87090447 is a no-ff merge commit but auto-generated merge message lacks PRE_R049_LOCAL_WEBSITE_VISIBLE_SURFACE_GAP_REMEDIATION
+- Candidate commits on parent 2 do contain the token, but CI checks latest HEAD
+
+Goal:
+Create a minimal single-parent governance candidate commit whose message includes PRE_R049_LOCAL_WEBSITE_VISIBLE_SURFACE_GAP_REMEDIATION to satisfy CI.
+No source/validator/workflow/manifest changes.
+PRE_R049 token is validator compatibility only, NOT R049 authorization.
