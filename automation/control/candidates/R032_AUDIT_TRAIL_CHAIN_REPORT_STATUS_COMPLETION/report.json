@@ -20,5 +20,11 @@
   "manifest_modified": false,
   "validator_modified": false,
   "workflow_modified": false,
-  "pre_push_hook_modified": false
+  "pre_push_hook_modified": false,
+  "candidate_commit": "cb023b95831cc498d9d99170eed204171e088cdf",
+  "evidence_hash_fix_no_amend": true,
+  "original_report_status_completion_commit": "cb023b95831cc498d9d99170eed204171e088cdf",
+  "tbd_after_commit_present_before": true,
+  "tbd_after_commit_present_after": false,
+  "round_id": "R032_AUDIT_TRAIL_CHAIN_REPORT_STATUS_COMPLETION_EVIDENCE_HASH_FIX_NO_AMEND"
 }

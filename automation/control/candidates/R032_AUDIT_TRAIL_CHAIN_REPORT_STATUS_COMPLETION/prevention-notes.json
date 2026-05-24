@@ -4,5 +4,7 @@
   "lesson_3": "validate-canonical-repair failure (report_status_not_completed) must not be claimed as success or ignored.",
   "lesson_4": "R032 acceptance/chain-status update must only proceed after CI green (both validate-round and validate-canonical-repair passing).",
   "lesson_5": "PRE_R049 token must never be interpreted as R049 authorization.",
-  "recommended_process_change": "After merge/push of a construction candidate, immediately update report.json status to 'completed' in the same merge commit, or create a follow-up candidate before the CI run completes."
+  "lesson_6": "RETURN_TO_CHATGPT.txt candidate_commit must be set to the actual commit hash before committing. TBD_AFTER_COMMIT placeholders block manual review and require a no-amend follow-up fix.",
+  "lesson_7": "When the original commit has TBD_AFTER_COMMIT and cannot be amended, a no-amend follow-up evidence hash fix commit is required. All validators must pass before the follow-up can proceed to manual review.",
+  "recommended_process_change": "After merge/push of a construction candidate, immediately update report.json status to 'completed' in the same merge commit, or create a follow-up candidate before the CI run completes. Never commit evidence files with TBD_AFTER_COMMIT or placeholder candidate_commit hashes."
 }

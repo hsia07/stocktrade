@@ -27,5 +27,10 @@
   "tests_pass": true,
   "validators_pass": true,
   "prohibited_actions_verified": true,
-  "no_aider_used": true
+  "no_aider_used": true,
+  "candidate_commit": "cb023b95831cc498d9d99170eed204171e088cdf",
+  "evidence_hash_fix_no_amend": true,
+  "original_report_status_completion_commit": "cb023b95831cc498d9d99170eed204171e088cdf",
+  "tbd_after_commit_present_before": true,
+  "tbd_after_commit_present_after": false
 }

@@ -1,16 +1,18 @@
-Task: R032 report status completion for R032_AUDIT_TRAIL_CHAIN evidence package.
+Task: R032 evidence hash fix (no-amend) for R032_AUDIT_TRAIL_CHAIN_REPORT_STATUS_COMPLETION evidence package.
 
 Background:
-- R032 audit trail chain candidate construction completed, merged, pushed
-- validate-canonical-repair #26 (run 26370175748) failed with report_status_not_completed
-- Root cause: EvidenceChecker / check_evidence_package requires report.json status == "completed"
-- Construction candidate report.json had status "candidate_ready_awaiting_manual_review"
+- R032 report status completion candidate commit cb023b95 had candidate_commit = TBD_AFTER_COMMIT placeholder
+- Cannot amend cb023b95
+- Must create a follow-up no-amend commit to fix the placeholder to the actual commit hash
 
 Fix:
-- Update report.json status from "candidate_ready_awaiting_manual_review" to "completed"
-- Update RETURN_TO_CHATGPT.txt to record this correction
-- Create evidence package for this report status completion round
+- Fix candidate_commit in RETURN_TO_CHATGPT.txt from TBD_AFTER_COMMIT to cb023b95831cc498d9d99170eed204171e088cdf
+- Update evidence.json, report.json with candidate_commit and evidence_hash_fix_no_amend flags
+- Update prevention-notes.json with lesson about TBD_AFTER_COMMIT
+- Regenerate candidate.diff
+- Create no-amend follow-up commit
 
 No source/tests/manifest/validator/workflow modifications.
 No R032 acceptance/chain-status update.
 No R033/R049/runtime/broker/live start.
+No amend. No merge. No push.
