@@ -1,0 +1,43 @@
+=== R032 Audit Trail Chain Test Results ===
+Date: 2026-05-25
+Python: 3.14.4
+pytest: 9.0.3
+
+Command: python -m pytest tests/test_audit_trail.py tests/test_traceability_chain.py -v
+
+Results: 45 passed in 0.18s
+
+--- Positive Tests (13) ---
+PASS test_create_full_decision_audit_record
+PASS test_append_record_to_chain
+PASS test_append_multi_record_chain
+PASS test_chain_verification_integrity
+PASS test_serialize_deserialize
+PASS test_replay
+PASS test_record_trace_id_and_decision_chain
+PASS test_record_ai_support_reject_veto
+PASS test_record_no_trade_reason
+PASS test_append_only_append_event
+PASS test_factory_create_decision_audit_record
+PASS test_get_by_decision_id
+PASS test_clear_chain
+
+--- Negative Tests (10) ---
+PASS test_missing_trace_id_fails
+PASS test_missing_final_decision_fails
+PASS test_veto_then_trade_allowed_fails
+PASS test_raw_confidence_direct_trade_approval_fails
+PASS test_llm_veto_ignored_fails
+PASS test_invalid_schema_version_fails
+PASS test_immutable_overwrite_rejected
+PASS test_missing_taiwan_placeholders_fails
+PASS test_missing_market_reality_placeholders_fails
+PASS test_order_fill_pnl_partial_linkage_not_complete
+
+--- Edge Tests (6) ---
+PASS test_empty_chain_verification
+PASS test_tampered_hash_detected
+PASS test_broken_chain_detected
+PASS test_high_confidence_with_chain_context_valid
+PASS test_append_correction_immutable_fails
+PASS test_order_execution_allowed_false_invariant

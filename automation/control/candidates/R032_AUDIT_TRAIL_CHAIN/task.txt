@@ -1,0 +1,33 @@
+任務名稱: R032_CANDIDATE_CONSTRUCTION_AUDIT_TRAIL_CHAIN
+目標: 建立交易日誌可追責鏈 — DecisionAuditRecord with 7 data contracts + AuditTrailChain with append-only persistence + hard safety invariants
+授權: 使用者已明確授權 R032 construction
+限制: 不啟動 R049/runtime/broker/live; order_execution_allowed=FALSE
+Base: 1fbc79af70edc73135ac6ebaa59e47d1c4cbb2c2
+Branch: candidate/r032-audit-trail-chain
+
+Source 檔案:
+  modules/decision_prechecklist/audit_trail.py (新增)
+  modules/decision_prechecklist/__init__.py (更新 exports)
+
+Test 檔案:
+  tests/test_audit_trail.py (新增)
+
+實作內容:
+1. TraceIdentity — trace_id, decision_id, session_id, strategy_id/version, config/threshold version, timestamps
+2. DecisionChain — event_inputs, signal_inputs, confidence_sources, AIOpinion (claim/support/reject/veto), steps, final_decision, final_reason_code
+3. RiskVetoChain — risk_snapshot, risk_gate_results, veto_reason_codes, veto_actor/stage, no_trade/reduce_size/wait reason
+4. MarketRealitySnapshot — cost/slippage model version, liquidity, fill_prob, cost, slippage, net_rr, session_state, limit_up_down_distance
+5. TaiwanMarketConstraints — ±10% limit, T+2 awareness, auction_session, odd_lot/round_lot, halt/disposition, liquidity
+6. OrderFillPnlReview — order_intent_id, order_id, fill_id, position_effect, realized_pnl, review_id, replay/audit status
+7. AuditTrailChain — append-only, immutable_after_write, SHA256 hash chain, JSONL serialization, replay, integrity verification
+8. Hard safety invariants enforced:
+   - missing_trace_id → DecisionAuditError
+   - missing_final_decision → DecisionAuditError
+   - veto + trade_allowed(EXECUTE) → DecisionAuditError
+   - raw_confidence ≥ 0.95 direct EXECUTE without chain context → DecisionAuditError
+   - LLM veto ignored (veto+EXECUTE) → DecisionAuditError
+   - invalid schema_version → DecisionAuditError
+   - immutable overwrite → ImmutableRecordError
+   - missing Taiwan/market placeholders → flagged
+   - partial order/fill/pnl complete chain → DecisionAuditError
+9. Tests: 13 positive, 10 negative, 6 edge = 29 total

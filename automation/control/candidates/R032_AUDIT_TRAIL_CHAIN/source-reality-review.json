@@ -1,0 +1,42 @@
+{
+  "review_type": "source_reality_audit",
+  "round_id": "R032",
+  "status": "verified",
+  "source_files": [
+    "modules/decision_prechecklist/audit_trail.py"
+  ],
+  "has_real_implementation": true,
+  "not_stub_or_todo_or_pass_only": true,
+  "classes_implemented": [
+    "TraceIdentity",
+    "AIOpinion",
+    "DecisionStep",
+    "DecisionChain",
+    "RiskVetoChain",
+    "MarketRealitySnapshot",
+    "TaiwanMarketConstraints",
+    "OrderFillPnlReview",
+    "DecisionAuditRecord",
+    "DecisionAuditError",
+    "ImmutableRecordError",
+    "AuditTrailChain"
+  ],
+  "functions_implemented": [
+    "create_decision_audit_record",
+    "reject_mutation_or_overwrite"
+  ],
+  "data_contracts_covered": 7,
+  "trace_identity_fields": 9,
+  "decision_chain_fields": 8,
+  "risk_veto_fields": 8,
+  "market_reality_fields": 10,
+  "taiwan_constraints_fields": 6,
+  "order_fill_pnl_fields": 8,
+  "append_only_contract_fields": 11,
+  "tests_import_real_source": true,
+  "test_file": "tests/test_audit_trail.py",
+  "tests_total": 29,
+  "tests_import_path": "from modules.decision_prechecklist.audit_trail import ...",
+  "not_docs_only": true,
+  "implementation_verified_by": "python -m pytest tests/test_audit_trail.py -v (29 passed)"
+}

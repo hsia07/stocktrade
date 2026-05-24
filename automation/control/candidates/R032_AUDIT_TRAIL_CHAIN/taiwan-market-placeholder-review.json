@@ -1,0 +1,42 @@
+{
+  "review_type": "taiwan_market_placeholder_audit",
+  "round_id": "R032",
+  "status": "placeholders_present",
+  "constraint_placeholders": {
+    "limit_up_down_pct": {
+      "value": 10.0,
+      "description": "±10% daily price limit for Taiwan stock market",
+      "present": true
+    },
+    "t2_settlement_aware": {
+      "value": false,
+      "description": "T+2 settlement awareness (placeholder, not yet enforced)",
+      "present": true,
+      "is_placeholder": true
+    },
+    "auction_session_state": {
+      "description": "Market session: pre_open / opening_auction / continuous / closing_auction / odd_lot / off_hours",
+      "present": true
+    },
+    "odd_lot_round_lot": {
+      "description": "1-999 shares (odd_lot) vs 1000 shares (round_lot = 1 board lot)",
+      "present": true
+    },
+    "halt_disposition_attention": {
+      "description": "Suspension / disposition measures / attention stock flags",
+      "present": true
+    },
+    "liquidity_insufficiency": {
+      "description": "ADV-based liquidity insufficiency detection",
+      "present": true
+    }
+  },
+  "enforcement": {
+    "missing_placeholders_trigger_validation_error": true,
+    "mechanism": "AuditTrailChain._check_taiwan_placeholders",
+    "test": "test_missing_taiwan_placeholders_fails PASS"
+  },
+  "note": "These are placeholder fields for R032 data contract. Full Taiwan market constraint enforcement (auction session gating, odd lot execution, halt detection, etc.) requires separate future rounds beyond R032.",
+  "is_not_complete_taiwan_constraint_implementation": true,
+  "requires_future_rounds": true
+}
