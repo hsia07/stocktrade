@@ -8,7 +8,7 @@ formal_status_code: candidate_ready_awaiting_manual_review
 
 base_head: 14c9f2638074b50e6bc9f57a6e94e786607d90e7
 candidate_branch: candidate/r031-acceptance-candidate-commit-evidence-fix-recreate-no-amend-v2
-candidate_commit: 4a489aebaa6d6d7431fab404b461cef5c5ec4f0c
+candidate_commit: 5865d890fc3fae2fa2000d4a67a75e2e629469f0
 candidate_commit_valid_git_object_true_or_false: TRUE
 candidate_commit_parent_count: 1
 candidate_commit_is_single_parent_true_or_false: TRUE
