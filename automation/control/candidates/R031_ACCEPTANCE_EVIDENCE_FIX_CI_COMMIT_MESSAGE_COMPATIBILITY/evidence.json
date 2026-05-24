@@ -1,0 +1,22 @@
+{
+  "round_id": "R031_ACCEPTANCE_EVIDENCE_FIX_CI_COMMIT_MESSAGE_COMPATIBILITY",
+  "task_type": "r031_acceptance_evidence_fix_ci_commit_message_compatibility_candidate",
+  "base_head": "87090447070b6b569f7bed01a6c0def495e5d215",
+  "failed_ci_head": "87090447070b6b569f7bed01a6c0def495e5d215",
+  "required_commit_message_token": "PRE_R049_LOCAL_WEBSITE_VISIBLE_SURFACE_GAP_REMEDIATION",
+  "root_cause": "ci_shallow_clone_merge_commit_detection_false_negative",
+  "ci_failure_reason": "latest_merge_commit_message_missing_required_manifest_round_id_token",
+  "compatibility_commit_only": true,
+  "r049_authorization_implied": false,
+  "r032_started": false,
+  "r049_started": false,
+  "runtime_started": false,
+  "broker_api_called": false,
+  "order_execution_allowed": false,
+  "manifest_modified": false,
+  "validator_modified": false,
+  "workflow_modified": false,
+  "source_files_modified": false,
+  "tests_modified": false,
+  "law_compliance": "04"
+}
