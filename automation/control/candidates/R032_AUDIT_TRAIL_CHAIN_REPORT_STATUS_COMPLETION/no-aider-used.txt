@@ -1,0 +1,2 @@
+This candidate was constructed without aider.
+Only git, python, and manual file edits were used.

@@ -1,6 +1,7 @@
 {
   "round_id": "R032_CANDIDATE_CONSTRUCTION_AUDIT_TRAIL_CHAIN",
-  "status": "candidate_ready_awaiting_manual_review",
+  "status": "completed",
+  "formal_status_code": "r032_candidate_construction_completed_and_evidence_package_completion_fixed",
   "base_head": "1fbc79af70edc73135ac6ebaa59e47d1c4cbb2c2",
   "candidate_branch": "candidate/r032-audit-trail-chain",
   "implementation_summary": {

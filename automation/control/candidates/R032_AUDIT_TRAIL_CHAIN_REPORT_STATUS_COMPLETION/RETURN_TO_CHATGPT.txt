@@ -1,0 +1,149 @@
+round_id:
+  R032_AUDIT_TRAIL_CHAIN_REPORT_STATUS_COMPLETION_EVIDENCE_HASH_FIX_NO_AMEND
+
+task_type:
+  r032_audit_trail_chain_report_status_completion_evidence_hash_fix_no_amend
+
+status:
+  completed
+
+formal_status_code:
+  candidate_ready_awaiting_manual_review
+
+base_head:
+  722ef4703298bc1b1ee90d4df27c95f21866f0b7
+
+candidate_branch:
+  candidate/r032-audit-trail-report-status-completion
+
+previous_candidate_commit_with_placeholder:
+  cb023b95831cc498d9d99170eed204171e088cdf
+
+candidate_commit:
+  cb023b95831cc498d9d99170eed204171e088cdf
+
+original_report_status_completion_commit:
+  cb023b95831cc498d9d99170eed204171e088cdf
+
+failed_package:
+  automation/control/candidates/R032_AUDIT_TRAIL_CHAIN
+
+root_cause:
+  Original R032 report status completion candidate (cb023b95) had candidate_commit = TBD_AFTER_COMMIT placeholder. This is a no-amend evidence hash fix to correct that placeholder to the actual commit hash.
+
+old_report_status:
+  candidate_ready_awaiting_manual_review
+
+new_report_status:
+  completed
+
+evidence_hash_fix_no_amend_true_or_false:
+  TRUE
+
+r032_acceptance_started_true_or_false:
+  FALSE
+
+r032_chain_status_updated_true_or_false:
+  FALSE
+
+r033_started_true_or_false:
+  FALSE
+
+r049_started_true_or_false:
+  FALSE
+
+runtime_started_true_or_false:
+  FALSE
+
+r032_runtime_started_true_or_false:
+  FALSE
+
+broker_api_called_true_or_false:
+  FALSE
+
+order_execution_allowed_true_or_false:
+  FALSE
+
+pre_r049_token_used_only_for_validator_compatibility_true_or_false:
+  TRUE
+
+r049_authorization_implied_by_token_true_or_false:
+  FALSE
+
+source_files_modified_true_or_false:
+  FALSE
+
+tests_modified_true_or_false:
+  FALSE
+
+manifest_modified_true_or_false:
+  FALSE
+
+validator_modified_true_or_false:
+  FALSE
+
+workflow_modified_true_or_false:
+  FALSE
+
+pre_push_hook_modified_true_or_false:
+  FALSE
+
+server_v2_modified_true_or_false:
+  FALSE
+
+modules_modified_true_or_false:
+  FALSE
+
+broker_live_order_wiring_added_true_or_false:
+  FALSE
+
+ui_roundtable_implemented_true_or_false:
+  FALSE
+
+tbd_after_commit_present_before_true_or_false:
+  TRUE
+
+tbd_after_commit_present_after_true_or_false:
+  FALSE
+
+placeholder_or_stale_hash_remaining_true_or_false:
+  FALSE
+
+amend_executed_true_or_false:
+  FALSE
+
+commit_created_true_or_false:
+  TRUE
+
+merge_executed_this_round_true_or_false:
+  FALSE
+
+push_executed_this_round_true_or_false:
+  FALSE
+
+workflow_rerun_executed_true_or_false:
+  FALSE
+
+files_modified:
+  - automation/control/candidates/R032_AUDIT_TRAIL_CHAIN_REPORT_STATUS_COMPLETION/RETURN_TO_CHATGPT.txt (fix candidate_commit from TBD_AFTER_COMMIT to cb023b95; update round_id, task_type for this hash fix round)
+  - automation/control/candidates/R032_AUDIT_TRAIL_CHAIN_REPORT_STATUS_COMPLETION/evidence.json (add candidate_commit, evidence_hash_fix_no_amend)
+  - automation/control/candidates/R032_AUDIT_TRAIL_CHAIN_REPORT_STATUS_COMPLETION/report.json (add candidate_commit, evidence_hash_fix_no_amend)
+  - automation/control/candidates/R032_AUDIT_TRAIL_CHAIN_REPORT_STATUS_COMPLETION/task.txt (update for this round)
+  - automation/control/candidates/R032_AUDIT_TRAIL_CHAIN_REPORT_STATUS_COMPLETION/prevention-notes.json (add lesson 6)
+  - automation/control/candidates/R032_AUDIT_TRAIL_CHAIN_REPORT_STATUS_COMPLETION/candidate.diff (regenerated)
+
+authorized_files_only_true_or_false:
+  TRUE
+
+remaining_blockers:
+  - R032 report status completion evidence hash fix candidate requires manual review before merge
+  - GitHub Actions actual success unresolved until candidate merged/pushed and CI rechecked
+  - R032 acceptance / chain-status update blocked until CI green
+  - P1 backlog deferred but not completed
+  - R049 remains blocked
+
+recommended_next_action:
+  AWAITING_MANUAL_REVIEW_R032_AUDIT_TRAIL_CHAIN_REPORT_STATUS_COMPLETION_EVIDENCE_HASH_FIX_CANDIDATE
+
+final_recommendation:
+  DO_NOT_START_R049

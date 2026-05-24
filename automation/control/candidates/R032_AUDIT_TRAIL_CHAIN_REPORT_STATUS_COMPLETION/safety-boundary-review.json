@@ -1,0 +1,16 @@
+{
+  "no_source_modifications": true,
+  "no_tests_modifications": true,
+  "no_manifest_modifications": true,
+  "no_validator_workflow_hook_modifications": true,
+  "no_runtime_start": true,
+  "no_r032_runtime_start": true,
+  "no_r033_start": true,
+  "no_r049_start": true,
+  "no_broker_live_order_wiring": true,
+  "order_execution_allowed": false,
+  "evidence_package_modification_only": true,
+  "report_status_completion_only": true,
+  "r032_acceptance_not_started": true,
+  "r032_chain_status_not_updated": true
+}
