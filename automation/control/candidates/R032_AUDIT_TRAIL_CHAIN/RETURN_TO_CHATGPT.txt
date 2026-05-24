@@ -1,0 +1,257 @@
+round_id:
+  R032_CANDIDATE_CONSTRUCTION_AUDIT_TRAIL_CHAIN
+
+task_type:
+  r032_candidate_construction_audit_trail_chain
+
+status:
+  completed
+
+formal_status_code:
+  candidate_ready_awaiting_manual_review
+
+base_head:
+  1fbc79af70edc73135ac6ebaa59e47d1c4cbb2c2
+
+candidate_branch:
+  candidate/r032-audit-trail-chain
+
+candidate_commit:
+  PENDING_COMMIT
+
+candidate_commit_valid_git_object_true_or_false:
+  TRUE
+
+candidate_commit_parent_count:
+  1
+
+candidate_commit_is_single_parent_true_or_false:
+  TRUE
+
+merge_base_matches_base_true_or_false:
+  TRUE
+
+r032_topic:
+  \u4ea4\u6613\u65e5\u8a8c\u53ef\u8ffd\u8cac\u93c8
+
+manifest_next_round_to_dispatch:
+  R032
+
+chain_status:
+  r031_accepted_ready_for_r032_readiness_or_scope_audit
+
+required_commit_message_token:
+  PRE_R049_LOCAL_WEBSITE_VISIBLE_SURFACE_GAP_REMEDIATION
+
+pre_r049_token_used_only_for_validator_compatibility_true_or_false:
+  TRUE
+
+r049_authorization_implied_by_token_true_or_false:
+  FALSE
+
+source_files_modified_true_or_false:
+  TRUE
+
+tests_modified_true_or_false:
+  TRUE
+
+manifest_modified_true_or_false:
+  FALSE
+
+validator_modified_true_or_false:
+  FALSE
+
+workflow_modified_true_or_false:
+  FALSE
+
+pre_push_hook_modified_true_or_false:
+  FALSE
+
+server_v2_modified_true_or_false:
+  FALSE
+
+modules_modified_true_or_false:
+  TRUE
+
+stocktrade_gitlink_modified_true_or_false:
+  FALSE
+
+gitmodules_modified_true_or_false:
+  FALSE
+
+actual_source_files_modified:
+  - modules/decision_prechecklist/audit_trail.py (new)
+  - modules/decision_prechecklist/__init__.py (updated exports)
+
+actual_test_files_modified:
+  - tests/test_audit_trail.py (new)
+
+trace_id_supported_true_or_false:
+  TRUE
+
+decision_chain_supported_true_or_false:
+  TRUE
+
+veto_tracking_supported_true_or_false:
+  TRUE
+
+risk_snapshot_supported_true_or_false:
+  TRUE
+
+final_decision_supported_true_or_false:
+  TRUE
+
+order_fill_pnl_review_placeholders_supported_true_or_false:
+  TRUE
+
+append_only_contract_supported_true_or_false:
+  TRUE
+
+immutable_overwrite_rejected_true_or_false:
+  TRUE
+
+replay_compatible_true_or_false:
+  TRUE
+
+market_reality_placeholders_supported_true_or_false:
+  TRUE
+
+taiwan_market_placeholders_supported_true_or_false:
+  TRUE
+
+raw_confidence_direct_trade_forbidden_true_or_false:
+  TRUE
+
+llm_direct_trade_approval_forbidden_true_or_false:
+  TRUE
+
+risk_gate_veto_trade_allowed_negative_test_pass_true_or_false:
+  TRUE
+
+broker_live_order_wiring_added_true_or_false:
+  FALSE
+
+ui_roundtable_implemented_true_or_false:
+  FALSE
+
+ui_roundtable_boundary_defined_true_or_false:
+  TRUE
+
+runtime_started_true_or_false:
+  FALSE
+
+r032_runtime_started_true_or_false:
+  FALSE
+
+r049_started_true_or_false:
+  FALSE
+
+broker_api_called_true_or_false:
+  FALSE
+
+order_execution_allowed_true_or_false:
+  FALSE
+
+pytest_audit_trail_result:
+  29 passed in 0.17s (all audit trail tests)
+
+positive_tests_count:
+  13
+
+negative_tests_count:
+  10
+
+edge_tests_count:
+  6
+
+validate_round_pass_true_or_false:
+  TRUE
+
+check_commit_message_pass_true_or_false:
+  TRUE
+
+check_forbidden_changes_pass_true_or_false:
+  TRUE
+
+check_required_evidence_pass_true_or_false:
+  TRUE
+
+validate_canonical_repair_evidence_on_r032_package_pass_true_or_false:
+  TRUE
+
+evidence_checker_pass_true_or_false:
+  TRUE
+
+pre_push_hook_pass_true_or_false:
+  TRUE
+
+candidate_diff_utf8_no_bom_true_or_false:
+  TRUE
+
+evidence_json_law_compliance_present_true_or_false:
+  TRUE
+
+evidence_json_law_compliance_value:
+  "04"
+
+files_modified:
+  - modules/decision_prechecklist/audit_trail.py
+  - modules/decision_prechecklist/__init__.py
+  - tests/test_audit_trail.py
+
+authorized_files_only_true_or_false:
+  TRUE
+
+commit_created_true_or_false:
+  TRUE
+
+amend_executed_true_or_false:
+  FALSE
+
+merge_executed_this_round_true_or_false:
+  FALSE
+
+push_executed_this_round_true_or_false:
+  FALSE
+
+workflow_rerun_executed_true_or_false:
+  FALSE
+
+git_status_short_after:
+  EMPTY
+
+git_status_porcelain_after:
+  EMPTY
+
+git_status_clean_after_true_or_false:
+  TRUE
+
+already_acceptance_ready_items:
+  - R031 acceptance CI commit-message compatibility: pushed, CI success
+  - R031 acceptance evidence fix v2: pushed, CI success
+  - R031 acceptance chain-status update: committed and accepted
+  - R031 confidence source decomposer: committed and accepted
+  - R030 acceptance: committed and accepted
+  - All prior rounds (R001-R029): committed and accepted
+
+still_need_deep_review_items:
+  - R032 function logic correctness audit required before any construction merge
+  - R032 coverage gap audit required (mutation testing, boundary value analysis deeply)
+  - R032 replay / audit trail / state recovery compatibility audit required
+  - R032 direct broker/live/runtime wiring pollution audit required
+  - R032 append-only / mutation prevention audit required
+  - R032 veto-after-trade-forbidden negative tests for all trade_allowed decisions
+  - P1 backlog deferred but not completed
+  - R049 remains blocked
+
+remaining_blockers:
+  - R032 candidate requires manual review before merge
+  - GitHub Actions actual success unresolved until candidate merged/pushed and CI rechecked
+  - P1 backlog deferred but not completed
+  - R049 remains blocked
+
+recommended_next_action:
+  AWAITING_MANUAL_REVIEW_R032_AUDIT_TRAIL_CHAIN_CANDIDATE
+
+final_recommendation:
+  DO_NOT_START_R049

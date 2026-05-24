@@ -1,0 +1,73 @@
+{
+  "review_type": "safety_invariants_audit",
+  "round_id": "R032",
+  "status": "all_invariants_enforced",
+  "invariants": {
+    "missing_trace_id": {
+      "enforced": true,
+      "mechanism": "AuditTrailChain._check_required_fields",
+      "test": "test_missing_trace_id_fails",
+      "test_result": "PASS"
+    },
+    "missing_final_decision": {
+      "enforced": true,
+      "mechanism": "AuditTrailChain._check_required_fields",
+      "test": "test_missing_final_decision_fails",
+      "test_result": "PASS"
+    },
+    "veto_trade_allowed_conflict": {
+      "enforced": true,
+      "mechanism": "AuditTrailChain._check_veto_invariant",
+      "test": "test_veto_then_trade_allowed_fails",
+      "test_result": "PASS"
+    },
+    "raw_confidence_direct_trade_approval": {
+      "enforced": true,
+      "mechanism": "AuditTrailChain._check_raw_confidence_guard",
+      "test": "test_raw_confidence_direct_trade_approval_fails",
+      "test_result": "PASS"
+    },
+    "llm_veto_ignored": {
+      "enforced": true,
+      "mechanism": "AuditTrailChain._check_llm_approval_guard",
+      "test": "test_llm_veto_ignored_fails",
+      "test_result": "PASS"
+    },
+    "invalid_schema_version": {
+      "enforced": true,
+      "mechanism": "AuditTrailChain._check_schema_version",
+      "test": "test_invalid_schema_version_fails",
+      "test_result": "PASS"
+    },
+    "immutable_overwrite_rejected": {
+      "enforced": true,
+      "mechanism": "reject_mutation_or_overwrite + AuditTrailChain.append_correction",
+      "test": "test_immutable_overwrite_rejected",
+      "test_result": "PASS"
+    },
+    "missing_taiwan_placeholders": {
+      "enforced": true,
+      "mechanism": "AuditTrailChain._check_taiwan_placeholders",
+      "test": "test_missing_taiwan_placeholders_fails",
+      "test_result": "PASS"
+    },
+    "missing_market_reality_placeholders": {
+      "enforced": true,
+      "mechanism": "AuditTrailChain._check_market_reality_placeholders",
+      "test": "test_missing_market_reality_placeholders_fails",
+      "test_result": "PASS"
+    },
+    "order_fill_pnl_partial_linkage": {
+      "enforced": true,
+      "mechanism": "AuditTrailChain._check_order_fill_pnl_linkage",
+      "test": "test_order_fill_pnl_partial_linkage_not_complete",
+      "test_result": "PASS"
+    }
+  },
+  "broker_live_order_wiring_added": false,
+  "runtime_started": false,
+  "r032_runtime_started": false,
+  "r049_started": false,
+  "order_execution_allowed": false,
+  "ui_roundtable_implemented": false
+}

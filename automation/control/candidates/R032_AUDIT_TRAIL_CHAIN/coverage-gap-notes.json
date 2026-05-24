@@ -1,0 +1,43 @@
+{
+  "review_type": "coverage_gap_assessment",
+  "round_id": "R032",
+  "status": "gaps_identified",
+  "still_need_deep_review": [
+    "R032 function logic correctness audit required before any construction merge",
+    "R032 coverage gap audit required (mutation testing, boundary value analysis)",
+    "R032 replay / audit trail / state recovery compatibility audit required",
+    "R032 direct broker/live/runtime wiring pollution audit required",
+    "R032 append-only / mutation prevention audit required",
+    "R032 veto-after-trade-forbidden negative tests for all trade_allowed decisions"
+  ],
+  "current_coverage": {
+    "positive_tests": 13,
+    "negative_tests": 10,
+    "edge_tests": 6,
+    "total": 29,
+    "all_pass": true
+  },
+  "known_gaps": [
+    "Mutation testing (reverse-break tests) not yet performed",
+    "No integration tests with actual trading pipeline",
+    "No end-to-end replay from trace creation → JSONL → re-import → replay",
+    "Taiwan market constraint enforcement is placeholder only (not full market rule engine)",
+    "Market reality snapshot is placeholder only (not connected to live market data)",
+    "Order/fill/pnl linkage is nullable placeholder (needs order execution pipeline)",
+    "Broker reconciliation not implemented",
+    "No cryptographic signature support (only SHA256 hash chain)",
+    "No durable storage backend (in-memory only in this candidate)",
+    "No concurrent access / thread safety testing"
+  ],
+  "p1_backlog_deferred": [
+    "R014 trace_id/decision_chain/veto tracking incomplete",
+    "R014 durable persistence incomplete",
+    "R029/R030 per-AI veto / full meeting table rework pending",
+    "R047/R048 P1 backlog pending",
+    "Signoff validation syntactic not cryptographic",
+    "CI shallow clone merge detection hardening backlog",
+    "Legacy UI evidence work_done=null normalization deferred",
+    "Validate-round workflow BOM file-level inconsistency deferred"
+  ],
+  "r049_remains_blocked": true
+}

@@ -1,0 +1,19 @@
+{
+  "review_type": "ui_roundtable_boundary_audit",
+  "round_id": "R032",
+  "status": "boundary_defined",
+  "boundary_statements": [
+    "R032 defines ONLY the data contract for trade log audit trail (DecisionAuditRecord with 7 sections)",
+    "The 'truth layer' for six-AI roundtable data CAN be supported by R029/R030/R031/R032 via DecisionChain.ai_opinions and RiskVetoChain",
+    "The 'visualization UI' for six-AI roundtable is NOT built in R032 construction",
+    "UI / dashboard / roundtable visualization requires a separate UI_VISIBLE gate task",
+    "R032 must NOT claim to have completed the visual roundtable"
+  ],
+  "ui_roundtable_implemented": false,
+  "no_ui_files_modified": true,
+  "no_dashboard_files_modified": true,
+  "no_html_css_js_modified": true,
+  "no_roundtable_visualization_code": true,
+  "data_contract_provides_truth_layer_for_future_ui": true,
+  "future_ui_requires_separate_gate": "UI_VISIBLE_ROUND_ACCEPTANCE_GATE"
+}

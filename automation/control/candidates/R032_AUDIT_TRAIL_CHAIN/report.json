@@ -1,0 +1,23 @@
+{
+  "round_id": "R032_CANDIDATE_CONSTRUCTION_AUDIT_TRAIL_CHAIN",
+  "status": "candidate_ready_awaiting_manual_review",
+  "base_head": "1fbc79af70edc73135ac6ebaa59e47d1c4cbb2c2",
+  "candidate_branch": "candidate/r032-audit-trail-chain",
+  "implementation_summary": {
+    "source_files": ["modules/decision_prechecklist/audit_trail.py"],
+    "test_files": ["tests/test_audit_trail.py"],
+    "data_contracts": 7,
+    "hard_invariants_enforced": 10,
+    "positive_tests": 13,
+    "negative_tests": 10,
+    "edge_tests": 6,
+    "total_tests": 29,
+    "all_tests_pass": true
+  },
+  "broker_live_order_wiring_added": false,
+  "order_execution_allowed": false,
+  "r049_started": false,
+  "runtime_started": false,
+  "ui_roundtable_implemented": false,
+  "validators_all_pass": true
+}
