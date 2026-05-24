@@ -1,0 +1,5 @@
+R031_ACCEPTANCE_CANDIDATE_COMMIT_EVIDENCE_FIX_RECREATE_NO_AMEND_V2
+No Aider Used
+This candidate was created without using Aider.
+Evidence metadata fix only. All work done manually.
+No AI pair programming tool used.

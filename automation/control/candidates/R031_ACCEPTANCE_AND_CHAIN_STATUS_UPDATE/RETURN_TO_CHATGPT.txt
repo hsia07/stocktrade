@@ -8,7 +8,7 @@ formal_status_code: candidate_ready_awaiting_manual_review
 
 base_head: fb28a158f9a469d0ca15cfe8c24d277e5f79c907
 candidate_branch: candidate/r031-acceptance-chain-status-update
-candidate_commit: (pending commit)
+candidate_commit: 74abfe88ebdc7ba8f30ea7f3d5bf1aa8a5b8193b
 r031_accepted_commit: fb28a158f9a469d0ca15cfe8c24d277e5f79c907
 r031_candidate_head: 270c6ce676c014cb9df162bc4f52d3b2cd698d05
 

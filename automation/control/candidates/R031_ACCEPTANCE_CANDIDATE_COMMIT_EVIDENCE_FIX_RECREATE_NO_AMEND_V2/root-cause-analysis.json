@@ -1,0 +1,44 @@
+{
+  "check_commit_message_fail_stdout": "FAIL: last commit message must include round id: PRE_R049_LOCAL_WEBSITE_VISIBLE_SURFACE_GAP_REMEDIATION",
+  "check_commit_message_exit_code": 1,
+  "manifest_round_id": "PRE_R049_LOCAL_WEBSITE_VISIBLE_SURFACE_GAP_REMEDIATION",
+  "manifest_current_round": "NONE",
+  "manifest_next_round_to_dispatch": "R032",
+  "manifest_chain_status": "r031_accepted_ready_for_r032_readiness_or_scope_audit",
+  "manifest_last_completed_round": "R031",
+  "check_commit_message_rule": "For non-merge commits: manifest_round_id must appear in commit message string. For merge commits (>=2 parents): check is skipped.",
+  "previous_v1_candidate_commit_message": "R031_ACCEPTANCE_CANDIDATE_COMMIT_EVIDENCE_FIX_RECREATE_NO_AMEND",
+  "previous_v1_fail_reason": "Commit message did not include manifest_round_id (PRE_R049_LOCAL_WEBSITE_VISIBLE_SURFACE_GAP_REMEDIATION). check_commit_message.py requires exact substring match for non-merge commits.",
+  "this_v2_commit_message_strategy": "Use manifest_round_id as prefix/token in commit message so check_commit_message.py finds the required substring, while keeping human-readable R031 evidence fix context.",
+  "this_v2_commit_message_used": "WILL_BE_SET_AFTER_COMMIT",
+  "invalid_candidate_commit_values_before": [
+    {
+      "file": "evidence.json",
+      "field": "candidate_commit",
+      "stale": "2ae49896ce6faf0d20e99fc6c7b22d08c76a40f6",
+      "correct": "74abfe88ebdc7ba8f30ea7f3d5bf1aa8a5b8193b"
+    },
+    {
+      "file": "report.json",
+      "field": "candidate_commit",
+      "stale": "556a9307fbc37e1cec7075d225ca629f3ac66657",
+      "correct": "74abfe88ebdc7ba8f30ea7f3d5bf1aa8a5b8193b"
+    },
+    {
+      "file": "RETURN_TO_CHATGPT.txt",
+      "field": "candidate_commit",
+      "stale": "(pending commit)",
+      "correct": "74abfe88ebdc7ba8f30ea7f3d5bf1aa8a5b8193b"
+    }
+  ],
+  "correct_candidate_commit": "74abfe88ebdc7ba8f30ea7f3d5bf1aa8a5b8193b",
+  "correct_merge_commit": "14c9f2638074b50e6bc9f57a6e94e786607d90e7",
+  "manifest_not_modified": true,
+  "validator_not_modified": true,
+  "source_not_modified": true,
+  "tests_not_modified": true,
+  "runtime_not_started": true,
+  "r032_not_started": true,
+  "r049_not_started": true,
+  "why_not_blocked": "Commit message can include manifest_round_id as prefix while still being human-recognizable as R031 evidence fix. No manifest/validator/source changes needed."
+}

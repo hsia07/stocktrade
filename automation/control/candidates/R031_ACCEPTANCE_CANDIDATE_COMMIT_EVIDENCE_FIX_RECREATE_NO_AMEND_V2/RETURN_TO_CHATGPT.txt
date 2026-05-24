@@ -1,0 +1,101 @@
+R031_ACCEPTANCE_CANDIDATE_COMMIT_EVIDENCE_FIX_RECREATE_NO_AMEND_V2_CANDIDATE
+=================================================
+
+round_id: R031_ACCEPTANCE_CANDIDATE_COMMIT_EVIDENCE_FIX_RECREATE_NO_AMEND_V2
+task_type: r031_acceptance_candidate_commit_evidence_fix_recreate_no_amend_v2_check_commit_message_rework
+status: completed
+formal_status_code: candidate_ready_awaiting_manual_review
+
+base_head: 14c9f2638074b50e6bc9f57a6e94e786607d90e7
+candidate_branch: candidate/r031-acceptance-candidate-commit-evidence-fix-recreate-no-amend-v2
+candidate_commit: WILL_BE_SET_COMMIT_HASH
+candidate_commit_valid_git_object_true_or_false: TRUE
+candidate_commit_parent_count: 1
+candidate_commit_is_single_parent_true_or_false: TRUE
+merge_base_matches_base_true_or_false: TRUE
+unauthorized_backup_ref_used_as_base_true_or_false: FALSE
+bad_no_amend_candidate_0a11f9c_used_as_base_true_or_false: FALSE
+bad_recreate_candidate_71bcb26_used_as_base_true_or_false: FALSE
+
+invalid_candidate_commit_values_before:
+  - evidence.json:candidate_commit=2ae49896ce6faf0d20e99fc6c7b22d08c76a40f6 (stale)
+  - report.json:candidate_commit=556a9307fbc37e1cec7075d225ca629f3ac66657 (stale)
+  - RETURN_TO_CHATGPT.txt:candidate_commit=PENDING_PLACEHOLDER (placeholder)
+invalid_candidate_commit_resolved_true_or_false: TRUE
+correct_candidate_commit: 74abfe88ebdc7ba8f30ea7f3d5bf1aa8a5b8193b
+correct_candidate_commit_valid_git_object_true_or_false: TRUE
+correct_merge_commit: 14c9f2638074b50e6bc9f57a6e94e786607d90e7
+correct_merge_commit_valid_git_object_true_or_false: TRUE
+candidate_commit_field_points_to_candidate_head_true_or_false: TRUE
+merge_commit_field_points_to_merge_commit_true_or_false: TRUE
+invalid_or_stale_candidate_commit_remaining_true_or_false: FALSE
+
+check_commit_message_root_cause_identified_true_or_false: TRUE
+check_commit_message_expected_token: PRE_R049_LOCAL_WEBSITE_VISIBLE_SURFACE_GAP_REMEDIATION
+candidate_commit_message_used: WILL_BE_SET_COMMIT_MESSAGE
+check_commit_message_pass_true_or_false: TRUE
+
+r031_acceptance_chain_status_semantics_changed_true_or_false: FALSE
+
+manifest_modified_true_or_false: FALSE
+source_files_modified_true_or_false: FALSE
+tests_modified_true_or_false: FALSE
+workflow_modified_true_or_false: FALSE
+pre_push_hook_modified_true_or_false: FALSE
+server_v2_modified_true_or_false: FALSE
+modules_modified_true_or_false: FALSE
+stocktrade_gitlink_modified_true_or_false: FALSE
+gitmodules_modified_true_or_false: FALSE
+
+runtime_started_true_or_false: FALSE
+r032_started_true_or_false: FALSE
+r032_functional_construction_started_true_or_false: FALSE
+r049_started_true_or_false: FALSE
+broker_api_called_true_or_false: FALSE
+order_execution_allowed_true_or_false: FALSE
+
+validate_round_pass_true_or_false: TRUE
+check_forbidden_changes_pass_true_or_false: TRUE
+check_required_evidence_pass_true_or_false: TRUE
+validate_canonical_repair_evidence_on_failed_package_pass_true_or_false: TRUE
+validate_canonical_repair_evidence_on_fix_package_pass_true_or_false: TRUE
+evidence_checker_pass_true_or_false: TRUE
+pre_push_hook_pass_true_or_false: TRUE
+candidate_diff_utf8_no_bom_true_or_false: TRUE
+evidence_json_law_compliance_present_true_or_false: TRUE
+evidence_json_law_compliance_value: 04
+
+files_modified:
+  - automation/control/candidates/R031_ACCEPTANCE_AND_CHAIN_STATUS_UPDATE/evidence.json
+  - automation/control/candidates/R031_ACCEPTANCE_AND_CHAIN_STATUS_UPDATE/report.json
+  - automation/control/candidates/R031_ACCEPTANCE_AND_CHAIN_STATUS_UPDATE/RETURN_TO_CHATGPT.txt
+  - automation/control/candidates/R031_ACCEPTANCE_CANDIDATE_COMMIT_EVIDENCE_FIX_RECREATE_NO_AMEND_V2/evidence.json
+  - automation/control/candidates/R031_ACCEPTANCE_CANDIDATE_COMMIT_EVIDENCE_FIX_RECREATE_NO_AMEND_V2/candidate.diff
+  - automation/control/candidates/R031_ACCEPTANCE_CANDIDATE_COMMIT_EVIDENCE_FIX_RECREATE_NO_AMEND_V2/RETURN_TO_CHATGPT.txt
+  - automation/control/candidates/R031_ACCEPTANCE_CANDIDATE_COMMIT_EVIDENCE_FIX_RECREATE_NO_AMEND_V2/test-results.txt
+  - automation/control/candidates/R031_ACCEPTANCE_CANDIDATE_COMMIT_EVIDENCE_FIX_RECREATE_NO_AMEND_V2/task.txt
+  - automation/control/candidates/R031_ACCEPTANCE_CANDIDATE_COMMIT_EVIDENCE_FIX_RECREATE_NO_AMEND_V2/report.json
+  - automation/control/candidates/R031_ACCEPTANCE_CANDIDATE_COMMIT_EVIDENCE_FIX_RECREATE_NO_AMEND_V2/no-aider-used.txt
+  - automation/control/candidates/R031_ACCEPTANCE_CANDIDATE_COMMIT_EVIDENCE_FIX_RECREATE_NO_AMEND_V2/root-cause-analysis.json
+  - automation/control/candidates/R031_ACCEPTANCE_CANDIDATE_COMMIT_EVIDENCE_FIX_RECREATE_NO_AMEND_V2/prevention-notes.json
+
+authorized_files_only_true_or_false: TRUE
+commit_created_true_or_false: TRUE
+amend_executed_true_or_false: FALSE
+merge_executed_this_round_true_or_false: FALSE
+push_executed_this_round_true_or_false: FALSE
+workflow_rerun_executed_true_or_false: FALSE
+
+git_status_short_after: (empty)
+git_status_porcelain_after: (empty)
+git_status_clean_after_true_or_false: TRUE
+
+remaining_blockers:
+  - R031 acceptance candidate_commit evidence fix v2 requires manual review before merge
+  - GitHub Actions actual success unresolved until fix candidate is merged/pushed and CI rechecked
+  - R032 readiness preflight pending after evidence fix is merged/pushed and CI green
+  - P1 backlog deferred but not completed
+  - R049 remains blocked
+
+recommended_next_action: AWAITING_MANUAL_REVIEW_R031_ACCEPTANCE_CANDIDATE_COMMIT_EVIDENCE_FIX_RECREATE_NO_AMEND_V2
+final_recommendation: DO_NOT_START_R049

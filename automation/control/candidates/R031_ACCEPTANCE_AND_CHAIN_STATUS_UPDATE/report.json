@@ -3,7 +3,7 @@
   "task_type": "r031_acceptance_and_chain_status_update_candidate",
   "status": "completed",
   "formal_status_code": "candidate_ready_awaiting_manual_review",
-  "candidate_commit": "556a9307fbc37e1cec7075d225ca629f3ac66657",
+  "candidate_commit": "74abfe88ebdc7ba8f30ea7f3d5bf1aa8a5b8193b",
   "base_head": "fb28a158f9a469d0ca15cfe8c24d277e5f79c907",
   "r031_acceptance_recorded": true,
   "r049_can_start_now": false,
