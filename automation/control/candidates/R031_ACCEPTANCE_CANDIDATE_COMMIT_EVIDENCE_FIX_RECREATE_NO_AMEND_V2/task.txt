@@ -1,0 +1,38 @@
+=== TASK DESCRIPTION ===
+task_id: R031_ACCEPTANCE_CANDIDATE_COMMIT_EVIDENCE_FIX_RECREATE_NO_AMEND_V2_CHECK_COMMIT_MESSAGE_REWORK
+task_type: r031_acceptance_candidate_commit_evidence_fix_recreate_no_amend_v2_check_commit_message_rework
+phase: Phase 2
+law_compliance: 04
+severity: HIGH
+
+=== PROBLEM STATEMENT ===
+The R031_ACCEPTANCE_AND_CHAIN_STATUS_UPDATE evidence package (at merge commit 14c9f263)
+contains stale candidate_commit hashes that fail evidence_checker CI.
+V1 fix candidate failed because check_commit_message validator did not pass.
+This v2 fix uses a commit message that includes the manifest round_id 
+(PRE_R049_LOCAL_WEBSITE_VISIBLE_SURFACE_GAP_REMEDIATION) to satisfy 
+check_commit_message.py requirements while still being recognizable as 
+the R031 evidence fix.
+
+=== SOLUTION ===
+1. Fix failed package candidate_commit hashes to 74abfe88
+2. Create v2 fix evidence package with root-cause analysis and prevention notes
+3. Use commit message that includes manifest round_id to pass check_commit_message
+4. Single-parent commit from clean base 14c9f263. No amend. No merge. No push.
+
+=== FILES ===
+MODIFY:
+- automation/control/candidates/R031_ACCEPTANCE_AND_CHAIN_STATUS_UPDATE/evidence.json
+- automation/control/candidates/R031_ACCEPTANCE_AND_CHAIN_STATUS_UPDATE/report.json
+- automation/control/candidates/R031_ACCEPTANCE_AND_CHAIN_STATUS_UPDATE/RETURN_TO_CHATGPT.txt
+
+CREATE:
+- automation/control/candidates/R031_ACCEPTANCE_CANDIDATE_COMMIT_EVIDENCE_FIX_RECREATE_NO_AMEND_V2/evidence.json
+- automation/control/candidates/R031_ACCEPTANCE_CANDIDATE_COMMIT_EVIDENCE_FIX_RECREATE_NO_AMEND_V2/candidate.diff
+- automation/control/candidates/R031_ACCEPTANCE_CANDIDATE_COMMIT_EVIDENCE_FIX_RECREATE_NO_AMEND_V2/RETURN_TO_CHATGPT.txt
+- automation/control/candidates/R031_ACCEPTANCE_CANDIDATE_COMMIT_EVIDENCE_FIX_RECREATE_NO_AMEND_V2/test-results.txt
+- automation/control/candidates/R031_ACCEPTANCE_CANDIDATE_COMMIT_EVIDENCE_FIX_RECREATE_NO_AMEND_V2/task.txt
+- automation/control/candidates/R031_ACCEPTANCE_CANDIDATE_COMMIT_EVIDENCE_FIX_RECREATE_NO_AMEND_V2/report.json
+- automation/control/candidates/R031_ACCEPTANCE_CANDIDATE_COMMIT_EVIDENCE_FIX_RECREATE_NO_AMEND_V2/no-aider-used.txt
+- automation/control/candidates/R031_ACCEPTANCE_CANDIDATE_COMMIT_EVIDENCE_FIX_RECREATE_NO_AMEND_V2/root-cause-analysis.json
+- automation/control/candidates/R031_ACCEPTANCE_CANDIDATE_COMMIT_EVIDENCE_FIX_RECREATE_NO_AMEND_V2/prevention-notes.json

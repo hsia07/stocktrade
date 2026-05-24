@@ -1,0 +1,36 @@
+{
+  "recommendations": [
+    {
+      "rule": "evidence_generator_must_distinguish_candidate_vs_merge_commit",
+      "detail": "Evidence generator must track and emit the FINAL candidate HEAD (the commit that was actually merged), not an intermediate or stale ref."
+    },
+    {
+      "rule": "candidate_commit_must_pass_git_cat_file_t",
+      "detail": "Every candidate_commit field must be verified as a real git commit object via git cat-file -t before finalization."
+    },
+    {
+      "rule": "no_stale_or_truncated_hashes",
+      "detail": "All commit hash fields must contain the full 40-hex hash of a real git object."
+    },
+    {
+      "rule": "candidate_package_files_modified_must_list_complete",
+      "detail": "The files_modified list in evidence must include every file that was changed."
+    },
+    {
+      "rule": "candidate_creation_must_not_amend_without_explicit_authorization",
+      "detail": "Candidate creation tasks must never use git amend unless the user explicitly authorizes it."
+    },
+    {
+      "rule": "recommended_next_action_must_not_combine_merge_and_push",
+      "detail": "Merge and push each require their own separate user signoff per governance chain."
+    },
+    {
+      "rule": "validator_fail_must_not_mark_candidate_ready",
+      "detail": "If any validator fails (including check_commit_message), the candidate must NOT be marked as candidate_ready. v1 was blocked for this reason."
+    },
+    {
+      "rule": "commit_message_must_include_manifest_round_id",
+      "detail": "check_commit_message.py requires that non-merge commits include the manifest round_id in the commit message. Fix branch commits must include this token."
+    }
+  ]
+}

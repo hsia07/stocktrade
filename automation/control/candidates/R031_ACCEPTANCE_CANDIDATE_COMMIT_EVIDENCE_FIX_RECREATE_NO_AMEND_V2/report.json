@@ -1,0 +1,23 @@
+{
+  "round_id": "R031_ACCEPTANCE_CANDIDATE_COMMIT_EVIDENCE_FIX_RECREATE_NO_AMEND_V2",
+  "task_type": "r031_acceptance_candidate_commit_evidence_fix_recreate_no_amend_v2_check_commit_message_rework",
+  "status": "completed",
+  "formal_status_code": "candidate_ready_awaiting_manual_review",
+  "canonical_branch": "work/canonical-mainline-repair-001",
+  "canonical_head": "14c9f2638074b50e6bc9f57a6e94e786607d90e7",
+  "test_count": 0,
+  "tests_passed": 0,
+  "candidate_commit": "4a489aebaa6d6d7431fab404b461cef5c5ec4f0c",
+  "base_head": "14c9f2638074b50e6bc9f57a6e94e786607d90e7",
+  "evidence_fix_applied": true,
+  "r049_can_start_now": false,
+  "p1_backlog_deferred_not_completed": true,
+  "validate_round_pass": true,
+  "check_commit_message_pass": true,
+  "check_forbidden_changes_pass": true,
+  "check_required_evidence_pass": true,
+  "evidence_checker_pass": true,
+  "pre_push_hook_pass": true,
+  "recommended_next_action": "AWAITING_MANUAL_REVIEW_R031_ACCEPTANCE_CANDIDATE_COMMIT_EVIDENCE_FIX_RECREATE_NO_AMEND_V2",
+  "final_recommendation": "DO_NOT_START_R049"
+}
