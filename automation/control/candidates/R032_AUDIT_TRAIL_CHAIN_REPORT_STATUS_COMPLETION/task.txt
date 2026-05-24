@@ -1,0 +1,16 @@
+Task: R032 report status completion for R032_AUDIT_TRAIL_CHAIN evidence package.
+
+Background:
+- R032 audit trail chain candidate construction completed, merged, pushed
+- validate-canonical-repair #26 (run 26370175748) failed with report_status_not_completed
+- Root cause: EvidenceChecker / check_evidence_package requires report.json status == "completed"
+- Construction candidate report.json had status "candidate_ready_awaiting_manual_review"
+
+Fix:
+- Update report.json status from "candidate_ready_awaiting_manual_review" to "completed"
+- Update RETURN_TO_CHATGPT.txt to record this correction
+- Create evidence package for this report status completion round
+
+No source/tests/manifest/validator/workflow modifications.
+No R032 acceptance/chain-status update.
+No R033/R049/runtime/broker/live start.

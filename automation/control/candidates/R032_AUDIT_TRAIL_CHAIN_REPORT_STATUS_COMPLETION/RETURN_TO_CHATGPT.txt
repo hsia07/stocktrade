@@ -1,0 +1,59 @@
+round_id:
+  R032_AUDIT_TRAIL_CHAIN_REPORT_STATUS_COMPLETION_CANDIDATE
+
+task_type:
+  r032_audit_trail_chain_report_status_completion_candidate
+
+status:
+  completed
+
+formal_status_code:
+  candidate_ready_awaiting_manual_review
+
+base_head:
+   722ef4703298bc1b1ee90d4df27c95f21866f0b7
+
+candidate_branch:
+   candidate/r032-audit-trail-report-status-completion
+
+candidate_commit:
+   TBD_AFTER_COMMIT
+
+failed_package:
+  automation/control/candidates/R032_AUDIT_TRAIL_CHAIN
+
+old_report_status:
+  candidate_ready_awaiting_manual_review
+
+new_report_status:
+  completed
+
+root_cause:
+  EvidenceChecker / check_evidence_package requires report.json status == "completed"
+
+what_this_candidate_does:
+  Updates R032 evidence package report.json status to "completed"
+
+r032_acceptance_started_true_or_false:
+  FALSE
+
+r032_chain_status_updated_true_or_false:
+  FALSE
+
+r033_started_true_or_false:
+  FALSE
+
+r049_started_true_or_false:
+  FALSE
+
+runtime_started_true_or_false:
+  FALSE
+
+order_execution_allowed_true_or_false:
+  FALSE
+
+recommended_next_action:
+  AWAITING_MANUAL_REVIEW_R032_AUDIT_TRAIL_CHAIN_REPORT_STATUS_COMPLETION_CANDIDATE
+
+final_recommendation:
+  DO_NOT_START_R049

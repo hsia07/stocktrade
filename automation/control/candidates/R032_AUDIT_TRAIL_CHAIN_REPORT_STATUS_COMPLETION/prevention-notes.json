@@ -1,0 +1,8 @@
+{
+  "lesson_1": "Candidate construction packages report.json status should be set to 'completed' after merge/push, not left as 'candidate_ready_awaiting_manual_review'.",
+  "lesson_2": "If validate-canonical-repair requires 'completed' status, a minimal evidence status completion candidate must be used to close the gap.",
+  "lesson_3": "validate-canonical-repair failure (report_status_not_completed) must not be claimed as success or ignored.",
+  "lesson_4": "R032 acceptance/chain-status update must only proceed after CI green (both validate-round and validate-canonical-repair passing).",
+  "lesson_5": "PRE_R049 token must never be interpreted as R049 authorization.",
+  "recommended_process_change": "After merge/push of a construction candidate, immediately update report.json status to 'completed' in the same merge commit, or create a follow-up candidate before the CI run completes."
+}
