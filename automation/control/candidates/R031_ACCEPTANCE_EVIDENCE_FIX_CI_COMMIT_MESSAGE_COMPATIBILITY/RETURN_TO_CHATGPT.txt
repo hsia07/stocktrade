@@ -10,3 +10,5 @@ ci_failure_reason: latest_merge_commit_message_missing_required_manifest_round_i
 compatibility_commit_only: true
 r049_authorization_implied: false
 recommended_next_action: AWAITING_MANUAL_REVIEW_R031_ACCEPTANCE_EVIDENCE_FIX_CI_COMMIT_MESSAGE_COMPATIBILITY_CANDIDATE
+blockers:
+  - GitHub Actions CI failure unresolved until this candidate is merged/pushed and rechecked
