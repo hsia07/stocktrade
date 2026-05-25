@@ -1,0 +1,13 @@
+{
+  "no_source_change": true,
+  "no_test_change": true,
+  "no_workflow_change": true,
+  "no_validator_change": true,
+  "no_hook_change": true,
+  "no_runtime_start": true,
+  "no_broker_live_order_wiring": true,
+  "order_execution_allowed": false,
+  "r033_not_started": true,
+  "r049_remains_blocked": true,
+  "r032_acceptance_record_only": true
+}

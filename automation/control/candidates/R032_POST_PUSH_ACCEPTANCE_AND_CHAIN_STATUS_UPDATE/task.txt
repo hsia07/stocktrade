@@ -1,0 +1,15 @@
+R032_POST_PUSH_ACCEPTANCE_AND_CHAIN_STATUS_UPDATE_CANDIDATE
+
+Purpose:
+Record R032 acceptance and update chain status from
+r031_accepted_ready_for_r032_readiness_or_scope_audit
+to
+r032_accepted_ready_for_r033_readiness_or_scope_audit
+
+Scope:
+- manifests/current_round.yaml (governance state only)
+- automation/control/candidates/R032_POST_PUSH_ACCEPTANCE_AND_CHAIN_STATUS_UPDATE/* (evidence package)
+
+No source/test/workflow/validator changes.
+R033 not started.
+R049 remains blocked.

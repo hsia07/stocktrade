@@ -1,0 +1,14 @@
+{
+  "canonical_head": "6fbb25e3a98f7ac8a5c8169150ef94e9fdfb9d8a",
+  "validate_round": {
+    "run_id": "26390165346",
+    "conclusion": "success",
+    "verified": true
+  },
+  "validate_canonical_repair": {
+    "run_id": "26390165327",
+    "conclusion": "success",
+    "verified": true
+  },
+  "manual_workflow_rerun_executed": false
+}
