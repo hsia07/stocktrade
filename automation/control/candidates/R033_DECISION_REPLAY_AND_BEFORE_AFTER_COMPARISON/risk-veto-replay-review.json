@@ -1,0 +1,8 @@
+{
+  "review_type": "risk_veto_replay_review",
+  "round_id": "R033",
+  "veto_replay_behavior": true,
+  "original_veto_cannot_become_trade_allowed": true,
+  "llm_veto_ignored_fails": true,
+  "verification": "ReplayIsolationGate.check_veto_replay blocks when original veto + replayed_trade_allowed=True; veto_ignored_in_replay DiffReasonCode; 4 veto replay tests PASS"
+}

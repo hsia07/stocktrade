@@ -1,0 +1,9 @@
+{
+  "review_type": "confidence_boundary_review",
+  "round_id": "R033",
+  "raw_confidence_not_executable": true,
+  "calibrated_confidence_label_support": true,
+  "unavailable_confidence_label_support": true,
+  "llm_ai_summary_non_blocking": true,
+  "verification": "DecisionComparator.compare with confidence_before/after labels; confidence_diffs in report; raw confidence guard in AuditTrailChain._check_raw_confidence_guard; LLM veto guard in _check_llm_approval_guard"
+}

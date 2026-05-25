@@ -2,7 +2,7 @@ from .checklist import DecisionPreChecklist, TradeCandidate, PreChecklistResult
 from .nea_engine import NEAEngine, NEResult
 from .position_sizing import PositionSizingEngine, SizingResult
 from .confidence_calibration import ConfidenceCalibrationGuard, CalibratedConfidence
-from .replay_trace import ReplayTrace, DecisionStep, VetoRecord
+from .replay_trace import ReplayTrace, DecisionStep, VetoRecord, ReplayResult, DiffReasonCode
 from .confidence_decomposition import (
     ConfidenceSourceDecomposer,
     ConfidenceDecompositionReport,
@@ -100,6 +100,7 @@ from .audit_trail import (
     MarketRealitySnapshot,
     TaiwanMarketConstraints,
     OrderFillPnlReview,
+    ReplayAuditLink,
     create_decision_audit_record,
     reject_mutation_or_overwrite,
     VALID_SCHEMA_VERSIONS,
@@ -130,6 +131,8 @@ __all__ = [
     "TraceabilityChain",
     "TraceabilityLink",
     "ChainVerificationResult",
+    "ReplayResult",
+    "DiffReasonCode",
     "DecisionComparator",
     "DecisionComparisonReport",
     "ComparisonFieldDiff",
@@ -201,6 +204,7 @@ __all__ = [
     "MarketRealitySnapshot",
     "TaiwanMarketConstraints",
     "OrderFillPnlReview",
+    "ReplayAuditLink",
     "create_decision_audit_record",
     "reject_mutation_or_overwrite",
     "VALID_SCHEMA_VERSIONS",

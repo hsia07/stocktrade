@@ -351,6 +351,133 @@ def test_assert_can_start_live_from_live_allowed():
     assert result.allowed
 
 
+# ── R033: veto replay enforcement ──
+
+def test_check_veto_replay_blocks_trade_allowed():
+    gate = ReplayIsolationGate()
+    gate.enter_replay(replay_trace_id="r1")
+    original_vetos = [{"gate": "risk", "reason_code": "max_loss", "detail": "stop"}]
+    result = gate.check_veto_replay(original_vetos, replayed_trade_allowed=True)
+    assert not result.allowed
+    assert result.reason_code == "VETO_REPLAY_MISMATCH"
+
+
+def test_check_veto_replay_allows_consistent_veto():
+    gate = ReplayIsolationGate()
+    gate.enter_replay(replay_trace_id="r1")
+    original_vetos = [{"gate": "risk", "reason_code": "max_loss", "detail": "stop"}]
+    result = gate.check_veto_replay(original_vetos, replayed_trade_allowed=False)
+    assert result.allowed
+    assert result.reason_code == "VETO_REPLAY_CONSISTENT"
+
+
+def test_check_veto_replay_no_veto_allows_trade():
+    gate = ReplayIsolationGate()
+    gate.enter_replay(replay_trace_id="r1")
+    result = gate.check_veto_replay([], replayed_trade_allowed=True)
+    assert result.allowed
+
+
+def test_check_veto_replay_no_context_returns_mode_none():
+    gate = ReplayIsolationGate()
+    result = gate.check_veto_replay([], replayed_trade_allowed=False)
+    assert result.mode == "NONE"
+
+
+# ── R033: as-of guard ──
+
+def test_as_of_guard_decision_ts_before_tradable_ts():
+    gate = ReplayIsolationGate()
+    gate.enter_replay(replay_trace_id="r1")
+    result = gate.check_as_of_guard(
+        decision_ts="2025-01-01T09:00:00",
+        tradable_ts="2025-01-01T10:00:00",
+    )
+    assert not result.allowed
+    assert result.reason_code == "DECISION_TS_BEFORE_TRADABLE_TS"
+
+
+def test_as_of_guard_future_leak_source_after_decision():
+    gate = ReplayIsolationGate()
+    gate.enter_replay(replay_trace_id="r1")
+    result = gate.check_as_of_guard(
+        decision_ts="2025-01-01T09:00:00",
+        source_ts="2025-01-01T10:00:00",
+    )
+    assert not result.allowed
+    assert "FUTURE_LEAK" in result.reason_code
+
+
+def test_as_of_guard_future_leak_publish_after_decision():
+    gate = ReplayIsolationGate()
+    gate.enter_replay(replay_trace_id="r1")
+    result = gate.check_as_of_guard(
+        decision_ts="2025-01-01T09:00:00",
+        publish_ts="2025-01-01T10:00:00",
+    )
+    assert not result.allowed
+    assert "FUTURE_LEAK" in result.reason_code
+
+
+def test_as_of_guard_future_leak_ingest_after_decision():
+    gate = ReplayIsolationGate()
+    gate.enter_replay(replay_trace_id="r1")
+    result = gate.check_as_of_guard(
+        decision_ts="2025-01-01T09:00:00",
+        ingest_ts="2025-01-01T10:00:00",
+    )
+    assert not result.allowed
+    assert "FUTURE_LEAK" in result.reason_code
+
+
+def test_as_of_guard_passes_valid_timestamps():
+    gate = ReplayIsolationGate()
+    gate.enter_replay(replay_trace_id="r1")
+    result = gate.check_as_of_guard(
+        decision_ts="2025-01-01T10:00:00",
+        tradable_ts="2025-01-01T09:00:00",
+        source_ts="2025-01-01T08:00:00",
+        publish_ts="2025-01-01T08:30:00",
+        ingest_ts="2025-01-01T08:45:00",
+    )
+    assert result.allowed
+    assert result.reason_code == "AS_OF_GUARD_PASSED"
+
+
+def test_as_of_guard_empty_timestamps_passes():
+    gate = ReplayIsolationGate()
+    gate.enter_replay(replay_trace_id="r1")
+    result = gate.check_as_of_guard()
+    assert result.allowed
+
+
+def test_as_of_guard_no_context():
+    gate = ReplayIsolationGate()
+    result = gate.check_as_of_guard(
+        decision_ts="2025-01-01T09:00:00",
+        tradable_ts="2025-01-01T10:00:00",
+    )
+    assert not result.allowed
+    assert result.reason_code == "DECISION_TS_BEFORE_TRADABLE_TS"
+
+
+# ── R033: replay live write blocking ──
+
+def test_check_replay_live_write_blocked():
+    gate = ReplayIsolationGate()
+    gate.enter_replay(replay_trace_id="r1")
+    result = gate.check_replay_live_write(target="live_state")
+    assert not result.allowed
+    assert "LIVE_WRITE" in result.reason_code
+
+
+def test_check_replay_live_write_allowed_in_live():
+    gate = ReplayIsolationGate()
+    gate.enter_live()
+    result = gate.check_replay_live_write(target="live_state")
+    assert result.allowed
+
+
 if __name__ == "__main__":
     import pytest
     sys.exit(pytest.main([__file__, "-v"]))

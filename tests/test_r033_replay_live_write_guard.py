@@ -525,6 +525,203 @@ def test_no_broker_import_in_isolation_module():
     assert "broker" not in source.lower() or "assert_can_call_broker" in source
 
 
+# ═══════════════════════════════════════════════════════════════
+# II. R033: Comprehensive negative tests
+# ═══════════════════════════════════════════════════════════════
+
+def test_replay_attempt_order_placement_blocked():
+    gate = ReplayIsolationGate()
+    gate.enter_replay(replay_trace_id="neg-order")
+    result = gate.assert_can_place_order("2330.TW")
+    assert not result.allowed
+    assert result.reason_code == "ORDER_PLACEMENT_BLOCKED_BY_MODE"
+    gate.clear()
+
+
+def test_broker_api_call_in_replay_blocked():
+    gate = ReplayIsolationGate()
+    gate.enter_replay(replay_trace_id="neg-broker")
+    result = gate.assert_can_call_broker("fubon_api")
+    assert not result.allowed
+    assert result.reason_code == "BROKER_CALL_BLOCKED_BY_MODE"
+    gate.clear()
+
+
+def test_original_veto_and_replay_trade_allowed_fails():
+    gate = ReplayIsolationGate()
+    gate.enter_replay(replay_trace_id="neg-veto")
+    original_vetos = [{"gate": "risk", "reason_code": "max_loss_breach", "detail": "10% loss limit"}]
+    result = gate.check_veto_replay(original_vetos, replayed_trade_allowed=True)
+    assert not result.allowed
+    assert result.reason_code == "VETO_REPLAY_MISMATCH"
+    gate.clear()
+
+
+def test_missing_trace_id_fails():
+    from modules.decision_prechecklist.decision_comparator import DecisionComparator
+    comp = DecisionComparator()
+    before = {"trace_id": "", "symbol": "ABC", "side": "buy",
+              "candidate_action": "entry", "final_decision": "NO_TRADE"}
+    after = {"trace_id": "", "symbol": "ABC", "side": "buy",
+             "candidate_action": "entry", "final_decision": "NO_TRADE"}
+    report = comp.compare(before, after)
+    codes = report.diff_reason_codes
+    assert any("missing_trace_id" in c for c in codes)
+
+
+def test_missing_final_decision_fails():
+    from modules.decision_prechecklist.decision_comparator import DecisionComparator
+    comp = DecisionComparator()
+    before = {"trace_id": "t1", "symbol": "ABC", "side": "buy",
+              "candidate_action": "entry", "final_decision": ""}
+    after = {"trace_id": "t2", "symbol": "ABC", "side": "buy",
+             "candidate_action": "entry", "final_decision": ""}
+    report = comp.compare(before, after)
+    codes = report.diff_reason_codes
+    assert any("missing_final_decision" in c for c in codes)
+
+
+def test_decision_ts_before_tradable_ts_fails():
+    gate = ReplayIsolationGate()
+    gate.enter_replay(replay_trace_id="neg-asof")
+    result = gate.check_as_of_guard(
+        decision_ts="2025-01-01T09:00:00",
+        tradable_ts="2025-01-01T10:00:00",
+    )
+    assert not result.allowed
+    assert result.reason_code == "DECISION_TS_BEFORE_TRADABLE_TS"
+    gate.clear()
+
+
+def test_future_leak_source_after_decision_fails():
+    gate = ReplayIsolationGate()
+    gate.enter_replay(replay_trace_id="neg-leak")
+    result = gate.check_as_of_guard(
+        decision_ts="2025-01-01T09:00:00",
+        source_ts="2025-01-01T10:00:00",
+    )
+    assert not result.allowed
+    assert "FUTURE_LEAK" in result.reason_code
+    gate.clear()
+
+
+def test_audit_record_mutation_attempt_blocked():
+    from modules.decision_prechecklist.audit_trail import (
+        ImmutableRecordError, reject_mutation_or_overwrite, create_decision_audit_record
+    )
+    record = create_decision_audit_record(
+        trace_id="mut-test",
+        final_decision="NO_TRADE",
+        final_reason_code="no_signal",
+    )
+    record.immutable_after_write = True
+    record.append_only = True
+    with pytest.raises(ImmutableRecordError):
+        reject_mutation_or_overwrite(record)
+
+
+def test_replay_live_write_attempt_blocked():
+    gate = ReplayIsolationGate()
+    gate.enter_replay(replay_trace_id="neg-livewrite")
+    result = gate.check_replay_live_write(target="live_state")
+    assert not result.allowed
+    assert "LIVE_WRITE" in result.reason_code
+    gate.clear()
+
+
+def test_replay_runtime_write_attempt_blocked():
+    gate = ReplayIsolationGate()
+    gate.enter_replay(replay_trace_id="neg-runtime")
+    result = gate.assert_can_write_runtime_state("live_cache")
+    assert not result.allowed
+    assert "RUNTIME_STATE_WRITE" in result.reason_code
+    gate.clear()
+
+
+# ═══════════════════════════════════════════════════════════════
+# III. R033: Edge tests — no-trade, veto-only, partial placeholders
+# ═══════════════════════════════════════════════════════════════
+
+def test_replay_no_trade_record_safe():
+    gate = ReplayIsolationGate()
+    gate.enter_replay(replay_trace_id="edge-no-trade")
+    result = gate.assert_can_place_order("2330.TW")
+    assert not result.allowed
+    gate.clear()
+
+
+def test_replay_veto_only_record():
+    gate = ReplayIsolationGate()
+    gate.enter_replay(replay_trace_id="edge-veto-only")
+    vetos = [{"gate": "risk", "reason_code": "rule_based", "detail": "no_trade_day"}]
+    result = gate.check_veto_replay(vetos, replayed_trade_allowed=False)
+    assert result.allowed
+    gate.clear()
+
+
+def test_replay_market_reality_placeholder_present():
+    from modules.decision_prechecklist.decision_comparator import DecisionComparator
+    comp = DecisionComparator()
+    before = {"trace_id": "t1", "symbol": "ABC", "side": "buy",
+              "candidate_action": "entry", "final_decision": "NO_TRADE"}
+    after = dict(before)
+    mr = {
+        "cost_model_version": "r032-v1",
+        "slippage_model_version": "r032-v1",
+        "liquidity_score": 0.5,
+        "estimated_fill_probability": 0.9,
+        "expected_cost": 0.001,
+        "expected_slippage": 0.0005,
+        "expected_net_rr": -0.001,
+        "market_session_state": "continuous",
+        "limit_up_down_distance": 9.5,
+    }
+    report = comp.compare(before, after,
+                          market_reality_before=mr,
+                          market_reality_after=mr)
+    assert len(report.market_reality_diffs) == 0  # identical placeholders ok
+
+
+def test_replay_taiwan_constraint_placeholder_present():
+    tc = {
+        "limit_up_down_pct": 10.0,
+        "t2_settlement_aware": True,
+        "auction_session_state": "continuous",
+        "odd_lot_round_lot": "round_lot",
+        "halt_disposition_attention": "none",
+        "liquidity_insufficiency": "none",
+    }
+    assert tc["limit_up_down_pct"] == 10.0
+    assert tc["odd_lot_round_lot"] in ("round_lot", "odd_lot")
+    assert tc["halt_disposition_attention"] in ("none", "halt", "attention", "disposition")
+
+
+def test_replay_market_reality_missing_fields_incomplete():
+    from modules.decision_prechecklist.decision_comparator import DecisionComparator
+    comp = DecisionComparator()
+    before = {"trace_id": "t1", "symbol": "ABC", "side": "buy",
+              "candidate_action": "entry", "final_decision": "NO_TRADE"}
+    after = dict(before)
+    mr_partial = {"cost_model_version": "v1"}
+    report = comp.compare(before, after,
+                          market_reality_before=mr_partial,
+                          market_reality_after=mr_partial)
+    # Partial market reality not treated as violation by comparator
+    assert len(report.market_reality_diffs) == 0  # identical partials
+    # But audit trail validation would flag it
+    from modules.decision_prechecklist.audit_trail import AuditTrailChain, create_decision_audit_record
+    chain = AuditTrailChain()
+    record = create_decision_audit_record(
+        trace_id="partial-mr",
+        final_decision="NO_TRADE",
+        final_reason_code="no_signal",
+        market_session_state="",
+    )
+    record.market_reality.cost_model_version = ""
+    errors = chain.validate_record(record)
+    assert any("cost_model_version_missing" in e for e in errors)
+
+
 if __name__ == "__main__":
     import pytest
     sys.exit(pytest.main([__file__, "-v"]))

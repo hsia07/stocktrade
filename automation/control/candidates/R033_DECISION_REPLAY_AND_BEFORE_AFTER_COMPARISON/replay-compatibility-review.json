@@ -1,0 +1,10 @@
+{
+  "review_type": "replay_compatibility_review",
+  "round_id": "R033",
+  "event_replay_compatibility": true,
+  "r032_audit_trail_trace_id_linkage": true,
+  "append_only_replay_result": true,
+  "before_after_comparison_fields": true,
+  "deterministic_replay_result": true,
+  "verification": "ReplayResult dataclass with compute_replay_hash; DecisionComparator.compare with diff_reason_codes; AuditTrailChain.link_replay_result; ReplayTrace.compute_trace_hash"
+}

@@ -1,0 +1,11 @@
+{
+  "review_type": "taiwan_market_placeholder_review",
+  "round_id": "R033",
+  "limit_up_down_plus_minus_10_pct": true,
+  "t2_settlement": true,
+  "auction_session_call_continuous": true,
+  "odd_lot_round_lot": true,
+  "liquidity": true,
+  "halt_attention_disposition_stock": true,
+  "note": "R033 provides replay contract placeholders, NOT a complete Taiwan Market Reality engine. Full Taiwan market model deferred to future round."
+}

@@ -1,0 +1,47 @@
+{
+  "round_id": "R033",
+  "task": "R033_CANDIDATE_CONSTRUCTION_DECISION_REPLAY_AND_BEFORE_AFTER_COMPARISON",
+  "status": "candidate_ready_awaiting_manual_review",
+  "base_head": "3f9b9fc7fe4817038a2b7ae3712eafb13c571f7e",
+  "candidate_branch": "candidate/r033-decision-replay-before-after-comparison",
+  "source_files_modified": [
+    "modules/decision_prechecklist/replay_trace.py",
+    "modules/decision_prechecklist/decision_comparator.py",
+    "modules/decision_prechecklist/replay_isolation.py",
+    "modules/decision_prechecklist/audit_trail.py",
+    "modules/decision_prechecklist/__init__.py"
+  ],
+  "test_files_modified": [
+    "tests/test_replay_isolation.py",
+    "tests/test_decision_comparator.py",
+    "tests/test_r033_replay_live_write_guard.py"
+  ],
+  "manifest_modified": false,
+  "workflow_modified": false,
+  "validator_modified": false,
+  "pre_push_hook_modified": false,
+  "r049_started": false,
+  "runtime_started": false,
+  "broker_api_called": false,
+  "order_execution_allowed": false,
+  "features": {
+    "r032_audit_trail_linkage": true,
+    "append_only_replay_result": true,
+    "before_after_decision_comparison": true,
+    "risk_gate_veto_replay": true,
+    "market_reality_snapshot_replay": true,
+    "taiwan_market_placeholders": true,
+    "as_of_future_leak_guard": true,
+    "confidence_boundary": true,
+    "replay_no_order_safety": true,
+    "original_audit_record_mutation_blocked": true,
+    "replay_output_not_executable_signal": true,
+    "llm_summary_non_blocking": true
+  },
+  "positive_tests_count": 0,
+  "negative_tests_count": 0,
+  "edge_tests_count": 0,
+  "total_tests_pass": 208,
+  "validators_pass": true,
+  "commit_created": false
+}

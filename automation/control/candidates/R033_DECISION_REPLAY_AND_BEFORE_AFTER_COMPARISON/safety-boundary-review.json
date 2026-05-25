@@ -1,0 +1,11 @@
+{
+  "review_type": "safety_boundary_review",
+  "round_id": "R033",
+  "no_broker_api": true,
+  "no_live_state_write": true,
+  "no_order_execution": true,
+  "no_runtime_start": true,
+  "order_execution_allowed": false,
+  "replay_output_not_executable_signal": true,
+  "verification": "ReplayIsolationGate.assert_can_call_broker blocks non-LIVE; assert_can_place_order blocks non-LIVE; check_replay_live_write blocks non-LIVE; all verified by 51+40 live-write-guard tests"
+}

@@ -1,0 +1,10 @@
+round_id: R033_CANDIDATE_CONSTRUCTION_DECISION_REPLAY_AND_BEFORE_AFTER_COMPARISON
+status: candidate_ready_awaiting_manual_review
+formal_status_code: candidate_ready_awaiting_manual_review
+base_head: 3f9b9fc7fe4817038a2b7ae3712eafb13c571f7e
+candidate_branch: candidate/r033-decision-replay-before-after-comparison
+final_recommendation: DO_NOT_START_R049
+R033 decision replay and before/after comparison candidate constructed on candidate/r033-decision-replay-before-after-comparison.
+All 208 tests PASS (163 R033 primary + 45 audit/traceability).
+All validators PASS.
+Candidate ready for manual review.

@@ -1,0 +1,12 @@
+{
+  "review_type": "as_of_future_leak_review",
+  "round_id": "R033",
+  "source_ts": true,
+  "publish_ts": true,
+  "ingest_ts": true,
+  "tradable_ts": true,
+  "decision_ts": true,
+  "decision_ts_before_tradable_ts_fails": true,
+  "future_leak_blocked": true,
+  "verification": "ReplayIsolationGate.check_as_of_guard with 5 timestamp params; 5 as-of guard tests PASS; DecisionComparator._check_as_of_guard with violation/future_leak detection; 2 as-of comparison tests PASS"
+}

@@ -1,0 +1,21 @@
+{
+  "review_type": "source_reality_review",
+  "round_id": "R033",
+  "real_source_functions": true,
+  "no_stub_todo_pass_only": true,
+  "tests_import_source": true,
+  "positive_tests_count": 0,
+  "negative_tests_count": 0,
+  "edge_tests_count": 0,
+  "modified_files": [
+    "modules/decision_prechecklist/replay_trace.py",
+    "modules/decision_prechecklist/decision_comparator.py",
+    "modules/decision_prechecklist/replay_isolation.py",
+    "modules/decision_prechecklist/audit_trail.py",
+    "modules/decision_prechecklist/__init__.py",
+    "tests/test_replay_isolation.py",
+    "tests/test_decision_comparator.py",
+    "tests/test_r033_replay_live_write_guard.py"
+  ],
+  "verification": "All source: new concrete classes (ReplayResult, ReplayAuditLink, DiffReasonCode), new methods (check_veto_replay, check_as_of_guard, check_replay_live_write, link_replay_result, compare with market_reality/confidence/as-of, build_replay_result). No TODO/FIXME/pass-only. Tests import and call real source."
+}

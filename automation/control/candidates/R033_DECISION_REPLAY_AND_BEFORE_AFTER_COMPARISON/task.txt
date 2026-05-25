@@ -1,0 +1,6 @@
+R033_CANDIDATE_CONSTRUCTION_DECISION_REPLAY_AND_BEFORE_AFTER_COMPARISON
+
+Build deterministic replay / before-after comparison contract for R033 交易回放與決策前後對照.
+Integrate with R032 audit trail, append-only replay result, Risk Gate veto replay,
+Market Reality / Taiwan placeholders, as-of / future leak guard, confidence boundary,
+and replay no-order safety.

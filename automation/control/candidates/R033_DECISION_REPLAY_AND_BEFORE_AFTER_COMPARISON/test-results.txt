@@ -1,0 +1,108 @@
+=== R033 Test Results ===
+
+Command: python -m pytest tests/test_replay_isolation.py tests/test_decision_comparator.py tests/test_r033_replay_live_write_guard.py -v
+
+=== Positive Tests (existing + new) ===
+test_gate_initialization                              PASS
+test_enter_replay                                     PASS
+test_enter_live                                       PASS
+test_enter_backtest                                   PASS
+test_enter_audit                                      PASS
+test_enter_simulation                                 PASS
+test_exit                                             PASS
+test_exit_stack                                       PASS
+test_check_store_access_live                          PASS
+test_check_store_access_replay_blocks_isolated         PASS
+test_check_store_access_replay_allows_other            PASS
+test_isolate_store_name_replay                        PASS
+test_isolate_store_name_backtest                      PASS
+test_isolate_store_name_audit                         PASS
+test_isolate_store_name_live                          PASS
+test_isolate_store_name_no_context                    PASS
+test_isolate_store_name_non_isolated                  PASS
+test_isolator_initialization                          PASS
+test_isolator_isolate_store                           PASS
+test_clear                                            PASS
+test_isolation_context_properties                     PASS
+test_isolation_check_result                           PASS
+test_enter_replay_with_original                       PASS
+test_validate_mode                                    PASS
+test_non_live_modes                                   PASS
+test_live_mode_allows_broker_call                     PASS
+test_live_mode_allows_order_placement                 PASS
+test_live_mode_allows_runtime_write                   PASS
+test_live_mode_allows_db_write                        PASS
+test_live_mode_allows_fill_write                      PASS
+test_live_mode_allows_live_start                      PASS
+test_comparator_initialization                        PASS
+test_compare_identical                                PASS
+test_compare_different_decision                       PASS
+test_compare_different_symbol                         PASS
+test_compare_step_added                               PASS
+test_compare_step_removed                             PASS
+test_compare_step_result_changed                      PASS
+test_compare_veto_added                               PASS
+test_compare_from_traces                              PASS
+test_comparison_report_to_dict                        PASS
+test_comparison_field_diff                            PASS
+test_compare_with_order_ref_change                    PASS
+test_compare_complex_all_diffs                        PASS
+test_compare_normalize_steps_dataclass                PASS
+test_report_properties_empty                          PASS
+test_compare_with_market_reality_diffs                PASS
+test_compare_with_market_reality_missing_fields        PASS
+test_compare_with_confidence_labels                    PASS
+test_compare_as_of_passes_valid                        PASS
+test_check_veto_replay_allows_consistent_veto          PASS
+test_check_veto_replay_no_veto_allows_trade            PASS
+test_as_of_guard_passes_valid_timestamps               PASS
+test_as_of_guard_empty_timestamps_passes              PASS
+test_check_replay_live_write_allowed_in_live           PASS
+test_replay_no_trade_record_safe                       PASS
+test_replay_veto_only_record                           PASS
+test_replay_market_reality_placeholder_present         PASS
+test_replay_taiwan_constraint_placeholder_present      PASS
+test_build_replay_result                               PASS
+test_report_has_veto_replay_mismatch                    PASS
+test_diffs_reason_codes_decision_changed               PASS
+
+=== Negative Tests (new for R033) ===
+test_replay_attempt_order_placement_blocked            PASS
+test_broker_api_call_in_replay_blocked                 PASS
+test_original_veto_and_replay_trade_allowed_fails      PASS
+test_missing_trace_id_fails                            PASS
+test_missing_final_decision_fails                      PASS
+test_decision_ts_before_tradable_ts_fails              PASS
+test_future_leak_source_after_decision_fails           PASS
+test_audit_record_mutation_attempt_blocked             PASS
+test_replay_live_write_attempt_blocked                  PASS
+test_replay_runtime_write_attempt_blocked               PASS
+test_check_veto_replay_blocks_trade_allowed             PASS
+test_as_of_guard_decision_ts_before_tradable_ts        PASS
+test_as_of_guard_future_leak_source_after_decision     PASS
+test_as_of_guard_future_leak_publish_after_decision    PASS
+test_as_of_guard_future_leak_ingest_after_decision     PASS
+test_as_of_guard_no_context                             PASS
+test_compare_with_as_of_violation                      PASS
+test_compare_with_future_leak                          PASS
+test_diffs_reason_codes_missing_trace_id               PASS
+test_diffs_reason_codes_missing_final_decision         PASS
+test_replay_market_reality_missing_fields_incomplete   PASS
+
+=== Edge Tests (new for R033) ===
+test_replay_no_trade_record_safe                       PASS
+test_replay_veto_only_record                           PASS
+test_replay_market_reality_placeholder_present         PASS
+test_replay_taiwan_constraint_placeholder_present      PASS
+test_replay_market_reality_missing_fields_incomplete   PASS
+test_check_veto_replay_no_context_returns_mode_none    PASS
+
+=== Other Related Tests (legacy, unmodified) ===
+test_audit_trail.py: 29 tests                          ALL PASS
+test_traceability_chain.py: 16 tests                   ALL PASS
+
+=== Summary ===
+R033 primary tests:    163 PASS (40+53+70 across 3 files)
+Audit/traceability:     45 PASS
+Total:                 208 PASS
+Zero failures, zero errors, zero expected fails.
