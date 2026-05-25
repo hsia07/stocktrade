@@ -1,0 +1,15 @@
+{
+  "failed_workflow": "validate-canonical-repair",
+  "failed_run_id": 26372122855,
+  "failed_package": "automation/control/candidates/R032_AUDIT_TRAIL_CHAIN_REPORT_STATUS_COMPLETION",
+  "ci_error": "candidate_commit:hash_not_found:not_a_valid_git_object",
+  "failed_candidate_commit": "cb023b95831cc498d9d99170eed204171e088cdf",
+  "local_full_history_cat_file_pass": true,
+  "all_local_validators_pass": true,
+  "fetch_depth_before": 2,
+  "fetch_depth_after": 0,
+  "failure_mechanism": "actions/checkout@v4 with fetch-depth: 2 creates a shallow clone. The merge commit af5726f4 has two parents: P1=722ef470 (canonical base) and P2=b463fa8e (candidate evidence hash fix head). With depth 2, only the merge commit (depth 0) and its parents (depth 1) are fetched. cb023b95, which is the parent of b463fa8e (depth 2 from merge commit), is not fetched. The evidence checker's validate_40hex_hash runs 'git cat-file -t cb023b95' which fails because the commit is not in the shallow clone. Changing to fetch-depth: 0 (full history) resolves this.",
+  "why_fetch_depth_0_is_minimal_safe_fix": "fetch-depth: 0 disables shallow cloning, fetching all reachable commits. This only affects the checkout step's history depth. It does not change any workflow logic, validator behavior, evidence semantics, or source code. It is the minimal change to ensure all git objects referenced in evidence packages are resolvable.",
+  "why_this_does_not_change_R032_source_tests_evidence_semantics": "The fix only changes the checkout depth parameter. No source files, test files, manifest, validators, workflows (other than the depth parameter), hooks, or evidence packages are modified. R032 evidence semantics remain unchanged.",
+  "why_this_does_not_mark_R032_accepted": "This fix is purely infrastructure (CI checkout depth). It does not update last_completed_round, chain_status, next_round_to_dispatch, or any acceptance-related fields in the manifest."
+}
