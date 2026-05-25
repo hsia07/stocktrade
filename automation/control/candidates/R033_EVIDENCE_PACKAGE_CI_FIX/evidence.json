@@ -1,6 +1,8 @@
 {
   "law_compliance": "04",
   "round_id": "R033_EVIDENCE_PACKAGE_CI_FIX",
+  "candidate_commit": "9aa65a3422d0a1e2c148f4126adbbfb9d76694c0",
+  "original_fix_commit": "9aa65a3422d0a1e2c148f4126adbbfb9d76694c0",
   "base_head": "c9b1ef49e964b32129f82c638e259a28f0d8e55b",
   "failed_workflow": "validate-canonical-repair #30",
   "failed_reason": "report_status_not_completed",
