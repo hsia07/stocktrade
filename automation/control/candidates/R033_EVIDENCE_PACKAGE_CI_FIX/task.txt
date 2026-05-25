@@ -1,0 +1,23 @@
+=== TASK DESCRIPTION ===
+task_id: R033_EVIDENCE_PACKAGE_CI_FIX
+task_type: r033_evidence_package_ci_fix_candidate
+phase: Phase 2
+law_compliance: 04
+severity: ci_compatibility
+
+=== PROBLEM STATEMENT ===
+validate-canonical-repair #30 failed at Evidence checker step:
+Evidence incomplete: ['report_status_not_completed']
+
+Root cause: automation/control/candidates/R033_DECISION_REPLAY_AND_BEFORE_AFTER_COMPARISON/report.json
+had status "candidate_ready_awaiting_manual_review" from candidate construction phase.
+After manual review, local no-ff merge, and remote push, the status was never updated to
+"completed". This fix updates report.json status to "completed" and adds required fields.
+
+=== SOLUTION ===
+1. Update report.json in R033 package: status→completed, add canonical_branch, canonical_head, test_count, tests_passed
+2. Create new fix evidence package documenting the CI fix
+
+=== FILES ===
+- automation/control/candidates/R033_DECISION_REPLAY_AND_BEFORE_AFTER_COMPARISON/report.json (fixed)
+- automation/control/candidates/R033_EVIDENCE_PACKAGE_CI_FIX/* (new fix evidence package)

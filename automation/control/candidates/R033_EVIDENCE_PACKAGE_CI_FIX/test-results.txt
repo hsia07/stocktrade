@@ -1,0 +1,10 @@
+TEST RESULTS
+R033 regression tests all PASS (unchanged from R033 candidate construction):
+
+test_replay_isolation.py:: 53 passed
+test_decision_comparator.py:: 26 passed
+test_r033_replay_live_write_guard.py:: 84 passed
+test_audit_trail.py:: 29 passed
+test_traceability_chain.py:: 16 passed
+
+Total: 208 passed, 0 failed, 0 skipped

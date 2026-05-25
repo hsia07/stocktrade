@@ -1,0 +1,10 @@
+{
+  "round_id": "R033_EVIDENCE_PACKAGE_CI_FIX",
+  "prevention_notes": [
+    "evidence package status must be updated after manual review + merge + push before acceptance",
+    "report.json must include canonical_branch / canonical_head / test_count / tests_passed when evidence checker requires them",
+    "CI green is required before chain-status acceptance update",
+    "The EvidenceChecker.check_completeness() method requires report.json status to be 'completed' or 'ready_for_merge_signoff' with merge proof",
+    "Future rounds should ensure report.json is updated at merge time, not deferred"
+  ]
+}

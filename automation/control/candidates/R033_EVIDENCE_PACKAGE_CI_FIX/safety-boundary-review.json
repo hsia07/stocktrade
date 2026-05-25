@@ -1,0 +1,20 @@
+{
+  "review_type": "safety_boundary",
+  "round_id": "R033_EVIDENCE_PACKAGE_CI_FIX",
+  "no_source_changes": true,
+  "no_test_changes": true,
+  "no_manifest_changes": true,
+  "no_workflow_changes": true,
+  "no_validator_changes": true,
+  "no_hook_changes": true,
+  "no_server_v2_changes": true,
+  "no_module_changes": true,
+  "no_runtime_started": true,
+  "no_broker_api_called": true,
+  "no_live_started": true,
+  "no_r034_started": true,
+  "no_r049_started": true,
+  "order_execution_allowed": false,
+  "r033_acceptance_pending": true,
+  "r033_acceptance_requires_ci_green": true
+}

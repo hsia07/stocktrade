@@ -1,0 +1,22 @@
+{
+  "round_id": "R033_EVIDENCE_PACKAGE_CI_FIX",
+  "task": "R033_EVIDENCE_PACKAGE_CI_FIX_CANDIDATE",
+  "status": "completed",
+  "base_head": "c9b1ef49e964b32129f82c638e259a28f0d8e55b",
+  "candidate_branch": "candidate/r033-evidence-package-ci-fix",
+  "canonical_branch": "work/canonical-mainline-repair-001",
+  "canonical_head": "c9b1ef49e964b32129f82c638e259a28f0d8e55b",
+  "source_files_modified": false,
+  "tests_modified": false,
+  "manifest_modified": false,
+  "workflow_modified": false,
+  "validator_modified": false,
+  "pre_push_hook_modified": false,
+  "r049_started": false,
+  "runtime_started": false,
+  "broker_api_called": false,
+  "order_execution_allowed": false,
+  "test_count": 208,
+  "tests_passed": 208,
+  "validators_pass": true
+}
