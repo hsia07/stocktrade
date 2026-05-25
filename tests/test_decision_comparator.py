@@ -244,6 +244,167 @@ def test_report_properties_empty():
     assert report.changed_field_count == 0
 
 
+# ── R033: comparison with reasons, market reality, confidence, as-of ──
+
+def test_compare_with_market_reality_diffs():
+    comp = DecisionComparator()
+    before = {"trace_id": "t1", "symbol": "ABC", "side": "buy",
+              "candidate_action": "entry", "final_decision": "EXECUTE"}
+    after = dict(before)
+    mr_before = {"cost_model_version": "v1", "liquidity_score": 0.8,
+                 "market_session_state": "continuous"}
+    mr_after = {"cost_model_version": "v2", "liquidity_score": 0.7,
+                "market_session_state": "continuous"}
+    report = comp.compare(before, after,
+                          market_reality_before=mr_before,
+                          market_reality_after=mr_after)
+    assert len(report.market_reality_diffs) >= 2
+    codes = report.diff_reason_codes
+    assert any("market_reality_snapshot_changed" in c for c in codes)
+
+
+def test_compare_with_market_reality_missing_fields():
+    comp = DecisionComparator()
+    before = {"trace_id": "t1", "symbol": "ABC", "side": "buy",
+              "candidate_action": "entry", "final_decision": "EXECUTE"}
+    after = dict(before)
+    report = comp.compare(before, after)
+    assert len(report.market_reality_diffs) == 0
+
+
+def test_compare_with_confidence_labels():
+    comp = DecisionComparator()
+    before = {"trace_id": "t1", "symbol": "ABC", "side": "buy",
+              "candidate_action": "entry", "final_decision": "EXECUTE"}
+    after = dict(before)
+    conf_before = {"raw": "0.85", "calibrated": "0.72"}
+    conf_after = {"raw": "0.85", "calibrated": "0.73"}
+    report = comp.compare(before, after,
+                          confidence_before=conf_before,
+                          confidence_after=conf_after)
+    assert len(report.confidence_diffs) == 1
+
+
+def test_compare_with_as_of_violation():
+    comp = DecisionComparator()
+    before = {"trace_id": "t1", "symbol": "ABC", "side": "buy",
+              "candidate_action": "entry", "final_decision": "EXECUTE"}
+    after = dict(before)
+    as_of_before = {
+        "decision_ts": "2025-01-01T09:00:00",
+        "tradable_ts": "2025-01-01T10:00:00",
+    }
+    as_of_after = {
+        "decision_ts": "2025-01-01T11:00:00",
+        "tradable_ts": "2025-01-01T10:00:00",
+    }
+    report = comp.compare(before, after,
+                          as_of_before=as_of_before,
+                          as_of_after=as_of_after)
+    assert report.has_as_of_violation
+    assert any("decision_ts_before_tradable_ts" in c for c in report.diff_reason_codes)
+
+
+def test_compare_with_future_leak():
+    comp = DecisionComparator()
+    before = {"trace_id": "t1", "symbol": "ABC", "side": "buy",
+              "candidate_action": "entry", "final_decision": "EXECUTE"}
+    after = dict(before)
+    as_of_before = {
+        "decision_ts": "2025-01-01T09:00:00",
+        "source_ts": "2025-01-01T10:00:00",
+    }
+    as_of_after = {
+        "decision_ts": "2025-01-01T09:00:00",
+    }
+    report = comp.compare(before, after,
+                          as_of_before=as_of_before,
+                          as_of_after=as_of_after)
+    assert report.has_future_leak
+    assert any("future_leak" in c for c in report.diff_reason_codes)
+
+
+def test_compare_as_of_passes_valid():
+    comp = DecisionComparator()
+    before = {"trace_id": "t1", "symbol": "ABC", "side": "buy",
+              "candidate_action": "entry", "final_decision": "EXECUTE"}
+    after = dict(before)
+    as_of_before = {
+        "decision_ts": "2025-01-01T10:00:00",
+        "tradable_ts": "2025-01-01T09:00:00",
+        "source_ts": "2025-01-01T08:00:00",
+    }
+    as_of_after = {
+        "decision_ts": "2025-01-01T10:00:00",
+        "tradable_ts": "2025-01-01T09:00:00",
+        "source_ts": "2025-01-01T08:00:00",
+    }
+    report = comp.compare(before, after,
+                          as_of_before=as_of_before,
+                          as_of_after=as_of_after)
+    assert not report.has_as_of_violation
+    assert not report.has_future_leak
+
+
+def test_diffs_reason_codes_decision_changed():
+    comp = DecisionComparator()
+    before = {"trace_id": "t1", "symbol": "ABC", "side": "buy",
+              "candidate_action": "entry", "final_decision": "EXECUTE"}
+    after = dict(before)
+    after["final_decision"] = "NO_TRADE"
+    report = comp.compare(before, after)
+    assert report.decision_changed
+    assert "decision_changed" in report.diff_reason_codes
+
+
+def test_diffs_reason_codes_missing_trace_id():
+    comp = DecisionComparator()
+    before = {"trace_id": "", "symbol": "ABC", "side": "buy",
+              "candidate_action": "entry", "final_decision": "NO_TRADE"}
+    after = {"trace_id": "t2", "symbol": "ABC", "side": "buy",
+             "candidate_action": "entry", "final_decision": "NO_TRADE"}
+    report = comp.compare(before, after)
+    codes = report.diff_reason_codes
+    assert any("missing_trace_id" in c for c in codes)
+
+
+def test_diffs_reason_codes_missing_final_decision():
+    comp = DecisionComparator()
+    before = {"trace_id": "t1", "symbol": "ABC", "side": "buy",
+              "candidate_action": "entry", "final_decision": ""}
+    after = {"trace_id": "t2", "symbol": "ABC", "side": "buy",
+             "candidate_action": "entry", "final_decision": "EXECUTE"}
+    report = comp.compare(before, after)
+    codes = report.diff_reason_codes
+    assert any("missing_final_decision" in c for c in codes)
+
+
+def test_report_has_veto_replay_mismatch():
+    report = DecisionComparisonReport(
+        trace_id_before="t1", trace_id_after="t2",
+        symbol="ABC", side="buy",
+        decision_before="NO_TRADE", decision_after="EXECUTE",
+        diff_reason_codes=["veto_ignored_in_replay"],
+    )
+    assert report.has_veto_replay_mismatch
+
+
+def test_build_replay_result():
+    comp = DecisionComparator()
+    before = {"trace_id": "t1", "symbol": "ABC", "side": "buy",
+              "candidate_action": "entry", "final_decision": "NO_TRADE",
+              "record_hash": "abc123"}
+    after = dict(before)
+    after["final_decision"] = "EXECUTE"
+    report = comp.compare(before, after)
+    result = comp.build_replay_result(report, audit_record_dict=before)
+    assert result["trace_id"] == "t1"
+    assert result["original_decision"] == "NO_TRADE"
+    assert result["replayed_decision"] == "EXECUTE"
+    assert result["replay_version"] == "r033-v1"
+    assert len(result["diff_reason_codes"]) > 0
+
+
 if __name__ == "__main__":
     import pytest
     sys.exit(pytest.main([__file__, "-v"]))

@@ -1,5 +1,6 @@
 from __future__ import annotations
 from dataclasses import dataclass, field
+from datetime import datetime, timezone
 from enum import Enum
 from typing import Any
 
@@ -279,8 +280,129 @@ class ReplayIsolationGate:
             "live_start",
         )
 
+    def check_veto_replay(
+        self,
+        original_vetos: list[Any],
+        replayed_trade_allowed: bool,
+    ) -> IsolationCheckResult:
+        mode = self._current_mode()
+        mode_str = mode.value if mode else "NONE"
+        has_veto = bool(original_vetos)
+        if has_veto and replayed_trade_allowed:
+            return IsolationCheckResult(
+                allowed=False,
+                reason="original veto present but replay produced trade_allowed=True",
+                reason_code="VETO_REPLAY_MISMATCH",
+                mode=mode_str,
+                target="veto_replay",
+                isolation_violation_reason="original veto must not become trade_allowed in replay",
+            )
+        return IsolationCheckResult(
+            allowed=True,
+            reason="veto replay consistent",
+            reason_code="VETO_REPLAY_CONSISTENT",
+            mode=mode_str,
+            target="veto_replay",
+            isolation_violation_reason="",
+        )
+
+    def check_as_of_guard(
+        self,
+        decision_ts: str = "",
+        tradable_ts: str = "",
+        source_ts: str = "",
+        publish_ts: str = "",
+        ingest_ts: str = "",
+    ) -> IsolationCheckResult:
+        mode = self._current_mode()
+        mode_str = mode.value if mode else "NONE"
+
+        def _parse(ts: str) -> datetime | None:
+            if not ts:
+                return None
+            try:
+                if ts.endswith("Z"):
+                    ts = ts[:-1] + "+00:00"
+                return datetime.fromisoformat(ts)
+            except (ValueError, TypeError):
+                return None
+
+        dt_decision = _parse(decision_ts)
+        dt_tradable = _parse(tradable_ts)
+        dt_source = _parse(source_ts)
+        dt_publish = _parse(publish_ts)
+        dt_ingest = _parse(ingest_ts)
+
+        if dt_decision and dt_tradable and dt_decision < dt_tradable:
+            return IsolationCheckResult(
+                allowed=False,
+                reason=f"decision_ts ({decision_ts}) before tradable_ts ({tradable_ts})",
+                reason_code="DECISION_TS_BEFORE_TRADABLE_TS",
+                mode=mode_str,
+                target="as_of_guard",
+                isolation_violation_reason="decision timestamp cannot precede tradable timestamp",
+            )
+
+        if dt_decision:
+            if dt_source and dt_source > dt_decision:
+                return IsolationCheckResult(
+                    allowed=False,
+                    reason=f"source_ts ({source_ts}) after decision_ts ({decision_ts}) — future leak",
+                    reason_code="FUTURE_LEAK_SOURCE_AFTER_DECISION",
+                    mode=mode_str,
+                    target="as_of_guard",
+                    isolation_violation_reason="source data timestamp after decision indicates future data leak",
+                )
+            if dt_publish and dt_publish > dt_decision:
+                return IsolationCheckResult(
+                    allowed=False,
+                    reason=f"publish_ts ({publish_ts}) after decision_ts ({decision_ts}) — future leak",
+                    reason_code="FUTURE_LEAK_PUBLISH_AFTER_DECISION",
+                    mode=mode_str,
+                    target="as_of_guard",
+                    isolation_violation_reason="publish timestamp after decision indicates future data leak",
+                )
+            if dt_ingest and dt_ingest > dt_decision:
+                return IsolationCheckResult(
+                    allowed=False,
+                    reason=f"ingest_ts ({ingest_ts}) after decision_ts ({decision_ts}) — future leak",
+                    reason_code="FUTURE_LEAK_INGEST_AFTER_DECISION",
+                    mode=mode_str,
+                    target="as_of_guard",
+                    isolation_violation_reason="ingest timestamp after decision indicates future data leak",
+                )
+
+        return IsolationCheckResult(
+            allowed=True,
+            reason="as-of guard passed",
+            reason_code="AS_OF_GUARD_PASSED",
+            mode=mode_str,
+            target="as_of_guard",
+            isolation_violation_reason="",
+        )
+
+    def check_replay_live_write(
+        self,
+        target: str = "",
+    ) -> IsolationCheckResult:
+        mode = self._current_mode()
+        if mode is None:
+            return self._blocked_result(
+                "no active context — fail-closed, live write blocked",
+                "LIVE_WRITE_MODE_CONTEXT_MISSING",
+                f"live_write:{target}",
+            )
+        if mode == ExecutionMode.LIVE:
+            return self._allowed_result(target=f"live_write:{target}")
+        return self._blocked_result(
+            f"{mode.value} mode blocked live write to '{target}'",
+            "LIVE_WRITE_BLOCKED_BY_MODE",
+            f"live_write:{target}",
+        )
+
     def clear(self) -> None:
         self._context_stack.clear()
+
 
 
 class ReplayStoreIsolator:

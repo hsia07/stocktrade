@@ -102,6 +102,22 @@ class MarketRealitySnapshot:
 
 
 @dataclass
+class ReplayAuditLink:
+    original_trace_id: str
+    replay_trace_id: str
+    original_record_hash: str
+    replay_result_hash: str
+    replay_version: str
+    replay_timestamp: str
+    original_decision: str
+    replayed_decision: str
+    diff_summary: str
+    diff_reason_codes: list[str]
+    status: str
+    chain_link_id: str
+
+
+@dataclass
 class TaiwanMarketConstraints:
     limit_up_down_pct: float = 10.0
     t2_settlement_aware: bool = False
@@ -409,6 +425,33 @@ class AuditTrailChain:
             if r.trace_identity.decision_id == decision_id:
                 return r
         return None
+
+    def link_replay_result(
+        self,
+        replay_result_dict: dict[str, Any],
+        original_record: DecisionAuditRecord | None = None,
+    ) -> ReplayAuditLink:
+        trace_id = replay_result_dict.get("trace_id", "")
+        original_rec = original_record
+        if original_rec is None:
+            match = self.get_by_trace_id(trace_id)
+            original_rec = match[0] if match else None
+
+        link = ReplayAuditLink(
+            original_trace_id=trace_id,
+            replay_trace_id="",
+            original_record_hash=replay_result_dict.get("original_record_hash", ""),
+            replay_result_hash="",
+            replay_version=replay_result_dict.get("replay_version", "r033-v1"),
+            replay_timestamp=replay_result_dict.get("replay_timestamp", ""),
+            original_decision=replay_result_dict.get("original_decision", ""),
+            replayed_decision=replay_result_dict.get("replayed_decision", ""),
+            diff_summary=replay_result_dict.get("diff_summary", ""),
+            diff_reason_codes=replay_result_dict.get("diff_reason_codes", []),
+            status="replay_linked",
+            chain_link_id=f"{self._chain_id}-R{len(self._records):04d}",
+        )
+        return link
 
 
 def create_decision_audit_record(
