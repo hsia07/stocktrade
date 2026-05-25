@@ -1,0 +1,20 @@
+{
+  "round_id": "R033",
+  "p1_backlog_deferred_not_completed": true,
+  "deferred_items": [
+    "R014 trace_id / decision_chain / veto tracking incomplete",
+    "R014 durable persistence incomplete",
+    "R029 / R030 per-AI veto / full meeting table rework pending",
+    "R047 / R048 P1 backlog pending",
+    "signoff validation syntactic not cryptographic",
+    "legacy UI evidence work_done=null normalization deferred",
+    "validate-round workflow BOM file-level inconsistency deferred",
+    "stocktrade gitlink / .gitmodules governance audit low-risk deferred if still applicable",
+    "R032 mutation / reverse-break tests still recommended before later live-readiness",
+    "R032 end-to-end replay integration audit still pending",
+    "R032 durable persistence implementation still future / partial",
+    "R033 mutation / reverse-break tests still recommended",
+    "R033 end-to-end replay integration audit still pending",
+    "R033 durable persistence implementation still future / partial"
+  ]
+}

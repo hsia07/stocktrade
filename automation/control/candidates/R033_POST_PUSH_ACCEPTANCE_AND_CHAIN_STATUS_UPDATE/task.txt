@@ -1,0 +1,23 @@
+=== TASK DESCRIPTION ===
+task_id: R033
+task_type: r033_post_push_acceptance_and_chain_status_update_candidate
+phase: Phase 2
+law_compliance: 04
+severity: governance
+
+=== PROBLEM STATEMENT ===
+R033 交易回放與決策前後對照 (DecisionReplayAndBeforeAfterComparison) has completed:
+- Source candidate 48db4a1 merged as c9b1ef4
+- Evidence CI fix candidate 540fe84 merged as 87d57a1
+- GitHub Actions validate-canonical-repair #31: success
+- GitHub Actions validate-round #249: success
+
+The manifest chain_status and last_completed_round need to be updated to reflect R033 acceptance.
+
+=== SOLUTION ===
+1. Update manifests/current_round.yaml: last_completed_round→R033, next_round_to_dispatch→R034, chain_status→r033_accepted_ready_for_r034_readiness_or_scope_audit
+2. Create acceptance evidence package documenting R033 completion
+
+=== FILES ===
+- manifests/current_round.yaml (governance state update)
+- automation/control/candidates/R033_POST_PUSH_ACCEPTANCE_AND_CHAIN_STATUS_UPDATE/* (new acceptance evidence)

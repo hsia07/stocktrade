@@ -1,0 +1,20 @@
+{
+  "round_id": "R033",
+  "workflows": {
+    "validate_round": {
+      "run": "#249",
+      "run_id": 26418250038,
+      "conclusion": "success",
+      "head_sha": "87d57a1ae00936cf1395a693e106974954376fda"
+    },
+    "validate_canonical_repair": {
+      "run": "#31",
+      "run_id": 26418250041,
+      "conclusion": "success",
+      "head_sha": "87d57a1ae00936cf1395a693e106974954376fda"
+    }
+  },
+  "latest_canonical_remote_head": "87d57a1ae00936cf1395a693e106974954376fda",
+  "manual_workflow_rerun_executed": false,
+  "verification_method": "public_github_api_read_only"
+}

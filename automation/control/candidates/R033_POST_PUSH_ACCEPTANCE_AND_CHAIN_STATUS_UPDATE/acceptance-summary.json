@@ -1,0 +1,18 @@
+{
+  "round_id": "R033",
+  "acceptance_type": "post_push_ci_green",
+  "r033_completed_content": "decision replay / before-after comparison contract",
+  "has_source_implementation": true,
+  "has_tests": true,
+  "source_merge_commit": "c9b1ef49e964b32129f82c638e259a28f0d8e55b",
+  "evidence_ci_fix_merge_commit": "87d57a1ae00936cf1395a693e106974954376fda",
+  "validate_round_run": "#249",
+  "validate_round_conclusion": "success",
+  "validate_canonical_repair_run": "#31",
+  "validate_canonical_repair_conclusion": "success",
+  "not_r034_start": true,
+  "not_r049_authorization": true,
+  "not_live_readiness": true,
+  "market_reality_placeholder_only": true,
+  "market_reality_full_engine_not_complete": true
+}
