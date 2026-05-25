@@ -1,0 +1,93 @@
+round_id:
+  VALIDATE_CANONICAL_REPAIR_CHECKOUT_DEPTH_FULL_HISTORY_FIX_CANDIDATE
+
+task_type:
+  validate_canonical_repair_checkout_depth_full_history_fix_candidate
+
+status:
+  completed
+
+formal_status_code:
+  candidate_ready_awaiting_manual_review
+
+base_head:
+  af5726f491cc32fb83c49b3c8af0e22fe108eb27
+
+candidate_branch:
+  candidate/validate-canonical-repair-checkout-depth-full-history
+
+root_cause:
+  validate-canonical-repair workflow uses fetch-depth: 2. Merge commit af5726f4 has P2=b463fa8e. cb023b95 (parent of b463fa8e, depth 2) is not fetched. evidence_checker validate_40hex_hash runs git cat-file -t cb023b95 which fails.
+
+fix:
+  Changed fetch-depth: 2 to fetch-depth: 0 in .github/workflows/validate-canonical-repair.yml
+
+workflow_modified_true_or_false:
+  TRUE
+
+workflow_modified_file:
+  .github/workflows/validate-canonical-repair.yml
+
+old_fetch_depth:
+  2
+
+new_fetch_depth:
+  0
+
+validate_round_workflow_modified_true_or_false:
+  FALSE
+
+validator_modified_true_or_false:
+  FALSE
+
+source_files_modified_true_or_false:
+  FALSE
+
+tests_modified_true_or_false:
+  FALSE
+
+manifest_modified_true_or_false:
+  FALSE
+
+evidence_semantics_modified_true_or_false:
+  FALSE
+
+r032_acceptance_started_true_or_false:
+  FALSE
+
+r032_chain_status_updated_true_or_false:
+  FALSE
+
+r033_started_true_or_false:
+  FALSE
+
+r049_started_true_or_false:
+  FALSE
+
+runtime_started_true_or_false:
+  FALSE
+
+broker_api_called_true_or_false:
+  FALSE
+
+order_execution_allowed_true_or_false:
+  FALSE
+
+pre_r049_token_used_only_for_validator_compatibility_true_or_false:
+  TRUE
+
+r049_authorization_implied_by_token_true_or_false:
+  FALSE
+
+remaining_blockers:
+  - Checkout depth fix candidate requires manual review before merge
+  - GitHub Actions actual success unresolved until candidate merged/pushed and CI rechecked
+  - R032 acceptance / chain-status update blocked until CI green
+  - P1 backlog deferred but not completed
+  - R049 remains blocked
+
+recommended_next_action:
+  AWAITING_MANUAL_REVIEW_VALIDATE_CANONICAL_REPAIR_CHECKOUT_DEPTH_FULL_HISTORY_FIX_CANDIDATE
+
+final_recommendation:
+  DO_NOT_START_R049

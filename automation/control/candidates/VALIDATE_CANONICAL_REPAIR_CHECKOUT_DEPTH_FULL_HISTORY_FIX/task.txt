@@ -1,0 +1,19 @@
+Task: Fix validate-canonical-repair checkout depth from fetch-depth: 2 to fetch-depth: 0.
+
+Background:
+- GitHub Actions run 26372122855 for commit af5726f4 failed at Evidence checker step
+- Error: candidate_commit:hash_not_found:not_a_valid_git_object
+- Root cause: .github/workflows/validate-canonical-repair.yml uses fetch-depth: 2
+- Merge commit af5726f4 has parents P1=722ef470 (canonical base) and P2=b463fa8e (candidate head)
+- cb023b95 (parent of b463fa8e, depth 2 from merge commit) is not fetched by shallow clone
+- git cat-file -t cb023b95 fails in CI; evidence_checker validate_40hex_hash fails
+- All validators PASS locally with full git history
+
+Fix:
+- Change fetch-depth: 2 to fetch-depth: 0 in .github/workflows/validate-canonical-repair.yml
+- This ensures ALL commits are fetched, including second-parent ancestors
+- No other changes
+
+No source/tests/manifest/evidence semantic changes.
+No R032 acceptance/chain-status update.
+No R033/R049/runtime/broker/live start.
