@@ -1,9 +1,11 @@
 {
   "round_id": "R033",
   "task": "R033_CANDIDATE_CONSTRUCTION_DECISION_REPLAY_AND_BEFORE_AFTER_COMPARISON",
-  "status": "candidate_ready_awaiting_manual_review",
+  "status": "completed",
   "base_head": "3f9b9fc7fe4817038a2b7ae3712eafb13c571f7e",
   "candidate_branch": "candidate/r033-decision-replay-before-after-comparison",
+  "canonical_branch": "work/canonical-mainline-repair-001",
+  "canonical_head": "c9b1ef49e964b32129f82c638e259a28f0d8e55b",
   "source_files_modified": [
     "modules/decision_prechecklist/replay_trace.py",
     "modules/decision_prechecklist/decision_comparator.py",
@@ -41,6 +43,8 @@
   "positive_tests_count": 0,
   "negative_tests_count": 0,
   "edge_tests_count": 0,
+  "test_count": 208,
+  "tests_passed": 208,
   "total_tests_pass": 208,
   "validators_pass": true,
   "commit_created": false

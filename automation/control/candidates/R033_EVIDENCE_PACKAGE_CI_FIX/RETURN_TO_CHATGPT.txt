@@ -1,0 +1,34 @@
+round_id: R033_EVIDENCE_PACKAGE_CI_FIX
+task_type: r033_evidence_package_ci_fix_candidate
+formal_status_code: candidate_ready_awaiting_manual_review
+base_head: c9b1ef49e964b32129f82c638e259a28f0d8e55b
+candidate_branch: candidate/r033-evidence-package-ci-fix
+
+summary:
+  R033 evidence package CI fix candidate.
+  Fixes validate-canonical-repair #30 failure: report_status_not_completed.
+  Updates report.json status from "candidate_ready_awaiting_manual_review" to "completed".
+  Adds canonical_branch, canonical_head, test_count, tests_passed fields.
+  Creates new fix evidence package documenting the CI fix.
+
+evidence_only: true
+no_source_tests_manifest_workflow_validator_hook_changes: true
+r033_acceptance_not_started: true
+r034_not_started: true
+r049_not_started: true
+runtime_not_started: true
+broker_api_not_called: true
+order_execution_allowed: false
+
+remaining_blockers:
+  - R033 evidence package CI fix candidate requires manual review before merge
+  - GitHub Actions actual success unresolved until fix candidate merged/pushed and CI rechecked
+  - R033 acceptance / chain-status update blocked until CI green
+  - P1 backlog deferred but not completed
+  - R049 remains blocked
+
+recommended_next_action:
+  AWAITING_MANUAL_REVIEW_R033_EVIDENCE_PACKAGE_CI_FIX_CANDIDATE
+
+final_recommendation:
+  DO_NOT_START_R049
