@@ -1,0 +1,11 @@
+{
+  "round_id": "R033",
+  "post_acceptance_limitations": [
+    "mutation / reverse-break tests still recommended before later live-readiness",
+    "end-to-end replay integration audit still pending",
+    "durable persistence implementation still future / partial unless separately proven",
+    "Market Reality engine remains placeholder contract, not full engine",
+    "replay output must not become execution signal",
+    "this is governance acceptance record, not R034 start, not R049 authorization"
+  ]
+}

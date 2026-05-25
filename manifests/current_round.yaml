@@ -65,7 +65,7 @@ direct_fail_conditions:
 risk_level: "green"
 owner: "you"
 start_authorized: true
-notes: "State normalization round. True functional round progress reconciliation: R020-R029 all completed on remote canonical (verified by git history). last_completed_round updated from R019 to R029. next_round_to_dispatch updated from R020 to R030. GOV-INT-003 intervention completed and chain unfreeze preserved. R030 dispatched, merged, and accepted as DETERMINISTIC_CONTRACT_ONLY_NOT_RUNTIME_WIRED. last_completed_round updated to R030. next_round_to_dispatch updated to R031. R031 dispatch authorized; runtime wiring pending future round. R031 (信心來源拆解 / ConfidenceSourceDecomposer) completed: candidate 270c6ce merged as fb28a15, pushed to origin, GitHub Actions validate-canonical-repair #22 + validate-round #240 both SUCCESS. last_completed_round updated to R031. next_round_to_dispatch updated to R032. chain_status updated to r031_accepted_ready_for_r032_readiness_or_scope_audit. R032 (交易日誌可追責鏈 / AuditTrailChain) completed: source candidate a77b94b merged as 722ef470, status completion + hash fix merged as af5726f4, checkout depth fix merged as 6fbb25e3. GitHub Actions validate-canonical-repair #28 + validate-round #246 both SUCCESS. last_completed_round updated to R032. next_round_to_dispatch updated to R033. chain_status updated to r032_accepted_ready_for_r033_readiness_or_scope_audit. R049 still blocked (no manifest, no dispatch path). P1 backlog deferred but not completed."
+notes: "State normalization round. True functional round progress reconciliation: R020-R029 all completed on remote canonical (verified by git history). last_completed_round updated from R019 to R029. next_round_to_dispatch updated from R020 to R030. GOV-INT-003 intervention completed and chain unfreeze preserved. R030 dispatched, merged, and accepted as DETERMINISTIC_CONTRACT_ONLY_NOT_RUNTIME_WIRED. last_completed_round updated to R030. next_round_to_dispatch updated to R031. R031 dispatch authorized; runtime wiring pending future round. R031 (信心來源拆解 / ConfidenceSourceDecomposer) completed: candidate 270c6ce merged as fb28a15, pushed to origin, GitHub Actions validate-canonical-repair #22 + validate-round #240 both SUCCESS. last_completed_round updated to R031. next_round_to_dispatch updated to R032. chain_status updated to r031_accepted_ready_for_r032_readiness_or_scope_audit. R032 (交易日誌可追責鏈 / AuditTrailChain) completed: source candidate a77b94b merged as 722ef470, status completion + hash fix merged as af5726f4, checkout depth fix merged as 6fbb25e3. GitHub Actions validate-canonical-repair #28 + validate-round #246 both SUCCESS. last_completed_round updated to R032. next_round_to_dispatch updated to R033. chain_status updated to r032_accepted_ready_for_r033_readiness_or_scope_audit. R033 (交易回放與決策前後對照 / DecisionReplayAndBeforeAfterComparison) completed: source candidate 48db4a1 merged as c9b1ef4, evidence CI fix candidate 540fe84 merged as 87d57a1. GitHub Actions validate-canonical-repair #31 + validate-round #249 both SUCCESS. last_completed_round updated to R033. next_round_to_dispatch updated to R034. chain_status updated to r033_accepted_ready_for_r034_readiness_or_scope_audit. R049 still blocked (no manifest, no dispatch path). P1 backlog deferred but not completed."
 containment_status: "PHASE2_ENTRY_AUTHORIZED_AUTO_MODE_AUTHORIZED"
 auto_run: false
 desired_action: null
@@ -80,12 +80,12 @@ fail_closed_guards:
   validate_evidence_real_changes: true
 guard_status: "ACTIVE"
 phase: "Phase 2"
-last_completed_round: "R032"
-last_completed_topic: "交易日誌可追責鏈"
-last_completed_commit: "6fbb25e3a98f7ac8a5c8169150ef94e9fdfb9d8a"
+last_completed_round: "R033"
+last_completed_topic: "交易回放與決策前後對照"
+last_completed_commit: "87d57a1ae00936cf1395a693e106974954376fda"
 current_round: "NONE"
-next_round_to_dispatch: "R033"
-chain_status: "r032_accepted_ready_for_r033_readiness_or_scope_audit"
+next_round_to_dispatch: "R034"
+chain_status: "r033_accepted_ready_for_r034_readiness_or_scope_audit"
 backlog:
   r018:
     branch: "work/candidate-r018-schema-migration"
@@ -167,5 +167,27 @@ backlog:
         conclusion: success
       validate_round:
         run_id: 26390165346
+        status: completed
+        conclusion: success
+  r033:
+    type: "functional_round"
+    description: "R033 交易回放與決策前後對照 / DecisionReplayAndBeforeAfterComparison"
+    branch: "candidate/r033-decision-replay-before-after-comparison"
+    candidate_commit: "48db4a14e549d0e0af7341eb09185f63b7d642d8"
+    merged_at_commit: "c9b1ef49e964b32129f82c638e259a28f0d8e55b"
+    evidence_complete: true
+    tests_pass: true
+    validators_pass: true
+    merge_review_status: "merged"
+    pushed_to_remote: true
+    evidence_ci_fix_candidate_commit: "540fe84083134a11d37e728cf2d00edf23c051ac"
+    evidence_ci_fix_merge_commit: "87d57a1ae00936cf1395a693e106974954376fda"
+    github_actions:
+      validate_canonical_repair:
+        run_id: 26418250041
+        status: completed
+        conclusion: success
+      validate_round:
+        run_id: 26418250038
         status: completed
         conclusion: success

@@ -1,0 +1,16 @@
+{
+  "review_type": "safety_boundary",
+  "round_id": "R033",
+  "no_source_changes": true,
+  "no_test_changes": true,
+  "no_workflow_changes": true,
+  "no_validator_changes": true,
+  "no_hook_changes": true,
+  "no_runtime_started": true,
+  "no_broker_api_called": true,
+  "no_live_order_wiring": true,
+  "order_execution_allowed": false,
+  "r034_not_started": true,
+  "r049_remains_blocked": true,
+  "r033_content_unchanged_by_this_candidate": true
+}
