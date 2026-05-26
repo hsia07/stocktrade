@@ -1,7 +1,7 @@
 === RETURN_TO_CHATGPT: C392D234_GOVERNANCE_COMPAT_FIX MANUAL REVIEW REPORT ===
 
-status:
-  COMPLETED_READ_ONLY_MANUAL_REVIEW_CANDIDATE_READY_FOR_MERGE_SIGNOFF
+formal_status_code:
+  MANUAL_REVIEW_PASS_AWAITING_MERGE_SIGNOFF
 
 candidate_id:
   C392D234_GOVERNANCE_COMPAT_FIX
@@ -193,7 +193,7 @@ manual_review_summary:
   F. Safety: order_execution_allowed remains FALSE. No R033 final confirmation, no R034, no R049, no runtime, no broker, no live.
   G. Evidence: Complete with all required files.
 
-recommended_next_action:
+recommendation:
   LOCAL_NO_FF_MERGE_TO_CANONICAL — proceed with:
   git checkout work/canonical-mainline-repair-001
   git merge --no-ff candidate/c392d234-governance-compat-fix -m "C392D234_GOVERNANCE_COMPAT_FIX — local no-ff merge forward governance record; not R049 authorization; no R033 final confirmation; no R034 construction; no runtime; no broker; no live; order_execution_allowed remains FALSE"
