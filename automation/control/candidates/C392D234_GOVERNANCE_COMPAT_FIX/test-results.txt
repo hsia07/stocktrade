@@ -1,0 +1,17 @@
+=== TEST RESULTS ===
+Command: pytest tests/test_replay_isolation.py tests/test_decision_comparator.py tests/test_r033_replay_live_write_guard.py tests/test_audit_trail.py tests/test_traceability_chain.py -v --tb=short
+Result: 208 passed, 2 warnings in 1.94s
+
+=== VALIDATORS ===
+check_branch_workflow: PASS
+check_forbidden_changes: PASS
+check_required_evidence: PASS
+check_commit_message: PASS (candidate branch)
+validate_canonical_repair_evidence: (skipped — not on canonical)
+evidence_checker: (skipped — not on canonical)
+pre-push hook: (skipped — no push yet)
+
+=== GIT STATUS ===
+On branch candidate/c392d234-governance-compat-fix
+Commit: 338adf9c83abca8c2ea6a220af38aee46c829504
+Clean: TRUE
