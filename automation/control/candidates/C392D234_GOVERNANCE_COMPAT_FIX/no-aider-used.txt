@@ -1,0 +1,1 @@
+No aider was used in this candidate round. All changes made by direct CLI and file editing. Verified: no .aider files, no aider-related artifacts.

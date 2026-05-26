@@ -1,0 +1,23 @@
+=== TASK DESCRIPTION ===
+task_id: C392D234_GOVERNANCE_COMPAT_FIX
+task_type: c392d234_merge_message_governance_compatibility_fix_candidate
+phase: Phase 2
+law_compliance: 04
+severity: governance
+
+=== PROBLEM STATEMENT ===
+Merge commit c392d234 (R033_POST_PUSH_ACCEPTANCE_AND_CHAIN_STATUS_UPDATE)
+was created with --no-edit, producing an auto-generated message:
+"Merge commit '0444bbb' into work/canonical-mainline-repair-001"
+This message lacks the required PRE_R049 token and safety disclaimers,
+constituting a governance noncompliance.
+
+=== SOLUTION ===
+Record the noncompliance in a governance document and update manifest notes.
+This is a forward-looking governance record only — no amendment, no force push,
+no waiver of the noncompliance.
+
+=== FILES ===
+- automation/control/governance/c392d234-noncompliance-record.json (NEW)
+- manifests/current_round.yaml (notes field update)
+- automation/control/candidates/C392D234_GOVERNANCE_COMPAT_FIX/* (evidence)
