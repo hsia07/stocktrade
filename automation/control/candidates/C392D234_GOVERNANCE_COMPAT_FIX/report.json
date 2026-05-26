@@ -6,6 +6,8 @@
   "candidate_branch": "candidate/c392d234-governance-compat-fix",
   "canonical_branch": "work/canonical-mainline-repair-001",
   "canonical_head": "03f965b5847da47f301bcbd5c92bdf74e20dab96",
+  "candidate_head": "5f35a6eb7b5f1036f48799faffa9b972a2fd5ad9",
+  "commit_count": 3,
   "governance_document_added": true,
   "manifest_notes_updated": true,
   "workflow_modified": false,
