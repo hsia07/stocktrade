@@ -1,0 +1,10 @@
+{
+  "round_id": "R033_VALIDATE_ROUND_FETCH_DEPTH_FIX",
+  "prevention_notes": [
+    "validate-round and validate-canonical-repair should use consistent checkout depth (fetch-depth: 0) for merge-commit-aware validation",
+    "no-ff merge commit messages must still include required token and safety disclaimers in all future merges",
+    "future merge instructions must not use --no-edit when required token is mandatory",
+    "CI infrastructure (workflow checkout depth) and governance (merge message compliance) are independent concerns — fixing one does not resolve the other",
+    "validate-round should match validate-canonical-repair checkout behavior since both run merge-commit-aware validators"
+  ]
+}
