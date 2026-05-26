@@ -1,0 +1,9 @@
+{
+  "law_compliance": "04",
+  "round_id": "C392D234_GOVERNANCE_COMPAT_FIX",
+  "prevention_topic": "c392d234 merge-message governance noncompatibility forward record",
+  "issue": "Merge commit c392d234 was created with --no-edit producing auto-generated message without required token and safety disclaimers",
+  "prevention": "All future local no-ff merges MUST use explicit -m with: (1) current manifest required token, (2) 'not R049 authorization', (3) 'no R033 final confirmation' (or current R-stage equivalent), (4) 'no R034 construction' (or current R-stage equivalent), (5) 'no runtime', (6) 'no broker', (7) 'no live', (8) 'order_execution_allowed remains FALSE'. --no-edit is prohibited for governance-significant merges.",
+  "applicable_rounds": ["ALL_FUTURE"],
+  "severity": "governance"
+}

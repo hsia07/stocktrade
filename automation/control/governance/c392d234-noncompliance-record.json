@@ -1,0 +1,14 @@
+{
+  "law_compliance": "04",
+  "record_type": "merge_message_governance_noncompliance",
+  "commit": "c392d2341b744b539c8bfc43c6e09b905d513480",
+  "issue": "merge commit created with --no-edit; auto-generated message lacks required PRE_R049 token and safety disclaimers",
+  "root_cause": "procedural error during local no-ff merge: git merge --no-ff --no-edit was used instead of explicit -m with required token (R033_POST_PUSH_ACCEPTANCE_AND_CHAIN_STATUS_UPDATE round)",
+  "impact": "check_commit_message.py would flag this commit's message as noncompliant if scanned as a non-merge commit; however CI skips merge-commit message validation (check_commit_message.py lines 64-66). The noncompliance has no functional CI impact.",
+  "status": "tracked",
+  "waived": false,
+  "remediation_required": "none — CI skips merge-commit message validation; noncompliance is recorded for governance audit purposes only. No amend, no force push, no waiver applied.",
+  "recorded_in_manifest": true,
+  "round_id": "C392D234_GOVERNANCE_COMPAT_FIX",
+  "date": "2026-05-27"
+}

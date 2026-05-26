@@ -1,0 +1,208 @@
+=== RETURN_TO_CHATGPT: C392D234_GOVERNANCE_COMPAT_FIX MANUAL REVIEW REPORT ===
+
+status:
+  COMPLETED_READ_ONLY_MANUAL_REVIEW_CANDIDATE_READY_FOR_MERGE_SIGNOFF
+
+candidate_id:
+  C392D234_GOVERNANCE_COMPAT_FIX
+
+candidate_branch:
+  candidate/c392d234-governance-compat-fix
+
+candidate_head:
+  977d9520f31d838ba77b66c3362e2d147fae26b1
+
+base_head:
+  03f965b5847da47f301bcbd5c92bdf74e20dab96
+
+canonical_branch:
+  work/canonical-mainline-repair-001
+
+canonical_head_before_merge:
+  03f965b5847da47f301bcbd5c92bdf74e20dab96
+
+commits_on_candidate:
+  - 338adf9: "C392D234_GOVERNANCE_COMPAT_FIX — c392d234 merge-message governance noncompatibility forward record; not R049 authorization; no R033 final confirmation; no R034 construction; no runtime; no broker; no live; order_execution_allowed remains FALSE"
+  - 977d952: "C392D234_GOVERNANCE_COMPAT_FIX — evidence package (candidate.diff, report.json, prevention-notes.json, test-results.txt)"
+
+total_commits:
+  2
+
+files_changed:
+  9 total (8 added, 1 modified)
+
+added_files:
+  - automation/control/governance/c392d234-noncompliance-record.json (governance record)
+  - automation/control/candidates/C392D234_GOVERNANCE_COMPAT_FIX/evidence.json
+  - automation/control/candidates/C392D234_GOVERNANCE_COMPAT_FIX/task.txt
+  - automation/control/candidates/C392D234_GOVERNANCE_COMPAT_FIX/no-aider-used.txt
+  - automation/control/candidates/C392D234_GOVERNANCE_COMPAT_FIX/candidate.diff
+  - automation/control/candidates/C392D234_GOVERNANCE_COMPAT_FIX/report.json
+  - automation/control/candidates/C392D234_GOVERNANCE_COMPAT_FIX/prevention-notes.json
+  - automation/control/candidates/C392D234_GOVERNANCE_COMPAT_FIX/test-results.txt
+
+modified_files:
+  - manifests/current_round.yaml (notes field only — appended C392D234_GOVERNANCE_COMPAT_FIX noncompliance record)
+
+governance_document_content_automation_control_governance_c392d234_noncompliance_record_json:
+  {
+    "law_compliance": "04",
+    "record_type": "merge_message_governance_noncompliance",
+    "commit": "c392d2341b744b539c8bfc43c6e09b905d513480",
+    "issue": "merge commit created with --no-edit; auto-generated message lacks required PRE_R049 token and safety disclaimers",
+    "root_cause": "procedural error during local no-ff merge: git merge --no-ff --no-edit was used instead of explicit -m with required token",
+    "impact": "CI skips merge-commit message validation; noncompliance has no functional CI impact",
+    "status": "tracked",
+    "waived": false,
+    "remediation_required": "none — recorded for governance audit purposes only. No amend, no force push, no waiver applied.",
+    "recorded_in_manifest": true,
+    "round_id": "C392D234_GOVERNANCE_COMPAT_FIX",
+    "date": "2026-05-27"
+  }
+
+manifest_notes_change:
+  Appended: "C392D234_GOVERNANCE_COMPAT_FIX: merge-commit message governance noncompliance recorded. Merge commit c392d234 created with --no-edit, auto-generated message lacks required PRE_R049 token and safety disclaimers. Noncompliance tracked in automation/control/governance/c392d234-noncompliance-record.json. Not waived. Forward record only — no amend, no force push, no waiver applied. order_execution_allowed remains FALSE."
+
+workflow_modified:
+  FALSE
+
+source_files_modified:
+  FALSE
+
+tests_modified:
+  FALSE
+
+validator_modified:
+  FALSE
+
+pre_push_hook_modified:
+  FALSE
+
+manifest_forbidden_paths_modified:
+  FALSE
+
+manifest_allowed_paths_modified:
+  FALSE
+
+manifest_authorized_exceptions_modified:
+  FALSE
+
+manifest_required_evidence_modified:
+  FALSE
+
+manifest_required_checks_modified:
+  FALSE
+
+manifest_last_completed_round_modified:
+  FALSE
+
+manifest_next_round_to_dispatch_modified:
+  FALSE
+
+manifest_chain_status_modified:
+  FALSE
+
+manifest_backlog_modified:
+  FALSE
+
+git_status_clean:
+  TRUE
+
+tests_run:
+  208
+
+tests_passed:
+  208
+
+test_file_count:
+  5
+
+test_files:
+  - tests/test_replay_isolation.py (53)
+  - tests/test_decision_comparator.py (26)
+  - tests/test_r033_replay_live_write_guard.py (84)
+  - tests/test_audit_trail.py (29)
+  - tests/test_traceability_chain.py (16)
+
+validators_run:
+  4-of-4 applicable
+
+validator_results:
+  check_branch_workflow: PASS
+  check_forbidden_changes: PASS
+  check_commit_message: PASS (no commit message to check — candidate branch)
+  check_required_evidence: PASS
+
+evidence_checker_path_exists:
+  FALSE (not yet present in repository — evidence_checker.py not found at scripts/validation/)
+
+validate_canonical_repair_evidence:
+  NOT_APPLICABLE (not on canonical branch)
+
+r033_final_status_confirmation_started:
+  FALSE
+
+r034_started:
+  FALSE
+
+r049_started:
+  FALSE
+
+runtime_started:
+  FALSE
+
+broker_api_called:
+  FALSE
+
+order_execution_allowed:
+  FALSE
+
+secret_values_exposed:
+  FALSE
+
+lockdown_active:
+  TRUE
+
+safety_flags_active:
+  - R033 final confirmation: FALSE
+  - R034: FALSE
+  - R049: FALSE
+  - runtime: FALSE
+  - broker: FALSE
+  - order_execution: FALSE
+
+evidence_package_complete:
+  TRUE
+
+evidence_files:
+  - evidence.json (present, law_compliance: "04")
+  - task.txt (present)
+  - no-aider-used.txt (present)
+  - candidate.diff (present, generated from candidate HEAD^..HEAD)
+  - report.json (present, status: "completed")
+  - prevention-notes.json (present)
+  - test-results.txt (present)
+  - RETURN_TO_CHATGPT.txt (present — this file)
+
+manual_review_summary:
+  A. Purpose: Record c392d234 merge-message governance noncompliance in a forward governance document + manifest notes update. Not a waiver. Not an amendment. Not a force push.
+  B. What changed: Only the manifest notes field was modified (1 line changed). All other changes are NEW files under automation/control/governance/ and automation/control/candidates/ — both in allowed_paths.
+  C. What did NOT change: No workflows, no source code, no validators, no tests, no pre-push hook, no forbidden paths, no manifest structural fields (last_completed_round, next_round_to_dispatch, chain_status, backlog, authorized_exceptions, required_evidence, required_checks, allowed_paths, forbidden_paths, containment_status, phase, guard_status).
+  D. Tests: 208/208 PASS (1.94s), no regressions.
+  E. Validators: All applicable PASS.
+  F. Safety: order_execution_allowed remains FALSE. No R033 final confirmation, no R034, no R049, no runtime, no broker, no live.
+  G. Evidence: Complete with all required files.
+
+recommended_next_action:
+  LOCAL_NO_FF_MERGE_TO_CANONICAL — proceed with:
+  git checkout work/canonical-mainline-repair-001
+  git merge --no-ff candidate/c392d234-governance-compat-fix -m "C392D234_GOVERNANCE_COMPAT_FIX — local no-ff merge forward governance record; not R049 authorization; no R033 final confirmation; no R034 construction; no runtime; no broker; no live; order_execution_allowed remains FALSE"
+  Followed by: 208 tests + all validators + pre-push hook + push + reconciliation
+
+critical_reminders:
+  - Do NOT start R033 final confirmation
+  - Do NOT start R034
+  - Do NOT start R049
+  - Do NOT start runtime/broker/live
+  - order_execution_allowed remains FALSE
+  - c392d234 noncompliance is RECORDED, not WAIVED
