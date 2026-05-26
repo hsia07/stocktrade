@@ -1,0 +1,21 @@
+=== TASK DESCRIPTION ===
+task_id: R033_VALIDATE_ROUND_FETCH_DEPTH_FIX
+task_type: r033_validate_round_fetch_depth_fix_candidate
+phase: Phase 2
+law_compliance: 04
+severity: infrastructure
+
+=== PROBLEM STATEMENT ===
+validate-round #250 FAILED on c392d234 with "Process completed with exit code 1".
+Root cause: actions/checkout@v4 default fetch-depth=1 (shallow clone) causes
+check_commit_message.py to fail merge-commit detection on no-ff merge commits.
+validate-canonical-repair #32 succeeded on the same commit because it uses fetch-depth: 0.
+
+=== SOLUTION ===
+Add fetch-depth: 0 to .github/workflows/validate-round.yml checkout step.
+This is the minimal CI infrastructure fix — no Python validators, tests, or
+manifest changes needed.
+
+=== FILES ===
+- .github/workflows/validate-round.yml (workflow checkout depth fix)
+- automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/* (evidence)

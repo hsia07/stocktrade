@@ -1,0 +1,20 @@
+{
+  "round_id": "R033_VALIDATE_ROUND_FETCH_DEPTH_FIX",
+  "ci_failure_workflow": "validate-round #250",
+  "ci_failure_conclusion": "failure",
+  "ci_failure_step": "Validate round",
+  "ci_failure_exit_code": 1,
+  "ci_failure_error_message": "Process completed with exit code 1 (exact log not accessible without auth)",
+  "ci_success_workflow": "validate-canonical-repair #32",
+  "ci_success_conclusion": "success",
+  "ci_success_checkout_depth": "fetch-depth: 0 (full clone)",
+  "root_cause": "validate-round workflow uses actions/checkout@v4 with default fetch-depth=1 (shallow clone). In a shallow clone of a no-ff merge commit, git rev-list --parents -n 1 HEAD (called by check_commit_message.py:is_merge_commit()) may behave differently than in a full clone. The script may not recognize the merge commit, fall through to the round_id-in-message check, and FAIL because the auto-generated merge message does not contain the PRE_R049 required token. validate-canonical-repair workflow uses fetch-depth: 0 (full clone) and succeeds on the same commit because git commands have full history available.",
+  "local_reproduction_result": "All 4 CI sub-scripts (validate_round, check_forbidden_changes, check_required_evidence, check_commit_message) PASS locally with full clone.",
+  "local_checkout_depth": "full history (local clone has complete git history)",
+  "fix_is_infrastructure_only": true,
+  "fix_does_not_alter_functional_source": true,
+  "fix_does_not_resolve_r033_final_confirmation": true,
+  "fix_does_not_resolve_merge_message_governance_noncompliance": true,
+  "c392d234_merge_message_noncompliance_still_tracked": true,
+  "noncompliance_issue": "Merge commit c392d234 has auto-generated message 'Merge commit 0444bbb into work/canonical-mainline-repair-001' lacking required PRE_R049 token and safety disclaimers. Not resolved by this fetch-depth fix."
+}

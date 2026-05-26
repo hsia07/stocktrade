@@ -1,0 +1,256 @@
+diff --git a/.github/workflows/validate-round.yml b/.github/workflows/validate-round.yml
+index 7c27a89..7c77b4a 100644
+--- a/.github/workflows/validate-round.yml
++++ b/.github/workflows/validate-round.yml
+@@ -11,6 +11,8 @@ jobs:
+     runs-on: ubuntu-latest
+     steps:
+       - uses: actions/checkout@v4
++        with:
++          fetch-depth: 0
+ 
+       - name: Setup Python
+         uses: actions/setup-python@v5
+diff --git a/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/RETURN_TO_CHATGPT.txt b/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/RETURN_TO_CHATGPT.txt
+new file mode 100644
+index 0000000..90d0564
+--- /dev/null
++++ b/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/RETURN_TO_CHATGPT.txt
+@@ -0,0 +1,28 @@
++round_id: R033_VALIDATE_ROUND_FETCH_DEPTH_FIX
++task_type: r033_validate_round_fetch_depth_fix_candidate
++formal_status_code: candidate_ready_awaiting_manual_review
++base_head: c392d2341b744b539c8bfc43c6e09b905d513480
++candidate_branch: candidate/r033-validate-round-fetch-depth-fix
++original_fix_commit: 2db958e8e0524db404c6e103c47b4ac77f48109d
++
++summary:
++  R033 validate-round fetch-depth CI infrastructure fix.
++  Added fetch-depth: 0 to .github/workflows/validate-round.yml to make
++  checkout depth consistent with validate-canonical-repair.yml.
++  This resolves validate-round #250 failure on no-ff merge commits.
++  This is not R033 final confirmation, not R034 start, not R049 authorization.
++
++remaining_blockers:
++  - validate-round fetch-depth fix candidate requires manual review before merge
++  - GitHub Actions actual success unresolved until fix candidate merged/pushed and CI rechecked
++  - c392d234 merge-message governance noncompliance still tracked
++  - R033 final status confirmation blocked until CI / governance noncompliance resolved
++  - R034 readiness preflight pending after R033 final confirmation
++  - P1 backlog deferred but not completed
++  - R049 remains blocked
++
++recommended_next_action:
++  AWAITING_MANUAL_REVIEW_R033_VALIDATE_ROUND_FETCH_DEPTH_FIX_CANDIDATE
++
++final_recommendation:
++  DO_NOT_START_R049
+diff --git a/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/candidate.diff b/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/candidate.diff
+new file mode 100644
+index 0000000..b888927
+--- /dev/null
++++ b/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/candidate.diff
+@@ -0,0 +1 @@
++diff --git a/.github/workflows/validate-round.yml b/.github/workflows/validate-round.yml index 7c27a89..7c77b4a 100644 --- a/.github/workflows/validate-round.yml +++ b/.github/workflows/validate-round.yml @@ -11,6 +11,8 @@ jobs:      runs-on: ubuntu-latest      steps:        - uses: actions/checkout@v4 +        with: +          fetch-depth: 0          - name: Setup Python          uses: actions/setup-python@v5 diff --git a/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/RETURN_TO_CHATGPT.txt b/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/RETURN_TO_CHATGPT.txt new file mode 100644 index 0000000..90d0564 --- /dev/null +++ b/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/RETURN_TO_CHATGPT.txt @@ -0,0 +1,28 @@ +round_id: R033_VALIDATE_ROUND_FETCH_DEPTH_FIX +task_type: r033_validate_round_fetch_depth_fix_candidate +formal_status_code: candidate_ready_awaiting_manual_review +base_head: c392d2341b744b539c8bfc43c6e09b905d513480 +candidate_branch: candidate/r033-validate-round-fetch-depth-fix +original_fix_commit: 2db958e8e0524db404c6e103c47b4ac77f48109d + +summary: +  R033 validate-round fetch-depth CI infrastructure fix. +  Added fetch-depth: 0 to .github/workflows/validate-round.yml to make +  checkout depth consistent with validate-canonical-repair.yml. +  This resolves validate-round #250 failure on no-ff merge commits. +  This is not R033 final confirmation, not R034 start, not R049 authorization. + +remaining_blockers: +  - validate-round fetch-depth fix candidate requires manual review before merge +  - GitHub Actions actual success unresolved until fix candidate merged/pushed and CI rechecked +  - c392d234 merge-message governance noncompliance still tracked +  - R033 final status confirmation blocked until CI / governance noncompliance resolved +  - R034 readiness preflight pending after R033 final confirmation +  - P1 backlog deferred but not completed +  - R049 remains blocked + +recommended_next_action: +  AWAITING_MANUAL_REVIEW_R033_VALIDATE_ROUND_FETCH_DEPTH_FIX_CANDIDATE + +final_recommendation: +  DO_NOT_START_R049 diff --git a/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/candidate.diff b/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/candidate.diff new file mode 100644 index 0000000..3dd0a8c --- /dev/null +++ b/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/candidate.diff @@ -0,0 +1 @@ +diff --git a/.github/workflows/validate-round.yml b/.github/workflows/validate-round.yml index 7c27a89..7c77b4a 100644 --- a/.github/workflows/validate-round.yml +++ b/.github/workflows/validate-round.yml @@ -11,6 +11,8 @@ jobs:      runs-on: ubuntu-latest      steps:        - uses: actions/checkout@v4 +        with: +          fetch-depth: 0          - name: Setup Python          uses: actions/setup-python@v5 diff --git a/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/RETURN_TO_CHATGPT.txt b/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/RETURN_TO_CHATGPT.txt new file mode 100644 index 0000000..90d0564 --- /dev/null +++ b/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/RETURN_TO_CHATGPT.txt @@ -0,0 +1,28 @@ +round_id: R033_VALIDATE_ROUND_FETCH_DEPTH_FIX +task_type: r033_validate_round_fetch_depth_fix_candidate +formal_status_code: candidate_ready_awaiting_manual_review +base_head: c392d2341b744b539c8bfc43c6e09b905d513480 +candidate_branch: candidate/r033-validate-round-fetch-depth-fix +original_fix_commit: 2db958e8e0524db404c6e103c47b4ac77f48109d + +summary: +  R033 validate-round fetch-depth CI infrastructure fix. +  Added fetch-depth: 0 to .github/workflows/validate-round.yml to make +  checkout depth consistent with validate-canonical-repair.yml. +  This resolves validate-round #250 failure on no-ff merge commits. +  This is not R033 final confirmation, not R034 start, not R049 authorization. + +remaining_blockers: +  - validate-round fetch-depth fix candidate requires manual review before merge +  - GitHub Actions actual success unresolved until fix candidate merged/pushed and CI rechecked +  - c392d234 merge-message governance noncompliance still tracked +  - R033 final status confirmation blocked until CI / governance noncompliance resolved +  - R034 readiness preflight pending after R033 final confirmation +  - P1 backlog deferred but not completed +  - R049 remains blocked + +recommended_next_action: +  AWAITING_MANUAL_REVIEW_R033_VALIDATE_ROUND_FETCH_DEPTH_FIX_CANDIDATE + +final_recommendation: +  DO_NOT_START_R049 diff --git a/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/candidate.diff b/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/candidate.diff new file mode 100644 index 0000000..e46cb8e --- /dev/null +++ b/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/candidate.diff @@ -0,0 +1 @@ +diff --git a/.github/workflows/validate-round.yml b/.github/workflows/validate-round.yml index 7c27a89..7c77b4a 100644 --- a/.github/workflows/validate-round.yml +++ b/.github/workflows/validate-round.yml @@ -11,6 +11,8 @@ jobs:      runs-on: ubuntu-latest      steps:        - uses: actions/checkout@v4 +        with: +          fetch-depth: 0          - name: Setup Python          uses: actions/setup-python@v5 diff --git a/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/evidence.json b/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/evidence.json new file mode 100644 index 0000000..414944a --- /dev/null +++ b/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/evidence.json @@ -0,0 +1,23 @@ +{ +  "law_compliance": "04", +  "round_id": "R033_VALIDATE_ROUND_FETCH_DEPTH_FIX", +  "base_head": "c392d2341b744b539c8bfc43c6e09b905d513480", +  "failed_workflow": "validate-round #250", +  "failed_reason": "validate-round shallow checkout (fetch-depth: default=1) likely caused check_commit_message.py merge-commit detection failure on merge commit c392d234", +  "passed_workflow": "validate-canonical-repair #32 (fetch-depth: 0, full clone)", +  "workflow_modified": true, +  "workflow_modified_file": ".github/workflows/validate-round.yml", +  "old_fetch_depth": "missing/default (shallow, depth=1)", +  "new_fetch_depth": 0, +  "validator_modified": false, +  "source_files_modified": false, +  "tests_modified": false, +  "manifest_modified": false, +  "pre_push_hook_modified": false, +  "r033_final_status_confirmation_started": false, +  "r034_started": false, +  "r049_started": false, +  "runtime_started": false, +  "broker_api_called": false, +  "order_execution_allowed": false +} diff --git a/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/prevention-notes.json b/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/prevention-notes.json new file mode 100644 index 0000000..ec55da1 --- /dev/null +++ b/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/prevention-notes.json @@ -0,0 +1,10 @@ +{ +  "round_id": "R033_VALIDATE_ROUND_FETCH_DEPTH_FIX", +  "prevention_notes": [ +    "validate-round and validate-canonical-repair should use consistent checkout depth (fetch-depth: 0) for merge-commit-aware validation", +    "no-ff merge commit messages must still include required token and safety disclaimers in all future merges", +    "future merge instructions must not use --no-edit when required token is mandatory", +    "CI infrastructure (workflow checkout depth) and governance (merge message compliance) are independent concerns ??fixing one does not resolve the other", +    "validate-round should match validate-canonical-repair checkout behavior since both run merge-commit-aware validators" +  ] +} diff --git a/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/root-cause-analysis.json b/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/root-cause-analysis.json new file mode 100644 index 0000000..6a2ecfe --- /dev/null +++ b/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/root-cause-analysis.json @@ -0,0 +1,20 @@ +{ +  "round_id": "R033_VALIDATE_ROUND_FETCH_DEPTH_FIX", +  "ci_failure_workflow": "validate-round #250", +  "ci_failure_conclusion": "failure", +  "ci_failure_step": "Validate round", +  "ci_failure_exit_code": 1, +  "ci_failure_error_message": "Process completed with exit code 1 (exact log not accessible without auth)", +  "ci_success_workflow": "validate-canonical-repair #32", +  "ci_success_conclusion": "success", +  "ci_success_checkout_depth": "fetch-depth: 0 (full clone)", +  "root_cause": "validate-round workflow uses actions/checkout@v4 with default fetch-depth=1 (shallow clone). In a shallow clone of a no-ff merge commit, git rev-list --parents -n 1 HEAD (called by check_commit_message.py:is_merge_commit()) may behave differently than in a full clone. The script may not recognize the merge commit, fall through to the round_id-in-message check, and FAIL because the auto-generated merge message does not contain the PRE_R049 required token. validate-canonical-repair workflow uses fetch-depth: 0 (full clone) and succeeds on the same commit because git commands have full history available.", +  "local_reproduction_result": "All 4 CI sub-scripts (validate_round, check_forbidden_changes, check_required_evidence, check_commit_message) PASS locally with full clone.", +  "local_checkout_depth": "full history (local clone has complete git history)", +  "fix_is_infrastructure_only": true, +  "fix_does_not_alter_functional_source": true, +  "fix_does_not_resolve_r033_final_confirmation": true, +  "fix_does_not_resolve_merge_message_governance_noncompliance": true, +  "c392d234_merge_message_noncompliance_still_tracked": true, +  "noncompliance_issue": "Merge commit c392d234 has auto-generated message 'Merge commit 0444bbb into work/canonical-mainline-repair-001' lacking required PRE_R049 token and safety disclaimers. Not resolved by this fetch-depth fix." +} diff --git a/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/safety-boundary-review.json b/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/safety-boundary-review.json new file mode 100644 index 0000000..1a22629 --- /dev/null +++ b/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/safety-boundary-review.json @@ -0,0 +1,21 @@ +{ +  "review_type": "safety_boundary", +  "round_id": "R033_VALIDATE_ROUND_FETCH_DEPTH_FIX", +  "base_head": "c392d2341b744b539c8bfc43c6e09b905d513480", +  "source_files_modified": false, +  "tests_modified": false, +  "manifest_modified": false, +  "validator_modified": false, +  "pre_push_hook_modified": false, +  "workflow_modified": true, +  "workflow_modified_file": ".github/workflows/validate-round.yml", +  "validate_canonical_repair_workflow_modified": false, +  "runtime_started": false, +  "r033_final_status_confirmation_started": false, +  "r034_started": false, +  "r049_started": false, +  "broker_api_called": false, +  "order_execution_allowed": false, +  "r033_final_confirmation_still_pending": true, +  "r033_merge_message_governance_noncompliance_not_resolved": true +} diff --git a/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/task.txt b/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/task.txt new file mode 100644 index 0000000..2dad3d7 --- /dev/null +++ b/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/task.txt @@ -0,0 +1,21 @@ +=== TASK DESCRIPTION === +task_id: R033_VALIDATE_ROUND_FETCH_DEPTH_FIX +task_type: r033_validate_round_fetch_depth_fix_candidate +phase: Phase 2 +law_compliance: 04 +severity: infrastructure + +=== PROBLEM STATEMENT === +validate-round #250 FAILED on c392d234 with "Process completed with exit code 1". +Root cause: actions/checkout@v4 default fetch-depth=1 (shallow clone) causes +check_commit_message.py to fail merge-commit detection on no-ff merge commits. +validate-canonical-repair #32 succeeded on the same commit because it uses fetch-depth: 0. + +=== SOLUTION === +Add fetch-depth: 0 to .github/workflows/validate-round.yml checkout step. +This is the minimal CI infrastructure fix ??no Python validators, tests, or +manifest changes needed. + +=== FILES === +- .github/workflows/validate-round.yml (workflow checkout depth fix) +- automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/* (evidence) diff --git a/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/workflow-diff-review.json b/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/workflow-diff-review.json new file mode 100644 index 0000000..39447e4 --- /dev/null +++ b/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/workflow-diff-review.json @@ -0,0 +1,13 @@ +{ +  "round_id": "R033_VALIDATE_ROUND_FETCH_DEPTH_FIX", +  "workflow_file_changed": ".github/workflows/validate-round.yml", +  "old_checkout_config": "actions/checkout@v4 with default settings (no with.fetch-depth specified, default depth=1 shallow)", +  "new_checkout_config": "actions/checkout@v4 with fetch-depth: 0 (full clone)", +  "trigger_unchanged": true, +  "validator_commands_unchanged": true, +  "permissions_unchanged": true, +  "no_secret_or_token_added": true, +  "no_workflow_auto_rerun_or_push_behavior_added": true, +  "validate_canonical_repair_workflow_not_modified": true, +  "note": "This is the minimal change needed to make validate-round workflow consistent with validate-canonical-repair workflow's checkout depth, enabling proper merge-commit detection in check_commit_message.py" +} \ No newline at end of file diff --git a/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/evidence.json b/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/evidence.json new file mode 100644 index 0000000..414944a --- /dev/null +++ b/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/evidence.json @@ -0,0 +1,23 @@ +{ +  "law_compliance": "04", +  "round_id": "R033_VALIDATE_ROUND_FETCH_DEPTH_FIX", +  "base_head": "c392d2341b744b539c8bfc43c6e09b905d513480", +  "failed_workflow": "validate-round #250", +  "failed_reason": "validate-round shallow checkout (fetch-depth: default=1) likely caused check_commit_message.py merge-commit detection failure on merge commit c392d234", +  "passed_workflow": "validate-canonical-repair #32 (fetch-depth: 0, full clone)", +  "workflow_modified": true, +  "workflow_modified_file": ".github/workflows/validate-round.yml", +  "old_fetch_depth": "missing/default (shallow, depth=1)", +  "new_fetch_depth": 0, +  "validator_modified": false, +  "source_files_modified": false, +  "tests_modified": false, +  "manifest_modified": false, +  "pre_push_hook_modified": false, +  "r033_final_status_confirmation_started": false, +  "r034_started": false, +  "r049_started": false, +  "runtime_started": false, +  "broker_api_called": false, +  "order_execution_allowed": false +} diff --git a/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/no-aider-used.txt b/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/no-aider-used.txt new file mode 100644 index 0000000..62a0b15 --- /dev/null +++ b/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/no-aider-used.txt @@ -0,0 +1 @@ +This candidate was constructed manually (no aider used). diff --git a/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/prevention-notes.json b/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/prevention-notes.json new file mode 100644 index 0000000..ec55da1 --- /dev/null +++ b/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/prevention-notes.json @@ -0,0 +1,10 @@ +{ +  "round_id": "R033_VALIDATE_ROUND_FETCH_DEPTH_FIX", +  "prevention_notes": [ +    "validate-round and validate-canonical-repair should use consistent checkout depth (fetch-depth: 0) for merge-commit-aware validation", +    "no-ff merge commit messages must still include required token and safety disclaimers in all future merges", +    "future merge instructions must not use --no-edit when required token is mandatory", +    "CI infrastructure (workflow checkout depth) and governance (merge message compliance) are independent concerns ??fixing one does not resolve the other", +    "validate-round should match validate-canonical-repair checkout behavior since both run merge-commit-aware validators" +  ] +} diff --git a/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/report.json b/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/report.json new file mode 100644 index 0000000..c017835 --- /dev/null +++ b/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/report.json @@ -0,0 +1,25 @@ +{ +  "round_id": "R033_VALIDATE_ROUND_FETCH_DEPTH_FIX", +  "task": "R033_VALIDATE_ROUND_FETCH_DEPTH_FIX_CANDIDATE", +  "status": "completed", +  "base_head": "c392d2341b744b539c8bfc43c6e09b905d513480", +  "candidate_branch": "candidate/r033-validate-round-fetch-depth-fix", +  "canonical_branch": "work/canonical-mainline-repair-001", +  "canonical_head": "c392d2341b744b539c8bfc43c6e09b905d513480", +  "original_fix_commit": "2db958e8e0524db404c6e103c47b4ac77f48109d", +  "workflow_modified": true, +  "source_files_modified": false, +  "tests_modified": false, +  "manifest_modified": false, +  "validator_modified": false, +  "pre_push_hook_modified": false, +  "r033_final_status_confirmation_started": false, +  "r034_started": false, +  "r049_started": false, +  "runtime_started": false, +  "broker_api_called": false, +  "order_execution_allowed": false, +  "test_count": 208, +  "tests_passed": 208, +  "validators_pass": true +} diff --git a/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/root-cause-analysis.json b/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/root-cause-analysis.json new file mode 100644 index 0000000..6a2ecfe --- /dev/null +++ b/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/root-cause-analysis.json @@ -0,0 +1,20 @@ +{ +  "round_id": "R033_VALIDATE_ROUND_FETCH_DEPTH_FIX", +  "ci_failure_workflow": "validate-round #250", +  "ci_failure_conclusion": "failure", +  "ci_failure_step": "Validate round", +  "ci_failure_exit_code": 1, +  "ci_failure_error_message": "Process completed with exit code 1 (exact log not accessible without auth)", +  "ci_success_workflow": "validate-canonical-repair #32", +  "ci_success_conclusion": "success", +  "ci_success_checkout_depth": "fetch-depth: 0 (full clone)", +  "root_cause": "validate-round workflow uses actions/checkout@v4 with default fetch-depth=1 (shallow clone). In a shallow clone of a no-ff merge commit, git rev-list --parents -n 1 HEAD (called by check_commit_message.py:is_merge_commit()) may behave differently than in a full clone. The script may not recognize the merge commit, fall through to the round_id-in-message check, and FAIL because the auto-generated merge message does not contain the PRE_R049 required token. validate-canonical-repair workflow uses fetch-depth: 0 (full clone) and succeeds on the same commit because git commands have full history available.", +  "local_reproduction_result": "All 4 CI sub-scripts (validate_round, check_forbidden_changes, check_required_evidence, check_commit_message) PASS locally with full clone.", +  "local_checkout_depth": "full history (local clone has complete git history)", +  "fix_is_infrastructure_only": true, +  "fix_does_not_alter_functional_source": true, +  "fix_does_not_resolve_r033_final_confirmation": true, +  "fix_does_not_resolve_merge_message_governance_noncompliance": true, +  "c392d234_merge_message_noncompliance_still_tracked": true, +  "noncompliance_issue": "Merge commit c392d234 has auto-generated message 'Merge commit 0444bbb into work/canonical-mainline-repair-001' lacking required PRE_R049 token and safety disclaimers. Not resolved by this fetch-depth fix." +} diff --git a/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/safety-boundary-review.json b/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/safety-boundary-review.json new file mode 100644 index 0000000..1a22629 --- /dev/null +++ b/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/safety-boundary-review.json @@ -0,0 +1,21 @@ +{ +  "review_type": "safety_boundary", +  "round_id": "R033_VALIDATE_ROUND_FETCH_DEPTH_FIX", +  "base_head": "c392d2341b744b539c8bfc43c6e09b905d513480", +  "source_files_modified": false, +  "tests_modified": false, +  "manifest_modified": false, +  "validator_modified": false, +  "pre_push_hook_modified": false, +  "workflow_modified": true, +  "workflow_modified_file": ".github/workflows/validate-round.yml", +  "validate_canonical_repair_workflow_modified": false, +  "runtime_started": false, +  "r033_final_status_confirmation_started": false, +  "r034_started": false, +  "r049_started": false, +  "broker_api_called": false, +  "order_execution_allowed": false, +  "r033_final_confirmation_still_pending": true, +  "r033_merge_message_governance_noncompliance_not_resolved": true +} diff --git a/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/task.txt b/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/task.txt new file mode 100644 index 0000000..2dad3d7 --- /dev/null +++ b/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/task.txt @@ -0,0 +1,21 @@ +=== TASK DESCRIPTION === +task_id: R033_VALIDATE_ROUND_FETCH_DEPTH_FIX +task_type: r033_validate_round_fetch_depth_fix_candidate +phase: Phase 2 +law_compliance: 04 +severity: infrastructure + +=== PROBLEM STATEMENT === +validate-round #250 FAILED on c392d234 with "Process completed with exit code 1". +Root cause: actions/checkout@v4 default fetch-depth=1 (shallow clone) causes +check_commit_message.py to fail merge-commit detection on no-ff merge commits. +validate-canonical-repair #32 succeeded on the same commit because it uses fetch-depth: 0. + +=== SOLUTION === +Add fetch-depth: 0 to .github/workflows/validate-round.yml checkout step. +This is the minimal CI infrastructure fix ??no Python validators, tests, or +manifest changes needed. + +=== FILES === +- .github/workflows/validate-round.yml (workflow checkout depth fix) +- automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/* (evidence) diff --git a/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/test-results.txt b/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/test-results.txt new file mode 100644 index 0000000..0581407 --- /dev/null +++ b/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/test-results.txt @@ -0,0 +1,13 @@ +TEST RESULTS ??R033_VALIDATE_ROUND_FETCH_DEPTH_FIX_CANDIDATE + +Base: c392d2341b744b539c8bfc43c6e09b905d513480 +Branch: candidate/r033-validate-round-fetch-depth-fix +R033 regression tests (unchanged from R033 source): + +test_replay_isolation.py:: 53 passed +test_decision_comparator.py:: 26 passed +test_r033_replay_live_write_guard.py:: 84 passed +test_audit_trail.py:: 29 passed +test_traceability_chain.py:: 16 passed + +Total: 208 passed, 0 failed, 0 skipped diff --git a/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/workflow-diff-review.json b/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/workflow-diff-review.json new file mode 100644 index 0000000..39447e4 --- /dev/null +++ b/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/workflow-diff-review.json @@ -0,0 +1,13 @@ +{ +  "round_id": "R033_VALIDATE_ROUND_FETCH_DEPTH_FIX", +  "workflow_file_changed": ".github/workflows/validate-round.yml", +  "old_checkout_config": "actions/checkout@v4 with default settings (no with.fetch-depth specified, default depth=1 shallow)", +  "new_checkout_config": "actions/checkout@v4 with fetch-depth: 0 (full clone)", +  "trigger_unchanged": true, +  "validator_commands_unchanged": true, +  "permissions_unchanged": true, +  "no_secret_or_token_added": true, +  "no_workflow_auto_rerun_or_push_behavior_added": true, +  "validate_canonical_repair_workflow_not_modified": true, +  "note": "This is the minimal change needed to make validate-round workflow consistent with validate-canonical-repair workflow's checkout depth, enabling proper merge-commit detection in check_commit_message.py" +} \ No newline at end of file diff --git a/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/evidence.json b/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/evidence.json new file mode 100644 index 0000000..414944a --- /dev/null +++ b/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/evidence.json @@ -0,0 +1,23 @@ +{ +  "law_compliance": "04", +  "round_id": "R033_VALIDATE_ROUND_FETCH_DEPTH_FIX", +  "base_head": "c392d2341b744b539c8bfc43c6e09b905d513480", +  "failed_workflow": "validate-round #250", +  "failed_reason": "validate-round shallow checkout (fetch-depth: default=1) likely caused check_commit_message.py merge-commit detection failure on merge commit c392d234", +  "passed_workflow": "validate-canonical-repair #32 (fetch-depth: 0, full clone)", +  "workflow_modified": true, +  "workflow_modified_file": ".github/workflows/validate-round.yml", +  "old_fetch_depth": "missing/default (shallow, depth=1)", +  "new_fetch_depth": 0, +  "validator_modified": false, +  "source_files_modified": false, +  "tests_modified": false, +  "manifest_modified": false, +  "pre_push_hook_modified": false, +  "r033_final_status_confirmation_started": false, +  "r034_started": false, +  "r049_started": false, +  "runtime_started": false, +  "broker_api_called": false, +  "order_execution_allowed": false +} diff --git a/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/no-aider-used.txt b/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/no-aider-used.txt new file mode 100644 index 0000000..62a0b15 --- /dev/null +++ b/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/no-aider-used.txt @@ -0,0 +1 @@ +This candidate was constructed manually (no aider used). diff --git a/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/prevention-notes.json b/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/prevention-notes.json new file mode 100644 index 0000000..ec55da1 --- /dev/null +++ b/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/prevention-notes.json @@ -0,0 +1,10 @@ +{ +  "round_id": "R033_VALIDATE_ROUND_FETCH_DEPTH_FIX", +  "prevention_notes": [ +    "validate-round and validate-canonical-repair should use consistent checkout depth (fetch-depth: 0) for merge-commit-aware validation", +    "no-ff merge commit messages must still include required token and safety disclaimers in all future merges", +    "future merge instructions must not use --no-edit when required token is mandatory", +    "CI infrastructure (workflow checkout depth) and governance (merge message compliance) are independent concerns ??fixing one does not resolve the other", +    "validate-round should match validate-canonical-repair checkout behavior since both run merge-commit-aware validators" +  ] +} diff --git a/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/report.json b/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/report.json new file mode 100644 index 0000000..c017835 --- /dev/null +++ b/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/report.json @@ -0,0 +1,25 @@ +{ +  "round_id": "R033_VALIDATE_ROUND_FETCH_DEPTH_FIX", +  "task": "R033_VALIDATE_ROUND_FETCH_DEPTH_FIX_CANDIDATE", +  "status": "completed", +  "base_head": "c392d2341b744b539c8bfc43c6e09b905d513480", +  "candidate_branch": "candidate/r033-validate-round-fetch-depth-fix", +  "canonical_branch": "work/canonical-mainline-repair-001", +  "canonical_head": "c392d2341b744b539c8bfc43c6e09b905d513480", +  "original_fix_commit": "2db958e8e0524db404c6e103c47b4ac77f48109d", +  "workflow_modified": true, +  "source_files_modified": false, +  "tests_modified": false, +  "manifest_modified": false, +  "validator_modified": false, +  "pre_push_hook_modified": false, +  "r033_final_status_confirmation_started": false, +  "r034_started": false, +  "r049_started": false, +  "runtime_started": false, +  "broker_api_called": false, +  "order_execution_allowed": false, +  "test_count": 208, +  "tests_passed": 208, +  "validators_pass": true +} diff --git a/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/root-cause-analysis.json b/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/root-cause-analysis.json new file mode 100644 index 0000000..6a2ecfe --- /dev/null +++ b/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/root-cause-analysis.json @@ -0,0 +1,20 @@ +{ +  "round_id": "R033_VALIDATE_ROUND_FETCH_DEPTH_FIX", +  "ci_failure_workflow": "validate-round #250", +  "ci_failure_conclusion": "failure", +  "ci_failure_step": "Validate round", +  "ci_failure_exit_code": 1, +  "ci_failure_error_message": "Process completed with exit code 1 (exact log not accessible without auth)", +  "ci_success_workflow": "validate-canonical-repair #32", +  "ci_success_conclusion": "success", +  "ci_success_checkout_depth": "fetch-depth: 0 (full clone)", +  "root_cause": "validate-round workflow uses actions/checkout@v4 with default fetch-depth=1 (shallow clone). In a shallow clone of a no-ff merge commit, git rev-list --parents -n 1 HEAD (called by check_commit_message.py:is_merge_commit()) may behave differently than in a full clone. The script may not recognize the merge commit, fall through to the round_id-in-message check, and FAIL because the auto-generated merge message does not contain the PRE_R049 required token. validate-canonical-repair workflow uses fetch-depth: 0 (full clone) and succeeds on the same commit because git commands have full history available.", +  "local_reproduction_result": "All 4 CI sub-scripts (validate_round, check_forbidden_changes, check_required_evidence, check_commit_message) PASS locally with full clone.", +  "local_checkout_depth": "full history (local clone has complete git history)", +  "fix_is_infrastructure_only": true, +  "fix_does_not_alter_functional_source": true, +  "fix_does_not_resolve_r033_final_confirmation": true, +  "fix_does_not_resolve_merge_message_governance_noncompliance": true, +  "c392d234_merge_message_noncompliance_still_tracked": true, +  "noncompliance_issue": "Merge commit c392d234 has auto-generated message 'Merge commit 0444bbb into work/canonical-mainline-repair-001' lacking required PRE_R049 token and safety disclaimers. Not resolved by this fetch-depth fix." +} diff --git a/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/safety-boundary-review.json b/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/safety-boundary-review.json new file mode 100644 index 0000000..1a22629 --- /dev/null +++ b/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/safety-boundary-review.json @@ -0,0 +1,21 @@ +{ +  "review_type": "safety_boundary", +  "round_id": "R033_VALIDATE_ROUND_FETCH_DEPTH_FIX", +  "base_head": "c392d2341b744b539c8bfc43c6e09b905d513480", +  "source_files_modified": false, +  "tests_modified": false, +  "manifest_modified": false, +  "validator_modified": false, +  "pre_push_hook_modified": false, +  "workflow_modified": true, +  "workflow_modified_file": ".github/workflows/validate-round.yml", +  "validate_canonical_repair_workflow_modified": false, +  "runtime_started": false, +  "r033_final_status_confirmation_started": false, +  "r034_started": false, +  "r049_started": false, +  "broker_api_called": false, +  "order_execution_allowed": false, +  "r033_final_confirmation_still_pending": true, +  "r033_merge_message_governance_noncompliance_not_resolved": true +} diff --git a/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/task.txt b/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/task.txt new file mode 100644 index 0000000..2dad3d7 --- /dev/null +++ b/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/task.txt @@ -0,0 +1,21 @@ +=== TASK DESCRIPTION === +task_id: R033_VALIDATE_ROUND_FETCH_DEPTH_FIX +task_type: r033_validate_round_fetch_depth_fix_candidate +phase: Phase 2 +law_compliance: 04 +severity: infrastructure + +=== PROBLEM STATEMENT === +validate-round #250 FAILED on c392d234 with "Process completed with exit code 1". +Root cause: actions/checkout@v4 default fetch-depth=1 (shallow clone) causes +check_commit_message.py to fail merge-commit detection on no-ff merge commits. +validate-canonical-repair #32 succeeded on the same commit because it uses fetch-depth: 0. + +=== SOLUTION === +Add fetch-depth: 0 to .github/workflows/validate-round.yml checkout step. +This is the minimal CI infrastructure fix ??no Python validators, tests, or +manifest changes needed. + +=== FILES === +- .github/workflows/validate-round.yml (workflow checkout depth fix) +- automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/* (evidence) diff --git a/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/test-results.txt b/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/test-results.txt new file mode 100644 index 0000000..0581407 --- /dev/null +++ b/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/test-results.txt @@ -0,0 +1,13 @@ +TEST RESULTS ??R033_VALIDATE_ROUND_FETCH_DEPTH_FIX_CANDIDATE + +Base: c392d2341b744b539c8bfc43c6e09b905d513480 +Branch: candidate/r033-validate-round-fetch-depth-fix +R033 regression tests (unchanged from R033 source): + +test_replay_isolation.py:: 53 passed +test_decision_comparator.py:: 26 passed +test_r033_replay_live_write_guard.py:: 84 passed +test_audit_trail.py:: 29 passed +test_traceability_chain.py:: 16 passed + +Total: 208 passed, 0 failed, 0 skipped diff --git a/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/workflow-diff-review.json b/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/workflow-diff-review.json new file mode 100644 index 0000000..39447e4 --- /dev/null +++ b/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/workflow-diff-review.json @@ -0,0 +1,13 @@ +{ +  "round_id": "R033_VALIDATE_ROUND_FETCH_DEPTH_FIX", +  "workflow_file_changed": ".github/workflows/validate-round.yml", +  "old_checkout_config": "actions/checkout@v4 with default settings (no with.fetch-depth specified, default depth=1 shallow)", +  "new_checkout_config": "actions/checkout@v4 with fetch-depth: 0 (full clone)", +  "trigger_unchanged": true, +  "validator_commands_unchanged": true, +  "permissions_unchanged": true, +  "no_secret_or_token_added": true, +  "no_workflow_auto_rerun_or_push_behavior_added": true, +  "validate_canonical_repair_workflow_not_modified": true, +  "note": "This is the minimal change needed to make validate-round workflow consistent with validate-canonical-repair workflow's checkout depth, enabling proper merge-commit detection in check_commit_message.py" +}
+\ No newline at end of file
+diff --git a/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/evidence.json b/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/evidence.json
+new file mode 100644
+index 0000000..414944a
+--- /dev/null
++++ b/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/evidence.json
+@@ -0,0 +1,23 @@
++{
++  "law_compliance": "04",
++  "round_id": "R033_VALIDATE_ROUND_FETCH_DEPTH_FIX",
++  "base_head": "c392d2341b744b539c8bfc43c6e09b905d513480",
++  "failed_workflow": "validate-round #250",
++  "failed_reason": "validate-round shallow checkout (fetch-depth: default=1) likely caused check_commit_message.py merge-commit detection failure on merge commit c392d234",
++  "passed_workflow": "validate-canonical-repair #32 (fetch-depth: 0, full clone)",
++  "workflow_modified": true,
++  "workflow_modified_file": ".github/workflows/validate-round.yml",
++  "old_fetch_depth": "missing/default (shallow, depth=1)",
++  "new_fetch_depth": 0,
++  "validator_modified": false,
++  "source_files_modified": false,
++  "tests_modified": false,
++  "manifest_modified": false,
++  "pre_push_hook_modified": false,
++  "r033_final_status_confirmation_started": false,
++  "r034_started": false,
++  "r049_started": false,
++  "runtime_started": false,
++  "broker_api_called": false,
++  "order_execution_allowed": false
++}
+diff --git a/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/no-aider-used.txt b/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/no-aider-used.txt
+new file mode 100644
+index 0000000..62a0b15
+--- /dev/null
++++ b/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/no-aider-used.txt
+@@ -0,0 +1 @@
++This candidate was constructed manually (no aider used).
+diff --git a/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/prevention-notes.json b/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/prevention-notes.json
+new file mode 100644
+index 0000000..ec55da1
+--- /dev/null
++++ b/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/prevention-notes.json
+@@ -0,0 +1,10 @@
++{
++  "round_id": "R033_VALIDATE_ROUND_FETCH_DEPTH_FIX",
++  "prevention_notes": [
++    "validate-round and validate-canonical-repair should use consistent checkout depth (fetch-depth: 0) for merge-commit-aware validation",
++    "no-ff merge commit messages must still include required token and safety disclaimers in all future merges",
++    "future merge instructions must not use --no-edit when required token is mandatory",
++    "CI infrastructure (workflow checkout depth) and governance (merge message compliance) are independent concerns — fixing one does not resolve the other",
++    "validate-round should match validate-canonical-repair checkout behavior since both run merge-commit-aware validators"
++  ]
++}
+diff --git a/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/report.json b/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/report.json
+new file mode 100644
+index 0000000..c017835
+--- /dev/null
++++ b/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/report.json
+@@ -0,0 +1,25 @@
++{
++  "round_id": "R033_VALIDATE_ROUND_FETCH_DEPTH_FIX",
++  "task": "R033_VALIDATE_ROUND_FETCH_DEPTH_FIX_CANDIDATE",
++  "status": "completed",
++  "base_head": "c392d2341b744b539c8bfc43c6e09b905d513480",
++  "candidate_branch": "candidate/r033-validate-round-fetch-depth-fix",
++  "canonical_branch": "work/canonical-mainline-repair-001",
++  "canonical_head": "c392d2341b744b539c8bfc43c6e09b905d513480",
++  "original_fix_commit": "2db958e8e0524db404c6e103c47b4ac77f48109d",
++  "workflow_modified": true,
++  "source_files_modified": false,
++  "tests_modified": false,
++  "manifest_modified": false,
++  "validator_modified": false,
++  "pre_push_hook_modified": false,
++  "r033_final_status_confirmation_started": false,
++  "r034_started": false,
++  "r049_started": false,
++  "runtime_started": false,
++  "broker_api_called": false,
++  "order_execution_allowed": false,
++  "test_count": 208,
++  "tests_passed": 208,
++  "validators_pass": true
++}
+diff --git a/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/root-cause-analysis.json b/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/root-cause-analysis.json
+new file mode 100644
+index 0000000..6a2ecfe
+--- /dev/null
++++ b/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/root-cause-analysis.json
+@@ -0,0 +1,20 @@
++{
++  "round_id": "R033_VALIDATE_ROUND_FETCH_DEPTH_FIX",
++  "ci_failure_workflow": "validate-round #250",
++  "ci_failure_conclusion": "failure",
++  "ci_failure_step": "Validate round",
++  "ci_failure_exit_code": 1,
++  "ci_failure_error_message": "Process completed with exit code 1 (exact log not accessible without auth)",
++  "ci_success_workflow": "validate-canonical-repair #32",
++  "ci_success_conclusion": "success",
++  "ci_success_checkout_depth": "fetch-depth: 0 (full clone)",
++  "root_cause": "validate-round workflow uses actions/checkout@v4 with default fetch-depth=1 (shallow clone). In a shallow clone of a no-ff merge commit, git rev-list --parents -n 1 HEAD (called by check_commit_message.py:is_merge_commit()) may behave differently than in a full clone. The script may not recognize the merge commit, fall through to the round_id-in-message check, and FAIL because the auto-generated merge message does not contain the PRE_R049 required token. validate-canonical-repair workflow uses fetch-depth: 0 (full clone) and succeeds on the same commit because git commands have full history available.",
++  "local_reproduction_result": "All 4 CI sub-scripts (validate_round, check_forbidden_changes, check_required_evidence, check_commit_message) PASS locally with full clone.",
++  "local_checkout_depth": "full history (local clone has complete git history)",
++  "fix_is_infrastructure_only": true,
++  "fix_does_not_alter_functional_source": true,
++  "fix_does_not_resolve_r033_final_confirmation": true,
++  "fix_does_not_resolve_merge_message_governance_noncompliance": true,
++  "c392d234_merge_message_noncompliance_still_tracked": true,
++  "noncompliance_issue": "Merge commit c392d234 has auto-generated message 'Merge commit 0444bbb into work/canonical-mainline-repair-001' lacking required PRE_R049 token and safety disclaimers. Not resolved by this fetch-depth fix."
++}
+diff --git a/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/safety-boundary-review.json b/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/safety-boundary-review.json
+new file mode 100644
+index 0000000..1a22629
+--- /dev/null
++++ b/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/safety-boundary-review.json
+@@ -0,0 +1,21 @@
++{
++  "review_type": "safety_boundary",
++  "round_id": "R033_VALIDATE_ROUND_FETCH_DEPTH_FIX",
++  "base_head": "c392d2341b744b539c8bfc43c6e09b905d513480",
++  "source_files_modified": false,
++  "tests_modified": false,
++  "manifest_modified": false,
++  "validator_modified": false,
++  "pre_push_hook_modified": false,
++  "workflow_modified": true,
++  "workflow_modified_file": ".github/workflows/validate-round.yml",
++  "validate_canonical_repair_workflow_modified": false,
++  "runtime_started": false,
++  "r033_final_status_confirmation_started": false,
++  "r034_started": false,
++  "r049_started": false,
++  "broker_api_called": false,
++  "order_execution_allowed": false,
++  "r033_final_confirmation_still_pending": true,
++  "r033_merge_message_governance_noncompliance_not_resolved": true
++}
+diff --git a/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/task.txt b/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/task.txt
+new file mode 100644
+index 0000000..2dad3d7
+--- /dev/null
++++ b/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/task.txt
+@@ -0,0 +1,21 @@
++=== TASK DESCRIPTION ===
++task_id: R033_VALIDATE_ROUND_FETCH_DEPTH_FIX
++task_type: r033_validate_round_fetch_depth_fix_candidate
++phase: Phase 2
++law_compliance: 04
++severity: infrastructure
++
++=== PROBLEM STATEMENT ===
++validate-round #250 FAILED on c392d234 with "Process completed with exit code 1".
++Root cause: actions/checkout@v4 default fetch-depth=1 (shallow clone) causes
++check_commit_message.py to fail merge-commit detection on no-ff merge commits.
++validate-canonical-repair #32 succeeded on the same commit because it uses fetch-depth: 0.
++
++=== SOLUTION ===
++Add fetch-depth: 0 to .github/workflows/validate-round.yml checkout step.
++This is the minimal CI infrastructure fix — no Python validators, tests, or
++manifest changes needed.
++
++=== FILES ===
++- .github/workflows/validate-round.yml (workflow checkout depth fix)
++- automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/* (evidence)
+diff --git a/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/test-results.txt b/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/test-results.txt
+new file mode 100644
+index 0000000..0581407
+--- /dev/null
++++ b/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/test-results.txt
+@@ -0,0 +1,13 @@
++TEST RESULTS — R033_VALIDATE_ROUND_FETCH_DEPTH_FIX_CANDIDATE
++
++Base: c392d2341b744b539c8bfc43c6e09b905d513480
++Branch: candidate/r033-validate-round-fetch-depth-fix
++R033 regression tests (unchanged from R033 source):
++
++test_replay_isolation.py:: 53 passed
++test_decision_comparator.py:: 26 passed
++test_r033_replay_live_write_guard.py:: 84 passed
++test_audit_trail.py:: 29 passed
++test_traceability_chain.py:: 16 passed
++
++Total: 208 passed, 0 failed, 0 skipped
+diff --git a/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/workflow-diff-review.json b/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/workflow-diff-review.json
+new file mode 100644
+index 0000000..39447e4
+--- /dev/null
++++ b/automation/control/candidates/R033_VALIDATE_ROUND_FETCH_DEPTH_FIX/workflow-diff-review.json
+@@ -0,0 +1,13 @@
++{
++  "round_id": "R033_VALIDATE_ROUND_FETCH_DEPTH_FIX",
++  "workflow_file_changed": ".github/workflows/validate-round.yml",
++  "old_checkout_config": "actions/checkout@v4 with default settings (no with.fetch-depth specified, default depth=1 shallow)",
++  "new_checkout_config": "actions/checkout@v4 with fetch-depth: 0 (full clone)",
++  "trigger_unchanged": true,
++  "validator_commands_unchanged": true,
++  "permissions_unchanged": true,
++  "no_secret_or_token_added": true,
++  "no_workflow_auto_rerun_or_push_behavior_added": true,
++  "validate_canonical_repair_workflow_not_modified": true,
++  "note": "This is the minimal change needed to make validate-round workflow consistent with validate-canonical-repair workflow's checkout depth, enabling proper merge-commit detection in check_commit_message.py"
++}

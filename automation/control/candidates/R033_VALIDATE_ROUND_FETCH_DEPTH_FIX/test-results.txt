@@ -1,0 +1,13 @@
+TEST RESULTS — R033_VALIDATE_ROUND_FETCH_DEPTH_FIX_CANDIDATE
+
+Base: c392d2341b744b539c8bfc43c6e09b905d513480
+Branch: candidate/r033-validate-round-fetch-depth-fix
+R033 regression tests (unchanged from R033 source):
+
+test_replay_isolation.py:: 53 passed
+test_decision_comparator.py:: 26 passed
+test_r033_replay_live_write_guard.py:: 84 passed
+test_audit_trail.py:: 29 passed
+test_traceability_chain.py:: 16 passed
+
+Total: 208 passed, 0 failed, 0 skipped

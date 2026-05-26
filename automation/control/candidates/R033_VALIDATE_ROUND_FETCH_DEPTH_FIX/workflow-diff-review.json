@@ -1,0 +1,13 @@
+{
+  "round_id": "R033_VALIDATE_ROUND_FETCH_DEPTH_FIX",
+  "workflow_file_changed": ".github/workflows/validate-round.yml",
+  "old_checkout_config": "actions/checkout@v4 with default settings (no with.fetch-depth specified, default depth=1 shallow)",
+  "new_checkout_config": "actions/checkout@v4 with fetch-depth: 0 (full clone)",
+  "trigger_unchanged": true,
+  "validator_commands_unchanged": true,
+  "permissions_unchanged": true,
+  "no_secret_or_token_added": true,
+  "no_workflow_auto_rerun_or_push_behavior_added": true,
+  "validate_canonical_repair_workflow_not_modified": true,
+  "note": "This is the minimal change needed to make validate-round workflow consistent with validate-canonical-repair workflow's checkout depth, enabling proper merge-commit detection in check_commit_message.py"
+}

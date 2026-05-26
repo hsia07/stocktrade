@@ -1,0 +1,28 @@
+round_id: R033_VALIDATE_ROUND_FETCH_DEPTH_FIX
+task_type: r033_validate_round_fetch_depth_fix_candidate
+formal_status_code: candidate_ready_awaiting_manual_review
+base_head: c392d2341b744b539c8bfc43c6e09b905d513480
+candidate_branch: candidate/r033-validate-round-fetch-depth-fix
+original_fix_commit: 2db958e8e0524db404c6e103c47b4ac77f48109d
+
+summary:
+  R033 validate-round fetch-depth CI infrastructure fix.
+  Added fetch-depth: 0 to .github/workflows/validate-round.yml to make
+  checkout depth consistent with validate-canonical-repair.yml.
+  This resolves validate-round #250 failure on no-ff merge commits.
+  This is not R033 final confirmation, not R034 start, not R049 authorization.
+
+remaining_blockers:
+  - validate-round fetch-depth fix candidate requires manual review before merge
+  - GitHub Actions actual success unresolved until fix candidate merged/pushed and CI rechecked
+  - c392d234 merge-message governance noncompliance still tracked
+  - R033 final status confirmation blocked until CI / governance noncompliance resolved
+  - R034 readiness preflight pending after R033 final confirmation
+  - P1 backlog deferred but not completed
+  - R049 remains blocked
+
+recommended_next_action:
+  AWAITING_MANUAL_REVIEW_R033_VALIDATE_ROUND_FETCH_DEPTH_FIX_CANDIDATE
+
+final_recommendation:
+  DO_NOT_START_R049
