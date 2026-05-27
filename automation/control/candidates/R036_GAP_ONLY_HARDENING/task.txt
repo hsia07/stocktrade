@@ -1,0 +1,29 @@
+R036_GAP_ONLY_HARDENING_CANDIDATE
+=================================
+Gap-only hardening for R036 fixed test dataset governance record.
+
+Status: source already in canonical HEAD at bc17936e
+- gap_only_hardening: true
+- source_construction_performed_now: FALSE
+- governance_record_acceptance_path_used: FALSE
+- canonical_merge_executed in pre-existing evidence: false (historical gap)
+
+Changes made in this candidate:
+- tests/test_fixed_test_dataset.py: added 7 invalid/malformed input tests
+  - test_make_candidate_negative_price
+  - test_make_candidate_invalid_confidence_above_one
+  - test_make_candidate_invalid_confidence_negative
+  - test_make_candidate_empty_symbol
+  - test_make_candidate_invalid_side
+  - test_fixed_test_case_mismatched_pass_and_veto
+  - test_fixed_test_run_result_mismatch
+
+No source file changes.
+No broker/live/order/execution pollution.
+No server_v2/index_v2 wiring.
+
+R037_R048_accepted: false
+R049_started: false
+order_execution_allowed: false
+
+recommended_next_action: AWAITING_MANUAL_REVIEW_FOR_R036_GAP_ONLY_HARDENING_CANDIDATE

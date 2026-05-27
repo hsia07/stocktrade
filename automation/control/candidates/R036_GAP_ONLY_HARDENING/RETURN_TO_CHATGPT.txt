@@ -1,0 +1,28 @@
+round_id: R036_GAP_ONLY_HARDENING_CANDIDATE
+task_type: gap_only_hardening_candidate
+formal_status_code: candidate_ready_awaiting_manual_review
+base_branch: work/canonical-mainline-repair-001
+base_head: bc17936e8201dd6d864e5df8f96354ba57ffa2bb
+candidate_branch: candidate/r036-gap-only-hardening
+official_topic: 固定測試資料集
+gap_only_hardening: true
+source_already_in_canonical: true
+source_construction_performed_now: false
+governance_record_acceptance_path_used: false
+test_count_before: 10
+test_count_after: 17
+tests_added: 7
+invalid_input_tests_added: 7
+R037_R048_accepted: false
+R049_started: false
+broker_api_called: false
+trading_runtime_started: false
+order_execution_allowed: false
+no source modifications
+recommended_next_action: AWAITING_MANUAL_REVIEW_FOR_R036_GAP_ONLY_HARDENING_CANDIDATE
+recommendation:
+  - DO_NOT_START_R049
+  - DO_NOT_ACCEPT_R037_R048_YET
+  - DO_NOT_PUSH_WITHOUT_USER_SIGNOFF
+  - R036_ONLY_NEXT
+  - ORDER_EXECUTION_ALLOWED_REMAINS_FALSE

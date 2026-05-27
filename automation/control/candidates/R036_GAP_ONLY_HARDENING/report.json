@@ -1,0 +1,52 @@
+{
+  "round_id": "R036_GAP_ONLY_HARDENING",
+  "candidate_type": "gap_only_hardening",
+  "status": "completed",
+  "base_branch": "work/canonical-mainline-repair-001",
+  "base_head": "bc17936e8201dd6d864e5df8f96354ba57ffa2bb",
+  "candidate_branch": "candidate/r036-gap-only-hardening",
+  "official_topic": "固定測試資料集",
+  "gap_only_hardening": true,
+  "source_already_in_canonical": true,
+  "source_construction_performed_now": false,
+  "governance_record_acceptance_path_used": false,
+  "canonical_merge_executed_historical": false,
+  "gap_reason": "R036 source file modules/decision_prechecklist/fixed_test_dataset.py (99 lines, 8 data contracts) exists on canonical HEAD at bc17936e; pre-existing R036_FIXED_DATASET/evidence.json records canonical_merge_executed=false; governance_record_acceptance_path not applicable since source already on canonical",
+  "test_count_before": 10,
+  "test_count_after": 17,
+  "tests_added": 7,
+  "invalid_input_tests_added": 7,
+  "source_integrity": {
+    "fixed_test_dataset_py": {
+      "exists": true,
+      "lines": 99,
+      "status": "REAL_CODE",
+      "stub_or_todo": false,
+      "pass_only": false,
+      "dataclass_only": false
+    }
+  },
+  "test_integrity": {
+    "test_fixed_test_dataset_py": {
+      "exists": true,
+      "lines_before": 71,
+      "lines_after": 120,
+      "tests_found": 17,
+      "tests_pass": true,
+      "imports_source": true,
+      "positive_path": 6,
+      "negative_path": 5,
+      "boundary": 2,
+      "invalid_input": 7
+    }
+  },
+  "safety_boundary": {
+    "broker_api_called": false,
+    "trading_runtime_started": false,
+    "order_execution_allowed": false
+  },
+  "backtest_replay_compatible": true,
+  "market_reality_compatible": true,
+  "final_recommendation": "candidate_ready_awaiting_manual_review",
+  "source_construction_performed_now": false
+}
