@@ -1,0 +1,17 @@
+Establish R035 governance record acceptance candidate.
+
+Background:
+R035 TO R048 FAST PLANNING READINESS MAP confirmed R035-R048 code/tests exist in HEAD via batch merge c529d9a/5bb4600.
+R035 GOVERNANCE RECORD SCOPE DECISION AND DEEP AUDIT confirmed R035 is eligible for governance_record_acceptance_path (Option A).
+User authorized Option A for R035 only.
+
+This candidate:
+- Creates governance record accepting R035 as delivered by batch merge
+- Corrects evidence inventory (removes contamination, adds missing files)
+- Does NOT modify any R035 source/test files
+- Does NOT accept R036-R048
+- Does NOT authorize R049
+
+Files created:
+- automation/control/governance/r035-governance-record.json
+- automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/

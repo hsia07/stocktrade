@@ -1,0 +1,50 @@
+{
+  "round_id": "R035",
+  "candidate_type": "governance_record_acceptance",
+  "base_head": "8b5a532a736d7c40f5731f3424e19efba426798b",
+  "candidate_branch": "candidate/r035-governance-record-acceptance",
+  "deep_audit_conclusion": "governance_record_acceptance_path eligible",
+  "user_authorization": "Option A granted for R035 only",
+  "source_integrity": {
+    "verification_framework_py": {
+      "exists": true,
+      "lines": 122,
+      "status": "REAL_CODE",
+      "stub_or_todo": false,
+      "pass_only": false,
+      "dataclass_only": false,
+      "broker_pollution": false,
+      "live_pollution": false,
+      "order_pollution": false,
+      "server_v2_pollution": false,
+      "index_v2_pollution": false
+    }
+  },
+  "test_integrity": {
+    "test_verification_framework_py": {
+      "exists": true,
+      "lines": 128,
+      "tests_found": 11,
+      "tests_pass": true,
+      "imports_source": true,
+      "positive_path": 6,
+      "negative_path": 4,
+      "boundary": 2,
+      "invalid_input_coverage": 0,
+      "broker_pollution": false,
+      "live_pollution": false,
+      "order_pollution": false
+    }
+  },
+  "coverage_gaps": [
+    {
+      "severity": "minor",
+      "finding": "invalid input tests for non-Callable / negative count not explicit",
+      "blocker": false
+    }
+  ],
+  "direct_blockers": [],
+  "contamination_fixed": true,
+  "corrected_inventory": true,
+  "final_recommendation": "candidate_ready_awaiting_manual_review"
+}
