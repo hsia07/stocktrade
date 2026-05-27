@@ -1,0 +1,25 @@
+{
+  "round_id": "R036_FINAL_CHAIN_STATUS_UPDATE",
+  "status": "candidate_ready_awaiting_manual_review",
+  "candidate_type": "manifest_chain_status_update",
+  "base_commit": "7ee575eaa8ec918611c1496523c50ece6f6aed36",
+  "scope": "manifest only",
+  "manifest_changes": {
+    "last_completed_round": "R035 -> R036",
+    "last_completed_topic": "快速驗證與壓力測試框架 -> 固定測試資料集",
+    "last_completed_commit": "7fdb35a3... -> 7ee575e...",
+    "next_round_to_dispatch": "R036 -> R037",
+    "chain_status": "r035_completed_... -> r036_completed_..."
+  },
+  "backlog_added": ["r035", "r036"],
+  "required_ci": {
+    "validate_round": "success (#260)",
+    "validate_canonical_repair": "success (#42)"
+  },
+  "safety": {
+    "order_execution_allowed": false,
+    "R037_R048_accepted": false,
+    "R049_started": false
+  },
+  "next": "R037 governance record scope decision or deep audit"
+}

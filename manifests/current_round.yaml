@@ -80,12 +80,12 @@ fail_closed_guards:
   validate_evidence_real_changes: true
 guard_status: "ACTIVE"
 phase: "Phase 2"
-last_completed_round: "R035"
-last_completed_topic: "快速驗證與壓力測試框架"
-last_completed_commit: "7fdb35a3bd02447c9351fef788adf84ba74366ac"
+last_completed_round: "R036"
+last_completed_topic: "固定測試資料集"
+last_completed_commit: "7ee575eaa8ec918611c1496523c50ece6f6aed36"
 current_round: "NONE"
-next_round_to_dispatch: "R036"
-chain_status: "r035_completed_ready_for_r036_governance_record_scope_decision_or_deep_audit"
+next_round_to_dispatch: "R037"
+chain_status: "r036_completed_ready_for_r037_governance_record_scope_decision_or_deep_audit"
 backlog:
   r018:
     branch: "work/candidate-r018-schema-migration"
@@ -207,6 +207,54 @@ backlog:
     shadow_order_simulated_execution_consistency: "deferred_backlog_not_completed"
     r034_construction_started: false
     r035_started: false
+    r049_started: false
+    runtime_started: false
+    broker_api_called: false
+    order_execution_allowed: false
+  r035:
+    type: "functional_round"
+    description: "R035 快速驗證與壓力測試框架 / FastValidationAndStressTestFramework"
+    branch: "candidate/r035-fast-validation-stress-test-framework"
+    candidate_commit: "7fdb35a3bd02447c9351fef788adf84ba74366ac"
+    merged_at_commit: "bc17936e8201dd6d864e5df8f96354ba57ffa2bb"
+    evidence_complete: true
+    tests_pass: true
+    validators_pass: true
+    merge_review_status: "merged"
+    pushed_to_remote: true
+    github_actions:
+      validate_canonical_repair:
+        run_id: 26519183499
+        status: completed
+        conclusion: success
+      validate_round:
+        run_id: 26519184058
+        status: completed
+        conclusion: success
+  r036:
+    type: "gap_only_hardening"
+    description: "R036 固定測試資料集 / FixedTestDataset"
+    scope_decision: "GAP_ONLY_HARDENING_SOURCE_ALREADY_ON_CANONICAL"
+    gap_reason: "R036_FIXED_DATASET evidence.json recorded canonical_merge_executed=false requiring formal gap-only hardening"
+    branch: "candidate/r036-gap-only-hardening"
+    candidate_commit: "28e96b90ed6ee11a0cfb7e10cc098b6632a2e692"
+    merged_at_commit: "7ee575eaa8ec918611c1496523c50ece6f6aed36"
+    evidence_complete: true
+    tests_pass: true
+    validators_pass: true
+    merge_review_status: "merged"
+    pushed_to_remote: true
+    github_actions:
+      validate_canonical_repair:
+        run_id: 26524951109
+        status: completed
+        conclusion: success
+      validate_round:
+        run_id: 26524951210
+        status: completed
+        conclusion: success
+    r036_construction_started: false
+    r037_started: false
     r049_started: false
     runtime_started: false
     broker_api_called: false

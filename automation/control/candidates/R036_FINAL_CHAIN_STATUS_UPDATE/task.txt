@@ -1,0 +1,37 @@
+R036 final chain status update candidate
+
+OBJECTIVE:
+Update manifests/current_round.yaml to record R036 as completed and R037 as next round to dispatch.
+
+BASE:
+work/canonical-mainline-repair-001
+7ee575eaa8ec918611c1496523c50ece6f6aed36
+
+CANDIDATE:
+candidate/r036-final-chain-status-update
+
+MANIFEST FIELDS UPDATED:
+- last_completed_round: R035 -> R036
+- last_completed_topic: 快速驗證與壓力測試框架 -> 固定測試資料集
+- last_completed_commit: 7fdb35a3... -> 7ee575e...
+- next_round_to_dispatch: R036 -> R037
+- chain_status: r035_... -> r036_...
+
+BACKLOG ENTRIES ADDED:
+- r035 (functional_round, merged)
+- r036 (gap_only_hardening, merged)
+
+NOT MODIFIED:
+- R036 source/tests
+- R037-R048
+- R049
+- server_v2.py / index_v2.html
+- broker / live / execution / order pipeline
+- order_execution_allowed (remains FALSE)
+
+SAFETY FLAGS:
+- broker_api_called: false
+- trading_runtime_started: false
+- order_execution_allowed: false
+- R037_R048_accepted: false
+- R049_started: false
