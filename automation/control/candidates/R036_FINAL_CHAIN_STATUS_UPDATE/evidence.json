@@ -1,0 +1,87 @@
+{
+  "round_id": "R036_FINAL_CHAIN_STATUS_UPDATE",
+  "task_type": "manifest_chain_status_update",
+  "status": "candidate_ready_awaiting_manual_review",
+  "formal_status_code": "R036_FINAL_CHAIN_STATUS_UPDATE_CANDIDATE_READY",
+  "base_branch": "work/canonical-mainline-repair-001",
+  "base_head": "7ee575eaa8ec918611c1496523c50ece6f6aed36",
+  "candidate_branch": "candidate/r036-final-chain-status-update",
+  "candidate_head": null,
+  "official_topic": "固定測試資料集",
+  "gap_only_hardening_scope": true,
+  "gap_only_hardening_note": "R036 source already on canonical at 7ee575e; this candidate updates manifest chain status only",
+  "manifest_update": {
+    "last_completed_round_before": "R035",
+    "last_completed_round_after": "R036",
+    "last_completed_topic_before": "快速驗證與壓力測試框架",
+    "last_completed_topic_after": "固定測試資料集",
+    "last_completed_commit_before": "7fdb35a3bd02447c9351fef788adf84ba74366ac",
+    "last_completed_commit_after": "7ee575eaa8ec918611c1496523c50ece6f6aed36",
+    "next_round_to_dispatch_before": "R036",
+    "next_round_to_dispatch_after": "R037",
+    "chain_status_before": "r035_completed_ready_for_r036_governance_record_scope_decision_or_deep_audit",
+    "chain_status_after": "r036_completed_ready_for_r037_governance_record_scope_decision_or_deep_audit"
+  },
+  "r036_evidence_summary": {
+    "remote_canonical_head": "7ee575eaa8ec918611c1496523c50ece6f6aed36",
+    "validate_round": {
+      "run_id": "26524951210",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    "validate_canonical_repair": {
+      "run_id": "26524951109",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    "source_file": "modules/decision_prechecklist/fixed_test_dataset.py",
+    "test_file": "tests/test_fixed_test_dataset.py",
+    "invalid_malformed_input_tests_added": 7,
+    "total_tests": 17,
+    "evidence_artifacts": [
+      "automation/control/candidates/R036_GAP_ONLY_HARDENING/evidence.json",
+      "automation/control/candidates/R036_GAP_ONLY_HARDENING/report.json",
+      "automation/control/candidates/R036_GAP_ONLY_HARDENING/RETURN_TO_CHATGPT.txt",
+      "automation/control/candidates/R036_GAP_ONLY_HARDENING/test-results.txt",
+      "automation/control/candidates/R036_GAP_ONLY_HARDENING/no-aider-used.txt"
+    ]
+  },
+  "backlog_entries_added": [
+    "r035",
+    "r036"
+  ],
+  "safety_boundary": {
+    "broker_api_called": false,
+    "trading_runtime_started": false,
+    "order_execution_allowed": false,
+    "r037_r048_accepted": false,
+    "r049_started": false,
+    "server_v2_wired": false,
+    "index_v2_wired": false
+  },
+  "law_compliance": "04",
+  "law_priority_verified": "02 > 03 > 04 > 01",
+  "files_modified": [
+    "manifests/current_round.yaml"
+  ],
+  "files_created": [
+    "automation/control/candidates/R036_FINAL_CHAIN_STATUS_UPDATE/evidence.json",
+    "automation/control/candidates/R036_FINAL_CHAIN_STATUS_UPDATE/RETURN_TO_CHATGPT.txt",
+    "automation/control/candidates/R036_FINAL_CHAIN_STATUS_UPDATE/task.txt",
+    "automation/control/candidates/R036_FINAL_CHAIN_STATUS_UPDATE/report.json",
+    "automation/control/candidates/R036_FINAL_CHAIN_STATUS_UPDATE/candidate.diff"
+  ],
+  "files_deleted": [],
+  "R037_R048_accepted": false,
+  "R049_started": false,
+  "preflight_checks": {
+    "base_head_check": "PASS",
+    "git_clean_check": "PASS",
+    "branch_check": "PASS",
+    "required_ci_green": "PASS",
+    "r037_r048_not_accepted": "PASS",
+    "r049_not_started": "PASS",
+    "order_execution_allowed_false": "PASS"
+  },
+  "generated_at": "2026-05-28"
+}
