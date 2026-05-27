@@ -1,0 +1,29 @@
+round_id: R035_GOVERNANCE_RECORD_ACCEPTANCE_CANDIDATE
+task_type: governance_record_acceptance_candidate
+status: candidate_ready_awaiting_manual_review
+formal_status_code: R035_GOVERNANCE_RECORD_ACCEPTANCE_CANDIDATE_READY
+base_branch: work/canonical-mainline-repair-001
+base_head: 8b5a532a736d7c40f5731f3424e19efba426798b
+candidate_branch: candidate/r035-governance-record-acceptance
+acceptance_path: governance_record_acceptance_path
+source_construction_performed_now: FALSE
+code_already_in_head: TRUE
+batch_merge_origin: c529d9a / 5bb4600
+original_candidate_commit: 45ac10f
+R035_source_files_found: TRUE
+R035_test_files_found: TRUE
+R035_test_count: 11
+R035_tests_pass: TRUE
+source_reality: REAL_CODE (VerificationRunner, StressTestEngine, 122 lines)
+tests_reality: POSITIVE+NEGATIVE+BOUNDARY (11 tests, 6 positive, 4 negative, 2 boundary)
+broker_live_order_pollution: NONE
+canonical_merge_executed_original_value: FALSE
+corrected_evidence_inventory: TRUE
+contamination_removed: TRUE
+R036_R048_accepted: FALSE
+R049_started: FALSE
+broker_api_called: FALSE
+trading_runtime_started: FALSE
+order_execution_allowed: FALSE
+recommended_next_action: AWAITING_MANUAL_REVIEW_FOR_R035_GOVERNANCE_RECORD_ACCEPTANCE_CANDIDATE
+final_recommendation: DO_NOT_START_R049; DO_NOT_ACCEPT_R036_R048_YET; R035_ONLY_NEXT; AWAIT_USER_MANUAL_REVIEW_AND_MERGE_SIGNOFF

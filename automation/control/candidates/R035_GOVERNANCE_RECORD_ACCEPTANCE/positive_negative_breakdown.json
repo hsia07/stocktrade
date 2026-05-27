@@ -1,0 +1,46 @@
+{
+  "round_id": "R035",
+  "test_file": "tests/test_verification_framework.py",
+  "total_tests": 11,
+  "all_pass": true,
+  "positive_path": {
+    "count": 6,
+    "tests": [
+      "test_runner_initialization: VerificationRunner instantiation succeeds",
+      "test_runner_add_and_run: 2 checks (1 pass + 1 fail) produces correct totals",
+      "test_runner_all_pass: 5 checks all pass",
+      "test_verification_check: dataclass field values correct",
+      "test_stress_test_engine: 50 iterations all pass",
+      "test_stress_test_metrics: duration >= 0, max >= min"
+    ]
+  },
+  "negative_path": {
+    "count": 4,
+    "tests": [
+      "test_runner_add_and_run: 1 of 2 checks fails",
+      "test_runner_exception_handling: exception in check caught and stored",
+      "test_stress_test_with_failures: partial failures, pass_rate < 1.0",
+      "test_stress_test_exception_handling: exceptions in generate, 5/10 fail"
+    ]
+  },
+  "boundary": {
+    "count": 2,
+    "tests": [
+      "test_verification_suite_result_properties: all_passed true/false boundary",
+      "test_runner_with_empty_checks: 0 checks, all_passed expected"
+    ]
+  },
+  "invalid_input_coverage": {
+    "count": 0,
+    "finding": "non-Callable to add_check, negative count to StressTestScenario not tested",
+    "severity": "minor",
+    "blocker": false
+  },
+  "deterministic_output": {
+    "count": 2,
+    "tests": [
+      "test_verification_suite_result_properties: all_passed depends deterministically on failed_checks",
+      "test_stress_test_metrics: structural invariants (max >= min, duration >= 0)"
+    ]
+  }
+}
