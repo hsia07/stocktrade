@@ -1,374 +1,904 @@
-diff --git a/automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/RETURN_TO_CHATGPT.txt b/automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/RETURN_TO_CHATGPT.txt
-new file mode 100644
-index 0000000..719c5f6
---- /dev/null
-+++ b/automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/RETURN_TO_CHATGPT.txt
-@@ -0,0 +1,29 @@
-+round_id: R035_GOVERNANCE_RECORD_ACCEPTANCE_CANDIDATE
-+task_type: governance_record_acceptance_candidate
-+status: candidate_ready_awaiting_manual_review
-+formal_status_code: R035_GOVERNANCE_RECORD_ACCEPTANCE_CANDIDATE_READY
-+base_branch: work/canonical-mainline-repair-001
-+base_head: 8b5a532a736d7c40f5731f3424e19efba426798b
-+candidate_branch: candidate/r035-governance-record-acceptance
-+acceptance_path: governance_record_acceptance_path
-+source_construction_performed_now: FALSE
-+code_already_in_head: TRUE
-+batch_merge_origin: c529d9a / 5bb4600
-+original_candidate_commit: 45ac10f
-+R035_source_files_found: TRUE
-+R035_test_files_found: TRUE
-+R035_test_count: 11
-+R035_tests_pass: TRUE
-+source_reality: REAL_CODE (VerificationRunner, StressTestEngine, 122 lines)
-+tests_reality: POSITIVE+NEGATIVE+BOUNDARY (11 tests, 6 positive, 4 negative, 2 boundary)
-+broker_live_order_pollution: NONE
-+canonical_merge_executed_original_value: FALSE
-+corrected_evidence_inventory: TRUE
-+contamination_removed: TRUE
-+R036_R048_accepted: FALSE
-+R049_started: FALSE
-+broker_api_called: FALSE
-+trading_runtime_started: FALSE
-+order_execution_allowed: FALSE
-+recommended_next_action: AWAITING_MANUAL_REVIEW_FOR_R035_GOVERNANCE_RECORD_ACCEPTANCE_CANDIDATE
-+final_recommendation: DO_NOT_START_R049; DO_NOT_ACCEPT_R036_R048_YET; R035_ONLY_NEXT; AWAIT_USER_MANUAL_REVIEW_AND_MERGE_SIGNOFF
 diff --git a/automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/candidate.diff b/automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/candidate.diff
-new file mode 100644
-index 0000000..e69de29
+index ad3cfd1..c0b27b7 100644
+--- a/automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/candidate.diff
++++ b/automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/candidate.diff
+@@ -1,374 +1,429 @@
+-diff --git a/automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/RETURN_TO_CHATGPT.txt b/automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/RETURN_TO_CHATGPT.txt
+-new file mode 100644
+-index 0000000..719c5f6
+---- /dev/null
+-+++ b/automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/RETURN_TO_CHATGPT.txt
+-@@ -0,0 +1,29 @@
+-+round_id: R035_GOVERNANCE_RECORD_ACCEPTANCE_CANDIDATE
+-+task_type: governance_record_acceptance_candidate
+-+status: candidate_ready_awaiting_manual_review
+-+formal_status_code: R035_GOVERNANCE_RECORD_ACCEPTANCE_CANDIDATE_READY
+-+base_branch: work/canonical-mainline-repair-001
+-+base_head: 8b5a532a736d7c40f5731f3424e19efba426798b
+-+candidate_branch: candidate/r035-governance-record-acceptance
+-+acceptance_path: governance_record_acceptance_path
+-+source_construction_performed_now: FALSE
+-+code_already_in_head: TRUE
+-+batch_merge_origin: c529d9a / 5bb4600
+-+original_candidate_commit: 45ac10f
+-+R035_source_files_found: TRUE
+-+R035_test_files_found: TRUE
+-+R035_test_count: 11
+-+R035_tests_pass: TRUE
+-+source_reality: REAL_CODE (VerificationRunner, StressTestEngine, 122 lines)
+-+tests_reality: POSITIVE+NEGATIVE+BOUNDARY (11 tests, 6 positive, 4 negative, 2 boundary)
+-+broker_live_order_pollution: NONE
+-+canonical_merge_executed_original_value: FALSE
+-+corrected_evidence_inventory: TRUE
+-+contamination_removed: TRUE
+-+R036_R048_accepted: FALSE
+-+R049_started: FALSE
+-+broker_api_called: FALSE
+-+trading_runtime_started: FALSE
+-+order_execution_allowed: FALSE
+-+recommended_next_action: AWAITING_MANUAL_REVIEW_FOR_R035_GOVERNANCE_RECORD_ACCEPTANCE_CANDIDATE
+-+final_recommendation: DO_NOT_START_R049; DO_NOT_ACCEPT_R036_R048_YET; R035_ONLY_NEXT; AWAIT_USER_MANUAL_REVIEW_AND_MERGE_SIGNOFF
+ diff --git a/automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/candidate.diff b/automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/candidate.diff
+-new file mode 100644
+-index 0000000..e69de29
++index ad3cfd1..e69de29 100644
++--- a/automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/candidate.diff
+++++ b/automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/candidate.diff
++@@ -1,374 +0,0 @@
++-diff --git a/automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/RETURN_TO_CHATGPT.txt b/automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/RETURN_TO_CHATGPT.txt
++-new file mode 100644
++-index 0000000..719c5f6
++---- /dev/null
++-+++ b/automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/RETURN_TO_CHATGPT.txt
++-@@ -0,0 +1,29 @@
++-+round_id: R035_GOVERNANCE_RECORD_ACCEPTANCE_CANDIDATE
++-+task_type: governance_record_acceptance_candidate
++-+status: candidate_ready_awaiting_manual_review
++-+formal_status_code: R035_GOVERNANCE_RECORD_ACCEPTANCE_CANDIDATE_READY
++-+base_branch: work/canonical-mainline-repair-001
++-+base_head: 8b5a532a736d7c40f5731f3424e19efba426798b
++-+candidate_branch: candidate/r035-governance-record-acceptance
++-+acceptance_path: governance_record_acceptance_path
++-+source_construction_performed_now: FALSE
++-+code_already_in_head: TRUE
++-+batch_merge_origin: c529d9a / 5bb4600
++-+original_candidate_commit: 45ac10f
++-+R035_source_files_found: TRUE
++-+R035_test_files_found: TRUE
++-+R035_test_count: 11
++-+R035_tests_pass: TRUE
++-+source_reality: REAL_CODE (VerificationRunner, StressTestEngine, 122 lines)
++-+tests_reality: POSITIVE+NEGATIVE+BOUNDARY (11 tests, 6 positive, 4 negative, 2 boundary)
++-+broker_live_order_pollution: NONE
++-+canonical_merge_executed_original_value: FALSE
++-+corrected_evidence_inventory: TRUE
++-+contamination_removed: TRUE
++-+R036_R048_accepted: FALSE
++-+R049_started: FALSE
++-+broker_api_called: FALSE
++-+trading_runtime_started: FALSE
++-+order_execution_allowed: FALSE
++-+recommended_next_action: AWAITING_MANUAL_REVIEW_FOR_R035_GOVERNANCE_RECORD_ACCEPTANCE_CANDIDATE
++-+final_recommendation: DO_NOT_START_R049; DO_NOT_ACCEPT_R036_R048_YET; R035_ONLY_NEXT; AWAIT_USER_MANUAL_REVIEW_AND_MERGE_SIGNOFF
++-diff --git a/automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/candidate.diff b/automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/candidate.diff
++-new file mode 100644
++-index 0000000..e69de29
++-diff --git a/automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/evidence.json b/automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/evidence.json
++-new file mode 100644
++-index 0000000..242bdb7
++---- /dev/null
++-+++ b/automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/evidence.json
++-@@ -0,0 +1,80 @@
++-+{
++-+  "round_id": "R035",
++-+  "task_type": "governance_record_acceptance_candidate",
++-+  "status": "candidate_ready_awaiting_manual_review",
++-+  "formal_status_code": "R035_GOVERNANCE_RECORD_ACCEPTANCE_CANDIDATE_READY",
++-+  "base_head": "8b5a532a736d7c40f5731f3424e19efba426798b",
++-+  "candidate_branch": "candidate/r035-governance-record-acceptance",
++-+  "official_topic": "敹恍?霅?憯?皜祈岫獢",
++-+  "acceptance_path": "governance_record_acceptance_path",
++-+  "batch_merge_origin": "c529d9a / 5bb4600",
++-+  "original_candidate_commit": "45ac10f",
++-+  "source_files": ["modules/decision_prechecklist/verification_framework.py"],
++-+  "test_files": ["tests/test_verification_framework.py"],
++-+  "test_count": 11,
++-+  "tests_pass": true,
++-+  "source_reality": {
++-+    "lines": 122,
++-+    "status": "REAL_CODE",
++-+    "classes": ["VerificationCheck", "VerificationSuiteResult", "StressTestScenario", "StressTestResult", "VerificationRunner", "StressTestEngine"],
++-+    "logic_types": ["verification runner with error handling", "stress test engine with statistical metrics"],
++-+    "stdlib_only": true,
++-+    "no_broker_live_order_pollution": true,
++-+    "no_server_v2_index_v2_wiring": true
++-+  },
++-+  "tests_reality": {
++-+    "lines": 128,
++-+    "imports_from_source": true,
++-+    "positive_path_tests": 6,
++-+    "negative_path_tests": 4,
++-+    "boundary_tests": 2,
++-+    "invalid_input_tests": 0,
++-+    "deterministic_output_tests": 2,
++-+    "all_pass": true
++-+  },
++-+  "safety_boundary": {
++-+    "broker_api_called": false,
++-+    "trading_runtime_started": false,
++-+    "order_execution_allowed": false,
++-+    "server_v2_wired": false,
++-+    "index_v2_wired": false
++-+  },
++-+  "corrected_evidence_inventory": true,
++-+  "contamination_removed": true,
++-+  "canonical_merge_executed_original_value": false,
++-+  "governance_record_acceptance_path": true,
++-+  "r036_R048_accepted": false,
++-+  "r049_started": false,
++-+  "broker_api_called": false,
++-+  "trading_runtime_started": false,
++-+  "order_execution_allowed": false,
++-+  "files_modified": [],
++-+  "files_created": [
++-+    "automation/control/governance/r035-governance-record.json",
++-+    "automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/evidence.json",
++-+    "automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/RETURN_TO_CHATGPT.txt",
++-+    "automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/task.txt",
++-+    "automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/candidate.diff",
++-+    "automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/report.json",
++-+    "automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/positive_negative_breakdown.json",
++-+    "automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/safety_boundary_review.json",
++-+    "automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/test-results.txt"
++-+  ],
++-+  "files_deleted": [],
++-+  "source_topic_table": "_governance/law/161頛芣迤撘?蝺其蜓憿蜇銵灶?臭??箸??v2.md",
++-+  "law_compliance": "04",
++-+  "law_priority_verified": "02 > 03 > 04 > 01",
++-+  "preflight_checks": {
++-+    "base_head_check": "PASS",
++-+    "git_clean_check": "PASS",
++-+    "branch_check": "PASS",
++-+    "tests_pass_check": "PASS",
++-+    "source_stub_check": "PASS (real code)",
++-+    "pollution_check": "PASS",
++-+    "contamination_removed_check": "PASS",
++-+    "corrected_inventory_check": "PASS",
++-+    "r036_r048_not_accepted": "PASS",
++-+    "r049_not_started": "PASS"
++-+  },
++-+  "generated_at": "2026-05-27"
++-+}
++-diff --git a/automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/positive_negative_breakdown.json b/automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/positive_negative_breakdown.json
++-new file mode 100644
++-index 0000000..67be980
++---- /dev/null
++-+++ b/automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/positive_negative_breakdown.json
++-@@ -0,0 +1,46 @@
++-+{
++-+  "round_id": "R035",
++-+  "test_file": "tests/test_verification_framework.py",
++-+  "total_tests": 11,
++-+  "all_pass": true,
++-+  "positive_path": {
++-+    "count": 6,
++-+    "tests": [
++-+      "test_runner_initialization: VerificationRunner instantiation succeeds",
++-+      "test_runner_add_and_run: 2 checks (1 pass + 1 fail) produces correct totals",
++-+      "test_runner_all_pass: 5 checks all pass",
++-+      "test_verification_check: dataclass field values correct",
++-+      "test_stress_test_engine: 50 iterations all pass",
++-+      "test_stress_test_metrics: duration >= 0, max >= min"
++-+    ]
++-+  },
++-+  "negative_path": {
++-+    "count": 4,
++-+    "tests": [
++-+      "test_runner_add_and_run: 1 of 2 checks fails",
++-+      "test_runner_exception_handling: exception in check caught and stored",
++-+      "test_stress_test_with_failures: partial failures, pass_rate < 1.0",
++-+      "test_stress_test_exception_handling: exceptions in generate, 5/10 fail"
++-+    ]
++-+  },
++-+  "boundary": {
++-+    "count": 2,
++-+    "tests": [
++-+      "test_verification_suite_result_properties: all_passed true/false boundary",
++-+      "test_runner_with_empty_checks: 0 checks, all_passed expected"
++-+    ]
++-+  },
++-+  "invalid_input_coverage": {
++-+    "count": 0,
++-+    "finding": "non-Callable to add_check, negative count to StressTestScenario not tested",
++-+    "severity": "minor",
++-+    "blocker": false
++-+  },
++-+  "deterministic_output": {
++-+    "count": 2,
++-+    "tests": [
++-+      "test_verification_suite_result_properties: all_passed depends deterministically on failed_checks",
++-+      "test_stress_test_metrics: structural invariants (max >= min, duration >= 0)"
++-+    ]
++-+  }
++-+}
++-diff --git a/automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/report.json b/automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/report.json
++-new file mode 100644
++-index 0000000..df34c59
++---- /dev/null
++-+++ b/automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/report.json
++-@@ -0,0 +1,50 @@
++-+{
++-+  "round_id": "R035",
++-+  "candidate_type": "governance_record_acceptance",
++-+  "base_head": "8b5a532a736d7c40f5731f3424e19efba426798b",
++-+  "candidate_branch": "candidate/r035-governance-record-acceptance",
++-+  "deep_audit_conclusion": "governance_record_acceptance_path eligible",
++-+  "user_authorization": "Option A granted for R035 only",
++-+  "source_integrity": {
++-+    "verification_framework_py": {
++-+      "exists": true,
++-+      "lines": 122,
++-+      "status": "REAL_CODE",
++-+      "stub_or_todo": false,
++-+      "pass_only": false,
++-+      "dataclass_only": false,
++-+      "broker_pollution": false,
++-+      "live_pollution": false,
++-+      "order_pollution": false,
++-+      "server_v2_pollution": false,
++-+      "index_v2_pollution": false
++-+    }
++-+  },
++-+  "test_integrity": {
++-+    "test_verification_framework_py": {
++-+      "exists": true,
++-+      "lines": 128,
++-+      "tests_found": 11,
++-+      "tests_pass": true,
++-+      "imports_source": true,
++-+      "positive_path": 6,
++-+      "negative_path": 4,
++-+      "boundary": 2,
++-+      "invalid_input_coverage": 0,
++-+      "broker_pollution": false,
++-+      "live_pollution": false,
++-+      "order_pollution": false
++-+    }
++-+  },
++-+  "coverage_gaps": [
++-+    {
++-+      "severity": "minor",
++-+      "finding": "invalid input tests for non-Callable / negative count not explicit",
++-+      "blocker": false
++-+    }
++-+  ],
++-+  "direct_blockers": [],
++-+  "contamination_fixed": true,
++-+  "corrected_inventory": true,
++-+  "final_recommendation": "candidate_ready_awaiting_manual_review"
++-+}
++-diff --git a/automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/safety_boundary_review.json b/automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/safety_boundary_review.json
++-new file mode 100644
++-index 0000000..b8e7a97
++---- /dev/null
++-+++ b/automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/safety_boundary_review.json
++-@@ -0,0 +1,37 @@
++-+{
++-+  "round_id": "R035",
++-+  "review_type": "safety_boundary_review",
++-+  "source_files_reviewed": ["modules/decision_prechecklist/verification_framework.py"],
++-+  "test_files_reviewed": ["tests/test_verification_framework.py"],
++-+  "broker_imports_or_calls": {
++-+    "source": "NOT_FOUND",
++-+    "tests": "NOT_FOUND"
++-+  },
++-+  "order_imports_or_calls": {
++-+    "source": "NOT_FOUND",
++-+    "tests": "NOT_FOUND"
++-+  },
++-+  "live_execution_imports_or_calls": {
++-+    "source": "NOT_FOUND",
++-+    "tests": "NOT_FOUND"
++-+  },
++-+  "server_v2_imports_or_calls": {
++-+    "source": "NOT_FOUND",
++-+    "tests": "NOT_FOUND"
++-+  },
++-+  "index_v2_imports_or_calls": {
++-+    "source": "NOT_FOUND",
++-+    "tests": "NOT_FOUND"
++-+  },
++-+  "trading_runtime_imports_or_calls": {
++-+    "source": "NOT_FOUND",
++-+    "tests": "NOT_FOUND"
++-+  },
++-+  "external_market_api_calls": {
++-+    "source": "NOT_FOUND",
++-+    "tests": "NOT_FOUND"
++-+  },
++-+  "source_imports": ["from __future__ import annotations", "import random", "import statistics", "from dataclasses import dataclass, field", "from typing import Any, Callable", "from datetime import datetime, timezone"],
++-+  "stdlib_only": true,
++-+  "verdict": "CLEAN"
++-+}
++-diff --git a/automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/task.txt b/automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/task.txt
++-new file mode 100644
++-index 0000000..6a254dc
++---- /dev/null
++-+++ b/automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/task.txt
++-@@ -0,0 +1,17 @@
++-+Establish R035 governance record acceptance candidate.
++-+
++-+Background:
++-+R035 TO R048 FAST PLANNING READINESS MAP confirmed R035-R048 code/tests exist in HEAD via batch merge c529d9a/5bb4600.
++-+R035 GOVERNANCE RECORD SCOPE DECISION AND DEEP AUDIT confirmed R035 is eligible for governance_record_acceptance_path (Option A).
++-+User authorized Option A for R035 only.
++-+
++-+This candidate:
++-+- Creates governance record accepting R035 as delivered by batch merge
++-+- Corrects evidence inventory (removes contamination, adds missing files)
++-+- Does NOT modify any R035 source/test files
++-+- Does NOT accept R036-R048
++-+- Does NOT authorize R049
++-+
++-+Files created:
++-+- automation/control/governance/r035-governance-record.json
++-+- automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/
++-diff --git a/automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/test-results.txt b/automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/test-results.txt
++-new file mode 100644
++-index 0000000..d5fe63b
++---- /dev/null
++-+++ b/automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/test-results.txt
++-@@ -0,0 +1,25 @@
++-+R035 test results for modules/decision_prechecklist/verification_framework.py
++-+Test file: tests/test_verification_framework.py
++-+Command: python -m pytest tests/test_verification_framework.py -v --tb=short
++-+Date: 2026-05-27
++-+
++-+RESULTS:
++-+============================= test session starts =============================
++-+platform win32 -- Python 3.14.4, pytest-9.0.3
++-+collected 11 items
++-+
++-+tests/test_verification_framework.py::test_runner_initialization PASSED
++-+tests/test_verification_framework.py::test_runner_add_and_run PASSED
++-+tests/test_verification_framework.py::test_runner_all_pass PASSED
++-+tests/test_verification_framework.py::test_runner_exception_handling PASSED
++-+tests/test_verification_framework.py::test_verification_suite_result_properties PASSED
++-+tests/test_verification_framework.py::test_verification_check PASSED
++-+tests/test_verification_framework.py::test_stress_test_engine PASSED
++-+tests/test_verification_framework.py::test_stress_test_with_failures PASSED
++-+tests/test_verification_framework.py::test_stress_test_exception_handling PASSED
++-+tests/test_verification_framework.py::test_stress_test_metrics PASSED
++-+tests/test_verification_framework.py::test_runner_with_empty_checks PASSED
++-+
++-+============================= 11 passed in 0.11s =============================
++-+
++-+All 11 tests PASS.
++-diff --git a/automation/control/governance/r035-governance-record.json b/automation/control/governance/r035-governance-record.json
++-new file mode 100644
++-index 0000000..8f73a9d
++---- /dev/null
++-+++ b/automation/control/governance/r035-governance-record.json
++-@@ -0,0 +1,39 @@
++-+{
++-+  "record_type": "R035_GOVERNANCE_RECORD_ACCEPTANCE",
++-+  "round_id": "R035",
++-+  "official_topic": "敹恍?霅?憯?皜祈岫獢",
++-+  "acceptance_path": "governance_record_acceptance_path",
++-+  "source_construction_performed_now": false,
++-+  "code_already_in_head": true,
++-+  "batch_merge_origin": "c529d9a (R031-R048 batch checkpoint) / 5bb4600 (R043-R048 staging checkpoint)",
++-+  "original_candidate_commit": "45ac10f",
++-+  "original_candidate_evidence_status": "flawed",
++-+  "canonical_merge_executed_in_original_evidence": false,
++-+  "reason_for_governance_record": "R035 source/tests were batch-merged into canonical via c529d9a/5bb4600 without per-round governance construction process. Corrected evidence inventory established.",
++-+  "source_files": [
++-+    "modules/decision_prechecklist/verification_framework.py"
++-+  ],
++-+  "test_files": [
++-+    "tests/test_verification_framework.py"
++-+  ],
++-+  "corrected_evidence_inventory": true,
++-+  "contamination_removed_from_R035_scope": [
++-+    "modules/decision_prechecklist/replay_isolation.py",
++-+    "tests/test_replay_isolation.py"
++-+  ],
++-+  "contamination_note": "replay_isolation.py and test_replay_isolation.py are R033/R034 topic content incorrectly listed in original R035 candidate evidence. Removed from R035 scope. These files remain in HEAD as part of their respective round deliveries.",
++-+  "minor_non_blocking_gap": "invalid input tests for non-Callable / negative count are not explicit in test coverage",
++-+  "no_code_level_hardening_required": true,
++-+  "r036_R048_not_accepted": true,
++-+  "r049_not_authorized": true,
++-+  "order_execution_allowed_remains_FALSE": true,
++-+  "base_head": "8b5a532a736d7c40f5731f3424e19efba426798b",
++-+  "candidate_branch": "candidate/r035-governance-record-acceptance",
++-+  "not_live_readiness": true,
++-+  "not_market_reality_full_engine": true,
++-+  "not_r049_authorization": true,
++-+  "created_at": "2026-05-27",
++-+  "governance_baseline": "04",
++-+  "law_priority": "02 > 03 > 04 > 01",
++-+  "notes": "R035 deep audit concluded governance_record_acceptance_path eligible. Source is real code (VerificationRunner, StressTestEngine), 11/11 tests pass, no broker/live/order pollution. Pre-existing candidate evidence had contamination (replay_isolation) and omissions (verification_framework.py). Corrected evidence inventory established. Awaiting manual review and merge signoff."
++-+}
+ diff --git a/automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/evidence.json b/automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/evidence.json
+-new file mode 100644
+-index 0000000..242bdb7
+---- /dev/null
++index 242bdb7..2cb4604 100644
++--- a/automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/evidence.json
+ +++ b/automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/evidence.json
+-@@ -0,0 +1,80 @@
+-+{
+-+  "round_id": "R035",
+-+  "task_type": "governance_record_acceptance_candidate",
+-+  "status": "candidate_ready_awaiting_manual_review",
+-+  "formal_status_code": "R035_GOVERNANCE_RECORD_ACCEPTANCE_CANDIDATE_READY",
+-+  "base_head": "8b5a532a736d7c40f5731f3424e19efba426798b",
+-+  "candidate_branch": "candidate/r035-governance-record-acceptance",
+-+  "official_topic": "敹恍?霅?憯?皜祈岫獢",
+-+  "acceptance_path": "governance_record_acceptance_path",
+-+  "batch_merge_origin": "c529d9a / 5bb4600",
+-+  "original_candidate_commit": "45ac10f",
+-+  "source_files": ["modules/decision_prechecklist/verification_framework.py"],
+-+  "test_files": ["tests/test_verification_framework.py"],
+-+  "test_count": 11,
+-+  "tests_pass": true,
+-+  "source_reality": {
+-+    "lines": 122,
+-+    "status": "REAL_CODE",
+-+    "classes": ["VerificationCheck", "VerificationSuiteResult", "StressTestScenario", "StressTestResult", "VerificationRunner", "StressTestEngine"],
+-+    "logic_types": ["verification runner with error handling", "stress test engine with statistical metrics"],
+-+    "stdlib_only": true,
+-+    "no_broker_live_order_pollution": true,
+-+    "no_server_v2_index_v2_wiring": true
+-+  },
+-+  "tests_reality": {
+-+    "lines": 128,
+-+    "imports_from_source": true,
+-+    "positive_path_tests": 6,
+-+    "negative_path_tests": 4,
+-+    "boundary_tests": 2,
+-+    "invalid_input_tests": 0,
+-+    "deterministic_output_tests": 2,
+-+    "all_pass": true
+-+  },
+-+  "safety_boundary": {
+-+    "broker_api_called": false,
+-+    "trading_runtime_started": false,
+-+    "order_execution_allowed": false,
+-+    "server_v2_wired": false,
+-+    "index_v2_wired": false
+-+  },
+-+  "corrected_evidence_inventory": true,
+-+  "contamination_removed": true,
+-+  "canonical_merge_executed_original_value": false,
+-+  "governance_record_acceptance_path": true,
+-+  "r036_R048_accepted": false,
+-+  "r049_started": false,
+-+  "broker_api_called": false,
+-+  "trading_runtime_started": false,
+-+  "order_execution_allowed": false,
+-+  "files_modified": [],
+-+  "files_created": [
+-+    "automation/control/governance/r035-governance-record.json",
+-+    "automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/evidence.json",
+-+    "automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/RETURN_TO_CHATGPT.txt",
+-+    "automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/task.txt",
+-+    "automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/candidate.diff",
+-+    "automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/report.json",
+-+    "automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/positive_negative_breakdown.json",
+-+    "automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/safety_boundary_review.json",
+-+    "automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/test-results.txt"
+-+  ],
+-+  "files_deleted": [],
+-+  "source_topic_table": "_governance/law/161頛芣迤撘?蝺其蜓憿蜇銵灶?臭??箸??v2.md",
+-+  "law_compliance": "04",
+-+  "law_priority_verified": "02 > 03 > 04 > 01",
+-+  "preflight_checks": {
+-+    "base_head_check": "PASS",
+-+    "git_clean_check": "PASS",
+-+    "branch_check": "PASS",
+-+    "tests_pass_check": "PASS",
+-+    "source_stub_check": "PASS (real code)",
+-+    "pollution_check": "PASS",
+-+    "contamination_removed_check": "PASS",
+-+    "corrected_inventory_check": "PASS",
+-+    "r036_r048_not_accepted": "PASS",
+-+    "r049_not_started": "PASS"
+-+  },
+-+  "generated_at": "2026-05-27"
+-+}
+-diff --git a/automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/positive_negative_breakdown.json b/automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/positive_negative_breakdown.json
+-new file mode 100644
+-index 0000000..67be980
+---- /dev/null
+-+++ b/automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/positive_negative_breakdown.json
+-@@ -0,0 +1,46 @@
+-+{
+-+  "round_id": "R035",
+-+  "test_file": "tests/test_verification_framework.py",
+-+  "total_tests": 11,
+-+  "all_pass": true,
+-+  "positive_path": {
+-+    "count": 6,
+-+    "tests": [
+-+      "test_runner_initialization: VerificationRunner instantiation succeeds",
+-+      "test_runner_add_and_run: 2 checks (1 pass + 1 fail) produces correct totals",
+-+      "test_runner_all_pass: 5 checks all pass",
+-+      "test_verification_check: dataclass field values correct",
+-+      "test_stress_test_engine: 50 iterations all pass",
+-+      "test_stress_test_metrics: duration >= 0, max >= min"
+-+    ]
+-+  },
+-+  "negative_path": {
+-+    "count": 4,
+-+    "tests": [
+-+      "test_runner_add_and_run: 1 of 2 checks fails",
+-+      "test_runner_exception_handling: exception in check caught and stored",
+-+      "test_stress_test_with_failures: partial failures, pass_rate < 1.0",
+-+      "test_stress_test_exception_handling: exceptions in generate, 5/10 fail"
+-+    ]
+-+  },
+-+  "boundary": {
+-+    "count": 2,
+-+    "tests": [
+-+      "test_verification_suite_result_properties: all_passed true/false boundary",
+-+      "test_runner_with_empty_checks: 0 checks, all_passed expected"
+-+    ]
+-+  },
+-+  "invalid_input_coverage": {
+-+    "count": 0,
+-+    "finding": "non-Callable to add_check, negative count to StressTestScenario not tested",
+-+    "severity": "minor",
+-+    "blocker": false
+-+  },
+-+  "deterministic_output": {
+-+    "count": 2,
+-+    "tests": [
+-+      "test_verification_suite_result_properties: all_passed depends deterministically on failed_checks",
+-+      "test_stress_test_metrics: structural invariants (max >= min, duration >= 0)"
+-+    ]
+-+  }
+-+}
++@@ -49,6 +49,7 @@
++   "trading_runtime_started": false,
++   "order_execution_allowed": false,
++   "files_modified": [],
+++  "candidate_commit": "e5175275e74643622ddbd24596bb7f1c2195177c",
++   "files_created": [
++     "automation/control/governance/r035-governance-record.json",
++     "automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/evidence.json",
++@@ -58,7 +59,10 @@
++     "automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/report.json",
++     "automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/positive_negative_breakdown.json",
++     "automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/safety_boundary_review.json",
++-    "automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/test-results.txt"
+++    "automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/test-results.txt",
+++    "automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/no-aider-used.txt",
+++    "automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/merge_signoff.txt",
+++    "automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/push_signoff.txt"
++   ],
++   "files_deleted": [],
++   "source_topic_table": "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md",
+ diff --git a/automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/report.json b/automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/report.json
+-new file mode 100644
+-index 0000000..df34c59
+---- /dev/null
++index df34c59..2c4a537 100644
++--- a/automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/report.json
+ +++ b/automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/report.json
+-@@ -0,0 +1,50 @@
+-+{
+-+  "round_id": "R035",
+-+  "candidate_type": "governance_record_acceptance",
+-+  "base_head": "8b5a532a736d7c40f5731f3424e19efba426798b",
+-+  "candidate_branch": "candidate/r035-governance-record-acceptance",
+-+  "deep_audit_conclusion": "governance_record_acceptance_path eligible",
+-+  "user_authorization": "Option A granted for R035 only",
+-+  "source_integrity": {
+-+    "verification_framework_py": {
+-+      "exists": true,
+-+      "lines": 122,
+-+      "status": "REAL_CODE",
+-+      "stub_or_todo": false,
+-+      "pass_only": false,
+-+      "dataclass_only": false,
+-+      "broker_pollution": false,
+-+      "live_pollution": false,
+-+      "order_pollution": false,
+-+      "server_v2_pollution": false,
+-+      "index_v2_pollution": false
+-+    }
+-+  },
+-+  "test_integrity": {
+-+    "test_verification_framework_py": {
+-+      "exists": true,
+-+      "lines": 128,
+-+      "tests_found": 11,
+-+      "tests_pass": true,
+-+      "imports_source": true,
+-+      "positive_path": 6,
+-+      "negative_path": 4,
+-+      "boundary": 2,
+-+      "invalid_input_coverage": 0,
+-+      "broker_pollution": false,
+-+      "live_pollution": false,
+-+      "order_pollution": false
+-+    }
+-+  },
+-+  "coverage_gaps": [
+-+    {
+-+      "severity": "minor",
+-+      "finding": "invalid input tests for non-Callable / negative count not explicit",
+-+      "blocker": false
+-+    }
+-+  ],
+-+  "direct_blockers": [],
+-+  "contamination_fixed": true,
+-+  "corrected_inventory": true,
+-+  "final_recommendation": "candidate_ready_awaiting_manual_review"
+-+}
+-diff --git a/automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/safety_boundary_review.json b/automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/safety_boundary_review.json
+-new file mode 100644
+-index 0000000..b8e7a97
+---- /dev/null
+-+++ b/automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/safety_boundary_review.json
+-@@ -0,0 +1,37 @@
+-+{
+-+  "round_id": "R035",
+-+  "review_type": "safety_boundary_review",
+-+  "source_files_reviewed": ["modules/decision_prechecklist/verification_framework.py"],
+-+  "test_files_reviewed": ["tests/test_verification_framework.py"],
+-+  "broker_imports_or_calls": {
+-+    "source": "NOT_FOUND",
+-+    "tests": "NOT_FOUND"
+-+  },
+-+  "order_imports_or_calls": {
+-+    "source": "NOT_FOUND",
+-+    "tests": "NOT_FOUND"
+-+  },
+-+  "live_execution_imports_or_calls": {
+-+    "source": "NOT_FOUND",
+-+    "tests": "NOT_FOUND"
+-+  },
+-+  "server_v2_imports_or_calls": {
+-+    "source": "NOT_FOUND",
+-+    "tests": "NOT_FOUND"
+-+  },
+-+  "index_v2_imports_or_calls": {
+-+    "source": "NOT_FOUND",
+-+    "tests": "NOT_FOUND"
+-+  },
+-+  "trading_runtime_imports_or_calls": {
+-+    "source": "NOT_FOUND",
+-+    "tests": "NOT_FOUND"
+-+  },
+-+  "external_market_api_calls": {
+-+    "source": "NOT_FOUND",
+-+    "tests": "NOT_FOUND"
+-+  },
+-+  "source_imports": ["from __future__ import annotations", "import random", "import statistics", "from dataclasses import dataclass, field", "from typing import Any, Callable", "from datetime import datetime, timezone"],
+-+  "stdlib_only": true,
+-+  "verdict": "CLEAN"
+-+}
+-diff --git a/automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/task.txt b/automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/task.txt
+-new file mode 100644
+-index 0000000..6a254dc
+---- /dev/null
+-+++ b/automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/task.txt
+-@@ -0,0 +1,17 @@
+-+Establish R035 governance record acceptance candidate.
+-+
+-+Background:
+-+R035 TO R048 FAST PLANNING READINESS MAP confirmed R035-R048 code/tests exist in HEAD via batch merge c529d9a/5bb4600.
+-+R035 GOVERNANCE RECORD SCOPE DECISION AND DEEP AUDIT confirmed R035 is eligible for governance_record_acceptance_path (Option A).
+-+User authorized Option A for R035 only.
+-+
+-+This candidate:
+-+- Creates governance record accepting R035 as delivered by batch merge
+-+- Corrects evidence inventory (removes contamination, adds missing files)
+-+- Does NOT modify any R035 source/test files
+-+- Does NOT accept R036-R048
+-+- Does NOT authorize R049
+-+
+-+Files created:
+-+- automation/control/governance/r035-governance-record.json
+-+- automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/
+-diff --git a/automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/test-results.txt b/automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/test-results.txt
+-new file mode 100644
+-index 0000000..d5fe63b
+---- /dev/null
+-+++ b/automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/test-results.txt
+-@@ -0,0 +1,25 @@
+-+R035 test results for modules/decision_prechecklist/verification_framework.py
+-+Test file: tests/test_verification_framework.py
+-+Command: python -m pytest tests/test_verification_framework.py -v --tb=short
+-+Date: 2026-05-27
+-+
+-+RESULTS:
+-+============================= test session starts =============================
+-+platform win32 -- Python 3.14.4, pytest-9.0.3
+-+collected 11 items
+-+
+-+tests/test_verification_framework.py::test_runner_initialization PASSED
+-+tests/test_verification_framework.py::test_runner_add_and_run PASSED
+-+tests/test_verification_framework.py::test_runner_all_pass PASSED
+-+tests/test_verification_framework.py::test_runner_exception_handling PASSED
+-+tests/test_verification_framework.py::test_verification_suite_result_properties PASSED
+-+tests/test_verification_framework.py::test_verification_check PASSED
+-+tests/test_verification_framework.py::test_stress_test_engine PASSED
+-+tests/test_verification_framework.py::test_stress_test_with_failures PASSED
+-+tests/test_verification_framework.py::test_stress_test_exception_handling PASSED
+-+tests/test_verification_framework.py::test_stress_test_metrics PASSED
+-+tests/test_verification_framework.py::test_runner_with_empty_checks PASSED
+-+
+-+============================= 11 passed in 0.11s =============================
+-+
+-+All 11 tests PASS.
+-diff --git a/automation/control/governance/r035-governance-record.json b/automation/control/governance/r035-governance-record.json
+-new file mode 100644
+-index 0000000..8f73a9d
+---- /dev/null
+-+++ b/automation/control/governance/r035-governance-record.json
+-@@ -0,0 +1,39 @@
+-+{
+-+  "record_type": "R035_GOVERNANCE_RECORD_ACCEPTANCE",
+-+  "round_id": "R035",
+-+  "official_topic": "敹恍?霅?憯?皜祈岫獢",
+-+  "acceptance_path": "governance_record_acceptance_path",
+-+  "source_construction_performed_now": false,
+-+  "code_already_in_head": true,
+-+  "batch_merge_origin": "c529d9a (R031-R048 batch checkpoint) / 5bb4600 (R043-R048 staging checkpoint)",
+-+  "original_candidate_commit": "45ac10f",
+-+  "original_candidate_evidence_status": "flawed",
+-+  "canonical_merge_executed_in_original_evidence": false,
+-+  "reason_for_governance_record": "R035 source/tests were batch-merged into canonical via c529d9a/5bb4600 without per-round governance construction process. Corrected evidence inventory established.",
+-+  "source_files": [
+-+    "modules/decision_prechecklist/verification_framework.py"
+-+  ],
+-+  "test_files": [
+-+    "tests/test_verification_framework.py"
+-+  ],
+-+  "corrected_evidence_inventory": true,
+-+  "contamination_removed_from_R035_scope": [
+-+    "modules/decision_prechecklist/replay_isolation.py",
+-+    "tests/test_replay_isolation.py"
+-+  ],
+-+  "contamination_note": "replay_isolation.py and test_replay_isolation.py are R033/R034 topic content incorrectly listed in original R035 candidate evidence. Removed from R035 scope. These files remain in HEAD as part of their respective round deliveries.",
+-+  "minor_non_blocking_gap": "invalid input tests for non-Callable / negative count are not explicit in test coverage",
+-+  "no_code_level_hardening_required": true,
+-+  "r036_R048_not_accepted": true,
+-+  "r049_not_authorized": true,
+-+  "order_execution_allowed_remains_FALSE": true,
+-+  "base_head": "8b5a532a736d7c40f5731f3424e19efba426798b",
+-+  "candidate_branch": "candidate/r035-governance-record-acceptance",
+-+  "not_live_readiness": true,
+-+  "not_market_reality_full_engine": true,
+-+  "not_r049_authorization": true,
+-+  "created_at": "2026-05-27",
+-+  "governance_baseline": "04",
+-+  "law_priority": "02 > 03 > 04 > 01",
+-+  "notes": "R035 deep audit concluded governance_record_acceptance_path eligible. Source is real code (VerificationRunner, StressTestEngine), 11/11 tests pass, no broker/live/order pollution. Pre-existing candidate evidence had contamination (replay_isolation) and omissions (verification_framework.py). Corrected evidence inventory established. Awaiting manual review and merge signoff."
+-+}
++@@ -1,8 +1,13 @@
++ {
++   "round_id": "R035",
++   "candidate_type": "governance_record_acceptance",
+++  "status": "completed",
++   "base_head": "8b5a532a736d7c40f5731f3424e19efba426798b",
++   "candidate_branch": "candidate/r035-governance-record-acceptance",
+++  "canonical_branch": "work/canonical-mainline-repair-001",
+++  "canonical_head": "90593957d176527b21791f1c13a5b3e763083829",
+++  "test_count": 11,
+++  "tests_passed": 11,
++   "deep_audit_conclusion": "governance_record_acceptance_path eligible",
++   "user_authorization": "Option A granted for R035 only",
++   "source_integrity": {
++@@ -46,5 +51,6 @@
++   "direct_blockers": [],
++   "contamination_fixed": true,
++   "corrected_inventory": true,
++-  "final_recommendation": "candidate_ready_awaiting_manual_review"
+++  "final_recommendation": "candidate_ready_awaiting_manual_review",
+++  "source_construction_performed_now": false
++ }
 diff --git a/automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/evidence.json b/automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/evidence.json
-new file mode 100644
-index 0000000..242bdb7
---- /dev/null
+index 242bdb7..2cb4604 100644
+--- a/automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/evidence.json
 +++ b/automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/evidence.json
-@@ -0,0 +1,80 @@
-+{
-+  "round_id": "R035",
-+  "task_type": "governance_record_acceptance_candidate",
-+  "status": "candidate_ready_awaiting_manual_review",
-+  "formal_status_code": "R035_GOVERNANCE_RECORD_ACCEPTANCE_CANDIDATE_READY",
-+  "base_head": "8b5a532a736d7c40f5731f3424e19efba426798b",
-+  "candidate_branch": "candidate/r035-governance-record-acceptance",
-+  "official_topic": "敹恍?霅?憯?皜祈岫獢",
-+  "acceptance_path": "governance_record_acceptance_path",
-+  "batch_merge_origin": "c529d9a / 5bb4600",
-+  "original_candidate_commit": "45ac10f",
-+  "source_files": ["modules/decision_prechecklist/verification_framework.py"],
-+  "test_files": ["tests/test_verification_framework.py"],
-+  "test_count": 11,
-+  "tests_pass": true,
-+  "source_reality": {
-+    "lines": 122,
-+    "status": "REAL_CODE",
-+    "classes": ["VerificationCheck", "VerificationSuiteResult", "StressTestScenario", "StressTestResult", "VerificationRunner", "StressTestEngine"],
-+    "logic_types": ["verification runner with error handling", "stress test engine with statistical metrics"],
-+    "stdlib_only": true,
-+    "no_broker_live_order_pollution": true,
-+    "no_server_v2_index_v2_wiring": true
-+  },
-+  "tests_reality": {
-+    "lines": 128,
-+    "imports_from_source": true,
-+    "positive_path_tests": 6,
-+    "negative_path_tests": 4,
-+    "boundary_tests": 2,
-+    "invalid_input_tests": 0,
-+    "deterministic_output_tests": 2,
-+    "all_pass": true
-+  },
-+  "safety_boundary": {
-+    "broker_api_called": false,
-+    "trading_runtime_started": false,
-+    "order_execution_allowed": false,
-+    "server_v2_wired": false,
-+    "index_v2_wired": false
-+  },
-+  "corrected_evidence_inventory": true,
-+  "contamination_removed": true,
-+  "canonical_merge_executed_original_value": false,
-+  "governance_record_acceptance_path": true,
-+  "r036_R048_accepted": false,
-+  "r049_started": false,
-+  "broker_api_called": false,
-+  "trading_runtime_started": false,
-+  "order_execution_allowed": false,
-+  "files_modified": [],
-+  "files_created": [
-+    "automation/control/governance/r035-governance-record.json",
-+    "automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/evidence.json",
-+    "automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/RETURN_TO_CHATGPT.txt",
-+    "automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/task.txt",
-+    "automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/candidate.diff",
-+    "automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/report.json",
-+    "automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/positive_negative_breakdown.json",
-+    "automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/safety_boundary_review.json",
-+    "automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/test-results.txt"
-+  ],
-+  "files_deleted": [],
-+  "source_topic_table": "_governance/law/161頛芣迤撘?蝺其蜓憿蜇銵灶?臭??箸??v2.md",
-+  "law_compliance": "04",
-+  "law_priority_verified": "02 > 03 > 04 > 01",
-+  "preflight_checks": {
-+    "base_head_check": "PASS",
-+    "git_clean_check": "PASS",
-+    "branch_check": "PASS",
-+    "tests_pass_check": "PASS",
-+    "source_stub_check": "PASS (real code)",
-+    "pollution_check": "PASS",
-+    "contamination_removed_check": "PASS",
-+    "corrected_inventory_check": "PASS",
-+    "r036_r048_not_accepted": "PASS",
-+    "r049_not_started": "PASS"
-+  },
-+  "generated_at": "2026-05-27"
-+}
-diff --git a/automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/positive_negative_breakdown.json b/automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/positive_negative_breakdown.json
+@@ -49,6 +49,7 @@
+   "trading_runtime_started": false,
+   "order_execution_allowed": false,
+   "files_modified": [],
++  "candidate_commit": "e5175275e74643622ddbd24596bb7f1c2195177c",
+   "files_created": [
+     "automation/control/governance/r035-governance-record.json",
+     "automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/evidence.json",
+@@ -58,7 +59,10 @@
+     "automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/report.json",
+     "automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/positive_negative_breakdown.json",
+     "automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/safety_boundary_review.json",
+-    "automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/test-results.txt"
++    "automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/test-results.txt",
++    "automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/no-aider-used.txt",
++    "automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/merge_signoff.txt",
++    "automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/push_signoff.txt"
+   ],
+   "files_deleted": [],
+   "source_topic_table": "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md",
+diff --git a/automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/merge_signoff.txt b/automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/merge_signoff.txt
 new file mode 100644
-index 0000000..67be980
+index 0000000..3077433
 --- /dev/null
-+++ b/automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/positive_negative_breakdown.json
-@@ -0,0 +1,46 @@
-+{
-+  "round_id": "R035",
-+  "test_file": "tests/test_verification_framework.py",
-+  "total_tests": 11,
-+  "all_pass": true,
-+  "positive_path": {
-+    "count": 6,
-+    "tests": [
-+      "test_runner_initialization: VerificationRunner instantiation succeeds",
-+      "test_runner_add_and_run: 2 checks (1 pass + 1 fail) produces correct totals",
-+      "test_runner_all_pass: 5 checks all pass",
-+      "test_verification_check: dataclass field values correct",
-+      "test_stress_test_engine: 50 iterations all pass",
-+      "test_stress_test_metrics: duration >= 0, max >= min"
-+    ]
-+  },
-+  "negative_path": {
-+    "count": 4,
-+    "tests": [
-+      "test_runner_add_and_run: 1 of 2 checks fails",
-+      "test_runner_exception_handling: exception in check caught and stored",
-+      "test_stress_test_with_failures: partial failures, pass_rate < 1.0",
-+      "test_stress_test_exception_handling: exceptions in generate, 5/10 fail"
-+    ]
-+  },
-+  "boundary": {
-+    "count": 2,
-+    "tests": [
-+      "test_verification_suite_result_properties: all_passed true/false boundary",
-+      "test_runner_with_empty_checks: 0 checks, all_passed expected"
-+    ]
-+  },
-+  "invalid_input_coverage": {
-+    "count": 0,
-+    "finding": "non-Callable to add_check, negative count to StressTestScenario not tested",
-+    "severity": "minor",
-+    "blocker": false
-+  },
-+  "deterministic_output": {
-+    "count": 2,
-+    "tests": [
-+      "test_verification_suite_result_properties: all_passed depends deterministically on failed_checks",
-+      "test_stress_test_metrics: structural invariants (max >= min, duration >= 0)"
-+    ]
-+  }
-+}
++++ b/automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/merge_signoff.txt
+@@ -0,0 +1,13 @@
++merge authorization signoff for R035 governance record acceptance
++
++User authorized Option A governance_record_acceptance_path for R035 only.
++User authorized local no-ff merge of candidate head e5175275e74643622ddbd24596bb7f1c2195177c
++into work/canonical-mainline-repair-001.
++
++This authorization is strictly limited to R035 governance record acceptance.
++It does NOT authorize R036-R048 acceptance.
++It does NOT authorize R049.
++order_execution_allowed remains FALSE.
++
++Authorized commit: e5175275e74643622ddbd24596bb7f1c2195177c
++Target branch: work/canonical-mainline-repair-001
+diff --git a/automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/no-aider-used.txt b/automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/no-aider-used.txt
+new file mode 100644
+index 0000000..04ee142
+--- /dev/null
++++ b/automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/no-aider-used.txt
+@@ -0,0 +1,8 @@
++R035 governance record acceptance completeness fix
++
++This candidate performed governance/evidence-only repair:
++- Aider was not used for this candidate
++- No Aider-generated source changes
++- OpenCode performed governance/evidence-only repair (no-aider-used.txt, authorization files, report status)
++
++no-aider-used: no aider tool was invoked during this evidence completeness fix.
+diff --git a/automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/push_signoff.txt b/automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/push_signoff.txt
+new file mode 100644
+index 0000000..495a3fc
+--- /dev/null
++++ b/automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/push_signoff.txt
+@@ -0,0 +1,12 @@
++push authorization signoff for R035 governance record acceptance
++
++User authorized push of merge commit 4c032a070d3e6efa748c5255950f62e8f387e8f9
++to origin/work/canonical-mainline-repair-001.
++
++This authorization is strictly limited to R035 governance record acceptance push.
++It does NOT authorize R036-R048 acceptance.
++It does NOT authorize R049.
++order_execution_allowed remains FALSE.
++
++Authorized commit: 4c032a070d3e6efa748c5255950f62e8f387e8f9
++Target: origin/work/canonical-mainline-repair-001
 diff --git a/automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/report.json b/automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/report.json
-new file mode 100644
-index 0000000..df34c59
---- /dev/null
+index df34c59..2c4a537 100644
+--- a/automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/report.json
 +++ b/automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/report.json
-@@ -0,0 +1,50 @@
-+{
-+  "round_id": "R035",
-+  "candidate_type": "governance_record_acceptance",
-+  "base_head": "8b5a532a736d7c40f5731f3424e19efba426798b",
-+  "candidate_branch": "candidate/r035-governance-record-acceptance",
-+  "deep_audit_conclusion": "governance_record_acceptance_path eligible",
-+  "user_authorization": "Option A granted for R035 only",
-+  "source_integrity": {
-+    "verification_framework_py": {
-+      "exists": true,
-+      "lines": 122,
-+      "status": "REAL_CODE",
-+      "stub_or_todo": false,
-+      "pass_only": false,
-+      "dataclass_only": false,
-+      "broker_pollution": false,
-+      "live_pollution": false,
-+      "order_pollution": false,
-+      "server_v2_pollution": false,
-+      "index_v2_pollution": false
-+    }
-+  },
-+  "test_integrity": {
-+    "test_verification_framework_py": {
-+      "exists": true,
-+      "lines": 128,
-+      "tests_found": 11,
-+      "tests_pass": true,
-+      "imports_source": true,
-+      "positive_path": 6,
-+      "negative_path": 4,
-+      "boundary": 2,
-+      "invalid_input_coverage": 0,
-+      "broker_pollution": false,
-+      "live_pollution": false,
-+      "order_pollution": false
-+    }
-+  },
-+  "coverage_gaps": [
-+    {
-+      "severity": "minor",
-+      "finding": "invalid input tests for non-Callable / negative count not explicit",
-+      "blocker": false
-+    }
-+  ],
-+  "direct_blockers": [],
-+  "contamination_fixed": true,
-+  "corrected_inventory": true,
-+  "final_recommendation": "candidate_ready_awaiting_manual_review"
-+}
-diff --git a/automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/safety_boundary_review.json b/automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/safety_boundary_review.json
-new file mode 100644
-index 0000000..b8e7a97
---- /dev/null
-+++ b/automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/safety_boundary_review.json
-@@ -0,0 +1,37 @@
-+{
-+  "round_id": "R035",
-+  "review_type": "safety_boundary_review",
-+  "source_files_reviewed": ["modules/decision_prechecklist/verification_framework.py"],
-+  "test_files_reviewed": ["tests/test_verification_framework.py"],
-+  "broker_imports_or_calls": {
-+    "source": "NOT_FOUND",
-+    "tests": "NOT_FOUND"
-+  },
-+  "order_imports_or_calls": {
-+    "source": "NOT_FOUND",
-+    "tests": "NOT_FOUND"
-+  },
-+  "live_execution_imports_or_calls": {
-+    "source": "NOT_FOUND",
-+    "tests": "NOT_FOUND"
-+  },
-+  "server_v2_imports_or_calls": {
-+    "source": "NOT_FOUND",
-+    "tests": "NOT_FOUND"
-+  },
-+  "index_v2_imports_or_calls": {
-+    "source": "NOT_FOUND",
-+    "tests": "NOT_FOUND"
-+  },
-+  "trading_runtime_imports_or_calls": {
-+    "source": "NOT_FOUND",
-+    "tests": "NOT_FOUND"
-+  },
-+  "external_market_api_calls": {
-+    "source": "NOT_FOUND",
-+    "tests": "NOT_FOUND"
-+  },
-+  "source_imports": ["from __future__ import annotations", "import random", "import statistics", "from dataclasses import dataclass, field", "from typing import Any, Callable", "from datetime import datetime, timezone"],
-+  "stdlib_only": true,
-+  "verdict": "CLEAN"
-+}
-diff --git a/automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/task.txt b/automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/task.txt
-new file mode 100644
-index 0000000..6a254dc
---- /dev/null
-+++ b/automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/task.txt
-@@ -0,0 +1,17 @@
-+Establish R035 governance record acceptance candidate.
-+
-+Background:
-+R035 TO R048 FAST PLANNING READINESS MAP confirmed R035-R048 code/tests exist in HEAD via batch merge c529d9a/5bb4600.
-+R035 GOVERNANCE RECORD SCOPE DECISION AND DEEP AUDIT confirmed R035 is eligible for governance_record_acceptance_path (Option A).
-+User authorized Option A for R035 only.
-+
-+This candidate:
-+- Creates governance record accepting R035 as delivered by batch merge
-+- Corrects evidence inventory (removes contamination, adds missing files)
-+- Does NOT modify any R035 source/test files
-+- Does NOT accept R036-R048
-+- Does NOT authorize R049
-+
-+Files created:
-+- automation/control/governance/r035-governance-record.json
-+- automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/
-diff --git a/automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/test-results.txt b/automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/test-results.txt
-new file mode 100644
-index 0000000..d5fe63b
---- /dev/null
-+++ b/automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/test-results.txt
-@@ -0,0 +1,25 @@
-+R035 test results for modules/decision_prechecklist/verification_framework.py
-+Test file: tests/test_verification_framework.py
-+Command: python -m pytest tests/test_verification_framework.py -v --tb=short
-+Date: 2026-05-27
-+
-+RESULTS:
-+============================= test session starts =============================
-+platform win32 -- Python 3.14.4, pytest-9.0.3
-+collected 11 items
-+
-+tests/test_verification_framework.py::test_runner_initialization PASSED
-+tests/test_verification_framework.py::test_runner_add_and_run PASSED
-+tests/test_verification_framework.py::test_runner_all_pass PASSED
-+tests/test_verification_framework.py::test_runner_exception_handling PASSED
-+tests/test_verification_framework.py::test_verification_suite_result_properties PASSED
-+tests/test_verification_framework.py::test_verification_check PASSED
-+tests/test_verification_framework.py::test_stress_test_engine PASSED
-+tests/test_verification_framework.py::test_stress_test_with_failures PASSED
-+tests/test_verification_framework.py::test_stress_test_exception_handling PASSED
-+tests/test_verification_framework.py::test_stress_test_metrics PASSED
-+tests/test_verification_framework.py::test_runner_with_empty_checks PASSED
-+
-+============================= 11 passed in 0.11s =============================
-+
-+All 11 tests PASS.
-diff --git a/automation/control/governance/r035-governance-record.json b/automation/control/governance/r035-governance-record.json
-new file mode 100644
-index 0000000..8f73a9d
---- /dev/null
-+++ b/automation/control/governance/r035-governance-record.json
-@@ -0,0 +1,39 @@
-+{
-+  "record_type": "R035_GOVERNANCE_RECORD_ACCEPTANCE",
-+  "round_id": "R035",
-+  "official_topic": "敹恍?霅?憯?皜祈岫獢",
-+  "acceptance_path": "governance_record_acceptance_path",
-+  "source_construction_performed_now": false,
-+  "code_already_in_head": true,
-+  "batch_merge_origin": "c529d9a (R031-R048 batch checkpoint) / 5bb4600 (R043-R048 staging checkpoint)",
-+  "original_candidate_commit": "45ac10f",
-+  "original_candidate_evidence_status": "flawed",
-+  "canonical_merge_executed_in_original_evidence": false,
-+  "reason_for_governance_record": "R035 source/tests were batch-merged into canonical via c529d9a/5bb4600 without per-round governance construction process. Corrected evidence inventory established.",
-+  "source_files": [
-+    "modules/decision_prechecklist/verification_framework.py"
-+  ],
-+  "test_files": [
-+    "tests/test_verification_framework.py"
-+  ],
-+  "corrected_evidence_inventory": true,
-+  "contamination_removed_from_R035_scope": [
-+    "modules/decision_prechecklist/replay_isolation.py",
-+    "tests/test_replay_isolation.py"
-+  ],
-+  "contamination_note": "replay_isolation.py and test_replay_isolation.py are R033/R034 topic content incorrectly listed in original R035 candidate evidence. Removed from R035 scope. These files remain in HEAD as part of their respective round deliveries.",
-+  "minor_non_blocking_gap": "invalid input tests for non-Callable / negative count are not explicit in test coverage",
-+  "no_code_level_hardening_required": true,
-+  "r036_R048_not_accepted": true,
-+  "r049_not_authorized": true,
-+  "order_execution_allowed_remains_FALSE": true,
-+  "base_head": "8b5a532a736d7c40f5731f3424e19efba426798b",
-+  "candidate_branch": "candidate/r035-governance-record-acceptance",
-+  "not_live_readiness": true,
-+  "not_market_reality_full_engine": true,
-+  "not_r049_authorization": true,
-+  "created_at": "2026-05-27",
-+  "governance_baseline": "04",
-+  "law_priority": "02 > 03 > 04 > 01",
-+  "notes": "R035 deep audit concluded governance_record_acceptance_path eligible. Source is real code (VerificationRunner, StressTestEngine), 11/11 tests pass, no broker/live/order pollution. Pre-existing candidate evidence had contamination (replay_isolation) and omissions (verification_framework.py). Corrected evidence inventory established. Awaiting manual review and merge signoff."
-+}
+@@ -1,8 +1,13 @@
+ {
+   "round_id": "R035",
+   "candidate_type": "governance_record_acceptance",
++  "status": "completed",
+   "base_head": "8b5a532a736d7c40f5731f3424e19efba426798b",
+   "candidate_branch": "candidate/r035-governance-record-acceptance",
++  "canonical_branch": "work/canonical-mainline-repair-001",
++  "canonical_head": "90593957d176527b21791f1c13a5b3e763083829",
++  "test_count": 11,
++  "tests_passed": 11,
+   "deep_audit_conclusion": "governance_record_acceptance_path eligible",
+   "user_authorization": "Option A granted for R035 only",
+   "source_integrity": {
+@@ -46,5 +51,6 @@
+   "direct_blockers": [],
+   "contamination_fixed": true,
+   "corrected_inventory": true,
+-  "final_recommendation": "candidate_ready_awaiting_manual_review"
++  "final_recommendation": "candidate_ready_awaiting_manual_review",
++  "source_construction_performed_now": false
+ }

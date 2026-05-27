@@ -1,0 +1,12 @@
+push authorization signoff for R035 governance record acceptance
+
+User authorized push of merge commit 4c032a070d3e6efa748c5255950f62e8f387e8f9
+to origin/work/canonical-mainline-repair-001.
+
+This authorization is strictly limited to R035 governance record acceptance push.
+It does NOT authorize R036-R048 acceptance.
+It does NOT authorize R049.
+order_execution_allowed remains FALSE.
+
+Authorized commit: 4c032a070d3e6efa748c5255950f62e8f387e8f9
+Target: origin/work/canonical-mainline-repair-001
