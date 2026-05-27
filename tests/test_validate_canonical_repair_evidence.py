@@ -12,6 +12,8 @@ from scripts.validation.validate_canonical_repair_evidence import (
     check_test_output_not_substituted,
     check_path_in_authorized_scope,
     check_file_exists,
+    check_governance_record_diff_scope,
+    classify_candidate,
     REQUIRED_FILES,
 )
 
@@ -226,3 +228,176 @@ class TestValidateCanonicalRepairEvidence:
         ok, issues, _ = validate_candidate(target)
         assert not ok
         assert any("missing:RETURN_TO_CHATGPT.txt" in i for i in issues)
+
+
+GOV_ACCEPTANCE_DIFF_GOVERNANCE_ONLY = """\
+diff --git a/automation/control/governance/r035-governance-record.json b/automation/control/governance/r035-governance-record.json
+new file mode 100644
+index 0000000..1234567
+--- /dev/null
++++ b/automation/control/governance/r035-governance-record.json
+@@ -0,0 +1,80 @@
++{"round_id": "R035", "acceptance_path": "governance_record_acceptance_path"}
+diff --git a/automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/evidence.json b/automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/evidence.json
+new file mode 100644
+index 0000000..1234567
+--- /dev/null
++++ b/automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/evidence.json
+@@ -0,0 +1,80 @@
++{"round_id": "R035"}
+"""
+
+GOV_ACCEPTANCE_DIFF_WITH_SOURCE = """\
+diff --git a/modules/decision_prechecklist/verification_framework.py b/modules/decision_prechecklist/verification_framework.py
+index 1234567..89abcde 100644
+--- a/modules/decision_prechecklist/verification_framework.py
++++ b/modules/decision_prechecklist/verification_framework.py
+@@ -1,5 +1,8 @@
++unauthorized change
+diff --git a/automation/control/governance/r035-governance-record.json b/automation/control/governance/r035-governance-record.json
+new file mode 100644
+index 0000000..1234567
+--- /dev/null
++++ b/automation/control/governance/r035-governance-record.json
+@@ -0,0 +1,80 @@
++{"round_id": "R035"}
+"""
+
+GOV_ACCEPTANCE_DIFF_WITH_SERVER_V2 = """\
+diff --git a/server_v2.py b/server_v2.py
+index 1234567..89abcde 100644
+--- a/server_v2.py
++++ b/server_v2.py
+@@ -1,5 +1,8 @@
++unauthorized change
+diff --git a/automation/control/governance/r035-governance-record.json b/automation/control/governance/r035-governance-record.json
+new file mode 100644
+index 0000000..1234567
+--- /dev/null
++++ b/automation/control/governance/r035-governance-record.json
+@@ -0,0 +1,80 @@
++{"round_id": "R035"}
+"""
+
+GOV_ACCEPTANCE_DIFF_WITH_TESTS = """\
+diff --git a/tests/test_verification_framework.py b/tests/test_verification_framework.py
+index 1234567..89abcde 100644
+--- a/tests/test_verification_framework.py
++++ b/tests/test_verification_framework.py
+@@ -1,5 +1,8 @@
++unauthorized change
+diff --git a/automation/control/governance/r035-governance-record.json b/automation/control/governance/r035-governance-record.json
+new file mode 100644
+index 0000000..1234567
+--- /dev/null
++++ b/automation/control/governance/r035-governance-record.json
+@@ -0,0 +1,80 @@
++{"round_id": "R035"}
+"""
+
+GOV_ACCEPTANCE_EVIDENCE = {
+    "round_id": "R035",
+    "task_type": "governance_record_acceptance_candidate",
+    "acceptance_path": "governance_record_acceptance_path",
+    "formal_status_code": "R035_GOVERNANCE_RECORD_ACCEPTANCE_CANDIDATE_READY",
+    "law_compliance": "04",
+    "broker_api_called": False,
+    "trading_runtime_started": False,
+    "order_execution_allowed": False,
+    "r049_started": False,
+    "r036_R048_accepted": False,
+}
+
+# --- check_governance_record_diff_scope ---
+
+class TestGovernanceRecordDiffScope:
+
+    def test_governance_only_diff_passes(self, tmp_path):
+        (tmp_path / "candidate.diff").write_text(GOV_ACCEPTANCE_DIFF_GOVERNANCE_ONLY, encoding="utf-8")
+        ok, issues = check_governance_record_diff_scope(tmp_path)
+        assert ok, f"Expected PASS, got {issues}"
+
+    def test_source_diff_fails(self, tmp_path):
+        (tmp_path / "candidate.diff").write_text(GOV_ACCEPTANCE_DIFF_WITH_SOURCE, encoding="utf-8")
+        ok, issues = check_governance_record_diff_scope(tmp_path)
+        assert not ok, "Expected FAIL for governance record with source changes"
+        assert any("forbidden_path" in i for i in issues)
+
+    def test_server_v2_diff_fails(self, tmp_path):
+        (tmp_path / "candidate.diff").write_text(GOV_ACCEPTANCE_DIFF_WITH_SERVER_V2, encoding="utf-8")
+        ok, issues = check_governance_record_diff_scope(tmp_path)
+        assert not ok, "Expected FAIL for governance record with server_v2 changes"
+        assert any("forbidden_path" in i for i in issues)
+
+    def test_missing_diff_skipped(self, tmp_path):
+        ok, issues = check_governance_record_diff_scope(tmp_path)
+        assert ok, "Expected PASS when no diff file exists"
+
+
+# --- classify_candidate ---
+
+class TestClassifyCandidateGovernanceRecord:
+
+    def test_governance_record_acceptance_classified(self, tmp_path):
+        ev = dict(GOV_ACCEPTANCE_EVIDENCE)
+        (tmp_path / "evidence.json").write_text(json.dumps(ev), encoding="utf-8")
+        cls = classify_candidate(tmp_path)
+        assert cls == "governance_record_acceptance", f"Expected governance_record_acceptance, got {cls}"
+
+    def test_regular_candidate_not_misclassified(self, tmp_path):
+        ev = {
+            "round_id": "test", "trace_id": "t1",
+            "law_compliance": "04", "evidence_type": "test",
+        }
+        (tmp_path / "evidence.json").write_text(json.dumps(ev), encoding="utf-8")
+        cls = classify_candidate(tmp_path)
+        assert cls != "governance_record_acceptance", "Regular candidate should not be governance_record_acceptance"
+        assert cls == "valid_acceptance_candidate"
+
+
+# --- validate_candidate with governance record ---
+
+class TestValidateGovernanceRecordCandidate:
+
+    def _setup_governance_candidate(self, tmp: Path, diff_content: str, ev_overrides: dict = None) -> Path:
+        ev = dict(GOV_ACCEPTANCE_EVIDENCE)
+        if ev_overrides:
+            ev.update(ev_overrides)
+        (tmp / "evidence.json").write_text(json.dumps(ev, indent=2), encoding="utf-8")
+        (tmp / "candidate.diff").write_text(diff_content, encoding="utf-8")
+        (tmp / "RETURN_TO_CHATGPT.txt").write_text(FORMAL_RTCG, encoding="utf-8")
+        (tmp / "test-results.txt").write_text("TEST RESULTS\npassed: 1\nfailed: 0\n", encoding="utf-8")
+        (tmp / "task.txt").write_text("task_id: R035\ntask_type: governance_record_acceptance\nlaw_compliance: 04\n", encoding="utf-8")
+        base = Path(tempfile.mkdtemp(prefix="candidates_scope_"))
+        target = base / "automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE"
+        target.mkdir(parents=True, exist_ok=True)
+        for f in tmp.iterdir():
+            shutil.copy2(f, target / f.name)
+        return target
+
+    def test_governance_record_acceptance_passes(self, tmp_path):
+        target = self._setup_governance_candidate(tmp_path, GOV_ACCEPTANCE_DIFF_GOVERNANCE_ONLY)
+        ok, issues, cls = validate_candidate(target)
+        assert ok, f"Expected PASS, got {issues}"
+        assert cls == "governance_record_acceptance"
+
+    def test_governance_record_with_source_fails(self, tmp_path):
+        target = self._setup_governance_candidate(tmp_path, GOV_ACCEPTANCE_DIFF_WITH_SOURCE)
+        ok, issues, cls = validate_candidate(target)
+        assert not ok, "Expected FAIL for governance record with source changes"
+        assert cls == "governance_record_acceptance"
+        assert any("forbidden_path" in i for i in issues)
+
+    def test_governance_record_with_server_v2_fails(self, tmp_path):
+        target = self._setup_governance_candidate(tmp_path, GOV_ACCEPTANCE_DIFF_WITH_SERVER_V2)
+        ok, issues, cls = validate_candidate(target)
+        assert not ok, "Expected FAIL for governance record with server_v2 changes"
+        assert cls == "governance_record_acceptance"
+        assert any("forbidden_path" in i for i in issues)
+
+    def test_governance_record_missing_evidence_json_fails(self, tmp_path):
+        target = self._setup_governance_candidate(tmp_path, GOV_ACCEPTANCE_DIFF_GOVERNANCE_ONLY)
+        (target / "evidence.json").unlink()
+        ok, issues, cls = validate_candidate(target)
+        assert not ok
+        assert any("missing:evidence.json" in i for i in issues)

@@ -44,24 +44,39 @@ FORBIDDEN_CLAIMS = [
 
 CANDIDATE_DIR_PREFIX = "automation/control/candidates/"
 
+GOVERNANCE_FORBIDDEN_PATH_PATTERNS = [
+    "modules/",
+    "tests/",
+    "server_v2.py",
+    "index_v2.html",
+    ".env",
+    ".env.",
+    "broker",
+    "live",
+    "order",
+]
 
-def find_changed_candidate_dirs(base_ref: str = "HEAD~1", head_ref: str = "HEAD") -> List[Path]:
-    """Find candidate evidence directories changed between base_ref and head_ref."""
+EMPTY_TREE = "4b825dc642cb6eb9a060e54bf899d153036d7c3d"
+
+
+def find_changed_candidate_dirs(head_ref: str = "HEAD") -> List[Path]:
+    """Find candidate evidence directories changed in head_ref using git diff-tree -m."""
     result = subprocess.run(
-        ["git", "diff", "--name-only", f"{base_ref}..{head_ref}", "--", CANDIDATE_DIR_PREFIX],
+        ["git", "diff-tree", "-m", "--no-commit-id", "-r", "--name-only", head_ref, "--", CANDIDATE_DIR_PREFIX],
         capture_output=True, text=True, timeout=30,
     )
     if result.returncode != 0:
-        print(f"FAIL: git diff error: {result.stderr.strip()}")
+        print(f"FAIL: git diff-tree error: {result.stderr.strip()}")
         sys.exit(1)
 
     changed_dirs: set[Path] = set()
+    seen: set[str] = set()
     for line in result.stdout.strip().splitlines():
         line = line.strip()
-        if not line:
+        if not line or line in seen:
             continue
+        seen.add(line)
         p = Path(line)
-        # Walk up to find the candidate directory root (has evidence.json)
         parent = p.parent
         while parent.name:
             if (parent / "evidence.json").exists():
@@ -170,6 +185,31 @@ def check_path_in_authorized_scope(candidate_dir: Path) -> Tuple[bool, List[str]
     return True, []
 
 
+def check_governance_record_diff_scope(candidate_dir: Path) -> Tuple[bool, List[str]]:
+    """Check that governance record acceptance only touches governance/evidence paths.
+    Only checks diff --git header lines (actual file paths modified), not diff content."""
+    issues = []
+    diff_path = candidate_dir / "candidate.diff"
+    if not diff_path.exists():
+        return True, []
+
+    try:
+        content = diff_path.read_text(encoding="utf-8", errors="replace")
+    except Exception as e:
+        return False, [f"governance_diff_read_error:{e}"]
+
+    for line in content.splitlines():
+        stripped = line.strip()
+        if not stripped.startswith("diff --git"):
+            continue
+        for pattern in GOVERNANCE_FORBIDDEN_PATH_PATTERNS:
+            if pattern in stripped:
+                issues.append(f"governance_record:forbidden_path:{stripped}")
+                break
+
+    return len(issues) == 0, issues
+
+
 def classify_candidate(candidate_dir: Path) -> str:
     ev_path = candidate_dir / "evidence.json"
     if not ev_path.exists():
@@ -186,6 +226,10 @@ def classify_candidate(candidate_dir: Path) -> str:
     status = data.get("evidence_status", "")
     if "invalid" in status.lower() or "superseded" in status.lower():
         return "expected_invalid_superseded"
+
+    acceptance_path = data.get("acceptance_path", "")
+    if acceptance_path == "governance_record_acceptance_path":
+        return "governance_record_acceptance"
 
     return "valid_acceptance_candidate"
 
@@ -221,24 +265,54 @@ def validate_candidate(candidate_dir: Path) -> Tuple[bool, List[str], str]:
     classification = classify_candidate(candidate_dir)
     if classification == "expected_invalid_superseded":
         return True, all_issues, classification
+
+    if classification == "governance_record_acceptance":
+        gov_ok, gov_issues = check_governance_record_diff_scope(candidate_dir)
+        if not gov_ok:
+            all_issues.extend(gov_issues)
+
     return len(all_issues) == 0, all_issues, classification
 
 
 def main():
     ap = argparse.ArgumentParser(description="Validate canonical repair evidence package")
     ap.add_argument("--candidate-dir", help="Explicit path to candidate evidence directory")
-    ap.add_argument("--base-ref", default="HEAD~1", help="Base ref for git diff (default: HEAD~1)")
-    ap.add_argument("--head-ref", default="HEAD", help="Head ref for git diff (default: HEAD)")
+    ap.add_argument("--head-ref", default="HEAD", help="Head ref for git diff-tree (default: HEAD)")
     args = ap.parse_args()
 
     if args.candidate_dir:
         dirs = [Path(args.candidate_dir)]
     else:
-        dirs = find_changed_candidate_dirs(args.base_ref, args.head_ref)
+        dirs = find_changed_candidate_dirs(args.head_ref)
         if not dirs:
-            print("FAIL: no changed candidate evidence package found in diff")
-            print(f"       checked {args.base_ref}..{args.head_ref} in {CANDIDATE_DIR_PREFIX}")
-            sys.exit(1)
+            parent_check = subprocess.run(
+                ["git", "rev-list", "--count", "--max-parents=0", args.head_ref],
+                capture_output=True, text=True, timeout=30,
+            )
+            if parent_check.stdout.strip() == "1":
+                diff_root = subprocess.run(
+                    ["git", "diff-tree", "--no-commit-id", "-r", "--name-only", EMPTY_TREE, args.head_ref, "--", CANDIDATE_DIR_PREFIX],
+                    capture_output=True, text=True, timeout=30,
+                )
+                if diff_root.returncode == 0:
+                    dirs = []
+                    seen = set()
+                    for line in diff_root.stdout.strip().splitlines():
+                        line = line.strip()
+                        if not line or line in seen:
+                            continue
+                        seen.add(line)
+                        p = Path(line)
+                        parent = p.parent
+                        while parent.name:
+                            if (parent / "evidence.json").exists():
+                                dirs.append(parent)
+                                break
+                            parent = parent.parent
+            if not dirs:
+                print("FAIL: no changed candidate evidence package found in diff")
+                print(f"       checked {args.head_ref} in {CANDIDATE_DIR_PREFIX}")
+                sys.exit(1)
 
     pass_count = 0
     expected_invalid_count = 0

@@ -26,12 +26,7 @@ jobs:
       - name: Detect changed candidate evidence packages
         id: detect
         run: |
-          if git rev-parse HEAD~1 >/dev/null 2>&1; then
-            BASE="HEAD~1"
-          else
-            BASE="$(git rev-list --max-parents=0 HEAD)"
-          fi
-          DIRS=$(python scripts/validation/detect_candidate_packages.py "$BASE")
+          DIRS=$(python scripts/validation/detect_candidate_packages.py)
           echo "candidate_dirs=$DIRS" >> $GITHUB_OUTPUT
 
       - name: Validate canonical repair evidence
