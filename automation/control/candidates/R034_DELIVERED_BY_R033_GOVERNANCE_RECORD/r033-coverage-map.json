@@ -15,13 +15,15 @@
       "source": "modules/decision_prechecklist/replay_isolation.py",
       "method": "assert_can_place_order",
       "status": "implemented_by_R033",
-      "tests": 53
+      "primary_test_file": "test_replay_isolation.py",
+      "primary_test_file_pytest_count": 53
     },
     "broker_api_blocked": {
       "source": "modules/decision_prechecklist/replay_isolation.py",
       "method": "assert_can_call_broker",
       "status": "implemented_by_R033",
-      "tests": 66
+      "primary_test_file": "test_r033_replay_live_write_guard.py",
+      "primary_test_file_pytest_count": 84
     },
     "live_state_write_blocked": {
       "source": "modules/decision_prechecklist/replay_isolation.py",
