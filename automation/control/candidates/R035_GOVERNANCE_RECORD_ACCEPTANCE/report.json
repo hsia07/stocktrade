@@ -1,8 +1,13 @@
 {
   "round_id": "R035",
   "candidate_type": "governance_record_acceptance",
+  "status": "completed",
   "base_head": "8b5a532a736d7c40f5731f3424e19efba426798b",
   "candidate_branch": "candidate/r035-governance-record-acceptance",
+  "canonical_branch": "work/canonical-mainline-repair-001",
+  "canonical_head": "90593957d176527b21791f1c13a5b3e763083829",
+  "test_count": 11,
+  "tests_passed": 11,
   "deep_audit_conclusion": "governance_record_acceptance_path eligible",
   "user_authorization": "Option A granted for R035 only",
   "source_integrity": {
@@ -46,5 +51,6 @@
   "direct_blockers": [],
   "contamination_fixed": true,
   "corrected_inventory": true,
-  "final_recommendation": "candidate_ready_awaiting_manual_review"
+  "final_recommendation": "candidate_ready_awaiting_manual_review",
+  "source_construction_performed_now": false
 }

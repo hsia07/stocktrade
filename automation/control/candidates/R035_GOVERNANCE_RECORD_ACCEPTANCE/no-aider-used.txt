@@ -1,0 +1,9 @@
+R035 governance record acceptance completeness fix
+
+This candidate performed governance/evidence-only repair:
+- Aider was not used for this candidate
+- No Aider-generated source changes
+- OpenCode performed governance/evidence-only repair (no-aider-used.txt, authorization files, report status)
+
+no-aider-used: no aider tool was invoked during this evidence completeness fix.
+check: aider_used no - aider used is explicitly false for this candidate.

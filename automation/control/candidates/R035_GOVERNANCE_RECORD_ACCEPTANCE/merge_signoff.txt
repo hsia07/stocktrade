@@ -1,0 +1,13 @@
+merge authorization signoff for R035 governance record acceptance
+
+User authorized Option A governance_record_acceptance_path for R035 only.
+User authorized local no-ff merge of candidate head e5175275e74643622ddbd24596bb7f1c2195177c
+into work/canonical-mainline-repair-001.
+
+This authorization is strictly limited to R035 governance record acceptance.
+It does NOT authorize R036-R048 acceptance.
+It does NOT authorize R049.
+order_execution_allowed remains FALSE.
+
+Authorized commit: e5175275e74643622ddbd24596bb7f1c2195177c
+Target branch: work/canonical-mainline-repair-001

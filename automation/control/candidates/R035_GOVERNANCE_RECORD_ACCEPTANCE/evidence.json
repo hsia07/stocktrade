@@ -49,6 +49,7 @@
   "trading_runtime_started": false,
   "order_execution_allowed": false,
   "files_modified": [],
+  "candidate_commit": "e5175275e74643622ddbd24596bb7f1c2195177c",
   "files_created": [
     "automation/control/governance/r035-governance-record.json",
     "automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/evidence.json",
@@ -58,7 +59,10 @@
     "automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/report.json",
     "automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/positive_negative_breakdown.json",
     "automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/safety_boundary_review.json",
-    "automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/test-results.txt"
+    "automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/test-results.txt",
+    "automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/no-aider-used.txt",
+    "automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/merge_signoff.txt",
+    "automation/control/candidates/R035_GOVERNANCE_RECORD_ACCEPTANCE/push_signoff.txt"
   ],
   "files_deleted": [],
   "source_topic_table": "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md",
