@@ -1,0 +1,25 @@
+R036 final chain status update — test results
+Generated: 2026-05-28
+
+SCOPE: manifest update only (no source code changes)
+
+TEST RESULTS:
+  tests/test_fixed_test_dataset.py:       17 passed
+  tests/test_validate_canonical_repair_evidence.py: 33 passed
+  tests/test_verification_framework.py:   11 passed
+  TOTAL:                                  61/61 PASS
+
+MANIFEST_UPDATE_ONLY: TRUE
+NO SOURCE_CODE_MODIFICATIONS: TRUE
+NO RUNTIME_BROKER_LIVE_EXECUTION: TRUE
+ORDER_EXECUTION_ALLOWED: FALSE
+R037_R048_ACCEPTED: FALSE
+R049_STARTED: FALSE
+
+CI VALIDATION:
+  validate-round #260: SUCCESS (commit 7ee575e)
+  validate-canonical-repair #42: SUCCESS (commit 7ee575e)
+
+NOTE: This candidate only updates manifests/current_round.yaml.
+All tests pass because no source code was modified.
+test-results.txt is included per REQUIRED_FILES in validate_canonical_repair_evidence.py.

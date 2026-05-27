@@ -1,0 +1,90 @@
+ROUND_ID: R036_FINAL_CHAIN_STATUS_UPDATE_CANDIDATE
+
+TASK_TYPE: manifest_chain_status_update_candidate
+
+FORMAL_STATUS_CODE: CANDIDATE_READY_AWAITING_MANUAL_REVIEW
+
+CURRENT_BRANCH: candidate/r036-final-chain-status-update
+BASE_BRANCH: work/canonical-mainline-repair-001
+BASE_HEAD: 7ee575eaa8ec918611c1496523c50ece6f6aed36
+REMOTE_HEAD: 7ee575eaa8ec918611c1496523c50ece6f6aed36
+LOCAL_REMOTE_HEAD_MATCH_TRUE_OR_FALSE: TRUE
+CANDIDATE_BRANCH: candidate/r036-final-chain-status-update
+CANDIDATE_HEAD: 671fc1580317fa9585a605c07c79bb7871d809b4
+GIT_CLEAN_BEFORE_TRUE_OR_FALSE: TRUE
+FILES_MODIFIED:
+  - manifests/current_round.yaml (M)
+FILES_CREATED:
+  - automation/control/candidates/R036_FINAL_CHAIN_STATUS_UPDATE/evidence.json
+  - automation/control/candidates/R036_FINAL_CHAIN_STATUS_UPDATE/RETURN_TO_CHATGPT.txt
+  - automation/control/candidates/R036_FINAL_CHAIN_STATUS_UPDATE/task.txt
+  - automation/control/candidates/R036_FINAL_CHAIN_STATUS_UPDATE/report.json
+  - automation/control/candidates/R036_FINAL_CHAIN_STATUS_UPDATE/candidate.diff
+FILES_DELETED: []
+MANIFEST_BEFORE:
+  last_completed_round: R035
+  last_completed_topic: 快速驗證與壓力測試框架
+  last_completed_commit: 7fdb35a3bd02447c9351fef788adf84ba74366ac
+  next_round_to_dispatch: R036
+  chain_status: r035_completed_ready_for_r036_governance_record_scope_decision_or_deep_audit
+MANIFEST_AFTER:
+  last_completed_round: R036
+  last_completed_topic: 固定測試資料集
+  last_completed_commit: 7ee575eaa8ec918611c1496523c50ece6f6aed36
+  next_round_to_dispatch: R037
+  chain_status: r036_completed_ready_for_r037_governance_record_scope_decision_or_deep_audit
+LAST_COMPLETED_ROUND_BEFORE: R035
+LAST_COMPLETED_ROUND_AFTER: R036
+NEXT_ROUND_TO_DISPATCH_BEFORE: R036
+NEXT_ROUND_TO_DISPATCH_AFTER: R037
+LAST_COMPLETED_COMMIT_AFTER: 7ee575eaa8ec918611c1496523c50ece6f6aed36
+CHAIN_STATUS_AFTER: r036_completed_ready_for_r037_governance_record_scope_decision_or_deep_audit
+MANIFEST_UPDATE_ONLY_TRUE_OR_FALSE: TRUE
+REQUIRED_CI_GREEN_TRUE_OR_FALSE: TRUE
+VALIDATE_ROUND_CONCLUSION: success (#260)
+VALIDATE_CANONICAL_REPAIR_CONCLUSION: success (#42)
+SOURCE_FILES_MODIFIED_TRUE_OR_FALSE: FALSE
+R036_SOURCE_MODIFIED_TRUE_OR_FALSE: FALSE
+R036_TESTS_MODIFIED_TRUE_OR_FALSE: FALSE
+R037_R048_MODIFIED_TRUE_OR_FALSE: FALSE
+R037_R048_ACCEPTED_TRUE_OR_FALSE: FALSE
+R049_MODIFIED_TRUE_OR_FALSE: FALSE
+R049_STARTED_TRUE_OR_FALSE: FALSE
+SERVER_V2_MODIFIED_TRUE_OR_FALSE: FALSE
+INDEX_V2_MODIFIED_TRUE_OR_FALSE: FALSE
+BROKER_API_CALLED_TRUE_OR_FALSE: FALSE
+TRADING_RUNTIME_STARTED_TRUE_OR_FALSE: FALSE
+ORDER_EXECUTION_ALLOWED_TRUE_OR_FALSE: FALSE
+VALIDATION_COMMANDS_RUN:
+  - git status --porcelain=v1 --untracked-files=all
+  - git diff --name-status 7ee575e..HEAD
+  - python -m pytest tests/test_fixed_test_dataset.py -q --tb=short
+  - python -m pytest tests/test_validate_canonical_repair_evidence.py -q --tb=short
+  - python -m pytest tests/test_verification_framework.py -q --tb=short
+VALIDATION_RESULTS:
+  git_status: clean
+  diff_files: manifest + 4 evidence files only
+  test_fixed_test_dataset: 17 passed
+  test_validate_canonical_repair_evidence: 33 passed
+  test_verification_framework: 11 passed
+EVIDENCE_VALIDATION_RESULT: PASS
+GIT_CLEAN_AFTER_TRUE_OR_FALSE: TRUE
+COMMITS_CREATED_TRUE_OR_FALSE: TRUE (1 commit: 671fc158)
+MERGE_EXECUTED_TRUE_OR_FALSE: FALSE
+PUSH_EXECUTED_TRUE_OR_FALSE: FALSE
+WORKFLOW_RERUN_TRUE_OR_FALSE: FALSE
+FORCE_PUSH_USED_TRUE_OR_FALSE: FALSE
+NO_VERIFY_USED_TRUE_OR_FALSE: FALSE
+BLOCKERS: NONE
+RECOMMENDED_NEXT_ACTION: AWAITING_MANUAL_REVIEW_FOR_R036_FINAL_CHAIN_STATUS_UPDATE_CANDIDATE
+
+FINAL_RECOMMENDATION:
+  DO_NOT_START_R049
+  DO_NOT_ACCEPT_R037_R048_YET
+  DO_NOT_PUSH_WITHOUT_USER_SIGNOFF
+  R036_FINAL_CHAIN_UPDATE_ONLY_NEXT
+  ORDER_EXECUTION_ALLOWED_REMAINS_FALSE
+  CANDIDATE_671fc15_READY_ON_candidate/r036-final-chain-status-update
+  MANIFEST_UPDATE_ONLY (5 files changed: manifest + 4 evidence artifacts)
+  ALL_VALIDATIONS_PASS
+  SAFE_TO_MERGE_AND_PUSH_AFTER_USER_EXPLICIT_SIGNOFF

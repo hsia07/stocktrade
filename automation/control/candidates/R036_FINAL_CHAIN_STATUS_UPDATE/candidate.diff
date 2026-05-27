@@ -1,11 +1,3 @@
-﻿git : warning: in the working copy of 'manifests/current_round.yaml', LF will be replaced by CRLF the next time Git tou
-ches it
-位於 線路:1 字元:1
-+ git diff 7ee575eaa8ec918611c1496523c50ece6f6aed36 -- manifests/curren ...
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    + CategoryInfo          : NotSpecified: (warning: in the... Git touches it:String) [], RemoteException
-    + FullyQualifiedErrorId : NativeCommandError
- 
 diff --git a/manifests/current_round.yaml b/manifests/current_round.yaml
 index 24cea54..fb158ec 100644
 --- a/manifests/current_round.yaml
@@ -15,10 +7,10 @@ index 24cea54..fb158ec 100644
  guard_status: "ACTIVE"
  phase: "Phase 2"
 -last_completed_round: "R035"
--last_completed_topic: "敹恍?霅?憯?皜祈岫獢"
+-last_completed_topic: "?????????????????"
 -last_completed_commit: "7fdb35a3bd02447c9351fef788adf84ba74366ac"
 +last_completed_round: "R036"
-+last_completed_topic: "?箏?皜祈岫鞈???
++last_completed_topic: "???????????
 +last_completed_commit: "7ee575eaa8ec918611c1496523c50ece6f6aed36"
  current_round: "NONE"
 -next_round_to_dispatch: "R036"
@@ -34,7 +26,7 @@ index 24cea54..fb158ec 100644
      order_execution_allowed: false
 +  r035:
 +    type: "functional_round"
-+    description: "R035 敹恍?霅?憯?皜祈岫獢 / FastValidationAndStressTestFramework"
++    description: "R035 ????????????????? / FastValidationAndStressTestFramework"
 +    branch: "candidate/r035-fast-validation-stress-test-framework"
 +    candidate_commit: "7fdb35a3bd02447c9351fef788adf84ba74366ac"
 +    merged_at_commit: "bc17936e8201dd6d864e5df8f96354ba57ffa2bb"
@@ -54,7 +46,7 @@ index 24cea54..fb158ec 100644
 +        conclusion: success
 +  r036:
 +    type: "gap_only_hardening"
-+    description: "R036 ?箏?皜祈岫鞈???/ FixedTestDataset"
++    description: "R036 ???????????/ FixedTestDataset"
 +    scope_decision: "GAP_ONLY_HARDENING_SOURCE_ALREADY_ON_CANONICAL"
 +    gap_reason: "R036_FIXED_DATASET evidence.json recorded canonical_merge_executed=false requiring formal gap-only hardening"
 +    branch: "candidate/r036-gap-only-hardening"
