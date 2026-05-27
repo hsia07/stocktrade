@@ -1,74 +1,372 @@
-diff --git a/manifests/current_round.yaml b/manifests/current_round.yaml
-index 24cea54..fb158ec 100644
---- a/manifests/current_round.yaml
-+++ b/manifests/current_round.yaml
-@@ -80,12 +80,12 @@ fail_closed_guards:
-   validate_evidence_real_changes: true
- guard_status: "ACTIVE"
- phase: "Phase 2"
--last_completed_round: "R035"
--last_completed_topic: "?????????????????"
--last_completed_commit: "7fdb35a3bd02447c9351fef788adf84ba74366ac"
-+last_completed_round: "R036"
-+last_completed_topic: "???????????
-+last_completed_commit: "7ee575eaa8ec918611c1496523c50ece6f6aed36"
- current_round: "NONE"
--next_round_to_dispatch: "R036"
--chain_status: "r035_completed_ready_for_r036_governance_record_scope_decision_or_deep_audit"
-+next_round_to_dispatch: "R037"
-+chain_status: "r036_completed_ready_for_r037_governance_record_scope_decision_or_deep_audit"
- backlog:
-   r018:
-     branch: "work/candidate-r018-schema-migration"
-@@ -211,3 +211,51 @@ backlog:
-     runtime_started: false
-     broker_api_called: false
-     order_execution_allowed: false
-+  r035:
-+    type: "functional_round"
-+    description: "R035 ????????????????? / FastValidationAndStressTestFramework"
-+    branch: "candidate/r035-fast-validation-stress-test-framework"
-+    candidate_commit: "7fdb35a3bd02447c9351fef788adf84ba74366ac"
-+    merged_at_commit: "bc17936e8201dd6d864e5df8f96354ba57ffa2bb"
-+    evidence_complete: true
-+    tests_pass: true
-+    validators_pass: true
-+    merge_review_status: "merged"
-+    pushed_to_remote: true
-+    github_actions:
-+      validate_canonical_repair:
-+        run_id: 26519183499
-+        status: completed
-+        conclusion: success
-+      validate_round:
-+        run_id: 26519184058
-+        status: completed
-+        conclusion: success
-+  r036:
-+    type: "gap_only_hardening"
-+    description: "R036 ???????????/ FixedTestDataset"
-+    scope_decision: "GAP_ONLY_HARDENING_SOURCE_ALREADY_ON_CANONICAL"
-+    gap_reason: "R036_FIXED_DATASET evidence.json recorded canonical_merge_executed=false requiring formal gap-only hardening"
-+    branch: "candidate/r036-gap-only-hardening"
-+    candidate_commit: "28e96b90ed6ee11a0cfb7e10cc098b6632a2e692"
-+    merged_at_commit: "7ee575eaa8ec918611c1496523c50ece6f6aed36"
-+    evidence_complete: true
-+    tests_pass: true
-+    validators_pass: true
-+    merge_review_status: "merged"
-+    pushed_to_remote: true
-+    github_actions:
-+      validate_canonical_repair:
-+        run_id: 26524951109
-+        status: completed
-+        conclusion: success
-+      validate_round:
-+        run_id: 26524951210
-+        status: completed
-+        conclusion: success
-+    r036_construction_started: false
-+    r037_started: false
-+    r049_started: false
-+    runtime_started: false
-+    broker_api_called: false
-+    order_execution_allowed: false
+diff --git a/automation/control/candidates/R036_FINAL_CHAIN_STATUS_UPDATE/RETURN_TO_CHATGPT.txt b/automation/control/candidates/R036_FINAL_CHAIN_STATUS_UPDATE/RETURN_TO_CHATGPT.txt
+new file mode 100644
+index 0000000..d9c4724
+--- /dev/null
++++ b/automation/control/candidates/R036_FINAL_CHAIN_STATUS_UPDATE/RETURN_TO_CHATGPT.txt
+@@ -0,0 +1,90 @@
++ROUND_ID: R036_FINAL_CHAIN_STATUS_UPDATE_CANDIDATE
++
++TASK_TYPE: manifest_chain_status_update_candidate
++
++FORMAL_STATUS_CODE: CANDIDATE_READY_AWAITING_MANUAL_REVIEW
++
++CURRENT_BRANCH: candidate/r036-final-chain-status-update
++BASE_BRANCH: work/canonical-mainline-repair-001
++BASE_HEAD: 7ee575eaa8ec918611c1496523c50ece6f6aed36
++REMOTE_HEAD: 7ee575eaa8ec918611c1496523c50ece6f6aed36
++LOCAL_REMOTE_HEAD_MATCH_TRUE_OR_FALSE: TRUE
++CANDIDATE_BRANCH: candidate/r036-final-chain-status-update
++CANDIDATE_HEAD: 671fc1580317fa9585a605c07c79bb7871d809b4
++GIT_CLEAN_BEFORE_TRUE_OR_FALSE: TRUE
++FILES_MODIFIED:
++  - manifests/current_round.yaml (M)
++FILES_CREATED:
++  - automation/control/candidates/R036_FINAL_CHAIN_STATUS_UPDATE/evidence.json
++  - automation/control/candidates/R036_FINAL_CHAIN_STATUS_UPDATE/RETURN_TO_CHATGPT.txt
++  - automation/control/candidates/R036_FINAL_CHAIN_STATUS_UPDATE/task.txt
++  - automation/control/candidates/R036_FINAL_CHAIN_STATUS_UPDATE/report.json
++  - automation/control/candidates/R036_FINAL_CHAIN_STATUS_UPDATE/candidate.diff
++FILES_DELETED: []
++MANIFEST_BEFORE:
++  last_completed_round: R035
++  last_completed_topic: ?????????????????
++  last_completed_commit: 7fdb35a3bd02447c9351fef788adf84ba74366ac
++  next_round_to_dispatch: R036
++  chain_status: r035_completed_ready_for_r036_governance_record_scope_decision_or_deep_audit
++MANIFEST_AFTER:
++  last_completed_round: R036
++  last_completed_topic: ???????????+  last_completed_commit: 7ee575eaa8ec918611c1496523c50ece6f6aed36
++  next_round_to_dispatch: R037
++  chain_status: r036_completed_ready_for_r037_governance_record_scope_decision_or_deep_audit
++LAST_COMPLETED_ROUND_BEFORE: R035
++LAST_COMPLETED_ROUND_AFTER: R036
++NEXT_ROUND_TO_DISPATCH_BEFORE: R036
++NEXT_ROUND_TO_DISPATCH_AFTER: R037
++LAST_COMPLETED_COMMIT_AFTER: 7ee575eaa8ec918611c1496523c50ece6f6aed36
++CHAIN_STATUS_AFTER: r036_completed_ready_for_r037_governance_record_scope_decision_or_deep_audit
++MANIFEST_UPDATE_ONLY_TRUE_OR_FALSE: TRUE
++REQUIRED_CI_GREEN_TRUE_OR_FALSE: TRUE
++VALIDATE_ROUND_CONCLUSION: success (#260)
++VALIDATE_CANONICAL_REPAIR_CONCLUSION: success (#42)
++SOURCE_FILES_MODIFIED_TRUE_OR_FALSE: FALSE
++R036_SOURCE_MODIFIED_TRUE_OR_FALSE: FALSE
++R036_TESTS_MODIFIED_TRUE_OR_FALSE: FALSE
++R037_R048_MODIFIED_TRUE_OR_FALSE: FALSE
++R037_R048_ACCEPTED_TRUE_OR_FALSE: FALSE
++R049_MODIFIED_TRUE_OR_FALSE: FALSE
++R049_STARTED_TRUE_OR_FALSE: FALSE
++SERVER_V2_MODIFIED_TRUE_OR_FALSE: FALSE
++INDEX_V2_MODIFIED_TRUE_OR_FALSE: FALSE
++BROKER_API_CALLED_TRUE_OR_FALSE: FALSE
++TRADING_RUNTIME_STARTED_TRUE_OR_FALSE: FALSE
++ORDER_EXECUTION_ALLOWED_TRUE_OR_FALSE: FALSE
++VALIDATION_COMMANDS_RUN:
++  - git status --porcelain=v1 --untracked-files=all
++  - git diff --name-status 7ee575e..HEAD
++  - python -m pytest tests/test_fixed_test_dataset.py -q --tb=short
++  - python -m pytest tests/test_validate_canonical_repair_evidence.py -q --tb=short
++  - python -m pytest tests/test_verification_framework.py -q --tb=short
++VALIDATION_RESULTS:
++  git_status: clean
++  diff_files: manifest + 4 evidence files only
++  test_fixed_test_dataset: 17 passed
++  test_validate_canonical_repair_evidence: 33 passed
++  test_verification_framework: 11 passed
++EVIDENCE_VALIDATION_RESULT: PASS
++GIT_CLEAN_AFTER_TRUE_OR_FALSE: TRUE
++COMMITS_CREATED_TRUE_OR_FALSE: TRUE (1 commit: 671fc158)
++MERGE_EXECUTED_TRUE_OR_FALSE: FALSE
++PUSH_EXECUTED_TRUE_OR_FALSE: FALSE
++WORKFLOW_RERUN_TRUE_OR_FALSE: FALSE
++FORCE_PUSH_USED_TRUE_OR_FALSE: FALSE
++NO_VERIFY_USED_TRUE_OR_FALSE: FALSE
++BLOCKERS: NONE
++RECOMMENDED_NEXT_ACTION: AWAITING_MANUAL_REVIEW_FOR_R036_FINAL_CHAIN_STATUS_UPDATE_CANDIDATE
++
++FINAL_RECOMMENDATION:
++  DO_NOT_START_R049
++  DO_NOT_ACCEPT_R037_R048_YET
++  DO_NOT_PUSH_WITHOUT_USER_SIGNOFF
++  R036_FINAL_CHAIN_UPDATE_ONLY_NEXT
++  ORDER_EXECUTION_ALLOWED_REMAINS_FALSE
++  CANDIDATE_671fc15_READY_ON_candidate/r036-final-chain-status-update
++  MANIFEST_UPDATE_ONLY (5 files changed: manifest + 4 evidence artifacts)
++  ALL_VALIDATIONS_PASS
++  SAFE_TO_MERGE_AND_PUSH_AFTER_USER_EXPLICIT_SIGNOFF
+diff --git a/automation/control/candidates/R036_FINAL_CHAIN_STATUS_UPDATE/candidate.diff b/automation/control/candidates/R036_FINAL_CHAIN_STATUS_UPDATE/candidate.diff
+new file mode 100644
+index 0000000..98011c7
+--- /dev/null
++++ b/automation/control/candidates/R036_FINAL_CHAIN_STATUS_UPDATE/candidate.diff
+@@ -0,0 +1,74 @@
++diff --git a/manifests/current_round.yaml b/manifests/current_round.yaml
++index 24cea54..fb158ec 100644
++--- a/manifests/current_round.yaml
+++++ b/manifests/current_round.yaml
++@@ -80,12 +80,12 @@ fail_closed_guards:
++   validate_evidence_real_changes: true
++ guard_status: "ACTIVE"
++ phase: "Phase 2"
++-last_completed_round: "R035"
++-last_completed_topic: "?????????????????"
++-last_completed_commit: "7fdb35a3bd02447c9351fef788adf84ba74366ac"
+++last_completed_round: "R036"
+++last_completed_topic: "???????????
+++last_completed_commit: "7ee575eaa8ec918611c1496523c50ece6f6aed36"
++ current_round: "NONE"
++-next_round_to_dispatch: "R036"
++-chain_status: "r035_completed_ready_for_r036_governance_record_scope_decision_or_deep_audit"
+++next_round_to_dispatch: "R037"
+++chain_status: "r036_completed_ready_for_r037_governance_record_scope_decision_or_deep_audit"
++ backlog:
++   r018:
++     branch: "work/candidate-r018-schema-migration"
++@@ -211,3 +211,51 @@ backlog:
++     runtime_started: false
++     broker_api_called: false
++     order_execution_allowed: false
+++  r035:
+++    type: "functional_round"
+++    description: "R035 ????????????????? / FastValidationAndStressTestFramework"
+++    branch: "candidate/r035-fast-validation-stress-test-framework"
+++    candidate_commit: "7fdb35a3bd02447c9351fef788adf84ba74366ac"
+++    merged_at_commit: "bc17936e8201dd6d864e5df8f96354ba57ffa2bb"
+++    evidence_complete: true
+++    tests_pass: true
+++    validators_pass: true
+++    merge_review_status: "merged"
+++    pushed_to_remote: true
+++    github_actions:
+++      validate_canonical_repair:
+++        run_id: 26519183499
+++        status: completed
+++        conclusion: success
+++      validate_round:
+++        run_id: 26519184058
+++        status: completed
+++        conclusion: success
+++  r036:
+++    type: "gap_only_hardening"
+++    description: "R036 ???????????/ FixedTestDataset"
+++    scope_decision: "GAP_ONLY_HARDENING_SOURCE_ALREADY_ON_CANONICAL"
+++    gap_reason: "R036_FIXED_DATASET evidence.json recorded canonical_merge_executed=false requiring formal gap-only hardening"
+++    branch: "candidate/r036-gap-only-hardening"
+++    candidate_commit: "28e96b90ed6ee11a0cfb7e10cc098b6632a2e692"
+++    merged_at_commit: "7ee575eaa8ec918611c1496523c50ece6f6aed36"
+++    evidence_complete: true
+++    tests_pass: true
+++    validators_pass: true
+++    merge_review_status: "merged"
+++    pushed_to_remote: true
+++    github_actions:
+++      validate_canonical_repair:
+++        run_id: 26524951109
+++        status: completed
+++        conclusion: success
+++      validate_round:
+++        run_id: 26524951210
+++        status: completed
+++        conclusion: success
+++    r036_construction_started: false
+++    r037_started: false
+++    r049_started: false
+++    runtime_started: false
+++    broker_api_called: false
+++    order_execution_allowed: false
+diff --git a/automation/control/candidates/R036_FINAL_CHAIN_STATUS_UPDATE/evidence.json b/automation/control/candidates/R036_FINAL_CHAIN_STATUS_UPDATE/evidence.json
+new file mode 100644
+index 0000000..e2722f5
+--- /dev/null
++++ b/automation/control/candidates/R036_FINAL_CHAIN_STATUS_UPDATE/evidence.json
+@@ -0,0 +1,87 @@
++{
++  "round_id": "R036_FINAL_CHAIN_STATUS_UPDATE",
++  "task_type": "manifest_chain_status_update",
++  "status": "candidate_ready_awaiting_manual_review",
++  "formal_status_code": "R036_FINAL_CHAIN_STATUS_UPDATE_CANDIDATE_READY",
++  "base_branch": "work/canonical-mainline-repair-001",
++  "base_head": "7ee575eaa8ec918611c1496523c50ece6f6aed36",
++  "candidate_branch": "candidate/r036-final-chain-status-update",
++  "candidate_head": null,
++  "official_topic": "???????????,
++  "gap_only_hardening_scope": true,
++  "gap_only_hardening_note": "R036 source already on canonical at 7ee575e; this candidate updates manifest chain status only",
++  "manifest_update": {
++    "last_completed_round_before": "R035",
++    "last_completed_round_after": "R036",
++    "last_completed_topic_before": "?????????????????",
++    "last_completed_topic_after": "???????????,
++    "last_completed_commit_before": "7fdb35a3bd02447c9351fef788adf84ba74366ac",
++    "last_completed_commit_after": "7ee575eaa8ec918611c1496523c50ece6f6aed36",
++    "next_round_to_dispatch_before": "R036",
++    "next_round_to_dispatch_after": "R037",
++    "chain_status_before": "r035_completed_ready_for_r036_governance_record_scope_decision_or_deep_audit",
++    "chain_status_after": "r036_completed_ready_for_r037_governance_record_scope_decision_or_deep_audit"
++  },
++  "r036_evidence_summary": {
++    "remote_canonical_head": "7ee575eaa8ec918611c1496523c50ece6f6aed36",
++    "validate_round": {
++      "run_id": "26524951210",
++      "status": "completed",
++      "conclusion": "success"
++    },
++    "validate_canonical_repair": {
++      "run_id": "26524951109",
++      "status": "completed",
++      "conclusion": "success"
++    },
++    "source_file": "modules/decision_prechecklist/fixed_test_dataset.py",
++    "test_file": "tests/test_fixed_test_dataset.py",
++    "invalid_malformed_input_tests_added": 7,
++    "total_tests": 17,
++    "evidence_artifacts": [
++      "automation/control/candidates/R036_GAP_ONLY_HARDENING/evidence.json",
++      "automation/control/candidates/R036_GAP_ONLY_HARDENING/report.json",
++      "automation/control/candidates/R036_GAP_ONLY_HARDENING/RETURN_TO_CHATGPT.txt",
++      "automation/control/candidates/R036_GAP_ONLY_HARDENING/test-results.txt",
++      "automation/control/candidates/R036_GAP_ONLY_HARDENING/no-aider-used.txt"
++    ]
++  },
++  "backlog_entries_added": [
++    "r035",
++    "r036"
++  ],
++  "safety_boundary": {
++    "broker_api_called": false,
++    "trading_runtime_started": false,
++    "order_execution_allowed": false,
++    "r037_r048_accepted": false,
++    "r049_started": false,
++    "server_v2_wired": false,
++    "index_v2_wired": false
++  },
++  "law_compliance": "04",
++  "law_priority_verified": "02 > 03 > 04 > 01",
++  "files_modified": [
++    "manifests/current_round.yaml"
++  ],
++  "files_created": [
++    "automation/control/candidates/R036_FINAL_CHAIN_STATUS_UPDATE/evidence.json",
++    "automation/control/candidates/R036_FINAL_CHAIN_STATUS_UPDATE/RETURN_TO_CHATGPT.txt",
++    "automation/control/candidates/R036_FINAL_CHAIN_STATUS_UPDATE/task.txt",
++    "automation/control/candidates/R036_FINAL_CHAIN_STATUS_UPDATE/report.json",
++    "automation/control/candidates/R036_FINAL_CHAIN_STATUS_UPDATE/candidate.diff"
++  ],
++  "files_deleted": [],
++  "R037_R048_accepted": false,
++  "R049_started": false,
++  "preflight_checks": {
++    "base_head_check": "PASS",
++    "git_clean_check": "PASS",
++    "branch_check": "PASS",
++    "required_ci_green": "PASS",
++    "r037_r048_not_accepted": "PASS",
++    "r049_not_started": "PASS",
++    "order_execution_allowed_false": "PASS"
++  },
++  "generated_at": "2026-05-28"
++}
+diff --git a/automation/control/candidates/R036_FINAL_CHAIN_STATUS_UPDATE/report.json b/automation/control/candidates/R036_FINAL_CHAIN_STATUS_UPDATE/report.json
+new file mode 100644
+index 0000000..b9f3b7b
+--- /dev/null
++++ b/automation/control/candidates/R036_FINAL_CHAIN_STATUS_UPDATE/report.json
+@@ -0,0 +1,25 @@
++{
++  "round_id": "R036_FINAL_CHAIN_STATUS_UPDATE",
++  "status": "completed",
++  "candidate_type": "manifest_chain_status_update",
++  "base_commit": "7ee575eaa8ec918611c1496523c50ece6f6aed36",
++  "scope": "manifest only",
++  "manifest_changes": {
++    "last_completed_round": "R035 -> R036",
++    "last_completed_topic": "????????????????? -> ???????????,
++    "last_completed_commit": "7fdb35a3... -> 7ee575e...",
++    "next_round_to_dispatch": "R036 -> R037",
++    "chain_status": "r035_completed_... -> r036_completed_..."
++  },
++  "backlog_added": ["r035", "r036"],
++  "required_ci": {
++    "validate_round": "success (#260)",
++    "validate_canonical_repair": "success (#42)"
++  },
++  "safety": {
++    "order_execution_allowed": false,
++    "R037_R048_accepted": false,
++    "R049_started": false
++  },
++  "next": "R037 governance record scope decision or deep audit"
++}
+diff --git a/automation/control/candidates/R036_FINAL_CHAIN_STATUS_UPDATE/task.txt b/automation/control/candidates/R036_FINAL_CHAIN_STATUS_UPDATE/task.txt
+new file mode 100644
+index 0000000..0fa3f84
+--- /dev/null
++++ b/automation/control/candidates/R036_FINAL_CHAIN_STATUS_UPDATE/task.txt
+@@ -0,0 +1,37 @@
++R036 final chain status update candidate
++
++OBJECTIVE:
++Update manifests/current_round.yaml to record R036 as completed and R037 as next round to dispatch.
++
++BASE:
++work/canonical-mainline-repair-001
++7ee575eaa8ec918611c1496523c50ece6f6aed36
++
++CANDIDATE:
++candidate/r036-final-chain-status-update
++
++MANIFEST FIELDS UPDATED:
++- last_completed_round: R035 -> R036
++- last_completed_topic: ????????????????? -> ???????????+- last_completed_commit: 7fdb35a3... -> 7ee575e...
++- next_round_to_dispatch: R036 -> R037
++- chain_status: r035_... -> r036_...
++
++BACKLOG ENTRIES ADDED:
++- r035 (functional_round, merged)
++- r036 (gap_only_hardening, merged)
++
++NOT MODIFIED:
++- R036 source/tests
++- R037-R048
++- R049
++- server_v2.py / index_v2.html
++- broker / live / execution / order pipeline
++- order_execution_allowed (remains FALSE)
++
++SAFETY FLAGS:
++- broker_api_called: false
++- trading_runtime_started: false
++- order_execution_allowed: false
++- R037_R048_accepted: false
++- R049_started: false
+diff --git a/automation/control/candidates/R036_FINAL_CHAIN_STATUS_UPDATE/test-results.txt b/automation/control/candidates/R036_FINAL_CHAIN_STATUS_UPDATE/test-results.txt
+new file mode 100644
+index 0000000..98243d9
+--- /dev/null
++++ b/automation/control/candidates/R036_FINAL_CHAIN_STATUS_UPDATE/test-results.txt
+@@ -0,0 +1,25 @@
++R036 final chain status update ??test results
++Generated: 2026-05-28
++
++SCOPE: manifest update only (no source code changes)
++
++TEST RESULTS:
++  tests/test_fixed_test_dataset.py:       17 passed
++  tests/test_validate_canonical_repair_evidence.py: 33 passed
++  tests/test_verification_framework.py:   11 passed
++  TOTAL:                                  61/61 PASS
++
++MANIFEST_UPDATE_ONLY: TRUE
++NO SOURCE_CODE_MODIFICATIONS: TRUE
++NO RUNTIME_BROKER_LIVE_EXECUTION: TRUE
++ORDER_EXECUTION_ALLOWED: FALSE
++R037_R048_ACCEPTED: FALSE
++R049_STARTED: FALSE
++
++CI VALIDATION:
++  validate-round #260: SUCCESS (commit 7ee575e)
++  validate-canonical-repair #42: SUCCESS (commit 7ee575e)
++
++NOTE: This candidate only updates manifests/current_round.yaml.
++All tests pass because no source code was modified.
++test-results.txt is included per REQUIRED_FILES in validate_canonical_repair_evidence.py.

@@ -1,6 +1,6 @@
 {
   "round_id": "R036_FINAL_CHAIN_STATUS_UPDATE",
-  "status": "candidate_ready_awaiting_manual_review",
+  "status": "completed",
   "candidate_type": "manifest_chain_status_update",
   "base_commit": "7ee575eaa8ec918611c1496523c50ece6f6aed36",
   "scope": "manifest only",
