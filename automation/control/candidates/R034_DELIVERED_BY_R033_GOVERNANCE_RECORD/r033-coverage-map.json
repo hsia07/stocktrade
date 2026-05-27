@@ -61,7 +61,7 @@
   "test_coverage": {
     "test_replay_isolation.py": 53,
     "test_decision_comparator.py": 26,
-    "test_r033_replay_live_write_guard.py": 66,
+    "test_r033_replay_live_write_guard.py": 84,
     "test_audit_trail.py": 29,
     "test_traceability_chain.py": 16,
     "total_tests_passed": 208,
