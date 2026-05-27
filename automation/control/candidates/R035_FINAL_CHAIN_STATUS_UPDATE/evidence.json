@@ -1,0 +1,56 @@
+{
+  "round_id": "R035_FINAL_CHAIN_STATUS_UPDATE",
+  "task_type": "manifest_chain_status_update_candidate",
+  "status": "candidate_ready_awaiting_manual_review",
+  "formal_status_code": "R035_FINAL_CHAIN_STATUS_UPDATE_CANDIDATE_READY",
+  "base_branch": "work/canonical-mainline-repair-001",
+  "base_head": "7fdb35a3bd02447c9351fef788adf84ba74366ac",
+  "candidate_branch": "candidate/r035-final-chain-status-update",
+  "manifest_update_only": true,
+  "last_completed_round_after": "R035",
+  "last_completed_topic_after": "快速驗證與壓力測試框架",
+  "last_completed_commit_after": "7fdb35a3bd02447c9351fef788adf84ba74366ac",
+  "next_round_to_dispatch_after": "R036",
+  "chain_status_after": "r035_completed_ready_for_r036_governance_record_scope_decision_or_deep_audit",
+  "pre_merge_ci_status": {
+    "validate_round": "completed/success",
+    "validate_canonical_repair": "completed/success"
+  },
+  "r035_governance_record_merge": "4c032a070d3e6efa748c5255950f62e8f387e8f9",
+  "r035_ci_false_positive_fix_merge": "90593957d176527b21791f1c13a5b3e763083829",
+  "r035_evidence_completeness_fix_merge": "7fdb35a3bd02447c9351fef788adf84ba74366ac",
+  "r035_candidate_commit": "e5175275e74643622ddbd24596bb7f1c2195177c",
+  "safety_boundary": {
+    "R036_R048_accepted": false,
+    "R049_started": false,
+    "broker_api_called": false,
+    "trading_runtime_started": false,
+    "order_execution_allowed": false
+  },
+  "files_modified": [
+    "manifests/current_round.yaml"
+  ],
+  "files_created": [
+    "automation/control/candidates/R035_FINAL_CHAIN_STATUS_UPDATE/evidence.json",
+    "automation/control/candidates/R035_FINAL_CHAIN_STATUS_UPDATE/RETURN_TO_CHATGPT.txt",
+    "automation/control/candidates/R035_FINAL_CHAIN_STATUS_UPDATE/task.txt",
+    "automation/control/candidates/R035_FINAL_CHAIN_STATUS_UPDATE/report.json",
+    "automation/control/candidates/R035_FINAL_CHAIN_STATUS_UPDATE/candidate.diff",
+    "automation/control/candidates/R035_FINAL_CHAIN_STATUS_UPDATE/test-results.txt",
+    "automation/control/candidates/R035_FINAL_CHAIN_STATUS_UPDATE/no-aider-used.txt"
+  ],
+  "files_deleted": [],
+  "law_compliance": "04",
+  "law_priority_verified": "02 > 03 > 04 > 01",
+  "preflight_checks": {
+    "base_head_check": "PASS",
+    "git_clean_check": "PASS",
+    "branch_check": "PASS",
+    "ci_green_check": "PASS",
+    "pollution_check": "PASS",
+    "r036_r048_not_accepted": "PASS",
+    "r049_not_started": "PASS",
+    "order_execution_allowed_false": "PASS"
+  },
+  "generated_at": "2026-05-27"
+}

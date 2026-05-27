@@ -1,0 +1,5 @@
+﻿test results for R035_FINAL_CHAIN_STATUS_UPDATE_CANDIDATE
+=========================================
+tests/test_verification_framework.py: 11/11 PASS
+tests/test_validate_canonical_repair_evidence.py: 33/33 PASS
+total: 44/44 PASS

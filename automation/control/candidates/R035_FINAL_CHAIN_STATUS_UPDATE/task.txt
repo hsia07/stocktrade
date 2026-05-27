@@ -1,0 +1,13 @@
+R035_FINAL_CHAIN_STATUS_UPDATE_CANDIDATE
+===========================
+Update manifests/current_round.yaml to reflect R035 completion.
+- last_completed_round: R034 -> R035
+- last_completed_topic: 重播與實盤模式隔離 -> 快速驗證與壓力測試框架
+- last_completed_commit: 24dcc08 -> 7fdb35a3
+- next_round_to_dispatch: R035 -> R036
+- chain_status: r034_delivered_by_r033... -> r035_completed_ready_for_r036_governance_record_scope_decision_or_deep_audit
+- manifest_update_only: true
+- No R036-R048 acceptance
+- No R049 authorization
+- No source/test/workflow/validator changes
+- order_execution_allowed remains FALSE

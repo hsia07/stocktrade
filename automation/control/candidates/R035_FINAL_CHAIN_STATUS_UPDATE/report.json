@@ -1,0 +1,42 @@
+{
+  "round_id": "R035_FINAL_CHAIN_STATUS_UPDATE",
+  "candidate_type": "manifest_chain_status_update",
+  "status": "completed",
+  "base_branch": "work/canonical-mainline-repair-001",
+  "base_head": "7fdb35a3bd02447c9351fef788adf84ba74366ac",
+  "candidate_branch": "candidate/r035-final-chain-status-update",
+  "manifest_update_only": true,
+  "manifest_before": {
+    "last_completed_round": "R034",
+    "last_completed_topic": "重播與實盤模式隔離",
+    "last_completed_commit": "24dcc08eb414035c8600fbe66afd5277c0b7fbcc",
+    "next_round_to_dispatch": "R035",
+    "chain_status": "r034_delivered_by_r033_ready_for_r035_readiness_or_scope_audit"
+  },
+  "manifest_after": {
+    "last_completed_round": "R035",
+    "last_completed_topic": "快速驗證與壓力測試框架",
+    "last_completed_commit": "7fdb35a3bd02447c9351fef788adf84ba74366ac",
+    "next_round_to_dispatch": "R036",
+    "chain_status": "r035_completed_ready_for_r036_governance_record_scope_decision_or_deep_audit"
+  },
+  "r035_commits_on_canonical": {
+    "governance_record_acceptance_merge": "4c032a070d3e6efa748c5255950f62e8f387e8f9",
+    "ci_false_positive_fix_merge": "90593957d176527b21791f1c13a5b3e763083829",
+    "evidence_completeness_fix_merge": "7fdb35a3bd02447c9351fef788adf84ba74366ac",
+    "original_candidate_commit": "e5175275e74643622ddbd24596bb7f1c2195177c"
+  },
+  "required_ci_results": {
+    "validate_round": "success",
+    "validate_canonical_repair": "success"
+  },
+  "safety_boundary": {
+    "R036_R048_accepted": false,
+    "R049_started": false,
+    "broker_api_called": false,
+    "trading_runtime_started": false,
+    "order_execution_allowed": false
+  },
+  "source_construction_performed_now": false,
+  "final_recommendation": "candidate_ready_awaiting_manual_review"
+}
