@@ -1,0 +1,25 @@
+﻿round_id: R035_FINAL_CHAIN_STATUS_UPDATE_CANDIDATE
+task_type: manifest_chain_status_update_candidate
+formal_status_code: candidate_ready_awaiting_manual_review
+base_branch: work/canonical-mainline-repair-001
+base_head: 7fdb35a3bd02447c9351fef788adf84ba74366ac
+candidate_branch: candidate/r035-final-chain-status-update
+manifest_update_only: true
+last_completed_round before: R034
+last_completed_round after: R035
+next_round_to_dispatch before: R035
+next_round_to_dispatch after: R036
+chain_status after: r035_completed_ready_for_r036_governance_record_scope_decision_or_deep_audit
+R036_R048_accepted: false
+R049_started: false
+broker_api_called: false
+trading_runtime_started: false
+order_execution_allowed: false
+no source/test/workflow/validator/law changes
+recommended_next_action: AWAITING_MANUAL_REVIEW_FOR_R035_FINAL_CHAIN_STATUS_UPDATE_CANDIDATE
+recommendation:
+  - DO_NOT_START_R049
+  - DO_NOT_ACCEPT_R036_R048_YET
+  - DO_NOT_PUSH_WITHOUT_USER_SIGNOFF
+  - R035_FINAL_CHAIN_UPDATE_ONLY_NEXT
+  - ORDER_EXECUTION_ALLOWED_REMAINS_FALSE

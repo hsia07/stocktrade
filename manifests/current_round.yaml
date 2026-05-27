@@ -80,12 +80,12 @@ fail_closed_guards:
   validate_evidence_real_changes: true
 guard_status: "ACTIVE"
 phase: "Phase 2"
-last_completed_round: "R034"
-last_completed_topic: "回放與真實模式隔離"
-last_completed_commit: "24dcc08eb414035c8600fbe66afd5277c0b7fbcc"
+last_completed_round: "R035"
+last_completed_topic: "快速驗證與壓力測試框架"
+last_completed_commit: "7fdb35a3bd02447c9351fef788adf84ba74366ac"
 current_round: "NONE"
-next_round_to_dispatch: "R035"
-chain_status: "r034_delivered_by_r033_ready_for_r035_readiness_or_scope_audit"
+next_round_to_dispatch: "R036"
+chain_status: "r035_completed_ready_for_r036_governance_record_scope_decision_or_deep_audit"
 backlog:
   r018:
     branch: "work/candidate-r018-schema-migration"
