@@ -1,0 +1,8 @@
+Task: R034_DELIVERED_BY_R033_GOVERNANCE_RECORD_CANDIDATE
+Description: Build governance record establishing that R034 official topic "回放與真實模式隔離" was substantially delivered by R033 ReplayIsolationGate.
+User authorization: Option B (R034_DELIVERED_BY_R033_GOVERNANCE_RECORD_SCOPE)
+No source/test/workflow/validator/hook modifications.
+No R034 construction.
+No R035/R049/runtime/broker/live startup.
+order_execution_allowed remains FALSE.
+Shadow order/simulated execution consistency deferred to backlog.

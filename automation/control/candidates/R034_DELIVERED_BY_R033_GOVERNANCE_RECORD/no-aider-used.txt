@@ -1,0 +1,1 @@
+This package was created by opencode CLI (Anomalyco). No aider was used in the construction of this candidate.

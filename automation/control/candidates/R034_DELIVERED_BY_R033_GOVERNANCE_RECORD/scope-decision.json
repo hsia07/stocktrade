@@ -1,0 +1,27 @@
+{
+  "round_id": "R034",
+  "decision_type": "scope_decision",
+  "scope_decision": "R034_DELIVERED_BY_R033_GOVERNANCE_RECORD_SCOPE",
+  "options_considered": {
+    "Option_A": {
+      "label": "R034_GAP_ONLY_HARDENING_SCOPE",
+      "description": "補 R033 未覆蓋的 replay/live boundary audit、simulated/shadow consistency contract、import scanner、failure-injection evidence",
+      "not_selected_reason": "R033 已實質完成 ReplayIsolationGate；gap-only 硬化可能導致平行治理鏈重複。影子下單一致性非單純 gap，需獨立 scope。"
+    },
+    "Option_B": {
+      "label": "R034_DELIVERED_BY_R033_GOVERNANCE_RECORD_SCOPE",
+      "description": "不新增 source，只建立治理記錄說明 R034 原題已由 R033 實質完成",
+      "user_selection": true,
+      "selection_reason": "使用者裁決同意 Option B：R034 official topic 回放與真實模式隔離由 R033 覆蓋，僅建立 governance record 收口。"
+    },
+    "Option_C": {
+      "label": "R034_BLOCKED_TOPIC_MISMATCH_REQUIRES_USER_DECISION",
+      "description": "因 topic table / audit matrix 不一致，暫停由使用者決定語意",
+      "not_selected_reason": "使用者已裁決採 topic table 官方主題（回放與真實模式隔離）並用 governance record 收口。不需要 pause。"
+    }
+  },
+  "topic_mismatch_handling": "Audit matrix Phase 2 topic '影子下單/模擬執行一致性' does NOT override topic table. Topic table remains official baseline. Mismatch logged as deferred backlog, not resolved in this round.",
+  "audit_matrix_shadow_order_not_covered_by_topic_table": true,
+  "shadow_order_simulated_execution_consistency_not_smuggled": true,
+  "construction_allowed_now": false
+}

@@ -1,0 +1,37 @@
+{
+  "round_id": "R034",
+  "review_type": "topic_mismatch_resolution",
+  "sources_compared": {
+    "topic_table": {
+      "source": "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md",
+      "line": 65,
+      "topic": "回放與真實模式隔離",
+      "is_official_baseline": true
+    },
+    "audit_matrix_phase_2": {
+      "source": "_governance/audit/161_round_law_source_normalization_matrix.md",
+      "phase_2_topic": "影子下單/模擬執行一致性",
+      "topic_table_ref": "回放與真實模式隔離",
+      "mismatch": true,
+      "mismatch_symbol": "❌",
+      "severity": "MEDIUM",
+      "note": "Phase 2 topic mismatch affects future round planning"
+    },
+    "law_03": {
+      "status": "NOT_FOUND",
+      "note": "03_161輪逐輪施行細則法典_整合法條增補版 has no R034 entry"
+    },
+    "law_04": {
+      "status": "NOT_FOUND",
+      "note": "04_交易系統法典補強版_20260416_修正版 has no R034 entry"
+    },
+    "manifest": {
+      "status": "NONE",
+      "note": "Manifest current_round.yaml has no R034 topic field"
+    }
+  },
+  "final_decision": "Topic table remains official baseline. R034 = 回放與真實模式隔離.",
+  "mismatch_handling": "Audit matrix Phase 2 topic '影子下單/模擬執行一致性' is NOT covered by topic table. Logged as deferred backlog/future scope. NOT resolved in this round. NOT smuggled into R034 scope.",
+  "construction_allowed_now": false,
+  "shadow_order_future_scope_needed": true
+}
