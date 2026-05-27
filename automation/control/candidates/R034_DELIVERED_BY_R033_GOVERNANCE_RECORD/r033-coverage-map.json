@@ -1,0 +1,78 @@
+{
+  "round_id": "R034",
+  "review_type": "r033_coverage_map",
+  "delivered_by_r033": true,
+  "r033_source_candidate": "48db4a14e549d0e0af7341eb09185f63b7d642d8",
+  "r033_source_merge": "c9b1ef49e964b32129f82c638e259a28f0d8e55b",
+  "r033_final_head": "24dcc08eb414035c8600fbe66afd5277c0b7fbcc",
+  "coverage_items": {
+    "ReplayIsolationGate": {
+      "source": "modules/decision_prechecklist/replay_isolation.py",
+      "status": "implemented_by_R033",
+      "details": "Full class with enter_replay/backtest/audit/simulation/live mode switching and safety gates"
+    },
+    "no_order_safety": {
+      "source": "modules/decision_prechecklist/replay_isolation.py",
+      "method": "assert_can_place_order",
+      "status": "implemented_by_R033",
+      "primary_test_file": "test_replay_isolation.py",
+      "primary_test_file_pytest_count": 53
+    },
+    "broker_api_blocked": {
+      "source": "modules/decision_prechecklist/replay_isolation.py",
+      "method": "assert_can_call_broker",
+      "status": "implemented_by_R033",
+      "primary_test_file": "test_r033_replay_live_write_guard.py",
+      "primary_test_file_pytest_count": 84
+    },
+    "live_state_write_blocked": {
+      "source": "modules/decision_prechecklist/replay_isolation.py",
+      "methods": ["assert_can_write_live_db", "assert_can_write_fill", "assert_can_write_runtime_state"],
+      "status": "implemented_by_R033"
+    },
+    "live_start_from_replay_blocked": {
+      "source": "modules/decision_prechecklist/replay_isolation.py",
+      "method": "assert_can_start_live_from",
+      "status": "implemented_by_R033"
+    },
+    "as_of_future_leak_guard": {
+      "source": "modules/decision_prechecklist/replay_isolation.py",
+      "method": "check_as_of_guard",
+      "status": "implemented_by_R033"
+    },
+    "veto_replay_consistency": {
+      "source": "modules/decision_prechecklist/replay_isolation.py",
+      "method": "check_veto_replay",
+      "status": "implemented_by_R033"
+    },
+    "replay_live_write_guard": {
+      "source": "modules/decision_prechecklist/replay_isolation.py",
+      "method": "check_replay_live_write",
+      "status": "implemented_by_R033"
+    },
+    "store_isolation": {
+      "source": "modules/decision_prechecklist/replay_isolation.py",
+      "method": "isolate_store",
+      "status": "implemented_by_R033"
+    },
+    "replay_output_not_executable": {
+      "status": "implemented_by_R033",
+      "evidence": "R033 evidence.json replay_output_not_executable_signal=true"
+    }
+  },
+  "test_coverage": {
+    "test_replay_isolation.py": 53,
+    "test_decision_comparator.py": 26,
+    "test_r033_replay_live_write_guard.py": 84,
+    "test_audit_trail.py": 29,
+    "test_traceability_chain.py": 16,
+    "total_tests_passed": 208,
+    "pytest_result": "PASS"
+  },
+  "r033_limitations": {
+    "note": "R033 provides replay contract placeholders, NOT a complete Taiwan Market Reality engine. Full Taiwan market model deferred to future round.",
+    "market_reality_placeholder": true,
+    "not_live_readiness": true,
+    "not_full_engine": true
+  }
+}

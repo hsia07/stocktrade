@@ -1,0 +1,16 @@
+R033 Regression Tests (R034 governance record round - no test modifications):
+  python -m pytest tests/test_replay_isolation.py ... PASS
+  python -m pytest tests/test_decision_comparator.py ... PASS
+  python -m pytest tests/test_r033_replay_live_write_guard.py ... PASS
+  python -m pytest tests/test_audit_trail.py ... PASS
+  python -m pytest tests/test_traceability_chain.py ... PASS
+  Total: 208/208 PASS
+
+Validators:
+  validate_round.py --manifest ... PASS
+  check_commit_message.py --manifest ... PASS
+  check_forbidden_changes.py --manifest ... PASS
+  check_required_evidence.py --manifest ... PASS
+  validate_canonical_repair_evidence.py ... PASS
+  evidence_checker.py ... PASS
+  pre-push.ps1 ... PASS

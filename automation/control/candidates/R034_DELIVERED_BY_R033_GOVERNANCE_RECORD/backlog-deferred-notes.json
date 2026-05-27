@@ -1,0 +1,69 @@
+{
+  "round_id": "R034",
+  "review_type": "backlog_deferred_inventory",
+  "p1_backlog_deferred_not_completed": true,
+  "deferred_items": [
+    {
+      "id": "shadow_order_simulated_execution_consistency",
+      "description": "Audit matrix Phase 2 topic mismatch: 影子下單/模擬執行一致性. Not covered by R033 or R034. Deferred to future round.",
+      "status": "deferred_not_completed",
+      "not_smuggled_in_r034": true
+    },
+    {
+      "id": "r032_mutation_reverse_break_tests",
+      "description": "R032 mutation / reverse-break tests still recommended",
+      "status": "deferred_not_completed"
+    },
+    {
+      "id": "r032_e2e_replay_integration_audit",
+      "description": "R032 E2E replay integration audit pending",
+      "status": "deferred_not_completed"
+    },
+    {
+      "id": "r032_durable_persistence",
+      "description": "R032 durable persistence future / partial",
+      "status": "deferred_not_completed"
+    },
+    {
+      "id": "r033_mutation_reverse_break_tests",
+      "description": "R033 mutation / reverse-break tests still recommended",
+      "status": "deferred_not_completed"
+    },
+    {
+      "id": "r033_e2e_replay_integration_audit",
+      "description": "R033 E2E replay integration audit pending",
+      "status": "deferred_not_completed"
+    },
+    {
+      "id": "r033_durable_persistence",
+      "description": "R033 durable persistence future / partial",
+      "status": "deferred_not_completed"
+    },
+    {
+      "id": "market_reality_full_engine",
+      "description": "Market Reality engine remains placeholder, not full engine",
+      "status": "deferred_not_completed"
+    },
+    {
+      "id": "r029_r030_per_ai_veto_rework",
+      "description": "R029 / R030 per-AI veto / full meeting table rework pending if still applicable",
+      "status": "deferred_not_completed"
+    },
+    {
+      "id": "r047_r048_backlog",
+      "description": "R047 / R048 P1 backlog pending",
+      "status": "deferred_not_completed"
+    },
+    {
+      "id": "signoff_cryptographic_validation",
+      "description": "Signoff validation syntactic not cryptographic",
+      "status": "deferred_not_completed"
+    },
+    {
+      "id": "stocktrade_gitlink_governance_audit",
+      "description": "Stocktrade gitlink / .gitmodules governance audit low-risk deferred (no .gitmodules exists)",
+      "status": "deferred_not_completed"
+    }
+  ],
+  "nothing_marked_completed_incorrectly": true
+}
