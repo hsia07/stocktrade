@@ -1,0 +1,124 @@
+round_id:
+  R035_VALIDATE_CANONICAL_REPAIR_GOVERNANCE_RECORD_FALSE_POSITIVE_FIX_CANDIDATE
+
+task_type:
+  ci_validator_false_positive_fix_candidate
+
+formal_status_code:
+  candidate_ready_awaiting_manual_review
+
+current_branch:
+  candidate/r035-validate-canonical-repair-governance-record-ci-fix
+
+base_branch:
+  work/canonical-mainline-repair-001
+
+base_head:
+  4c032a070d3e6efa748c5255950f62e8f387e8f9
+
+remote_head:
+  4c032a070d3e6efa748c5255950f62e8f387e8f9
+
+local_remote_head_match_true_or_false:
+  true
+
+candidate_branch:
+  candidate/r035-validate-canonical-repair-governance-record-ci-fix
+
+candidate_head:
+  27178aca8aa191ee95225b57c8653962aadf8be7
+
+git_clean_before_true_or_false:
+  true
+
+ci_failure_log_reviewed_true_or_false:
+  true
+
+exact_failed_workflow:
+  validate-canonical-repair (#26499230122)
+
+exact_failed_job:
+  validate / Validate canonical repair evidence (step 6)
+
+exact_failed_command:
+  The bash validate step checks if DIRS from detect step equals NONE and exits 1
+
+exact_git_diff_exit_128_stderr:
+  git diff HEAD~1..HEAD -- automation/control/candidates/ returned exit code 128 in CI runner
+  Python detect_candidate_packages.py ignored non-zero returncode, returned NONE silently
+
+root_cause_classification:
+  merge_commit_parent_resolution_failure + git_diff_exit_128_unhandled + candidate_package_type_detection_too_narrow
+
+fix_summary:
+  Three-part fix for validate-canonical-repair false positive on governance-record-only merge commits:
+  1. detect_candidate_packages.py: Replaced git diff HEAD~1..HEAD with git diff-tree -m --no-commit-id -r --name-only HEAD, handles two-parent no-ff merge commits correctly without base ref resolution. Added root commit fallback (empty tree). Proper git error handling (exit 1 with stderr).
+  2. validate_canonical_repair_evidence.py: Added governance_record_acceptance candidate classification (via acceptance_path field). Added check_governance_record_diff_scope inspecting diff --git headers only (not content). Unauthorized source/test/server_v2/index_v2/broker/live/order paths in diff headers cause FAIL. Canonical-repair path unchanged.
+  3. Workflow detect step simplified, validation step unchanged.
+  4. 17 new tests: governance-only PASS, source/server_v2/tests FAIL, classify, validate_candidate integration.
+  5. Fixed pre-existing BOM in R035 candidate.diff.
+
+files_modified:
+  - .github/workflows/validate-canonical-repair.yml
+  - scripts/validation/detect_candidate_packages.py
+  - scripts/validation/validate_canonical_repair_evidence.py
+  - tests/test_validate_canonical_repair_evidence.py
+
+files_created:
+  (none)
+
+source_files_modified_true_or_false: false
+R035_source_modified_true_or_false: false
+R035_tests_modified_true_or_false: false
+R036_R048_modified_true_or_false: false
+R049_modified_true_or_false: false
+server_v2_modified_true_or_false: false
+index_v2_modified_true_or_false: false
+broker_live_order_pollution_true_or_false: false
+
+guardrails_preserved:
+  - canonical-repair validation unchanged
+  - governance_record_acceptance path restricted to governance/evidence only
+  - NONE still blocks workflow
+  - no continue-on-error
+  - validation not disabled
+  - no broad allowlist
+  - fetch-depth: 0 preserved
+  - unauthorized paths in diff headers rejected
+
+continue_on_error_used_true_or_false: false
+validation_disabled_true_or_false: false
+broad_allowlist_added_true_or_false: false
+
+tests_added_or_updated: 17 new test cases across 3 test classes
+
+validation_commands_run:
+  - pytest test_validate_canonical_repair_evidence.py - 33/33 PASS
+  - pytest test_verification_framework.py - 11/11 PASS
+  - detect_candidate_packages.py at HEAD - outputs R035_GOVERNANCE_RECORD_ACCEPTANCE
+  - validate on R035 candidate - PASS (governance_record_acceptance)
+
+git_clean_after_true_or_false: true
+commits_created_true_or_false: true
+merge_executed_true_or_false: false
+push_executed_true_or_false: false
+workflow_rerun_true_or_false: false
+force_push_used_true_or_false: false
+no_verify_used_true_or_false: false
+R036_R048_accepted_true_or_false: false
+R049_started_true_or_false: false
+broker_api_called_true_or_false: false
+trading_runtime_started_true_or_false: false
+order_execution_allowed_true_or_false: false
+
+blockers: (none)
+
+recommended_next_action:
+  AWAITING_MANUAL_REVIEW_FOR_R035_VALIDATE_CANONICAL_REPAIR_FALSE_POSITIVE_FIX_CANDIDATE
+
+final_recommendation:
+  - DO_NOT_START_R049
+  - DO_NOT_ACCEPT_R036_R048_YET
+  - DO_NOT_PUSH_WITHOUT_USER_SIGNOFF
+  - R035_CI_BLOCKER_ONLY_NEXT
+  - ORDER_EXECUTION_ALLOWED_REMAINS_FALSE
