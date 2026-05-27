@@ -1,0 +1,86 @@
+{
+  "round_id": "R036_GAP_ONLY_HARDENING",
+  "task_type": "gap_only_hardening",
+  "status": "candidate_ready_awaiting_manual_review",
+  "formal_status_code": "R036_GAP_ONLY_HARDENING_CANDIDATE_READY",
+  "base_branch": "work/canonical-mainline-repair-001",
+  "base_head": "bc17936e8201dd6d864e5df8f96354ba57ffa2bb",
+  "candidate_branch": "candidate/r036-gap-only-hardening",
+  "official_topic": "固定測試資料集",
+  "gap_only_hardening": true,
+  "source_already_in_canonical": true,
+  "source_file": "modules/decision_prechecklist/fixed_test_dataset.py",
+  "test_file": "tests/test_fixed_test_dataset.py",
+  "source_construction_performed_now": false,
+  "governance_record_acceptance_path_used": false,
+  "gap_reason": "source already on canonical HEAD; pre-existing R036_FIXED_DATASET evidence.json records canonical_merge_executed=false requiring formal gap-only hardening",
+  "canonical_head_at_start": "bc17936e8201dd6d864e5df8f96354ba57ffa2bb",
+  "test_count_before": 10,
+  "test_count_after": 17,
+  "tests_added": [
+    "test_make_candidate_negative_price (invalid: negative price)",
+    "test_make_candidate_invalid_confidence_above_one (invalid: confidence > 1.0)",
+    "test_make_candidate_invalid_confidence_negative (invalid: negative confidence)",
+    "test_make_candidate_empty_symbol (invalid: empty string symbol)",
+    "test_make_candidate_invalid_side (invalid: non-buy/sell side)",
+    "test_fixed_test_case_mismatched_pass_and_veto (invalid: inconsistent expectations)",
+    "test_fixed_test_run_result_mismatch (invalid: mismatch detection)"
+  ],
+  "source_reality": {
+    "lines": 99,
+    "status": "REAL_CODE",
+    "classes": ["FixedTestCase", "FixedTestRunResult"],
+    "functions": ["register", "make_candidate"],
+    "data_contracts": 8,
+    "stdlib_only": true,
+    "no_broker_live_order_pollution": true
+  },
+  "tests_reality": {
+    "lines": 120,
+    "imports_from_source": true,
+    "positive_path_tests": 6,
+    "negative_path_tests": 5,
+    "boundary_tests": 2,
+    "invalid_input_tests": 7,
+    "all_pass": true
+  },
+  "safety_boundary": {
+    "broker_api_called": false,
+    "trading_runtime_started": false,
+    "order_execution_allowed": false,
+    "server_v2_wired": false,
+    "index_v2_wired": false
+  },
+  "backtest_replay_compatibility": true,
+  "market_reality_compatibility": true,
+  "files_modified": [
+    "tests/test_fixed_test_dataset.py"
+  ],
+  "files_created": [
+    "automation/control/candidates/R036_GAP_ONLY_HARDENING/evidence.json",
+    "automation/control/candidates/R036_GAP_ONLY_HARDENING/RETURN_TO_CHATGPT.txt",
+    "automation/control/candidates/R036_GAP_ONLY_HARDENING/task.txt",
+    "automation/control/candidates/R036_GAP_ONLY_HARDENING/report.json",
+    "automation/control/candidates/R036_GAP_ONLY_HARDENING/candidate.diff",
+    "automation/control/candidates/R036_GAP_ONLY_HARDENING/test-results.txt",
+    "automation/control/candidates/R036_GAP_ONLY_HARDENING/no-aider-used.txt"
+  ],
+  "files_deleted": [],
+  "R037_R048_accepted": false,
+  "R049_started": false,
+  "R036_source_modified": false,
+  "law_compliance": "04",
+  "law_priority_verified": "02 > 03 > 04 > 01",
+  "preflight_checks": {
+    "base_head_check": "PASS",
+    "git_clean_check": "PASS",
+    "branch_check": "PASS",
+    "tests_pass_check": "PASS",
+    "source_stub_check": "PASS (real code)",
+    "pollution_check": "PASS",
+    "r037_r048_not_accepted": "PASS",
+    "r049_not_started": "PASS",
+    "order_execution_allowed_false": "PASS"
+  },
+  "generated_at": "2026-05-27"
+}

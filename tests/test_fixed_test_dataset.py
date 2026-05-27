@@ -69,3 +69,53 @@ def test_fixed_test_run_result():
 
 if __name__ == "__main__":
     import pytest; sys.exit(pytest.main([__file__, "-v"]))
+
+
+def test_make_candidate_negative_price():
+    c = make_candidate(price=-100.0)
+    assert c.price < 0
+
+
+def test_make_candidate_invalid_confidence_above_one():
+    c = make_candidate(confidence_raw=1.5)
+    assert c.confidence_raw > 1.0
+
+
+def test_make_candidate_invalid_confidence_negative():
+    c = make_candidate(confidence_raw=-0.5)
+    assert c.confidence_raw < 0
+
+
+def test_make_candidate_empty_symbol():
+    c = make_candidate(symbol="")
+    assert c.symbol == ""
+
+
+def test_make_candidate_invalid_side():
+    c = make_candidate(side="hold")
+    assert c.side == "hold"
+
+
+def test_fixed_test_case_mismatched_pass_and_veto():
+    case = FixedTestCase(
+        name="mismatch_test",
+        description="expecting passed but also has veto code",
+        candidate=make_candidate(),
+        expected_passed=True,
+        expected_veto_reason_code="SINGLE_SIGNAL_DIRECT_TRADE",
+    )
+    assert case.expected_passed is True
+    assert case.expected_veto_reason_code is not None
+
+
+def test_fixed_test_run_result_mismatch():
+    r = FixedTestRunResult(
+        test_name="mismatch",
+        passed=False,
+        expected_passed=True,
+        actual_passed=False,
+        expected_veto_code="SINGLE_SIGNAL_DIRECT_TRADE",
+        actual_veto_code=None,
+        matches_expectation=False,
+    )
+    assert r.matches_expectation is False

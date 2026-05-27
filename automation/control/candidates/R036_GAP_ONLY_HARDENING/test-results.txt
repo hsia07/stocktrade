@@ -1,0 +1,29 @@
+test results for R036_GAP_ONLY_HARDENING_CANDIDATE
+=================================================
+tests/test_fixed_test_dataset.py: 17/17 PASS
+
+Breakdown:
+  test_fixed_dataset_has_cases: PASS
+  test_fixed_case_normal_passes: PASS
+  test_fixed_case_single_signal_blocked: PASS
+  test_fixed_case_event_news_blocked: PASS
+  test_fixed_case_llm_blocked: PASS
+  test_fixed_case_taiwan_suspended: PASS
+  test_fixed_case_non_taiwan: PASS
+  test_make_candidate_defaults: PASS
+  test_make_candidate_overrides: PASS
+  test_fixed_test_run_result: PASS
+  test_make_candidate_negative_price: PASS
+  test_make_candidate_invalid_confidence_above_one: PASS
+  test_make_candidate_invalid_confidence_negative: PASS
+  test_make_candidate_empty_symbol: PASS
+  test_make_candidate_invalid_side: PASS
+  test_fixed_test_case_mismatched_pass_and_veto: PASS
+  test_fixed_test_run_result_mismatch: PASS
+
+Validation framework tests: 11/11 PASS
+Canonical repair evidence tests: 33/33 PASS
+
+Coverage improvement:
+  - invalid/malformed input tests: 0 -> 7
+  - total tests: 10 -> 17
