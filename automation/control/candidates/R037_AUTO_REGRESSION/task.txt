@@ -1,0 +1,10 @@
+task_type: auto_regression_check
+round_id: R037
+topic: 自動回歸檢查
+phase: Phase 2
+goal: Implement automatic regression checking for decision pipeline
+deliverables:
+  - modules/decision_prechecklist/auto_regression_check.py
+  - tests/test_auto_regression_check.py
+evidence_gap: Required files (report.json, task.txt, test-results.txt, no-aider-used.txt) were missing from original candidate package. Filled during R037 gap-only hardening.
+canonical_merge_executed: false

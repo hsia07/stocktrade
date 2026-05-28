@@ -1,0 +1,82 @@
+{
+  "round_id": "R037",
+  "task_type": "gap_only_hardening_candidate",
+  "status": "candidate_ready_awaiting_manual_review",
+  "formal_status_code": "R037_GAP_ONLY_HARDENING_CANDIDATE_READY",
+  "base_head": "82b240dd1940c36c46b1177c2bc6f028d570be51",
+  "candidate_branch": "candidate/r037-gap-only-hardening",
+  "official_topic": "自動回歸檢查",
+  "source_already_in_canonical": true,
+  "batch_merge_origin": "c529d9a/5bb4600 (Phase 2 batch checkpoint)",
+  "canonical_merge_executed_original_value": false,
+  "gap_only_hardening": true,
+  "law_gap_hardening_performed": true,
+  "evidence_inventory_completed": true,
+  "source_files": [
+    "modules/decision_prechecklist/auto_regression_check.py"
+  ],
+  "test_files": [
+    "tests/test_auto_regression_check.py"
+  ],
+  "test_count": 18,
+  "tests_pass": true,
+  "source_modifications": [
+    "Added suite_name field to RegressionSuiteResult",
+    "Added to_dict() serializable report foundation",
+    "Added as_report() version diff report with mismatch_items and all_results",
+    "Added mode parameter to run() supporting 'full' and 'smoke'",
+    "Added run_smoke() method",
+    "Added extreme scenario filtering in smoke mode",
+    "Added check_strategy_parameter_update() placeholder contract",
+    "Added check_ai_weight_update() placeholder contract"
+  ],
+  "test_additions": [
+    "test_checker_detects_veto_code_mismatch",
+    "test_checker_detects_opposite_direction",
+    "test_fixed_test_cases_non_empty_and_known_names",
+    "test_serializable_report",
+    "test_version_diff_report",
+    "test_smoke_mode",
+    "test_run_smoke_method",
+    "test_extreme_scenario_filtered_in_smoke",
+    "test_strategy_parameter_update_contract",
+    "test_ai_weight_update_contract",
+    "test_observable_output_has_stable_keys",
+    "test_no_broker_live_order_pollution"
+  ],
+  "pre_existing_evidence_completed": true,
+  "pre_existing_evidence_missing_files_filled": [
+    "report.json",
+    "task.txt",
+    "test-results.txt",
+    "no-aider-used.txt"
+  ],
+  "safety_boundary": {
+    "broker_api_called": false,
+    "trading_runtime_started": false,
+    "order_execution_allowed": false,
+    "server_v2_modified": false,
+    "index_v2_modified": false,
+    "r038_r048_modified": false,
+    "r049_modified": false
+  },
+  "governance_record_created": true,
+  "governance_record_path": "automation/control/governance/r037-gap-only-hardening-record.json",
+  "r038_r048_accepted": false,
+  "r049_started": false,
+  "law_compliance": "04",
+  "law_priority_verified": "02 > 03 > 04 > 01",
+  "preflight_checks": {
+    "branch_check": "PASS",
+    "head_check": "PASS",
+    "git_clean_check": "PASS",
+    "manifest_check": "PASS",
+    "tests_pass_check": "PASS",
+    "pollution_check": "PASS",
+    "evidence_inventory_check": "PASS",
+    "source_stub_check": "PASS"
+  },
+  "governance_record_rework_applied": true,
+  "governance_record_rework_detail": "Added missing law_gap_hardening_performed boolean field to governance record",
+  "generated_at": "2026-05-28"
+}

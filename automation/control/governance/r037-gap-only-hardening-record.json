@@ -1,0 +1,88 @@
+{
+  "record_type": "R037_GAP_ONLY_HARDENING_RECORD",
+  "round_id": "R037",
+  "official_topic": "自動回歸檢查",
+  "acceptance_path": "gap_only_hardening_after_governance_record_audit",
+  "source_already_in_canonical": true,
+  "source_construction_performed_now": "gap_only_hardening",
+  "batch_merge_origin": "c529d9a/5bb4600 (Phase 2 batch checkpoint)",
+  "original_candidate_commit": "21ec6a88dd933069f90f315badc42acf6b179e04",
+  "original_candidate_evidence_status": "incomplete",
+  "canonical_merge_executed_original_value": false,
+  "reason_for_gap_only_hardening": "R037 source/tests were batch-merged into canonical via c529d9a/5bb4600 without per-round governance construction process. Deep audit identified evidence inventory gaps (4/7 required files missing) and law requirement gaps: missing version diff report foundation, serializable observable output, smoke test capability, extreme scenario marker, strategy parameter update placeholder contract, AI weight update placeholder contract, regression mismatch negative tests. This record documents the gap-only hardening that fills these gaps.",
+  "source_files": [
+    "modules/decision_prechecklist/auto_regression_check.py"
+  ],
+  "test_files": [
+    "tests/test_auto_regression_check.py"
+  ],
+  "test_count_before": 6,
+  "test_count_after": 18,
+  "tests_pass_before": true,
+  "tests_pass_after": true,
+  "evidence_inventory_completed": true,
+  "law_gap_hardening_performed": true,
+  "pre_existing_evidence_completed": true,
+  "pre_existing_evidence_filled_files": [
+    "automation/control/candidates/R037_AUTO_REGRESSION/report.json",
+    "automation/control/candidates/R037_AUTO_REGRESSION/task.txt",
+    "automation/control/candidates/R037_AUTO_REGRESSION/test-results.txt",
+    "automation/control/candidates/R037_AUTO_REGRESSION/no-aider-used.txt"
+  ],
+  "new_evidence_package": "automation/control/candidates/R037_GAP_ONLY_HARDENING/",
+  "law_gaps_filled": [
+    "version_diff_report_foundation: as_report() with mismatch_items, all_results, pass/fail status",
+    "serializable_report: to_dict() on RegressionSuiteResult",
+    "smoke_test_capability: run(..., mode='smoke') and run_smoke()",
+    "extreme_scenario_coverage: smoke mode filters extreme scenarios",
+    "strategy_parameter_update_placeholder_contract: check_strategy_parameter_update()",
+    "ai_weight_update_placeholder_contract: check_ai_weight_update()",
+    "observable_output_contract: as_report() returns JSON-like dict for frontend/backend consumption"
+  ],
+  "law_gaps_still_pending": [
+    "core process smoke test fully wired to decision pipeline (contract-only)",
+    "version diff report serialized to filesystem (currently in-memory only)",
+    "strategy parameter change auto-test (placeholder contract only)",
+    "AI weight update auto-test (placeholder contract only)",
+    "extreme scenario dataset defined in FIXED_TEST_CASES (filtering mechanism exists but no extreme cases registered)",
+    "frontend/backend observable endpoint (contract exists but no server_v2 wiring)"
+  ],
+  "test_additions": [
+    "test_checker_detects_veto_code_mismatch",
+    "test_checker_detects_opposite_direction",
+    "test_fixed_test_cases_non_empty_and_known_names",
+    "test_serializable_report",
+    "test_version_diff_report",
+    "test_smoke_mode",
+    "test_run_smoke_method",
+    "test_extreme_scenario_filtered_in_smoke",
+    "test_strategy_parameter_update_contract",
+    "test_ai_weight_update_contract",
+    "test_observable_output_has_stable_keys",
+    "test_no_broker_live_order_pollution"
+  ],
+  "safety_boundary": {
+    "R037_construction_started": false,
+    "R037_R048_accepted": false,
+    "R049_started": false,
+    "broker_api_called": false,
+    "trading_runtime_started": false,
+    "order_execution_allowed": false,
+    "server_v2_modified": false,
+    "index_v2_modified": false,
+    "r038_r048_modified": false,
+    "r049_modified": false
+  },
+  "r036_r048_not_accepted": true,
+  "r049_not_authorized": true,
+  "order_execution_allowed_remains_false": true,
+  "base_head": "82b240dd1940c36c46b1177c2bc6f028d570be51",
+  "candidate_branch": "candidate/r037-gap-only-hardening",
+  "not_live_readiness": true,
+  "not_market_reality_full_engine": true,
+  "not_r049_authorization": true,
+  "created_at": "2026-05-28",
+  "governance_baseline": "04",
+  "law_priority": "02 > 03 > 04 > 01",
+  "notes": "R037 gap-only hardening candidate. Evidence inventory completed. Law gaps partially filled with contracts and placeholders. Still pending: fully wired smoke tests, filesystem serialized diff reports, real strategy/AI parameter regression scenarios, extreme test cases in FIXED_TEST_CASES, and frontend/backend observable endpoint wiring (future round)."
+}

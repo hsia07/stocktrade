@@ -1,0 +1,18 @@
+{
+  "round_id": "R037",
+  "task_type": "auto_regression_check",
+  "base_head": "82b240dd1940c36c46b1177c2bc6f028d570be51",
+  "candidate_head": "82b240dd1940c36c46b1177c2bc6f028d570be51",
+  "status": "completed",
+  "tests_pass": true,
+  "test_count": 6,
+  "evidence_gap_filled": true,
+  "blockers": [],
+  "safety": {
+    "broker_api_called": false,
+    "trading_runtime_started": false,
+    "order_execution_allowed": false,
+    "server_v2_modified": false,
+    "index_v2_modified": false
+  }
+}

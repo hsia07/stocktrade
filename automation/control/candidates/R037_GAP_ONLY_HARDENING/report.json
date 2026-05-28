@@ -1,0 +1,37 @@
+{
+  "round_id": "R037",
+  "task_type": "gap_only_hardening_candidate",
+  "status": "completed",
+  "formal_status_code": "R037_GAP_ONLY_HARDENING_CANDIDATE_READY",
+  "base_head": "82b240dd1940c36c46b1177c2bc6f028d570be51",
+  "candidate_branch": "candidate/r037-gap-only-hardening",
+  "source_files": [
+    "modules/decision_prechecklist/auto_regression_check.py"
+  ],
+  "test_files": [
+    "tests/test_auto_regression_check.py"
+  ],
+  "test_count_before": 6,
+  "test_count_after": 18,
+  "tests_pass_before": true,
+  "tests_pass_after": true,
+  "all_validation_passed": true,
+  "blockers": [],
+  "safety": {
+    "broker_api_called": false,
+    "trading_runtime_started": false,
+    "order_execution_allowed": false,
+    "server_v2_modified": false,
+    "index_v2_modified": false,
+    "r038_r048_modified": false,
+    "r049_modified": false,
+    "manifest_modified": false,
+    "validator_modified": false,
+    "workflow_modified": false
+  },
+  "governance_record_created": true,
+  "pre_existing_evidence_completed": true,
+  "governance_record_rework_applied": true,
+  "governance_record_rework_detail": "Added missing law_gap_hardening_performed boolean field to governance record",
+  "gap_only_hardening": true
+}
