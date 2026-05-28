@@ -1,0 +1,22 @@
+{
+  "round_id": "R038",
+  "issue_type": "orphaned_gitlink",
+  "path": "stocktrade",
+  "gitlink_mode_before": "160000",
+  "gitlink_commit_before": "0084b68c602742bdf2097be2000662f68eb181d7",
+  "gitlink_removed_from_parent_index": true,
+  "local_nested_repo_deleted": false,
+  "stocktrade_ignore_rule_added_or_already_present": true,
+  "same_repo_nested_clone": true,
+  "formal_submodule_rejected": true,
+  "formal_submodule_rejection_reason": "same_repo_recursion_risk",
+  "workflow_checkout_hardening_rejected_for_now": true,
+  "rerun_only_rejected_for_now": true,
+  "R038_completed": false,
+  "R038_full_construction_started": false,
+  "R038_R048_accepted": false,
+  "R049_started": false,
+  "broker_api_called": false,
+  "trading_runtime_started": false,
+  "order_execution_allowed": false
+}

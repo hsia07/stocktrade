@@ -49,3 +49,6 @@ open_panel_only.bat
 
 # Runtime audit output (TelegramInboundReceiver command audit logs)
 automation/control/inbound_returns/
+
+# Local nested repo (same repo clone, not a submodule, not a construction target)
+/stocktrade/

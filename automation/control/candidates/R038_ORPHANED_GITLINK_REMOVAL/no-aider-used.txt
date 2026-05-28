@@ -1,0 +1,3 @@
+no aider used
+Aider was not used for this candidate.
+All changes were made manually via OpenCode CLI tools (bash, write, edit).

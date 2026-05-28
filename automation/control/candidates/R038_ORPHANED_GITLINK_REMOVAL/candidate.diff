@@ -1,0 +1,711 @@
+diff --git a/.gitignore b/.gitignore
+index 41baa5f..21ec17d 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -49,3 +49,6 @@ open_panel_only.bat
+ 
+ # Runtime audit output (TelegramInboundReceiver command audit logs)
+ automation/control/inbound_returns/
++
++# Local nested repo (same repo clone, not a submodule, not a construction target)
++/stocktrade/
+diff --git a/automation/control/candidates/R038_ORPHANED_GITLINK_REMOVAL/RETURN_TO_CHATGPT.txt b/automation/control/candidates/R038_ORPHANED_GITLINK_REMOVAL/RETURN_TO_CHATGPT.txt
+new file mode 100644
+index 0000000..070a561
+--- /dev/null
++++ b/automation/control/candidates/R038_ORPHANED_GITLINK_REMOVAL/RETURN_TO_CHATGPT.txt
+@@ -0,0 +1,20 @@
++round_id: R038_ORPHANED_GITLINK_REMOVAL_FINAL_REWORK_CANDIDATE
++formal_status_code: CANDIDATE_READY_AWAITING_MANUAL_REVIEW
++base_branch: work/canonical-mainline-repair-001
++base_head: f5237c945c785df7a7dd04fc2a712acb582c5e67
++candidate_branch: candidate/r038-orphaned-gitlink-removal
++candidate_head: adf253bd860c7c59f4a09e14bc930aa3de8921e0
++pre_rework_candidate_head: 0592b73b0df90c2a9a300769bbeb24611d29b239
++obsolete_pre_amend_candidate_head: c115d1b7f7b29a4851bbc66a77ba83607545a475
++fix_type: orphaned_gitlink_removal
++summary: Removed orphaned gitlink for stocktrade/ (mode 160000) from parent repo index. Added /stocktrade/ to .gitignore. Preserved local nested repo content. Created governance record and evidence package. Final metadata rework: candidate_head set to adf253b, pre_rework (0592b73) and obsolete_pre_amend (c115d1b7) recorded as historical hashes. Test count 138/138 confirmed. official_topic UTF-8 verified.
++formal recommendation: AWAITING_MANUAL_REVIEW_FOR_R038_ORPHANED_GITLINK_REMOVAL_FINAL_REWORKED_CANDIDATE
++blocker: R038_NOT_COMPLETED
++remaining: R038 full-scope construction not authorized. R038-R048 not accepted. R049 not started. order_execution_allowed remains FALSE.
++DO_NOT_START_R049
++DO_NOT_ACCEPT_R038_R048_YET
++DO_NOT_MARK_R038_COMPLETED
++DO_NOT_START_R038_FULL_CONSTRUCTION_WITHOUT_USER_AUTHORIZATION
++DO_NOT_PUSH_WITHOUT_USER_SIGNOFF
++R038_ONLY_NEXT
++ORDER_EXECUTION_ALLOWED_REMAINS_FALSE
+diff --git a/automation/control/candidates/R038_ORPHANED_GITLINK_REMOVAL/candidate.diff b/automation/control/candidates/R038_ORPHANED_GITLINK_REMOVAL/candidate.diff
+new file mode 100644
+index 0000000..986b41b
+--- /dev/null
++++ b/automation/control/candidates/R038_ORPHANED_GITLINK_REMOVAL/candidate.diff
+@@ -0,0 +1,470 @@
++diff --git a/.gitignore b/.gitignore
++index 41baa5f..21ec17d 100644
++--- a/.gitignore
+++++ b/.gitignore
++@@ -49,3 +49,6 @@ open_panel_only.bat
++ 
++ # Runtime audit output (TelegramInboundReceiver command audit logs)
++ automation/control/inbound_returns/
+++
+++# Local nested repo (same repo clone, not a submodule, not a construction target)
+++/stocktrade/
++diff --git a/automation/control/candidates/R038_ORPHANED_GITLINK_REMOVAL/RETURN_TO_CHATGPT.txt b/automation/control/candidates/R038_ORPHANED_GITLINK_REMOVAL/RETURN_TO_CHATGPT.txt
++new file mode 100644
++index 0000000..bffeca7
++--- /dev/null
+++++ b/automation/control/candidates/R038_ORPHANED_GITLINK_REMOVAL/RETURN_TO_CHATGPT.txt
++@@ -0,0 +1,19 @@
+++round_id: R038_ORPHANED_GITLINK_REMOVAL_CANDIDATE
+++formal_status_code: CANDIDATE_READY_AWAITING_MANUAL_REVIEW
+++base_branch: work/canonical-mainline-repair-001
+++base_head: f5237c945c785df7a7dd04fc2a712acb582c5e67
+++candidate_branch: candidate/r038-orphaned-gitlink-removal
+++candidate_head: 0592b73b0df90c2a9a300769bbeb24611d29b239
+++pre_amend_candidate_head: c115d1b7f7b29a4851bbc66a77ba83607545a475
+++fix_type: orphaned_gitlink_removal
+++summary: Removed orphaned gitlink for stocktrade/ (mode 160000) from parent repo index. Added /stocktrade/ to .gitignore. Preserved local nested repo content. Created governance record and evidence package. Evidence metadata corrected: candidate_head updated from c115d1b7 to 0592b73, test count corrected to 138/138, official_topic encoding fixed.
+++formal recommendation: AWAITING_MANUAL_REVIEW_FOR_R038_ORPHANED_GITLINK_REMOVAL_REWORKED_CANDIDATE
+++blocker: R038_NOT_COMPLETED
+++remaining: R038 full-scope construction not authorized. R038-R048 not accepted. R049 not started. order_execution_allowed remains FALSE.
+++DO_NOT_START_R049
+++DO_NOT_ACCEPT_R038_R048_YET
+++DO_NOT_MARK_R038_COMPLETED
+++DO_NOT_START_R038_FULL_CONSTRUCTION_WITHOUT_USER_AUTHORIZATION
+++DO_NOT_PUSH_WITHOUT_USER_SIGNOFF
+++R038_ONLY_NEXT
+++ORDER_EXECUTION_ALLOWED_REMAINS_FALSE
++diff --git a/automation/control/candidates/R038_ORPHANED_GITLINK_REMOVAL/candidate.diff b/automation/control/candidates/R038_ORPHANED_GITLINK_REMOVAL/candidate.diff
++new file mode 100644
++index 0000000..f43592f
++--- /dev/null
+++++ b/automation/control/candidates/R038_ORPHANED_GITLINK_REMOVAL/candidate.diff
++@@ -0,0 +1,236 @@
+++diff --git a/.gitignore b/.gitignore
+++index 41baa5f..21ec17d 100644
+++--- a/.gitignore
++++++ b/.gitignore
+++@@ -49,3 +49,6 @@ open_panel_only.bat
+++ 
+++ # Runtime audit output (TelegramInboundReceiver command audit logs)
+++ automation/control/inbound_returns/
++++
++++# Local nested repo (same repo clone, not a submodule, not a construction target)
++++/stocktrade/
+++diff --git a/automation/control/candidates/R038_ORPHANED_GITLINK_REMOVAL/RETURN_TO_CHATGPT.txt b/automation/control/candidates/R038_ORPHANED_GITLINK_REMOVAL/RETURN_TO_CHATGPT.txt
+++new file mode 100644
+++index 0000000..bffeca7
+++--- /dev/null
++++++ b/automation/control/candidates/R038_ORPHANED_GITLINK_REMOVAL/RETURN_TO_CHATGPT.txt
+++@@ -0,0 +1,19 @@
++++round_id: R038_ORPHANED_GITLINK_REMOVAL_CANDIDATE
++++formal_status_code: CANDIDATE_READY_AWAITING_MANUAL_REVIEW
++++base_branch: work/canonical-mainline-repair-001
++++base_head: f5237c945c785df7a7dd04fc2a712acb582c5e67
++++candidate_branch: candidate/r038-orphaned-gitlink-removal
++++candidate_head: 0592b73b0df90c2a9a300769bbeb24611d29b239
++++pre_amend_candidate_head: c115d1b7f7b29a4851bbc66a77ba83607545a475
++++fix_type: orphaned_gitlink_removal
++++summary: Removed orphaned gitlink for stocktrade/ (mode 160000) from parent repo index. Added /stocktrade/ to .gitignore. Preserved local nested repo content. Created governance record and evidence package. Evidence metadata corrected: candidate_head updated from c115d1b7 to 0592b73, test count corrected to 138/138, official_topic encoding fixed.
++++formal recommendation: AWAITING_MANUAL_REVIEW_FOR_R038_ORPHANED_GITLINK_REMOVAL_REWORKED_CANDIDATE
++++blocker: R038_NOT_COMPLETED
++++remaining: R038 full-scope construction not authorized. R038-R048 not accepted. R049 not started. order_execution_allowed remains FALSE.
++++DO_NOT_START_R049
++++DO_NOT_ACCEPT_R038_R048_YET
++++DO_NOT_MARK_R038_COMPLETED
++++DO_NOT_START_R038_FULL_CONSTRUCTION_WITHOUT_USER_AUTHORIZATION
++++DO_NOT_PUSH_WITHOUT_USER_SIGNOFF
++++R038_ONLY_NEXT
++++ORDER_EXECUTION_ALLOWED_REMAINS_FALSE
+++diff --git a/automation/control/candidates/R038_ORPHANED_GITLINK_REMOVAL/candidate.diff b/automation/control/candidates/R038_ORPHANED_GITLINK_REMOVAL/candidate.diff
+++new file mode 100644
+++index 0000000..1ac96b4
+++--- /dev/null
++++++ b/automation/control/candidates/R038_ORPHANED_GITLINK_REMOVAL/candidate.diff
+++@@ -0,0 +1 @@
++++placeholder - will be regenerated
+++\ No newline at end of file
+++diff --git a/automation/control/candidates/R038_ORPHANED_GITLINK_REMOVAL/evidence.json b/automation/control/candidates/R038_ORPHANED_GITLINK_REMOVAL/evidence.json
+++new file mode 100644
+++index 0000000..8f5b3d4
+++--- /dev/null
++++++ b/automation/control/candidates/R038_ORPHANED_GITLINK_REMOVAL/evidence.json
+++@@ -0,0 +1,55 @@
++++{
++++  "round_id": "R038",
++++  "task_type": "orphaned_gitlink_removal_candidate",
++++  "status": "candidate_ready_awaiting_manual_review",
++++  "formal_status_code": "CANDIDATE_READY_AWAITING_MANUAL_REVIEW",
++++  "official_topic": "策略 CI/CD 驗證鏈",
++++  "round_phase": "Phase 2",
++++  "base_branch": "work/canonical-mainline-repair-001",
++++  "base_head": "f5237c945c785df7a7dd04fc2a712acb582c5e67",
++++  "candidate_branch": "candidate/r038-orphaned-gitlink-removal",
++++  "source_construction_performed_now": false,
++++  "source_files_modified": false,
++++  "tests_modified": false,
++++  "manifest_modified": false,
++++  "validator_files_modified": false,
++++  "workflow_files_modified": false,
++++  "R038_completed": false,
++++  "R038_full_construction_started": false,
++++  "R038_R048_accepted": false,
++++  "R049_started": false,
++++  "broker_api_called": false,
++++  "trading_runtime_started": false,
++++  "order_execution_allowed": false,
++++  "law_compliance": "04",
++++  "gitlink_removed_from_parent_index": true,
++++  "local_nested_repo_deleted": false,
++++  "same_repo_nested_clone": true,
++++  "stocktrade_ignore_rule_added": true,
++++  "formal_submodule_rejected": true,
++++  "formal_submodule_rejection_reason": "same_repo_recursion_risk",
++++  "fixes_applied": [
++++    "Removed orphaned gitlink for stocktrade/ (mode 160000) from parent repo index",
++++    "Added /stocktrade/ to .gitignore to prevent re-addition of nested repo",
++++    "Preserved local nested repo content (stocktrade/.git, all files intact)",
++++    "Created governance record: automation/control/governance/r038-orphaned-gitlink-removal-record.json"
++++  ],
++++  "not_applied": [
++++    "R038 NOT completed",
++++    "R038 full-scope construction NOT executed",
++++    "Source/tests NOT modified",
++++    "Manifest NOT modified",
++++    "Validators/workflows NOT modified",
++++    "R038-R048 NOT accepted",
++++    "R049 NOT started",
++++    "order_execution_allowed remains FALSE"
++++  ],
++++  "evidence_packages_validated": 1,
++++  "evidence_packages_pass": true,
++++  "blockers": [
++++    "R038_NOT_COMPLETED",
++++    "FULL_SCOPE_CONSTRUCTION_NOT_EXECUTED"
++++  ],
++++  "recommended_next_action": "AWAITING_MANUAL_REVIEW_FOR_R038_ORPHANED_GITLINK_REMOVAL_CANDIDATE",
++++  "generated_at": "2026-05-29T00:00:00"
++++}
+++diff --git a/automation/control/candidates/R038_ORPHANED_GITLINK_REMOVAL/no-aider-used.txt b/automation/control/candidates/R038_ORPHANED_GITLINK_REMOVAL/no-aider-used.txt
+++new file mode 100644
+++index 0000000..53de910
+++--- /dev/null
++++++ b/automation/control/candidates/R038_ORPHANED_GITLINK_REMOVAL/no-aider-used.txt
+++@@ -0,0 +1,3 @@
++++no aider used
++++Aider was not used for this candidate.
++++All changes were made manually via OpenCode CLI tools (bash, write, edit).
+++diff --git a/automation/control/candidates/R038_ORPHANED_GITLINK_REMOVAL/report.json b/automation/control/candidates/R038_ORPHANED_GITLINK_REMOVAL/report.json
+++new file mode 100644
+++index 0000000..33977ef
+++--- /dev/null
++++++ b/automation/control/candidates/R038_ORPHANED_GITLINK_REMOVAL/report.json
+++@@ -0,0 +1,29 @@
++++{
++++  "round_id": "R038",
++++  "task_type": "orphaned_gitlink_removal_candidate",
++++  "status": "completed",
++++  "overall_result": "PASS",
++++  "tests_pass": true,
++++  "tests_run": 138,
++++  "tests_passed": 138,
++++  "tests_failed": 0,
++++  "evidence_packages_validated": 1,
++++  "evidence_packages_pass": true,
++++  "gitlink_removed": true,
++++  "local_nested_repo_preserved": true,
++++  "ignore_rule_added": true,
++++  "source_modified": false,
++++  "tests_modified": false,
++++  "manifest_modified": false,
++++  "validator_modified": false,
++++  "workflow_modified": false,
++++  "R038_completed": false,
++++  "R038_full_construction_started": false,
++++  "order_execution_allowed": false,
++++  "canonical_branch": "work/canonical-mainline-repair-001",
++++  "canonical_head": "f5237c945c785df7a7dd04fc2a712acb582c5e67",
++++  "test_count": 138,
++++  "tests_initial_count": 129,
++++  "historical_note": "Initial report showed 129 tests (subset). Full validation run confirmed 138/138. Count corrected to 138.",
++++  "generated_at": "2026-05-29T00:00:00"
++++}
+++diff --git a/automation/control/candidates/R038_ORPHANED_GITLINK_REMOVAL/task.txt b/automation/control/candidates/R038_ORPHANED_GITLINK_REMOVAL/task.txt
+++new file mode 100644
+++index 0000000..9b5005a
+++--- /dev/null
++++++ b/automation/control/candidates/R038_ORPHANED_GITLINK_REMOVAL/task.txt
+++@@ -0,0 +1,28 @@
++++=== TASK DESCRIPTION ===
++++Remove orphaned gitlink stocktrade/ from parent repo index.
++++
++++=== PROBLEM STATEMENT ===
++++The parent repo has an orphaned gitlink entry for stocktrade/ (mode 160000 commit 0084b68c) with no .gitmodules mapping. The nested repo at stocktrade/ is a clone of the same repo (https://github.com/hsia07/stocktrade.git) on the same branch. This orphaned gitlink may cause CI runner-level git exit 128 errors (validate-canonical-repair Evidence checker step). The nested repo cannot be formally submoduled due to same-repo recursion risk. The gitlink should be removed from the parent index and the nested repo should be gitignored.
++++
++++=== SOLUTION ===
++++1. Update .gitignore to add /stocktrade/ (prevent re-addition)
++++2. Remove gitlink from parent index via git rm --cached (preserve local nested repo)
++++3. Create governance record documenting the remediation
++++4. Create candidate evidence package for manual review
++++5. Do NOT delete local nested repo content
++++6. Do NOT modify source/tests/manifest/validators/workflows
++++
++++=== FILES ===
++++Modified:
++++  .gitignore (add /stocktrade/ ignore rule)
++++Deleted from index (cached):
++++  stocktrade (gitlink entry, mode 160000)
++++Created:
++++  automation/control/governance/r038-orphaned-gitlink-removal-record.json
++++  automation/control/candidates/R038_ORPHANED_GITLINK_REMOVAL/ (7 files)
++++
++++task_id: R038
++++task_type: orphaned_gitlink_removal_candidate
++++phase: Phase 2
++++law_compliance: 04
++++severity: medium
+++diff --git a/automation/control/candidates/R038_ORPHANED_GITLINK_REMOVAL/test-results.txt b/automation/control/candidates/R038_ORPHANED_GITLINK_REMOVAL/test-results.txt
+++new file mode 100644
+++index 0000000..bd4e90b
+++--- /dev/null
++++++ b/automation/control/candidates/R038_ORPHANED_GITLINK_REMOVAL/test-results.txt
+++@@ -0,0 +1,12 @@
++++TEST RESULTS
++++=============
++++validate_canonical_repair_evidence: PASS
++++test_cicd_verification_chain: PASS (9/9)
++++test_auto_regression_check: PASS (18/18)
++++test_fixed_test_dataset: PASS (17/17)
++++test_validate_canonical_repair_evidence: PASS (33/33)
++++test_verification_framework: PASS (11/11)
++++test_governance_authorization_gate: PASS (27/27)
++++test_check_required_evidence_ui_gate: PASS (23/23)
++++Total: 138 tests passed, 0 failed
++++Note: cp950 warnings are non-blocking encoding warnings on Windows platform, do not affect pass/fail status.
+++diff --git a/automation/control/governance/r038-orphaned-gitlink-removal-record.json b/automation/control/governance/r038-orphaned-gitlink-removal-record.json
+++new file mode 100644
+++index 0000000..1f5cebe
+++--- /dev/null
++++++ b/automation/control/governance/r038-orphaned-gitlink-removal-record.json
+++@@ -0,0 +1,22 @@
++++{
++++  "round_id": "R038",
++++  "issue_type": "orphaned_gitlink",
++++  "path": "stocktrade",
++++  "gitlink_mode_before": "160000",
++++  "gitlink_commit_before": "0084b68c602742bdf2097be2000662f68eb181d7",
++++  "gitlink_removed_from_parent_index": true,
++++  "local_nested_repo_deleted": false,
++++  "stocktrade_ignore_rule_added_or_already_present": true,
++++  "same_repo_nested_clone": true,
++++  "formal_submodule_rejected": true,
++++  "formal_submodule_rejection_reason": "same_repo_recursion_risk",
++++  "workflow_checkout_hardening_rejected_for_now": true,
++++  "rerun_only_rejected_for_now": true,
++++  "R038_completed": false,
++++  "R038_full_construction_started": false,
++++  "R038_R048_accepted": false,
++++  "R049_started": false,
++++  "broker_api_called": false,
++++  "trading_runtime_started": false,
++++  "order_execution_allowed": false
++++}
+++diff --git a/stocktrade b/stocktrade
+++deleted file mode 160000
+++index 0084b68..0000000
+++--- a/stocktrade
++++++ /dev/null
+++@@ -1 +0,0 @@
+++-Subproject commit 0084b68c602742bdf2097be2000662f68eb181d7
++diff --git a/automation/control/candidates/R038_ORPHANED_GITLINK_REMOVAL/evidence.json b/automation/control/candidates/R038_ORPHANED_GITLINK_REMOVAL/evidence.json
++new file mode 100644
++index 0000000..8f5b3d4
++--- /dev/null
+++++ b/automation/control/candidates/R038_ORPHANED_GITLINK_REMOVAL/evidence.json
++@@ -0,0 +1,55 @@
+++{
+++  "round_id": "R038",
+++  "task_type": "orphaned_gitlink_removal_candidate",
+++  "status": "candidate_ready_awaiting_manual_review",
+++  "formal_status_code": "CANDIDATE_READY_AWAITING_MANUAL_REVIEW",
+++  "official_topic": "策略 CI/CD 驗證鏈",
+++  "round_phase": "Phase 2",
+++  "base_branch": "work/canonical-mainline-repair-001",
+++  "base_head": "f5237c945c785df7a7dd04fc2a712acb582c5e67",
+++  "candidate_branch": "candidate/r038-orphaned-gitlink-removal",
+++  "source_construction_performed_now": false,
+++  "source_files_modified": false,
+++  "tests_modified": false,
+++  "manifest_modified": false,
+++  "validator_files_modified": false,
+++  "workflow_files_modified": false,
+++  "R038_completed": false,
+++  "R038_full_construction_started": false,
+++  "R038_R048_accepted": false,
+++  "R049_started": false,
+++  "broker_api_called": false,
+++  "trading_runtime_started": false,
+++  "order_execution_allowed": false,
+++  "law_compliance": "04",
+++  "gitlink_removed_from_parent_index": true,
+++  "local_nested_repo_deleted": false,
+++  "same_repo_nested_clone": true,
+++  "stocktrade_ignore_rule_added": true,
+++  "formal_submodule_rejected": true,
+++  "formal_submodule_rejection_reason": "same_repo_recursion_risk",
+++  "fixes_applied": [
+++    "Removed orphaned gitlink for stocktrade/ (mode 160000) from parent repo index",
+++    "Added /stocktrade/ to .gitignore to prevent re-addition of nested repo",
+++    "Preserved local nested repo content (stocktrade/.git, all files intact)",
+++    "Created governance record: automation/control/governance/r038-orphaned-gitlink-removal-record.json"
+++  ],
+++  "not_applied": [
+++    "R038 NOT completed",
+++    "R038 full-scope construction NOT executed",
+++    "Source/tests NOT modified",
+++    "Manifest NOT modified",
+++    "Validators/workflows NOT modified",
+++    "R038-R048 NOT accepted",
+++    "R049 NOT started",
+++    "order_execution_allowed remains FALSE"
+++  ],
+++  "evidence_packages_validated": 1,
+++  "evidence_packages_pass": true,
+++  "blockers": [
+++    "R038_NOT_COMPLETED",
+++    "FULL_SCOPE_CONSTRUCTION_NOT_EXECUTED"
+++  ],
+++  "recommended_next_action": "AWAITING_MANUAL_REVIEW_FOR_R038_ORPHANED_GITLINK_REMOVAL_CANDIDATE",
+++  "generated_at": "2026-05-29T00:00:00"
+++}
++diff --git a/automation/control/candidates/R038_ORPHANED_GITLINK_REMOVAL/no-aider-used.txt b/automation/control/candidates/R038_ORPHANED_GITLINK_REMOVAL/no-aider-used.txt
++new file mode 100644
++index 0000000..53de910
++--- /dev/null
+++++ b/automation/control/candidates/R038_ORPHANED_GITLINK_REMOVAL/no-aider-used.txt
++@@ -0,0 +1,3 @@
+++no aider used
+++Aider was not used for this candidate.
+++All changes were made manually via OpenCode CLI tools (bash, write, edit).
++diff --git a/automation/control/candidates/R038_ORPHANED_GITLINK_REMOVAL/report.json b/automation/control/candidates/R038_ORPHANED_GITLINK_REMOVAL/report.json
++new file mode 100644
++index 0000000..33977ef
++--- /dev/null
+++++ b/automation/control/candidates/R038_ORPHANED_GITLINK_REMOVAL/report.json
++@@ -0,0 +1,29 @@
+++{
+++  "round_id": "R038",
+++  "task_type": "orphaned_gitlink_removal_candidate",
+++  "status": "completed",
+++  "overall_result": "PASS",
+++  "tests_pass": true,
+++  "tests_run": 138,
+++  "tests_passed": 138,
+++  "tests_failed": 0,
+++  "evidence_packages_validated": 1,
+++  "evidence_packages_pass": true,
+++  "gitlink_removed": true,
+++  "local_nested_repo_preserved": true,
+++  "ignore_rule_added": true,
+++  "source_modified": false,
+++  "tests_modified": false,
+++  "manifest_modified": false,
+++  "validator_modified": false,
+++  "workflow_modified": false,
+++  "R038_completed": false,
+++  "R038_full_construction_started": false,
+++  "order_execution_allowed": false,
+++  "canonical_branch": "work/canonical-mainline-repair-001",
+++  "canonical_head": "f5237c945c785df7a7dd04fc2a712acb582c5e67",
+++  "test_count": 138,
+++  "tests_initial_count": 129,
+++  "historical_note": "Initial report showed 129 tests (subset). Full validation run confirmed 138/138. Count corrected to 138.",
+++  "generated_at": "2026-05-29T00:00:00"
+++}
++diff --git a/automation/control/candidates/R038_ORPHANED_GITLINK_REMOVAL/task.txt b/automation/control/candidates/R038_ORPHANED_GITLINK_REMOVAL/task.txt
++new file mode 100644
++index 0000000..9b5005a
++--- /dev/null
+++++ b/automation/control/candidates/R038_ORPHANED_GITLINK_REMOVAL/task.txt
++@@ -0,0 +1,28 @@
+++=== TASK DESCRIPTION ===
+++Remove orphaned gitlink stocktrade/ from parent repo index.
+++
+++=== PROBLEM STATEMENT ===
+++The parent repo has an orphaned gitlink entry for stocktrade/ (mode 160000 commit 0084b68c) with no .gitmodules mapping. The nested repo at stocktrade/ is a clone of the same repo (https://github.com/hsia07/stocktrade.git) on the same branch. This orphaned gitlink may cause CI runner-level git exit 128 errors (validate-canonical-repair Evidence checker step). The nested repo cannot be formally submoduled due to same-repo recursion risk. The gitlink should be removed from the parent index and the nested repo should be gitignored.
+++
+++=== SOLUTION ===
+++1. Update .gitignore to add /stocktrade/ (prevent re-addition)
+++2. Remove gitlink from parent index via git rm --cached (preserve local nested repo)
+++3. Create governance record documenting the remediation
+++4. Create candidate evidence package for manual review
+++5. Do NOT delete local nested repo content
+++6. Do NOT modify source/tests/manifest/validators/workflows
+++
+++=== FILES ===
+++Modified:
+++  .gitignore (add /stocktrade/ ignore rule)
+++Deleted from index (cached):
+++  stocktrade (gitlink entry, mode 160000)
+++Created:
+++  automation/control/governance/r038-orphaned-gitlink-removal-record.json
+++  automation/control/candidates/R038_ORPHANED_GITLINK_REMOVAL/ (7 files)
+++
+++task_id: R038
+++task_type: orphaned_gitlink_removal_candidate
+++phase: Phase 2
+++law_compliance: 04
+++severity: medium
++diff --git a/automation/control/candidates/R038_ORPHANED_GITLINK_REMOVAL/test-results.txt b/automation/control/candidates/R038_ORPHANED_GITLINK_REMOVAL/test-results.txt
++new file mode 100644
++index 0000000..bd4e90b
++--- /dev/null
+++++ b/automation/control/candidates/R038_ORPHANED_GITLINK_REMOVAL/test-results.txt
++@@ -0,0 +1,12 @@
+++TEST RESULTS
+++=============
+++validate_canonical_repair_evidence: PASS
+++test_cicd_verification_chain: PASS (9/9)
+++test_auto_regression_check: PASS (18/18)
+++test_fixed_test_dataset: PASS (17/17)
+++test_validate_canonical_repair_evidence: PASS (33/33)
+++test_verification_framework: PASS (11/11)
+++test_governance_authorization_gate: PASS (27/27)
+++test_check_required_evidence_ui_gate: PASS (23/23)
+++Total: 138 tests passed, 0 failed
+++Note: cp950 warnings are non-blocking encoding warnings on Windows platform, do not affect pass/fail status.
++diff --git a/automation/control/governance/r038-orphaned-gitlink-removal-record.json b/automation/control/governance/r038-orphaned-gitlink-removal-record.json
++new file mode 100644
++index 0000000..1f5cebe
++--- /dev/null
+++++ b/automation/control/governance/r038-orphaned-gitlink-removal-record.json
++@@ -0,0 +1,22 @@
+++{
+++  "round_id": "R038",
+++  "issue_type": "orphaned_gitlink",
+++  "path": "stocktrade",
+++  "gitlink_mode_before": "160000",
+++  "gitlink_commit_before": "0084b68c602742bdf2097be2000662f68eb181d7",
+++  "gitlink_removed_from_parent_index": true,
+++  "local_nested_repo_deleted": false,
+++  "stocktrade_ignore_rule_added_or_already_present": true,
+++  "same_repo_nested_clone": true,
+++  "formal_submodule_rejected": true,
+++  "formal_submodule_rejection_reason": "same_repo_recursion_risk",
+++  "workflow_checkout_hardening_rejected_for_now": true,
+++  "rerun_only_rejected_for_now": true,
+++  "R038_completed": false,
+++  "R038_full_construction_started": false,
+++  "R038_R048_accepted": false,
+++  "R049_started": false,
+++  "broker_api_called": false,
+++  "trading_runtime_started": false,
+++  "order_execution_allowed": false
+++}
++diff --git a/stocktrade b/stocktrade
++deleted file mode 160000
++index 0084b68..0000000
++--- a/stocktrade
+++++ /dev/null
++@@ -1 +0,0 @@
++-Subproject commit 0084b68c602742bdf2097be2000662f68eb181d7
+diff --git a/automation/control/candidates/R038_ORPHANED_GITLINK_REMOVAL/evidence.json b/automation/control/candidates/R038_ORPHANED_GITLINK_REMOVAL/evidence.json
+new file mode 100644
+index 0000000..9cc2e01
+--- /dev/null
++++ b/automation/control/candidates/R038_ORPHANED_GITLINK_REMOVAL/evidence.json
+@@ -0,0 +1,58 @@
++{
++  "round_id": "R038",
++  "task_type": "orphaned_gitlink_removal_candidate",
++  "status": "candidate_ready_awaiting_manual_review",
++  "formal_status_code": "CANDIDATE_READY_AWAITING_MANUAL_REVIEW",
++  "official_topic": "策略 CI/CD 驗證鏈",
++  "round_phase": "Phase 2",
++  "base_branch": "work/canonical-mainline-repair-001",
++  "base_head": "f5237c945c785df7a7dd04fc2a712acb582c5e67",
++  "candidate_branch": "candidate/r038-orphaned-gitlink-removal",
++  "candidate_head": "adf253bd860c7c59f4a09e14bc930aa3de8921e0",
++  "pre_rework_candidate_head": "0592b73b0df90c2a9a300769bbeb24611d29b239",
++  "obsolete_pre_amend_candidate_head": "c115d1b7f7b29a4851bbc66a77ba83607545a475",
++  "source_construction_performed_now": false,
++  "source_files_modified": false,
++  "tests_modified": false,
++  "manifest_modified": false,
++  "validator_files_modified": false,
++  "workflow_files_modified": false,
++  "R038_completed": false,
++  "R038_full_construction_started": false,
++  "R038_R048_accepted": false,
++  "R049_started": false,
++  "broker_api_called": false,
++  "trading_runtime_started": false,
++  "order_execution_allowed": false,
++  "law_compliance": "04",
++  "gitlink_removed_from_parent_index": true,
++  "local_nested_repo_deleted": false,
++  "same_repo_nested_clone": true,
++  "stocktrade_ignore_rule_added": true,
++  "formal_submodule_rejected": true,
++  "formal_submodule_rejection_reason": "same_repo_recursion_risk",
++  "fixes_applied": [
++    "Removed orphaned gitlink for stocktrade/ (mode 160000) from parent repo index",
++    "Added /stocktrade/ to .gitignore to prevent re-addition of nested repo",
++    "Preserved local nested repo content (stocktrade/.git, all files intact)",
++    "Created governance record: automation/control/governance/r038-orphaned-gitlink-removal-record.json"
++  ],
++  "not_applied": [
++    "R038 NOT completed",
++    "R038 full-scope construction NOT executed",
++    "Source/tests NOT modified",
++    "Manifest NOT modified",
++    "Validators/workflows NOT modified",
++    "R038-R048 NOT accepted",
++    "R049 NOT started",
++    "order_execution_allowed remains FALSE"
++  ],
++  "evidence_packages_validated": 1,
++  "evidence_packages_pass": true,
++  "blockers": [
++    "R038_NOT_COMPLETED",
++    "FULL_SCOPE_CONSTRUCTION_NOT_EXECUTED"
++  ],
++  "recommended_next_action": "AWAITING_MANUAL_REVIEW_FOR_R038_ORPHANED_GITLINK_REMOVAL_FINAL_REWORKED_CANDIDATE",
++  "generated_at": "2026-05-29T00:00:00"
++}
+diff --git a/automation/control/candidates/R038_ORPHANED_GITLINK_REMOVAL/no-aider-used.txt b/automation/control/candidates/R038_ORPHANED_GITLINK_REMOVAL/no-aider-used.txt
+new file mode 100644
+index 0000000..53de910
+--- /dev/null
++++ b/automation/control/candidates/R038_ORPHANED_GITLINK_REMOVAL/no-aider-used.txt
+@@ -0,0 +1,3 @@
++no aider used
++Aider was not used for this candidate.
++All changes were made manually via OpenCode CLI tools (bash, write, edit).
+diff --git a/automation/control/candidates/R038_ORPHANED_GITLINK_REMOVAL/report.json b/automation/control/candidates/R038_ORPHANED_GITLINK_REMOVAL/report.json
+new file mode 100644
+index 0000000..8032f9b
+--- /dev/null
++++ b/automation/control/candidates/R038_ORPHANED_GITLINK_REMOVAL/report.json
+@@ -0,0 +1,32 @@
++{
++  "round_id": "R038",
++  "task_type": "orphaned_gitlink_removal_candidate",
++  "status": "completed",
++  "overall_result": "PASS",
++  "tests_pass": true,
++  "tests_run": 138,
++  "tests_passed": 138,
++  "tests_failed": 0,
++  "evidence_packages_validated": 1,
++  "evidence_packages_pass": true,
++  "gitlink_removed": true,
++  "local_nested_repo_preserved": true,
++  "ignore_rule_added": true,
++  "source_modified": false,
++  "tests_modified": false,
++  "manifest_modified": false,
++  "validator_modified": false,
++  "workflow_modified": false,
++  "R038_completed": false,
++  "R038_full_construction_started": false,
++  "order_execution_allowed": false,
++  "canonical_branch": "work/canonical-mainline-repair-001",
++  "canonical_head": "f5237c945c785df7a7dd04fc2a712acb582c5e67",
++  "candidate_head": "adf253bd860c7c59f4a09e14bc930aa3de8921e0",
++  "pre_rework_candidate_head": "0592b73b0df90c2a9a300769bbeb24611d29b239",
++  "obsolete_pre_amend_candidate_head": "c115d1b7f7b29a4851bbc66a77ba83607545a475",
++  "test_count": 138,
++  "tests_initial_count": 129,
++  "historical_note": "Initial report showed 129 tests (subset). Full validation run confirmed 138/138. Count corrected to 138.",
++  "generated_at": "2026-05-29T00:00:00"
++}
+diff --git a/automation/control/candidates/R038_ORPHANED_GITLINK_REMOVAL/task.txt b/automation/control/candidates/R038_ORPHANED_GITLINK_REMOVAL/task.txt
+new file mode 100644
+index 0000000..9b5005a
+--- /dev/null
++++ b/automation/control/candidates/R038_ORPHANED_GITLINK_REMOVAL/task.txt
+@@ -0,0 +1,28 @@
++=== TASK DESCRIPTION ===
++Remove orphaned gitlink stocktrade/ from parent repo index.
++
++=== PROBLEM STATEMENT ===
++The parent repo has an orphaned gitlink entry for stocktrade/ (mode 160000 commit 0084b68c) with no .gitmodules mapping. The nested repo at stocktrade/ is a clone of the same repo (https://github.com/hsia07/stocktrade.git) on the same branch. This orphaned gitlink may cause CI runner-level git exit 128 errors (validate-canonical-repair Evidence checker step). The nested repo cannot be formally submoduled due to same-repo recursion risk. The gitlink should be removed from the parent index and the nested repo should be gitignored.
++
++=== SOLUTION ===
++1. Update .gitignore to add /stocktrade/ (prevent re-addition)
++2. Remove gitlink from parent index via git rm --cached (preserve local nested repo)
++3. Create governance record documenting the remediation
++4. Create candidate evidence package for manual review
++5. Do NOT delete local nested repo content
++6. Do NOT modify source/tests/manifest/validators/workflows
++
++=== FILES ===
++Modified:
++  .gitignore (add /stocktrade/ ignore rule)
++Deleted from index (cached):
++  stocktrade (gitlink entry, mode 160000)
++Created:
++  automation/control/governance/r038-orphaned-gitlink-removal-record.json
++  automation/control/candidates/R038_ORPHANED_GITLINK_REMOVAL/ (7 files)
++
++task_id: R038
++task_type: orphaned_gitlink_removal_candidate
++phase: Phase 2
++law_compliance: 04
++severity: medium
+diff --git a/automation/control/candidates/R038_ORPHANED_GITLINK_REMOVAL/test-results.txt b/automation/control/candidates/R038_ORPHANED_GITLINK_REMOVAL/test-results.txt
+new file mode 100644
+index 0000000..bd4e90b
+--- /dev/null
++++ b/automation/control/candidates/R038_ORPHANED_GITLINK_REMOVAL/test-results.txt
+@@ -0,0 +1,12 @@
++TEST RESULTS
++=============
++validate_canonical_repair_evidence: PASS
++test_cicd_verification_chain: PASS (9/9)
++test_auto_regression_check: PASS (18/18)
++test_fixed_test_dataset: PASS (17/17)
++test_validate_canonical_repair_evidence: PASS (33/33)
++test_verification_framework: PASS (11/11)
++test_governance_authorization_gate: PASS (27/27)
++test_check_required_evidence_ui_gate: PASS (23/23)
++Total: 138 tests passed, 0 failed
++Note: cp950 warnings are non-blocking encoding warnings on Windows platform, do not affect pass/fail status.
+diff --git a/automation/control/governance/r038-orphaned-gitlink-removal-record.json b/automation/control/governance/r038-orphaned-gitlink-removal-record.json
+new file mode 100644
+index 0000000..1f5cebe
+--- /dev/null
++++ b/automation/control/governance/r038-orphaned-gitlink-removal-record.json
+@@ -0,0 +1,22 @@
++{
++  "round_id": "R038",
++  "issue_type": "orphaned_gitlink",
++  "path": "stocktrade",
++  "gitlink_mode_before": "160000",
++  "gitlink_commit_before": "0084b68c602742bdf2097be2000662f68eb181d7",
++  "gitlink_removed_from_parent_index": true,
++  "local_nested_repo_deleted": false,
++  "stocktrade_ignore_rule_added_or_already_present": true,
++  "same_repo_nested_clone": true,
++  "formal_submodule_rejected": true,
++  "formal_submodule_rejection_reason": "same_repo_recursion_risk",
++  "workflow_checkout_hardening_rejected_for_now": true,
++  "rerun_only_rejected_for_now": true,
++  "R038_completed": false,
++  "R038_full_construction_started": false,
++  "R038_R048_accepted": false,
++  "R049_started": false,
++  "broker_api_called": false,
++  "trading_runtime_started": false,
++  "order_execution_allowed": false
++}
+diff --git a/stocktrade b/stocktrade
+deleted file mode 160000
+index 0084b68..0000000
+--- a/stocktrade
++++ /dev/null
+@@ -1 +0,0 @@
+-Subproject commit 0084b68c602742bdf2097be2000662f68eb181d7

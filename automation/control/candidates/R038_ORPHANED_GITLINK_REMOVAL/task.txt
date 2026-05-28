@@ -1,0 +1,28 @@
+=== TASK DESCRIPTION ===
+Remove orphaned gitlink stocktrade/ from parent repo index.
+
+=== PROBLEM STATEMENT ===
+The parent repo has an orphaned gitlink entry for stocktrade/ (mode 160000 commit 0084b68c) with no .gitmodules mapping. The nested repo at stocktrade/ is a clone of the same repo (https://github.com/hsia07/stocktrade.git) on the same branch. This orphaned gitlink may cause CI runner-level git exit 128 errors (validate-canonical-repair Evidence checker step). The nested repo cannot be formally submoduled due to same-repo recursion risk. The gitlink should be removed from the parent index and the nested repo should be gitignored.
+
+=== SOLUTION ===
+1. Update .gitignore to add /stocktrade/ (prevent re-addition)
+2. Remove gitlink from parent index via git rm --cached (preserve local nested repo)
+3. Create governance record documenting the remediation
+4. Create candidate evidence package for manual review
+5. Do NOT delete local nested repo content
+6. Do NOT modify source/tests/manifest/validators/workflows
+
+=== FILES ===
+Modified:
+  .gitignore (add /stocktrade/ ignore rule)
+Deleted from index (cached):
+  stocktrade (gitlink entry, mode 160000)
+Created:
+  automation/control/governance/r038-orphaned-gitlink-removal-record.json
+  automation/control/candidates/R038_ORPHANED_GITLINK_REMOVAL/ (7 files)
+
+task_id: R038
+task_type: orphaned_gitlink_removal_candidate
+phase: Phase 2
+law_compliance: 04
+severity: medium
