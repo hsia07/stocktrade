@@ -1,0 +1,24 @@
+R038 governance evidence gap-only hardening candidate
+====================================================
+
+Task: Fix R038 governance evidence defects found during deep audit.
+
+Defects fixed:
+1. R038_CICD_CHAIN evidence package: 3/7 -> 7/7 files
+   - Added: report.json, task.txt, no-aider-used.txt, test-results.txt
+2. R038_CICD_CHAIN/candidate.diff: UTF-16 LE -> UTF-8 without BOM
+3. R038_CICD_CHAIN/evidence.json: updated canonical_merge_executed=true, batch merge origin recorded
+4. R038_CICD_CHAIN/RETURN_TO_CHATGPT.txt: updated governance gap context
+5. Governance record: automation/control/governance/r038-governance-record.json created
+6. New candidate package: R038_GOVERNANCE_EVIDENCE_GAP_ONLY_HARDENING/ (7/7 files)
+
+NOT done:
+- R038 NOT completed
+- Source/tests NOT modified
+- Manifest NOT modified
+- Validators/workflows NOT modified
+- R038-R048 NOT accepted
+- R049 NOT started
+- order_execution_allowed remains FALSE
+
+Authorized by: user explicitly authorized Option 1 (R038_GOVERNANCE_EVIDENCE_GAP_ONLY_HARDENING_CANDIDATE)

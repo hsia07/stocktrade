@@ -1,0 +1,41 @@
+{
+  "round_id": "R038",
+  "official_topic": "策略 CI/CD 驗證鏈",
+  "round_phase": "Phase 2",
+  "source_files": [
+    "modules/decision_prechecklist/cicd_verification_chain.py"
+  ],
+  "test_files": [
+    "tests/test_cicd_verification_chain.py"
+  ],
+  "source_already_on_canonical": true,
+  "canonical_merge_executed": true,
+  "batch_merge_origin": true,
+  "batch_merge_commits": [
+    "b845ad54841b7ae3e79badfe54e7580f1c7f32ca",
+    "c529d9a5a11959a80e9b3715b5084cc350f45ae2",
+    "9fff36da0aec4979559d2721bf2b508a93f2494c"
+  ],
+  "formal_round_construction_executed": false,
+  "governance_evidence_gap_only_hardening": true,
+  "r038_completed": false,
+  "full_scope_construction_completed": false,
+  "functional_gaps_remain": true,
+  "backtest_replay_market_reality_gaps_remain": true,
+  "L0_L9_validation_chain_gaps_remain": true,
+  "strategy_lifecycle_gaps_remain": true,
+  "NEA_confidence_metrics_gaps_remain": true,
+  "R038_R048_accepted": false,
+  "R049_started": false,
+  "broker_api_called": false,
+  "trading_runtime_started": false,
+  "order_execution_allowed": false,
+  "evidence_package_before_fix": "automation/control/candidates/R038_CICD_CHAIN",
+  "evidence_package_before_state": "3_of_7_files_incomplete_utf16_le",
+  "evidence_package_after_fix": "automation/control/candidates/R038_CICD_CHAIN",
+  "evidence_package_after_state": "7_of_7_files_complete_utf8_no_bom",
+  "governance_gap_hardening_candidate_package": "automation/control/candidates/R038_GOVERNANCE_EVIDENCE_GAP_ONLY_HARDENING",
+  "governance_record_path": "automation/control/governance/r038-governance-record.json",
+  "generated_at": "2026-05-28T15:00:00",
+  "notes": "R038 governance evidence gap-only hardening. Evidence package fixed to 7/7, candidate.diff re-encoded to UTF-8 without BOM, formal governance record created. R038 NOT completed. Full-scope construction NOT executed. 42+ functional gaps remain. User must authorize full-scope construction separately before R038 can be completed."
+}

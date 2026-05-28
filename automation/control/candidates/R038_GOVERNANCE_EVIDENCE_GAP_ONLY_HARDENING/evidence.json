@@ -1,0 +1,53 @@
+{
+  "round_id": "R038",
+  "task_type": "governance_evidence_gap_only_hardening",
+  "status": "candidate_ready_awaiting_manual_review",
+  "formal_status_code": "CANDIDATE_READY_AWAITING_MANUAL_REVIEW",
+  "official_topic": "策略 CI/CD 驗證鏈",
+  "round_phase": "Phase 2",
+  "base_branch": "work/canonical-mainline-repair-001",
+  "base_head": "6cf2bac55ec72eae5730c8c4e7d3317ea5aebca5",
+  "candidate_branch": "candidate/r038-governance-evidence-gap-only-hardening",
+  "source_construction_performed_now": false,
+  "source_files_modified": false,
+  "tests_modified": false,
+  "manifest_modified": false,
+  "validator_files_modified": false,
+  "workflow_files_modified": false,
+  "R038_completed": false,
+  "R038_full_construction_started": false,
+  "R038_R048_accepted": false,
+  "R049_started": false,
+  "broker_api_called": false,
+  "trading_runtime_started": false,
+  "order_execution_allowed": false,
+  "law_compliance": "04",
+  "fixes_applied": [
+    "R038_CICD_CHAIN evidence package completed to 7/7 files: added report.json, task.txt, no-aider-used.txt, test-results.txt",
+    "R038_CICD_CHAIN/candidate.diff re-encoded from UTF-16 LE to UTF-8 without BOM",
+    "R038_CICD_CHAIN/evidence.json updated: canonical_merge_executed=true, batch_merge_origin=true, formal_construction_executed=false, r038_completed=false",
+    "R038_CICD_CHAIN/RETURN_TO_CHATGPT.txt updated to reflect governance gap hardening",
+    "Formal governance record created: automation/control/governance/r038-governance-record.json",
+    "R038_GOVERNANCE_EVIDENCE_GAP_ONLY_HARDENING/ candidate evidence package created (7/7 files)"
+  ],
+  "not_applied": [
+    "R038 NOT completed",
+    "R038 full-scope construction NOT executed",
+    "Source/tests NOT modified",
+    "Manifest NOT modified",
+    "Validators/workflows NOT modified",
+    "R038-R048 NOT accepted",
+    "R049 NOT started",
+    "order_execution_allowed remains FALSE"
+  ],
+  "tests_run": 129,
+  "tests_passed": 129,
+  "evidence_packages_validated": 2,
+  "evidence_packages_pass": true,
+  "blockers": [
+    "R038_NOT_COMPLETED",
+    "FULL_SCOPE_CONSTRUCTION_NOT_EXECUTED"
+  ],
+  "recommended_next_action": "AWAITING_MANUAL_REVIEW_FOR_R038_GOVERNANCE_EVIDENCE_GAP_ONLY_HARDENING_CANDIDATE",
+  "generated_at": "2026-05-28T15:00:00"
+}

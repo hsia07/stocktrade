@@ -1,0 +1,31 @@
+R038 governance evidence gap-only hardening candidate
+
+R038_CICD_CHAIN evidence fix:
+- evidence.json: updated canonical_merge_executed=true, batch merge origin
+- RETURN_TO_CHATGPT.txt: updated governance gap context
+- candidate.diff: re-encoded UTF-16 LE -> UTF-8 without BOM
+- report.json: added (7/7)
+- task.txt: added (7/7)
+- no-aider-used.txt: added (7/7)
+- test-results.txt: added (7/7)
+
+Governance record: automation/control/governance/r038-governance-record.json
+
+New candidate package: R038_GOVERNANCE_EVIDENCE_GAP_ONLY_HARDENING/ (7/7)
+
+Tests run: 129/129 PASS
+- test_cicd_verification_chain: 9/9 PASS
+- test_auto_regression_check: 18/18 PASS
+- test_fixed_test_dataset: 17/17 PASS
+- test_validate_canonical_repair_evidence: 33/33 PASS
+- test_verification_framework: 11/11 PASS
+- test_governance_authorization_gate: 27/27 PASS
+- test_check_required_evidence_ui_gate: 23/23 PASS
+
+Evidence validation: PASS (both R038_CICD_CHAIN and R038_GOVERNANCE_EVIDENCE_GAP_ONLY_HARDENING)
+candidate.diff encoding: UTF-8 without BOM
+
+R038 NOT completed.
+R038 full-scope construction NOT executed.
+No source/test/manifest/validator/workflow modifications.
+order_execution_allowed remains FALSE.

@@ -1,0 +1,14 @@
+R038 governance evidence gap-only hardening
+Fix R038_CICD_CHAIN evidence package completeness:
+- Add missing files (report.json, task.txt, no-aider-used.txt, test-results.txt)
+- Re-encode candidate.diff from UTF-16 LE to UTF-8 without BOM
+- Fix evidence.json: canonical_merge_executed=true, batch merge origin recorded
+- Create formal governance record: r038-governance-record.json
+- Create R038_GOVERNANCE_EVIDENCE_GAP_ONLY_HARDENING/ candidate evidence package
+
+NOT R038 completion.
+NOT R038 full construction.
+NOT R038-R048 acceptance.
+NOT R049 authorization.
+No source/tests/manifest modifications.
+order_execution_allowed remains FALSE.

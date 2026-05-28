@@ -1,0 +1,59 @@
+round_id: R038
+task_type: governance_evidence_gap_only_hardening
+status: candidate_ready_awaiting_manual_review
+formal_status_code: CANDIDATE_READY_AWAITING_MANUAL_REVIEW
+official_topic: 策略 CI/CD 驗證鏈
+round_phase: Phase 2
+base_branch: work/canonical-mainline-repair-001
+base_head: 6cf2bac55ec72eae5730c8c4e7d3317ea5aebca5
+candidate_branch: candidate/r038-governance-evidence-gap-only-hardening
+source_construction_performed_now: FALSE
+source_files_modified: FALSE
+tests_modified: FALSE
+manifest_modified: FALSE
+validator_files_modified: FALSE
+workflow_files_modified: FALSE
+R038_completed: FALSE
+R038_full_construction_started: FALSE
+R038_R048_accepted: FALSE
+R049_started: FALSE
+broker_api_called: FALSE
+trading_runtime_started: FALSE
+order_execution_allowed: FALSE
+law_compliance: 04
+tests_run: 129
+tests_passed: 129
+recommended_next_action: AWAITING_MANUAL_REVIEW_FOR_R038_GOVERNANCE_EVIDENCE_GAP_ONLY_HARDENING_CANDIDATE
+
+fixes_applied:
+  - R038_CICD_CHAIN evidence package: 7/7 files (added report.json, task.txt, no-aider-used.txt, test-results.txt)
+  - R038_CICD_CHAIN/candidate.diff: re-encoded from UTF-16 LE to UTF-8 without BOM
+  - R038_CICD_CHAIN/evidence.json: canonical_merge_executed=true, batch_merge_origin=true, formal_construction_executed=false, r038_completed=false
+  - R038_CICD_CHAIN/RETURN_TO_CHATGPT.txt: updated for governance gap hardening
+  - Automation/control/governance/r038-governance-record.json: created
+  - R038_GOVERNANCE_EVIDENCE_GAP_ONLY_HARDENING/: new candidate evidence package (7/7 files)
+
+not_applied:
+  - R038 NOT completed
+  - R038 full-scope construction NOT executed
+  - Source/tests NOT modified
+  - Manifest NOT modified
+  - Validators/workflows NOT modified
+  - R038-R048 NOT accepted
+  - R049 NOT started
+  - order_execution_allowed remains FALSE
+
+blockers:
+  - R038_NOT_COMPLETED
+  - FULL_SCOPE_CONSTRUCTION_NOT_EXECUTED
+
+summary: |
+  This candidate performs governance evidence gap-only hardening for R038.
+  It does NOT complete R038.
+  It does NOT execute R038 full-scope construction.
+  It does NOT modify source, tests, manifest, validators, or workflows.
+  R038 source was batch-merged to canonical without formal round construction.
+  R038 remains blocked for full completion until user authorizes full-scope construction.
+  Functional gaps remain: backtest/replay/Market Reality, L0-L9 validation chain,
+  strategy lifecycle, NEA, confidence calibration, metrics contract.
+  order_execution_allowed remains FALSE.
