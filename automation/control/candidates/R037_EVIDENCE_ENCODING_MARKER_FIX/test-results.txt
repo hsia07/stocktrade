@@ -1,5 +1,5 @@
-R037 evidence encoding and marker fix test results
-base: 130174747b124960544db4586a0e4e32d702138d
+R037 evidence encoding marker fix report status candidate test results
+base: 89da9a73a753b64853a0fb3d5021bcb622e280cd
 
 pytest tests/test_auto_regression_check.py -q --tb=short
 18 passed in 0.17s
@@ -23,3 +23,4 @@ Total: 129 passed, 0 failed
 
 validate_canonical_repair_evidence.py R037_AUTO_REGRESSION: PASS
 validate_canonical_repair_evidence.py R037_GAP_ONLY_HARDENING: PASS
+check_evidence_package.py R037_EVIDENCE_ENCODING_MARKER_FIX: PASS (expected)
