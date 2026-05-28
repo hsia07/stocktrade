@@ -1,0 +1,40 @@
+R038 governance evidence gap-only hardening candidate
+
+Pre-hardening state:
+- R038_CICD_CHAIN evidence package: 3/7 files (missing report.json, task.txt, no-aider-used.txt, test-results.txt)
+- candidate.diff: UTF-16 LE
+- No formal governance record
+- evidence.json claimed canonical_merge_executed=false, but source already on canonical via batch merge
+
+Post-hardening fixes:
+- Added report.json, task.txt, no-aider-used.txt, test-results.txt (7/7 complete)
+- Re-encoded candidate.diff from UTF-16 LE to UTF-8 without BOM
+- Updated evidence.json: canonical_merge_executed=true, batch_merge_origin=true, formal_construction_executed=false
+- Created formal governance record: automation/control/governance/r038-governance-record.json
+- Created R038_GOVERNANCE_EVIDENCE_GAP_ONLY_HARDENING/ candidate evidence package
+- All at HEAD commit on candidate/r038-governance-evidence-gap-only-hardening
+
+This candidate does NOT:
+- Complete R038
+- Execute R038 full-scope construction
+- Accept R038-R048
+- Authorize R049
+- Modify source/tests/manifest/validators/workflows
+- Enable order_execution_allowed
+
+Tests run: 129/129 PASS
+Evidence validation: PASS
+candidate.diff: UTF-8 without BOM
+
+== R038_GOVERNANCE_EVIDENCE_GAP_ONLY_HARDENING ==
+
+Tests run: 9/9 PASS (test_cicd_verification_chain)
+Evidence validation: PASS
+candidate.diff: UTF-8 without BOM
+
+Pre-upstream-merge checks:
+- No source modifications
+- No test modifications
+- No manifest modifications
+- No validator/workflow modifications
+- order_execution_allowed remains FALSE

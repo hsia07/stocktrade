@@ -1,0 +1,187 @@
+git : warning: in the working copy of 'automation/control/candidates/R038_CICD_CHAIN/RETURN_TO_CHATGPT.txt', LF will be
+ replaced by CRLF the next time Git touches it
+位於 線路:1 字元:88
++ ...  diff ==="; git diff 6cf2bac55ec72eae5730c8c4e7d3317ea5aebca5 > autom ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (warning: in the... Git touches it:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+warning: in the working copy of 'automation/control/candidates/R038_CICD_CHAIN/evidence.json', LF will be replaced by C
+RLF the next time Git touches it
+diff --git a/automation/control/candidates/R038_CICD_CHAIN/RETURN_TO_CHATGPT.txt b/automation/control/candidates/R038_CICD_CHAIN/RETURN_TO_CHATGPT.txt
+index f3ba509..2c51a09 100644
+--- a/automation/control/candidates/R038_CICD_CHAIN/RETURN_TO_CHATGPT.txt
++++ b/automation/control/candidates/R038_CICD_CHAIN/RETURN_TO_CHATGPT.txt
+@@ -1,29 +1,50 @@
+ round_id: R038
+ task_type: strategy_cicd_verification_chain
+-status: completed
+-formal_status_code: R038_CICD_CHAIN_PASS
+-staging_branch: auto/telegram-r031-r048-phase2-20260516-0542
+-round_topic: 蝑 CI/CD 撽???+status: gap_only_hardening
++formal_status_code: R038_GOVERNANCE_EVIDENCE_GAP_ONLY_HARDENING
++official_topic: 蝑 CI/CD 撽??? round_phase: Phase 2
+-candidate_commit: b845ad56c941a9069be11468bcd438183243605c
+-base_head: 82e3a71de1ba65e12761d34c07dd89395f9ed4c7
+-candidate_diff_path: automation/control/candidates/R038_CICD_CHAIN/candidate.diff
+-evidence_json_path: automation/control/candidates/R038_CICD_CHAIN/evidence.json
+-candidate_diff_present_true_or_false: TRUE
+-evidence_json_present_true_or_false: TRUE
+-authorized_files_only_true_or_false: TRUE
+-tests_pass_true_or_false: TRUE
+-validators_pass_true_or_false: TRUE
+-self_review_result: PASS
+-r030_contract_only_preserved_true_or_false: TRUE
+-canonical_merge_executed_true_or_false: FALSE
+-canonical_push_executed_true_or_false: FALSE
+-origin_push_executed_true_or_false: FALSE
+-runtime_started_true_or_false: FALSE
+-trading_broker_execution_live_started_true_or_false: FALSE
+-order_execution_allowed_true_or_false: FALSE
+-blockers: []
++source_files:
++  - modules/decision_prechecklist/cicd_verification_chain.py
++test_files:
++  - tests/test_cicd_verification_chain.py
++staging_branch: auto/telegram-r031-r048-phase2-20260516-0542
+ source_topic_table: _governance/law/161頛芣迤撘?蝺其蜓憿蜇銵灶?臭??箸??v2.md
+-law_priority_verified: 02 > 03 > 04 > 01
+-recommended_next_action: PROCEED_TO_R039
+-summary: StrategyCICDVerificationChain: multi-stage CI/CD pipeline with regression + verify stages. 9 tests pass.
++source_already_on_canonical: TRUE
++canonical_merge_executed: TRUE
++batch_merge_origin: TRUE
++formal_round_construction_executed: FALSE
++governance_evidence_gap_only_hardening: TRUE
++r038_completed: FALSE
++full_scope_construction_required: TRUE
++functional_gaps_remain: TRUE
++backtest_replay_market_reality_gaps_remain: TRUE
++L0_L9_validation_chain_gaps_remain: TRUE
++strategy_lifecycle_gaps_remain: TRUE
++NEA_confidence_metrics_gaps_remain: TRUE
++tests_pass: TRUE
++validators_pass: TRUE
++authorized_files_only: TRUE
++r030_contract_only_preserved: TRUE
++runtime_started: FALSE
++trading_broker_execution_live_started: FALSE
++order_execution_allowed: FALSE
++R038_R048_accepted: FALSE
++R049_started: FALSE
++recommended_next_action: PROCEED_TO_MANUAL_REVIEW_THEN_AWAIT_FULL_SCOPE_CONSTRUCTION_AUTHORIZATION
++law_compliance: 04
++
++summary: |
++  R038 governance evidence gap-only hardening.
++  Evidence package completed to 7/7 files.
++  candidate.diff re-encoded from UTF-16 LE to UTF-8 without BOM.
++  Formal governance record created.
++  Batch merge origin recorded.
++  This is NOT R038 completion.
++  R038 full-scope construction NOT executed.
++  R038 source was batch-merged to canonical without formal round construction.
++  Functional gaps remain: backtest/replay/Market Reality, L0-L9 validation chain,
++  strategy lifecycle, NEA, confidence calibration, metrics contract.
++  order_execution_allowed remains FALSE.
++  R038-R048 NOT accepted.
++  R049 NOT started.
+diff --git a/automation/control/candidates/R038_CICD_CHAIN/candidate.diff b/automation/control/candidates/R038_CICD_CHAIN/candidate.diff
+index 813238a..83b7741 100644
+Binary files a/automation/control/candidates/R038_CICD_CHAIN/candidate.diff and b/automation/control/candidates/R038_CICD_CHAIN/candidate.diff differ
+diff --git a/automation/control/candidates/R038_CICD_CHAIN/evidence.json b/automation/control/candidates/R038_CICD_CHAIN/evidence.json
+index da8c297..373535a 100644
+--- a/automation/control/candidates/R038_CICD_CHAIN/evidence.json
++++ b/automation/control/candidates/R038_CICD_CHAIN/evidence.json
+@@ -1,60 +1,46 @@
+ {
+   "round_id": "R038",
+   "task_type": "strategy_cicd_verification_chain",
+-  "status": "completed",
+-  "formal_status_code": "R038_CICD_CHAIN_PASS",
+-  "staging_branch": "auto/telegram-r031-r048-phase2-20260516-0542",
+-  "round_topic": "蝑 CI/CD 撽???,
++  "status": "gap_only_hardening",
++  "formal_status_code": "R038_GOVERNANCE_EVIDENCE_GAP_ONLY_HARDENING",
++  "official_topic": "蝑 CI/CD 撽???,
+   "round_phase": "Phase 2",
+-  "source_topic_table": "_governance/law/161頛芣迤撘?蝺其蜓憿蜇銵灶?臭??箸??v2.md",
+-  "base_head": "1cf03ce29a8340cb9364edff69be3a16dee29ea4",
+-  "candidate_commit": "b845ad56c941a9069be11468bcd438183243605c",
+-  "files_modified": [
+-    "modules/decision_prechecklist/cicd_verification_chain.py",
+-    "tests/test_cicd_verification_chain.py"
++  "source_files": [
++    "modules/decision_prechecklist/cicd_verification_chain.py"
+   ],
+-  "files_added": [
+-    "modules/decision_prechecklist/cicd_verification_chain.py",
++  "test_files": [
+     "tests/test_cicd_verification_chain.py"
+   ],
+-  "candidate_diff_path": "automation/control/candidates/R038_CICD_CHAIN/candidate.diff",
+-  "evidence_json_path": "automation/control/candidates/R038_CICD_CHAIN/evidence.json",
+-  "candidate_diff_bytes": 15032,
+-  "authorized_files_only": true,
++  "staging_branch": "auto/telegram-r031-r048-phase2-20260516-0542",
++  "source_topic_table": "_governance/law/161頛芣迤撘?蝺其蜓憿蜇銵灶?臭??箸??v2.md",
++  "source_already_on_canonical": true,
++  "canonical_merge_executed": true,
++  "batch_merge_origin": true,
++  "formal_round_construction_executed": false,
++  "governance_evidence_gap_only_hardening": true,
++  "r038_completed": false,
++  "full_scope_construction_required": true,
++  "functional_gaps_remain": true,
++  "backtest_replay_market_reality_gaps_remain": true,
++  "L0_L9_validation_chain_gaps_remain": true,
++  "strategy_lifecycle_gaps_remain": true,
++  "NEA_confidence_metrics_gaps_remain": true,
+   "tests_pass": true,
+   "validators_pass": true,
+-  "self_review_result": "PASS",
++  "authorized_files_only": true,
+   "r030_contract_only_preserved": true,
+-  "canonical_merge_executed": false,
+-  "canonical_push_executed": false,
+   "runtime_started": false,
+   "trading_broker_execution_live_started": false,
+   "order_execution_allowed": false,
+-  "blockers": [],
+-  "recommended_next_action": "PROCEED_TO_R039",
++  "R038_R048_accepted": false,
++  "R049_started": false,
++  "blockers": [
++    "R038_NOT_COMPLETED",
++    "FULL_SCOPE_CONSTRUCTION_NOT_EXECUTED",
++    "FUNCTIONAL_GAPS_REMAIN"
++  ],
++  "recommended_next_action": "PROCEED_TO_MANUAL_REVIEW_THEN_AWAIT_FULL_SCOPE_CONSTRUCTION_AUTHORIZATION",
+   "law_compliance": "04",
+-  "law_priority_verified": "02 > 03 > 04 > 01",
+-  "preflight_checks": {
+-    "round_id_check": "PASS",
+-    "topic_table_check": "PASS",
+-    "phase_mapping_check": "PASS",
+-    "law_priority_check": "PASS",
+-    "fresh_rtc_check": "PASS",
+-    "manifest_state_check": "PASS",
+-    "branch_head_check": "PASS",
+-    "dirty_tree_check": "PASS",
+-    "authorized_file_scope_check": "PASS",
+-    "runtime_stopped_check": "PASS",
+-    "order_execution_allowed_check": "PASS",
+-    "r030_contract_only_preserved_check": "PASS"
+-  },
+-  "cicd_chain": {
+-    "test_count": 9,
+-    "pipeline_stages_supported": [
+-      "regression",
+-      "verification",
+-      "chain_verify"
+-    ]
+-  },
+-  "generated_at": "2026-05-17T06:00:00"
++  "historian_generated_at": "2026-05-28T14:58:58",
++  "governance_gap_fix_generated_at": "2026-05-28T15:00:00"
+ }
