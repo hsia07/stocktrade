@@ -1,0 +1,13 @@
+task_name: R037_FINAL_CHAIN_STATUS_UPDATE_CANDIDATE
+task_type: manifest_chain_status_update_candidate
+base_commit: 99c5686b1132141173e012ca412f898d17314cee
+update_type: final_chain_status_update
+manifest_update_only: true
+r037_completed: true
+r038_construction_started: false
+r038_r048_accepted: false
+r049_started: false
+order_execution_allowed: false
+required_ci_green: true
+validate_round: success
+validate_canonical_repair: success

@@ -1,0 +1,41 @@
+round_id: R037_FINAL_CHAIN_STATUS_UPDATE_CANDIDATE
+task_type: manifest_chain_status_update_candidate
+formal_status_code: candidate_ready_awaiting_manual_review
+base_branch: work/canonical-mainline-repair-001
+base_head: 99c5686b1132141173e012ca412f898d17314cee
+candidate_branch: candidate/r037-final-chain-status-update
+candidate_commit: to_be_determined_after_commit
+
+update_type: final_chain_status_update
+manifest_update_only: true
+source_construction_performed_now: false
+r037_completed: true
+r038_construction_started: false
+r038_r048_accepted: false
+r049_started: false
+broker_api_called: false
+trading_runtime_started: false
+order_execution_allowed: false
+
+required_ci_green: true
+validate_round_conclusion: success
+validate_round_run_id: 26558739969
+validate_canonical_repair_conclusion: success
+validate_canonical_repair_run_id: 26558739963
+
+manifest_changes:
+  last_completed_round: R036 -> R037
+  last_completed_topic: 固定測試資料集 -> 自動回歸檢查
+  last_completed_commit: 7ee575ea -> 99c56864
+  next_round_to_dispatch: R037 -> R038
+  chain_status: r036_completed_ready_for_r037_governance_record_scope_decision_or_deep_audit -> r037_completed_ready_for_r038_governance_record_scope_decision_or_deep_audit
+
+blockers: []
+recommended_next_action: AWAITING_MANUAL_REVIEW_FOR_R037_FINAL_CHAIN_STATUS_UPDATE_CANDIDATE
+final_recommendation:
+  - DO_NOT_START_R049
+  - DO_NOT_START_R038_CONSTRUCTION_YET
+  - DO_NOT_ACCEPT_R038_R048_YET
+  - DO_NOT_PUSH_WITHOUT_USER_SIGNOFF
+  - R037_FINAL_CHAIN_UPDATE_ONLY_NEXT
+  - ORDER_EXECUTION_ALLOWED_REMAINS_FALSE
