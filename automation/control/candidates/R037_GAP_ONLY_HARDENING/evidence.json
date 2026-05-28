@@ -76,5 +76,7 @@
     "evidence_inventory_check": "PASS",
     "source_stub_check": "PASS"
   },
+  "governance_record_rework_applied": true,
+  "governance_record_rework_detail": "Added missing law_gap_hardening_performed boolean field to governance record",
   "generated_at": "2026-05-28"
 }

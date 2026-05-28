@@ -31,5 +31,7 @@
   },
   "governance_record_created": true,
   "pre_existing_evidence_completed": true,
+  "governance_record_rework_applied": true,
+  "governance_record_rework_detail": "Added missing law_gap_hardening_performed boolean field to governance record",
   "gap_only_hardening": true
 }

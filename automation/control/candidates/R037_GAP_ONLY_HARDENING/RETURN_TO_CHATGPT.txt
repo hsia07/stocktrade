@@ -1,5 +1,5 @@
-round_id: R037_GAP_ONLY_HARDENING_CANDIDATE
-task_type: gap_only_hardening_candidate
+round_id: R037_GAP_ONLY_HARDENING_GOVERNANCE_RECORD_FLAG_REWORK_CANDIDATE
+task_type: candidate_rework
 formal_status_code: candidate_ready_awaiting_manual_review
 current_branch: candidate/r037-gap-only-hardening
 base_branch: work/canonical-mainline-repair-001
@@ -8,6 +8,8 @@ remote_head: 82b240dd1940c36c46b1177c2bc6f028d570be51
 local_remote_head_match_true_or_false: TRUE
 candidate_branch: candidate/r037-gap-only-hardening
 git_clean_before_true_or_false: TRUE
+governance_record_rework_applied: TRUE
+exact_gap_fixed: Added missing "law_gap_hardening_performed: true" boolean field to governance record
 R037_official_topic: 自動回歸檢查
 source_already_in_canonical_true_or_false: TRUE
 batch_merge_origin_verified_true_or_false: TRUE

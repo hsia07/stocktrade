@@ -21,6 +21,7 @@
   "tests_pass_before": true,
   "tests_pass_after": true,
   "evidence_inventory_completed": true,
+  "law_gap_hardening_performed": true,
   "pre_existing_evidence_completed": true,
   "pre_existing_evidence_filled_files": [
     "automation/control/candidates/R037_AUTO_REGRESSION/report.json",
