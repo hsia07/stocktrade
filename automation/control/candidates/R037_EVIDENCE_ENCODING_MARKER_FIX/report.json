@@ -1,0 +1,22 @@
+{
+  "round_id": "R037_EVIDENCE_ENCODING_MARKER_FIX",
+  "status": "candidate_ready_awaiting_manual_review",
+  "fixes": [
+    "automation/control/candidates/R037_AUTO_REGRESSION/candidate.diff: UTF-16 LE -> UTF-8 without BOM",
+    "automation/control/candidates/R037_GAP_ONLY_HARDENING/candidate.diff: UTF-16 LE -> UTF-8 without BOM",
+    "automation/control/candidates/R037_AUTO_REGRESSION/RETURN_TO_CHATGPT.txt: added candidate_branch: marker"
+  ],
+  "validation_results": {
+    "validate_canonical_repair_R037_AUTO_REGRESSION": null,
+    "validate_canonical_repair_R037_GAP_ONLY_HARDENING": null,
+    "pytest_auto_regression_check": null,
+    "pytest_fixed_test_dataset": null,
+    "pytest_validate_canonical_repair_evidence": null,
+    "pytest_verification_framework": null,
+    "pytest_governance_authorization_gate": null,
+    "pytest_check_required_evidence_ui_gate": null
+  },
+  "source_construction_performed_now": false,
+  "no_broker_live_order_runtime_pollution": true,
+  "order_execution_allowed_remains_false": true
+}

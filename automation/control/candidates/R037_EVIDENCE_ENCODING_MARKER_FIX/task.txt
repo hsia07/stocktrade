@@ -1,0 +1,17 @@
+task_name: R037_EVIDENCE_ENCODING_AND_MARKER_FIX_CANDIDATE
+task_type: evidence_package_fix_candidate
+base_commit: 130174747b124960544db4586a0e4e32d702138d
+fix_scope: evidence_encoding_and_marker_only
+ci_failure_validate_canonical_repair_47_resolved: true
+fixes:
+  - R037_AUTO_REGRESSION/candidate.diff UTF-16 LE -> UTF-8 no BOM
+  - R037_GAP_ONLY_HARDENING/candidate.diff UTF-16 LE -> UTF-8 no BOM
+  - R037_AUTO_REGRESSION/RETURN_TO_CHATGPT.txt added candidate_branch marker
+no_source_modified: true
+no_tests_modified: true
+no_manifest_modified: true
+no_validator_modified: true
+no_workflow_modified: true
+no_r038_r048_accepted: true
+no_r049_started: true
+order_execution_allowed: false

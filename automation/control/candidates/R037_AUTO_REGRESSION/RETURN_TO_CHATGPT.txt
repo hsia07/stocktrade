@@ -6,6 +6,7 @@ staging_branch: auto/telegram-r031-r048-phase2-20260516-0542
 round_topic: 自動回歸檢查
 round_phase: Phase 2
 candidate_commit: 21ec6a88dd933069f90f315badc42acf6b179e04
+candidate_branch: candidate/r037-gap-only-hardening
 base_head: 45ac10fbf2041a78708e3d9a2b3e60e7a72aeb6d
 candidate_diff_path: automation/control/candidates/R037_AUTO_REGRESSION/candidate.diff
 evidence_json_path: automation/control/candidates/R037_AUTO_REGRESSION/evidence.json

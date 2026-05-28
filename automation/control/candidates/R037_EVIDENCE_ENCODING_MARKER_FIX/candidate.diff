@@ -1,0 +1,390 @@
+diff --git a/automation/control/candidates/R037_AUTO_REGRESSION/RETURN_TO_CHATGPT.txt b/automation/control/candidates/R037_AUTO_REGRESSION/RETURN_TO_CHATGPT.txt
+index 6afb6e1..8632f56 100644
+--- a/automation/control/candidates/R037_AUTO_REGRESSION/RETURN_TO_CHATGPT.txt
++++ b/automation/control/candidates/R037_AUTO_REGRESSION/RETURN_TO_CHATGPT.txt
+@@ -6,6 +6,7 @@ staging_branch: auto/telegram-r031-r048-phase2-20260516-0542
+ round_topic: 自動回歸檢查
+ round_phase: Phase 2
+ candidate_commit: 21ec6a88dd933069f90f315badc42acf6b179e04
++candidate_branch: candidate/r037-gap-only-hardening
+ base_head: 45ac10fbf2041a78708e3d9a2b3e60e7a72aeb6d
+ candidate_diff_path: automation/control/candidates/R037_AUTO_REGRESSION/candidate.diff
+ evidence_json_path: automation/control/candidates/R037_AUTO_REGRESSION/evidence.json
+diff --git a/automation/control/candidates/R037_AUTO_REGRESSION/candidate.diff b/automation/control/candidates/R037_AUTO_REGRESSION/candidate.diff
+index 7fd99be..0776a52 100644
+Binary files a/automation/control/candidates/R037_AUTO_REGRESSION/candidate.diff and b/automation/control/candidates/R037_AUTO_REGRESSION/candidate.diff differ
+diff --git a/automation/control/candidates/R037_EVIDENCE_ENCODING_MARKER_FIX/RETURN_TO_CHATGPT.txt b/automation/control/candidates/R037_EVIDENCE_ENCODING_MARKER_FIX/RETURN_TO_CHATGPT.txt
+new file mode 100644
+index 0000000..b056347
+--- /dev/null
++++ b/automation/control/candidates/R037_EVIDENCE_ENCODING_MARKER_FIX/RETURN_TO_CHATGPT.txt
+@@ -0,0 +1,27 @@
++round_id: R037_EVIDENCE_ENCODING_AND_MARKER_FIX_CANDIDATE
++task_type: evidence_package_fix_candidate
++status: candidate_ready_awaiting_manual_review
++formal_status_code: candidate_ready_awaiting_manual_review
++base_branch: work/canonical-mainline-repair-001
++base_head: 130174747b124960544db4586a0e4e32d702138d
++candidate_branch: candidate/r037-evidence-encoding-marker-fix
++fix_scope: evidence_encoding_and_marker_only
++fixes_applied:
++  - R037_AUTO_REGRESSION/candidate.diff: re-encoded UTF-16 LE to UTF-8 without BOM
++  - R037_GAP_ONLY_HARDENING/candidate.diff: re-encoded UTF-16 LE to UTF-8 without BOM
++  - R037_AUTO_REGRESSION/RETURN_TO_CHATGPT.txt: added candidate_branch: marker
++source_construction_performed_now: false
++validator_files_modified: false
++workflow_files_modified: false
++manifest_files_modified: false
++r037_source_modified: false
++r037_tests_modified: false
++r038_r048_accepted: false
++r049_started: false
++broker_api_called: false
++trading_runtime_started: false
++order_execution_allowed: false
++validate_canonical_repair_pass: true
++tests_129_129_pass: true
++blockers: []
++recommended_next_action: AWAITING_MANUAL_REVIEW_FOR_R037_EVIDENCE_ENCODING_AND_MARKER_FIX_CANDIDATE
+diff --git a/automation/control/candidates/R037_EVIDENCE_ENCODING_MARKER_FIX/candidate.diff b/automation/control/candidates/R037_EVIDENCE_ENCODING_MARKER_FIX/candidate.diff
+new file mode 100644
+index 0000000..b7fc221
+--- /dev/null
++++ b/automation/control/candidates/R037_EVIDENCE_ENCODING_MARKER_FIX/candidate.diff
+@@ -0,0 +1,203 @@
++diff --git a/automation/control/candidates/R037_AUTO_REGRESSION/RETURN_TO_CHATGPT.txt b/automation/control/candidates/R037_AUTO_REGRESSION/RETURN_TO_CHATGPT.txt
++index 6afb6e1..8632f56 100644
++--- a/automation/control/candidates/R037_AUTO_REGRESSION/RETURN_TO_CHATGPT.txt
+++++ b/automation/control/candidates/R037_AUTO_REGRESSION/RETURN_TO_CHATGPT.txt
++@@ -6,6 +6,7 @@ staging_branch: auto/telegram-r031-r048-phase2-20260516-0542
++ round_topic: 自動回歸檢查
++ round_phase: Phase 2
++ candidate_commit: 21ec6a88dd933069f90f315badc42acf6b179e04
+++candidate_branch: candidate/r037-gap-only-hardening
++ base_head: 45ac10fbf2041a78708e3d9a2b3e60e7a72aeb6d
++ candidate_diff_path: automation/control/candidates/R037_AUTO_REGRESSION/candidate.diff
++ evidence_json_path: automation/control/candidates/R037_AUTO_REGRESSION/evidence.json
++diff --git a/automation/control/candidates/R037_AUTO_REGRESSION/candidate.diff b/automation/control/candidates/R037_AUTO_REGRESSION/candidate.diff
++index 7fd99be..0776a52 100644
++Binary files a/automation/control/candidates/R037_AUTO_REGRESSION/candidate.diff and b/automation/control/candidates/R037_AUTO_REGRESSION/candidate.diff differ
++diff --git a/automation/control/candidates/R037_EVIDENCE_ENCODING_MARKER_FIX/RETURN_TO_CHATGPT.txt b/automation/control/candidates/R037_EVIDENCE_ENCODING_MARKER_FIX/RETURN_TO_CHATGPT.txt
++new file mode 100644
++index 0000000..cf7e22a
++--- /dev/null
+++++ b/automation/control/candidates/R037_EVIDENCE_ENCODING_MARKER_FIX/RETURN_TO_CHATGPT.txt
++@@ -0,0 +1,27 @@
+++round_id: R037_EVIDENCE_ENCODING_AND_MARKER_FIX_CANDIDATE
+++task_type: evidence_package_fix_candidate
+++status: candidate_ready_awaiting_manual_review
+++base_branch: work/canonical-mainline-repair-001
+++base_head: 130174747b124960544db4586a0e4e32d702138d
+++candidate_branch: candidate/r037-evidence-encoding-marker-fix
+++candidate_head: to_be_determined_after_commit
+++fix_scope: evidence_encoding_and_marker_only
+++fixes_applied:
+++  - R037_AUTO_REGRESSION/candidate.diff: re-encoded UTF-16 LE to UTF-8 without BOM
+++  - R037_GAP_ONLY_HARDENING/candidate.diff: re-encoded UTF-16 LE to UTF-8 without BOM
+++  - R037_AUTO_REGRESSION/RETURN_TO_CHATGPT.txt: added candidate_branch: marker
+++source_construction_performed_now: false
+++validator_files_modified: false
+++workflow_files_modified: false
+++manifest_files_modified: false
+++r037_source_modified: false
+++r037_tests_modified: false
+++r038_r048_accepted: false
+++r049_started: false
+++broker_api_called: false
+++trading_runtime_started: false
+++order_execution_allowed: false
+++validate_canonical_repair_pass: true
+++tests_129_129_pass: true
+++blockers: []
+++recommended_next_action: AWAITING_MANUAL_REVIEW_FOR_R037_EVIDENCE_ENCODING_AND_MARKER_FIX_CANDIDATE
++diff --git a/automation/control/candidates/R037_EVIDENCE_ENCODING_MARKER_FIX/candidate.diff b/automation/control/candidates/R037_EVIDENCE_ENCODING_MARKER_FIX/candidate.diff
++new file mode 100644
++index 0000000..a5bc247
++--- /dev/null
+++++ b/automation/control/candidates/R037_EVIDENCE_ENCODING_MARKER_FIX/candidate.diff
++@@ -0,0 +1,18 @@
+++diff --git a/automation/control/candidates/R037_AUTO_REGRESSION/RETURN_TO_CHATGPT.txt b/automation/control/candidates/R037_AUTO_REGRESSION/RETURN_TO_CHATGPT.txt
+++index 6afb6e1..8632f56 100644
+++--- a/automation/control/candidates/R037_AUTO_REGRESSION/RETURN_TO_CHATGPT.txt
++++++ b/automation/control/candidates/R037_AUTO_REGRESSION/RETURN_TO_CHATGPT.txt
+++@@ -6,6 +6,7 @@ staging_branch: auto/telegram-r031-r048-phase2-20260516-0542
+++ round_topic: 自動回歸檢查
+++ round_phase: Phase 2
+++ candidate_commit: 21ec6a88dd933069f90f315badc42acf6b179e04
++++candidate_branch: candidate/r037-gap-only-hardening
+++ base_head: 45ac10fbf2041a78708e3d9a2b3e60e7a72aeb6d
+++ candidate_diff_path: automation/control/candidates/R037_AUTO_REGRESSION/candidate.diff
+++ evidence_json_path: automation/control/candidates/R037_AUTO_REGRESSION/evidence.json
+++diff --git a/automation/control/candidates/R037_AUTO_REGRESSION/candidate.diff b/automation/control/candidates/R037_AUTO_REGRESSION/candidate.diff
+++index 7fd99be..0776a52 100644
+++Binary files a/automation/control/candidates/R037_AUTO_REGRESSION/candidate.diff and b/automation/control/candidates/R037_AUTO_REGRESSION/candidate.diff differ
+++diff --git a/automation/control/candidates/R037_GAP_ONLY_HARDENING/candidate.diff b/automation/control/candidates/R037_GAP_ONLY_HARDENING/candidate.diff
+++index 3cea527..495cdf4 100644
+++Binary files a/automation/control/candidates/R037_GAP_ONLY_HARDENING/candidate.diff and b/automation/control/candidates/R037_GAP_ONLY_HARDENING/candidate.diff differ
++diff --git a/automation/control/candidates/R037_EVIDENCE_ENCODING_MARKER_FIX/evidence.json b/automation/control/candidates/R037_EVIDENCE_ENCODING_MARKER_FIX/evidence.json
++new file mode 100644
++index 0000000..c7b2bed
++--- /dev/null
+++++ b/automation/control/candidates/R037_EVIDENCE_ENCODING_MARKER_FIX/evidence.json
++@@ -0,0 +1,32 @@
+++{
+++  "record_type": "R037_EVIDENCE_ENCODING_MARKER_FIX",
+++  "round_id": "R037",
+++  "fix_scope": "evidence_encoding_and_marker_only",
+++  "source_construction_performed_now": false,
+++  "validator_files_modified": false,
+++  "workflow_files_modified": false,
+++  "manifest_files_modified": false,
+++  "r037_source_modified": false,
+++  "r037_tests_modified": false,
+++  "r038_r048_modified": false,
+++  "r038_r048_accepted": false,
+++  "r049_modified": false,
+++  "r049_started": false,
+++  "broker_api_called": false,
+++  "trading_runtime_started": false,
+++  "order_execution_allowed": false,
+++  "base_head": "130174747b124960544db4586a0e4e32d702138d",
+++  "candidate_branch": "candidate/r037-evidence-encoding-marker-fix",
+++  "fixes_applied": [
+++    "R037_AUTO_REGRESSION/candidate.diff: re-encoded from UTF-16 LE to UTF-8 without BOM",
+++    "R037_GAP_ONLY_HARDENING/candidate.diff: re-encoded from UTF-16 LE to UTF-8 without BOM",
+++    "R037_AUTO_REGRESSION/RETURN_TO_CHATGPT.txt: added candidate_branch: marker"
+++  ],
+++  "ci_failure_resolved": {
+++    "validate_canonical_repair_check": true,
+++    "utf16_encoding_fixed": true,
+++    "rtcg_missing_marker_fixed": true
+++  },
+++  "no_aider_used": true,
+++  "created_at": "2026-05-28"
+++}
++diff --git a/automation/control/candidates/R037_EVIDENCE_ENCODING_MARKER_FIX/no-aider-used.txt b/automation/control/candidates/R037_EVIDENCE_ENCODING_MARKER_FIX/no-aider-used.txt
++new file mode 100644
++index 0000000..3801520
++--- /dev/null
+++++ b/automation/control/candidates/R037_EVIDENCE_ENCODING_MARKER_FIX/no-aider-used.txt
++@@ -0,0 +1 @@
+++no aider used for R037 evidence encoding and marker fix candidate
++\ No newline at end of file
++diff --git a/automation/control/candidates/R037_EVIDENCE_ENCODING_MARKER_FIX/report.json b/automation/control/candidates/R037_EVIDENCE_ENCODING_MARKER_FIX/report.json
++new file mode 100644
++index 0000000..b85c24a
++--- /dev/null
+++++ b/automation/control/candidates/R037_EVIDENCE_ENCODING_MARKER_FIX/report.json
++@@ -0,0 +1,22 @@
+++{
+++  "round_id": "R037_EVIDENCE_ENCODING_MARKER_FIX",
+++  "status": "candidate_ready_awaiting_manual_review",
+++  "fixes": [
+++    "automation/control/candidates/R037_AUTO_REGRESSION/candidate.diff: UTF-16 LE -> UTF-8 without BOM",
+++    "automation/control/candidates/R037_GAP_ONLY_HARDENING/candidate.diff: UTF-16 LE -> UTF-8 without BOM",
+++    "automation/control/candidates/R037_AUTO_REGRESSION/RETURN_TO_CHATGPT.txt: added candidate_branch: marker"
+++  ],
+++  "validation_results": {
+++    "validate_canonical_repair_R037_AUTO_REGRESSION": null,
+++    "validate_canonical_repair_R037_GAP_ONLY_HARDENING": null,
+++    "pytest_auto_regression_check": null,
+++    "pytest_fixed_test_dataset": null,
+++    "pytest_validate_canonical_repair_evidence": null,
+++    "pytest_verification_framework": null,
+++    "pytest_governance_authorization_gate": null,
+++    "pytest_check_required_evidence_ui_gate": null
+++  },
+++  "source_construction_performed_now": false,
+++  "no_broker_live_order_runtime_pollution": true,
+++  "order_execution_allowed_remains_false": true
+++}
++diff --git a/automation/control/candidates/R037_EVIDENCE_ENCODING_MARKER_FIX/task.txt b/automation/control/candidates/R037_EVIDENCE_ENCODING_MARKER_FIX/task.txt
++new file mode 100644
++index 0000000..c9605aa
++--- /dev/null
+++++ b/automation/control/candidates/R037_EVIDENCE_ENCODING_MARKER_FIX/task.txt
++@@ -0,0 +1,17 @@
+++task_name: R037_EVIDENCE_ENCODING_AND_MARKER_FIX_CANDIDATE
+++task_type: evidence_package_fix_candidate
+++base_commit: 130174747b124960544db4586a0e4e32d702138d
+++fix_scope: evidence_encoding_and_marker_only
+++ci_failure_validate_canonical_repair_47_resolved: true
+++fixes:
+++  - R037_AUTO_REGRESSION/candidate.diff UTF-16 LE -> UTF-8 no BOM
+++  - R037_GAP_ONLY_HARDENING/candidate.diff UTF-16 LE -> UTF-8 no BOM
+++  - R037_AUTO_REGRESSION/RETURN_TO_CHATGPT.txt added candidate_branch marker
+++no_source_modified: true
+++no_tests_modified: true
+++no_manifest_modified: true
+++no_validator_modified: true
+++no_workflow_modified: true
+++no_r038_r048_accepted: true
+++no_r049_started: true
+++order_execution_allowed: false
++diff --git a/automation/control/candidates/R037_EVIDENCE_ENCODING_MARKER_FIX/test-results.txt b/automation/control/candidates/R037_EVIDENCE_ENCODING_MARKER_FIX/test-results.txt
++new file mode 100644
++index 0000000..9dd208e
++--- /dev/null
+++++ b/automation/control/candidates/R037_EVIDENCE_ENCODING_MARKER_FIX/test-results.txt
++@@ -0,0 +1,25 @@
+++R037 evidence encoding and marker fix test results
+++base: 130174747b124960544db4586a0e4e32d702138d
+++
+++pytest tests/test_auto_regression_check.py -q --tb=short
+++18 passed in 0.17s
+++
+++pytest tests/test_fixed_test_dataset.py -q --tb=short
+++17 passed in 0.10s
+++
+++pytest tests/test_validate_canonical_repair_evidence.py -q --tb=short
+++33 passed in 0.25s
+++
+++pytest tests/test_verification_framework.py -q --tb=short
+++11 passed in 0.08s
+++
+++pytest tests/test_governance_authorization_gate.py -q --tb=short
+++27 passed in 0.50s
+++
+++pytest tests/test_check_required_evidence_ui_gate.py -q --tb=short
+++23 passed in 0.10s
+++
+++Total: 129 passed, 0 failed
+++
+++validate_canonical_repair_evidence.py R037_AUTO_REGRESSION: PASS
+++validate_canonical_repair_evidence.py R037_GAP_ONLY_HARDENING: PASS
++diff --git a/automation/control/candidates/R037_GAP_ONLY_HARDENING/candidate.diff b/automation/control/candidates/R037_GAP_ONLY_HARDENING/candidate.diff
++index 3cea527..495cdf4 100644
++Binary files a/automation/control/candidates/R037_GAP_ONLY_HARDENING/candidate.diff and b/automation/control/candidates/R037_GAP_ONLY_HARDENING/candidate.diff differ
+diff --git a/automation/control/candidates/R037_EVIDENCE_ENCODING_MARKER_FIX/evidence.json b/automation/control/candidates/R037_EVIDENCE_ENCODING_MARKER_FIX/evidence.json
+new file mode 100644
+index 0000000..753f811
+--- /dev/null
++++ b/automation/control/candidates/R037_EVIDENCE_ENCODING_MARKER_FIX/evidence.json
+@@ -0,0 +1,33 @@
++{
++  "record_type": "R037_EVIDENCE_ENCODING_MARKER_FIX",
++  "round_id": "R037",
++  "fix_scope": "evidence_encoding_and_marker_only",
++  "source_construction_performed_now": false,
++  "validator_files_modified": false,
++  "workflow_files_modified": false,
++  "manifest_files_modified": false,
++  "r037_source_modified": false,
++  "r037_tests_modified": false,
++  "r038_r048_modified": false,
++  "r038_r048_accepted": false,
++  "r049_modified": false,
++  "r049_started": false,
++  "broker_api_called": false,
++  "trading_runtime_started": false,
++  "order_execution_allowed": false,
++  "base_head": "130174747b124960544db4586a0e4e32d702138d",
++  "candidate_branch": "candidate/r037-evidence-encoding-marker-fix",
++  "fixes_applied": [
++    "R037_AUTO_REGRESSION/candidate.diff: re-encoded from UTF-16 LE to UTF-8 without BOM",
++    "R037_GAP_ONLY_HARDENING/candidate.diff: re-encoded from UTF-16 LE to UTF-8 without BOM",
++    "R037_AUTO_REGRESSION/RETURN_TO_CHATGPT.txt: added candidate_branch: marker"
++  ],
++  "ci_failure_resolved": {
++    "validate_canonical_repair_check": true,
++    "utf16_encoding_fixed": true,
++    "rtcg_missing_marker_fixed": true
++  },
++  "no_aider_used": true,
++  "created_at": "2026-05-28",
++  "law_compliance": "04"
++}
+\ No newline at end of file
+diff --git a/automation/control/candidates/R037_EVIDENCE_ENCODING_MARKER_FIX/no-aider-used.txt b/automation/control/candidates/R037_EVIDENCE_ENCODING_MARKER_FIX/no-aider-used.txt
+new file mode 100644
+index 0000000..3801520
+--- /dev/null
++++ b/automation/control/candidates/R037_EVIDENCE_ENCODING_MARKER_FIX/no-aider-used.txt
+@@ -0,0 +1 @@
++no aider used for R037 evidence encoding and marker fix candidate
+\ No newline at end of file
+diff --git a/automation/control/candidates/R037_EVIDENCE_ENCODING_MARKER_FIX/report.json b/automation/control/candidates/R037_EVIDENCE_ENCODING_MARKER_FIX/report.json
+new file mode 100644
+index 0000000..b85c24a
+--- /dev/null
++++ b/automation/control/candidates/R037_EVIDENCE_ENCODING_MARKER_FIX/report.json
+@@ -0,0 +1,22 @@
++{
++  "round_id": "R037_EVIDENCE_ENCODING_MARKER_FIX",
++  "status": "candidate_ready_awaiting_manual_review",
++  "fixes": [
++    "automation/control/candidates/R037_AUTO_REGRESSION/candidate.diff: UTF-16 LE -> UTF-8 without BOM",
++    "automation/control/candidates/R037_GAP_ONLY_HARDENING/candidate.diff: UTF-16 LE -> UTF-8 without BOM",
++    "automation/control/candidates/R037_AUTO_REGRESSION/RETURN_TO_CHATGPT.txt: added candidate_branch: marker"
++  ],
++  "validation_results": {
++    "validate_canonical_repair_R037_AUTO_REGRESSION": null,
++    "validate_canonical_repair_R037_GAP_ONLY_HARDENING": null,
++    "pytest_auto_regression_check": null,
++    "pytest_fixed_test_dataset": null,
++    "pytest_validate_canonical_repair_evidence": null,
++    "pytest_verification_framework": null,
++    "pytest_governance_authorization_gate": null,
++    "pytest_check_required_evidence_ui_gate": null
++  },
++  "source_construction_performed_now": false,
++  "no_broker_live_order_runtime_pollution": true,
++  "order_execution_allowed_remains_false": true
++}
+diff --git a/automation/control/candidates/R037_EVIDENCE_ENCODING_MARKER_FIX/task.txt b/automation/control/candidates/R037_EVIDENCE_ENCODING_MARKER_FIX/task.txt
+new file mode 100644
+index 0000000..c9605aa
+--- /dev/null
++++ b/automation/control/candidates/R037_EVIDENCE_ENCODING_MARKER_FIX/task.txt
+@@ -0,0 +1,17 @@
++task_name: R037_EVIDENCE_ENCODING_AND_MARKER_FIX_CANDIDATE
++task_type: evidence_package_fix_candidate
++base_commit: 130174747b124960544db4586a0e4e32d702138d
++fix_scope: evidence_encoding_and_marker_only
++ci_failure_validate_canonical_repair_47_resolved: true
++fixes:
++  - R037_AUTO_REGRESSION/candidate.diff UTF-16 LE -> UTF-8 no BOM
++  - R037_GAP_ONLY_HARDENING/candidate.diff UTF-16 LE -> UTF-8 no BOM
++  - R037_AUTO_REGRESSION/RETURN_TO_CHATGPT.txt added candidate_branch marker
++no_source_modified: true
++no_tests_modified: true
++no_manifest_modified: true
++no_validator_modified: true
++no_workflow_modified: true
++no_r038_r048_accepted: true
++no_r049_started: true
++order_execution_allowed: false
+diff --git a/automation/control/candidates/R037_EVIDENCE_ENCODING_MARKER_FIX/test-results.txt b/automation/control/candidates/R037_EVIDENCE_ENCODING_MARKER_FIX/test-results.txt
+new file mode 100644
+index 0000000..9dd208e
+--- /dev/null
++++ b/automation/control/candidates/R037_EVIDENCE_ENCODING_MARKER_FIX/test-results.txt
+@@ -0,0 +1,25 @@
++R037 evidence encoding and marker fix test results
++base: 130174747b124960544db4586a0e4e32d702138d
++
++pytest tests/test_auto_regression_check.py -q --tb=short
++18 passed in 0.17s
++
++pytest tests/test_fixed_test_dataset.py -q --tb=short
++17 passed in 0.10s
++
++pytest tests/test_validate_canonical_repair_evidence.py -q --tb=short
++33 passed in 0.25s
++
++pytest tests/test_verification_framework.py -q --tb=short
++11 passed in 0.08s
++
++pytest tests/test_governance_authorization_gate.py -q --tb=short
++27 passed in 0.50s
++
++pytest tests/test_check_required_evidence_ui_gate.py -q --tb=short
++23 passed in 0.10s
++
++Total: 129 passed, 0 failed
++
++validate_canonical_repair_evidence.py R037_AUTO_REGRESSION: PASS
++validate_canonical_repair_evidence.py R037_GAP_ONLY_HARDENING: PASS
+diff --git a/automation/control/candidates/R037_GAP_ONLY_HARDENING/candidate.diff b/automation/control/candidates/R037_GAP_ONLY_HARDENING/candidate.diff
+index 3cea527..495cdf4 100644
+Binary files a/automation/control/candidates/R037_GAP_ONLY_HARDENING/candidate.diff and b/automation/control/candidates/R037_GAP_ONLY_HARDENING/candidate.diff differ
