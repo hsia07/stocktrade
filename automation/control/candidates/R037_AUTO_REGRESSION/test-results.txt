@@ -1,0 +1,10 @@
+Command: python -m pytest tests/test_auto_regression_check.py -q --tb=short
+Result: 6 passed in 0.15s
+
+Tests:
+  test_checker_initialization PASSED
+  test_checker_runs_all_cases PASSED
+  test_checker_known_result PASSED
+  test_checker_detects_mismatch PASSED
+  test_regression_suite_result PASSED
+  test_checker_run_empty_list PASSED

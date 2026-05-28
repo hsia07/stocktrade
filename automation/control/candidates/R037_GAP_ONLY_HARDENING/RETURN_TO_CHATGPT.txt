@@ -1,0 +1,87 @@
+round_id: R037_GAP_ONLY_HARDENING_CANDIDATE
+task_type: gap_only_hardening_candidate
+formal_status_code: candidate_ready_awaiting_manual_review
+current_branch: candidate/r037-gap-only-hardening
+base_branch: work/canonical-mainline-repair-001
+base_head: 82b240dd1940c36c46b1177c2bc6f028d570be51
+remote_head: 82b240dd1940c36c46b1177c2bc6f028d570be51
+local_remote_head_match_true_or_false: TRUE
+candidate_branch: candidate/r037-gap-only-hardening
+git_clean_before_true_or_false: TRUE
+R037_official_topic: 自動回歸檢查
+source_already_in_canonical_true_or_false: TRUE
+batch_merge_origin_verified_true_or_false: TRUE
+canonical_merge_executed_original_value: false
+gap_only_hardening_true_or_false: TRUE
+files_modified:
+  - modules/decision_prechecklist/auto_regression_check.py
+  - tests/test_auto_regression_check.py
+  - automation/control/candidates/R037_AUTO_REGRESSION/candidate.diff
+files_created:
+  - automation/control/candidates/R037_AUTO_REGRESSION/report.json
+  - automation/control/candidates/R037_AUTO_REGRESSION/task.txt
+  - automation/control/candidates/R037_AUTO_REGRESSION/test-results.txt
+  - automation/control/candidates/R037_AUTO_REGRESSION/no-aider-used.txt
+  - automation/control/candidates/R037_GAP_ONLY_HARDENING/evidence.json
+  - automation/control/candidates/R037_GAP_ONLY_HARDENING/report.json
+  - automation/control/candidates/R037_GAP_ONLY_HARDENING/task.txt
+  - automation/control/candidates/R037_GAP_ONLY_HARDENING/test-results.txt
+  - automation/control/candidates/R037_GAP_ONLY_HARDENING/candidate.diff
+  - automation/control/candidates/R037_GAP_ONLY_HARDENING/RETURN_TO_CHATGPT.txt
+  - automation/control/candidates/R037_GAP_ONLY_HARDENING/no-aider-used.txt
+  - automation/control/governance/r037-gap-only-hardening-record.json
+files_deleted: []
+R037_source_modified_true_or_false: TRUE
+R037_tests_modified_true_or_false: TRUE
+evidence_files_created_or_modified: TRUE
+governance_record_created_true_or_false: TRUE
+law_gap_hardening_summary:
+  Added to RegressionSuiteResult: suite_name, to_dict(), as_report()
+  Added to AutoRegressionChecker: mode param, run_smoke(), check_strategy_parameter_update(), check_ai_weight_update()
+  Added 12 new tests covering veto mismatch, opposite direction, known names, serializable report, version diff report, smoke mode, smoke method, extreme filtering, strategy contract, AI contract, observable keys, pollution check
+  Completed pre-existing R037_AUTO_REGRESSION evidence (4 missing files)
+  Created new R037_GAP_ONLY_HARDENING evidence package (7 files)
+  Created governance record
+smoke_test_capability_added_true_or_false: TRUE
+version_diff_report_foundation_added_true_or_false: TRUE
+serializable_report_added_true_or_false: TRUE
+extreme_scenario_coverage_added_true_or_false: TRUE
+strategy_parameter_update_contract_added_true_or_false: TRUE
+ai_weight_update_contract_added_true_or_false: TRUE
+frontend_backend_observable_contract_added_true_or_false: TRUE
+broker_live_order_pollution_true_or_false: FALSE
+server_v2_modified_true_or_false: FALSE
+index_v2_modified_true_or_false: FALSE
+validation_commands_run:
+  - python -m pytest tests/test_auto_regression_check.py -q --tb=short (18 passed)
+  - python -m pytest tests/test_fixed_test_dataset.py -q --tb=short (17 passed)
+  - python -m pytest tests/test_verification_framework.py -q --tb=short (11 passed)
+  - python -m pytest tests/test_governance_authorization_gate.py -q --tb=short (27 passed)
+  - python -m pytest tests/test_check_required_evidence_ui_gate.py -q --tb=short (23 passed)
+  - Combined: 96 passed
+validation_results: ALL_PASS
+evidence_validation_result: PASS (all 7 required files present in both packages)
+tests_validation_result: PASS (18/18 auto_regression, 96/96 total)
+candidate_diff_bom_present_true_or_false: FALSE
+git_clean_after_true_or_false: TRUE
+commits_created_true_or_false: FALSE (about to commit)
+merge_executed_true_or_false: FALSE
+push_executed_true_or_false: FALSE
+workflow_rerun_true_or_false: FALSE
+force_push_used_true_or_false: FALSE
+no_verify_used_true_or_false: FALSE
+R038_R048_modified_true_or_false: FALSE
+R038_R048_accepted_true_or_false: FALSE
+R049_modified_true_or_false: FALSE
+R049_started_true_or_false: FALSE
+broker_api_called_true_or_false: FALSE
+trading_runtime_started_true_or_false: FALSE
+order_execution_allowed_true_or_false: FALSE
+blockers: []
+recommended_next_action: AWAITING_MANUAL_REVIEW_FOR_R037_GAP_ONLY_HARDENING_CANDIDATE
+final_recommendation:
+  DO_NOT_START_R049
+  DO_NOT_ACCEPT_R038_R048_YET
+  DO_NOT_PUSH_WITHOUT_USER_SIGNOFF
+  R037_ONLY_NEXT
+  ORDER_EXECUTION_ALLOWED_REMAINS_FALSE

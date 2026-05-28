@@ -1,0 +1,28 @@
+task_type: gap_only_hardening_candidate
+round_id: R037
+topic: 自動回歸檢查
+goal: Fill R037 governance record scope decision deep audit gaps with minimum hardening
+base_head: 82b240dd1940c36c46b1177c2bc6f028d570be51
+candidate_branch: candidate/r037-gap-only-hardening
+source_already_in_canonical: true
+batch_merge_origin: c529d9a/5bb4600 (Phase 2 batch checkpoint)
+canonical_merge_executed_original_value: false
+gap_only_hardening: true
+is_governance_record: false
+is_r049_authorization: false
+is_live_readiness: false
+scope:
+  - Complete pre-existing R037_AUTO_REGRESSION evidence package (add missing report.json, task.txt, test-results.txt, no-aider-used.txt)
+  - Create new R037_GAP_ONLY_HARDENING evidence package with all 7 required files
+  - Add serializable report foundation (to_dict, as_report) to auto_regression_check.py
+  - Add version diff report foundation with mismatch_items
+  - Add smoke test capability (mode parameter, run_smoke method)
+  - Add extreme scenario marker/filtering support
+  - Add strategy_parameter_update and ai_weight_update placeholder contracts
+  - Add 12 new tests covering all added capabilities
+  - Create governance record
+  - No canonical_merge_executed change
+  - No manifest change
+  - No R038-R048, R049, law, validator, workflow modifications
+  - No broker/live/order/server_v2/index_v2 wiring
+  - order_execution_allowed remains FALSE
