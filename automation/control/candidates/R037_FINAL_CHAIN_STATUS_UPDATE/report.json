@@ -1,0 +1,11 @@
+{
+  "round_id": "R037_FINAL_CHAIN_STATUS_UPDATE_CANDIDATE",
+  "status": "completed",
+  "update_type": "final_chain_status_update",
+  "manifest_update_only": true,
+  "source_construction_performed_now": false,
+  "r038_construction_started": false,
+  "r038_r048_accepted": false,
+  "r049_started": false,
+  "order_execution_allowed": false
+}

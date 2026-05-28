@@ -1,0 +1,22 @@
+{
+  "round_id": "R037",
+  "update_type": "final_chain_status_update",
+  "source_construction_performed_now": false,
+  "manifest_update_only": true,
+  "required_ci_green": true,
+  "validate_round_conclusion": "success",
+  "validate_round_run_id": 26558739969,
+  "validate_canonical_repair_conclusion": "success",
+  "validate_canonical_repair_run_id": 26558739963,
+  "r038_construction_started": false,
+  "r038_r048_accepted": false,
+  "r049_started": false,
+  "broker_api_called": false,
+  "trading_runtime_started": false,
+  "order_execution_allowed": false,
+  "base_head": "99c5686b1132141173e012ca412f898d17314cee",
+  "candidate_branch": "candidate/r037-final-chain-status-update",
+  "no_aider_used": true,
+  "created_at": "2026-05-28",
+  "law_compliance": "04"
+}

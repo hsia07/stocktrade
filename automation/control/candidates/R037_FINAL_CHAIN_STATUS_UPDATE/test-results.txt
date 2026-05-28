@@ -1,0 +1,26 @@
+R037 final chain status update candidate test results
+base: 99c5686b1132141173e012ca412f898d17314cee
+
+pytest tests/test_auto_regression_check.py -q --tb=short
+18 passed in 0.13s
+
+pytest tests/test_fixed_test_dataset.py -q --tb=short
+17 passed in 0.12s
+
+pytest tests/test_validate_canonical_repair_evidence.py -q --tb=short
+33 passed in 0.27s
+
+pytest tests/test_verification_framework.py -q --tb=short
+11 passed in 0.12s
+
+pytest tests/test_governance_authorization_gate.py -q --tb=short
+27 passed in 1.01s
+
+pytest tests/test_check_required_evidence_ui_gate.py -q --tb=short
+23 passed in 0.14s
+
+Total: 129 passed, 0 failed
+
+validate_canonical_repair_evidence.py R037_AUTO_REGRESSION: PASS
+validate_canonical_repair_evidence.py R037_GAP_ONLY_HARDENING: PASS
+validate_canonical_repair_evidence.py R037_EVIDENCE_ENCODING_MARKER_FIX: PASS
