@@ -1,0 +1,47 @@
+TEST RESULTS FOR R036_SECOND_WAVE_RETROACTIVE_ACCEPTANCE_INCIDENT_RECORD
+
+=== LOCAL VALIDATION ===
+Date: 2026-05-28
+Base commit: 3293087e90661159735ca4df4ceb0d6dc082deb1
+Candidate branch: candidate/r036-second-wave-retroactive-acceptance-incident-record
+
+=== GOVERNANCE PREVENTION TESTS ===
+Test suite: tests/test_governance_authorization_gate.py
+Result: PASS
+Passed: 27
+Failed: 0
+
+=== UI GATE TESTS ===
+Test suite: tests/test_check_required_evidence_ui_gate.py
+Result: PASS
+Passed: 23
+Failed: 0
+
+=== VALIDATION FRAMEWORK TESTS ===
+Test suite: tests/test_verification_framework.py
+Result: PASS
+Passed: 11
+Failed: 0
+
+=== R036 SOURCE TESTS ===
+Test suite: tests/test_fixed_test_dataset.py
+Result: PASS
+Passed: 17
+Failed: 0
+
+=== CANONICAL REPAIR EVIDENCE TESTS ===
+Test suite: tests/test_validate_canonical_repair_evidence.py
+Result: PASS
+Passed: 33
+Failed: 0
+
+=== REQUIRED CI CONFIRMATION ===
+validate-round #263: SUCCESS on 3293087e90661159735ca4df4ceb0d6dc082deb1
+validate-canonical-repair #45: SUCCESS on 3293087e90661159735ca4df4ceb0d6dc082deb1
+
+=== OVERALL SUMMARY ===
+Total test suites: 5
+Total tests: 111
+Passed: 111
+Failed: 0
+Skipped: 0

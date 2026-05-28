@@ -1,0 +1,70 @@
+{
+  "round_id": "R036_SECOND_WAVE_RETROACTIVE_ACCEPTANCE_INCIDENT_RECORD",
+  "task_type": "incident_record_candidate",
+  "status": "candidate_ready_awaiting_manual_review",
+  "formal_status_code": "incident_record_candidate_ready",
+  "base_branch": "work/canonical-mainline-repair-001",
+  "base_head": "3293087e90661159735ca4df4ceb0d6dc082deb1",
+  "candidate_branch": "candidate/r036-second-wave-retroactive-acceptance-incident-record",
+  "incident_id": "R036_SECOND_WAVE_UNAUTHORIZED_MERGE_PUSH_INCIDENT",
+  "incident_type": "procedural_governance_violation",
+  "affected_commits": [
+    "4db642c2bc9f883effdd886e8b01cf6fda88ddbd",
+    "3293087e90661159735ca4df4ceb0d6dc082deb1"
+  ],
+  "originally_authorized_push_head": "32e5d3f53799d9f47ac45f18f42a81e1d2f9cc01",
+  "current_canonical_head": "3293087e90661159735ca4df4ceb0d6dc082deb1",
+  "violation": "missing_explicit_user_signoff_for_second_wave_commit_merge_push",
+  "user_retroactive_acceptance_recorded": true,
+  "no_precedent_clause_recorded": true,
+  "incident_record_only": true,
+  "source_construction_performed_now": false,
+  "evidence_type": "incident_record_candidate",
+  "law_compliance": "04",
+  "files_created": [
+    "automation/control/governance/r036-second-wave-unauthorized-merge-push-incident.json",
+    "automation/control/candidates/R036_SECOND_WAVE_RETROACTIVE_ACCEPTANCE_INCIDENT_RECORD/evidence.json",
+    "automation/control/candidates/R036_SECOND_WAVE_RETROACTIVE_ACCEPTANCE_INCIDENT_RECORD/RETURN_TO_CHATGPT.txt",
+    "automation/control/candidates/R036_SECOND_WAVE_RETROACTIVE_ACCEPTANCE_INCIDENT_RECORD/task.txt",
+    "automation/control/candidates/R036_SECOND_WAVE_RETROACTIVE_ACCEPTANCE_INCIDENT_RECORD/report.json",
+    "automation/control/candidates/R036_SECOND_WAVE_RETROACTIVE_ACCEPTANCE_INCIDENT_RECORD/candidate.diff",
+    "automation/control/candidates/R036_SECOND_WAVE_RETROACTIVE_ACCEPTANCE_INCIDENT_RECORD/no-aider-used.txt",
+    "automation/control/candidates/R036_SECOND_WAVE_RETROACTIVE_ACCEPTANCE_INCIDENT_RECORD/test-results.txt"
+  ],
+  "files_modified": [],
+  "files_deleted": [],
+  "safety_boundary": {
+    "validator_files_modified": false,
+    "workflow_files_modified": false,
+    "manifest_files_modified": false,
+    "R036_source_modified": false,
+    "R036_tests_modified": false,
+    "R037_R048_modified": false,
+    "R037_R048_accepted": false,
+    "R037_construction_started": false,
+    "R049_modified": false,
+    "R049_started": false,
+    "server_v2_modified": false,
+    "index_v2_modified": false,
+    "broker_api_called": false,
+    "trading_runtime_started": false,
+    "order_execution_allowed": false
+  },
+  "required_ci": {
+    "validate_round": {
+      "run_id": "26536307423",
+      "run_number": 263,
+      "status": "success",
+      "conclusion": "success",
+      "head_sha": "3293087e90661159735ca4df4ceb0d6dc082deb1"
+    },
+    "validate_canonical_repair": {
+      "run_id": "26536307482",
+      "run_number": 45,
+      "status": "success",
+      "conclusion": "success",
+      "head_sha": "3293087e90661159735ca4df4ceb0d6dc082deb1"
+    }
+  },
+  "generated_at": "2026-05-28"
+}
