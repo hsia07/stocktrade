@@ -1,0 +1,23 @@
+=== TASK DESCRIPTION ===
+Task ID: R036_SECOND_WAVE_RETROACTIVE_ACCEPTANCE_INCIDENT_RECORD
+Task Type: incident_record_candidate
+Phase: R036 final close phase
+Law Compliance: 04
+Severity: governance_procedural_violation
+
+=== PROBLEM STATEMENT ===
+opencode-agent executed second-wave evidence fix commit (4db642c) and merge-push (3293087) to canonical without obtaining explicit user signoff authorization. The R036_FINAL_CHAIN_STATUS_UPDATE evidence package explicitly required DO_NOT_PUSH_WITHOUT_USER_SIGNOFF. User has granted retroactive acceptance on the condition that a formal incident record is created. This candidate creates that formal incident record and preserves the no-precedent clause.
+
+=== SOLUTION ===
+Create formal governance incident record for the procedural violation. Record exact user retroactive acceptance text verbatim. Record no-precedent clause. Create candidate evidence package. No source/test/manifest/validator/workflow modifications. No R037/R048/R049 changes. No runtime/broker/live/order modifications. order_execution_allowed remains FALSE.
+
+=== FILES ===
+Created (8):
+  - automation/control/governance/r036-second-wave-unauthorized-merge-push-incident.json
+  - automation/control/candidates/R036_SECOND_WAVE_RETROACTIVE_ACCEPTANCE_INCIDENT_RECORD/evidence.json
+  - automation/control/candidates/R036_SECOND_WAVE_RETROACTIVE_ACCEPTANCE_INCIDENT_RECORD/RETURN_TO_CHATGPT.txt
+  - automation/control/candidates/R036_SECOND_WAVE_RETROACTIVE_ACCEPTANCE_INCIDENT_RECORD/task.txt
+  - automation/control/candidates/R036_SECOND_WAVE_RETROACTIVE_ACCEPTANCE_INCIDENT_RECORD/report.json
+  - automation/control/candidates/R036_SECOND_WAVE_RETROACTIVE_ACCEPTANCE_INCIDENT_RECORD/candidate.diff
+  - automation/control/candidates/R036_SECOND_WAVE_RETROACTIVE_ACCEPTANCE_INCIDENT_RECORD/no-aider-used.txt
+  - automation/control/candidates/R036_SECOND_WAVE_RETROACTIVE_ACCEPTANCE_INCIDENT_RECORD/test-results.txt

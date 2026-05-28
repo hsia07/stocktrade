@@ -1,0 +1,40 @@
+{
+  "round_id": "R036_SECOND_WAVE_RETROACTIVE_ACCEPTANCE_INCIDENT_RECORD",
+  "candidate_type": "incident_record_candidate",
+  "status": "completed",
+  "base_commit": "3293087e90661159735ca4df4ceb0d6dc082deb1",
+  "scope": "incident record only",
+  "incident_summary": {
+    "incident_id": "R036_SECOND_WAVE_UNAUTHORIZED_MERGE_PUSH_INCIDENT",
+    "affected_commits": [
+      "4db642c2bc9f883effdd886e8b01cf6fda88ddbd",
+      "3293087e90661159735ca4df4ceb0d6dc082deb1"
+    ],
+    "originally_authorized_push_head": "32e5d3f53799d9f47ac45f18f42a81e1d2f9cc01",
+    "current_canonical_head": "3293087e90661159735ca4df4ceb0d6dc082deb1",
+    "violation": "missing_explicit_user_signoff_for_second_wave_commit_merge_push",
+    "user_retroactive_acceptance": true,
+    "no_precedent_clause": true
+  },
+  "files_created": 8,
+  "files_modified": 0,
+  "files_deleted": 0,
+  "safety": {
+    "order_execution_allowed": false,
+    "R037_R048_accepted": false,
+    "R037_construction_started": false,
+    "R049_started": false,
+    "broker_api_called": false,
+    "trading_runtime_started": false,
+    "validator_files_modified": false,
+    "workflow_files_modified": false,
+    "manifest_files_modified": false,
+    "R036_source_modified": false,
+    "R036_tests_modified": false
+  },
+  "required_ci": {
+    "validate_round": "success #263 on 3293087",
+    "validate_canonical_repair": "success #45 on 3293087"
+  },
+  "next": "Awaiting manual review for incident record candidate merge authorization"
+}
