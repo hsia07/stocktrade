@@ -1,0 +1,25 @@
+=== R038 SCOPE SPLIT GOVERNANCE PLAN CANDIDATE ===
+
+round_id: R038
+task_type: scope_split_governance_plan_candidate
+formal_status_code: candidate_ready_awaiting_manual_review
+base_head: bbd1f14295f185cc06f69087f201aa6f4bad3610
+candidate_branch: candidate/r038-scope-split-governance-plan
+official_topic: 策略 CI/CD 驗證鏈
+plan_type: scope_split_governance_plan
+internal_subtasks: R038a-R038g
+internal_subtask_only: TRUE
+
+Governance plan created at:
+automation/control/governance/r038-scope-split-governance-plan.json
+
+Evidence package at:
+automation/control/candidates/R038_SCOPE_SPLIT_GOVERNANCE_PLAN/
+
+No functional construction performed.
+R038 remains NOT completed.
+next_round_to_dispatch remains R038.
+order_execution_allowed remains FALSE.
+
+blockers: none
+recommendation: AWAITING_MANUAL_REVIEW_FOR_R038_SCOPE_SPLIT_GOVERNANCE_PLAN_CANDIDATE

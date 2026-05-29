@@ -1,0 +1,7 @@
+task_type: scope_split_governance_plan_candidate
+round_id: R038
+official_topic: 策略 CI/CD 驗證鏈
+plan_type: scope_split_governance_plan
+internal_subtasks: R038a-R038g
+internal_subtask_only: TRUE
+source_construction_performed_now: FALSE
