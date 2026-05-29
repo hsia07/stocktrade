@@ -1,0 +1,12 @@
+TEST RESULTS
+=============
+validate_canonical_repair_evidence: PASS
+test_cicd_verification_chain: PASS (9/9)
+test_auto_regression_check: PASS (18/18)
+test_fixed_test_dataset: PASS (17/17)
+test_validate_canonical_repair_evidence: PASS (33/33)
+test_verification_framework: PASS (11/11)
+test_governance_authorization_gate: PASS (27/27)
+test_check_required_evidence_ui_gate: PASS (23/23)
+Total: 138 tests passed, 0 failed
+Note: cp950 warnings are non-blocking encoding warnings on Windows platform, do not affect pass/fail status.
