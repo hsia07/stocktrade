@@ -1,0 +1,16 @@
+{
+  "round_id": "R038A_MARKET_REALITY_TRACE_REPLAY_GAP_REWORK_CANDIDATE",
+  "task_type": "r038a_market_reality_trace_replay_gap_rework_candidate",
+  "status": "candidate_pass",
+  "rework_summary": "Fixed 6 enforcement gaps: TaiwanRealityContract enforced, order/fill/pnl refs enforced, as-of subfields enforced, session enum enforced, cost/slippage validated, all fail-closed reason codes tested",
+  "tests_before_rework": 30,
+  "tests_after_rework": 69,
+  "negative_fail_closed_tests_after": 43,
+  "evidence_consistency_fix_applied": true,
+  "evidence_consistency_fix_note": "candidate.diff regenerated; stale hash 47f35c8 removed; self-reference policy enforced",
+  "all_pass": true,
+  "canonical_branch": "work/canonical-mainline-repair-001",
+  "canonical_head": "4a9320365aa7c9d8ccfc8b7afddd354bb4dfc77a",
+  "test_count": 69,
+  "tests_passed": 69
+}

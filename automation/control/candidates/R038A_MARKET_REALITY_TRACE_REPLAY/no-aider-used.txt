@@ -1,0 +1,2 @@
+NO_AIDER_USED
+This candidate was created manually without aider.
