@@ -1,0 +1,27 @@
+{
+  "schema_version": "1.0",
+  "round_id": "R038",
+  "official_topic": "\u7b56\u7565 CI/CD \u9a57\u8b49\u93c8",
+  "task_type": "scope_split_governance_plan_candidate",
+  "candidate_head_self_reference_policy": "not_stored_inside_same_commit",
+  "candidate_head": null,
+  "base_head": "bbd1f14295f185cc06f69087f201aa6f4bad3610",
+  "plan_type": "scope_split_governance_plan",
+  "source_construction_performed_now": false,
+  "tests_run": 0,
+  "tests_passed": 0,
+  "summary": "Governance plan only. No functional construction performed. R038 scope split into 7 internal subtasks (R038a-R038g) with shared acceptance gates, direct FAIL conditions, and final close gate defined.",
+  "validation_commands": [
+    "python scripts/validation/validate_canonical_repair_evidence.py --candidate-dir automation/control/candidates/R038_SCOPE_SPLIT_GOVERNANCE_PLAN",
+    "python -m pytest tests/test_cicd_verification_chain.py -q --tb=short",
+    "python -m pytest tests/test_auto_regression_check.py -q --tb=short",
+    "python -m pytest tests/test_fixed_test_dataset.py -q --tb=short",
+    "python -m pytest tests/test_validate_canonical_repair_evidence.py -q --tb=short",
+    "python -m pytest tests/test_verification_framework.py -q --tb=short",
+    "python -m pytest tests/test_governance_authorization_gate.py -q --tb=short",
+    "python -m pytest tests/test_check_required_evidence_ui_gate.py -q --tb=short"
+  ],
+  "validation_results": {},
+  "evidence_package_complete": true,
+  "law_compliance": "04"
+}

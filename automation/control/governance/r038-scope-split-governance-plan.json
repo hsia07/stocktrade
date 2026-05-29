@@ -1,0 +1,213 @@
+{
+  "schema_version": "1.0",
+  "governance_plan_id": "R038_SCOPE_SPLIT_GOVERNANCE_PLAN",
+  "round_id": "R038",
+  "official_topic": "\u7b56\u7565 CI/CD \u9a57\u8b49\u93c8",
+  "plan_type": "scope_split_governance_plan",
+  "created_at": "2026-05-29T07:06:00Z",
+  "created_by": "opencode-agent",
+
+  "status": {
+    "R038_completed": false,
+    "R038_full_construction_started": false,
+    "manifest_update_required": false,
+    "next_round_to_dispatch_must_remain": "R038",
+    "R038_R048_accepted": false,
+    "R049_started": false,
+    "order_execution_allowed": false
+  },
+
+  "scope_split_rationale": "R038 official topic '\u7b56\u7565 CI/CD \u9a57\u8b49\u93c8' encompasses an entire strategy verification pipeline spanning backtest, replay, 10-level validation, market reality modeling, lifecycle management, NEA/confidence calibration, and metrics. The full scope is too large for a single candidate. It is split into 7 internal subtasks (R038a\u2013R038g), each with focused deliverable and acceptance gate.",
+
+  "internal_subtasks": {
+    "R038a": {
+      "internal_subtask_only": true,
+      "name": "Market Reality integration contract + decision trace replay",
+      "requirements": [
+        "decision trace replay contract",
+        "Market Reality snapshot contract",
+        "net-of-cost PnL compatibility",
+        "Taiwan cost / slippage / liquidity / fill probability / partial fill compatibility",
+        "Risk Gate veto replay hook",
+        "no live / broker / order"
+      ]
+    },
+    "R038b": {
+      "internal_subtask_only": true,
+      "name": "L0-L4 validation chain",
+      "requirements": [
+        "L0 Backtest",
+        "L1 Walk-Forward",
+        "L2 Monte Carlo / permutation",
+        "L3 Block Bootstrap",
+        "L4 Bonferroni / multiple testing correction",
+        "evidence output contract"
+      ]
+    },
+    "R038c": {
+      "internal_subtask_only": true,
+      "name": "L5-L9 validation chain",
+      "requirements": [
+        "L5 Walk-Forward OOS",
+        "L6 Regime segmentation",
+        "L7 Combinatorial Purged CV",
+        "L8 Probabilistic Sharpe / Reality Check / SPA",
+        "L9 Paper trading 6\u201312 months + pre-live stress",
+        "explicit prohibition: L0 backtest alone is NOT live readiness"
+      ]
+    },
+    "R038d": {
+      "internal_subtask_only": true,
+      "name": "Strategy lifecycle automation",
+      "requirements": [
+        "new strategy default research_only",
+        "auto validation max shadow / paper",
+        "paper\u2192live_small, live_small\u2192live_normal, capital increase require human approval",
+        "strategy TTL",
+        "rolling health check",
+        "decay detection",
+        "paper/live drift",
+        "regime validity",
+        "auto downgrade / disable / quarantine"
+      ]
+    },
+    "R038e": {
+      "internal_subtask_only": true,
+      "name": "Metrics contract + CI evidence artifact pipeline",
+      "requirements": [
+        "net-of-cost PnL",
+        "max drawdown",
+        "Sharpe / Sortino / Calmar",
+        "win rate",
+        "payoff ratio",
+        "trade count",
+        "turnover",
+        "exposure",
+        "liquidity / slippage / fill metrics",
+        "VaR / CVaR",
+        "skew / kurtosis",
+        "drawdown depth / duration",
+        "regime breakdown",
+        "paper/live drift",
+        "statistical sufficiency",
+        "CI evidence artifact schema"
+      ]
+    },
+    "R038f": {
+      "internal_subtask_only": true,
+      "name": "NEA / confidence calibration integration",
+      "requirements": [
+        "NEA deterministic scoring contract",
+        "net_edge = p_hat * W_hat - (1-p_hat) * L_hat - C - S - B - T - R - U",
+        "raw confidence must not directly amplify position size",
+        "calibration curve",
+        "Brier score",
+        "calibration version",
+        "sample period",
+        "confidence calibration evidence",
+        "deterministic position sizing / allocation hook"
+      ]
+    },
+    "R038g": {
+      "internal_subtask_only": true,
+      "name": "Negative / fail-closed testing suite",
+      "requirements": [
+        "corrupted state",
+        "rejected fill",
+        "partial fill",
+        "unfilled",
+        "timeout cancel",
+        "stale data",
+        "regime mismatch",
+        "veto override attempt",
+        "confidence floor violation",
+        "sizing cap hit",
+        "cost / slippage / liquidity failure",
+        "order_execution_allowed must remain FALSE",
+        "broker/live/runtime pollution negative tests"
+      ]
+    }
+  },
+
+  "internal_subtask_only": true,
+  "subtasks_are_not_formal_rounds": "R038a\u2013R038g are internal R038 subtask labels only. They are NOT formal main rounds. They do NOT modify the 161-round official topic table. They do NOT advance next_round_to_dispatch. Any instruction treating R038a\u2013R038g as R039/R040 replacements is a direct FAIL.",
+
+  "shared_acceptance_gates": [
+    "source reality audit: no stub / TODO / pass-only",
+    "tests reality audit: positive + negative + boundary tests",
+    "fail-closed behavior verified",
+    "evidence package 7/7 complete",
+    "candidate.diff UTF-8 without BOM",
+    "no source/test fake pass",
+    "no manifest round advancement",
+    "no R039-R048 acceptance",
+    "no R049",
+    "no broker/live/order/runtime",
+    "order_execution_allowed FALSE",
+    "manual review before merge",
+    "user signoff before merge",
+    "user signoff before push",
+    "CI green before next subtask"
+  ],
+
+  "direct_FAIL_conditions": [
+    "source is stub / TODO / pass-only",
+    "tests only cover happy path",
+    "tests do not import source",
+    "no negative/fail-closed tests",
+    "cannot replay decision through pipeline",
+    "no order/fill/pnl schema",
+    "Risk Gate only live, backtest/replay cannot verify veto",
+    "ignores costs / slippage / liquidity / partial fill",
+    "applies US/crypto assumptions to Taiwan market",
+    "TradingView-only acceptance",
+    "gross PnL only (no net-of-cost)",
+    "raw confidence directly amplifies position size",
+    "strategy upgrades itself to live/capital without human approval",
+    "broker/live/order/server_v2/index_v2 runtime pollution",
+    "order_execution_allowed is not FALSE",
+    "R038 marked completed",
+    "manifest next_round_to_dispatch changed to R039",
+    "R039-R048 accepted",
+    "R049 started"
+  ],
+
+  "R038_final_close_gate": {
+    "description": "R038 can only be considered for final close after all R038a\u2013R038g are completed, each with manual review PASS, merge/push/CI green, and a dedicated R038 final close audit. Until then: R038_completed=FALSE, next_round_to_dispatch=R038, R039-R048 accepted=FALSE, R049 started=FALSE.",
+    "prerequisites": [
+      "R038a completed + manual review PASS + CI green",
+      "R038b completed + manual review PASS + CI green",
+      "R038c completed + manual review PASS + CI green",
+      "R038d completed + manual review PASS + CI green",
+      "R038e completed + manual review PASS + CI green",
+      "R038f completed + manual review PASS + CI green",
+      "R038g completed + manual review PASS + CI green",
+      "R038 final close audit",
+      "user signoff for manifest update"
+    ]
+  },
+
+  "backtest_replay_market_reality_requirements_included": true,
+  "L0_L9_requirements_included": true,
+  "strategy_lifecycle_requirements_included": true,
+  "metrics_contract_requirements_included": true,
+  "NEA_confidence_requirements_included": true,
+  "negative_fail_closed_requirements_included": true,
+
+  "construction_audit": {
+    "source_construction_performed_now": false,
+    "source_files_modified": false,
+    "tests_modified": false,
+    "manifest_modified": false,
+    "validator_files_modified": false,
+    "workflow_files_modified": false,
+    "R038_completed": false,
+    "R038_full_construction_started": false,
+    "R038_R048_accepted": false,
+    "R049_started": false,
+    "broker_api_called": false,
+    "trading_runtime_started": false,
+    "order_execution_allowed": false,
+    "law_compliance": "04"
+  }
+}
