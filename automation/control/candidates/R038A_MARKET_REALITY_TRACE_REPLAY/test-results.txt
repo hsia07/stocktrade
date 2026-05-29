@@ -1,0 +1,11 @@
+R038a tests: 69/69 PASS
+All enforcement gaps closed:
+- TaiwanRealityContract enforced: 7 tests added
+- Order/fill/pnl refs enforced: 8 tests added
+- As-of subfields enforced: 7 tests added (3 missing + 3 monotonic + 1 decision_ts)
+- Session enum enforced: 5 tests added (1 invalid + 2 zero + 2 negative)
+- All 7 previously missing fail-closed rules: 7 tests added
+- 30 original tests preserved and passing
+
+Required suites: 138/138 PASS
+Evidence validator: PASS

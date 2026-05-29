@@ -1,0 +1,94 @@
+round_id: R038A_MARKET_REALITY_TRACE_REPLAY_GAP_REWORK_CANDIDATE
+formal_status_code: CANDIDATE_READY_AWAITING_MANUAL_REVIEW
+base_head: 4a9320365aa7c9d8ccfc8b7afddd354bb4dfc77a
+candidate_branch: candidate/r038a-market-reality-trace-replay
+
+R038A_MARKET_REALITY_TRACE_REPLAY_GAP_REWORK_CANDIDATE
+============================================================
+candidate_head_self_reference_policy: not_stored_inside_same_commit
+candidate_head_reason: git commit hash changes when evidence files are amended
+candidate_head_available_in_external_git_log: true
+pre_initial_candidate_head: 0d5cbc93e3f18c462acd0b4cb9d67504408b85a0
+pre_gap_rework_candidate_head: d2546648fd02c35a7a7c8e30dba821934036cc06
+stale_evidence_hash_marked_obsolete: 47f35c8a9539ea5f30dd4c17c0067f5c35c3219f
+
+Note: current candidate HEAD is NOT stored in committed evidence files.
+It must be obtained externally via: git rev-parse candidate/r038a-market-reality-trace-replay
+
+Rework performed:
+- TaiwanRealityContract: added to DecisionTraceReplayInput, enforced in validate_and_replay
+  (fee_rate/tax_rate/minimum_fee non-negative, minimum_fee_aware must be True,
+   halt_disposition_attention/liquidity_insufficiency fail-closed)
+- order_ref/fill_ref/pnl_ref: fill_ref status-based enforcement (rejected, unfilled,
+  timeout_cancel, cancel_pending, partial without safe policy)
+- as_of_source_ts/as_of_publish_ts/as_of_ingest_ts: all checked in check_as_of_contract,
+  monotonic order enforced (source <= publish <= ingest <= tradable <= decision)
+- market_session_state: validated against ALLOWED_MARKET_SESSION_STATES
+- expected_cost/expected_slippage: non-negative validation
+- expected_net_rr: must be positive (>0)
+- All 7 previously missing fail-closed rules now have tests
+- Added 39 new tests (total from 30 to 69)
+- All existing tests preserved and passing
+
+Evidence consistency fix applied:
+- candidate.diff regenerated from base..HEAD (includes all gap rework enforcement)
+- evidence.json updated with self-reference policy metadata
+- Stale hash 47f35c8 removed from committed evidence
+- Source enforcement unchanged (source/tests not modified by this fix)
+
+Verification:
+- R038a tests: 69/69 PASS
+- Required suites: 138/138 PASS
+- Evidence validator: PASS
+- candidate.diff: UTF-8 without BOM, contains all gap rework enforcement
+- No manifest/validator/workflow/law/server/index modifications
+
+pre_initial_candidate_head: 0d5cbc93e3f18c462acd0b4cb9d67504408b85a0
+pre_gap_rework_candidate_head: d2546648fd02c35a7a7c8e30dba821934036cc06
+candidate_commit_count_since_base: 1
+git_clean_before_true_or_false: True
+TaiwanRealityContract_enforced_true_or_false: True
+order_fill_pnl_refs_enforced_true_or_false: True
+as_of_subfields_enforced_true_or_false: True
+session_enum_enforced_true_or_false: True
+expected_cost_slippage_validated_true_or_false: True
+all_fail_closed_reason_codes_tested_true_or_false: True
+r038a_total_test_count_after: 69
+negative_fail_closed_tests_count_after: 43
+tests_import_real_source_true_or_false: True
+CICDVerificationChain_R038a_integration_true_or_false: True
+CICDIntegration_dead_code_true_or_false: False
+no_broker_live_order_runtime_pollution_true_or_false: True
+order_execution_allowed_enforced_false_true_or_false: True
+evidence_package_complete_true_or_false: True
+candidate_diff_matches_current_content_true_or_false: True
+candidate_diff_contains_gap_rework_enforcement_true_or_false: True
+source_files_modified_true_or_false: True
+R038a_source_modified_true_or_false: True
+R038b_R038g_modified_true_or_false: False
+manifest_files_modified_true_or_false: False
+validator_files_modified_true_or_false: False
+workflow_files_modified_true_or_false: False
+law_files_modified_true_or_false: False
+server_v2_modified_true_or_false: False
+index_v2_modified_true_or_false: False
+R038_completed_true_or_false: False
+R038_full_construction_started_true_or_false: False
+R038_R048_accepted_true_or_false: False
+R049_started_true_or_false: False
+broker_api_called_true_or_false: False
+trading_runtime_started_true_or_false: False
+order_execution_allowed_true_or_false: False
+
+Status: AWAITING_MANUAL_REVIEW_FOR_REWORKED_CANDIDATE
+
+recommended_next_action: AWAITING_MANUAL_REVIEW_FOR_R038A_MARKET_REALITY_TRACE_REPLAY_REWORKED_CANDIDATE
+
+final_recommendation:
+- DO_NOT_START_R049
+- DO_NOT_ACCEPT_R038_R048_YET
+- DO_NOT_MARK_R038_COMPLETED
+- DO_NOT_START_R038B_WITHOUT_USER_AUTHORIZATION
+- DO_NOT_MERGE_WITHOUT_USER_SIGNOFF
+- R038A_ONLY_NEXT
+- ORDER_EXECUTION_ALLOWED_REMAINS_FALSE
