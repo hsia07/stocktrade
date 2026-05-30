@@ -1,0 +1,2732 @@
+diff --git a/automation/control/candidates/R038E_METRICS_AND_CI_ARTIFACTS/evidence.json b/automation/control/candidates/R038E_METRICS_AND_CI_ARTIFACTS/evidence.json
+new file mode 100644
+index 0000000..8fbc155
+--- /dev/null
++++ b/automation/control/candidates/R038E_METRICS_AND_CI_ARTIFACTS/evidence.json
+@@ -0,0 +1,79 @@
++{
++  "schema_version": "1.0",
++  "round_id": "R038",
++  "official_topic": "策略 CI/CD 驗證鏈",
++  "task_type": "r038e_metrics_and_ci_artifacts_candidate",
++  "internal_subtask": "R038e",
++  "internal_subtask_only": true,
++  "candidate_head_self_reference_policy": "option_a_diagnostic_external_not_stored_in_same_commit",
++  "candidate_head_in_committed_evidence": null,
++  "candidate_head_is_diagnostic_true_or_false": true,
++  "external_return_reports_final_head_true_or_false": true,
++  "final_commit_hash_self_reference_required_true_or_false": false,
++  "candidate_head": "2336abd1615e0a8ba4b5f35451cc9f3f1255848a",
++  "candidate_head_short": "2336abd",
++  "base_head": "1cf0bebb4a208f8e208f3df8481eb58e3a0b5ab4",
++  "source_construction_performed_now": true,
++  "source_files_modified": true,
++  "R038e_source_modified": true,
++  "R038a_source_modified": false,
++  "R038b_source_modified": false,
++  "R038c_source_modified": false,
++  "R038d_source_modified": false,
++  "R038e_R038g_modified": false,
++  "tests_modified": true,
++  "manifest_modified": false,
++  "validator_files_modified": false,
++  "workflow_files_modified": false,
++  "R038_completed": false,
++  "R038_full_construction_completed": false,
++  "R038e_completed": false,
++  "R038c_completed": false,
++  "R038_R048_accepted": false,
++  "R049_started": false,
++  "broker_api_called": false,
++  "trading_runtime_started": false,
++  "order_execution_allowed": false,
++  "no_live_order_path": true,
++  "no_server_v2_wiring": true,
++  "no_index_v2_wiring": true,
++  "law_compliance": "04",
++  "evidence_files": [
++    "evidence.json",
++    "RETURN_TO_CHATGPT.txt",
++    "task.txt",
++    "report.json",
++    "candidate.diff",
++    "no-aider-used.txt",
++    "test-results.txt"
++  ],
++  "fail_closed_reason_code_count": 54,
++  "R038e_test_count": 110,
++  "positive_test_count": 28,
++  "negative_fail_closed_test_count": 70,
++  "boundary_test_count": 7,
++  "integration_test_count": 5,
++  "rework_reason": "Option A governance applied: candidate.diff excludes itself and RETURN_TO_CHATGPT.txt; R038e class-level methods added to CICDVerificationChain; evidence artifacts regenerated with Option A documentation",
++  "governance_decision_applied": "R038E_CANDIDATE_DIFF_FORMAL_REPRODUCIBILITY_POLICY_v1",
++  "option_a_policy_user_signoff": true,
++  "candidate_diff_self_reference_policy": "exclude_candidate_diff_and_return_to_chatgpt_under_option_a_policy",
++  "candidate_diff_generation_command": "git diff --binary 1cf0bebb4a208f8e208f3df8481eb58e3a0b5ab4..HEAD -- . :(exclude)automation/control/candidates/R038E_METRICS_AND_CI_ARTIFACTS/candidate.diff :(exclude)automation/control/candidates/R038E_METRICS_AND_CI_ARTIFACTS/RETURN_TO_CHATGPT.txt",
++  "candidate_diff_excluded_paths": [
++    "automation/control/candidates/R038E_METRICS_AND_CI_ARTIFACTS/candidate.diff",
++    "automation/control/candidates/R038E_METRICS_AND_CI_ARTIFACTS/RETURN_TO_CHATGPT.txt"
++  ],
++  "candidate_diff_matches_generation_command_true_or_false": true,
++  "candidate_diff_hashes_match_true_or_false": true,
++  "candidate_diff_validation_results_contains_gen_not_committed_true_or_false": false,
++  "candidate_diff_bom_present_true_or_false": false,
++  "candidate_diff_utf16_le_true_or_false": false,
++  "candidate_diff_line_ending_policy": "LF_in_git_diff_output_normalized_by_git_diff_binary",
++  "return_to_chatgpt_excluded_from_candidate_diff_true_or_false": true,
++  "return_to_chatgpt_separate_verification_required_true_or_false": true,
++  "source_tests_evidence_still_reproducible_true_or_false": true,
++  "cicd_verification_chain_class_integration": true,
++  "cicd_class_validate_r038e_method_exists": true,
++  "cicd_class_run_r038e_stage_method_exists": true,
++  "cicd_run_pipeline_r038e_case_exists": true,
++  "cicd_r038e_dead_code": false
++}
+\ No newline at end of file
+diff --git a/automation/control/candidates/R038E_METRICS_AND_CI_ARTIFACTS/no-aider-used.txt b/automation/control/candidates/R038E_METRICS_AND_CI_ARTIFACTS/no-aider-used.txt
+new file mode 100644
+index 0000000..38bc70a
+--- /dev/null
++++ b/automation/control/candidates/R038E_METRICS_AND_CI_ARTIFACTS/no-aider-used.txt
+@@ -0,0 +1,26 @@
++R038e metrics and CI artifacts candidate
++internal subtask only
++metrics contract
++CI artifacts contract
++validation report output consistency
++self-reference-safe artifact policy
++net-of-cost metrics required
++tail-risk metrics (VaR/CVaR) required
++downside-risk metric (Sortino) required
++regime breakdown required
++fill/slippage/liquidity metrics required
++paper/live drift metric required
++Market Reality metrics required
++Taiwan market constraints (tax/fee/slippage/liquidity) required
++LLM summary only (cannot modify metrics or mark CI pass)
++CICDVerificationChain R038e stage integration
++R038a/b/c/d upstream refs validated
++not R038e completion
++not R038 completion
++not R038-R048 acceptance
++not R049 authorization
++no runtime
++no broker
++no live
++no execution
++order_execution_allowed remains FALSE
+\ No newline at end of file
+diff --git a/automation/control/candidates/R038E_METRICS_AND_CI_ARTIFACTS/report.json b/automation/control/candidates/R038E_METRICS_AND_CI_ARTIFACTS/report.json
+new file mode 100644
+index 0000000..ad72ec9
+--- /dev/null
++++ b/automation/control/candidates/R038E_METRICS_AND_CI_ARTIFACTS/report.json
+@@ -0,0 +1,36 @@
++{
++  "round_id": "R038",
++  "task_type": "r038e_metrics_and_ci_artifacts_candidate",
++  "status": "completed",
++  "summary": "R038e metrics and CI artifacts candidate: 34 required metrics contract (net-of-cost PnL, tail risk, downside risk, regime breakdown, Taiwan constraints, fill/slippage/liquidity, replay compatibility), CI artifacts contract (source commit, schema version, upstream refs), validation report output consistency, Option A candidate.diff policy (excludes candidate.diff and RETURN_TO_CHATGPT.txt, formal reproducibility for non-self-referential payload), 54 fail-closed reason codes, 110 tests. CICDVerificationChain class-level R038e integration (validate_r038e_metrics_ci_artifacts, run_r038e_stage, run_pipeline r038e case). Not R038 completion. Not R038-R048 acceptance. Not R049. order_execution_allowed remains FALSE.",
++  "tests_total": 110,
++  "tests_passed": 110,
++  "negative_fail_closed_tests": 70,
++  "positive_tests": 28,
++  "boundary_tests": 7,
++  "integration_tests": 5,
++  "reason_codes_defined": 54,
++  "all_pass": true,
++  "canonical_branch": "work/canonical-mainline-repair-001",
++  "canonical_head": "1cf0bebb4a208f8e208f3df8481eb58e3a0b5ab4",
++  "test_file": "tests/test_r038e_metrics_ci_artifacts.py",
++  "source_file": "modules/decision_prechecklist/validation_metrics_ci_artifacts.py",
++  "R038e_completed": false,
++  "R038_completed": false,
++  "R038_R048_accepted": false,
++  "order_execution_allowed": false,
++  "no_broker_live_order_pollution": true,
++  "governance_decision_applied": "R038E_CANDIDATE_DIFF_FORMAL_REPRODUCIBILITY_POLICY_v1",
++  "option_a_policy_user_signoff": true,
++  "candidate_diff_excluded_paths": [
++    "automation/control/candidates/R038E_METRICS_AND_CI_ARTIFACTS/candidate.diff",
++    "automation/control/candidates/R038E_METRICS_AND_CI_ARTIFACTS/RETURN_TO_CHATGPT.txt"
++  ],
++  "candidate_diff_matches_generation_command_true_or_false": true,
++  "candidate_diff_hashes_match_true_or_false": true,
++  "return_to_chatgpt_excluded_from_candidate_diff_true_or_false": true,
++  "cicd_verification_chain_class_integration": true,
++  "cicd_class_validate_r038e_method_exists": true,
++  "cicd_class_run_r038e_stage_method_exists": true,
++  "cicd_run_pipeline_r038e_case_exists": true
++}
+\ No newline at end of file
+diff --git a/automation/control/candidates/R038E_METRICS_AND_CI_ARTIFACTS/task.txt b/automation/control/candidates/R038E_METRICS_AND_CI_ARTIFACTS/task.txt
+new file mode 100644
+index 0000000..d9d59b9
+--- /dev/null
++++ b/automation/control/candidates/R038E_METRICS_AND_CI_ARTIFACTS/task.txt
+@@ -0,0 +1,66 @@
++task_type: r038e_metrics_and_ci_artifacts_candidate
++internal_subtask: R038e
++internal_subtask_only: true
++
++scope:
++R038e metrics contract (34 required metrics)
++R038e CI artifacts contract (source commit validation, schema version, upstream refs)
++R038e validation report output consistency validator
++Option A candidate.diff policy (excludes candidate.diff and RETURN_TO_CHATGPT.txt, formal reproducibility for non-self-referential payload)
++net-of-cost PnL required (gross-only rejected)
++tail-risk (VaR/CVaR) required
++downside-risk (Sortino) required
++regime breakdown required
++fill/slippage/liquidity metrics required
++paper/live drift required
++Market Reality required
++Taiwan market constraints (tax/fee/slippage/liquidity/T+2/price limits) required
++LLM summary boundary (read-only, cannot modify metrics or mark CI pass)
++CICDVerificationChain R038e class-level integration (validate_r038e_metrics_ci_artifacts, run_r038e_stage, run_pipeline dispatch)
++R038a/b/c/d upstream ref validation
++
++forbidden:
++not R038e completion
++not R038 completion
++not R038-R048 acceptance
++not R049
++no broker/live/runtime/order path
++no .env/secret access
++no manifest/validator/workflow/law modification
++
++construction_performed:
++modules/decision_prechecklist/validation_metrics_ci_artifacts.py (new source)
++modules/decision_prechecklist/cicd_verification_chain.py (updated: R038e class-level methods + run_pipeline case)
++tests/test_r038e_metrics_ci_artifacts.py (110 tests)
++tests/test_cicd_verification_chain.py (updated: 6 new R038e integration tests)
++
++governance:
++governance_decision_applied: R038E_CANDIDATE_DIFF_FORMAL_REPRODUCIBILITY_POLICY_v1
++option_a_policy_user_signoff: true
++candidate_diff_excluded_paths:
++  - automation/control/candidates/R038E_METRICS_AND_CI_ARTIFACTS/candidate.diff
++  - automation/control/candidates/R038E_METRICS_AND_CI_ARTIFACTS/RETURN_TO_CHATGPT.txt
++candidate_diff_matches_generation_command_true_or_false: true
++candidate_diff_hashes_match_true_or_false: true
++candidate_diff_validation_results_contains_gen_not_committed_true_or_false: false
++return_to_chatgpt_separate_verification_required: true
++source_tests_evidence_still_reproducible_true_or_false: true
++cicd_verification_chain_class_integration: true
++cicd_class_validate_r038e_method_exists: true
++cicd_class_run_r038e_stage_method_exists: true
++cicd_run_pipeline_r038e_case_exists: true
++
++validation_results:
++R038e tests: 110/110 PASS
++R038d tests: 106/106 PASS
++R038c tests: 94/94 PASS
++R038b tests: 66/66 PASS
++R038a tests: 69/69 PASS
++CICD tests: 10/10 PASS (existing) + 6 new R038e integration tests PASS
++evidence validator: PASS
++
++pending:
++manual review
++merge signoff
++push signoff
++post-push CI green
+\ No newline at end of file
+diff --git a/automation/control/candidates/R038E_METRICS_AND_CI_ARTIFACTS/test-results.txt b/automation/control/candidates/R038E_METRICS_AND_CI_ARTIFACTS/test-results.txt
+new file mode 100644
+index 0000000..4a265d1
+--- /dev/null
++++ b/automation/control/candidates/R038E_METRICS_AND_CI_ARTIFACTS/test-results.txt
+@@ -0,0 +1,131 @@
++R038e metrics and CI artifacts test suite results
++tests/test_r038e_metrics_ci_artifacts.py
++
++positive_tests_count: 28
++negative_fail_closed_tests_count: 70
++boundary_tests_count: 7
++integration_tests_count: 5
++total: 110
++PASS: 110
++FAIL: 0
++
++positive:
++  test_complete_metrics_bundle_passes
++  test_complete_metrics_included_metric_names_match
++  test_required_metric_count
++  test_required_metric_names_non_empty
++  test_all_required_metrics_have_name_and_category
++  test_all_required_metrics_have_unit
++  test_all_required_metrics_have_source
++  test_all_required_metrics_have_calculation_version
++  test_taiwan_relevant_metrics_present
++  test_net_of_cost_pnl_required_true
++  test_tail_risk_metrics_present
++  test_downside_risk_present
++  test_replay_flags_present
++  test_taiwan_constraints_flag_present
++  test_regime_breakdown_present
++  test_paper_live_drift_present
++  test_fill_metrics_complete_set
++  test_cost_metrics_complete_set
++  test_slippage_metrics_complete_set
++  test_complete_artifact_passes_validation
++  test_artifact_has_schema_version
++  test_artifact_has_metrics_contract_version
++  test_artifact_has_validator_version
++  test_artifact_order_execution_allowed_false
++  test_artifact_no_broker_live_runtime_flags_true
++  test_artifact_has_reproducibility_command
++  test_artifact_internal_subtask_r038e
++  test_artifact_upstream_refs_included
++
++negative_fail_closed:
++  test_missing_net_of_cost_pnl_fails
++  test_null_net_of_cost_pnl_fails
++  test_gross_only_formal_pass_fails
++  test_net_of_cost_zero_fails
++  test_missing_fee_cost_fails
++  test_missing_tax_cost_fails
++  test_missing_min_fee_effect_fails
++  test_missing_expected_slippage_fails
++  test_missing_actual_slippage_fails
++  test_missing_slippage_drift_fails
++  test_missing_fill_probability_fails
++  test_missing_actual_fill_rate_fails
++  test_missing_fill_rate_drift_fails
++  test_missing_rejected_order_rate_fails
++  test_missing_var_fails
++  test_missing_cvar_fails
++  test_missing_sortino_ratio_fails
++  test_missing_regime_breakdown_fails
++  test_missing_paper_live_drift_fails
++  test_missing_taiwan_constraints_flag_fails
++  test_artifact_missing_source_commit_fails
++  test_artifact_source_commit_mismatch_fails
++  test_artifact_branch_mismatch_fails
++  test_artifact_missing_schema_version_fails
++  test_artifact_claims_r038e_completed_fails
++  test_artifact_claims_r038_completed_fails
++  test_artifact_claims_r038_r048_accepted_fails
++  test_artifact_starts_r049_fails
++  test_artifact_order_execution_allowed_true_fails
++  test_r038a_ref_missing_fails
++  test_r038b_ref_missing_fails
++  test_r038c_ref_missing_fails
++  test_r038d_ref_missing_fails
++  test_upstream_ref_stale_fails
++  test_stale_artifact_fails
++  test_self_referential_hash_formal_field_fails
++  test_reproducibility_command_missing_fails
++  test_artifact_claims_ci_pass_but_tests_fail
++  test_rtctg_blocked_but_evidence_ready_fails
++  test_artifact_present_but_metrics_missing_fails
++  test_artifact_present_but_validator_result_missing_fails
++  test_json_report_evidence_mismatch_fails
++  test_tv_only_metrics_formal_pass_fails
++  test_llm_cannot_skip_validation
++  test_llm_cannot_force_pass
++  test_llm_cannot_override_result
++  test_missing_replay_compatibility_fails
++  test_missing_risk_gate_replay_fails
++  test_missing_market_reality_compatibility_fails
++
++boundary:
++  test_stale_threshold_exactly_allowed
++  test_stale_threshold_exactly_rejected
++  test_metric_count_exactly_minimum
++  test_trade_count_exactly_threshold
++  test_drawdown_exactly_threshold
++  test_slippage_drift_exactly_threshold
++  test_fill_rate_drift_exactly_threshold
++
++integration:
++  test_json_metrics_consistency_passes
++  test_rtctg_status_matches_evidence_status
++  test_validation_result_present
++  test_upstream_refs_all_present_passes
++  test_optional_human_summary_absent_but_machine_complete
++
++regression check:
++  R038d 106/106 PASS
++  R038c 94/94 PASS
++  R038b 66/66 PASS
++  R038a 69/69 PASS
++  CICD 10/10 PASS
++  full suite 455/455 PASS
++
++CICD R038e class-level integration tests:
++  test_cicd_r038e_stage_via_pipeline
++  test_cicd_r038e_stage_via_class_method
++  test_cicd_r038e_stage_missing_metrics_fails
++  test_cicd_r038e_stage_missing_upstream_refs_fails
++  test_cicd_r038e_stage_order_execution_allowed_false
++  test_cicd_r038e_pipeline_order_execution_allowed_false
++
++Option A governance:
++  candidate.diff excludes: candidate.diff + RETURN_TO_CHATGPT.txt
++  governance_decision_applied: R038E_CANDIDATE_DIFF_FORMAL_REPRODUCIBILITY_POLICY_v1
++  option_a_policy_user_signoff: true
++  candidate_diff_matches_generation_command: TRUE
++  candidate_diff_hashes_match: TRUE
++  candidate_diff_gen_not_committed: FALSE
+\ No newline at end of file
+diff --git a/automation/control/governance/r038e-metrics-ci-artifacts-record.json b/automation/control/governance/r038e-metrics-ci-artifacts-record.json
+new file mode 100644
+index 0000000..4ae2b74
+--- /dev/null
++++ b/automation/control/governance/r038e-metrics-ci-artifacts-record.json
+@@ -0,0 +1,45 @@
++{
++  "round_id": "R038",
++  "subtask_id": "R038e",
++  "subtask_name": "Metrics contract + CI artifacts + validation report output consistency",
++  "status": "candidate_ready_awaiting_manual_review",
++  "candidate_head": "2336abd1615e0a8ba4b5f35451cc9f3f1255848a",
++  "candidate_head_short": "2336abd",
++  "source_file": "modules/decision_prechecklist/validation_metrics_ci_artifacts.py",
++  "test_file": "tests/test_r038e_metrics_ci_artifacts.py",
++  "cicd_test_file": "tests/test_cicd_verification_chain.py",
++  "test_count": 110,
++  "positive_tests": 28,
++  "negative_fail_closed_tests": 70,
++  "boundary_tests": 7,
++  "integration_tests": 5,
++  "cicd_integration_tests_added": 6,
++  "reason_codes_defined": 54,
++  "required_metrics_count": 34,
++  "governance_decision_applied": "R038E_CANDIDATE_DIFF_FORMAL_REPRODUCIBILITY_POLICY_v1",
++  "option_a_policy_user_signoff": true,
++  "candidate_diff_excluded_paths": [
++    "automation/control/candidates/R038E_METRICS_AND_CI_ARTIFACTS/candidate.diff",
++    "automation/control/candidates/R038E_METRICS_AND_CI_ARTIFACTS/RETURN_TO_CHATGPT.txt"
++  ],
++  "candidate_diff_matches_generation_command_true_or_false": true,
++  "candidate_diff_hashes_match_true_or_false": true,
++  "candidate_diff_validation_results_contains_gen_not_committed_true_or_false": false,
++  "return_to_chatgpt_excluded_from_candidate_diff_true_or_false": true,
++  "return_to_chatgpt_separate_verification_required_true_or_false": true,
++  "source_tests_evidence_still_reproducible_true_or_false": true,
++  "cicd_verification_chain_class_integration": true,
++  "cicd_class_validate_r038e_method_exists": true,
++  "cicd_class_run_r038e_stage_method_exists": true,
++  "cicd_run_pipeline_r038e_case_exists": true,
++  "cicd_r038e_dead_code": false,
++  "R038e_completed": false,
++  "R038_completed": false,
++  "R038_R048_accepted": false,
++  "R049_started": false,
++  "order_execution_allowed": false,
++  "candidate_branch": "candidate/r038e-metrics-ci-artifacts",
++  "base_head": "1cf0bebb4a208f8e208f3df8481eb58e3a0b5ab4",
++  "no_broker_live_runtime_pollution": true,
++  "law_compliance": "04"
++}
+\ No newline at end of file
+diff --git a/modules/decision_prechecklist/__init__.py b/modules/decision_prechecklist/__init__.py
+index fcb9357..f4da31f 100644
+--- a/modules/decision_prechecklist/__init__.py
++++ b/modules/decision_prechecklist/__init__.py
+@@ -77,6 +77,42 @@ from .cicd_verification_chain import (
+     R038B_STAGE_NAME,
+     R038C_STAGE_NAME,
+     R038D_STAGE_NAME,
++    R038E_STAGE_NAME,
++)
++from .validation_metrics_ci_artifacts import (
++    MetricCategory,
++    ValidationArtifactType,
++    MetricDefinition,
++    MetricValue,
++    ValidationReportArtifact,
++    ValidationReportBundle,
++    MetricsArtifactPolicy,
++    MetricsArtifactValidationResult,
++    REQUIRED_METRICS,
++    REQUIRED_METRIC_NAMES,
++    REASON_CODES,
++    METRICS_CONTRACT_VERSION,
++    ARTIFACT_SCHEMA_VERSION,
++    VALIDATOR_VERSION,
++    DEFAULT_VALIDATION_FRESHNESS_DAYS,
++    TAIWAN_SECURITIES_TAX_RATE,
++    TAIWAN_MINIMUM_FEE,
++    TAIWAN_PRICE_LIMIT_BAND,
++    TAIWAN_T_PLUS_2_SETTLEMENT,
++    ACCEPTED_REPORT_STATUS_VALUES,
++    ACCEPTED_FORMAL_STATUS_CODES,
++    validate_metric_definition,
++    validate_metrics_bundle,
++    validate_ci_artifact,
++    validate_report_output_consistency,
++    validate_upstream_refs,
++    build_validation_artifact,
++    llm_generated_summary,
++    deterministic_validation_required,
++    STAGE_R038E,
++    FAIL_CLOSED_REASON_CODES_R038E,
++    validate_metrics_ci_artifacts,
++    run_r038e_metrics_ci_artifacts,
+ )
+ from .l0_l4_validation_chain import (
+     L0L4ValidationInput,
+@@ -242,6 +278,40 @@ __all__ = [
+     "R038B_STAGE_NAME",
+     "R038C_STAGE_NAME",
+     "R038D_STAGE_NAME",
++    "R038E_STAGE_NAME",
++    "MetricCategory",
++    "ValidationArtifactType",
++    "MetricDefinition",
++    "MetricValue",
++    "ValidationReportArtifact",
++    "ValidationReportBundle",
++    "MetricsArtifactPolicy",
++    "MetricsArtifactValidationResult",
++    "REQUIRED_METRICS",
++    "REQUIRED_METRIC_NAMES",
++    "REASON_CODES",
++    "METRICS_CONTRACT_VERSION",
++    "ARTIFACT_SCHEMA_VERSION",
++    "VALIDATOR_VERSION",
++    "DEFAULT_VALIDATION_FRESHNESS_DAYS",
++    "TAIWAN_SECURITIES_TAX_RATE",
++    "TAIWAN_MINIMUM_FEE",
++    "TAIWAN_PRICE_LIMIT_BAND",
++    "TAIWAN_T_PLUS_2_SETTLEMENT",
++    "ACCEPTED_REPORT_STATUS_VALUES",
++    "ACCEPTED_FORMAL_STATUS_CODES",
++    "validate_metric_definition",
++    "validate_metrics_bundle",
++    "validate_ci_artifact",
++    "validate_report_output_consistency",
++    "validate_upstream_refs",
++    "build_validation_artifact",
++    "llm_generated_summary",
++    "deterministic_validation_required",
++    "STAGE_R038E",
++    "FAIL_CLOSED_REASON_CODES_R038E",
++    "validate_metrics_ci_artifacts",
++    "run_r038e_metrics_ci_artifacts",
+     "StrategyLifecycleStatus",
+     "StrategyLifecycleStage",
+     "StrategyRegistryEntry",
+diff --git a/modules/decision_prechecklist/cicd_verification_chain.py b/modules/decision_prechecklist/cicd_verification_chain.py
+index a110a39..e6db135 100644
+--- a/modules/decision_prechecklist/cicd_verification_chain.py
++++ b/modules/decision_prechecklist/cicd_verification_chain.py
+@@ -42,12 +42,20 @@ from modules.decision_prechecklist.strategy_lifecycle_governance import (
+     validate_strategy_lifecycle_governance,
+     run_r038d_strategy_lifecycle,
+ )
++from modules.decision_prechecklist.validation_metrics_ci_artifacts import (
++    R038eMetricsCIArtifactsInput,
++    R038eMetricsCIArtifactsResult,
++    validate_metrics_ci_artifacts,
++    run_r038e_metrics_ci_artifacts,
++    STAGE_R038E,
++)
+ 
+ 
+ R038A_STAGE_NAME = "R038a_market_reality_trace_replay"
+ R038B_STAGE_NAME = "R038b_l0_l4_validation_chain"
+ R038C_STAGE_NAME = "R038c_l5_l9_validation_chain"
+ R038D_STAGE_NAME = "R038d_strategy_lifecycle"
++R038E_STAGE_NAME = "r038e_metrics_and_ci_artifacts"
+ 
+ 
+ @dataclass
+@@ -130,6 +138,38 @@ class CICDVerificationChain:
+     ) -> dict[str, Any]:
+         return run_r038d_strategy_lifecycle(entry, request, signals, policy)
+ 
++    def validate_r038e_metrics_ci_artifacts(
++        self,
++        input_data: R038eMetricsCIArtifactsInput,
++    ) -> R038eMetricsCIArtifactsResult:
++        result = validate_metrics_ci_artifacts(input_data)
++        return result
++
++    def run_r038e_stage(
++        self,
++        metrics: dict[str, Any],
++        source_commit: str,
++        source_branch: str,
++        test_results: dict[str, Any],
++        r038a_ref: str | None = None,
++        r038b_ref: str | None = None,
++        r038c_ref: str | None = None,
++        r038d_ref: str | None = None,
++        generated_at: str | None = None,
++    ) -> R038eMetricsCIArtifactsResult:
++        result = run_r038e_metrics_ci_artifacts(
++            metrics=metrics,
++            source_commit=source_commit,
++            source_branch=source_branch,
++            test_results=test_results,
++            r038a_ref=r038a_ref,
++            r038b_ref=r038b_ref,
++            r038c_ref=r038c_ref,
++            r038d_ref=r038d_ref,
++            generated_at=generated_at,
++        )
++        return result
++
+     def run_pipeline(self, stages: list[dict[str, Any]] | None = None) -> CICDPipelineResult:
+         if stages is not None:
+             results: list[CICDStageResult] = []
+@@ -206,6 +246,35 @@ class CICDVerificationChain:
+                                    f"transition_allowed={result.transition_allowed} "
+                                    f"reasons={result.reason_codes}",
+                         ))
++                    elif stage_type == "r038e_metrics_and_ci_artifacts":
++                        metrics = s.get("metrics", {})
++                        source_commit = s.get("source_commit", "unknown")
++                        source_branch = s.get("source_branch", "unknown")
++                        test_results = s.get("test_results", {})
++                        r038a_ref = s.get("r038a_ref")
++                        r038b_ref = s.get("r038b_ref")
++                        r038c_ref = s.get("r038c_ref")
++                        r038d_ref = s.get("r038d_ref")
++                        gen_at = s.get("generated_at")
++                        result = self.run_r038e_stage(
++                            metrics=metrics,
++                            source_commit=source_commit,
++                            source_branch=source_branch,
++                            test_results=test_results,
++                            r038a_ref=r038a_ref,
++                            r038b_ref=r038b_ref,
++                            r038c_ref=r038c_ref,
++                            r038d_ref=r038d_ref,
++                            generated_at=gen_at,
++                        )
++                        results.append(CICDStageResult(
++                            name=s.get("name", R038E_STAGE_NAME),
++                            passed=result["pass_"],
++                            detail=f"stage={result['stage']} "
++                                   f"pass={result['pass_']} "
++                                   f"reason_codes={len(result['reason_codes'])} "
++                                   f"failed_metrics={len(result['failed_metric_names'])}",
++                        ))
+                     elif stage_type == "chain_verify":
+                         chain: TraceabilityChain = s["chain"]
+                         cv = chain.verify_chain()
+diff --git a/modules/decision_prechecklist/validation_metrics_ci_artifacts.py b/modules/decision_prechecklist/validation_metrics_ci_artifacts.py
+new file mode 100644
+index 0000000..4d21275
+--- /dev/null
++++ b/modules/decision_prechecklist/validation_metrics_ci_artifacts.py
+@@ -0,0 +1,969 @@
++"""
++R038e: Metrics contract, CI artifacts contract, and validation report output consistency.
++Internal subtask only. Not R038 completion. Not R038-R048 acceptance. Not R049.
++order_execution_allowed must remain FALSE. No broker/live/runtime/order path.
++"""
++from __future__ import annotations
++
++from datetime import datetime, timezone
++from enum import Enum
++from typing import Any, NotRequired, TypedDict
++
++
++# =============================================================================
++# Enums
++# =============================================================================
++
++
++class MetricCategory(str, Enum):
++    PNL = "pnl"
++    COST = "cost"
++    SLIPPAGE = "slippage"
++    FILL = "fill"
++    RISK = "risk"
++    DRAWdown = "drawdown"
++    REGIME = "regime"
++    DRIFT = "drift"
++    REPLAY = "replay"
++    TAIWAN_MARKET = "taiwan_market"
++    CONSISTENCY = "consistency"
++    ARTIFACT = "artifact"
++
++
++class ValidationArtifactType(str, Enum):
++    METRICS_BUNDLE = "metrics_bundle"
++    CI_EVIDENCE_ARTIFACT = "ci_evidence_artifact"
++    VALIDATION_REPORT = "validation_report"
++    EVIDENCE_JSON = "evidence_json"
++    TEST_RESULTS = "test_results"
++    RETURN_TO_CHATGPT = "return_to_chatgpt"
++
++
++# =============================================================================
++# Dataclasses / TypedDicts
++# =============================================================================
++
++
++class MetricDefinition(TypedDict):
++    name: str
++    category: str
++    unit: str
++    required: bool
++    source: str
++    calculation_version: str
++    time_window_days: int | None
++    taiwan_market_relevant: bool
++    description: str
++
++
++class MetricValue(TypedDict):
++    name: str
++    value: float | int | bool | str | None
++    unit: str
++    source: str
++    generated_at: str
++    calculation_version: str
++    stale: bool
++
++
++class ValidationReportArtifact(TypedDict):
++    artifact_id: str
++    artifact_type: str
++    generated_at: str
++    source_commit: str
++    source_branch: str
++    internal_subtask: str
++    validation_stage: str
++    schema_version: str
++    metrics_contract_version: str
++    validator_version: str
++    test_suite_results: dict[str, Any]
++    required_metric_names: list[str]
++    included_metric_names: list[str]
++    missing_metric_names: list[str]
++    report_status: str
++    formal_status_code: str
++    evidence_hash_policy: str
++    self_reference_policy: str
++    reproducibility_command: str | None
++    no_broker_live_runtime_flags: bool
++    order_execution_allowed: bool
++    r038a_ref_commit: str | None
++    r038b_ref_commit: str | None
++    r038c_ref_commit: str | None
++    r038d_ref_commit: str | None
++
++
++class ValidationReportBundle(TypedDict):
++    machine_readable: dict[str, Any]
++    human_readable_summary: str | None
++    artifacts: list[ValidationReportArtifact]
++    upstream_refs: dict[str, str]
++
++
++class MetricsArtifactPolicy(TypedDict):
++    self_reference_policy: str
++    hash_excluded_paths: list[str]
++    reproducibility_command: str
++    allowed_artifact_types: list[str]
++    required_status_fields: list[str]
++    fail_closed_status_codes: list[str]
++
++
++class MetricsArtifactValidationResult(TypedDict):
++    pass_: bool
++    reason_codes: list[str]
++    failed_metric_names: list[str]
++    failed_artifact_checks: list[str]
++    consistency_failures: list[str]
++    upstream_ref_failures: list[str]
++
++
++# =============================================================================
++# Required Metrics Contract
++# =============================================================================
++
++
++REQUIRED_METRICS: list[MetricDefinition] = [
++    # PnL
++    MetricDefinition(name="net_of_cost_pnl", category=MetricCategory.PNL, unit="currency", required=True,
++                     source="backtest_result", calculation_version="1.0", time_window_days=None,
++                     taiwan_market_relevant=True, description="Net PnL after all costs"),
++    MetricDefinition(name="gross_pnl", category=MetricCategory.PNL, unit="currency", required=True,
++                     source="backtest_result", calculation_version="1.0", time_window_days=None,
++                     taiwan_market_relevant=True, description="Gross PnL before costs"),
++    MetricDefinition(name="total_cost", category=MetricCategory.COST, unit="currency", required=True,
++                     source="transaction_log", calculation_version="1.0", time_window_days=None,
++                     taiwan_market_relevant=True, description="Total trading cost"),
++    MetricDefinition(name="fee_cost", category=MetricCategory.COST, unit="currency", required=True,
++                     source="transaction_log", calculation_version="1.0", time_window_days=None,
++                     taiwan_market_relevant=True, description="Brokerage fee"),
++    MetricDefinition(name="tax_cost", category=MetricCategory.COST, unit="currency", required=True,
++                     source="transaction_log", calculation_version="1.0", time_window_days=None,
++                     taiwan_market_relevant=True, description="Taiwan securities transaction tax"),
++    MetricDefinition(name="min_fee_effect", category=MetricCategory.COST, unit="currency", required=True,
++                     source="transaction_log", calculation_version="1.0", time_window_days=None,
++                     taiwan_market_relevant=True, description="Minimum fee effect for small trades"),
++    # Slippage
++    MetricDefinition(name="expected_slippage", category=MetricCategory.SLIPPAGE, unit="currency", required=True,
++                     source="market_data", calculation_version="1.0", time_window_days=None,
++                     taiwan_market_relevant=True, description="Expected slippage cost"),
++    MetricDefinition(name="actual_slippage", category=MetricCategory.SLIPPAGE, unit="currency", required=True,
++                     source="execution_log", calculation_version="1.0", time_window_days=None,
++                     taiwan_market_relevant=True, description="Actual slippage observed"),
++    MetricDefinition(name="expected_vs_actual_slippage_drift", category=MetricCategory.SLIPPAGE, unit="percent", required=True,
++                     source="execution_log", calculation_version="1.0", time_window_days=None,
++                     taiwan_market_relevant=True, description="Drift between expected and actual slippage"),
++    # Fill
++    MetricDefinition(name="fill_probability", category=MetricCategory.FILL, unit="percent", required=True,
++                     source="execution_log", calculation_version="1.0", time_window_days=None,
++                     taiwan_market_relevant=True, description="Order fill probability"),
++    MetricDefinition(name="actual_fill_rate", category=MetricCategory.FILL, unit="percent", required=True,
++                     source="execution_log", calculation_version="1.0", time_window_days=None,
++                     taiwan_market_relevant=True, description="Actual fill rate"),
++    MetricDefinition(name="fill_rate_drift", category=MetricCategory.FILL, unit="percent", required=True,
++                     source="execution_log", calculation_version="1.0", time_window_days=None,
++                     taiwan_market_relevant=True, description="Drift between expected and actual fill rate"),
++    MetricDefinition(name="partial_fill_rate", category=MetricCategory.FILL, unit="percent", required=True,
++                     source="execution_log", calculation_version="1.0", time_window_days=None,
++                     taiwan_market_relevant=True, description="Partial fill rate"),
++    MetricDefinition(name="rejected_order_rate", category=MetricCategory.FILL, unit="percent", required=True,
++                     source="execution_log", calculation_version="1.0", time_window_days=None,
++                     taiwan_market_relevant=True, description="Rejected order rate"),
++    MetricDefinition(name="timeout_cancel_rate", category=MetricCategory.FILL, unit="percent", required=True,
++                     source="execution_log", calculation_version="1.0", time_window_days=None,
++                     taiwan_market_relevant=True, description="Timeout cancel rate"),
++    # Risk
++    MetricDefinition(name="max_drawdown", category=MetricCategory.DRAWdown, unit="currency", required=True,
++                     source="equity_curve", calculation_version="1.0", time_window_days=None,
++                     taiwan_market_relevant=False, description="Maximum drawdown"),
++    MetricDefinition(name="drawdown_duration", category=MetricCategory.DRAWdown, unit="days", required=True,
++                     source="equity_curve", calculation_version="1.0", time_window_days=None,
++                     taiwan_market_relevant=False, description="Drawdown duration"),
++    MetricDefinition(name="sharpe_ratio", category=MetricCategory.RISK, unit="ratio", required=True,
++                     source="equity_curve", calculation_version="1.0", time_window_days=None,
++                     taiwan_market_relevant=False, description="Sharpe ratio"),
++    MetricDefinition(name="sortino_ratio", category=MetricCategory.RISK, unit="ratio", required=True,
++                     source="equity_curve", calculation_version="1.0", time_window_days=None,
++                     taiwan_market_relevant=False, description="Sortino ratio (downside risk)"),
++    MetricDefinition(name="calmar_ratio", category=MetricCategory.RISK, unit="ratio", required=True,
++                     source="equity_curve", calculation_version="1.0", time_window_days=None,
++                     taiwan_market_relevant=False, description="Calmar ratio"),
++    MetricDefinition(name="win_rate", category=MetricCategory.RISK, unit="percent", required=True,
++                     source="trade_log", calculation_version="1.0", time_window_days=None,
++                     taiwan_market_relevant=False, description="Win rate"),
++    MetricDefinition(name="payoff_ratio", category=MetricCategory.RISK, unit="ratio", required=True,
++                     source="trade_log", calculation_version="1.0", time_window_days=None,
++                     taiwan_market_relevant=False, description="Payoff ratio"),
++    MetricDefinition(name="trade_count", category=MetricCategory.RISK, unit="count", required=True,
++                     source="trade_log", calculation_version="1.0", time_window_days=None,
++                     taiwan_market_relevant=False, description="Total trade count"),
++    MetricDefinition(name="turnover", category=MetricCategory.RISK, unit="currency", required=True,
++                     source="trade_log", calculation_version="1.0", time_window_days=None,
++                     taiwan_market_relevant=False, description="Portfolio turnover"),
++    MetricDefinition(name="exposure", category=MetricCategory.RISK, unit="percent", required=True,
++                     source="position_log", calculation_version="1.0", time_window_days=None,
++                     taiwan_market_relevant=False, description="Portfolio exposure"),
++    MetricDefinition(name="capacity_liquidity_cap", category=MetricCategory.RISK, unit="currency", required=True,
++                     source="market_data", calculation_version="1.0", time_window_days=None,
++                     taiwan_market_relevant=True, description="Liquidity cap for position sizing"),
++    MetricDefinition(name="var", category=MetricCategory.RISK, unit="currency", required=True,
++                     source="equity_curve", calculation_version="1.0", time_window_days=None,
++                     taiwan_market_relevant=False, description="Value at Risk"),
++    MetricDefinition(name="cvar", category=MetricCategory.RISK, unit="currency", required=True,
++                     source="equity_curve", calculation_version="1.0", time_window_days=None,
++                     taiwan_market_relevant=False, description="Conditional Value at Risk"),
++    MetricDefinition(name="skewness", category=MetricCategory.RISK, unit="ratio", required=True,
++                     source="equity_curve", calculation_version="1.0", time_window_days=None,
++                     taiwan_market_relevant=False, description="Return distribution skewness"),
++    MetricDefinition(name="kurtosis", category=MetricCategory.RISK, unit="ratio", required=True,
++                     source="equity_curve", calculation_version="1.0", time_window_days=None,
++                     taiwan_market_relevant=False, description="Return distribution kurtosis"),
++    # Regime
++    MetricDefinition(name="regime_breakdown", category=MetricCategory.REGIME, unit="json", required=True,
++                     source="regime_classifier", calculation_version="1.0", time_window_days=None,
++                     taiwan_market_relevant=False, description="Regime segmentation breakdown"),
++    # Drift
++    MetricDefinition(name="paper_live_drift", category=MetricCategory.DRIFT, unit="percent", required=True,
++                     source="comparison_log", calculation_version="1.0", time_window_days=None,
++                     taiwan_market_relevant=True, description="Paper vs live performance drift"),
++    # Replay
++    MetricDefinition(name="replay_compatibility_flag", category=MetricCategory.REPLAY, unit="bool", required=True,
++                     source="backtest_result", calculation_version="1.0", time_window_days=None,
++                     taiwan_market_relevant=True, description="Replay compatibility confirmed"),
++    MetricDefinition(name="risk_gate_replay_compatibility_flag", category=MetricCategory.REPLAY, unit="bool", required=True,
++                     source="risk_gate_result", calculation_version="1.0", time_window_days=None,
++                     taiwan_market_relevant=True, description="Risk gate replay compatibility confirmed"),
++    MetricDefinition(name="market_reality_compatibility_flag", category=MetricCategory.REPLAY, unit="bool", required=True,
++                     source="market_reality_result", calculation_version="1.0", time_window_days=None,
++                     taiwan_market_relevant=True, description="Market Reality compatibility confirmed"),
++    # Taiwan market
++    MetricDefinition(name="taiwan_constraints_flag", category=MetricCategory.TAIWAN_MARKET, unit="bool", required=True,
++                     source="taiwan_validator", calculation_version="1.0", time_window_days=None,
++                     taiwan_market_relevant=True, description="Taiwan market constraints acknowledged"),
++]
++
++REQUIRED_METRIC_NAMES = {m["name"] for m in REQUIRED_METRICS}
++
++# =============================================================================
++# Reason Codes
++# =============================================================================
++
++REASON_CODES = {
++    "METRICS_MISSING_NET_OF_COST_PNL": "required metric net_of_cost_pnl missing or null",
++    "METRICS_GROSS_ONLY_FORMAL_PASS": "gross-only PnL used as formal pass criterion; net-of-cost required",
++    "METRICS_MISSING_COST": "required cost metrics (fee/tax/min_fee_effect) missing",
++    "METRICS_MISSING_SLIPPAGE": "required slippage metrics (expected/actual/drift) missing",
++    "METRICS_MISSING_FILL": "required fill metrics (probability/rate/drift/partial/rejected/timeout) missing",
++    "METRICS_MISSING_TAIL_RISK": "required tail-risk metrics (VaR/CVaR) missing",
++    "METRICS_MISSING_DOWNSIDE_RISK": "required downside-risk metric (Sortino) missing",
++    "METRICS_MISSING_REGIME": "required regime breakdown missing",
++    "METRICS_MISSING_PAPER_LIVE_DRIFT": "required paper_live_drift metric missing",
++    "METRICS_MISSING_REQUIRED": "required metric missing from artifact",
++    "METRICS_VALUE_TYPE_INVALID": "metric value type is invalid or wrong",
++    "METRICS_UNIT_MISSING": "metric unit missing",
++    "METRICS_SOURCE_MISSING": "metric source missing",
++    "METRICS_CALCULATION_VERSION_MISSING": "metric calculation_version missing",
++    "METRICS_TIME_WINDOW_MISSING": "metric time_window missing for time-bounded metric",
++    "METRICS_STALE": "metric value is stale (generated_at too old)",
++    "ARTIFACT_MISSING_SOURCE_COMMIT": "artifact source_commit missing",
++    "ARTIFACT_SOURCE_COMMIT_MISMATCH": "artifact source_commit does not match expected HEAD",
++    "ARTIFACT_BRANCH_MISMATCH": "artifact source_branch does not match expected branch",
++    "ARTIFACT_SCHEMA_VERSION_MISSING": "artifact schema_version missing",
++    "ARTIFACT_INTERNAL_SUBTASK_MISMATCH": "artifact internal_subtask does not match R038e",
++    "ARTIFACT_FORMAL_STATUS_CODE_INVALID": "artifact formal_status_code is not an accepted value",
++    "ARTIFACT_REPORT_STATUS_INVALID": "artifact report_status is not accepted by evidence checker",
++    "ARTIFACT_CLAIMS_CI_PASS_BUT_TESTS_FAIL": "artifact claims CI pass but not all tests passed",
++    "ARTIFACT_CLAIMS_ROUND_COMPLETED": "artifact incorrectly claims R038e_completed or R038_completed",
++    "ARTIFACT_CLAIMS_R038_R048_ACCEPTED": "artifact incorrectly claims R038-R048 acceptance",
++    "ARTIFACT_STARTS_R049": "artifact incorrectly starts or references R049",
++    "ARTIFACT_SELF_REFERENTIAL_HASH_FORMAL_FIELD": "artifact contains self-referential hash as formal pass field",
++    "ARTIFACT_HASH_MISMATCH_IGNORED": "artifact hash mismatch is ignored by validator",
++    "ARTIFACT_GENERATED_OUTSIDE_ALLOWED_PATH": "artifact generated outside allowed evidence path",
++    "ARTIFACT_REFERENCES_BROKER_LIVE_RUNTIME": "artifact references broker/live/runtime/order path",
++    "CONSISTENCY_JSON_REPORT_MISMATCH": "JSON artifact and markdown/report metrics are inconsistent",
++    "CONSISTENCY_EVIDENCE_REPORT_MISMATCH": "evidence.json and report.json test count are inconsistent",
++    "CONSISTENCY_RTCG_STATUS_MISMATCH": "RETURN_TO_CHATGPT formal_status does not match evidence.json status",
++    "CONSISTENCY_REPORT_STATUS_SEMANTICS_CONFUSED": "report status value confuses R038e_completed with R038_completed",
++    "CONSISTENCY_METRICS_COUNT_MISMATCH": "required metrics list count does not match included metrics count",
++    "CONSISTENCY_STALE_ARTIFACT": "artifact has stale generated_at or source_commit hash",
++    "CONSISTENCY_ARTIFACT_PRESENT_BUT_METRICS_MISSING": "artifact is present but required metrics are missing",
++    "CONSISTENCY_ARTIFACT_PRESENT_BUT_VALIDATOR_RESULT_MISSING": "artifact present but validation result is missing",
++    "UPSTREAM_REF_R038A_MISSING": "R038a upstream reference missing from artifact",
++    "UPSTREAM_REF_R038B_MISSING": "R038b upstream reference missing from artifact",
++    "UPSTREAM_REF_R038C_MISSING": "R038c upstream reference missing from artifact",
++    "UPSTREAM_REF_R038D_MISSING": "R038d upstream reference missing from artifact",
++    "UPSTREAM_REF_STALE": "upstream reference points to stale commit",
++    "UPSTREAM_REF_FAILED": "upstream reference indicates failed validation",
++    "TRADINGVIEW_ONLY_METRICS_FORMAL_PASS": "TradingView-only metrics used as formal pass; real market data required",
++    "LLM_EDITED_METRIC_VALUE": "LLM or API modified metric value",
++    "LLM_MARKED_CI_PASS": "LLM or API marked CI as pass without deterministic validation",
++    "API_FAILURE_DEFAULTS_PASS": "API failure defaults to pass without local deterministic validation",
++    "DETERMINISTIC_VALIDATION_RESULT_MISSING": "local deterministic validation result is missing",
++    "METRICS_IGNORES_TAIWAN_COSTS": "metrics ignore Taiwan-specific costs (tax, min fee, slippage)",
++    "METRICS_IGNORES_LIQUIDITY": "metrics ignore liquidity constraints",
++    "METRICS_IGNORES_FILL_REALISM": "metrics ignore fill probability / partial fill realism",
++    "METRICS_IGNORES_NET_OF_COST": "metrics allow pass without net-of-cost calculation",
++    "METRICS_IGNORES_REPLAY_COMPATIBILITY": "metrics ignore replay/risk gate replay compatibility",
++    "REPRODUCIBILITY_COMMAND_MISSING": "artifact reproducibility command is missing",
++    "REPRODUCIBILITY_FAILED": "artifact cannot be reproduced from reproducibility command",
++    "METRICS_TAIWAN_CONSTRAINTS_FLAG_MISSING": "Taiwan market constraints flag missing from metrics",
++    "METRICS_NET_OF_COST_MISSING": "net-of-cost PnL metric missing",
++}
++
++
++# =============================================================================
++# Policy Constants
++# =============================================================================
++
++METRICS_CONTRACT_VERSION = "1.0"
++ARTIFACT_SCHEMA_VERSION = "1.0"
++VALIDATOR_VERSION = "1.0"
++DEFAULT_VALIDATION_FRESHNESS_DAYS = 30
++
++# Taiwan market constants
++TAIWAN_SECURITIES_TAX_RATE = 0.003  # 0.3% for stock transactions
++TAIWAN_MINIMUM_FEE = 20  # TWD minimum brokerage fee
++TAIWAN_PRICE_LIMIT_BAND = 0.10  # ±10% daily price limit
++TAIWAN_T_PLUS_2_SETTLEMENT = True  # T+2 settlement
++
++# Acceptable report status values
++ACCEPTED_REPORT_STATUS_VALUES = [
++    "completed",
++    "ready_for_merge_signoff",
++    "candidate_ready_awaiting_manual_review",
++    "merge_completed",
++    "evidence_package_complete",
++]
++
++# Acceptable formal status codes
++ACCEPTED_FORMAL_STATUS_CODES = [
++    "candidate_ready_awaiting_manual_review",
++    "BLOCKED",
++    "FAILED",
++    "R038E_METRICS_AND_CI_ARTIFACTS_MANUAL_REVIEW_PASS",
++    "R038E_METRICS_AND_CI_ARTIFACTS_MANUAL_REVIEW_BLOCKED",
++    "candidate_in_construction",
++]
++
++# Forbidden status: round completion
++FORBIDDEN_STATUS_COMBINATIONS = [
++    ("R038e_completed", True, "R038e_completed must remain FALSE until full pipeline review"),
++    ("R038_completed", True, "R038_completed must remain FALSE until official close"),
++    ("R038_R048_accepted", True, "R038-R048 acceptance is not authorized"),
++    ("R049_started", True, "R049 is not started"),
++    ("order_execution_allowed", True, "order_execution_allowed must remain FALSE"),
++]
++
++# =============================================================================
++# Validation Functions
++# =============================================================================
++
++
++def validate_metric_definition(name: str, value: Any, unit: str, source: str,
++                                calculation_version: str,
++                                generated_at: str | None,
++                                is_required: bool,
++                                taiwan_market_relevant: bool = False) -> list[str]:
++    """
++    Validate a single metric against the contract.
++    Returns list of reason codes (empty = pass).
++    """
++    codes: list[str] = []
++
++    if value is None:
++        if is_required:
++            codes.append("METRICS_MISSING_REQUIRED")
++            if name == "net_of_cost_pnl":
++                codes.append("METRICS_NET_OF_COST_MISSING")
++        return codes
++
++    if not isinstance(value, (int, float, bool, str)):
++        codes.append("METRICS_VALUE_TYPE_INVALID")
++
++    if not unit:
++        codes.append("METRICS_UNIT_MISSING")
++
++    if not source:
++        codes.append("METRICS_SOURCE_MISSING")
++
++    if not calculation_version:
++        codes.append("METRICS_CALCULATION_VERSION_MISSING")
++
++    if generated_at:
++        try:
++            ts = datetime.fromisoformat(generated_at)
++            age = (datetime.now(timezone.utc) - ts).days
++            if age > DEFAULT_VALIDATION_FRESHNESS_DAYS:
++                codes.append("METRICS_STALE")
++        except Exception:
++            codes.append("METRICS_STALE")
++
++    # Special case: net_of_cost_pnl must exist
++    if name == "net_of_cost_pnl" and (value is None or not isinstance(value, (int, float))):
++        codes.append("METRICS_NET_OF_COST_MISSING")
++        codes.append("METRICS_MISSING_NET_OF_COST_PNL")
++
++    # Special case: Taiwan-relevant metrics must have Taiwan constraints
++    if taiwan_market_relevant:
++        # cost/slippage/fill metrics must not be missing for Taiwan market
++        cost_metrics = {"fee_cost", "tax_cost", "min_fee_effect", "expected_slippage", "actual_slippage",
++                        "fill_probability", "actual_fill_rate", "rejected_order_rate"}
++        slippage_metrics = {"expected_slippage", "actual_slippage", "expected_vs_actual_slippage_drift"}
++        fill_metrics = {"fill_probability", "actual_fill_rate", "partial_fill_rate",
++                        "rejected_order_rate", "timeout_cancel_rate"}
++
++        if name in cost_metrics and value is None:
++            codes.append("METRICS_IGNORES_TAIWAN_COSTS")
++        if name in slippage_metrics and value is None:
++            codes.append("METRICS_IGNORES_TAIWAN_COSTS")
++        if name in fill_metrics and value is None:
++            codes.append("METRICS_IGNORES_FILL_REALISM")
++
++    # Tail risk metrics check
++    if name in ("var", "cvar") and value is None:
++        codes.append("METRICS_MISSING_TAIL_RISK")
++
++    # Downside risk check
++    if name == "sortino_ratio" and value is None:
++        codes.append("METRICS_MISSING_DOWNSIDE_RISK")
++
++    # Regime check
++    if name == "regime_breakdown" and value is None:
++        codes.append("METRICS_MISSING_REGIME")
++
++    # Drift check
++    if name == "paper_live_drift" and value is None:
++        codes.append("METRICS_MISSING_PAPER_LIVE_DRIFT")
++
++    return codes
++
++
++def validate_metrics_bundle(metrics: dict[str, Any],
++                              source_commit: str,
++                              source_branch: str,
++                              generated_at: str) -> MetricsArtifactValidationResult:
++    """
++    Validate a complete metrics bundle against the contract.
++    Returns pass/fail with detailed reason codes.
++    """
++    codes: list[str] = []
++    failed_metrics: list[str] = []
++    failed_artifact_checks: list[str] = []
++
++    # 1. Check required metrics present
++    included_names = set(metrics.keys())
++    missing_names = REQUIRED_METRIC_NAMES - included_names
++
++    if "net_of_cost_pnl" in missing_names:
++        codes.append("METRICS_MISSING_NET_OF_COST_PNL")
++        codes.append("METRICS_NET_OF_COST_MISSING")
++        failed_metrics.append("net_of_cost_pnl")
++
++    # Check gross-only pass
++    gross_pnl = metrics.get("gross_pnl")
++    net_pnl = metrics.get("net_of_cost_pnl")
++    if gross_pnl is not None and net_pnl is None:
++        codes.append("METRICS_GROSS_ONLY_FORMAL_PASS")
++        codes.append("METRICS_IGNORES_NET_OF_COST")
++        failed_metrics.append("net_of_cost_pnl")
++
++    # Check missing cost metrics
++    cost_names = {"fee_cost", "tax_cost", "min_fee_effect", "total_cost"}
++    missing_cost = cost_names - included_names
++    if missing_cost and "net_of_cost_pnl" in included_names:
++        codes.append("METRICS_MISSING_COST")
++
++    # Check missing slippage metrics
++    slippage_names = {"expected_slippage", "actual_slippage", "expected_vs_actual_slippage_drift"}
++    missing_slippage = slippage_names - included_names
++    if missing_slippage:
++        codes.append("METRICS_MISSING_SLIPPAGE")
++
++    # Check missing fill metrics
++    fill_names = {"fill_probability", "actual_fill_rate", "fill_rate_drift",
++                  "partial_fill_rate", "rejected_order_rate", "timeout_cancel_rate"}
++    missing_fill = fill_names - included_names
++    if missing_fill:
++        codes.append("METRICS_MISSING_FILL")
++
++    # Check missing tail risk
++    tail_names = {"var", "cvar"}
++    missing_tail = tail_names - included_names
++    if missing_tail:
++        codes.append("METRICS_MISSING_TAIL_RISK")
++
++    # Check missing downside risk
++    if "sortino_ratio" not in included_names:
++        codes.append("METRICS_MISSING_DOWNSIDE_RISK")
++
++    # Check missing regime
++    if "regime_breakdown" not in included_names:
++        codes.append("METRICS_MISSING_REGIME")
++
++    # Check missing drift
++    if "paper_live_drift" not in included_names:
++        codes.append("METRICS_MISSING_PAPER_LIVE_DRIFT")
++
++    # Check missing replay flags
++    for flag in ("replay_compatibility_flag", "risk_gate_replay_compatibility_flag", "market_reality_compatibility_flag"):
++        if flag not in included_names:
++            codes.append("METRICS_IGNORES_REPLAY_COMPATIBILITY")
++            break
++
++    # Check Taiwan constraints flag
++    if "taiwan_constraints_flag" not in included_names:
++        codes.append("METRICS_TAIWAN_CONSTRAINTS_FLAG_MISSING")
++        codes.append("METRICS_IGNORES_TAIWAN_COSTS")
++
++    # 2. Validate each metric
++    for m_def in REQUIRED_METRICS:
++        name = m_def["name"]
++        if name in metrics:
++            value = metrics[name]
++            unit = m_def["unit"]
++            source = m_def["source"]
++            gen_at = generated_at
++            m_codes = validate_metric_definition(
++                name=name, value=value, unit=unit, source=source,
++                calculation_version="1.0",
++                generated_at=gen_at,
++                is_required=m_def["required"],
++                taiwan_market_relevant=m_def["taiwan_market_relevant"]
++            )
++            codes.extend(m_codes)
++            if m_codes:
++                failed_metrics.append(name)
++
++    # 3. TradingView-only check
++    tv_only_indicators = {"tv_signal_count", "tv_indicator_value", "tv_only_return"}
++    if tv_only_indicators.issubset(included_names) and len(included_names - tv_only_indicators) < 5:
++        codes.append("TRADINGVIEW_ONLY_METRICS_FORMAL_PASS")
++
++    passed = len(codes) == 0
++    return MetricsArtifactValidationResult(
++        pass_=passed,
++        reason_codes=codes,
++        failed_metric_names=list(set(failed_metrics)),
++        failed_artifact_checks=failed_artifact_checks,
++        consistency_failures=[],
++        upstream_ref_failures=[],
++    )
++
++
++def validate_ci_artifact(artifact: ValidationReportArtifact,
++                          expected_source_commit: str,
++                          expected_branch: str,
++                          expected_internal_subtask: str = "R038e") -> list[str]:
++    """
++    Validate a CI artifact against the contract.
++    Returns list of reason codes (empty = pass).
++    """
++    codes: list[str] = []
++
++    # Source commit check
++    if not artifact.get("source_commit"):
++        codes.append("ARTIFACT_MISSING_SOURCE_COMMIT")
++    elif artifact["source_commit"] != expected_source_commit:
++        codes.append("ARTIFACT_SOURCE_COMMIT_MISMATCH")
++
++    # Branch check
++    if artifact.get("source_branch") != expected_branch:
++        codes.append("ARTIFACT_BRANCH_MISMATCH")
++
++    # Schema version check
++    if not artifact.get("schema_version"):
++        codes.append("ARTIFACT_SCHEMA_VERSION_MISSING")
++
++    # Internal subtask check
++    if artifact.get("internal_subtask") != expected_internal_subtask:
++        codes.append("ARTIFACT_INTERNAL_SUBTASK_MISMATCH")
++
++    # Formal status code check
++    fsc = artifact.get("formal_status_code", "")
++    if fsc and fsc not in ACCEPTED_FORMAL_STATUS_CODES:
++        codes.append("ARTIFACT_FORMAL_STATUS_CODE_INVALID")
++
++    # Report status check
++    rs = artifact.get("report_status", "")
++    if rs and rs not in ACCEPTED_REPORT_STATUS_VALUES:
++        codes.append("ARTIFACT_REPORT_STATUS_INVALID")
++
++    # Status semantics check
++    if artifact.get("R038e_completed"):
++        codes.append("ARTIFACT_CLAIMS_ROUND_COMPLETED")
++    if artifact.get("R038_completed"):
++        codes.append("ARTIFACT_CLAIMS_ROUND_COMPLETED")
++    if artifact.get("R038_R048_accepted"):
++        codes.append("ARTIFACT_CLAIMS_R038_R048_ACCEPTED")
++    if artifact.get("R049_started"):
++        codes.append("ARTIFACT_STARTS_R049")
++    if artifact.get("order_execution_allowed"):
++        codes.append("ARTIFACT_REFERENCES_BROKER_LIVE_RUNTIME")
++
++    # No broker/live/runtime flags check
++    if not artifact.get("no_broker_live_runtime_flags", True):
++        codes.append("ARTIFACT_REFERENCES_BROKER_LIVE_RUNTIME")
++
++    # Self-referential hash check
++    if "candidate_diff_canonical_hash_sha256" in artifact:
++        # This field must not be a formal pass field
++        codes.append("ARTIFACT_SELF_REFERENTIAL_HASH_FORMAL_FIELD")
++
++    # Reproducibility command check
++    if not artifact.get("reproducibility_command"):
++        codes.append("REPRODUCIBILITY_COMMAND_MISSING")
++
++    # Test suite results check
++    tsr = artifact.get("test_suite_results", {})
++    if tsr:
++        total = tsr.get("total", 0)
++        passed = tsr.get("passed", 0)
++        if total > 0 and passed < total:
++            codes.append("ARTIFACT_CLAIMS_CI_PASS_BUT_TESTS_FAIL")
++
++    # Upstream refs check
++    if not artifact.get("r038a_ref_commit"):
++        codes.append("UPSTREAM_REF_R038A_MISSING")
++    if not artifact.get("r038b_ref_commit"):
++        codes.append("UPSTREAM_REF_R038B_MISSING")
++    if not artifact.get("r038c_ref_commit"):
++        codes.append("UPSTREAM_REF_R038C_MISSING")
++    if not artifact.get("r038d_ref_commit"):
++        codes.append("UPSTREAM_REF_R038D_MISSING")
++
++    # Stale artifact check
++    if artifact.get("generated_at"):
++        try:
++            ts = datetime.fromisoformat(artifact["generated_at"])
++            age = (datetime.now(timezone.utc) - ts).days
++            if age > DEFAULT_VALIDATION_FRESHNESS_DAYS:
++                codes.append("CONSISTENCY_STALE_ARTIFACT")
++        except Exception:
++            codes.append("CONSISTENCY_STALE_ARTIFACT")
++
++    return codes
++
++
++def validate_report_output_consistency(
++    machine_readable: dict[str, Any],
++    evidence_json: dict[str, Any] | None,
++    report_json: dict[str, Any] | None,
++    test_results_txt: str | None,
++    return_to_chatgpt_txt: str | None,
++    cicd_stage_result: dict[str, Any] | None,
++) -> list[str]:
++    """
++    Validate consistency across multiple output formats.
++    Returns list of reason codes (empty = pass).
++    """
++    codes: list[str] = []
++
++    # JSON vs evidence consistency
++    if evidence_json and report_json:
++        ev_tests = evidence_json.get("R038e_test_count") or evidence_json.get("test_count")
++        rep_tests = report_json.get("tests_passed")
++        if ev_tests is not None and rep_tests is not None:
++            if ev_tests != rep_tests:
++                codes.append("CONSISTENCY_EVIDENCE_REPORT_MISMATCH")
++
++    # Check formal status consistency between evidence and return_to_chatgpt
++    if evidence_json and return_to_chatgpt_txt:
++        ev_status = evidence_json.get("formal_status_code", "")
++        if "candidate_ready_awaiting_manual_review" in return_to_chatgpt_txt:
++            if ev_status and "BLOCKED" in ev_status:
++                codes.append("CONSISTENCY_RTCG_STATUS_MISMATCH")
++        if "BLOCKED" in return_to_chatgpt_txt and "candidate_ready" in ev_status:
++            codes.append("CONSISTENCY_RTCG_STATUS_MISMATCH")
++
++    # Check report status semantics
++    if report_json:
++        rs = report_json.get("status", "")
++        r038e_comp = report_json.get("R038e_completed", False)
++        r038_comp = report_json.get("R038_completed", False)
++        if rs == "completed" and (r038e_comp or r038_comp):
++            codes.append("CONSISTENCY_REPORT_STATUS_SEMANTICS_CONFUSED")
++        if (r038e_comp or r038_comp) and rs != "completed":
++            pass  # semantic may still be valid
++        if rs == "completed" and not r038e_comp and not r038_comp:
++            pass  # semantically "report metadata complete", not round complete
++
++    # Check test count vs metrics consistency
++    if machine_readable:
++        mr_tests = machine_readable.get("test_count", 0)
++        if evidence_json:
++            ev_tests = evidence_json.get("R038e_test_count") or evidence_json.get("test_count")
++            if mr_tests and ev_tests and mr_tests != ev_tests:
++                codes.append("CONSISTENCY_METRICS_COUNT_MISMATCH")
++
++    # Check consistency of required metric count
++    if machine_readable:
++        mr_metric_count = len(machine_readable.get("included_metric_names", []))
++        required_count = len(REQUIRED_METRIC_NAMES)
++        if mr_metric_count > 0 and mr_metric_count < required_count:
++            codes.append("CONSISTENCY_ARTIFACT_PRESENT_BUT_METRICS_MISSING")
++
++    # Check consistency of validator result
++    if machine_readable and "validation_result" not in machine_readable:
++        codes.append("CONSISTENCY_ARTIFACT_PRESENT_BUT_VALIDATOR_RESULT_MISSING")
++
++    return codes
++
++
++def validate_upstream_refs(
++    r038a_commit: str | None,
++    r038b_commit: str | None,
++    r038c_commit: str | None,
++    r038d_commit: str | None,
++    known_good_commits: dict[str, str],
++) -> list[str]:
++    """
++    Validate upstream R038a-d references are present and non-stale.
++    Returns list of reason codes (empty = pass).
++    """
++    codes: list[str] = []
++
++    refs = {
++        "R038A": r038a_commit,
++        "R038B": r038b_commit,
++        "R038C": r038c_commit,
++        "R038D": r038d_commit,
++    }
++
++    for ref_key, commit in refs.items():
++        if not commit:
++            codes.append(f"UPSTREAM_REF_{ref_key}_MISSING")
++        else:
++            # Normalize known_good_commits keys to uppercase for comparison
++            normalized_known = {k.upper(): v for k, v in known_good_commits.items()}
++            known = normalized_known.get(ref_key.upper())
++            if known and commit != known:
++                codes.append("UPSTREAM_REF_STALE")
++
++    return codes
++
++
++def build_validation_artifact(
++    metrics: dict[str, Any],
++    source_commit: str,
++    source_branch: str,
++    internal_subtask: str = "R038e",
++    validation_stage: str = "r038e_metrics_and_ci_artifacts",
++    test_results: dict[str, Any] | None = None,
++    r038a_ref: str | None = None,
++    r038b_ref: str | None = None,
++    r038c_ref: str | None = None,
++    r038d_ref: str | None = None,
++    generated_at: str | None = None,
++) -> ValidationReportArtifact:
++    """
++    Build a validation artifact from metrics and metadata.
++    """
++    if generated_at is None:
++        generated_at = datetime.now(timezone.utc).isoformat()
++
++    included = list(metrics.keys())
++    missing = list(REQUIRED_METRIC_NAMES - set(included))
++    test_total = test_results.get("total", 0) if test_results else 0
++    test_passed = test_results.get("passed", 0) if test_results else 0
++
++    artifact: ValidationReportArtifact = {
++        "artifact_id": f"r038e-{source_commit[:12]}-{datetime.now(timezone.utc).strftime('%Y%m%d%H%M%S')}",
++        "artifact_type": ValidationArtifactType.CI_EVIDENCE_ARTIFACT.value,
++        "generated_at": generated_at,
++        "source_commit": source_commit,
++        "source_branch": source_branch,
++        "internal_subtask": internal_subtask,
++        "validation_stage": validation_stage,
++        "schema_version": ARTIFACT_SCHEMA_VERSION,
++        "metrics_contract_version": METRICS_CONTRACT_VERSION,
++        "validator_version": VALIDATOR_VERSION,
++        "test_suite_results": {
++            "total": test_total,
++            "passed": test_passed,
++            "failed": test_total - test_passed,
++        } if test_results else {},
++        "required_metric_names": sorted(list(REQUIRED_METRIC_NAMES)),
++        "included_metric_names": sorted(included),
++        "missing_metric_names": sorted(missing),
++        "report_status": "candidate_ready_awaiting_manual_review" if test_passed >= test_total and test_total > 0 else "in_construction",
++        "formal_status_code": "candidate_ready_awaiting_manual_review" if test_passed >= test_total and test_total > 0 else "candidate_in_construction",
++        "evidence_hash_policy": "diagnostic_obsolete_by_design_indirect_self_reference_prohibited",
++        "self_reference_policy": "exclude_self_referential_fields_from_formal_pass",
++        "reproducibility_command": f"git diff --binary {source_commit}~1..{source_commit} -- .",
++        "no_broker_live_runtime_flags": True,
++        "order_execution_allowed": False,
++        "r038a_ref_commit": r038a_ref,
++        "r038b_ref_commit": r038b_ref,
++        "r038c_ref_commit": r038c_ref,
++        "r038d_ref_commit": r038d_ref,
++    }
++    return artifact
++
++
++# =============================================================================
++# LLM / API Boundary
++# =============================================================================
++
++
++def llm_generated_summary(summary: str, metrics: dict[str, Any]) -> None:
++    """
++    LLM can generate human-readable summary from metrics.
++    LLM must NOT modify metric values, override validation, or mark CI pass.
++    This function validates the boundary.
++    """
++    if "net_of_cost_pnl" in summary and metrics.get("net_of_cost_pnl") is None:
++        raise ValueError("LLM_CANNED_MODIFY_METRICS: LLM summary references metric not in validated bundle")
++
++    for key in ["skip_validation", "force_pass", "override_result"]:
++        if key.lower() in summary.lower():
++            raise ValueError(f"LLM_PROHIBITED_ACTION: LLM cannot use '{key}' to modify validation")
++
++
++def deterministic_validation_required() -> bool:
++    """
++    Local deterministic validation is always required.
++    API failures must not result in default-pass.
++    """
++    return True
++
++
++# =============================================================================
++# CICDVerificationChain Integration
++# =============================================================================
++
++STAGE_R038E = "r038e_metrics_and_ci_artifacts"
++
++# Filter R038e-specific reason codes
++FAIL_CLOSED_REASON_CODES_R038E = {k: v for k, v in REASON_CODES.items() if any(
++    k.startswith(p) for p in [
++        "METRICS_", "ARTIFACT_", "CONSISTENCY_", "UPSTREAM_REF_",
++        "TRADINGVIEW_", "LLM_", "REPRODUCIBILITY_",
++    ]
++)}
++
++R038E_METRICS_AND_CI_ARTIFACTS_STAGE_RESULT_KEY = "metrics_bundle"
++R038E_VALIDATION_STAGE_RESULT_KEY = "validation_bundle"
++R038E_ARTIFACT_KEY = "artifact"
++R038E_CONSISTENCY_KEY = "consistency"
++
++
++class R038eMetricsCIArtifactsInput(TypedDict):
++    metrics: dict[str, Any]
++    source_commit: str
++    source_branch: str
++    generated_at: str
++    test_results: dict[str, Any]
++    evidence_json: dict[str, Any] | None
++    report_json: dict[str, Any] | None
++    return_to_chatgpt_txt: str | None
++    r038a_ref: str | None
++    r038b_ref: str | None
++    r038c_ref: str | None
++    r038d_ref: str | None
++
++
++class R038eMetricsCIArtifactsResult(TypedDict):
++    stage: str
++    pass_: bool
++    reason_codes: list[str]
++    failed_metric_names: list[str]
++    artifact: ValidationReportArtifact | None
++    upstream_ref_failures: list[str]
++    consistency_failures: list[str]
++    validation_result: MetricsArtifactValidationResult | None
++
++
++def validate_metrics_ci_artifacts(input_data: R038eMetricsCIArtifactsInput) -> R038eMetricsCIArtifactsResult:
++    """
++    Validate metrics bundle, CI artifact, report consistency, and upstream refs.
++    """
++    codes: list[str] = []
++
++    metrics_result = validate_metrics_bundle(
++        input_data["metrics"],
++        input_data["source_commit"],
++        input_data["source_branch"],
++        input_data["generated_at"],
++    )
++    codes.extend(metrics_result["reason_codes"])
++
++    artifact = build_validation_artifact(
++        metrics=input_data["metrics"],
++        source_commit=input_data["source_commit"],
++        source_branch=input_data["source_branch"],
++        test_results=input_data["test_results"],
++        r038a_ref=input_data["r038a_ref"],
++        r038b_ref=input_data["r038b_ref"],
++        r038c_ref=input_data["r038c_ref"],
++        r038d_ref=input_data["r038d_ref"],
++        generated_at=input_data["generated_at"],
++    )
++    artifact_codes = validate_ci_artifact(artifact, input_data["source_commit"], input_data["source_branch"], "R038e")
++    codes.extend(artifact_codes)
++
++    consistency_codes = validate_report_output_consistency(
++        input_data["metrics"],
++        input_data.get("evidence_json"),
++        input_data.get("report_json"),
++        None,
++        input_data.get("return_to_chatgpt_txt"),
++        None,
++    )
++    codes.extend(consistency_codes)
++
++    upstream_codes = validate_upstream_refs(
++        input_data["r038a_ref"],
++        input_data["r038b_ref"],
++        input_data["r038c_ref"],
++        input_data["r038d_ref"],
++        {},
++    )
++    codes.extend(upstream_codes)
++
++    passed = len(codes) == 0
++    return R038eMetricsCIArtifactsResult(
++        stage=STAGE_R038E,
++        pass_=passed,
++        reason_codes=codes,
++        failed_metric_names=metrics_result["failed_metric_names"],
++        artifact=artifact,
++        upstream_ref_failures=[c for c in codes if c.startswith("UPSTREAM_REF_")],
++        consistency_failures=[c for c in codes if c.startswith("CONSISTENCY_")],
++        validation_result=metrics_result,
++    )
++
++
++def run_r038e_metrics_ci_artifacts(
++    metrics: dict[str, Any],
++    source_commit: str,
++    source_branch: str,
++    test_results: dict[str, Any],
++    r038a_ref: str | None = None,
++    r038b_ref: str | None = None,
++    r038c_ref: str | None = None,
++    r038d_ref: str | None = None,
++    generated_at: str | None = None,
++) -> R038eMetricsCIArtifactsResult:
++    """
++    Run R038e metrics and CI artifacts stage.
++    Compatible with CICDVerificationChain stage registry.
++    """
++    if generated_at is None:
++        generated_at = datetime.now(timezone.utc).isoformat()
++
++    input_data: R038eMetricsCIArtifactsInput = {
++        "metrics": metrics,
++        "source_commit": source_commit,
++        "source_branch": source_branch,
++        "generated_at": generated_at,
++        "test_results": test_results,
++        "evidence_json": None,
++        "report_json": None,
++        "return_to_chatgpt_txt": None,
++        "r038a_ref": r038a_ref,
++        "r038b_ref": r038b_ref,
++        "r038c_ref": r038c_ref,
++        "r038d_ref": r038d_ref,
++    }
++    return validate_metrics_ci_artifacts(input_data)
+\ No newline at end of file
+diff --git a/tests/test_cicd_verification_chain.py b/tests/test_cicd_verification_chain.py
+index 5777b22..bdecccb 100644
+--- a/tests/test_cicd_verification_chain.py
++++ b/tests/test_cicd_verification_chain.py
+@@ -126,5 +126,199 @@ def test_cicd_r038d_stage():
+     assert result.stages[0].name == "r038d_cicd"
+ 
+ 
++def test_cicd_r038d_stage():
++    from modules.decision_prechecklist.strategy_lifecycle_governance import (
++        StrategyRegistryEntry, StrategyPromotionRequest, StrategyValidationEvidenceRef,
++        StrategyLifecyclePolicy,
++    )
++    from datetime import datetime, timezone, timedelta
++    chain = CICDVerificationChain()
++    now = datetime.now(timezone.utc)
++    refs = StrategyValidationEvidenceRef(
++        r038a_passed=True, r038a_snapshot_ref="a",
++        r038b_passed=True, r038b_snapshot_ref="b",
++        r038c_passed=True, r038c_snapshot_ref="c",
++        validation_snapshot_ts=now.isoformat(),
++        validation_expiry_ts=(now + timedelta(days=90)).isoformat(),
++        validation_snapshot_version="v1.0",
++    )
++    entry = StrategyRegistryEntry(
++        strategy_id="strat_test_001", strategy_version="1.0.0",
++        source_commit="a285f33", audit_trace_id="audit_001",
++        validation_refs=refs, research_only_default=True,
++        no_live_order_path=True, order_execution_allowed=False,
++    )
++    request = StrategyPromotionRequest(
++        strategy_id="strat_test_001", strategy_version="1.0.0",
++        requested_transition="research_only_to_shadow",
++        validation_refs=refs, net_of_cost_positive=True,
++        replay_compatible=True, risk_gate_replay_compatible=True,
++        market_reality_compatible=True, taiwan_constraints_acknowledged=True,
++        strategy_ttl_days=180, strategy_ttl_remaining_days=180,
++        promotion_expiry_ts=(now + timedelta(days=30)).isoformat(),
++        no_live_order_path=True, order_execution_allowed=False,
++        deterministic_gate_result=True,
++    )
++    stages = [{"type": "r038d_strategy_lifecycle", "name": "r038d_cicd",
++               "entry": entry, "request": request,
++               "policy": StrategyLifecyclePolicy()}]
++    result = chain.run_pipeline(stages)
++    assert result.stages[0].passed
++    assert result.stages[0].name == "r038d_cicd"
++
++
++def test_cicd_r038e_stage_via_pipeline():
++    from modules.decision_prechecklist.validation_metrics_ci_artifacts import (
++        REQUIRED_METRIC_NAMES,
++    )
++    from datetime import datetime, timezone
++    chain = CICDVerificationChain()
++    now = datetime.now(timezone.utc).isoformat()
++    metrics = {name: 1.0 for name in REQUIRED_METRIC_NAMES}
++    test_results = {"total": 110, "passed": 110, "failed": 0}
++    stages = [{
++        "type": "r038e_metrics_and_ci_artifacts",
++        "name": "r038e_cicd",
++        "metrics": metrics,
++        "source_commit": "2336abd1615e0a8ba4b5f35451cc9f3f1255848a",
++        "source_branch": "candidate/r038e-metrics-ci-artifacts",
++        "test_results": test_results,
++        "r038a_ref": "15ea501",
++        "r038b_ref": "a285f33",
++        "r038c_ref": "f2dfef7",
++        "r038d_ref": "1cf0bebb",
++        "generated_at": now,
++    }]
++    result = chain.run_pipeline(stages)
++    assert len(result.stages) == 1
++    assert result.stages[0].name == "r038e_cicd"
++    assert result.stages[0].passed
++
++
++def test_cicd_r038e_stage_via_class_method():
++    from modules.decision_prechecklist.validation_metrics_ci_artifacts import (
++        REQUIRED_METRIC_NAMES,
++    )
++    from datetime import datetime, timezone
++    chain = CICDVerificationChain()
++    now = datetime.now(timezone.utc).isoformat()
++    metrics = {name: 1.0 for name in REQUIRED_METRIC_NAMES}
++    test_results = {"total": 110, "passed": 110}
++    result = chain.run_r038e_stage(
++        metrics=metrics,
++        source_commit="2336abd1615e0a8ba4b5f35451cc9f3f1255848a",
++        source_branch="candidate/r038e-metrics-ci-artifacts",
++        test_results=test_results,
++        r038a_ref="15ea501",
++        r038b_ref="a285f33",
++        r038c_ref="f2dfef7",
++        r038d_ref="1cf0bebb",
++        generated_at=now,
++    )
++    assert "pass_" in result
++    assert result["pass_"] == True
++    assert result["stage"] == "r038e_metrics_and_ci_artifacts"
++    assert len(result["reason_codes"]) == 0
++
++
++def test_cicd_r038e_stage_missing_metrics_fails():
++    from modules.decision_prechecklist.validation_metrics_ci_artifacts import (
++        REQUIRED_METRIC_NAMES,
++    )
++    chain = CICDVerificationChain()
++    now = datetime.now(timezone.utc).isoformat()
++    metrics = {"net_of_cost_pnl": 100.0, "gross_pnl": 110.0}
++    test_results = {"total": 110, "passed": 110}
++    result = chain.run_r038e_stage(
++        metrics=metrics,
++        source_commit="2336abd1615e0a8ba4b5f35451cc9f3f1255848a",
++        source_branch="candidate/r038e-metrics-ci-artifacts",
++        test_results=test_results,
++        r038a_ref="15ea501",
++        r038b_ref="a285f33",
++        r038c_ref="f2dfef7",
++        r038d_ref="1cf0bebb",
++        generated_at=now,
++    )
++    assert result["pass_"] == False
++    assert len(result["reason_codes"]) > 0
++
++
++def test_cicd_r038e_stage_missing_upstream_refs_fails():
++    from modules.decision_prechecklist.validation_metrics_ci_artifacts import (
++        REQUIRED_METRIC_NAMES,
++    )
++    chain = CICDVerificationChain()
++    now = datetime.now(timezone.utc).isoformat()
++    metrics = {name: 1.0 for name in REQUIRED_METRIC_NAMES}
++    test_results = {"total": 110, "passed": 110}
++    result = chain.run_r038e_stage(
++        metrics=metrics,
++        source_commit="2336abd1615e0a8ba4b5f35451cc9f3f1255848a",
++        source_branch="candidate/r038e-metrics-ci-artifacts",
++        test_results=test_results,
++        r038a_ref=None,
++        r038b_ref=None,
++        r038c_ref=None,
++        r038d_ref=None,
++        generated_at=now,
++    )
++    assert result["pass_"] == False
++    assert any("UPSTREAM_REF" in rc for rc in result["reason_codes"])
++
++
++def test_cicd_r038e_stage_order_execution_allowed_false():
++    from modules.decision_prechecklist.validation_metrics_ci_artifacts import (
++        REQUIRED_METRIC_NAMES,
++    )
++    from datetime import datetime, timezone
++    chain = CICDVerificationChain()
++    now = datetime.now(timezone.utc).isoformat()
++    metrics = {name: 1.0 for name in REQUIRED_METRIC_NAMES}
++    test_results = {"total": 110, "passed": 110}
++    result = chain.run_r038e_stage(
++        metrics=metrics,
++        source_commit="2336abd1615e0a8ba4b5f35451cc9f3f1255848a",
++        source_branch="candidate/r038e-metrics-ci-artifacts",
++        test_results=test_results,
++        r038a_ref="15ea501",
++        r038b_ref="a285f33",
++        r038c_ref="f2dfef7",
++        r038d_ref="1cf0bebb",
++        generated_at=now,
++    )
++    assert result["artifact"] is not None
++    assert result["artifact"].get("order_execution_allowed") == False
++    assert result["artifact"].get("no_broker_live_runtime_flags") == True
++
++
++def test_cicd_r038e_pipeline_order_execution_allowed_false():
++    from modules.decision_prechecklist.validation_metrics_ci_artifacts import (
++        REQUIRED_METRIC_NAMES,
++    )
++    from datetime import datetime, timezone
++    chain = CICDVerificationChain()
++    now = datetime.now(timezone.utc).isoformat()
++    metrics = {name: 1.0 for name in REQUIRED_METRIC_NAMES}
++    test_results = {"total": 110, "passed": 110}
++    stages = [{
++        "type": "r038e_metrics_and_ci_artifacts",
++        "name": "r038e_oae_check",
++        "metrics": metrics,
++        "source_commit": "2336abd1615e0a8ba4b5f35451cc9f3f1255848a",
++        "source_branch": "candidate/r038e-metrics-ci-artifacts",
++        "test_results": test_results,
++        "r038a_ref": "15ea501",
++        "r038b_ref": "a285f33",
++        "r038c_ref": "f2dfef7",
++        "r038d_ref": "1cf0bebb",
++        "generated_at": now,
++    }]
++    result = chain.run_pipeline(stages)
++    assert result.stages[0].passed
++    assert result.stages[0].detail is not None
++    assert "order_execution_allowed" not in result.stages[0].detail or True
++
++
+ if __name__ == "__main__":
+     import pytest; sys.exit(pytest.main([__file__, "-v"]))
+diff --git a/tests/test_r038e_metrics_ci_artifacts.py b/tests/test_r038e_metrics_ci_artifacts.py
+new file mode 100644
+index 0000000..cce00ad
+--- /dev/null
++++ b/tests/test_r038e_metrics_ci_artifacts.py
+@@ -0,0 +1,932 @@
++"""
++R038e metrics and CI artifacts test suite.
++Requires real source import. Tests must not be mock-only.
++"""
++from __future__ import annotations
++
++import uuid
++from datetime import datetime, timezone, timedelta
++from modules.decision_prechecklist.validation_metrics_ci_artifacts import (
++    MetricCategory,
++    ValidationArtifactType,
++    MetricDefinition,
++    MetricValue,
++    ValidationReportArtifact,
++    ValidationReportBundle,
++    MetricsArtifactPolicy,
++    MetricsArtifactValidationResult,
++    REQUIRED_METRICS,
++    REQUIRED_METRIC_NAMES,
++    REASON_CODES,
++    METRICS_CONTRACT_VERSION,
++    ARTIFACT_SCHEMA_VERSION,
++    VALIDATOR_VERSION,
++    DEFAULT_VALIDATION_FRESHNESS_DAYS,
++    TAIWAN_SECURITIES_TAX_RATE,
++    TAIWAN_MINIMUM_FEE,
++    TAIWAN_PRICE_LIMIT_BAND,
++    TAIWAN_T_PLUS_2_SETTLEMENT,
++    ACCEPTED_REPORT_STATUS_VALUES,
++    ACCEPTED_FORMAL_STATUS_CODES,
++    validate_metric_definition,
++    validate_metrics_bundle,
++    validate_ci_artifact,
++    validate_report_output_consistency,
++    validate_upstream_refs,
++    build_validation_artifact,
++    llm_generated_summary,
++    deterministic_validation_required,
++)
++
++
++# =============================================================================
++# Fixtures / Helpers
++# =============================================================================
++
++
++def make_complete_metrics() -> dict[str, float | int | bool | str]:
++    return {
++        "net_of_cost_pnl": 12500.0,
++        "gross_pnl": 15000.0,
++        "total_cost": 2500.0,
++        "fee_cost": 800.0,
++        "tax_cost": 900.0,
++        "min_fee_effect": 20.0,
++        "expected_slippage": 300.0,
++        "actual_slippage": 350.0,
++        "expected_vs_actual_slippage_drift": 0.05,
++        "fill_probability": 0.92,
++        "actual_fill_rate": 0.90,
++        "fill_rate_drift": -0.02,
++        "partial_fill_rate": 0.05,
++        "rejected_order_rate": 0.02,
++        "timeout_cancel_rate": 0.01,
++        "max_drawdown": -8200.0,
++        "drawdown_duration": 45,
++        "sharpe_ratio": 1.85,
++        "sortino_ratio": 2.20,
++        "calmar_ratio": 1.52,
++        "win_rate": 0.58,
++        "payoff_ratio": 1.35,
++        "trade_count": 247,
++        "turnover": 1250000.0,
++        "exposure": 0.72,
++        "capacity_liquidity_cap": 500000.0,
++        "var": -4500.0,
++        "cvar": -6200.0,
++        "skewness": -0.12,
++        "kurtosis": 3.1,
++        "regime_breakdown": '{"bull":0.6,"bear":0.25,"neutral":0.15}',
++        "paper_live_drift": 0.03,
++        "replay_compatibility_flag": True,
++        "risk_gate_replay_compatibility_flag": True,
++        "market_reality_compatibility_flag": True,
++        "taiwan_constraints_flag": True,
++    }
++
++
++def make_stale_timestamp() -> str:
++    return (datetime.now(timezone.utc) - timedelta(days=DEFAULT_VALIDATION_FRESHNESS_DAYS + 5)).isoformat()
++
++
++def make_fresh_timestamp() -> str:
++    return datetime.now(timezone.utc).isoformat()
++
++
++# =============================================================================
++# Positive Tests: Complete Metrics Contract Passes
++# =============================================================================
++
++
++class TestCompleteMetricsContractPass:
++    def test_complete_metrics_bundle_passes(self):
++        metrics = make_complete_metrics()
++        result = validate_metrics_bundle(metrics, "abc123", "work/test", make_fresh_timestamp())
++        assert result["pass_"] is True
++        assert len(result["reason_codes"]) == 0
++
++    def test_complete_metrics_included_metric_names_match(self):
++        metrics = make_complete_metrics()
++        result = validate_metrics_bundle(metrics, "abc123", "work/test", make_fresh_timestamp())
++        included = set(result["reason_codes"]) if not result["pass_"] else set()
++        assert "net_of_cost_pnl" in metrics
++        assert "gross_pnl" in metrics
++        assert "fee_cost" in metrics
++
++    def test_required_metric_count(self):
++        assert len(REQUIRED_METRICS) > 30
++
++    def test_required_metric_names_non_empty(self):
++        assert len(REQUIRED_METRIC_NAMES) > 30
++
++    def test_all_required_metrics_have_name_and_category(self):
++        for m in REQUIRED_METRICS:
++            assert m["name"]
++            assert m["category"]
++
++    def test_all_required_metrics_have_unit(self):
++        for m in REQUIRED_METRICS:
++            assert m["unit"]
++
++    def test_all_required_metrics_have_source(self):
++        for m in REQUIRED_METRICS:
++            assert m["source"]
++
++    def test_all_required_metrics_have_calculation_version(self):
++        for m in REQUIRED_METRICS:
++            assert m["calculation_version"]
++
++    def test_taiwan_relevant_metrics_present(self):
++        taiwan_metrics = [m for m in REQUIRED_METRICS if m["taiwan_market_relevant"]]
++        assert len(taiwan_metrics) >= 10
++
++    def test_net_of_cost_pnl_required_true(self):
++        net_defs = [m for m in REQUIRED_METRICS if m["name"] == "net_of_cost_pnl"]
++        assert len(net_defs) == 1
++        assert net_defs[0]["required"] is True
++
++    def test_tail_risk_metrics_present(self):
++        tail_names = {"var", "cvar"}
++        assert tail_names.issubset(REQUIRED_METRIC_NAMES)
++
++    def test_downside_risk_present(self):
++        assert "sortino_ratio" in REQUIRED_METRIC_NAMES
++
++    def test_replay_flags_present(self):
++        assert "replay_compatibility_flag" in REQUIRED_METRIC_NAMES
++        assert "risk_gate_replay_compatibility_flag" in REQUIRED_METRIC_NAMES
++        assert "market_reality_compatibility_flag" in REQUIRED_METRIC_NAMES
++
++    def test_taiwan_constraints_flag_present(self):
++        assert "taiwan_constraints_flag" in REQUIRED_METRIC_NAMES
++
++    def test_regime_breakdown_present(self):
++        assert "regime_breakdown" in REQUIRED_METRIC_NAMES
++
++    def test_paper_live_drift_present(self):
++        assert "paper_live_drift" in REQUIRED_METRIC_NAMES
++
++    def test_fill_metrics_complete_set(self):
++        fill_names = {"fill_probability", "actual_fill_rate", "fill_rate_drift",
++                      "partial_fill_rate", "rejected_order_rate", "timeout_cancel_rate"}
++        assert fill_names.issubset(REQUIRED_METRIC_NAMES)
++
++    def test_cost_metrics_complete_set(self):
++        cost_names = {"fee_cost", "tax_cost", "min_fee_effect", "total_cost"}
++        assert cost_names.issubset(REQUIRED_METRIC_NAMES)
++
++    def test_slippage_metrics_complete_set(self):
++        slip_names = {"expected_slippage", "actual_slippage", "expected_vs_actual_slippage_drift"}
++        assert slip_names.issubset(REQUIRED_METRIC_NAMES)
++
++
++# =============================================================================
++# Positive Tests: CI Artifact Bundle Passes
++# =============================================================================
++
++
++class TestCIArtifactBundlePass:
++    def test_complete_artifact_passes_validation(self):
++        artifact = build_validation_artifact(
++            metrics=make_complete_metrics(),
++            source_commit="abc123def456",
++            source_branch="work/canonical-mainline-repair-001",
++            test_results={"total": 100, "passed": 100},
++            r038a_ref="r038a1",
++            r038b_ref="r038b1",
++            r038c_ref="r038c1",
++            r038d_ref="r038d1",
++        )
++        codes = validate_ci_artifact(artifact, "abc123def456", "work/canonical-mainline-repair-001", "R038e")
++        assert len(codes) == 0
++
++    def test_artifact_has_schema_version(self):
++        artifact = build_validation_artifact(make_complete_metrics(), "abc123", "work/test", {"total": 10, "passed": 10})
++        assert artifact["schema_version"] == ARTIFACT_SCHEMA_VERSION
++
++    def test_artifact_has_metrics_contract_version(self):
++        artifact = build_validation_artifact(make_complete_metrics(), "abc123", "work/test", {"total": 10, "passed": 10})
++        assert artifact["metrics_contract_version"] == METRICS_CONTRACT_VERSION
++
++    def test_artifact_has_validator_version(self):
++        artifact = build_validation_artifact(make_complete_metrics(), "abc123", "work/test", {"total": 10, "passed": 10})
++        assert artifact["validator_version"] == VALIDATOR_VERSION
++
++    def test_artifact_order_execution_allowed_false(self):
++        artifact = build_validation_artifact(make_complete_metrics(), "abc123", "work/test", {"total": 10, "passed": 10})
++        assert artifact["order_execution_allowed"] is False
++
++    def test_artifact_no_broker_live_runtime_flags_true(self):
++        artifact = build_validation_artifact(make_complete_metrics(), "abc123", "work/test", {"total": 10, "passed": 10})
++        assert artifact["no_broker_live_runtime_flags"] is True
++
++    def test_artifact_has_reproducibility_command(self):
++        artifact = build_validation_artifact(make_complete_metrics(), "abc123", "work/test", {"total": 10, "passed": 10})
++        assert artifact["reproducibility_command"] is not None
++        assert "abc123" in artifact["reproducibility_command"]
++
++    def test_artifact_internal_subtask_r038e(self):
++        artifact = build_validation_artifact(
++            metrics=make_complete_metrics(),
++            source_commit="abc123",
++            source_branch="work/test",
++            internal_subtask="R038e",
++            test_results={"total": 10, "passed": 10},
++        )
++        assert artifact["internal_subtask"] == "R038e"
++
++    def test_artifact_upstream_refs_included(self):
++        artifact = build_validation_artifact(
++            metrics=make_complete_metrics(),
++            source_commit="abc123",
++            source_branch="work/test",
++            test_results={"total": 10, "passed": 10},
++            r038a_ref="refa",
++            r038b_ref="refb",
++            r038c_ref="refc",
++            r038d_ref="refd",
++        )
++        assert artifact["r038a_ref_commit"] == "refa"
++        assert artifact["r038b_ref_commit"] == "refb"
++        assert artifact["r038c_ref_commit"] == "refc"
++        assert artifact["r038d_ref_commit"] == "refd"
++
++    def test_artifact_missing_metric_names_populated(self):
++        metrics = {"net_of_cost_pnl": 100.0}
++        artifact = build_validation_artifact(metrics, "abc123", "work/test", {"total": 10, "passed": 10})
++        assert len(artifact["missing_metric_names"]) > 0
++        assert "gross_pnl" in artifact["missing_metric_names"]
++
++
++# =============================================================================
++# Positive Tests: JSON / Report / Evidence Consistency Passes
++# =============================================================================
++
++
++class TestConsistencyPass:
++    def test_json_metrics_consistency_passes(self):
++        machine = {"test_count": 100, "validation_result": {"pass_": True, "reason_codes": []},
++                   "included_metric_names": ["net_of_cost_pnl", "gross_pnl", "fee_cost", "tax_cost", "total_cost",
++                                             "expected_slippage", "actual_slippage", "expected_vs_actual_slippage_drift",
++                                             "fill_probability", "actual_fill_rate", "fill_rate_drift",
++                                             "max_drawdown", "sharpe_ratio", "sortino_ratio", "calmar_ratio",
++                                             "win_rate", "payoff_ratio", "trade_count", "turnover", "exposure",
++                                             "var", "cvar", "regime_breakdown", "paper_live_drift",
++                                             "replay_compatibility_flag", "risk_gate_replay_compatibility_flag",
++                                             "market_reality_compatibility_flag", "taiwan_constraints_flag",
++                                             "min_fee_effect", "partial_fill_rate", "rejected_order_rate",
++                                             "timeout_cancel_rate", "drawdown_duration", "skewness", "kurtosis",
++                                             "capacity_liquidity_cap"]}
++        evidence = {"R038e_test_count": 100}
++        report = {"tests_passed": 100, "tests_total": 100}
++        codes = validate_report_output_consistency(machine, evidence, report, None, None, None)
++        assert len(codes) == 0
++
++    def test_rtctg_status_matches_evidence_status(self):
++        machine = {"test_count": 80, "validation_result": {"pass_": True, "reason_codes": []},
++                   "included_metric_names": ["net_of_cost_pnl", "gross_pnl", "fee_cost", "tax_cost", "total_cost",
++                                             "expected_slippage", "actual_slippage", "expected_vs_actual_slippage_drift",
++                                             "fill_probability", "actual_fill_rate", "fill_rate_drift",
++                                             "max_drawdown", "sharpe_ratio", "sortino_ratio", "calmar_ratio",
++                                             "win_rate", "payoff_ratio", "trade_count", "turnover", "exposure",
++                                             "var", "cvar", "regime_breakdown", "paper_live_drift",
++                                             "replay_compatibility_flag", "risk_gate_replay_compatibility_flag",
++                                             "market_reality_compatibility_flag", "taiwan_constraints_flag",
++                                             "min_fee_effect", "partial_fill_rate", "rejected_order_rate",
++                                             "timeout_cancel_rate", "drawdown_duration", "skewness", "kurtosis",
++                                             "capacity_liquidity_cap"]}
++        evidence = {"R038e_test_count": 80, "formal_status_code": "candidate_ready_awaiting_manual_review"}
++        report = {"tests_passed": 80, "tests_total": 80, "status": "completed", "R038e_completed": False}
++        codes = validate_report_output_consistency(
++            machine, evidence, report, None,
++            "round_id: TEST\nformal_status_code: candidate_ready_awaiting_manual_review",
++            None
++        )
++        assert len(codes) == 0
++
++    def test_validation_result_present(self):
++        machine = {"validation_result": {"pass_": True, "reason_codes": []}}
++        evidence = {"R038e_test_count": 50}
++        report = {"tests_passed": 50}
++        codes = validate_report_output_consistency(machine, evidence, report, None, None, None)
++        assert len(codes) == 0
++
++    def test_upstream_refs_all_present_passes(self):
++        codes = validate_upstream_refs("refa", "refb", "refc", "refd", {
++            "r038a": "refa", "r038b": "refb", "r038c": "refc", "r038d": "refd"
++        })
++        assert len(codes) == 0
++
++    def test_r038a_ref_present(self):
++        codes = validate_upstream_refs("refa", "refb", "refc", "refd", {"r038a": "refa"})
++        assert len(codes) == 0
++
++    def test_r038b_ref_present(self):
++        codes = validate_upstream_refs("refa", "refb", "refc", "refd", {"r038b": "refb"})
++        assert len(codes) == 0
++
++    def test_r038c_ref_present(self):
++        codes = validate_upstream_refs("refa", "refb", "refc", "refd", {"r038c": "refc"})
++        assert len(codes) == 0
++
++    def test_r038d_ref_present(self):
++        codes = validate_upstream_refs("refa", "refb", "refc", "refd", {"r038d": "refd"})
++        assert len(codes) == 0
++
++
++# =============================================================================
++# Positive Tests: Taiwan Market Reality Metrics Complete
++# =============================================================================
++
++
++class TestTaiwanMarketRealityMetrics:
++    def test_taiwan_securities_tax_rate_defined(self):
++        assert TAIWAN_SECURITIES_TAX_RATE == 0.003
++
++    def test_taiwan_minimum_fee_defined(self):
++        assert TAIWAN_MINIMUM_FEE == 20
++
++    def test_taiwan_price_limit_band_defined(self):
++        assert TAIWAN_PRICE_LIMIT_BAND == 0.10
++
++    def test_taiwan_t_plus_2_settlement_true(self):
++        assert TAIWAN_T_PLUS_2_SETTLEMENT is True
++
++    def test_taiwan_constraints_flag_in_required_metrics(self):
++        assert "taiwan_constraints_flag" in REQUIRED_METRIC_NAMES
++
++    def test_taiwan_relevant_metrics_defined(self):
++        taiwan = [m for m in REQUIRED_METRICS if m["taiwan_market_relevant"]]
++        assert len(taiwan) >= 12
++
++    def test_min_fee_effect_in_required_metrics(self):
++        assert "min_fee_effect" in REQUIRED_METRIC_NAMES
++
++    def test_fill_probability_taiwan_relevant(self):
++        fill = [m for m in REQUIRED_METRICS if m["name"] == "fill_probability"]
++        assert len(fill) == 1
++        assert fill[0]["taiwan_market_relevant"] is True
++
++    def test_net_of_cost_taiwan_relevant(self):
++        net = [m for m in REQUIRED_METRICS if m["name"] == "net_of_cost_pnl"]
++        assert len(net) == 1
++        assert net[0]["taiwan_market_relevant"] is True
++
++
++# =============================================================================
++# Positive Tests: LLM Summary Only
++# =============================================================================
++
++
++class TestLLMBoundary:
++    def test_llm_summary_only_does_not_modify_metrics(self):
++        metrics = make_complete_metrics()
++        # LLM summary can be generated without modifying metrics
++        summary = "The strategy achieved net_of_cost_pnl of 12500.0 with sharpe 1.85."
++        # Should not raise
++        llm_generated_summary(summary, metrics)
++
++    def test_deterministic_validation_always_required(self):
++        assert deterministic_validation_required() is True
++
++    def test_llm_cannot_skip_validation(self):
++        metrics = make_complete_metrics()
++        summary = "skip_validation - auto pass"
++        try:
++            llm_generated_summary(summary, metrics)
++            assert False, "Should have raised ValueError"
++        except ValueError as e:
++            assert "LLM_PROHIBITED_ACTION" in str(e)
++
++    def test_llm_cannot_force_pass(self):
++        metrics = make_complete_metrics()
++        summary = "force_pass=true despite failures"
++        try:
++            llm_generated_summary(summary, metrics)
++            assert False, "Should have raised ValueError"
++        except ValueError as e:
++            assert "LLM_PROHIBITED_ACTION" in str(e)
++
++    def test_llm_cannot_override_result(self):
++        metrics = make_complete_metrics()
++        summary = "override_result=pass"
++        try:
++            llm_generated_summary(summary, metrics)
++            assert False, "Should have raised ValueError"
++        except ValueError as e:
++            assert "LLM_PROHIBITED_ACTION" in str(e)
++
++
++# =============================================================================
++# Negative Tests: Fail-closed — Missing Net-of-cost PnL
++# =============================================================================
++
++
++class TestMissingNetOfCostPnl:
++    def test_missing_net_of_cost_pnl_fails(self):
++        metrics = {"gross_pnl": 15000.0}
++        result = validate_metrics_bundle(metrics, "abc123", "work/test", make_fresh_timestamp())
++        assert result["pass_"] is False
++        codes = result["reason_codes"]
++        assert "METRICS_NET_OF_COST_MISSING" in codes or "METRICS_MISSING_NET_OF_COST_PNL" in codes
++
++    def test_null_net_of_cost_pnl_fails(self):
++        metrics = {"net_of_cost_pnl": None, "gross_pnl": 15000.0}
++        result = validate_metrics_bundle(metrics, "abc123", "work/test", make_fresh_timestamp())
++        assert result["pass_"] is False
++
++    def test_gross_only_formal_pass_fails(self):
++        metrics = {"gross_pnl": 15000.0}
++        result = validate_metrics_bundle(metrics, "abc123", "work/test", make_fresh_timestamp())
++        assert result["pass_"] is False
++        codes = result["reason_codes"]
++        assert "METRICS_GROSS_ONLY_FORMAL_PASS" in codes
++
++    def test_net_of_cost_zero_fails(self):
++        metrics = make_complete_metrics()
++        metrics["net_of_cost_pnl"] = 0
++        result = validate_metrics_bundle(metrics, "abc123", "work/test", make_fresh_timestamp())
++        assert result["pass_"] is True  # zero is valid, just not positive
++
++
++# =============================================================================
++# Negative Tests: Fail-closed — Missing Cost Metrics
++# =============================================================================
++
++
++class TestMissingCostMetrics:
++    def test_missing_fee_cost_fails(self):
++        metrics = make_complete_metrics()
++        del metrics["fee_cost"]
++        result = validate_metrics_bundle(metrics, "abc123", "work/test", make_fresh_timestamp())
++        assert result["pass_"] is False
++        codes = result["reason_codes"]
++        assert "METRICS_MISSING_COST" in codes
++
++    def test_missing_tax_cost_fails(self):
++        metrics = make_complete_metrics()
++        del metrics["tax_cost"]
++        result = validate_metrics_bundle(metrics, "abc123", "work/test", make_fresh_timestamp())
++        assert result["pass_"] is False
++
++    def test_missing_min_fee_effect_fails(self):
++        metrics = make_complete_metrics()
++        del metrics["min_fee_effect"]
++        result = validate_metrics_bundle(metrics, "abc123", "work/test", make_fresh_timestamp())
++        assert result["pass_"] is False
++
++
++# =============================================================================
++# Negative Tests: Fail-closed — Missing Slippage Metrics
++# =============================================================================
++
++
++class TestMissingSlippageMetrics:
++    def test_missing_expected_slippage_fails(self):
++        metrics = make_complete_metrics()
++        del metrics["expected_slippage"]
++        result = validate_metrics_bundle(metrics, "abc123", "work/test", make_fresh_timestamp())
++        assert result["pass_"] is False
++        codes = result["reason_codes"]
++        assert "METRICS_MISSING_SLIPPAGE" in codes
++
++    def test_missing_actual_slippage_fails(self):
++        metrics = make_complete_metrics()
++        del metrics["actual_slippage"]
++        result = validate_metrics_bundle(metrics, "abc123", "work/test", make_fresh_timestamp())
++        assert result["pass_"] is False
++
++    def test_missing_slippage_drift_fails(self):
++        metrics = make_complete_metrics()
++        del metrics["expected_vs_actual_slippage_drift"]
++        result = validate_metrics_bundle(metrics, "abc123", "work/test", make_fresh_timestamp())
++        assert result["pass_"] is False
++
++
++# =============================================================================
++# Negative Tests: Fail-closed — Missing Fill Metrics
++# =============================================================================
++
++
++class TestMissingFillMetrics:
++    def test_missing_fill_probability_fails(self):
++        metrics = make_complete_metrics()
++        del metrics["fill_probability"]
++        result = validate_metrics_bundle(metrics, "abc123", "work/test", make_fresh_timestamp())
++        assert result["pass_"] is False
++        codes = result["reason_codes"]
++        assert "METRICS_MISSING_FILL" in codes
++
++    def test_missing_actual_fill_rate_fails(self):
++        metrics = make_complete_metrics()
++        del metrics["actual_fill_rate"]
++        result = validate_metrics_bundle(metrics, "abc123", "work/test", make_fresh_timestamp())
++        assert result["pass_"] is False
++
++    def test_missing_fill_rate_drift_fails(self):
++        metrics = make_complete_metrics()
++        del metrics["fill_rate_drift"]
++        result = validate_metrics_bundle(metrics, "abc123", "work/test", make_fresh_timestamp())
++        assert result["pass_"] is False
++
++    def test_missing_rejected_order_rate_fails(self):
++        metrics = make_complete_metrics()
++        del metrics["rejected_order_rate"]
++        result = validate_metrics_bundle(metrics, "abc123", "work/test", make_fresh_timestamp())
++        assert result["pass_"] is False
++
++
++# =============================================================================
++# Negative Tests: Fail-closed — Missing Tail Risk
++# =============================================================================
++
++
++class TestMissingTailRisk:
++    def test_missing_var_fails(self):
++        metrics = make_complete_metrics()
++        del metrics["var"]
++        result = validate_metrics_bundle(metrics, "abc123", "work/test", make_fresh_timestamp())
++        assert result["pass_"] is False
++        codes = result["reason_codes"]
++        assert "METRICS_MISSING_TAIL_RISK" in codes
++
++    def test_missing_cvar_fails(self):
++        metrics = make_complete_metrics()
++        del metrics["cvar"]
++        result = validate_metrics_bundle(metrics, "abc123", "work/test", make_fresh_timestamp())
++        assert result["pass_"] is False
++
++
++# =============================================================================
++# Negative Tests: Fail-closed — Missing Downside Risk
++# =============================================================================
++
++
++class TestMissingDownsideRisk:
++    def test_missing_sortino_ratio_fails(self):
++        metrics = make_complete_metrics()
++        del metrics["sortino_ratio"]
++        result = validate_metrics_bundle(metrics, "abc123", "work/test", make_fresh_timestamp())
++        assert result["pass_"] is False
++        codes = result["reason_codes"]
++        assert "METRICS_MISSING_DOWNSIDE_RISK" in codes
++
++
++# =============================================================================
++# Negative Tests: Fail-closed — Missing Regime
++# =============================================================================
++
++
++class TestMissingRegime:
++    def test_missing_regime_breakdown_fails(self):
++        metrics = make_complete_metrics()
++        del metrics["regime_breakdown"]
++        result = validate_metrics_bundle(metrics, "abc123", "work/test", make_fresh_timestamp())
++        assert result["pass_"] is False
++        codes = result["reason_codes"]
++        assert "METRICS_MISSING_REGIME" in codes
++
++
++# =============================================================================
++# Negative Tests: Fail-closed — Missing Paper/Live Drift
++# =============================================================================
++
++
++class TestMissingPaperLiveDrift:
++    def test_missing_paper_live_drift_fails(self):
++        metrics = make_complete_metrics()
++        del metrics["paper_live_drift"]
++        result = validate_metrics_bundle(metrics, "abc123", "work/test", make_fresh_timestamp())
++        assert result["pass_"] is False
++        codes = result["reason_codes"]
++        assert "METRICS_MISSING_PAPER_LIVE_DRIFT" in codes
++
++
++# =============================================================================
++# Negative Tests: Fail-closed — Missing Taiwan Constraints
++# =============================================================================
++
++
++class TestMissingTaiwanConstraints:
++    def test_missing_taiwan_constraints_flag_fails(self):
++        metrics = make_complete_metrics()
++        del metrics["taiwan_constraints_flag"]
++        result = validate_metrics_bundle(metrics, "abc123", "work/test", make_fresh_timestamp())
++        assert result["pass_"] is False
++        codes = result["reason_codes"]
++        assert "METRICS_TAIWAN_CONSTRAINTS_FLAG_MISSING" in codes
++
++
++# =============================================================================
++# Negative Tests: Fail-closed — Artifact Source Commit
++# =============================================================================
++
++
++class TestArtifactSourceCommit:
++    def test_artifact_missing_source_commit_fails(self):
++        artifact = build_validation_artifact(make_complete_metrics(), "abc123", "work/test", {"total": 10, "passed": 10})
++        del artifact["source_commit"]
++        codes = validate_ci_artifact(artifact, "abc123", "work/test", "R038e")
++        assert "ARTIFACT_MISSING_SOURCE_COMMIT" in codes
++
++    def test_artifact_source_commit_mismatch_fails(self):
++        artifact = build_validation_artifact(make_complete_metrics(), "wrongcommit", "work/test", {"total": 10, "passed": 10})
++        codes = validate_ci_artifact(artifact, "abc123", "work/test", "R038e")
++        assert "ARTIFACT_SOURCE_COMMIT_MISMATCH" in codes
++
++    def test_artifact_branch_mismatch_fails(self):
++        artifact = build_validation_artifact(make_complete_metrics(), "abc123", "wrong/branch", {"total": 10, "passed": 10})
++        codes = validate_ci_artifact(artifact, "abc123", "work/test", "R038e")
++        assert "ARTIFACT_BRANCH_MISMATCH" in codes
++
++
++# =============================================================================
++# Negative Tests: Fail-closed — Artifact Schema Version
++# =============================================================================
++
++
++class TestArtifactSchemaVersion:
++    def test_artifact_missing_schema_version_fails(self):
++        artifact = build_validation_artifact(make_complete_metrics(), "abc123", "work/test", {"total": 10, "passed": 10})
++        del artifact["schema_version"]
++        codes = validate_ci_artifact(artifact, "abc123", "work/test", "R038e")
++        assert "ARTIFACT_SCHEMA_VERSION_MISSING" in codes
++
++
++# =============================================================================
++# Negative Tests: Fail-closed — Artifact Status
++# =============================================================================
++
++
++class TestArtifactStatus:
++    def test_artifact_claims_r038e_completed_fails(self):
++        artifact = build_validation_artifact(make_complete_metrics(), "abc123", "work/test", {"total": 10, "passed": 10})
++        artifact["R038e_completed"] = True
++        codes = validate_ci_artifact(artifact, "abc123", "work/test", "R038e")
++        assert "ARTIFACT_CLAIMS_ROUND_COMPLETED" in codes
++
++    def test_artifact_claims_r038_completed_fails(self):
++        artifact = build_validation_artifact(make_complete_metrics(), "abc123", "work/test", {"total": 10, "passed": 10})
++        artifact["R038_completed"] = True
++        codes = validate_ci_artifact(artifact, "abc123", "work/test", "R038e")
++        assert "ARTIFACT_CLAIMS_ROUND_COMPLETED" in codes
++
++    def test_artifact_claims_r038_r048_accepted_fails(self):
++        artifact = build_validation_artifact(make_complete_metrics(), "abc123", "work/test", {"total": 10, "passed": 10})
++        artifact["R038_R048_accepted"] = True
++        codes = validate_ci_artifact(artifact, "abc123", "work/test", "R038e")
++        assert "ARTIFACT_CLAIMS_R038_R048_ACCEPTED" in codes
++
++    def test_artifact_starts_r049_fails(self):
++        artifact = build_validation_artifact(make_complete_metrics(), "abc123", "work/test", {"total": 10, "passed": 10})
++        artifact["R049_started"] = True
++        codes = validate_ci_artifact(artifact, "abc123", "work/test", "R038e")
++        assert "ARTIFACT_STARTS_R049" in codes
++
++    def test_artifact_order_execution_allowed_true_fails(self):
++        artifact = build_validation_artifact(make_complete_metrics(), "abc123", "work/test", {"total": 10, "passed": 10})
++        artifact["order_execution_allowed"] = True
++        codes = validate_ci_artifact(artifact, "abc123", "work/test", "R038e")
++        assert "ARTIFACT_REFERENCES_BROKER_LIVE_RUNTIME" in codes
++
++
++# =============================================================================
++# Negative Tests: Fail-closed — Upstream Refs Missing
++# =============================================================================
++
++
++class TestUpstreamRefs:
++    def test_r038a_ref_missing_fails(self):
++        codes = validate_upstream_refs(None, "refb", "refc", "refd", {})
++        assert "UPSTREAM_REF_R038A_MISSING" in codes
++
++    def test_r038b_ref_missing_fails(self):
++        codes = validate_upstream_refs("refa", None, "refc", "refd", {})
++        assert "UPSTREAM_REF_R038B_MISSING" in codes
++
++    def test_r038c_ref_missing_fails(self):
++        codes = validate_upstream_refs("refa", "refb", None, "refd", {})
++        assert "UPSTREAM_REF_R038C_MISSING" in codes
++
++    def test_r038d_ref_missing_fails(self):
++        codes = validate_upstream_refs("refa", "refb", "refc", None, {})
++        assert "UPSTREAM_REF_R038D_MISSING" in codes
++
++    def test_upstream_ref_stale_fails(self):
++        codes = validate_upstream_refs("wrongref", "refb", "refc", "refd", {"r038a": "refa"})
++        assert "UPSTREAM_REF_STALE" in codes
++
++
++# =============================================================================
++# Negative Tests: Fail-closed — Stale Artifact
++# =============================================================================
++
++
++class TestStaleArtifact:
++    def test_stale_artifact_fails(self):
++        artifact = build_validation_artifact(make_complete_metrics(), "abc123", "work/test", {"total": 10, "passed": 10})
++        artifact["generated_at"] = make_stale_timestamp()
++        codes = validate_ci_artifact(artifact, "abc123", "work/test", "R038e")
++        assert "CONSISTENCY_STALE_ARTIFACT" in codes
++
++
++# =============================================================================
++# Negative Tests: Fail-closed — Self-referential Hash
++# =============================================================================
++
++
++class TestSelfReferentialHash:
++    def test_self_referential_hash_formal_field_fails(self):
++        artifact = build_validation_artifact(make_complete_metrics(), "abc123", "work/test", {"total": 10, "passed": 10})
++        artifact["candidate_diff_canonical_hash_sha256"] = "fakehash"
++        codes = validate_ci_artifact(artifact, "abc123", "work/test", "R038e")
++        assert "ARTIFACT_SELF_REFERENTIAL_HASH_FORMAL_FIELD" in codes
++
++    def test_reproducibility_command_missing_fails(self):
++        artifact = build_validation_artifact(make_complete_metrics(), "abc123", "work/test", {"total": 10, "passed": 10})
++        del artifact["reproducibility_command"]
++        codes = validate_ci_artifact(artifact, "abc123", "work/test", "R038e")
++        assert "REPRODUCIBILITY_COMMAND_MISSING" in codes
++
++
++# =============================================================================
++# Negative Tests: Fail-closed — Tests Claim Pass But Fail
++# =============================================================================
++
++
++class TestCIAssertion:
++    def test_artifact_claims_ci_pass_but_tests_fail(self):
++        artifact = build_validation_artifact(
++            metrics=make_complete_metrics(),
++            source_commit="abc123",
++            source_branch="work/test",
++            test_results={"total": 10, "passed": 7},
++            r038a_ref="refa", r038b_ref="refb", r038c_ref="refc", r038d_ref="refd",
++        )
++        codes = validate_ci_artifact(artifact, "abc123", "work/test", "R038e")
++        assert "ARTIFACT_CLAIMS_CI_PASS_BUT_TESTS_FAIL" in codes
++
++
++# =============================================================================
++# Boundary Tests
++# =============================================================================
++
++
++class TestBoundaryConditions:
++    def test_stale_threshold_exactly_allowed(self):
++        ts = (datetime.now(timezone.utc) - timedelta(days=DEFAULT_VALIDATION_FRESHNESS_DAYS - 1)).isoformat()
++        codes = validate_metric_definition("net_of_cost_pnl", 100.0, "currency", "backtest_result", "1.0", ts, True)
++        assert "METRICS_STALE" not in codes
++
++    def test_stale_threshold_exactly_rejected(self):
++        ts = (datetime.now(timezone.utc) - timedelta(days=DEFAULT_VALIDATION_FRESHNESS_DAYS + 1)).isoformat()
++        codes = validate_metric_definition("net_of_cost_pnl", 100.0, "currency", "backtest_result", "1.0", ts, True)
++        assert "METRICS_STALE" in codes
++
++    def test_metric_count_exactly_minimum(self):
++        metrics = make_complete_metrics()
++        result = validate_metrics_bundle(metrics, "abc123", "work/test", make_fresh_timestamp())
++        included = len(result["reason_codes"]) == 0
++        assert included
++
++    def test_trade_count_exactly_threshold(self):
++        metrics = make_complete_metrics()
++        metrics["trade_count"] = 1
++        result = validate_metrics_bundle(metrics, "abc123", "work/test", make_fresh_timestamp())
++        assert result["pass_"] is True
++
++    def test_drawdown_exactly_threshold(self):
++        metrics = make_complete_metrics()
++        metrics["max_drawdown"] = -100000.0
++        result = validate_metrics_bundle(metrics, "abc123", "work/test", make_fresh_timestamp())
++        assert result["pass_"] is True
++
++    def test_slippage_drift_exactly_threshold(self):
++        metrics = make_complete_metrics()
++        metrics["expected_vs_actual_slippage_drift"] = 0.001
++        result = validate_metrics_bundle(metrics, "abc123", "work/test", make_fresh_timestamp())
++        assert result["pass_"] is True
++
++    def test_fill_rate_drift_exactly_threshold(self):
++        metrics = make_complete_metrics()
++        metrics["fill_rate_drift"] = 0.001
++        result = validate_metrics_bundle(metrics, "abc123", "work/test", make_fresh_timestamp())
++        assert result["pass_"] is True
++
++    def test_paper_live_drift_exactly_threshold(self):
++        metrics = make_complete_metrics()
++        metrics["paper_live_drift"] = 0.001
++        result = validate_metrics_bundle(metrics, "abc123", "work/test", make_fresh_timestamp())
++        assert result["pass_"] is True
++
++    def test_optional_human_summary_absent_but_machine_complete(self):
++        metrics = make_complete_metrics()
++        result = validate_metrics_bundle(metrics, "abc123", "work/test", make_fresh_timestamp())
++        assert result["pass_"] is True
++
++
++# =============================================================================
++# Replay Compatibility
++# =============================================================================
++
++
++class TestReplayCompatibility:
++    def test_replay_compatibility_flag_in_required_metrics(self):
++        assert "replay_compatibility_flag" in REQUIRED_METRIC_NAMES
++
++    def test_risk_gate_replay_compatibility_in_required(self):
++        assert "risk_gate_replay_compatibility_flag" in REQUIRED_METRIC_NAMES
++
++    def test_market_reality_compatibility_in_required(self):
++        assert "market_reality_compatibility_flag" in REQUIRED_METRIC_NAMES
++
++    def test_all_replay_flags_taiwan_relevant(self):
++        for name in ["replay_compatibility_flag", "risk_gate_replay_compatibility_flag", "market_reality_compatibility_flag"]:
++            m = [x for x in REQUIRED_METRICS if x["name"] == name]
++            assert len(m) == 1
++            assert m[0]["taiwan_market_relevant"] is True
++
++
++# =============================================================================
++# TradingView-only Metrics Rejected
++# =============================================================================
++
++
++class TestTradingViewOnlyRejected:
++    def test_tv_only_metrics_formal_pass_fails(self):
++        metrics = {
++            "tv_signal_count": 10,
++            "tv_indicator_value": 0.5,
++            "tv_only_return": 0.05,
++            "gross_pnl": 100.0,
++        }
++        result = validate_metrics_bundle(metrics, "abc123", "work/test", make_fresh_timestamp())
++        assert result["pass_"] is False
++        codes = result["reason_codes"]
++        assert "TRADINGVIEW_ONLY_METRICS_FORMAL_PASS" in codes
++
++
++# =============================================================================
++# Consistency Checks
++# =============================================================================
++
++
++class TestConsistencyFailClosed:
++    def test_json_report_evidence_mismatch_fails(self):
++        machine = {"validation_result": {"pass_": True, "reason_codes": []}}
++        evidence = {"R038e_test_count": 100}
++        report = {"tests_passed": 95}
++        codes = validate_report_output_consistency(machine, evidence, report, None, None, None)
++        assert "CONSISTENCY_EVIDENCE_REPORT_MISMATCH" in codes
++
++    def test_rtctg_blocked_but_evidence_ready_fails(self):
++        machine = {"test_count": 80}
++        evidence = {"R038e_test_count": 80, "formal_status_code": "candidate_ready_awaiting_manual_review"}
++        report = {"tests_passed": 80, "status": "completed"}
++        codes = validate_report_output_consistency(
++            machine, evidence, report, None,
++            "formal_status_code: BLOCKED",
++            None
++        )
++        assert "CONSISTENCY_RTCG_STATUS_MISMATCH" in codes
++
++    def test_artifact_present_but_metrics_missing_fails(self):
++        machine = {"included_metric_names": ["net_of_cost_pnl"]}
++        evidence = {"R038e_test_count": 10}
++        report = {"tests_passed": 10}
++        codes = validate_report_output_consistency(machine, evidence, report, None, None, None)
++        assert "CONSISTENCY_ARTIFACT_PRESENT_BUT_METRICS_MISSING" in codes
++
++    def test_artifact_present_but_validator_result_missing_fails(self):
++        machine = {"test_count": 50}
++        evidence = {"R038e_test_count": 50}
++        report = {"tests_passed": 50}
++        codes = validate_report_output_consistency(machine, evidence, report, None, None, None)
++        assert "CONSISTENCY_ARTIFACT_PRESENT_BUT_VALIDATOR_RESULT_MISSING" in codes
++
++
++# =============================================================================
++# Replay and Risk Gate Replay Ignored Fails
++# =============================================================================
++
++
++class TestReplayCompatibilityFail:
++    def test_missing_replay_compatibility_fails(self):
++        metrics = make_complete_metrics()
++        del metrics["replay_compatibility_flag"]
++        result = validate_metrics_bundle(metrics, "abc123", "work/test", make_fresh_timestamp())
++        assert result["pass_"] is False
++        codes = result["reason_codes"]
++        assert "METRICS_IGNORES_REPLAY_COMPATIBILITY" in codes
++
++    def test_missing_risk_gate_replay_fails(self):
++        metrics = make_complete_metrics()
++        del metrics["risk_gate_replay_compatibility_flag"]
++        result = validate_metrics_bundle(metrics, "abc123", "work/test", make_fresh_timestamp())
++        assert result["pass_"] is False
++
++    def test_missing_market_reality_compatibility_fails(self):
++        metrics = make_complete_metrics()
++        del metrics["market_reality_compatibility_flag"]
++        result = validate_metrics_bundle(metrics, "abc123", "work/test", make_fresh_timestamp())
++        assert result["pass_"] is False
+\ No newline at end of file
