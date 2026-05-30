@@ -1,0 +1,20 @@
+{
+  "round_id": "R038",
+  "task_type": "r038c_l5_l9_validation_chain_candidate",
+  "status": "completed",
+  "summary": "R038c L5-L9 validation chain candidate: 58 fail-closed reason codes, 5-level gate architecture, 94 tests (66 negative/fail-closed, 7 boundary, 4 integration, 14 positive), CICDVerificationChain integration, order_execution_allowed=FALSE",
+  "tests_total": 94,
+  "tests_passed": 94,
+  "negative_fail_closed_tests": 66,
+  "boundary_tests": 7,
+  "integration_tests": 4,
+  "reason_codes_defined": 58,
+  "all_pass": true,
+  "canonical_branch": "work/canonical-mainline-repair-001",
+  "canonical_head": "a063ad0b2395306e3bb10b26f9689b8fdaa04b1d",
+  "test_file": "tests/test_r038c_l5_l9_validation_chain.py",
+  "source_file": "modules/decision_prechecklist/l5_l9_validation_chain.py",
+  "R038c_completed": false,
+  "order_execution_allowed": false,
+  "no_broker_live_order_pollution": true
+}

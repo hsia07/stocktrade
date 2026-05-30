@@ -1,0 +1,2 @@
+This candidate was constructed by opencode-agent directly, without Aider.
+All source code, tests, evidence package, and governance records were written by opencode-agent using file read/write/edit tools.
