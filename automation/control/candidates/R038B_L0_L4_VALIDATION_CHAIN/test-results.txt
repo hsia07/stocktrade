@@ -9,4 +9,6 @@ Breakdown:
   Boundary tests: 7
   Integration (CICDVerificationChain) tests: 4
   Enum/constant tests: 7
-  New in blocker rework: test_l0_order_fill_pnl_schema_incompatible_fails
+
+Note: This is an evidence metadata fix candidate. No source/tests modified.
+All 66 R038b tests continue to pass (unchanged from blocker rework).
