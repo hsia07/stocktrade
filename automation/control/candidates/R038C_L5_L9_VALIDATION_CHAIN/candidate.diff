@@ -1,0 +1,2100 @@
+diff --git a/automation/control/candidates/R038C_L5_L9_VALIDATION_CHAIN/RETURN_TO_CHATGPT.txt b/automation/control/candidates/R038C_L5_L9_VALIDATION_CHAIN/RETURN_TO_CHATGPT.txt
+new file mode 100644
+index 0000000..dfd3322
+--- /dev/null
++++ b/automation/control/candidates/R038C_L5_L9_VALIDATION_CHAIN/RETURN_TO_CHATGPT.txt
+@@ -0,0 +1,94 @@
++round_id: R038C_METADATA_REWORK_DIRTY_CANDIDATE_DIFF_REPAIR
++task_type: r038c_dirty_candidate_diff_repair
++formal_status_code: candidate_ready_awaiting_manual_review
++base_head: a063ad0b2395306e3bb10b26f9689b8fdaa04b1d
++candidate_branch: candidate/r038c-l5-l9-validation-chain
++
++R038C_METADATA_REWORK_DIRTY_CANDIDATE_DIFF_REPAIR
++===================================================
++
++Current state:
++  R038c metadata count rework: complete.
++  Pre-repair candidate HEAD: 4b2ee4a59e8dd9979a4c65a5ed412c27fc4cd354
++  candidate.diff was unstaged: True
++  candidate.diff regenerated, staged, and committed: True
++  git clean after amend: True
++  candidate since base: 1 commit
++
++Evidence metadata counts verified:
++  negative_fail_closed_tests_count: 66
++  l7_gate_test_count: 11
++  l8_gate_test_count: 11
++  R038c_test_count: 94
++
++candidate_head_self_reference_policy: not_stored_inside_same_commit
++candidate_head_reason: git commit hash changes when evidence files are amended; candidate.diff represents diff of logical candidate content at commit time.
++
++Safety flags:
++- order_execution_allowed: FALSE
++- broker_api_called: FALSE
++- trading_runtime_started: FALSE
++- R038c_completed: FALSE (internal subtask only, not authorized for R038 completed)
++- no_live_order_path: TRUE
++- no_server_v2_wiring: TRUE
++- no_index_v2_wiring: TRUE
++
++Verification:
++- R038c tests: 94/94 PASS
++- CICD tests: 9/9 PASS (plus 13 r038c CICD tests)
++- candidate.diff: UTF-8 without BOM
++- evidence checker: PASS (after RETURN_TO_CHATGPT.txt marker fix)
++- validate-canonical-repair: PASS
++
++R038c_test_count: 94
++negative_fail_closed_test_count: 66
++l5_gate_test_count: 16
++l6_gate_test_count: 11
++l7_gate_test_count: 11
++l8_gate_test_count: 11
++l9_gate_test_count: 13
++general_gate_test_count: 4
++boundary_test_count: 7
++integration_test_count: 4
++
++R038c_source_modified: True
++R038a_source_modified: False
++R038b_source_modified: False
++R038c_R038g_modified: True
++tests_modified: True
++manifest_modified: False
++validator_files_modified: False
++workflow_files_modified: False
++law_files_modified: False
++server_v2_modified: False
++index_v2_modified: False
++env_files_modified: False
++secret_value_exposed: False
++broker_live_order_pollution: False
++
++R038c_completed: False
++R038_completed: False
++R038_R048_accepted: False
++R049_started: False
++broker_api_called: False
++trading_runtime_started: False
++order_execution_allowed: False
++
++candidate_commit_count_since_base: 1
++merge_executed: False
++push_executed: False
++workflow_rerun: False
++force_push_used: False
++no_verify_used: False
++
++recommended_next_action: AWAITING_MANUAL_REVIEW_FOR_R038C_L5_L9_VALIDATION_CHAIN_REWORKED_CLEAN_CANDIDATE
++
++final_recommendation:
++- DO_NOT_START_R049
++- DO_NOT_ACCEPT_R038_R048_YET
++- DO_NOT_MARK_R038_COMPLETED
++- DO_NOT_START_R038D_WITHOUT_USER_AUTHORIZATION
++- DO_NOT_MERGE_WITHOUT_USER_SIGNOFF
++- DO_NOT_PUSH_WITHOUT_USER_SIGNOFF
++- R038C_ONLY_NEXT
++- ORDER_EXECUTION_ALLOWED_REMAINS_FALSE
+diff --git a/automation/control/candidates/R038C_L5_L9_VALIDATION_CHAIN/evidence.json b/automation/control/candidates/R038C_L5_L9_VALIDATION_CHAIN/evidence.json
+new file mode 100644
+index 0000000..6dea7b5
+--- /dev/null
++++ b/automation/control/candidates/R038C_L5_L9_VALIDATION_CHAIN/evidence.json
+@@ -0,0 +1,121 @@
++{
++  "schema_version": "1.0",
++  "round_id": "R038",
++  "official_topic": "蝑 CI/CD 撽???,
++  "task_type": "r038c_l5_l9_validation_chain_candidate",
++  "internal_subtask": "R038c",
++  "internal_subtask_only": true,
++  "candidate_head_self_reference_policy": "not_stored_inside_same_commit",
++  "candidate_head": null,
++  "base_head": "a063ad0b2395306e3bb10b26f9689b8fdaa04b1d",
++  "source_construction_performed_now": true,
++  "source_files_modified": true,
++  "R038c_source_modified": true,
++  "R038a_source_modified": false,
++  "R038b_source_modified": false,
++  "R038c_R038g_modified": true,
++  "tests_modified": true,
++  "manifest_modified": false,
++  "validator_files_modified": false,
++  "workflow_files_modified": false,
++  "R038_completed": false,
++  "R038_full_construction_completed": false,
++  "R038c_completed": false,
++  "R038_R048_accepted": false,
++  "R049_started": false,
++  "broker_api_called": false,
++  "trading_runtime_started": false,
++  "order_execution_allowed": false,
++  "no_live_order_path": true,
++  "no_server_v2_wiring": true,
++  "no_index_v2_wiring": true,
++  "law_compliance": "04",
++  "evidence_files": [
++    "evidence.json",
++    "RETURN_TO_CHATGPT.txt",
++    "task.txt",
++    "report.json",
++    "candidate.diff",
++    "no-aider-used.txt",
++    "test-results.txt"
++  ],
++  "gate_validators": {
++    "l5_walk_forward_oos": {
++      "final_out_of_sample_period": "L5_FINAL_OOS_PERIOD_MISSING",
++      "oos_window_count": ["L5_OOS_WINDOWS_MISSING", "L5_OOS_WINDOW_COUNT_BELOW_THRESHOLD"],
++      "no_training_overlap_with_oos": "L5_TRAIN_TEST_OVERLAP",
++      "no_future_leak": "L5_FUTURE_LEAK",
++      "as_of_replay_compatible": "L5_AS_OF_REPLAY_NOT_COMPATIBLE",
++      "net_of_cost_oos_result": ["L5_OOS_RESULT_GROSS_ONLY", "L5_OOS_NEGATIVE_AFTER_COST"],
++      "cost_model_version": "L5_COST_MODEL_MISSING",
++      "slippage_model_version": "L5_SLIPPAGE_MODEL_MISSING",
++      "market_reality_compatible": "L5_MARKET_REALITY_NOT_COMPATIBLE",
++      "risk_gate_replay_compatible": "L5_RISK_GATE_REPLAY_NOT_COMPATIBLE",
++      "evidence_source_tradingview_only": "L5_TRADINGVIEW_ONLY"
++    },
++    "l6_regime_segmentation": {
++      "regime_count": "L6_SINGLE_REGIME_ONLY",
++      "regime_labels": "L6_REGIME_LABELS_MISSING",
++      "per_regime_sample_count": "L6_INSUFFICIENT_SAMPLES_PER_REGIME",
++      "per_regime_net_of_cost_result": "L6_PER_REGIME_RESULT_GROSS_ONLY",
++      "aggregate_only_hides_failed": "L6_AGGREGATE_ONLY_HIDES_FAILED",
++      "hindsight_regime_smoothed": "L6_HINDSIGHT_REGIME_FOR_LIVE",
++      "offline_vs_online_filter_declared": "L6_ONLINE_FILTER_POSTERIOR_MISSING",
++      "regime_uncertainty_policy": "L6_UNCERTAINTY_THRESHOLD_MISSING",
++      "market_reality_per_regime": "L6_REGIME_MARKET_REALITY_NOT_COMPATIBLE"
++    },
++    "l7_combinatorial_purged_cv": {
++      "combinatorial_split_count": "L7_COMBO_SPLIT_COUNT_BELOW_THRESHOLD",
++      "fold_count": "L7_FOLD_COUNT_BELOW_THRESHOLD",
++      "purge_window": "L7_PURGE_WINDOW_MISSING",
++      "embargo_window": "L7_EMBARGO_WINDOW_MISSING",
++      "time_series_order_preserved": "L7_TIME_SERIES_ORDER_NOT_PRESERVED",
++      "overlapping_label_protection": "L7_LABEL_OVERLAP_LEAKAGE",
++      "leakage_gap_declared": "L7_LEAKAGE_GAP_NOT_DECLARED",
++      "per_fold_net_of_cost_result": "L7_PER_FOLD_RESULT_GROSS_ONLY",
++      "cost_slippage_omitted": "L7_COST_SLIPPAGE_OMITTED_FROM_FOLDS"
++    },
++    "l8_psr_reality_check_spa": {
++      "probabilistic_sharpe_ratio": "L8_PSR_MISSING",
++      "reality_check_p_value": "L8_REALITY_CHECK_MISSING",
++      "benchmark_or_baseline": "L8_BENCHMARK_BASELINE_MISSING",
++      "multiple_testing_adjusted_p_value": ["L8_ADJUSTED_P_VALUE_MISSING", "L8_ADJUSTED_P_ABOVE_THRESHOLD"],
++      "bootstrap_or_resampling_method": "L8_BOOTSTRAP_METHOD_MISSING",
++      "trade_count": "L8_INSUFFICIENT_TRADE_COUNT",
++      "non_normality_adjustment": "L8_TAIL_RISK_IGNORED",
++      "net_of_cost_metric": "L8_GROSS_METRIC_USED",
++      "raw_sharpe_only": "L8_RAW_SHARPE_ONLY"
++    },
++    "l9_paper_trading_readiness": {
++      "paper_duration_months": "L9_PAPER_DURATION_BELOW_MINIMUM",
++      "paper_trading_days": "L9_INSUFFICIENT_TRADING_DAYS",
++      "paper_trade_count": "L9_INSUFFICIENT_PAPER_TRADES",
++      "paper_net_of_cost_pnl": "L9_PAPER_NET_OF_COST_MISSING",
++      "slippage_drift": "L9_SLIPPAGE_DRIFT_OVER_THRESHOLD",
++      "fill_rate_drift": "L9_FILL_RATE_DRIFT_OVER_THRESHOLD",
++      "paper_live_drift_policy": "L9_PAPER_LIVE_DRIFT_POLICY_MISSING",
++      "strategy_ttl_expiry": "L9_STRATEGY_TTL_EXPIRY_MISSING",
++      "revalidation_before_live": "L9_REVALIDATION_BEFORE_LIVE_MISSING",
++      "human_approval_for_live": "L9_HUMAN_APPROVAL_MISSING",
++      "no_live_order_path": "L9_LIVE_ORDER_PATH_PRESENT",
++      "order_execution_allowed": "L9_ORDER_EXECUTION_ALLOWED_TRUE"
++    },
++    "general_compatibility": {
++      "replay_compatible": "GENERAL_MISSING_REPLAY_COMPATIBILITY",
++      "risk_gate_replay_compatible": "GENERAL_MISSING_RISK_GATE_REPLAY_COMPATIBILITY",
++      "order_execution_allowed": "GENERAL_ORDER_EXECUTION_ALLOWED_NOT_FALSE"
++    }
++  },
++  "fail_closed_reason_code_count": 58,
++  "R038c_test_count": 94,
++    "negative_fail_closed_test_count": 66,
++  "l5_gate_test_count": 16,
++  "l6_gate_test_count": 11,
++    "l7_gate_test_count": 11,
++    "l8_gate_test_count": 11,
++  "l9_gate_test_count": 13,
++  "general_gate_test_count": 4,
++  "boundary_test_count": 7,
++  "integration_test_count": 4,
++  "rework_reason": ""
++}
+diff --git a/automation/control/candidates/R038C_L5_L9_VALIDATION_CHAIN/no-aider-used.txt b/automation/control/candidates/R038C_L5_L9_VALIDATION_CHAIN/no-aider-used.txt
+new file mode 100644
+index 0000000..5f9512f
+--- /dev/null
++++ b/automation/control/candidates/R038C_L5_L9_VALIDATION_CHAIN/no-aider-used.txt
+@@ -0,0 +1,2 @@
++This candidate was constructed by opencode-agent directly, without Aider.
++All source code, tests, evidence package, and governance records were written by opencode-agent using file read/write/edit tools.
+diff --git a/automation/control/candidates/R038C_L5_L9_VALIDATION_CHAIN/report.json b/automation/control/candidates/R038C_L5_L9_VALIDATION_CHAIN/report.json
+new file mode 100644
+index 0000000..af63ec1
+--- /dev/null
++++ b/automation/control/candidates/R038C_L5_L9_VALIDATION_CHAIN/report.json
+@@ -0,0 +1,20 @@
++{
++  "round_id": "R038",
++  "task_type": "r038c_l5_l9_validation_chain_candidate",
++  "status": "completed",
++  "summary": "R038c L5-L9 validation chain candidate: 58 fail-closed reason codes, 5-level gate architecture, 94 tests (66 negative/fail-closed, 7 boundary, 4 integration, 14 positive), CICDVerificationChain integration, order_execution_allowed=FALSE",
++  "tests_total": 94,
++  "tests_passed": 94,
++  "negative_fail_closed_tests": 66,
++  "boundary_tests": 7,
++  "integration_tests": 4,
++  "reason_codes_defined": 58,
++  "all_pass": true,
++  "canonical_branch": "work/canonical-mainline-repair-001",
++  "canonical_head": "a063ad0b2395306e3bb10b26f9689b8fdaa04b1d",
++  "test_file": "tests/test_r038c_l5_l9_validation_chain.py",
++  "source_file": "modules/decision_prechecklist/l5_l9_validation_chain.py",
++  "R038c_completed": false,
++  "order_execution_allowed": false,
++  "no_broker_live_order_pollution": true
++}
+diff --git a/automation/control/candidates/R038C_L5_L9_VALIDATION_CHAIN/task.txt b/automation/control/candidates/R038C_L5_L9_VALIDATION_CHAIN/task.txt
+new file mode 100644
+index 0000000..781db7a
+--- /dev/null
++++ b/automation/control/candidates/R038C_L5_L9_VALIDATION_CHAIN/task.txt
+@@ -0,0 +1,18 @@
++task_type: r038c_l5_l9_validation_chain_candidate
++round_id: R038
++official_topic: 蝑 CI/CD 撽???+internal_subtask: R038c
++internal_subtask_only: TRUE
++source_construction_performed_now: TRUE
++R038_completed: FALSE
++R038_full_construction_started: FALSE
++R038c_completed: FALSE
++R038_R048_accepted: FALSE
++R049_started: FALSE
++broker_api_called: FALSE
++trading_runtime_started: FALSE
++order_execution_allowed: FALSE
++no_live_order_path: TRUE
++no_server_v2_wiring: TRUE
++no_index_v2_wiring: TRUE
++law_compliance: "04"
+diff --git a/automation/control/candidates/R038C_L5_L9_VALIDATION_CHAIN/test-results.txt b/automation/control/candidates/R038C_L5_L9_VALIDATION_CHAIN/test-results.txt
+new file mode 100644
+index 0000000..8d907a2
+--- /dev/null
++++ b/automation/control/candidates/R038C_L5_L9_VALIDATION_CHAIN/test-results.txt
+@@ -0,0 +1,19 @@
++Test Results: test_r038c_l5_l9_validation_chain.py
++================================================
++Suite: 94 passed in 0.26s
++Total: 94/94 PASS
++
++Breakdown:
++  Positive tests: 14
++  Negative/fail-closed tests: 66
++  Boundary tests: 7
++  Integration (CICDVerificationChain) tests: 4
++  Enum/constant tests: 5
++  Property/hash tests: 3
++
++Supplementary test suites (all passing):
++  test_r038a_market_reality_trace_replay.py: 69/69 PASS
++  test_r038b_l0_l4_validation_chain.py: 66/66 PASS
++  test_cicd_verification_chain.py: 9/9 PASS
++  test_governance_authorization_gate.py: 20/20 PASS
++  test_validate_canonical_repair_evidence.py: 34/34 PASS
+diff --git a/automation/control/governance/r038c-l5-l9-validation-chain-record.json b/automation/control/governance/r038c-l5-l9-validation-chain-record.json
+new file mode 100644
+index 0000000..1cc93ef
+--- /dev/null
++++ b/automation/control/governance/r038c-l5-l9-validation-chain-record.json
+@@ -0,0 +1,62 @@
++{
++  "schema_version": "1.0",
++  "record_id": "R038C_L5_L9_VALIDATION_CHAIN_RECORD",
++  "round_id": "R038",
++  "internal_subtask": "R038c",
++  "internal_subtask_only": true,
++  "official_topic": "蝑 CI/CD 撽???,
++  "created_at": "2026-05-30T06:00:00Z",
++  "created_by": "opencode-agent",
++  "candidate_branch": "candidate/r038c-l5-l9-validation-chain",
++  "base_head": "a063ad0b2395306e3bb10b26f9689b8fdaa04b1d",
++  "status": {
++    "R038_completed": false,
++    "R038_full_construction_started": false,
++    "R038c_completed": false,
++    "R038_R048_accepted": false,
++    "R049_started": false,
++    "order_execution_allowed": false
++  },
++  "construction_audit": {
++    "source_construction_performed_now": true,
++    "source_files_modified": true,
++    "R038c_source_modified": true,
++    "R038a_source_modified": false,
++    "R038b_source_modified": false,
++    "R038c_R038g_modified": true,
++    "tests_modified": true,
++    "manifest_modified": false,
++    "validator_files_modified": false,
++    "workflow_files_modified": false,
++    "law_files_modified": false,
++    "server_v2_modified": false,
++    "index_v2_modified": false,
++    "broker_live_order_pollution": false,
++    "broker_api_called": false,
++    "trading_runtime_started": false,
++    "order_execution_allowed": false,
++    "no_live_order_path": true,
++    "no_server_v2_wiring": true,
++    "no_index_v2_wiring": true,
++    "law_compliance": "04"
++  },
++  "files": {
++    "created": [
++      "modules/decision_prechecklist/l5_l9_validation_chain.py",
++      "tests/test_r038c_l5_l9_validation_chain.py",
++      "automation/control/candidates/R038C_L5_L9_VALIDATION_CHAIN/evidence.json",
++      "automation/control/candidates/R038C_L5_L9_VALIDATION_CHAIN/RETURN_TO_CHATGPT.txt",
++      "automation/control/candidates/R038C_L5_L9_VALIDATION_CHAIN/task.txt",
++      "automation/control/candidates/R038C_L5_L9_VALIDATION_CHAIN/report.json",
++      "automation/control/candidates/R038C_L5_L9_VALIDATION_CHAIN/candidate.diff",
++      "automation/control/candidates/R038C_L5_L9_VALIDATION_CHAIN/no-aider-used.txt",
++      "automation/control/candidates/R038C_L5_L9_VALIDATION_CHAIN/test-results.txt",
++      "automation/control/governance/r038c-l5-l9-validation-chain-record.json"
++    ],
++    "modified": [
++      "modules/decision_prechecklist/__init__.py",
++      "modules/decision_prechecklist/cicd_verification_chain.py"
++    ],
++    "deleted": []
++  }
++}
+diff --git a/modules/decision_prechecklist/__init__.py b/modules/decision_prechecklist/__init__.py
+index 3fea29d..e173ef8 100644
+--- a/modules/decision_prechecklist/__init__.py
++++ b/modules/decision_prechecklist/__init__.py
+@@ -57,6 +57,7 @@ from .cicd_verification_chain import (
+     CICDPipelineResult,
+     R038A_STAGE_NAME,
+     R038B_STAGE_NAME,
++    R038C_STAGE_NAME,
+ )
+ from .l0_l4_validation_chain import (
+     L0L4ValidationInput,
+@@ -78,6 +79,26 @@ from .l0_l4_validation_chain import (
+     validate_l0_l4_chain,
+     run_r038b_l0_l4_validation_chain,
+ )
++from .l5_l9_validation_chain import (
++    L5L9ValidationInput,
++    L5L9ValidationResult,
++    L5L9ValidationStatus,
++    L5WalkForwardOOSEvidence,
++    L6RegimeSegmentEvidence,
++    L7CombinatorialPurgedCVEvidence,
++    L8PSRRealityCheckSPAEvidence,
++    L9PaperTradingReadinessEvidence,
++    L5L9ValidationLevel,
++    STAGE_R038C,
++    FAIL_CLOSED_REASON_CODES_R038C,
++    validate_l5_walk_forward_oos,
++    validate_l6_regime_segmentation,
++    validate_l7_combinatorial_purged_cv,
++    validate_l8_psr_reality_check_spa,
++    validate_l9_paper_trading_readiness,
++    validate_l5_l9_chain,
++    run_r038c_l5_l9_validation_chain,
++)
+ from .market_reality_trace_replay_contract import (
+     MarketRealityReplaySnapshot,
+     DecisionTraceReplayInput,
+@@ -200,6 +221,7 @@ __all__ = [
+     "CICDPipelineResult",
+     "R038A_STAGE_NAME",
+     "R038B_STAGE_NAME",
++    "R038C_STAGE_NAME",
+     "L0L4ValidationInput",
+     "L0L4ValidationResult",
+     "L0L4ValidationStatus",
+@@ -218,6 +240,24 @@ __all__ = [
+     "validate_l4_multiple_testing_correction",
+     "validate_l0_l4_chain",
+     "run_r038b_l0_l4_validation_chain",
++    "L5L9ValidationInput",
++    "L5L9ValidationResult",
++    "L5L9ValidationStatus",
++    "L5WalkForwardOOSEvidence",
++    "L6RegimeSegmentEvidence",
++    "L7CombinatorialPurgedCVEvidence",
++    "L8PSRRealityCheckSPAEvidence",
++    "L9PaperTradingReadinessEvidence",
++    "L5L9ValidationLevel",
++    "STAGE_R038C",
++    "FAIL_CLOSED_REASON_CODES_R038C",
++    "validate_l5_walk_forward_oos",
++    "validate_l6_regime_segmentation",
++    "validate_l7_combinatorial_purged_cv",
++    "validate_l8_psr_reality_check_spa",
++    "validate_l9_paper_trading_readiness",
++    "validate_l5_l9_chain",
++    "run_r038c_l5_l9_validation_chain",
+     "MarketRealityReplaySnapshot",
+     "DecisionTraceReplayInput",
+     "DecisionTraceReplayResult",
+diff --git a/modules/decision_prechecklist/cicd_verification_chain.py b/modules/decision_prechecklist/cicd_verification_chain.py
+index aa3b92e..26ee436 100644
+--- a/modules/decision_prechecklist/cicd_verification_chain.py
++++ b/modules/decision_prechecklist/cicd_verification_chain.py
+@@ -24,10 +24,19 @@ from modules.decision_prechecklist.l0_l4_validation_chain import (
+     validate_l0_l4_chain,
+     run_r038b_l0_l4_validation_chain,
+ )
++from modules.decision_prechecklist.l5_l9_validation_chain import (
++    L5L9ValidationInput,
++    L5L9ValidationResult,
++    L5L9ValidationStatus,
++    STAGE_R038C,
++    validate_l5_l9_chain,
++    run_r038c_l5_l9_validation_chain,
++)
+ 
+ 
+ R038A_STAGE_NAME = "R038a_market_reality_trace_replay"
+ R038B_STAGE_NAME = "R038b_l0_l4_validation_chain"
++R038C_STAGE_NAME = "R038c_l5_l9_validation_chain"
+ 
+ 
+ @dataclass
+@@ -80,6 +89,18 @@ class CICDVerificationChain:
+     ) -> dict[str, Any]:
+         return run_r038b_l0_l4_validation_chain(input_data)
+ 
++    def validate_l5_l9_validation_chain(
++        self,
++        input_data: L5L9ValidationInput,
++    ) -> L5L9ValidationResult:
++        return validate_l5_l9_chain(input_data)
++
++    def run_r038c_stage(
++        self,
++        input_data: L5L9ValidationInput,
++    ) -> dict[str, Any]:
++        return run_r038c_l5_l9_validation_chain(input_data)
++
+     def run_pipeline(self, stages: list[dict[str, Any]] | None = None) -> CICDPipelineResult:
+         if stages is not None:
+             results: list[CICDStageResult] = []
+@@ -129,6 +150,20 @@ class CICDVerificationChain:
+                                    f"failed={result.failed_levels} "
+                                    f"reasons={result.reason_codes}",
+                         ))
++                    elif stage_type == "r038c_l5_l9":
++                        inp = s.get("input")
++                        if inp is None:
++                            inp = L5L9ValidationInput()
++                        result = self.validate_l5_l9_validation_chain(inp)
++                        results.append(CICDStageResult(
++                            name=s.get("name", R038C_STAGE_NAME),
++                            passed=result.validation_passed,
++                            detail=f"status={result.status.value if result.status else 'unknown'} "
++                                   f"levels={result.levels_checked} "
++                                   f"passed={result.passed_levels} "
++                                   f"failed={result.failed_levels} "
++                                   f"reasons={result.reason_codes}",
++                        ))
+                     elif stage_type == "chain_verify":
+                         chain: TraceabilityChain = s["chain"]
+                         cv = chain.verify_chain()
+diff --git a/modules/decision_prechecklist/l5_l9_validation_chain.py b/modules/decision_prechecklist/l5_l9_validation_chain.py
+new file mode 100644
+index 0000000..1db5600
+--- /dev/null
++++ b/modules/decision_prechecklist/l5_l9_validation_chain.py
+@@ -0,0 +1,655 @@
++from __future__ import annotations
++import hashlib
++import json
++import uuid
++from dataclasses import dataclass, field, asdict
++from datetime import datetime, timezone
++from enum import Enum
++from typing import Any
++
++
++STAGE_R038C = "R038c_l5_l9_validation_chain"
++
++
++class L5L9ValidationLevel(str, Enum):
++    L5 = "L5"
++    L6 = "L6"
++    L7 = "L7"
++    L8 = "L8"
++    L9 = "L9"
++
++
++class L5L9ValidationStatus(str, Enum):
++    PASS = "pass"
++    FAIL_CLOSED = "fail_closed"
++    LEVEL_FAILED = "level_failed"
++    BLOCKED_TRADINGVIEW_ONLY = "blocked_tradingview_only"
++    BLOCKED_ORDER_EXECUTION_ALLOWED = "blocked_order_execution_allowed"
++
++    @classmethod
++    def _missing_(cls, value: object) -> L5L9ValidationStatus | None:
++        return None
++
++
++FAIL_CLOSED_REASON_CODES_R038C: dict[str, str] = {
++    # L5 Walk-Forward OOS
++    "L5_OOS_WINDOWS_MISSING": "L5 walk-forward has no out_of_sample_windows",
++    "L5_FINAL_OOS_PERIOD_MISSING": "L5 walk-forward missing final_out_of_sample_period",
++    "L5_OOS_WINDOW_COUNT_BELOW_THRESHOLD": "L5 OOS window count below minimum threshold",
++    "L5_TRAIN_TEST_OVERLAP": "L5 walk-forward has training_overlap_with_oos, must be FALSE",
++    "L5_FUTURE_LEAK": "L5 walk-forward has future_leak flag, no_future_leak must be TRUE",
++    "L5_AS_OF_REPLAY_NOT_COMPATIBLE": "L5 walk-forward missing as_of_replay_compatible",
++    "L5_OOS_RESULT_GROSS_ONLY": "L5 walk-forward OOS result is gross-only, net_of_cost_oos_result required",
++    "L5_COST_MODEL_MISSING": "L5 walk-forward missing cost_model_version",
++    "L5_SLIPPAGE_MODEL_MISSING": "L5 walk-forward missing slippage_model_version",
++    "L5_MARKET_REALITY_NOT_COMPATIBLE": "L5 walk-forward not market_reality_compatible",
++    "L5_RISK_GATE_REPLAY_NOT_COMPATIBLE": "L5 walk-forward not risk_gate_replay_compatible",
++    "L5_OOS_NEGATIVE_AFTER_COST": "L5 walk-forward OOS result is negative after cost",
++    "L5_TRADINGVIEW_ONLY": "L5 evidence is TradingView/Pine/DeepTest only, formal Python backtest required",
++    # L6 Regime Segmentation
++    "L6_SINGLE_REGIME_ONLY": "L6 regime segmentation has only one regime, at least 2 required",
++    "L6_REGIME_LABELS_MISSING": "L6 regime segmentation missing regime labels",
++    "L6_INSUFFICIENT_SAMPLES_PER_REGIME": "L6 regime segmentation has insufficient samples per regime",
++    "L6_PER_REGIME_RESULT_GROSS_ONLY": "L6 per-regime result is gross-only, net_of_cost required per regime",
++    "L6_AGGREGATE_ONLY_HIDES_FAILED": "L6 aggregate-only result may hide failed regime - individual per-regime results required",
++    "L6_HINDSIGHT_REGIME_FOR_LIVE": "L6 hindsight/smoothed regime used for live decision, must be FALSE for live",
++    "L6_ONLINE_FILTER_POSTERIOR_MISSING": "L6 missing online filter or posterior policy for regime active decision",
++    "L6_UNCERTAINTY_THRESHOLD_MISSING": "L6 missing uncertainty threshold or entropy gate for regime classification",
++    "L6_REGIME_MARKET_REALITY_NOT_COMPATIBLE": "L6 regime segmentation not market reality compatible per regime",
++    # L7 Combinatorial Purged CV
++    "L7_ORDINARY_RANDOM_KFOLD_ONLY": "L7 uses ordinary random K-fold only, combinatorial purged CV required",
++    "L7_PURGE_WINDOW_MISSING": "L7 combinatorial purged CV missing purge_window",
++    "L7_EMBARGO_WINDOW_MISSING": "L7 combinatorial purged CV missing embargo_window",
++    "L7_FOLD_COUNT_BELOW_THRESHOLD": "L7 combinatorial purged CV fold count below minimum threshold",
++    "L7_COMBO_SPLIT_COUNT_BELOW_THRESHOLD": "L7 combinatorial split count below minimum threshold",
++    "L7_TIME_SERIES_ORDER_NOT_PRESERVED": "L7 combinatorial purged CV time_series_order_preserved must be TRUE",
++    "L7_LABEL_OVERLAP_LEAKAGE": "L7 combinatorial purged CV overlapping_label_protection must be TRUE",
++    "L7_LEAKAGE_GAP_NOT_DECLARED": "L7 combinatorial purged CV leakage_gap_declared must be TRUE",
++    "L7_PER_FOLD_RESULT_GROSS_ONLY": "L7 per-fold result is gross-only, net_of_cost required per fold",
++    "L7_COST_SLIPPAGE_OMITTED_FROM_FOLDS": "L7 cost/slippage omitted from folds, net_of_cost required per fold",
++    # L8 PSR / Reality Check / SPA
++    "L8_RAW_SHARPE_ONLY": "L8 raw Sharpe ratio only, PSR/Reality Check/SPA evidence required",
++    "L8_PSR_MISSING": "L8 missing Probabilistic Sharpe Ratio or equivalent statistical test",
++    "L8_REALITY_CHECK_MISSING": "L8 missing Reality Check / SPA test result",
++    "L8_BENCHMARK_BASELINE_MISSING": "L8 missing benchmark or strategy family baseline for SPA",
++    "L8_ADJUSTED_P_VALUE_MISSING": "L8 missing multiple-testing adjusted p_value",
++    "L8_ADJUSTED_P_ABOVE_THRESHOLD": "L8 adjusted p_value above required threshold",
++    "L8_BOOTSTRAP_METHOD_MISSING": "L8 missing bootstrap or resampling method",
++    "L8_INSUFFICIENT_TRADE_COUNT": "L8 insufficient trade count for statistical test",
++    "L8_TAIL_RISK_IGNORED": "L8 ignores skew/kurtosis/tail risk, non_normality_adjustment required",
++    "L8_GROSS_METRIC_USED": "L8 gross metric used instead of net_of_cost metric",
++    # L9 Paper Trading Readiness
++    "L9_PAPER_DURATION_BELOW_MINIMUM": "L9 paper trading duration below minimum required months",
++    "L9_INSUFFICIENT_TRADING_DAYS": "L9 insufficient paper trading days",
++    "L9_INSUFFICIENT_PAPER_TRADES": "L9 insufficient paper trade count",
++    "L9_PAPER_NET_OF_COST_MISSING": "L9 missing net_of_cost paper PnL result",
++    "L9_SLIPPAGE_DRIFT_OVER_THRESHOLD": "L9 slippage drift (expected vs actual) exceeds threshold",
++    "L9_FILL_RATE_DRIFT_OVER_THRESHOLD": "L9 fill-rate drift (expected vs actual) exceeds threshold",
++    "L9_PAPER_LIVE_DRIFT_POLICY_MISSING": "L9 missing paper_live drift policy",
++    "L9_STRATEGY_TTL_EXPIRY_MISSING": "L9 missing strategy TTL or promotion expiry",
++    "L9_REVALIDATION_BEFORE_LIVE_MISSING": "L9 missing revalidation_before_live requirement",
++    "L9_HUMAN_APPROVAL_MISSING": "L9 missing human_approval_required_for_live",
++    "L9_LIVE_ORDER_PATH_PRESENT": "L9 has broker/live/order/runtime path, no_live_order_path must be TRUE",
++    "L9_ORDER_EXECUTION_ALLOWED_TRUE": "L9 order_execution_allowed must be FALSE for validation",
++    # General
++    "GENERAL_MISSING_REPLAY_COMPATIBILITY": "L5-L9 validation input missing replay compatibility flag",
++    "GENERAL_MISSING_RISK_GATE_REPLAY_COMPATIBILITY": "L5-L9 validation input missing risk gate replay compatibility flag",
++    "GENERAL_ORDER_EXECUTION_ALLOWED_NOT_FALSE": "order_execution_allowed must be FALSE in validation context",
++    "GENERAL_TRADINGVIEW_ONLY": "evidence is TradingView/Pine/DeepTest only, formal Python backtest required",
++}
++
++MIN_OOS_WINDOW_COUNT = 2
++MIN_REGIME_COUNT = 2
++MIN_SAMPLES_PER_REGIME = 20
++MIN_FOLD_COUNT = 3
++MIN_COMBO_SPLIT_COUNT = 2
++MIN_PAPER_MONTHS = 6
++MAX_PAPER_MONTHS = 12
++MIN_PAPER_TRADING_DAYS = 60
++MIN_PAPER_TRADE_COUNT = 30
++DEFAULT_PAPER_DURATION_MONTHS = 6
++DEFAULT_ADJUSTED_P_THRESHOLD = 0.05
++DEFAULT_SLIPPAGE_DRIFT_THRESHOLD = 0.20
++DEFAULT_FILL_RATE_DRIFT_THRESHOLD = 0.15
++DEFAULT_EVIDENCE_SOURCE_PYTHON = "python_backtest"
++
++
++@dataclass
++class L5WalkForwardOOSEvidence:
++    final_out_of_sample_period: str = ""
++    oos_window_count: int = 0
++    walk_forward_oos_splits: list[dict[str, Any]] = field(default_factory=list)
++    no_training_overlap_with_oos: bool = False
++    no_future_leak: bool = False
++    as_of_replay_compatible: bool = False
++    net_of_cost_oos_result: float | None = None
++    gross_oos_result: float | None = None
++    cost_model_version: str = ""
++    slippage_model_version: str = ""
++    market_reality_compatible: bool = False
++    risk_gate_replay_compatible: bool = False
++    evidence_source: str = DEFAULT_EVIDENCE_SOURCE_PYTHON
++
++    @property
++    def is_tradingview_only(self) -> bool:
++        return self.evidence_source in ("tradingview", "pine", "deeptest")
++
++
++@dataclass
++class L6RegimeSegmentEvidence:
++    regime_count: int = 0
++    regime_labels: list[str] = field(default_factory=list)
++    per_regime_sample_count: dict[str, int] = field(default_factory=dict)
++    per_regime_net_of_cost_result: dict[str, float] = field(default_factory=dict)
++    per_regime_gross_result: dict[str, float] = field(default_factory=dict)
++    aggregate_net_of_cost_result: float | None = None
++    regime_definition_version: str = ""
++    offline_labeler_vs_online_filter_declared: bool = False
++    hindsight_regime_smoothed_for_live: bool = False
++    no_hindsight_regime_for_live: bool = False
++    regime_uncertainty_policy_present: bool = False
++    uncertainty_threshold_or_entropy_gate: str = ""
++    market_reality_compatible_per_regime: bool = False
++    evidence_source: str = DEFAULT_EVIDENCE_SOURCE_PYTHON
++
++    @property
++    def is_tradingview_only(self) -> bool:
++        return self.evidence_source in ("tradingview", "pine", "deeptest")
++
++
++@dataclass
++class L7CombinatorialPurgedCVEvidence:
++    combinatorial_split_count: int = 0
++    purge_window: int = 0
++    embargo_window: int = 0
++    fold_count: int = 0
++    time_series_order_preserved: bool = False
++    overlapping_label_protection: bool = False
++    leakage_gap_declared: bool = False
++    per_fold_net_of_cost_result: list[float] = field(default_factory=list)
++    per_fold_gross_result: list[float] = field(default_factory=list)
++    cost_model_version: str = ""
++    slippage_model_version: str = ""
++    evidence_source: str = DEFAULT_EVIDENCE_SOURCE_PYTHON
++
++    @property
++    def is_tradingview_only(self) -> bool:
++        return self.evidence_source in ("tradingview", "pine", "deeptest")
++
++
++@dataclass
++class L8PSRRealityCheckSPAEvidence:
++    probabilistic_sharpe_ratio: float | None = None
++    raw_sharpe_ratio: float | None = None
++    reality_check_p_value: float | None = None
++    spa_p_value: float | None = None
++    benchmark_or_strategy_family_baseline: str = ""
++    multiple_testing_adjusted_p_value: float | None = None
++    bootstrap_or_resampling_method: str = ""
++    non_normality_or_tail_risk_adjustment: str = ""
++    trade_count: int = 0
++    net_of_cost_metric_used: bool = False
++    raw_sharpe_not_sufficient: bool = False
++    gross_metric_used: bool = False
++    evidence_source: str = DEFAULT_EVIDENCE_SOURCE_PYTHON
++
++    @property
++    def is_tradingview_only(self) -> bool:
++        return self.evidence_source in ("tradingview", "pine", "deeptest")
++
++
++@dataclass
++class L9PaperTradingReadinessEvidence:
++    paper_duration_months: int = 0
++    paper_trading_days: int = 0
++    paper_trade_count: int = 0
++    paper_net_of_cost_pnl: float | None = None
++    paper_gross_pnl: float | None = None
++    expected_vs_actual_slippage_drift: float | None = None
++    expected_vs_actual_fill_rate_drift: float | None = None
++    paper_live_drift_policy_present: bool = False
++    strategy_ttl_or_promotion_expiry: str = ""
++    revalidation_required_before_live: bool = False
++    human_approval_required_for_live: bool = False
++    no_live_order_path: bool = False
++    order_execution_allowed: bool = False
++    evidence_source: str = DEFAULT_EVIDENCE_SOURCE_PYTHON
++
++    @property
++    def is_tradingview_only(self) -> bool:
++        return self.evidence_source in ("tradingview", "pine", "deeptest")
++
++
++@dataclass
++class L5L9ValidationInput:
++    input_id: str = ""
++    l5_evidence: L5WalkForwardOOSEvidence | None = None
++    l6_evidence: L6RegimeSegmentEvidence | None = None
++    l7_evidence: L7CombinatorialPurgedCVEvidence | None = None
++    l8_evidence: L8PSRRealityCheckSPAEvidence | None = None
++    l9_evidence: L9PaperTradingReadinessEvidence | None = None
++    adjusted_p_threshold: float = DEFAULT_ADJUSTED_P_THRESHOLD
++    paper_duration_months: int = DEFAULT_PAPER_DURATION_MONTHS
++    slippage_drift_threshold: float = DEFAULT_SLIPPAGE_DRIFT_THRESHOLD
++    fill_rate_drift_threshold: float = DEFAULT_FILL_RATE_DRIFT_THRESHOLD
++    order_execution_allowed: bool = False
++    market_reality_compatible_required: bool = True
++    replay_compatible_required: bool = True
++    risk_gate_replay_required: bool = True
++    evidence_source_override: str = ""
++
++
++@dataclass
++class L5L9ValidationResult:
++    input_id: str = ""
++    stage: str = STAGE_R038C
++    validation_passed: bool = False
++    fail_closed: bool = False
++    status: L5L9ValidationStatus = L5L9ValidationStatus.FAIL_CLOSED
++    reason_codes: list[str] = field(default_factory=list)
++    levels_checked: list[str] = field(default_factory=list)
++    level_results: dict[str, dict[str, Any]] = field(default_factory=dict)
++    passed_levels: list[str] = field(default_factory=list)
++    failed_levels: list[str] = field(default_factory=list)
++    order_execution_allowed: bool = False
++    net_of_cost_required: bool = True
++    market_reality_required: bool = True
++    replay_required: bool = True
++    risk_gate_replay_required: bool = True
++    tradingview_only_rejected: bool = True
++    paper_live_human_approval_required: bool = True
++    live_runtime_forbidden: bool = True
++    timestamp: str = ""
++
++    def to_dict(self) -> dict[str, Any]:
++        return {
++            "input_id": self.input_id,
++            "stage": self.stage,
++            "validation_passed": self.validation_passed,
++            "fail_closed": self.fail_closed,
++            "status": self.status.value if self.status else "unknown",
++            "reason_codes": self.reason_codes,
++            "levels_checked": self.levels_checked,
++            "level_results": self.level_results,
++            "passed_levels": self.passed_levels,
++            "failed_levels": self.failed_levels,
++            "order_execution_allowed": self.order_execution_allowed,
++            "net_of_cost_required": self.net_of_cost_required,
++            "market_reality_required": self.market_reality_required,
++            "replay_required": self.replay_required,
++            "risk_gate_replay_required": self.risk_gate_replay_required,
++            "tradingview_only_rejected": self.tradingview_only_rejected,
++            "paper_live_human_approval_required": self.paper_live_human_approval_required,
++            "live_runtime_forbidden": self.live_runtime_forbidden,
++            "timestamp": self.timestamp,
++        }
++
++    def compute_result_hash(self) -> str:
++        d = self.to_dict()
++        d.pop("input_id", None)
++        d.pop("timestamp", None)
++        raw = json.dumps(d, sort_keys=True, ensure_ascii=False, default=str).encode("utf-8")
++        return hashlib.sha256(raw).hexdigest()
++
++
++def _check_evidence_source(evidence: Any) -> bool:
++    if hasattr(evidence, "evidence_source"):
++        return evidence.evidence_source in ("tradingview", "pine", "deeptest")
++    return False
++
++
++def validate_l5_walk_forward_oos(
++    evidence: L5WalkForwardOOSEvidence | None,
++    min_oos_windows: int = MIN_OOS_WINDOW_COUNT,
++) -> list[str]:
++    codes: list[str] = []
++    if evidence is None:
++        codes.append("L5_OOS_WINDOWS_MISSING")
++        codes.append("L5_FINAL_OOS_PERIOD_MISSING")
++        codes.append("L5_COST_MODEL_MISSING")
++        codes.append("L5_SLIPPAGE_MODEL_MISSING")
++        codes.append("L5_MARKET_REALITY_NOT_COMPATIBLE")
++        codes.append("L5_RISK_GATE_REPLAY_NOT_COMPATIBLE")
++        return codes
++    if not evidence.final_out_of_sample_period:
++        codes.append("L5_FINAL_OOS_PERIOD_MISSING")
++    if evidence.oos_window_count <= 0:
++        codes.append("L5_OOS_WINDOWS_MISSING")
++    elif evidence.oos_window_count < min_oos_windows:
++        codes.append("L5_OOS_WINDOW_COUNT_BELOW_THRESHOLD")
++    if not evidence.no_training_overlap_with_oos:
++        codes.append("L5_TRAIN_TEST_OVERLAP")
++    if not evidence.no_future_leak:
++        codes.append("L5_FUTURE_LEAK")
++    if not evidence.as_of_replay_compatible:
++        codes.append("L5_AS_OF_REPLAY_NOT_COMPATIBLE")
++    if evidence.net_of_cost_oos_result is None:
++        codes.append("L5_OOS_RESULT_GROSS_ONLY")
++    elif evidence.net_of_cost_oos_result < 0:
++        codes.append("L5_OOS_NEGATIVE_AFTER_COST")
++    if not evidence.cost_model_version:
++        codes.append("L5_COST_MODEL_MISSING")
++    if not evidence.slippage_model_version:
++        codes.append("L5_SLIPPAGE_MODEL_MISSING")
++    if not evidence.market_reality_compatible:
++        codes.append("L5_MARKET_REALITY_NOT_COMPATIBLE")
++    if not evidence.risk_gate_replay_compatible:
++        codes.append("L5_RISK_GATE_REPLAY_NOT_COMPATIBLE")
++    if evidence.is_tradingview_only:
++        codes.append("L5_TRADINGVIEW_ONLY")
++    return codes
++
++
++def validate_l6_regime_segmentation(
++    evidence: L6RegimeSegmentEvidence | None,
++    min_regimes: int = MIN_REGIME_COUNT,
++    min_samples: int = MIN_SAMPLES_PER_REGIME,
++) -> list[str]:
++    codes: list[str] = []
++    if evidence is None:
++        codes.append("L6_SINGLE_REGIME_ONLY")
++        codes.append("L6_REGIME_LABELS_MISSING")
++        codes.append("L6_PER_REGIME_RESULT_GROSS_ONLY")
++        codes.append("L6_HINDSIGHT_REGIME_FOR_LIVE")
++        codes.append("L6_UNCERTAINTY_THRESHOLD_MISSING")
++        codes.append("L6_REGIME_MARKET_REALITY_NOT_COMPATIBLE")
++        return codes
++    if evidence.regime_count < min_regimes:
++        codes.append("L6_SINGLE_REGIME_ONLY")
++    if not evidence.regime_labels:
++        codes.append("L6_REGIME_LABELS_MISSING")
++    if evidence.per_regime_sample_count:
++        insufficient = any(
++            cnt < min_samples for cnt in evidence.per_regime_sample_count.values()
++        )
++        if insufficient:
++            codes.append("L6_INSUFFICIENT_SAMPLES_PER_REGIME")
++    if not evidence.per_regime_net_of_cost_result:
++        codes.append("L6_PER_REGIME_RESULT_GROSS_ONLY")
++    if evidence.aggregate_net_of_cost_result is not None and not evidence.per_regime_net_of_cost_result:
++        codes.append("L6_AGGREGATE_ONLY_HIDES_FAILED")
++    if evidence.hindsight_regime_smoothed_for_live:
++        codes.append("L6_HINDSIGHT_REGIME_FOR_LIVE")
++    if not evidence.no_hindsight_regime_for_live:
++        if not evidence.hindsight_regime_smoothed_for_live:
++            pass
++        codes.append("L6_HINDSIGHT_REGIME_FOR_LIVE")
++    if not evidence.offline_labeler_vs_online_filter_declared:
++        codes.append("L6_ONLINE_FILTER_POSTERIOR_MISSING")
++    if not evidence.regime_uncertainty_policy_present:
++        codes.append("L6_UNCERTAINTY_THRESHOLD_MISSING")
++    if not evidence.market_reality_compatible_per_regime:
++        codes.append("L6_REGIME_MARKET_REALITY_NOT_COMPATIBLE")
++    return codes
++
++
++def validate_l7_combinatorial_purged_cv(
++    evidence: L7CombinatorialPurgedCVEvidence | None,
++    min_folds: int = MIN_FOLD_COUNT,
++    min_splits: int = MIN_COMBO_SPLIT_COUNT,
++) -> list[str]:
++    codes: list[str] = []
++    if evidence is None:
++        codes.append("L7_ORDINARY_RANDOM_KFOLD_ONLY")
++        codes.append("L7_PURGE_WINDOW_MISSING")
++        codes.append("L7_EMBARGO_WINDOW_MISSING")
++        codes.append("L7_PER_FOLD_RESULT_GROSS_ONLY")
++        return codes
++    if evidence.fold_count <= 0 and evidence.combinatorial_split_count <= 0:
++        codes.append("L7_ORDINARY_RANDOM_KFOLD_ONLY")
++    if evidence.purge_window <= 0:
++        codes.append("L7_PURGE_WINDOW_MISSING")
++    if evidence.embargo_window <= 0:
++        codes.append("L7_EMBARGO_WINDOW_MISSING")
++    if evidence.fold_count < min_folds:
++        codes.append("L7_FOLD_COUNT_BELOW_THRESHOLD")
++    if evidence.combinatorial_split_count < min_splits:
++        codes.append("L7_COMBO_SPLIT_COUNT_BELOW_THRESHOLD")
++    if not evidence.time_series_order_preserved:
++        codes.append("L7_TIME_SERIES_ORDER_NOT_PRESERVED")
++    if not evidence.overlapping_label_protection:
++        codes.append("L7_LABEL_OVERLAP_LEAKAGE")
++    if not evidence.leakage_gap_declared:
++        codes.append("L7_LEAKAGE_GAP_NOT_DECLARED")
++    if not evidence.per_fold_net_of_cost_result:
++        codes.append("L7_PER_FOLD_RESULT_GROSS_ONLY")
++    if not evidence.cost_model_version and not evidence.slippage_model_version:
++        if evidence.per_fold_gross_result and not evidence.per_fold_net_of_cost_result:
++            codes.append("L7_COST_SLIPPAGE_OMITTED_FROM_FOLDS")
++    return codes
++
++
++def validate_l8_psr_reality_check_spa(
++    evidence: L8PSRRealityCheckSPAEvidence | None,
++    adjusted_p_threshold: float = DEFAULT_ADJUSTED_P_THRESHOLD,
++) -> list[str]:
++    codes: list[str] = []
++    if evidence is None:
++        codes.append("L8_RAW_SHARPE_ONLY")
++        codes.append("L8_PSR_MISSING")
++        codes.append("L8_REALITY_CHECK_MISSING")
++        codes.append("L8_ADJUSTED_P_VALUE_MISSING")
++        codes.append("L8_BOOTSTRAP_METHOD_MISSING")
++        codes.append("L8_GROSS_METRIC_USED")
++        return codes
++    if evidence.raw_sharpe_ratio is not None and evidence.probabilistic_sharpe_ratio is None:
++        if not evidence.reality_check_p_value and not evidence.spa_p_value:
++            codes.append("L8_RAW_SHARPE_ONLY")
++    if evidence.probabilistic_sharpe_ratio is None:
++        if not evidence.reality_check_p_value and not evidence.spa_p_value:
++            codes.append("L8_PSR_MISSING")
++    if not evidence.reality_check_p_value and not evidence.spa_p_value:
++        codes.append("L8_REALITY_CHECK_MISSING")
++    if not evidence.benchmark_or_strategy_family_baseline:
++        codes.append("L8_BENCHMARK_BASELINE_MISSING")
++    if evidence.multiple_testing_adjusted_p_value is None:
++        codes.append("L8_ADJUSTED_P_VALUE_MISSING")
++    elif evidence.multiple_testing_adjusted_p_value > adjusted_p_threshold:
++        codes.append("L8_ADJUSTED_P_ABOVE_THRESHOLD")
++    if not evidence.bootstrap_or_resampling_method:
++        codes.append("L8_BOOTSTRAP_METHOD_MISSING")
++    if evidence.trade_count <= 0:
++        codes.append("L8_INSUFFICIENT_TRADE_COUNT")
++    elif evidence.trade_count < 30:
++        codes.append("L8_INSUFFICIENT_TRADE_COUNT")
++    if not evidence.non_normality_or_tail_risk_adjustment:
++        codes.append("L8_TAIL_RISK_IGNORED")
++    if not evidence.net_of_cost_metric_used:
++        codes.append("L8_GROSS_METRIC_USED")
++    if evidence.gross_metric_used:
++        codes.append("L8_GROSS_METRIC_USED")
++    return codes
++
++
++def validate_l9_paper_trading_readiness(
++    evidence: L9PaperTradingReadinessEvidence | None,
++    min_paper_months: int = MIN_PAPER_MONTHS,
++    min_trading_days: int = MIN_PAPER_TRADING_DAYS,
++    min_trades: int = MIN_PAPER_TRADE_COUNT,
++    slippage_threshold: float = DEFAULT_SLIPPAGE_DRIFT_THRESHOLD,
++    fill_rate_threshold: float = DEFAULT_FILL_RATE_DRIFT_THRESHOLD,
++) -> list[str]:
++    codes: list[str] = []
++    if evidence is None:
++        codes.append("L9_PAPER_DURATION_BELOW_MINIMUM")
++        codes.append("L9_INSUFFICIENT_TRADING_DAYS")
++        codes.append("L9_INSUFFICIENT_PAPER_TRADES")
++        codes.append("L9_PAPER_NET_OF_COST_MISSING")
++        codes.append("L9_PAPER_LIVE_DRIFT_POLICY_MISSING")
++        codes.append("L9_REVALIDATION_BEFORE_LIVE_MISSING")
++        codes.append("L9_HUMAN_APPROVAL_MISSING")
++        codes.append("L9_LIVE_ORDER_PATH_PRESENT")
++        return codes
++    if evidence.paper_duration_months < min_paper_months:
++        codes.append("L9_PAPER_DURATION_BELOW_MINIMUM")
++    if evidence.paper_trading_days < min_trading_days:
++        codes.append("L9_INSUFFICIENT_TRADING_DAYS")
++    if evidence.paper_trade_count < min_trades:
++        codes.append("L9_INSUFFICIENT_PAPER_TRADES")
++    if evidence.paper_net_of_cost_pnl is None:
++        codes.append("L9_PAPER_NET_OF_COST_MISSING")
++    if evidence.expected_vs_actual_slippage_drift is not None:
++        if evidence.expected_vs_actual_slippage_drift > slippage_threshold:
++            codes.append("L9_SLIPPAGE_DRIFT_OVER_THRESHOLD")
++    if evidence.expected_vs_actual_fill_rate_drift is not None:
++        if evidence.expected_vs_actual_fill_rate_drift > fill_rate_threshold:
++            codes.append("L9_FILL_RATE_DRIFT_OVER_THRESHOLD")
++    if not evidence.paper_live_drift_policy_present:
++        codes.append("L9_PAPER_LIVE_DRIFT_POLICY_MISSING")
++    if not evidence.strategy_ttl_or_promotion_expiry:
++        codes.append("L9_STRATEGY_TTL_EXPIRY_MISSING")
++    if not evidence.revalidation_required_before_live:
++        codes.append("L9_REVALIDATION_BEFORE_LIVE_MISSING")
++    if not evidence.human_approval_required_for_live:
++        codes.append("L9_HUMAN_APPROVAL_MISSING")
++    if not evidence.no_live_order_path:
++        codes.append("L9_LIVE_ORDER_PATH_PRESENT")
++    if evidence.order_execution_allowed:
++        codes.append("L9_ORDER_EXECUTION_ALLOWED_TRUE")
++    return codes
++
++
++def validate_l5_l9_general_compatibility(
++    any_evidence: Any,
++    order_execution_allowed: bool,
++) -> list[str]:
++    codes: list[str] = []
++    if any_evidence is None:
++        codes.append("GENERAL_MISSING_REPLAY_COMPATIBILITY")
++        codes.append("GENERAL_MISSING_RISK_GATE_REPLAY_COMPATIBILITY")
++    else:
++        if hasattr(any_evidence, "as_of_replay_compatible"):
++            if not any_evidence.as_of_replay_compatible:
++                codes.append("GENERAL_MISSING_REPLAY_COMPATIBILITY")
++        if hasattr(any_evidence, "risk_gate_replay_compatible"):
++            if not any_evidence.risk_gate_replay_compatible:
++                codes.append("GENERAL_MISSING_RISK_GATE_REPLAY_COMPATIBILITY")
++    if _check_evidence_source(any_evidence):
++        codes.append("GENERAL_TRADINGVIEW_ONLY")
++    if order_execution_allowed is not False:
++        codes.append("GENERAL_ORDER_EXECUTION_ALLOWED_NOT_FALSE")
++    return codes
++
++
++def validate_l5_l9_chain(input_data: L5L9ValidationInput) -> L5L9ValidationResult:
++    input_id = input_data.input_id or uuid.uuid4().hex[:16]
++    result = L5L9ValidationResult(
++        input_id=input_id,
++        timestamp=datetime.now(timezone.utc).isoformat(),
++    )
++    all_reason_codes: list[str] = []
++    level_results: dict[str, dict[str, Any]] = {}
++    passed_levels: list[str] = []
++    failed_levels: list[str] = []
++    levels_checked: list[str] = []
++
++    first_evidence = input_data.l5_evidence or input_data.l6_evidence or input_data.l7_evidence or input_data.l8_evidence or input_data.l9_evidence
++    general_codes = validate_l5_l9_general_compatibility(
++        first_evidence, input_data.order_execution_allowed,
++    )
++    all_reason_codes.extend(general_codes)
++
++    # L5 Walk-Forward OOS
++    l5_codes = validate_l5_walk_forward_oos(input_data.l5_evidence)
++    all_reason_codes.extend(l5_codes)
++    levels_checked.append("L5")
++    l5_pass = len(l5_codes) == 0
++    level_results["L5"] = {
++        "pass": l5_pass,
++        "reason_codes": l5_codes,
++    }
++    if l5_pass:
++        passed_levels.append("L5")
++    else:
++        failed_levels.append("L5")
++
++    # L6 Regime Segmentation
++    l6_codes = validate_l6_regime_segmentation(input_data.l6_evidence)
++    all_reason_codes.extend(l6_codes)
++    levels_checked.append("L6")
++    l6_pass = len(l6_codes) == 0
++    level_results["L6"] = {
++        "pass": l6_pass,
++        "reason_codes": l6_codes,
++    }
++    if l6_pass:
++        passed_levels.append("L6")
++    else:
++        failed_levels.append("L6")
++
++    # L7 Combinatorial Purged CV
++    l7_codes = validate_l7_combinatorial_purged_cv(input_data.l7_evidence)
++    all_reason_codes.extend(l7_codes)
++    levels_checked.append("L7")
++    l7_pass = len(l7_codes) == 0
++    level_results["L7"] = {
++        "pass": l7_pass,
++        "reason_codes": l7_codes,
++    }
++    if l7_pass:
++        passed_levels.append("L7")
++    else:
++        failed_levels.append("L7")
++
++    # L8 PSR / Reality Check / SPA
++    l8_codes = validate_l8_psr_reality_check_spa(input_data.l8_evidence, input_data.adjusted_p_threshold)
++    all_reason_codes.extend(l8_codes)
++    levels_checked.append("L8")
++    l8_pass = len(l8_codes) == 0
++    level_results["L8"] = {
++        "pass": l8_pass,
++        "reason_codes": l8_codes,
++    }
++    if l8_pass:
++        passed_levels.append("L8")
++    else:
++        failed_levels.append("L8")
++
++    # L9 Paper Trading Readiness
++    l9_codes = validate_l9_paper_trading_readiness(
++        input_data.l9_evidence,
++        slippage_threshold=input_data.slippage_drift_threshold,
++        fill_rate_threshold=input_data.fill_rate_drift_threshold,
++    )
++    all_reason_codes.extend(l9_codes)
++    levels_checked.append("L9")
++    l9_pass = len(l9_codes) == 0
++    level_results["L9"] = {
++        "pass": l9_pass,
++        "reason_codes": l9_codes,
++    }
++    if l9_pass:
++        passed_levels.append("L9")
++    else:
++        failed_levels.append("L9")
++
++    has_fail_closed = bool(all_reason_codes)
++    has_tradingview_only = any("TRADINGVIEW_ONLY" in c for c in all_reason_codes)
++    has_order_execution = any("ORDER_EXECUTION_ALLOWED" in c for c in all_reason_codes)
++
++    result.reason_codes = all_reason_codes
++    result.levels_checked = levels_checked
++    result.level_results = level_results
++    result.passed_levels = passed_levels
++    result.failed_levels = failed_levels
++    result.validation_passed = not has_fail_closed
++    result.fail_closed = has_fail_closed
++    result.order_execution_allowed = False
++
++    if has_order_execution:
++        result.status = L5L9ValidationStatus.BLOCKED_ORDER_EXECUTION_ALLOWED
++    elif has_tradingview_only:
++        result.status = L5L9ValidationStatus.BLOCKED_TRADINGVIEW_ONLY
++    elif has_fail_closed:
++        result.status = L5L9ValidationStatus.FAIL_CLOSED
++    else:
++        result.status = L5L9ValidationStatus.PASS
++
++    return result
++
++
++def run_r038c_l5_l9_validation_chain(
++    input_data: L5L9ValidationInput,
++) -> dict[str, Any]:
++    result = validate_l5_l9_chain(input_data)
++    return result.to_dict()
+diff --git a/tests/test_r038c_l5_l9_validation_chain.py b/tests/test_r038c_l5_l9_validation_chain.py
+new file mode 100644
+index 0000000..9dcdc82
+--- /dev/null
++++ b/tests/test_r038c_l5_l9_validation_chain.py
+@@ -0,0 +1,920 @@
++from modules.decision_prechecklist.l5_l9_validation_chain import (
++    L5WalkForwardOOSEvidence,
++    L6RegimeSegmentEvidence,
++    L7CombinatorialPurgedCVEvidence,
++    L8PSRRealityCheckSPAEvidence,
++    L9PaperTradingReadinessEvidence,
++    L5L9ValidationInput,
++    L5L9ValidationResult,
++    L5L9ValidationStatus,
++    L5L9ValidationLevel,
++    STAGE_R038C,
++    FAIL_CLOSED_REASON_CODES_R038C,
++    validate_l5_walk_forward_oos,
++    validate_l6_regime_segmentation,
++    validate_l7_combinatorial_purged_cv,
++    validate_l8_psr_reality_check_spa,
++    validate_l9_paper_trading_readiness,
++    validate_l5_l9_chain,
++    run_r038c_l5_l9_validation_chain,
++    MIN_OOS_WINDOW_COUNT,
++    MIN_REGIME_COUNT,
++    MIN_SAMPLES_PER_REGIME,
++    MIN_FOLD_COUNT,
++    MIN_COMBO_SPLIT_COUNT,
++    MIN_PAPER_MONTHS,
++    MIN_PAPER_TRADING_DAYS,
++    MIN_PAPER_TRADE_COUNT,
++    DEFAULT_ADJUSTED_P_THRESHOLD,
++    DEFAULT_SLIPPAGE_DRIFT_THRESHOLD,
++    DEFAULT_FILL_RATE_DRIFT_THRESHOLD,
++)
++from modules.decision_prechecklist.cicd_verification_chain import (
++    CICDVerificationChain,
++    CICDStageResult,
++    R038C_STAGE_NAME,
++)
++
++
++# ============================================================
++# Positive tests
++# ============================================================
++
++def test_complete_l5_l9_evidence_passes():
++    inp = make_complete_input()
++    result = validate_l5_l9_chain(inp)
++    assert result.validation_passed is True
++    assert result.status == L5L9ValidationStatus.PASS
++    assert len(result.failed_levels) == 0
++    assert len(result.passed_levels) == 5
++    assert result.order_execution_allowed is False
++
++
++def test_cicd_verification_chain_calls_r038c_stage():
++    chain = CICDVerificationChain()
++    inp = make_complete_input()
++    result = chain.validate_l5_l9_validation_chain(inp)
++    assert result.validation_passed is True
++    assert len(result.levels_checked) == 5
++
++
++def test_cicd_verification_chain_r038c_stage_returns_deterministic_result():
++    chain = CICDVerificationChain()
++    inp = make_complete_input()
++    result_dict = chain.run_r038c_stage(inp)
++    assert result_dict["stage"] == STAGE_R038C
++    assert result_dict["validation_passed"] is True
++    assert result_dict["net_of_cost_required"] is True
++    assert result_dict["market_reality_required"] is True
++    assert result_dict["replay_required"] is True
++    assert result_dict["tradingview_only_rejected"] is True
++    assert result_dict["order_execution_allowed"] is False
++
++
++def test_cicd_pipeline_r038c_stage_type():
++    chain = CICDVerificationChain()
++    inp = make_complete_input()
++    stages = [{"type": "r038c_l5_l9", "name": "R038c_test", "input": inp}]
++    pipeline_result = chain.run_pipeline(stages)
++    assert pipeline_result.all_passed is True
++    assert len(pipeline_result.stages) == 1
++    assert pipeline_result.stages[0].passed is True
++    assert pipeline_result.stages[0].name == "R038c_test"
++
++
++def test_run_r038c_l5_l9_validation_chain_returns_dict():
++    inp = make_complete_input()
++    result_dict = run_r038c_l5_l9_validation_chain(inp)
++    assert isinstance(result_dict, dict)
++    assert result_dict["stage"] == STAGE_R038C
++    assert result_dict["validation_passed"] is True
++    for level in ["L5", "L6", "L7", "L8", "L9"]:
++        assert level in result_dict["levels_checked"]
++
++
++def test_l5_walk_forward_valid_evidence_no_codes():
++    ev = make_l5_complete()
++    codes = validate_l5_walk_forward_oos(ev)
++    assert len(codes) == 0
++
++
++def test_l6_regime_segmentation_valid_evidence_no_codes():
++    ev = make_l6_complete()
++    codes = validate_l6_regime_segmentation(ev)
++    assert len(codes) == 0
++
++
++def test_l7_combinatorial_purged_cv_valid_evidence_no_codes():
++    ev = make_l7_complete()
++    codes = validate_l7_combinatorial_purged_cv(ev)
++    assert len(codes) == 0
++
++
++def test_l8_psr_reality_check_spa_valid_evidence_no_codes():
++    ev = make_l8_complete()
++    codes = validate_l8_psr_reality_check_spa(ev)
++    assert len(codes) == 0
++
++
++def test_l9_paper_trading_readiness_valid_evidence_no_codes():
++    ev = make_l9_complete()
++    codes = validate_l9_paper_trading_readiness(ev)
++    assert len(codes) == 0
++
++
++def test_l5_l9_validation_level_enum_values():
++    assert L5L9ValidationLevel.L5.value == "L5"
++    assert L5L9ValidationLevel.L6.value == "L6"
++    assert L5L9ValidationLevel.L7.value == "L7"
++    assert L5L9ValidationLevel.L8.value == "L8"
++    assert L5L9ValidationLevel.L9.value == "L9"
++
++
++def test_stage_r038c_constant():
++    assert STAGE_R038C == "R038c_l5_l9_validation_chain"
++
++
++def test_fail_closed_reason_codes_populated():
++    assert len(FAIL_CLOSED_REASON_CODES_R038C) > 0
++    assert "L5_OOS_WINDOWS_MISSING" in FAIL_CLOSED_REASON_CODES_R038C
++    assert "L6_SINGLE_REGIME_ONLY" in FAIL_CLOSED_REASON_CODES_R038C
++    assert "L7_ORDINARY_RANDOM_KFOLD_ONLY" in FAIL_CLOSED_REASON_CODES_R038C
++    assert "L8_RAW_SHARPE_ONLY" in FAIL_CLOSED_REASON_CODES_R038C
++    assert "L9_PAPER_DURATION_BELOW_MINIMUM" in FAIL_CLOSED_REASON_CODES_R038C
++
++
++def test_result_to_dict_and_hash():
++    inp = make_complete_input()
++    result = validate_l5_l9_chain(inp)
++    d = result.to_dict()
++    assert d["stage"] == STAGE_R038C
++    assert isinstance(d["reason_codes"], list)
++    h = result.compute_result_hash()
++    assert isinstance(h, str)
++    assert len(h) == 64
++
++
++# ============================================================
++# Negative / fail-closed tests - L5 Walk-Forward OOS
++# ============================================================
++
++def test_l5_missing_oos_windows_fails():
++    ev = make_l5_complete()
++    ev.oos_window_count = 0
++    codes = validate_l5_walk_forward_oos(ev)
++    assert "L5_OOS_WINDOWS_MISSING" in codes
++
++
++def test_l5_missing_final_oos_period_fails():
++    ev = make_l5_complete()
++    ev.final_out_of_sample_period = ""
++    codes = validate_l5_walk_forward_oos(ev)
++    assert "L5_FINAL_OOS_PERIOD_MISSING" in codes
++
++
++def test_l5_oos_window_count_below_threshold_fails():
++    ev = make_l5_complete()
++    ev.oos_window_count = MIN_OOS_WINDOW_COUNT - 1
++    codes = validate_l5_walk_forward_oos(ev)
++    assert "L5_OOS_WINDOW_COUNT_BELOW_THRESHOLD" in codes
++
++
++def test_l5_train_test_overlap_fails():
++    ev = make_l5_complete()
++    ev.no_training_overlap_with_oos = False
++    codes = validate_l5_walk_forward_oos(ev)
++    assert "L5_TRAIN_TEST_OVERLAP" in codes
++
++
++def test_l5_future_leak_fails():
++    ev = make_l5_complete()
++    ev.no_future_leak = False
++    codes = validate_l5_walk_forward_oos(ev)
++    assert "L5_FUTURE_LEAK" in codes
++
++
++def test_l5_replay_not_compatible_fails():
++    ev = make_l5_complete()
++    ev.as_of_replay_compatible = False
++    codes = validate_l5_walk_forward_oos(ev)
++    assert "L5_AS_OF_REPLAY_NOT_COMPATIBLE" in codes
++
++
++def test_l5_oos_result_gross_only_fails():
++    ev = make_l5_complete()
++    ev.net_of_cost_oos_result = None
++    codes = validate_l5_walk_forward_oos(ev)
++    assert "L5_OOS_RESULT_GROSS_ONLY" in codes
++
++
++def test_l5_cost_model_missing_fails():
++    ev = make_l5_complete()
++    ev.cost_model_version = ""
++    codes = validate_l5_walk_forward_oos(ev)
++    assert "L5_COST_MODEL_MISSING" in codes
++
++
++def test_l5_slippage_model_missing_fails():
++    ev = make_l5_complete()
++    ev.slippage_model_version = ""
++    codes = validate_l5_walk_forward_oos(ev)
++    assert "L5_SLIPPAGE_MODEL_MISSING" in codes
++
++
++def test_l5_market_reality_not_compatible_fails():
++    ev = make_l5_complete()
++    ev.market_reality_compatible = False
++    codes = validate_l5_walk_forward_oos(ev)
++    assert "L5_MARKET_REALITY_NOT_COMPATIBLE" in codes
++
++
++def test_l5_risk_gate_replay_not_compatible_fails():
++    ev = make_l5_complete()
++    ev.risk_gate_replay_compatible = False
++    codes = validate_l5_walk_forward_oos(ev)
++    assert "L5_RISK_GATE_REPLAY_NOT_COMPATIBLE" in codes
++
++
++def test_l5_oos_negative_after_cost_fails():
++    ev = make_l5_complete()
++    ev.net_of_cost_oos_result = -100.0
++    codes = validate_l5_walk_forward_oos(ev)
++    assert "L5_OOS_NEGATIVE_AFTER_COST" in codes
++
++
++def test_l5_tradingview_only_fails():
++    ev = make_l5_complete()
++    ev.evidence_source = "tradingview"
++    codes = validate_l5_walk_forward_oos(ev)
++    assert "L5_TRADINGVIEW_ONLY" in codes
++
++
++def test_l5_pine_only_fails():
++    ev = make_l5_complete()
++    ev.evidence_source = "pine"
++    codes = validate_l5_walk_forward_oos(ev)
++    assert "L5_TRADINGVIEW_ONLY" in codes
++
++
++def test_l5_deeptest_only_fails():
++    ev = make_l5_complete()
++    ev.evidence_source = "deeptest"
++    codes = validate_l5_walk_forward_oos(ev)
++    assert "L5_TRADINGVIEW_ONLY" in codes
++
++
++def test_l5_none_evidence_fails():
++    codes = validate_l5_walk_forward_oos(None)
++    assert "L5_OOS_WINDOWS_MISSING" in codes
++    assert "L5_FINAL_OOS_PERIOD_MISSING" in codes
++    assert "L5_COST_MODEL_MISSING" in codes
++
++
++# ============================================================
++# Negative / fail-closed tests - L6 Regime Segmentation
++# ============================================================
++
++def test_l6_single_regime_only_fails():
++    ev = make_l6_complete()
++    ev.regime_count = 1
++    codes = validate_l6_regime_segmentation(ev)
++    assert "L6_SINGLE_REGIME_ONLY" in codes
++
++
++def test_l6_regime_labels_missing_fails():
++    ev = make_l6_complete()
++    ev.regime_labels = []
++    codes = validate_l6_regime_segmentation(ev)
++    assert "L6_REGIME_LABELS_MISSING" in codes
++
++
++def test_l6_insufficient_samples_per_regime_fails():
++    ev = make_l6_complete()
++    ev.per_regime_sample_count = {"bull": 5, "bear": 3}
++    codes = validate_l6_regime_segmentation(ev)
++    assert "L6_INSUFFICIENT_SAMPLES_PER_REGIME" in codes
++
++
++def test_l6_per_regime_result_gross_only_fails():
++    ev = make_l6_complete()
++    ev.per_regime_net_of_cost_result = {}
++    codes = validate_l6_regime_segmentation(ev)
++    assert "L6_PER_REGIME_RESULT_GROSS_ONLY" in codes
++
++
++def test_l6_aggregate_only_hides_failed_fails():
++    ev = make_l6_complete()
++    ev.per_regime_net_of_cost_result = {}
++    ev.aggregate_net_of_cost_result = 1000.0
++    codes = validate_l6_regime_segmentation(ev)
++    assert "L6_AGGREGATE_ONLY_HIDES_FAILED" in codes
++
++
++def test_l6_hindsight_regime_for_live_fails():
++    ev = make_l6_complete()
++    ev.hindsight_regime_smoothed_for_live = True
++    codes = validate_l6_regime_segmentation(ev)
++    assert "L6_HINDSIGHT_REGIME_FOR_LIVE" in codes
++
++
++def test_l6_no_hindsight_regime_for_live_also_fails_when_not_set():
++    ev = make_l6_complete()
++    ev.hindsight_regime_smoothed_for_live = False
++    ev.no_hindsight_regime_for_live = False
++    codes = validate_l6_regime_segmentation(ev)
++    assert "L6_HINDSIGHT_REGIME_FOR_LIVE" in codes
++
++
++def test_l6_online_filter_posterior_missing_fails():
++    ev = make_l6_complete()
++    ev.offline_labeler_vs_online_filter_declared = False
++    codes = validate_l6_regime_segmentation(ev)
++    assert "L6_ONLINE_FILTER_POSTERIOR_MISSING" in codes
++
++
++def test_l6_uncertainty_threshold_missing_fails():
++    ev = make_l6_complete()
++    ev.regime_uncertainty_policy_present = False
++    codes = validate_l6_regime_segmentation(ev)
++    assert "L6_UNCERTAINTY_THRESHOLD_MISSING" in codes
++
++
++def test_l6_regime_market_reality_not_compatible_fails():
++    ev = make_l6_complete()
++    ev.market_reality_compatible_per_regime = False
++    codes = validate_l6_regime_segmentation(ev)
++    assert "L6_REGIME_MARKET_REALITY_NOT_COMPATIBLE" in codes
++
++
++def test_l6_none_evidence_fails():
++    codes = validate_l6_regime_segmentation(None)
++    assert "L6_SINGLE_REGIME_ONLY" in codes
++    assert "L6_REGIME_LABELS_MISSING" in codes
++    assert "L6_PER_REGIME_RESULT_GROSS_ONLY" in codes
++
++
++# ============================================================
++# Negative / fail-closed tests - L7 Combinatorial Purged CV
++# ============================================================
++
++def test_l7_ordinary_random_kfold_only_fails():
++    ev = make_l7_complete()
++    ev.fold_count = 0
++    ev.combinatorial_split_count = 0
++    codes = validate_l7_combinatorial_purged_cv(ev)
++    assert "L7_ORDINARY_RANDOM_KFOLD_ONLY" in codes
++
++
++def test_l7_purge_window_missing_fails():
++    ev = make_l7_complete()
++    ev.purge_window = 0
++    codes = validate_l7_combinatorial_purged_cv(ev)
++    assert "L7_PURGE_WINDOW_MISSING" in codes
++
++
++def test_l7_embargo_window_missing_fails():
++    ev = make_l7_complete()
++    ev.embargo_window = 0
++    codes = validate_l7_combinatorial_purged_cv(ev)
++    assert "L7_EMBARGO_WINDOW_MISSING" in codes
++
++
++def test_l7_fold_count_below_threshold_fails():
++    ev = make_l7_complete()
++    ev.fold_count = MIN_FOLD_COUNT - 1
++    codes = validate_l7_combinatorial_purged_cv(ev)
++    assert "L7_FOLD_COUNT_BELOW_THRESHOLD" in codes
++
++
++def test_l7_combo_split_count_below_threshold_fails():
++    ev = make_l7_complete()
++    ev.combinatorial_split_count = MIN_COMBO_SPLIT_COUNT - 1
++    codes = validate_l7_combinatorial_purged_cv(ev)
++    assert "L7_COMBO_SPLIT_COUNT_BELOW_THRESHOLD" in codes
++
++
++def test_l7_time_series_order_not_preserved_fails():
++    ev = make_l7_complete()
++    ev.time_series_order_preserved = False
++    codes = validate_l7_combinatorial_purged_cv(ev)
++    assert "L7_TIME_SERIES_ORDER_NOT_PRESERVED" in codes
++
++
++def test_l7_label_overlap_leakage_fails():
++    ev = make_l7_complete()
++    ev.overlapping_label_protection = False
++    codes = validate_l7_combinatorial_purged_cv(ev)
++    assert "L7_LABEL_OVERLAP_LEAKAGE" in codes
++
++
++def test_l7_leakage_gap_not_declared_fails():
++    ev = make_l7_complete()
++    ev.leakage_gap_declared = False
++    codes = validate_l7_combinatorial_purged_cv(ev)
++    assert "L7_LEAKAGE_GAP_NOT_DECLARED" in codes
++
++
++def test_l7_per_fold_result_gross_only_fails():
++    ev = make_l7_complete()
++    ev.per_fold_net_of_cost_result = []
++    codes = validate_l7_combinatorial_purged_cv(ev)
++    assert "L7_PER_FOLD_RESULT_GROSS_ONLY" in codes
++
++
++def test_l7_cost_slippage_omitted_from_folds_fails():
++    ev = make_l7_complete()
++    ev.cost_model_version = ""
++    ev.slippage_model_version = ""
++    ev.per_fold_gross_result = [100.0, 200.0]
++    ev.per_fold_net_of_cost_result = []
++    codes = validate_l7_combinatorial_purged_cv(ev)
++    assert "L7_COST_SLIPPAGE_OMITTED_FROM_FOLDS" in codes
++
++
++def test_l7_none_evidence_fails():
++    codes = validate_l7_combinatorial_purged_cv(None)
++    assert "L7_ORDINARY_RANDOM_KFOLD_ONLY" in codes
++    assert "L7_PURGE_WINDOW_MISSING" in codes
++    assert "L7_EMBARGO_WINDOW_MISSING" in codes
++    assert "L7_PER_FOLD_RESULT_GROSS_ONLY" in codes
++
++
++# ============================================================
++# Negative / fail-closed tests - L8 PSR / Reality Check / SPA
++# ============================================================
++
++def test_l8_raw_sharpe_only_fails():
++    ev = make_l8_complete()
++    ev.probabilistic_sharpe_ratio = None
++    ev.reality_check_p_value = None
++    ev.spa_p_value = None
++    codes = validate_l8_psr_reality_check_spa(ev)
++    assert "L8_RAW_SHARPE_ONLY" in codes
++
++
++def test_l8_psr_missing_fails():
++    ev = make_l8_complete()
++    ev.probabilistic_sharpe_ratio = None
++    ev.reality_check_p_value = None
++    ev.spa_p_value = None
++    codes = validate_l8_psr_reality_check_spa(ev)
++    assert "L8_PSR_MISSING" in codes
++
++
++def test_l8_reality_check_missing_fails():
++    ev = make_l8_complete()
++    ev.reality_check_p_value = None
++    ev.spa_p_value = None
++    codes = validate_l8_psr_reality_check_spa(ev)
++    assert "L8_REALITY_CHECK_MISSING" in codes
++
++
++def test_l8_benchmark_baseline_missing_fails():
++    ev = make_l8_complete()
++    ev.benchmark_or_strategy_family_baseline = ""
++    codes = validate_l8_psr_reality_check_spa(ev)
++    assert "L8_BENCHMARK_BASELINE_MISSING" in codes
++
++
++def test_l8_adjusted_p_value_missing_fails():
++    ev = make_l8_complete()
++    ev.multiple_testing_adjusted_p_value = None
++    codes = validate_l8_psr_reality_check_spa(ev)
++    assert "L8_ADJUSTED_P_VALUE_MISSING" in codes
++
++
++def test_l8_adjusted_p_above_threshold_fails():
++    ev = make_l8_complete()
++    ev.multiple_testing_adjusted_p_value = DEFAULT_ADJUSTED_P_THRESHOLD + 0.01
++    codes = validate_l8_psr_reality_check_spa(ev)
++    assert "L8_ADJUSTED_P_ABOVE_THRESHOLD" in codes
++
++
++def test_l8_bootstrap_method_missing_fails():
++    ev = make_l8_complete()
++    ev.bootstrap_or_resampling_method = ""
++    codes = validate_l8_psr_reality_check_spa(ev)
++    assert "L8_BOOTSTRAP_METHOD_MISSING" in codes
++
++
++def test_l8_insufficient_trade_count_fails():
++    ev = make_l8_complete()
++    ev.trade_count = 0
++    codes = validate_l8_psr_reality_check_spa(ev)
++    assert "L8_INSUFFICIENT_TRADE_COUNT" in codes
++
++
++def test_l8_tail_risk_ignored_fails():
++    ev = make_l8_complete()
++    ev.non_normality_or_tail_risk_adjustment = ""
++    codes = validate_l8_psr_reality_check_spa(ev)
++    assert "L8_TAIL_RISK_IGNORED" in codes
++
++
++def test_l8_gross_metric_used_fails():
++    ev = make_l8_complete()
++    ev.net_of_cost_metric_used = False
++    codes = validate_l8_psr_reality_check_spa(ev)
++    assert "L8_GROSS_METRIC_USED" in codes
++
++
++def test_l8_none_evidence_fails():
++    codes = validate_l8_psr_reality_check_spa(None)
++    assert "L8_RAW_SHARPE_ONLY" in codes
++    assert "L8_PSR_MISSING" in codes
++    assert "L8_REALITY_CHECK_MISSING" in codes
++    assert "L8_ADJUSTED_P_VALUE_MISSING" in codes
++    assert "L8_BOOTSTRAP_METHOD_MISSING" in codes
++    assert "L8_GROSS_METRIC_USED" in codes
++
++
++# ============================================================
++# Negative / fail-closed tests - L9 Paper Trading Readiness
++# ============================================================
++
++def test_l9_paper_duration_below_minimum_fails():
++    ev = make_l9_complete()
++    ev.paper_duration_months = MIN_PAPER_MONTHS - 1
++    codes = validate_l9_paper_trading_readiness(ev)
++    assert "L9_PAPER_DURATION_BELOW_MINIMUM" in codes
++
++
++def test_l9_insufficient_trading_days_fails():
++    ev = make_l9_complete()
++    ev.paper_trading_days = MIN_PAPER_TRADING_DAYS - 1
++    codes = validate_l9_paper_trading_readiness(ev)
++    assert "L9_INSUFFICIENT_TRADING_DAYS" in codes
++
++
++def test_l9_insufficient_paper_trades_fails():
++    ev = make_l9_complete()
++    ev.paper_trade_count = MIN_PAPER_TRADE_COUNT - 1
++    codes = validate_l9_paper_trading_readiness(ev)
++    assert "L9_INSUFFICIENT_PAPER_TRADES" in codes
++
++
++def test_l9_paper_net_of_cost_missing_fails():
++    ev = make_l9_complete()
++    ev.paper_net_of_cost_pnl = None
++    codes = validate_l9_paper_trading_readiness(ev)
++    assert "L9_PAPER_NET_OF_COST_MISSING" in codes
++
++
++def test_l9_slippage_drift_over_threshold_fails():
++    ev = make_l9_complete()
++    ev.expected_vs_actual_slippage_drift = DEFAULT_SLIPPAGE_DRIFT_THRESHOLD + 0.01
++    codes = validate_l9_paper_trading_readiness(ev)
++    assert "L9_SLIPPAGE_DRIFT_OVER_THRESHOLD" in codes
++
++
++def test_l9_fill_rate_drift_over_threshold_fails():
++    ev = make_l9_complete()
++    ev.expected_vs_actual_fill_rate_drift = DEFAULT_FILL_RATE_DRIFT_THRESHOLD + 0.01
++    codes = validate_l9_paper_trading_readiness(ev)
++    assert "L9_FILL_RATE_DRIFT_OVER_THRESHOLD" in codes
++
++
++def test_l9_paper_live_drift_policy_missing_fails():
++    ev = make_l9_complete()
++    ev.paper_live_drift_policy_present = False
++    codes = validate_l9_paper_trading_readiness(ev)
++    assert "L9_PAPER_LIVE_DRIFT_POLICY_MISSING" in codes
++
++
++def test_l9_strategy_ttl_expiry_missing_fails():
++    ev = make_l9_complete()
++    ev.strategy_ttl_or_promotion_expiry = ""
++    codes = validate_l9_paper_trading_readiness(ev)
++    assert "L9_STRATEGY_TTL_EXPIRY_MISSING" in codes
++
++
++def test_l9_revalidation_before_live_missing_fails():
++    ev = make_l9_complete()
++    ev.revalidation_required_before_live = False
++    codes = validate_l9_paper_trading_readiness(ev)
++    assert "L9_REVALIDATION_BEFORE_LIVE_MISSING" in codes
++
++
++def test_l9_human_approval_missing_fails():
++    ev = make_l9_complete()
++    ev.human_approval_required_for_live = False
++    codes = validate_l9_paper_trading_readiness(ev)
++    assert "L9_HUMAN_APPROVAL_MISSING" in codes
++
++
++def test_l9_live_order_path_present_fails():
++    ev = make_l9_complete()
++    ev.no_live_order_path = False
++    codes = validate_l9_paper_trading_readiness(ev)
++    assert "L9_LIVE_ORDER_PATH_PRESENT" in codes
++
++
++def test_l9_order_execution_allowed_true_fails():
++    ev = make_l9_complete()
++    ev.order_execution_allowed = True
++    codes = validate_l9_paper_trading_readiness(ev)
++    assert "L9_ORDER_EXECUTION_ALLOWED_TRUE" in codes
++
++
++def test_l9_none_evidence_fails():
++    codes = validate_l9_paper_trading_readiness(None)
++    assert "L9_PAPER_DURATION_BELOW_MINIMUM" in codes
++    assert "L9_INSUFFICIENT_TRADING_DAYS" in codes
++    assert "L9_INSUFFICIENT_PAPER_TRADES" in codes
++    assert "L9_PAPER_NET_OF_COST_MISSING" in codes
++    assert "L9_PAPER_LIVE_DRIFT_POLICY_MISSING" in codes
++    assert "L9_REVALIDATION_BEFORE_LIVE_MISSING" in codes
++    assert "L9_HUMAN_APPROVAL_MISSING" in codes
++    assert "L9_LIVE_ORDER_PATH_PRESENT" in codes
++
++
++# ============================================================
++# General compatibility fail-closed tests
++# ============================================================
++
++def test_missing_replay_compatibility_global_fails():
++    ev = make_l5_complete()
++    ev.as_of_replay_compatible = False
++    inp = make_complete_input()
++    inp.l5_evidence = ev
++    result = validate_l5_l9_chain(inp)
++    assert result.validation_passed is False
++    assert "GENERAL_MISSING_REPLAY_COMPATIBILITY" in result.reason_codes
++
++
++def test_missing_risk_gate_replay_compatibility_global_fails():
++    ev = make_l5_complete()
++    ev.risk_gate_replay_compatible = False
++    inp = make_complete_input()
++    inp.l5_evidence = ev
++    result = validate_l5_l9_chain(inp)
++    assert result.validation_passed is False
++    assert "GENERAL_MISSING_RISK_GATE_REPLAY_COMPATIBILITY" in result.reason_codes
++
++
++def test_order_execution_allowed_true_fails():
++    inp = make_complete_input()
++    inp.order_execution_allowed = True
++    result = validate_l5_l9_chain(inp)
++    assert result.validation_passed is False
++    assert result.order_execution_allowed is False
++    assert "GENERAL_ORDER_EXECUTION_ALLOWED_NOT_FALSE" in result.reason_codes
++
++
++def test_general_tradingview_only_fails():
++    ev = make_l5_complete()
++    ev.evidence_source = "tradingview"
++    inp = make_complete_input()
++    inp.l5_evidence = ev
++    result = validate_l5_l9_chain(inp)
++    assert result.validation_passed is False
++    assert "GENERAL_TRADINGVIEW_ONLY" in result.reason_codes
++
++
++# ============================================================
++# Integration tests - CICD verification chain
++# ============================================================
++
++def test_cicd_verification_chain_supports_r038c_stage_name():
++    chain = CICDVerificationChain()
++    inp = make_complete_input()
++    stages = [{"type": "r038c_l5_l9", "name": R038C_STAGE_NAME, "input": inp}]
++    pipeline_result = chain.run_pipeline(stages)
++    assert pipeline_result.stages[0].name == R038C_STAGE_NAME
++    assert pipeline_result.all_passed is True
++
++
++def test_cicd_pipeline_multiple_stages():
++    chain = CICDVerificationChain()
++    inp = make_complete_input()
++    stages = [
++        {"type": "chain_verify", "name": "pre_check", "chain": make_trace_chain()},
++        {"type": "r038c_l5_l9", "name": "R038c_l5_l9", "input": inp},
++    ]
++    pipeline_result = chain.run_pipeline(stages)
++    assert pipeline_result.all_passed is True
++    assert len(pipeline_result.stages) == 2
++
++
++def test_cicd_pipeline_r038c_stage_with_none_input():
++    chain = CICDVerificationChain()
++    stages = [{"type": "r038c_l5_l9", "name": "R038c_test"}]
++    pipeline_result = chain.run_pipeline(stages)
++    assert pipeline_result.all_passed is False
++    assert len(pipeline_result.stages) == 1
++
++
++def test_cicd_stage_result_type():
++    chain = CICDVerificationChain()
++    inp = make_complete_input()
++    stages = [{"type": "r038c_l5_l9", "name": "R038c_test", "input": inp}]
++    pipeline_result = chain.run_pipeline(stages)
++    s = pipeline_result.stages[0]
++    assert isinstance(s, CICDStageResult)
++    assert s.name == "R038c_test"
++    assert s.passed is True
++    assert "L5" in s.detail
++    assert "L9" in s.detail
++
++
++# ============================================================
++# Boundary tests
++# ============================================================
++
++def test_oos_window_count_exactly_minimum_passes():
++    ev = make_l5_complete()
++    ev.oos_window_count = MIN_OOS_WINDOW_COUNT
++    codes = validate_l5_walk_forward_oos(ev)
++    assert "L5_OOS_WINDOW_COUNT_BELOW_THRESHOLD" not in codes
++    assert len(codes) == 0
++
++
++def test_regime_count_exactly_minimum_passes():
++    ev = make_l6_complete()
++    ev.regime_count = MIN_REGIME_COUNT
++    codes = validate_l6_regime_segmentation(ev)
++    assert "L6_SINGLE_REGIME_ONLY" not in codes
++
++
++def test_fold_count_exactly_minimum_passes():
++    ev = make_l7_complete()
++    ev.fold_count = MIN_FOLD_COUNT
++    codes = validate_l7_combinatorial_purged_cv(ev)
++    assert "L7_FOLD_COUNT_BELOW_THRESHOLD" not in codes
++
++
++def test_combo_split_count_exactly_minimum_passes():
++    ev = make_l7_complete()
++    ev.combinatorial_split_count = MIN_COMBO_SPLIT_COUNT
++    codes = validate_l7_combinatorial_purged_cv(ev)
++    assert "L7_COMBO_SPLIT_COUNT_BELOW_THRESHOLD" not in codes
++
++
++def test_paper_duration_exactly_minimum_passes():
++    ev = make_l9_complete()
++    ev.paper_duration_months = MIN_PAPER_MONTHS
++    codes = validate_l9_paper_trading_readiness(ev)
++    assert "L9_PAPER_DURATION_BELOW_MINIMUM" not in codes
++    assert len(codes) == 0
++
++
++def test_adjusted_p_value_exactly_threshold_passes():
++    ev = make_l8_complete()
++    ev.multiple_testing_adjusted_p_value = DEFAULT_ADJUSTED_P_THRESHOLD
++    codes = validate_l8_psr_reality_check_spa(ev)
++    assert "L8_ADJUSTED_P_ABOVE_THRESHOLD" not in codes
++
++
++def test_all_levels_pass_but_one_warning_no_bypass_fail_closed():
++    inp = make_complete_input()
++    inp.l5_evidence.oos_window_count = 0
++    result = validate_l5_l9_chain(inp)
++    assert result.validation_passed is False
++    assert result.fail_closed is True
++    assert "L5_OOS_WINDOWS_MISSING" in result.reason_codes
++
++
++def test_l5_is_tradingview_only_property():
++    ev = make_l5_complete()
++    assert ev.is_tradingview_only is False
++    ev.evidence_source = "tradingview"
++    assert ev.is_tradingview_only is True
++    ev.evidence_source = "pine"
++    assert ev.is_tradingview_only is True
++    ev.evidence_source = "deeptest"
++    assert ev.is_tradingview_only is True
++
++
++def test_result_deterministic_hash():
++    inp = make_complete_input()
++    r1 = validate_l5_l9_chain(inp)
++    r2 = validate_l5_l9_chain(inp)
++    assert r1.compute_result_hash() == r2.compute_result_hash()
++
++
++def test_status_enum_missing_returns_none():
++    assert L5L9ValidationStatus._missing_("bogus") is None
++
++
++# ============================================================
++# Helpers
++# ============================================================
++
++def make_trace_chain():
++    from modules.decision_prechecklist.traceability_chain import TraceabilityChain
++    chain = TraceabilityChain(chain_id="r038c_test_chain")
++    chain.add_link(
++        trace_id="t1", symbol="AAPL", side="BUY",
++        final_decision="ALLOW", total_steps=5, veto_count=0,
++    )
++    return chain
++
++
++def make_l5_complete() -> L5WalkForwardOOSEvidence:
++    return L5WalkForwardOOSEvidence(
++        final_out_of_sample_period="2026-01-01..2026-03-31",
++        oos_window_count=3,
++        walk_forward_oos_splits=[{"train": 1, "test": 1}, {"train": 2, "test": 2}],
++        no_training_overlap_with_oos=True,
++        no_future_leak=True,
++        as_of_replay_compatible=True,
++        net_of_cost_oos_result=5000.0,
++        gross_oos_result=7000.0,
++        cost_model_version="cost_v3",
++        slippage_model_version="slippage_v2",
++        market_reality_compatible=True,
++        risk_gate_replay_compatible=True,
++        evidence_source="python_backtest",
++    )
++
++
++def make_l6_complete() -> L6RegimeSegmentEvidence:
++    return L6RegimeSegmentEvidence(
++        regime_count=3,
++        regime_labels=["bull", "bear", "sideways"],
++        per_regime_sample_count={"bull": 100, "bear": 50, "sideways": 80},
++        per_regime_net_of_cost_result={"bull": 2000.0, "bear": -500.0, "sideways": 800.0},
++        per_regime_gross_result={"bull": 3000.0, "bear": 0.0, "sideways": 1200.0},
++        aggregate_net_of_cost_result=2300.0,
++        regime_definition_version="v2",
++        offline_labeler_vs_online_filter_declared=True,
++        hindsight_regime_smoothed_for_live=False,
++        no_hindsight_regime_for_live=True,
++        regime_uncertainty_policy_present=True,
++        uncertainty_threshold_or_entropy_gate="entropy<0.5",
++        market_reality_compatible_per_regime=True,
++        evidence_source="python_backtest",
++    )
++
++
++def make_l7_complete() -> L7CombinatorialPurgedCVEvidence:
++    return L7CombinatorialPurgedCVEvidence(
++        combinatorial_split_count=5,
++        purge_window=20,
++        embargo_window=10,
++        fold_count=5,
++        time_series_order_preserved=True,
++        overlapping_label_protection=True,
++        leakage_gap_declared=True,
++        per_fold_net_of_cost_result=[100.0, 200.0, 150.0, 180.0, 120.0],
++        per_fold_gross_result=[150.0, 280.0, 200.0, 240.0, 160.0],
++        cost_model_version="cost_v3",
++        slippage_model_version="slippage_v2",
++        evidence_source="python_backtest",
++    )
++
++
++def make_l8_complete() -> L8PSRRealityCheckSPAEvidence:
++    return L8PSRRealityCheckSPAEvidence(
++        probabilistic_sharpe_ratio=0.85,
++        raw_sharpe_ratio=0.95,
++        reality_check_p_value=0.03,
++        spa_p_value=0.02,
++        benchmark_or_strategy_family_baseline="equal_weight_benchmark",
++        multiple_testing_adjusted_p_value=0.04,
++        bootstrap_or_resampling_method="stationary_bootstrap",
++        non_normality_or_tail_risk_adjustment="skew_adjusted",
++        trade_count=200,
++        net_of_cost_metric_used=True,
++        raw_sharpe_not_sufficient=True,
++        gross_metric_used=False,
++        evidence_source="python_backtest",
++    )
++
++
++def make_l9_complete() -> L9PaperTradingReadinessEvidence:
++    return L9PaperTradingReadinessEvidence(
++        paper_duration_months=6,
++        paper_trading_days=63,
++        paper_trade_count=50,
++        paper_net_of_cost_pnl=12000.0,
++        paper_gross_pnl=15000.0,
++        expected_vs_actual_slippage_drift=0.05,
++        expected_vs_actual_fill_rate_drift=0.03,
++        paper_live_drift_policy_present=True,
++        strategy_ttl_or_promotion_expiry="2026-12-31",
++        revalidation_required_before_live=True,
++        human_approval_required_for_live=True,
++        no_live_order_path=True,
++        order_execution_allowed=False,
++        evidence_source="python_backtest",
++    )
++
++
++def make_complete_input() -> L5L9ValidationInput:
++    return L5L9ValidationInput(
++        input_id="r038c_test_complete",
++        l5_evidence=make_l5_complete(),
++        l6_evidence=make_l6_complete(),
++        l7_evidence=make_l7_complete(),
++        l8_evidence=make_l8_complete(),
++        l9_evidence=make_l9_complete(),
++        adjusted_p_threshold=DEFAULT_ADJUSTED_P_THRESHOLD,
++        paper_duration_months=MIN_PAPER_MONTHS,
++        slippage_drift_threshold=DEFAULT_SLIPPAGE_DRIFT_THRESHOLD,
++        fill_rate_drift_threshold=DEFAULT_FILL_RATE_DRIFT_THRESHOLD,
++        order_execution_allowed=False,
++        market_reality_compatible_required=True,
++        replay_compatible_required=True,
++        risk_gate_replay_required=True,
++    )

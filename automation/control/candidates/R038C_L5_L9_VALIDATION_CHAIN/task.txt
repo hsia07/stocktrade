@@ -1,0 +1,18 @@
+task_type: r038c_l5_l9_validation_chain_candidate
+round_id: R038
+official_topic: 策略 CI/CD 驗證鏈
+internal_subtask: R038c
+internal_subtask_only: TRUE
+source_construction_performed_now: TRUE
+R038_completed: FALSE
+R038_full_construction_started: FALSE
+R038c_completed: FALSE
+R038_R048_accepted: FALSE
+R049_started: FALSE
+broker_api_called: FALSE
+trading_runtime_started: FALSE
+order_execution_allowed: FALSE
+no_live_order_path: TRUE
+no_server_v2_wiring: TRUE
+no_index_v2_wiring: TRUE
+law_compliance: "04"

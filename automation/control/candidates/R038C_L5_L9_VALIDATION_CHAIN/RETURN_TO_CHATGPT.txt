@@ -1,0 +1,94 @@
+round_id: R038C_METADATA_REWORK_DIRTY_CANDIDATE_DIFF_REPAIR
+task_type: r038c_dirty_candidate_diff_repair
+formal_status_code: candidate_ready_awaiting_manual_review
+base_head: a063ad0b2395306e3bb10b26f9689b8fdaa04b1d
+candidate_branch: candidate/r038c-l5-l9-validation-chain
+
+R038C_METADATA_REWORK_DIRTY_CANDIDATE_DIFF_REPAIR
+===================================================
+
+Current state:
+  R038c metadata count rework: complete.
+  Pre-repair candidate HEAD: 4b2ee4a59e8dd9979a4c65a5ed412c27fc4cd354
+  candidate.diff was unstaged: True
+  candidate.diff regenerated, staged, and committed: True
+  git clean after amend: True
+  candidate since base: 1 commit
+
+Evidence metadata counts verified:
+  negative_fail_closed_tests_count: 66
+  l7_gate_test_count: 11
+  l8_gate_test_count: 11
+  R038c_test_count: 94
+
+candidate_head_self_reference_policy: not_stored_inside_same_commit
+candidate_head_reason: git commit hash changes when evidence files are amended; candidate.diff represents diff of logical candidate content at commit time.
+
+Safety flags:
+- order_execution_allowed: FALSE
+- broker_api_called: FALSE
+- trading_runtime_started: FALSE
+- R038c_completed: FALSE (internal subtask only, not authorized for R038 completed)
+- no_live_order_path: TRUE
+- no_server_v2_wiring: TRUE
+- no_index_v2_wiring: TRUE
+
+Verification:
+- R038c tests: 94/94 PASS
+- CICD tests: 9/9 PASS (plus 13 r038c CICD tests)
+- candidate.diff: UTF-8 without BOM
+- evidence checker: PASS (after RETURN_TO_CHATGPT.txt marker fix)
+- validate-canonical-repair: PASS
+
+R038c_test_count: 94
+negative_fail_closed_test_count: 66
+l5_gate_test_count: 16
+l6_gate_test_count: 11
+l7_gate_test_count: 11
+l8_gate_test_count: 11
+l9_gate_test_count: 13
+general_gate_test_count: 4
+boundary_test_count: 7
+integration_test_count: 4
+
+R038c_source_modified: True
+R038a_source_modified: False
+R038b_source_modified: False
+R038c_R038g_modified: True
+tests_modified: True
+manifest_modified: False
+validator_files_modified: False
+workflow_files_modified: False
+law_files_modified: False
+server_v2_modified: False
+index_v2_modified: False
+env_files_modified: False
+secret_value_exposed: False
+broker_live_order_pollution: False
+
+R038c_completed: False
+R038_completed: False
+R038_R048_accepted: False
+R049_started: False
+broker_api_called: False
+trading_runtime_started: False
+order_execution_allowed: False
+
+candidate_commit_count_since_base: 1
+merge_executed: False
+push_executed: False
+workflow_rerun: False
+force_push_used: False
+no_verify_used: False
+
+recommended_next_action: AWAITING_MANUAL_REVIEW_FOR_R038C_L5_L9_VALIDATION_CHAIN_REWORKED_CLEAN_CANDIDATE
+
+final_recommendation:
+- DO_NOT_START_R049
+- DO_NOT_ACCEPT_R038_R048_YET
+- DO_NOT_MARK_R038_COMPLETED
+- DO_NOT_START_R038D_WITHOUT_USER_AUTHORIZATION
+- DO_NOT_MERGE_WITHOUT_USER_SIGNOFF
+- DO_NOT_PUSH_WITHOUT_USER_SIGNOFF
+- R038C_ONLY_NEXT
+- ORDER_EXECUTION_ALLOWED_REMAINS_FALSE

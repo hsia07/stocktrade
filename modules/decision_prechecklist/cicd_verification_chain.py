@@ -24,10 +24,19 @@ from modules.decision_prechecklist.l0_l4_validation_chain import (
     validate_l0_l4_chain,
     run_r038b_l0_l4_validation_chain,
 )
+from modules.decision_prechecklist.l5_l9_validation_chain import (
+    L5L9ValidationInput,
+    L5L9ValidationResult,
+    L5L9ValidationStatus,
+    STAGE_R038C,
+    validate_l5_l9_chain,
+    run_r038c_l5_l9_validation_chain,
+)
 
 
 R038A_STAGE_NAME = "R038a_market_reality_trace_replay"
 R038B_STAGE_NAME = "R038b_l0_l4_validation_chain"
+R038C_STAGE_NAME = "R038c_l5_l9_validation_chain"
 
 
 @dataclass
@@ -80,6 +89,18 @@ class CICDVerificationChain:
     ) -> dict[str, Any]:
         return run_r038b_l0_l4_validation_chain(input_data)
 
+    def validate_l5_l9_validation_chain(
+        self,
+        input_data: L5L9ValidationInput,
+    ) -> L5L9ValidationResult:
+        return validate_l5_l9_chain(input_data)
+
+    def run_r038c_stage(
+        self,
+        input_data: L5L9ValidationInput,
+    ) -> dict[str, Any]:
+        return run_r038c_l5_l9_validation_chain(input_data)
+
     def run_pipeline(self, stages: list[dict[str, Any]] | None = None) -> CICDPipelineResult:
         if stages is not None:
             results: list[CICDStageResult] = []
@@ -122,6 +143,20 @@ class CICDVerificationChain:
                         result = self.validate_l0_l4_validation_chain(inp)
                         results.append(CICDStageResult(
                             name=s.get("name", R038B_STAGE_NAME),
+                            passed=result.validation_passed,
+                            detail=f"status={result.status.value if result.status else 'unknown'} "
+                                   f"levels={result.levels_checked} "
+                                   f"passed={result.passed_levels} "
+                                   f"failed={result.failed_levels} "
+                                   f"reasons={result.reason_codes}",
+                        ))
+                    elif stage_type == "r038c_l5_l9":
+                        inp = s.get("input")
+                        if inp is None:
+                            inp = L5L9ValidationInput()
+                        result = self.validate_l5_l9_validation_chain(inp)
+                        results.append(CICDStageResult(
+                            name=s.get("name", R038C_STAGE_NAME),
                             passed=result.validation_passed,
                             detail=f"status={result.status.value if result.status else 'unknown'} "
                                    f"levels={result.levels_checked} "
