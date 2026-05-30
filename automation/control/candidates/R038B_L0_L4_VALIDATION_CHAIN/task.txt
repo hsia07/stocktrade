@@ -1,12 +1,14 @@
-task_type: r038b_l0_l4_validation_chain_candidate
-round_id: R038
+task_type: r038b_report_status_fix_candidate
+round_id: R038B_L0_L4_VALIDATION_CHAIN_REPORT_STATUS_FIX_CANDIDATE
 official_topic: 策略 CI/CD 驗證鏈
 internal_subtask: R038b
 internal_subtask_only: TRUE
-source_construction_performed_now: TRUE
+source_construction_performed_now: FALSE
+evidence_metadata_fix_only: TRUE
+ci_failure_type: report_status_not_completed
 R038_completed: FALSE
 R038_full_construction_started: FALSE
-R038b_completed: FALSE (pending manual review/merge/push/CI green)
+R038b_completed: FALSE
 R038_R048_accepted: FALSE
 R049_started: FALSE
 broker_api_called: FALSE
