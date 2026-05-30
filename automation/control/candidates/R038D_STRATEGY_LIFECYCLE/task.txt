@@ -1,0 +1,26 @@
+R038d Strategy Lifecycle Governance Candidate
+
+Objective: Build strategy lifecycle governance contract, strategy registry, research_only -> shadow/paper promotion gate, downgrade/quarantine governance, and fail-closed validation chain for R038 internal subtask R038d.
+
+Scope:
+- StrategyLifecycleStatus/Stage enums
+- StrategyRegistryEntry dataclass with validation_refs for R038a/b/c
+- StrategyPromotionRequest/Decision dataclasses
+- StrategyDowngradeSignal dataclass
+- StrategyLifecyclePolicy dataclass
+- StrategyLifecycleValidationResult dataclass with to_dict() and compute_result_hash()
+- validate_strategy_registry_entry() fail-closed validator
+- validate_new_strategy_defaults() fail-closed validator
+- validate_promotion_readiness() fail-closed validator (R038a/b/c refs, net-of-cost, replay, market reality, TTL, Taiwan constraints)
+- validate_live_promotion_boundary() fail-closed validator (human approval required for paper->live, capital increase, live logic change)
+- validate_downgrade_quarantine() fail-closed validator
+- validate_strategy_ttl_freshness() fail-closed validator
+- validate_strategy_lifecycle_governance() aggregate chain validator
+- run_r038d_strategy_lifecycle() dict output
+- CICDVerificationChain integration (validate_strategy_lifecycle_governance, run_r038d_stage, r038d_strategy_lifecycle pipeline stage)
+- 106 tests (22 positive, 65 negative/fail-closed, 6 boundary, 13 integration)
+  (rework: added test_unparseable_validation_expiry_ts_fails and test_unparseable_expiry_ts_fails_full_lifecycle; canonical candidate.diff policy established)
+- 62 fail-closed reason codes
+- Taiwan market constraints, LLM boundary, allocation boundary enforced
+- order_execution_allowed remains FALSE throughout
+- No runtime, no broker, no live, no order path

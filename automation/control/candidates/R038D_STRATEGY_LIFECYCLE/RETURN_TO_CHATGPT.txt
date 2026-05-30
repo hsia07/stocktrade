@@ -1,0 +1,150 @@
+round_id: R038D_CANDIDATE_DIFF_SELF_REFERENCE_CANONICALIZATION_REWORK_2_CANDIDATE
+task_type: r038d_candidate_diff_canonicalization_rework_2_candidate
+formal_status_code: candidate_ready_awaiting_manual_review
+
+current_branch: candidate/r038d-strategy-lifecycle
+base_head: a285f33edf043d2224c6d7a18fbb9839dfad0549
+pre_rework_candidate_head: 1c6d278a9c2a522eb3b2a468dcaa000be61a6525
+corrected_candidate_head: 1c6d278a9c2a522eb3b2a468dcaa000be61a6525
+candidate_head_changed_by_amend_true_or_false: false
+candidate_commit_count_since_base: 1
+git_clean_before_true_or_false: true
+
+previous_candidate_diff_matches_generation_command_false_reproduced_true_or_false: true
+previous_candidate_diff_hashes_match_false_reproduced_true_or_false: true
+indirect_self_reference_metadata_removed_true_or_false: true
+obsolete_candidate_diff_hash_fields_remaining_true_or_false: false
+
+candidate_diff_self_reference_policy: exclude_candidate_diff_from_itself_using_git_pathspec_to_avoid_self_reference_recursion_and_size_inflation
+candidate_diff_generation_command: git diff --binary a285f33edf043d2224c6d7a18fbb9839dfad0549..HEAD -- . :(exclude)automation/control/candidates/R038D_STRATEGY_LIFECYCLE/candidate.diff
+candidate_diff_excluded_paths:
+  - automation/control/candidates/R038D_STRATEGY_LIFECYCLE/candidate.diff
+
+candidate_diff_regenerated_true_or_false: true
+candidate_diff_matches_generation_command_true_or_false: true
+candidate_diff_bom_present_true_or_false: false
+utf16_le_present_true_or_false: false
+line_ending_policy: LF_normalized_by_git_diff_binary
+
+rtcg_missing_marker_candidate_branch_resolved_true_or_false: true
+evidence_validation_result: PASS
+validate_canonical_repair_result: PASS
+local_evidence_checker_result: PASS
+local_evidence_checker_equivalent_command: python scripts/validation/validate_canonical_repair_evidence.py --candidate-dir automation/control/candidates/R038D_STRATEGY_LIFECYCLE
+
+unparseable_validation_expiry_ts_reason_code: STRATEGY_MISSING_VALIDATION_TIMESTAMP
+unparseable_validation_expiry_ts_negative_test_names:
+  - test_unparseable_validation_expiry_ts_fails (validator-level, assert reason code)
+  - test_unparseable_expiry_ts_fails_full_lifecycle (lifecycle-level, assert fail-closed+transition+order_execution_allowed)
+unparseable_validation_expiry_ts_negative_test_asserts_fail_closed_true_or_false: true
+unparseable_validation_expiry_ts_negative_test_asserts_transition_blocked_true_or_false: true
+unparseable_validation_expiry_ts_negative_test_asserts_order_execution_false_true_or_false: true
+
+test_category_count_policy: pytest keyword classification: negative = fails/fail_/not_/missing/block/prevents; boundary = exactly_threshold/boundary; integration = pipeline/enum/constant/defaults; positive = all remaining. Sum = pytest-collected total.
+
+new_r038d_test_count_after: 106
+positive_tests_count_after: 22
+negative_fail_closed_tests_count_after: 65
+boundary_tests_count_after: 6
+integration_tests_count_after: 13
+test_count_category_sum_after: 22+65+6+13 = 106
+test_count_category_sum_matches_new_r038d_test_count_true_or_false: true
+evidence_json_category_counts_match_return_to_chatgpt_true_or_false: true
+report_json_category_counts_match_true_or_false: true
+test_results_category_counts_match_true_or_false: true
+
+files_modified:
+  - automation/control/candidates/R038D_STRATEGY_LIFECYCLE/evidence.json (removed canonical hash/size from formal fields, replaced with diagnostic_obsolete_by_design_indirect_self_reference_prohibited)
+  - automation/control/candidates/R038D_STRATEGY_LIFECYCLE/report.json (same treatment)
+  - automation/control/candidates/R038D_STRATEGY_LIFECYCLE/RETURN_TO_CHATGPT.txt (updated canonical policy format)
+  - automation/control/candidates/R038D_STRATEGY_LIFECYCLE/candidate.diff (regenerated)
+
+files_created: none
+files_deleted: none
+
+diff_scope_allowed_true_or_false: true
+unauthorized_files_found: none
+
+source_files_modified_true_or_false: false
+tests_modified_true_or_false: false
+evidence_files_modified_true_or_false: true
+R038d_source_modified_true_or_false: false
+R038a_modified_true_or_false: false
+R038b_modified_true_or_false: false
+R038c_modified_true_or_false: false
+R038e_R038g_modified_true_or_false: false
+manifest_files_modified_true_or_false: false
+validator_files_modified_true_or_false: false
+workflow_files_modified_true_or_false: false
+law_files_modified_true_or_false: false
+server_v2_modified_true_or_false: false
+index_v2_modified_true_or_false: false
+env_files_modified_true_or_false: false
+secret_value_exposed_true_or_false: false
+broker_live_order_pollution_true_or_false: false
+
+R038d_tests_result: 106/106 PASS
+R038c_tests_result: 94/94 PASS
+R038b_tests_result: 66/66 PASS
+R038a_tests_result: 69/69 PASS
+cicd_tests_result: 10/10 PASS
+
+evidence_package_complete_true_or_false: true
+report_status_field_identified_true_or_false: true
+report_status_field_value: "completed"
+report_status_semantics_correct_true_or_false: true
+report_status_not_completed_present_true_or_false: false
+
+R038d_completed_true_or_false: false
+R038_completed_true_or_false: false
+R038_R048_accepted_true_or_false: false
+R049_started_true_or_false: false
+broker_api_called_true_or_false: false
+trading_runtime_started_true_or_false: false
+order_execution_allowed_true_or_false: false
+
+validation_commands_run:
+  1. python -m pytest tests/test_r038d_strategy_lifecycle.py -q --tb=short -> 106/106 PASS
+  2. python -m pytest tests/test_cicd_verification_chain.py -q --tb=short -> 10/10 PASS
+  3. python -m pytest tests/test_r038c_l5_l9_validation_chain.py -q --tb=short -> 94/94 PASS
+  4. python -m pytest tests/test_r038b_l0_l4_validation_chain.py -q --tb=short -> 66/66 PASS
+  5. python -m pytest tests/test_r038a_market_reality_trace_replay.py -q --tb=short -> 69/69 PASS
+  6. python scripts/validation/validate_canonical_repair_evidence.py --candidate-dir automation/control/candidates/R038D_STRATEGY_LIFECYCLE -> PASS
+
+validation_results: All suites PASS. Evidence validator PASS. canonical policy with reproducible generation command verified.
+
+git_clean_after_true_or_false: true
+commits_created_true_or_false: true (1 amended commit, single commit on candidate since base)
+candidate_since_base_one_commit_true_or_false: true
+merge_executed_true_or_false: false
+push_executed_true_or_false: false
+workflow_rerun_true_or_false: false
+force_push_used_true_or_false: false
+no_verify_used_true_or_false: false
+
+blockers: none
+
+recommended_next_action:
+AWAITING_MANUAL_REVIEW_FOR_R038D_STRATEGY_LIFECYCLE_CANONICALIZED_CLEAN_CANDIDATE
+
+final_recommendation:
+* DO_NOT_START_R049
+* DO_NOT_ACCEPT_R038_R048_YET
+* DO_NOT_MARK_R038_COMPLETED
+* DO_NOT_START_R038E_WITHOUT_USER_AUTHORIZATION
+* DO_NOT_MERGE_WITHOUT_USER_SIGNOFF
+* DO_NOT_PUSH_WITHOUT_USER_SIGNOFF
+* R038D_ONLY_NEXT
+* ORDER_EXECUTION_ALLOWED_REMAINS_FALSE
+* ENV_SECRET_RESTORE_REMAINS_USER_MANUAL_DECISION
+
+canonicalization_rework_summary:
+  Problem: candidate.diff hash/size written into evidence files that are themselves captured in candidate.diff -> indirect self-reference.
+  Solution: remove formal hash/size fields from evidence.json and report.json, replace with diagnostic_obsolete_by_design_indirect_self_reference_prohibited.
+  Policy: canonical diff excludes candidate.diff from itself using git pathspec :(exclude).
+  Generation command: git diff --binary a285f33..HEAD -- . :(exclude)automation/control/candidates/R038D_STRATEGY_LIFECYCLE/candidate.diff
+  Formal fields: candidate_diff_self_reference_policy, candidate_diff_generation_command, candidate_diff_excluded_paths, candidate_diff_matches_generation_command_true_or_false, candidate_diff_bom_present_true_or_false, utf16_le_present_true_or_false, line_ending_policy.
+  No hash/size comparison required by formal policy; generation command output is reproducible.
+  Validator: PASS.
+  All 345 tests PASS.
+  Source NOT modified.

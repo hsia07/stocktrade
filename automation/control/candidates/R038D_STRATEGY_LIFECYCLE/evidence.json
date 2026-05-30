@@ -1,0 +1,122 @@
+{
+  "schema_version": "1.0",
+  "round_id": "R038",
+  "official_topic": "策略 CI/CD 驗證鏈",
+  "task_type": "r038d_strategy_lifecycle_candidate",
+  "internal_subtask": "R038d",
+  "internal_subtask_only": true,
+  "candidate_head_self_reference_policy": "not_stored_inside_same_commit",
+  "candidate_head": null,
+  "base_head": "a285f33edf043d2224c6d7a18fbb9839dfad0549",
+  "source_construction_performed_now": true,
+  "source_files_modified": true,
+  "R038d_source_modified": true,
+  "R038a_source_modified": false,
+  "R038b_source_modified": false,
+  "R038c_source_modified": false,
+  "R038c_R038g_modified": false,
+  "tests_modified": true,
+  "manifest_modified": false,
+  "validator_files_modified": false,
+  "workflow_files_modified": false,
+  "R038_completed": false,
+  "R038_full_construction_completed": false,
+  "R038d_completed": false,
+  "R038c_completed": false,
+  "R038_R048_accepted": false,
+  "R049_started": false,
+  "broker_api_called": false,
+  "trading_runtime_started": false,
+  "order_execution_allowed": false,
+  "no_live_order_path": true,
+  "no_server_v2_wiring": true,
+  "no_index_v2_wiring": true,
+  "law_compliance": "04",
+  "evidence_files": [
+    "evidence.json",
+    "RETURN_TO_CHATGPT.txt",
+    "task.txt",
+    "report.json",
+    "candidate.diff",
+    "no-aider-used.txt",
+    "test-results.txt"
+  ],
+  "gate_validators": {
+    "strategy_registry": {
+      "missing_strategy_id": "REGISTRY_MISSING_STRATEGY_ID",
+      "missing_strategy_version": "REGISTRY_MISSING_STRATEGY_VERSION",
+      "missing_validation_refs": "REGISTRY_MISSING_VALIDATION_REFS",
+      "missing_source_commit": "REGISTRY_MISSING_SOURCE_COMMIT",
+      "missing_audit_trail_id": "REGISTRY_MISSING_AUDIT_TRAIL_ID",
+      "order_execution_allowed_true": "REGISTRY_ORDER_EXECUTION_ALLOWED_TRUE",
+      "no_live_order_path_false": "REGISTRY_NO_LIVE_ORDER_PATH_FALSE",
+      "research_only_not_default": "REGISTRY_RESEARCH_ONLY_NOT_DEFAULT"
+    },
+    "new_strategy_defaults": {
+      "not_research_only": "NEW_STRATEGY_NOT_RESEARCH_ONLY",
+      "has_real_capital": "NEW_STRATEGY_HAS_REAL_CAPITAL",
+      "self_enables_live": "NEW_STRATEGY_SELF_ENABLES_LIVE"
+    },
+    "promotion_readiness": {
+      "missing_r038a_ref": "PROMOTION_MISSING_R038A_REF",
+      "missing_r038b_ref": "PROMOTION_MISSING_R038B_REF",
+      "missing_r038c_ref": "PROMOTION_MISSING_R038C_REF",
+      "validation_stale": "PROMOTION_VALIDATION_STALE",
+      "net_of_cost_not_positive": "PROMOTION_NET_OF_COST_NOT_POSITIVE",
+      "ttl_missing": "PROMOTION_TTL_MISSING",
+      "ttl_expired": "PROMOTION_TTL_EXPIRED",
+      "expiry_missing": "PROMOTION_EXPIRY_MISSING",
+      "expiry_expired": "PROMOTION_EXPIRY_EXPIRED",
+      "tradingview_only": "PROMOTION_TRADINGVIEW_ONLY",
+      "order_execution_allowed_true": "PROMOTION_ORDER_EXECUTION_ALLOWED_TRUE"
+    },
+    "live_promotion_boundary": {
+      "auto_live_approval": "PROMOTION_AUTO_LIVE_APPROVAL",
+      "missing_human_approval": "PROMOTION_TO_LIVE_MISSING_HUMAN_APPROVAL",
+      "auto_capital_increase": "PROMOTION_AUTO_CAPITAL_INCREASE"
+    },
+    "downgrade_quarantine": {
+      "signal_ignored": "DOWNGRADE_SIGNAL_IGNORED",
+      "governance_block_ignored": "DOWNGRADE_GOVERNANCE_BLOCK_IGNORED",
+      "quarantined_promotable": "DOWNGRADE_QUARANTINED_PROMOTABLE",
+      "slippage_drift_over": "DOWNGRADE_SLIPPAGE_DRIFT_OVER_THRESHOLD",
+      "fill_rate_drift_over": "DOWNGRADE_FILL_RATE_DRIFT_OVER_THRESHOLD"
+    },
+    "strategy_ttl": {
+      "missing_ttl": "STRATEGY_MISSING_TTL",
+      "expired_ttl": "STRATEGY_EXPIRED_TTL",
+      "expired_validation": "STRATEGY_EXPIRED_VALIDATION",
+      "revalidation_missing": "STRATEGY_REVALIDATION_BEFORE_LIVE_MISSING"
+    },
+    "llm_boundary": {
+      "llm_approved_promotion": "LLM_APPROVED_PROMOTION",
+      "llm_missing_deterministic_gate": "LLM_MISSING_LOCAL_DETERMINISTIC_GATE",
+      "allocation_llm_controls_qty": "ALLOCATION_LLM_CONTROLS_QTY"
+    },
+    "allocation_boundary": {
+      "self_increases_capital": "ALLOCATION_SELF_INCREASES_CAPITAL",
+      "risk_gate_cannot_veto": "ALLOCATION_RISK_GATE_CANNOT_VETO",
+      "taiwan_liquidity_missing": "ALLOCATION_TAIWAN_LIQUIDITY_CONSTRAINTS_MISSING"
+    }
+  },
+  "fail_closed_reason_code_count": 62,
+  "R038d_test_count": 106,
+  "positive_test_count": 22,
+  "negative_fail_closed_test_count": 65,
+  "boundary_test_count": 6,
+  "integration_test_count": 13,
+  "rework_reason": "manual_review_blocker: line 621 except Exception pass causing fail-open for unparseable validation_expiry_ts; fixed to codes.append(STRATEGY_MISSING_VALIDATION_TIMESTAMP); negative test added: test_unparseable_validation_expiry_ts_fails",
+  "fail_open_timestamp_gap_resolved_true_or_false": true,
+  "unparseable_validation_expiry_ts_fail_closed_true_or_false": true,
+  "unparseable_validation_expiry_ts_reason_code": "STRATEGY_MISSING_VALIDATION_TIMESTAMP",
+  "unparseable_validation_expiry_ts_negative_test_name": "test_unparseable_validation_expiry_ts_fails",
+  "standalone_pass_occurrences": 0,
+  "except_exception_pass_line_621_classification": "RESOLVED_SILENT_PASS_REMOVED_pass_line_621_now_codes_append",
+  "candidate_diff_self_reference_policy": "exclude_candidate_diff_from_itself_using_git_pathspec_to_avoid_self_reference_recursion_and_size_inflation",
+  "candidate_diff_generation_command": "git diff --binary a285f33edf043d2224c6d7a18fbb9839dfad0549..HEAD -- . :(exclude)automation/control/candidates/R038D_STRATEGY_LIFECYCLE/candidate.diff",
+  "candidate_diff_excluded_paths": ["automation/control/candidates/R038D_STRATEGY_LIFECYCLE/candidate.diff"],
+  "candidate_diff_generation_command_note": "git diff --binary base..HEAD -- . then :(exclude) pathspec excludes candidate.diff itself from the diff output, preventing self-reference recursion and size inflation",
+  "candidate_diff_bom_present_true_or_false": false,
+  "candidate_diff_utf16_le_true_or_false": false,
+  "candidate_diff_line_ending_policy": "LF_in_git_diff_output_normalized_by_git_diff_binary"
+}

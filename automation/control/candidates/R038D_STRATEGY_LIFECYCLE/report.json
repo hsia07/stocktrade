@@ -1,0 +1,23 @@
+{
+  "round_id": "R038",
+  "task_type": "r038d_strategy_lifecycle_candidate",
+  "status": "completed",
+  "summary": "R038d strategy lifecycle governance candidate: 62 fail-closed reason codes, strategy registry contract, promotion gate (research_only->shadow->paper), downgrade/quarantine governance, TTL/freshness enforcement, LLM boundary, allocation boundary, Taiwan constraints, CICDVerificationChain integration, order_execution_allowed=FALSE. Canonical candidate.diff policy established: self-reference-excluded git diff, SHA256=diagnostic_obsolete, size=diagnostic_obsolete, LF only, UTF-8 no BOM.",
+  "tests_total": 106,
+  "tests_passed": 106,
+  "negative_fail_closed_tests": 65,
+  "positive_tests": 22,
+  "boundary_tests": 6,
+  "integration_tests": 13,
+  "reason_codes_defined": 62,
+  "all_pass": true,
+  "canonical_branch": "work/canonical-mainline-repair-001",
+  "canonical_head": "a285f33edf043d2224c6d7a18fbb9839dfad0549",
+  "test_file": "tests/test_r038d_strategy_lifecycle.py",
+  "source_file": "modules/decision_prechecklist/strategy_lifecycle_governance.py",
+  "R038d_completed": false,
+  "R038_completed": false,
+  "R038_R048_accepted": false,
+  "order_execution_allowed": false,
+  "no_broker_live_order_pollution": true
+}
