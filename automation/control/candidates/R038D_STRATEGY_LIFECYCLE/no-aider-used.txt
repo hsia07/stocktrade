@@ -1,0 +1,5 @@
+NO_AIDER_USED
+This candidate was constructed without aider.
+All code was written by the AI agent (opencode-agent) and reviewed by the user.
+No automated code generation tool (aider, copilot chat, etc.) was used for construction.
+Only opencode-agent CLI with manual review and validation.

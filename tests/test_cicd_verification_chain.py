@@ -84,5 +84,47 @@ def test_cicd_pipeline_result():
     assert r.summary == "1/2"
 
 
+
+def test_cicd_r038d_stage():
+    from modules.decision_prechecklist.strategy_lifecycle_governance import (
+        StrategyRegistryEntry, StrategyPromotionRequest, StrategyValidationEvidenceRef,
+        StrategyLifecyclePolicy,
+    )
+    from datetime import datetime, timezone, timedelta
+    chain = CICDVerificationChain()
+    now = datetime.now(timezone.utc)
+    refs = StrategyValidationEvidenceRef(
+        r038a_passed=True, r038a_snapshot_ref="a",
+        r038b_passed=True, r038b_snapshot_ref="b",
+        r038c_passed=True, r038c_snapshot_ref="c",
+        validation_snapshot_ts=now.isoformat(),
+        validation_expiry_ts=(now + timedelta(days=90)).isoformat(),
+        validation_snapshot_version="v1.0",
+    )
+    entry = StrategyRegistryEntry(
+        strategy_id="strat_test_001", strategy_version="1.0.0",
+        source_commit="a285f33", audit_trace_id="audit_001",
+        validation_refs=refs, research_only_default=True,
+        no_live_order_path=True, order_execution_allowed=False,
+    )
+    request = StrategyPromotionRequest(
+        strategy_id="strat_test_001", strategy_version="1.0.0",
+        requested_transition="research_only_to_shadow",
+        validation_refs=refs, net_of_cost_positive=True,
+        replay_compatible=True, risk_gate_replay_compatible=True,
+        market_reality_compatible=True, taiwan_constraints_acknowledged=True,
+        strategy_ttl_days=180, strategy_ttl_remaining_days=180,
+        promotion_expiry_ts=(now + timedelta(days=30)).isoformat(),
+        no_live_order_path=True, order_execution_allowed=False,
+        deterministic_gate_result=True,
+    )
+    stages = [{"type": "r038d_strategy_lifecycle", "name": "r038d_cicd",
+               "entry": entry, "request": request,
+               "policy": StrategyLifecyclePolicy()}]
+    result = chain.run_pipeline(stages)
+    assert result.stages[0].passed
+    assert result.stages[0].name == "r038d_cicd"
+
+
 if __name__ == "__main__":
     import pytest; sys.exit(pytest.main([__file__, "-v"]))

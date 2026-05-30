@@ -32,11 +32,22 @@ from modules.decision_prechecklist.l5_l9_validation_chain import (
     validate_l5_l9_chain,
     run_r038c_l5_l9_validation_chain,
 )
+from modules.decision_prechecklist.strategy_lifecycle_governance import (
+    StrategyRegistryEntry,
+    StrategyPromotionRequest,
+    StrategyDowngradeSignal,
+    StrategyLifecyclePolicy,
+    StrategyLifecycleValidationResult,
+    STAGE_R038D,
+    validate_strategy_lifecycle_governance,
+    run_r038d_strategy_lifecycle,
+)
 
 
 R038A_STAGE_NAME = "R038a_market_reality_trace_replay"
 R038B_STAGE_NAME = "R038b_l0_l4_validation_chain"
 R038C_STAGE_NAME = "R038c_l5_l9_validation_chain"
+R038D_STAGE_NAME = "R038d_strategy_lifecycle"
 
 
 @dataclass
@@ -101,6 +112,24 @@ class CICDVerificationChain:
     ) -> dict[str, Any]:
         return run_r038c_l5_l9_validation_chain(input_data)
 
+    def validate_strategy_lifecycle_governance(
+        self,
+        entry: StrategyRegistryEntry | None = None,
+        request: StrategyPromotionRequest | None = None,
+        signals: list[StrategyDowngradeSignal] | None = None,
+        policy: StrategyLifecyclePolicy | None = None,
+    ) -> StrategyLifecycleValidationResult:
+        return validate_strategy_lifecycle_governance(entry, request, signals, policy)
+
+    def run_r038d_stage(
+        self,
+        entry: StrategyRegistryEntry | None = None,
+        request: StrategyPromotionRequest | None = None,
+        signals: list[StrategyDowngradeSignal] | None = None,
+        policy: StrategyLifecyclePolicy | None = None,
+    ) -> dict[str, Any]:
+        return run_r038d_strategy_lifecycle(entry, request, signals, policy)
+
     def run_pipeline(self, stages: list[dict[str, Any]] | None = None) -> CICDPipelineResult:
         if stages is not None:
             results: list[CICDStageResult] = []
@@ -162,6 +191,19 @@ class CICDVerificationChain:
                                    f"levels={result.levels_checked} "
                                    f"passed={result.passed_levels} "
                                    f"failed={result.failed_levels} "
+                                   f"reasons={result.reason_codes}",
+                        ))
+                    elif stage_type == "r038d_strategy_lifecycle":
+                        entry = s.get("entry")
+                        req = s.get("request")
+                        sigs = s.get("signals")
+                        pol = s.get("policy")
+                        result = self.validate_strategy_lifecycle_governance(entry, req, sigs, pol)
+                        results.append(CICDStageResult(
+                            name=s.get("name", R038D_STAGE_NAME),
+                            passed=result.validation_passed,
+                            detail=f"registry_valid={result.registry_entry_valid} "
+                                   f"transition_allowed={result.transition_allowed} "
                                    f"reasons={result.reason_codes}",
                         ))
                     elif stage_type == "chain_verify":
