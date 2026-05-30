@@ -1,0 +1,55 @@
+round_id: R038B_L0_L4_VALIDATION_CHAIN_BLOCKER_REWORK_CANDIDATE
+formal_status_code: CANDIDATE_READY_AWAITING_MANUAL_REVIEW
+base_head: ce03d96c90798bc17a4e8c16cd1f5b4465493226
+candidate_branch: candidate/r038b-l0-l4-validation-chain
+pre_blocker_rework_candidate_head: 0e50fd2d57fcfe2e5a02f0af16ddb75df704ecc9
+
+R038B_L0_L4_VALIDATION_CHAIN_BLOCKER_REWORK_CANDIDATE
+============================================================
+candidate_head_self_reference_policy: not_stored_inside_same_commit
+candidate_head_reason: git commit hash changes when evidence files are amended
+
+Blocker rework performed:
+1. candidate.diff: UTF-16 LE -> UTF-8 without BOM (regenerated via Python)
+2. reason_code_count metadata: 37 -> 40 (added L0_ORDER_FILL_PNL_SCHEMA_INCOMPATIBLE,
+   included previously uncounted L4_RAW_P_USED_WITHOUT_CORRECTION and
+   GENERAL_ORDER_EXECUTION_ALLOWED_NOT_FALSE)
+3. order_fill_pnl_schema_compatible: fail-closed enforcement added to validate_l0_backtest
+   (L0_ORDER_FILL_PNL_SCHEMA_INCOMPATIBLE code, tested in
+   test_l0_order_fill_pnl_schema_incompatible_fails)
+
+Verification:
+- Evidence validator: PASS
+- R038b tests: 66/66 PASS
+- R038a tests: 69/69 PASS
+- candidate.diff: UTF-8 without BOM, no BOM
+- reason_code_count metadata matches source (40)
+- order_fill_pnl_schema_compatible enforced and tested
+
+r038b_total_test_count: 66
+negative_fail_closed_tests_count: 43
+total_reason_codes_defined: 40
+evidence_package_complete_true_or_false: True
+candidate_diff_matches_current_content_true_or_false: True
+order_fill_pnl_schema_compatibility_enforced_true_or_false: True
+order_fill_pnl_schema_compatibility_tested_true_or_false: True
+R038b_source_modified_true_or_false: True
+R038a_modified_true_or_false: False
+R038c_R038g_modified_true_or_false: False
+R038_completed_true_or_false: False
+R038_R048_accepted_true_or_false: False
+R049_started_true_or_false: False
+order_execution_allowed_true_or_false: False
+
+Status: AWAITING_MANUAL_REVIEW_FOR_REWORKED_CANDIDATE
+
+recommended_next_action: AWAITING_MANUAL_REVIEW_FOR_R038B_L0_L4_VALIDATION_CHAIN_REWORKED_CANDIDATE
+
+final_recommendation:
+- DO_NOT_START_R049
+- DO_NOT_ACCEPT_R038_R048_YET
+- DO_NOT_MARK_R038_COMPLETED
+- DO_NOT_START_R038C_WITHOUT_USER_AUTHORIZATION
+- DO_NOT_MERGE_WITHOUT_USER_SIGNOFF
+- R038B_ONLY_NEXT
+- ORDER_EXECUTION_ALLOWED_REMAINS_FALSE

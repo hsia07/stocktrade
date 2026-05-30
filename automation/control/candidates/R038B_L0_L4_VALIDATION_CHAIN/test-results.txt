@@ -1,0 +1,12 @@
+Test Results: test_r038b_l0_l4_validation_chain.py
+================================================
+Suite: 66 passed in 0.28s
+Total: 66/66 PASS
+
+Breakdown:
+  Positive tests: 14
+  Negative/fail-closed tests: 43
+  Boundary tests: 7
+  Integration (CICDVerificationChain) tests: 4
+  Enum/constant tests: 7
+  New in blocker rework: test_l0_order_fill_pnl_schema_incompatible_fails

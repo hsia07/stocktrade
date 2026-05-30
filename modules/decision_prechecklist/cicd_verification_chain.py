@@ -16,9 +16,18 @@ from modules.decision_prechecklist.market_reality_trace_replay_contract import (
     validate_and_replay,
     run_r038a_market_reality_trace_replay,
 )
+from modules.decision_prechecklist.l0_l4_validation_chain import (
+    L0L4ValidationInput,
+    L0L4ValidationResult,
+    L0L4ValidationStatus,
+    STAGE_R038B,
+    validate_l0_l4_chain,
+    run_r038b_l0_l4_validation_chain,
+)
 
 
 R038A_STAGE_NAME = "R038a_market_reality_trace_replay"
+R038B_STAGE_NAME = "R038b_l0_l4_validation_chain"
 
 
 @dataclass
@@ -59,6 +68,18 @@ class CICDVerificationChain:
     ) -> dict[str, Any]:
         return run_r038a_market_reality_trace_replay(input_data, order_execution_allowed)
 
+    def validate_l0_l4_validation_chain(
+        self,
+        input_data: L0L4ValidationInput,
+    ) -> L0L4ValidationResult:
+        return validate_l0_l4_chain(input_data)
+
+    def run_r038b_stage(
+        self,
+        input_data: L0L4ValidationInput,
+    ) -> dict[str, Any]:
+        return run_r038b_l0_l4_validation_chain(input_data)
+
     def run_pipeline(self, stages: list[dict[str, Any]] | None = None) -> CICDPipelineResult:
         if stages is not None:
             results: list[CICDStageResult] = []
@@ -93,6 +114,20 @@ class CICDVerificationChain:
                             name=s.get("name", "verification"),
                             passed=v.all_passed,
                             detail=v.summary,
+                        ))
+                    elif stage_type == "r038b_l0_l4":
+                        inp = s.get("input")
+                        if inp is None:
+                            inp = L0L4ValidationInput()
+                        result = self.validate_l0_l4_validation_chain(inp)
+                        results.append(CICDStageResult(
+                            name=s.get("name", R038B_STAGE_NAME),
+                            passed=result.validation_passed,
+                            detail=f"status={result.status.value if result.status else 'unknown'} "
+                                   f"levels={result.levels_checked} "
+                                   f"passed={result.passed_levels} "
+                                   f"failed={result.failed_levels} "
+                                   f"reasons={result.reason_codes}",
                         ))
                     elif stage_type == "chain_verify":
                         chain: TraceabilityChain = s["chain"]

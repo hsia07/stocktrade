@@ -1,0 +1,20 @@
+{
+  "round_id": "R038B_L0_L4_VALIDATION_CHAIN_CANDIDATE",
+  "task_type": "r038b_l0_l4_validation_chain_candidate",
+  "status": "candidate_pass",
+  "summary": "R038b L0-L4 validation chain blocker rework: candidate.diff UTF-8 without BOM, reason_code_count 40, order_fill_pnl_schema_compatible fail-closed enforced",
+  "tests_total": 66,
+  "tests_passed": 66,
+  "negative_fail_closed_tests": 43,
+  "boundary_tests": 7,
+  "integration_tests": 4,
+  "reason_codes_defined": 40,
+  "all_pass": true,
+  "canonical_branch": "work/canonical-mainline-repair-001",
+  "canonical_head": "ce03d96c90798bc17a4e8c16cd1f5b4465493226",
+  "test_file": "tests/test_r038b_l0_l4_validation_chain.py",
+  "source_file": "modules/decision_prechecklist/l0_l4_validation_chain.py",
+  "R038b_completed": false,
+  "order_execution_allowed": false,
+  "no_broker_live_order_pollution": true
+}
