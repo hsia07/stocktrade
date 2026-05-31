@@ -1,0 +1,2 @@
+TRUE
+This candidate was implemented without aider. Implementation executor: OpenCode CLI (big-pickle).

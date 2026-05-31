@@ -322,5 +322,185 @@ def test_cicd_r038e_pipeline_order_execution_allowed_false():
     assert "order_execution_allowed" not in result.stages[0].detail or True
 
 
+# =============================================================================
+# R038f CICD Integration Tests
+# =============================================================================
+
+
+def test_cicd_r038f_stage_via_pipeline():
+    from datetime import datetime, timezone
+    chain = CICDVerificationChain()
+    now = datetime.now(timezone.utc).isoformat()
+    stages = [{
+        "type": "r038f_nea_confidence_calibration",
+        "name": "r038f_cicd",
+        "input": {
+            "p_hat": 0.75,
+            "W_hat": 0.12,
+            "L_hat": 0.05,
+            "C": 0.002,
+            "S": 0.001,
+            "B": 0.0005,
+            "T": 0.0002,
+            "R": 0.005,
+            "U": 0.003,
+            "fill_probability": 0.85,
+            "regime_uncertainty": 0.15,
+            "market_reality_snapshot": {"liquidity": "adequate"},
+            "risk_snapshot": {"cvar": -0.02},
+            "threshold_config_version": "r038f_v1",
+            "calibration_version": "r038f_cal_v1",
+            "taiwan_reality_contract": {
+                "price": 150.0, "reference_price": 148.0, "fee": 25.0,
+            },
+            "order_execution_allowed": False,
+            "calibration_brier_score": 0.12,
+            "calibration_sample_count": 100,
+            "calibration_timestamp": now,
+            "raw_confidence_not_used": True,
+            "vetoes": [],
+            "llm_summary_only": True,
+        },
+    }]
+    result = chain.run_pipeline(stages)
+    assert len(result.stages) == 1
+    assert result.stages[0].name == "r038f_cicd"
+    assert result.stages[0].passed
+
+
+def test_cicd_r038f_stage_via_class_method():
+    from datetime import datetime, timezone
+    chain = CICDVerificationChain()
+    now = datetime.now(timezone.utc).isoformat()
+    result = chain.run_r038f_stage({
+        "p_hat": 0.75,
+        "W_hat": 0.12,
+        "L_hat": 0.05,
+        "C": 0.002,
+        "S": 0.001,
+        "B": 0.0005,
+        "T": 0.0002,
+        "R": 0.005,
+        "U": 0.003,
+        "fill_probability": 0.85,
+        "regime_uncertainty": 0.15,
+        "market_reality_snapshot": {"liquidity": "adequate"},
+        "risk_snapshot": {"cvar": -0.02},
+        "threshold_config_version": "r038f_v1",
+        "calibration_version": "r038f_cal_v1",
+        "taiwan_reality_contract": {
+            "price": 150.0, "reference_price": 148.0, "fee": 25.0,
+        },
+        "order_execution_allowed": False,
+        "calibration_brier_score": 0.12,
+        "calibration_sample_count": 100,
+        "calibration_timestamp": now,
+        "raw_confidence_not_used": True,
+        "vetoes": [],
+        "llm_summary_only": True,
+    })
+    assert result["pass_"] is True
+    assert result["stage"] == "r038f_nea_confidence_calibration"
+    assert len(result["reason_codes"]) == 0
+
+
+def test_cicd_r038f_stage_validation_method():
+    from datetime import datetime, timezone
+    chain = CICDVerificationChain()
+    now = datetime.now(timezone.utc).isoformat()
+    result = chain.validate_r038f_nea_confidence_calibration({
+        "p_hat": 0.75,
+        "W_hat": 0.12,
+        "L_hat": 0.05,
+        "C": 0.002,
+        "S": 0.001,
+        "B": 0.0005,
+        "T": 0.0002,
+        "R": 0.005,
+        "U": 0.003,
+        "fill_probability": 0.85,
+        "regime_uncertainty": 0.15,
+        "market_reality_snapshot": {"liquidity": "adequate"},
+        "risk_snapshot": {"cvar": -0.02},
+        "threshold_config_version": "r038f_v1",
+        "calibration_version": "r038f_cal_v1",
+        "taiwan_reality_contract": {
+            "price": 150.0, "reference_price": 148.0, "fee": 25.0,
+        },
+        "order_execution_allowed": False,
+        "calibration_brier_score": 0.12,
+        "calibration_sample_count": 100,
+        "calibration_timestamp": now,
+        "raw_confidence_not_used": True,
+        "vetoes": [],
+        "llm_summary_only": True,
+    })
+    assert result["pass_"] is True
+
+
+def test_cicd_r038f_stage_negative():
+    from datetime import datetime, timezone
+    chain = CICDVerificationChain()
+    now = datetime.now(timezone.utc).isoformat()
+    result = chain.run_r038f_stage({
+        "p_hat": 0.3,
+        "W_hat": 0.01,
+        "L_hat": 0.1,
+        "C": 0.01,
+        "S": 0.01,
+        "B": 0.01,
+        "T": 0.01,
+        "R": 0.01,
+        "U": 0.01,
+        "fill_probability": 0.3,
+        "regime_uncertainty": 0.6,
+        "market_reality_snapshot": {},
+        "risk_snapshot": {},
+        "threshold_config_version": "r038f_v1",
+        "calibration_version": "",
+        "taiwan_reality_contract": None,
+        "order_execution_allowed": True,
+        "calibration_brier_score": None,
+        "calibration_sample_count": 0,
+        "calibration_timestamp": now,
+        "raw_confidence_not_used": False,
+        "vetoes": ["BROKER_API_CALLED_VETO"],
+        "llm_summary_only": False,
+    })
+    assert result["pass_"] is False
+    assert len(result["reason_codes"]) > 0
+
+
+def test_cicd_r038f_pipeline_order_execution_allowed_false():
+    from datetime import datetime, timezone
+    chain = CICDVerificationChain()
+    now = datetime.now(timezone.utc).isoformat()
+    stages = [{
+        "type": "r038f_nea_confidence_calibration",
+        "name": "r038f_oae_check",
+        "input": {
+            "p_hat": 0.75, "W_hat": 0.12, "L_hat": 0.05,
+            "C": 0.002, "S": 0.001, "B": 0.0005, "T": 0.0002,
+            "R": 0.005, "U": 0.003,
+            "fill_probability": 0.85, "regime_uncertainty": 0.15,
+            "market_reality_snapshot": {"liquidity": "adequate"},
+            "risk_snapshot": {"cvar": -0.02},
+            "calibration_version": "r038f_cal_v1",
+            "taiwan_reality_contract": {
+                "price": 150.0, "reference_price": 148.0, "fee": 25.0,
+            },
+            "order_execution_allowed": False,
+            "calibration_brier_score": 0.12,
+            "calibration_sample_count": 100,
+            "calibration_timestamp": now,
+            "raw_confidence_not_used": True,
+            "vetoes": [],
+            "llm_summary_only": True,
+        },
+    }]
+    result = chain.run_pipeline(stages)
+    assert result.stages[0].passed
+
+
 if __name__ == "__main__":
     import pytest; sys.exit(pytest.main([__file__, "-v"]))

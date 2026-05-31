@@ -1,0 +1,148 @@
+round_id:
+R038F_NEA_CONFIDENCE_CALIBRATION_CANDIDATE
+
+task_type:
+r038f_nea_confidence_calibration_candidate
+
+formal_status_code:
+candidate_ready_awaiting_manual_review
+
+current_branch: candidate/r038f-nea-confidence-calibration
+base_branch: work/canonical-mainline-repair-001
+base_head: 085e0c63f22c9bcba60f88d7cf0e683a33f2090a
+remote_head: 085e0c63f22c9bcba60f88d7cf0e683a33f2090a
+local_remote_head_match_true_or_false: true
+candidate_branch: candidate/r038f-nea-confidence-calibration
+candidate_head: 3f8b108ad4aa87cd555b842c5f65ef499c30a930
+candidate_commit_count_since_base: 1
+git_clean_before_true_or_false: true
+git_clean_after_true_or_false: true
+
+files_created:
+  - modules/decision_prechecklist/net_expected_advantage.py
+  - tests/test_r038f_nea_confidence_calibration.py
+  - automation/control/candidates/R038F_NEA_CONFIDENCE_CALIBRATION/evidence.json
+  - automation/control/candidates/R038F_NEA_CONFIDENCE_CALIBRATION/task.txt
+  - automation/control/candidates/R038F_NEA_CONFIDENCE_CALIBRATION/report.json
+  - automation/control/candidates/R038F_NEA_CONFIDENCE_CALIBRATION/candidate.diff
+  - automation/control/candidates/R038F_NEA_CONFIDENCE_CALIBRATION/no-aider-used.txt
+  - automation/control/candidates/R038F_NEA_CONFIDENCE_CALIBRATION/test-results.txt
+  - automation/control/candidates/R038F_NEA_CONFIDENCE_CALIBRATION/RETURN_TO_CHATGPT.txt
+files_modified:
+  - modules/decision_prechecklist/__init__.py
+  - modules/decision_prechecklist/cicd_verification_chain.py
+  - modules/decision_prechecklist/confidence_calibration.py
+  - tests/test_cicd_verification_chain.py
+files_deleted: []
+diff_scope_allowed_true_or_false: true
+unauthorized_files_found: []
+
+deterministic_nea_gate_created_true_or_false: true
+confidence_calibration_contract_created_true_or_false: true
+calibrated_payoff_bucket_created_true_or_false: true
+score_breakdown_created_true_or_false: true
+raw_confidence_direct_pass_rejected_true_or_false: true
+raw_confidence_position_sizing_rejected_true_or_false: true
+p_hat_required_true_or_false: true
+calibration_version_required_true_or_false: true
+calibration_metric_required_true_or_false: true
+brier_score_or_equivalent_required_true_or_false: true
+net_edge_formula_implemented_true_or_false: true
+net_edge_cost_components_included_true_or_false: true
+expected_net_rr_required_true_or_false: true
+fill_probability_required_true_or_false: true
+regime_uncertainty_required_true_or_false: true
+market_reality_snapshot_required_true_or_false: true
+risk_snapshot_required_true_or_false: true
+vetoes_required_true_or_false: true
+reason_codes_required_true_or_false: true
+taiwan_market_constraints_required_true_or_false: true
+order_execution_allowed_enforced_false_true_or_false: true
+llm_summary_only_true_or_false: true
+llm_cannot_modify_calibration_true_or_false: true
+llm_cannot_mark_nea_pass_true_or_false: true
+broker_live_order_pollution_true_or_false: false
+CICDVerificationChain_class_validate_r038f_exists_true_or_false: true
+CICDVerificationChain_class_run_r038f_stage_exists_true_or_false: true
+CICDVerificationChain_run_pipeline_r038f_case_exists_true_or_false: true
+CICDVerificationChain_R038f_integration_true_or_false: true
+
+candidate_diff_generation_command: git add -N <new_files> && git diff --binary HEAD -- . ':!candidate.diff' ':!RETURN_TO_CHATGPT.txt' && git reset <new_files>
+candidate_diff_excluded_paths:
+  - automation/control/candidates/R038F_NEA_CONFIDENCE_CALIBRATION/candidate.diff
+  - automation/control/candidates/R038F_NEA_CONFIDENCE_CALIBRATION/RETURN_TO_CHATGPT.txt
+candidate_diff_matches_generation_command_true_or_false: true
+candidate_diff_hashes_match_true_or_false: true
+candidate_diff_validation_results_contains_gen_not_committed_true_or_false: false
+return_to_chatgpt_separate_verification_required_true_or_false: true
+
+evidence_package_complete_true_or_false: true
+evidence_files_present:
+  - evidence.json
+  - RETURN_TO_CHATGPT.txt
+  - task.txt
+  - report.json
+  - candidate.diff
+  - no-aider-used.txt
+  - test-results.txt
+evidence_validation_result: PASS
+validate_canonical_repair_result: PASS
+local_evidence_checker_result: PASS
+
+R038f_tests_result: 132 passed, 0 failed
+R038f_test_count: 132
+positive_tests_count: 21
+negative_fail_closed_tests_count: 45
+boundary_tests_count: 12
+integration_tests_count: 8
+score_breakdown_tests_count: 20
+payoff_bucket_tests_count: 3
+reason_code_coverage_tests_count: 19
+final_decision_tests_count: 4
+test_count_category_sum: 132
+tests_import_real_source_true_or_false: true
+cicd_tests_result: 21 passed, 0 failed
+R038e_tests_result: 110 passed, 0 failed
+R038d_tests_result: 106 passed, 0 failed
+R038c_tests_result: 94 passed, 0 failed
+R038b_tests_result: 66 passed, 0 failed
+R038a_tests_result: 69 passed, 0 failed
+total_required_tests_passed: 598
+full_suite_result: 2053 passed, 2 failed (pre-existing only)
+full_suite_failure_classification: pre-existing_only_no_regression
+
+manifest_files_modified_true_or_false: false
+validator_files_modified_true_or_false: false
+workflow_files_modified_true_or_false: false
+law_files_modified_true_or_false: false
+server_v2_modified_true_or_false: false
+index_v2_modified_true_or_false: false
+env_files_modified_true_or_false: false
+secret_value_exposed_true_or_false: false
+R038f_completed_true_or_false: false
+R038_completed_true_or_false: false
+R038_R048_accepted_true_or_false: false
+R049_started_true_or_false: false
+broker_api_called_true_or_false: false
+trading_runtime_started_true_or_false: false
+order_execution_allowed_true_or_false: false
+commit_created_true_or_false: false
+merge_executed_true_or_false: false
+push_executed_true_or_false: false
+workflow_rerun_true_or_false: false
+
+blockers: NONE
+
+recommended_next_action:
+AWAITING_MANUAL_REVIEW_FOR_R038F_NEA_CONFIDENCE_CALIBRATION_CANDIDATE
+
+final_recommendation:
+  DO_NOT_START_R049
+  DO_NOT_ACCEPT_R038_R048_YET
+  DO_NOT_MARK_R038_COMPLETED
+  DO_NOT_START_R038G_WITHOUT_USER_AUTHORIZATION
+  DO_NOT_MERGE_WITHOUT_USER_SIGNOFF
+  DO_NOT_PUSH_WITHOUT_USER_SIGNOFF
+  R038F_ONLY_NEXT
+  ORDER_EXECUTION_ALLOWED_REMAINS_FALSE
+  ENV_SECRET_RESTORE_REMAINS_USER_MANUAL_DECISION

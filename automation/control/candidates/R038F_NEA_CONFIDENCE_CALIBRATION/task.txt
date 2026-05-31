@@ -1,0 +1,21 @@
+R038F_NEA_CONFIDENCE_CALIBRATION_CANDIDATE
+internal_subtask: R038f
+official_topic: R038 策略 CI/CD 驗證鏈
+base_branch: work/canonical-mainline-repair-001
+base_commit: 085e0c63f22c9bcba60f88d7cf0e683a33f2090a
+
+Goal: deterministic NEA gate / confidence calibration / calibrated payoff bucket /
+score breakdown / CICDVerificationChain integration / evidence package.
+
+Deliverables:
+- modules/decision_prechecklist/net_expected_advantage.py (new)
+- modules/decision_prechecklist/confidence_calibration.py (enhanced)
+- modules/decision_prechecklist/cicd_verification_chain.py (modified)
+- modules/decision_prechecklist/__init__.py (modified)
+- tests/test_r038f_nea_confidence_calibration.py (new, 132 tests, 45 fail-closed)
+- tests/test_cicd_verification_chain.py (modified, 6 new R038f tests)
+- automation/control/candidates/R038F_NEA_CONFIDENCE_CALIBRATION/ (7-file evidence)
+- automation/control/governance/r038f-nea-confidence-calibration-record.json
+
+Not R038 completion. Not R038-R048 acceptance. Not R049.
+order_execution_allowed remains FALSE. No broker/live/runtime/order path.
