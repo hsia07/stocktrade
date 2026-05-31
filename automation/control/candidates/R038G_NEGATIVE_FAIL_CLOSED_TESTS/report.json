@@ -1,0 +1,29 @@
+{
+  "candidate_id": "R038G_NEGATIVE_FAIL_CLOSED_TESTS",
+  "status": "completed",
+  "message": "R038g negative fail-closed tests candidate evidence report complete",
+  "note": "status completed means evidence report metadata is complete only. This does NOT mean R038g_completed=TRUE, R038_completed=TRUE, R038_R048_accepted=TRUE, or R049_started=TRUE.",
+  "test_summary": {
+    "total": 130,
+    "passed": 130,
+    "failed": 0,
+    "test_file": "tests/test_r038g_negative_fail_closed_tests.py",
+    "module_file": "modules/decision_prechecklist/r038g_negative_fail_closed_tests.py"
+  },
+  "coverage_categories": {
+    "negative_fail_closed": 71,
+    "mutation_style": 20,
+    "cross_stage_integration": 15,
+    "cicd_integration": 6,
+    "oea_invariant_strict": 4,
+    "framework_suite": 15
+  },
+  "stage_coverage": ["R038a", "R038b", "R038c", "R038d", "R038e", "R038f", "CICD"],
+  "source_files_touched": [
+    "modules/decision_prechecklist/__init__.py",
+    "modules/decision_prechecklist/cicd_verification_chain.py",
+    "modules/decision_prechecklist/r038g_negative_fail_closed_tests.py",
+    "tests/test_r038g_negative_fail_closed_tests.py"
+  ],
+  "generated_at": "2026-05-31T09:42:00Z"
+}

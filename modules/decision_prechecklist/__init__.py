@@ -136,6 +136,15 @@ from .net_expected_advantage import (
     validate_r038f_nea_confidence_calibration,
     run_r038f_nea_confidence_calibration,
 )
+from .r038g_negative_fail_closed_tests import (
+    R038GTestCase,
+    R038GTestResult,
+    R038GTestSuite,
+    STAGE_R038G,
+    FAIL_CLOSED_REASON_CODES_R038G,
+    get_fail_closed_tests,
+    run_r038g_fail_closed_tests,
+)
 from .confidence_calibration import (
     ConfidenceCalibrationGuard,
     CalibratedConfidence,
@@ -287,6 +296,14 @@ __all__ = [
     "validate_r038f_nea_confidence_calibration",
     "run_r038f_nea_confidence_calibration",
     "R038F_STAGE_NAME",
+    "R038G_STAGE_NAME",
+    "R038GTestCase",
+    "R038GTestResult",
+    "R038GTestSuite",
+    "STAGE_R038G",
+    "FAIL_CLOSED_REASON_CODES_R038G",
+    "get_fail_closed_tests",
+    "run_r038g_fail_closed_tests",
     "ReplayTrace",
     "DecisionStep",
     "VetoRecord",

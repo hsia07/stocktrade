@@ -54,6 +54,14 @@ from modules.decision_prechecklist.net_expected_advantage import (
     R038fNEAConfidenceCalibrationResult,
     STAGE_R038F,
 )
+from modules.decision_prechecklist.r038g_negative_fail_closed_tests import (
+    R038GTestCase,
+    R038GTestResult,
+    R038GTestSuite,
+    get_fail_closed_tests,
+    run_r038g_fail_closed_tests,
+    STAGE_R038G,
+)
 
 
 R038A_STAGE_NAME = "R038a_market_reality_trace_replay"
@@ -62,6 +70,7 @@ R038C_STAGE_NAME = "R038c_l5_l9_validation_chain"
 R038D_STAGE_NAME = "R038d_strategy_lifecycle"
 R038E_STAGE_NAME = "r038e_metrics_and_ci_artifacts"
 R038F_STAGE_NAME = "r038f_nea_confidence_calibration"
+R038G_STAGE_NAME = "r038g_negative_fail_closed_tests"
 
 
 @dataclass
@@ -212,6 +221,20 @@ class CICDVerificationChain:
     ) -> R038fNEAConfidenceCalibrationResult:
         return self.validate_r038f_nea_confidence_calibration(input_data)
 
+    def validate_r038g_fail_closed_tests(
+        self,
+        tests: list[R038GTestCase] | None = None,
+    ) -> R038GTestSuite:
+        if tests is None:
+            tests = get_fail_closed_tests()
+        return run_r038g_fail_closed_tests(tests)
+
+    def run_r038g_stage(
+        self,
+        tests: list[R038GTestCase] | None = None,
+    ) -> R038GTestSuite:
+        return self.validate_r038g_fail_closed_tests(tests)
+
     def run_pipeline(self, stages: list[dict[str, Any]] | None = None) -> CICDPipelineResult:
         if stages is not None:
             results: list[CICDStageResult] = []
@@ -299,6 +322,17 @@ class CICDVerificationChain:
                                    f"net_edge={result['net_edge']:.4f} "
                                    f"payoff_bucket={result['payoff_bucket']} "
                                    f"reason_codes={len(result['reason_codes'])}",
+                        ))
+                    elif stage_type == "r038g_negative_fail_closed_tests":
+                        tests = s.get("tests")
+                        result = self.run_r038g_stage(tests)
+                        results.append(CICDStageResult(
+                            name=s.get("name", R038G_STAGE_NAME),
+                            passed=result.all_passed,
+                            detail=f"total={result.total} "
+                                   f"passed={result.passed} "
+                                   f"failed={result.failed} "
+                                   f"stage={result.stage}",
                         ))
                     elif stage_type == "r038e_metrics_and_ci_artifacts":
                         metrics = s.get("metrics", {})
