@@ -7,7 +7,7 @@
   "base_commit": "085e0c63f22c9bcba60f88d7cf0e683a33f2090a",
   "candidate_branch": "candidate/r038f-nea-confidence-calibration",
   "candidate_commit": "3f8b108ad4aa87cd555b842c5f65ef499c30a930",
-  "status": "candidate_ready_awaiting_manual_review",
+  "status": "merged",
   "deterministic_nea_gate": true,
   "confidence_calibration_contract": true,
   "calibrated_payoff_bucket": true,

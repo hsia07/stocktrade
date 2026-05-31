@@ -1,5 +1,6 @@
 {
   "round_id": "R038F_NEA_CONFIDENCE_CALIBRATION_CANDIDATE",
+  "status": "completed",
   "internal_subtask": "R038f",
   "formal_status_code": "candidate_ready_awaiting_manual_review",
   "stage": "r038f_nea_confidence_calibration",
