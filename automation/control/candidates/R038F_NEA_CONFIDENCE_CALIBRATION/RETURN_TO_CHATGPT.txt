@@ -1,13 +1,20 @@
 round_id:
-R038F_NEA_CONFIDENCE_CALIBRATION_CANDIDATE
+R038F_REPORT_STATUS_FIX_CANDIDATE
 
 task_type:
-r038f_nea_confidence_calibration_candidate
+r038f_report_status_fix_candidate
 
 formal_status_code:
 candidate_ready_awaiting_manual_review
 
-current_branch: candidate/r038f-nea-confidence-calibration
+post_push_ci_blocker:
+  workflow: validate-canonical-repair
+  failed_step: Evidence checker
+  failure: report_status_not_completed
+  root_cause: report.json had no "status" field
+  fix: added "status": "completed" to report.json, regenerated candidate.diff
+
+current_branch: candidate/r038f-report-status-fix
 base_branch: work/canonical-mainline-repair-001
 base_head: 085e0c63f22c9bcba60f88d7cf0e683a33f2090a
 remote_head: 085e0c63f22c9bcba60f88d7cf0e683a33f2090a
