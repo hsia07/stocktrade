@@ -1,0 +1,26 @@
+R038e metrics and CI artifacts candidate
+internal subtask only
+metrics contract
+CI artifacts contract
+validation report output consistency
+self-reference-safe artifact policy
+net-of-cost metrics required
+tail-risk metrics (VaR/CVaR) required
+downside-risk metric (Sortino) required
+regime breakdown required
+fill/slippage/liquidity metrics required
+paper/live drift metric required
+Market Reality metrics required
+Taiwan market constraints (tax/fee/slippage/liquidity) required
+LLM summary only (cannot modify metrics or mark CI pass)
+CICDVerificationChain R038e stage integration
+R038a/b/c/d upstream refs validated
+not R038e completion
+not R038 completion
+not R038-R048 acceptance
+not R049 authorization
+no runtime
+no broker
+no live
+no execution
+order_execution_allowed remains FALSE

@@ -42,12 +42,20 @@ from modules.decision_prechecklist.strategy_lifecycle_governance import (
     validate_strategy_lifecycle_governance,
     run_r038d_strategy_lifecycle,
 )
+from modules.decision_prechecklist.validation_metrics_ci_artifacts import (
+    R038eMetricsCIArtifactsInput,
+    R038eMetricsCIArtifactsResult,
+    validate_metrics_ci_artifacts,
+    run_r038e_metrics_ci_artifacts,
+    STAGE_R038E,
+)
 
 
 R038A_STAGE_NAME = "R038a_market_reality_trace_replay"
 R038B_STAGE_NAME = "R038b_l0_l4_validation_chain"
 R038C_STAGE_NAME = "R038c_l5_l9_validation_chain"
 R038D_STAGE_NAME = "R038d_strategy_lifecycle"
+R038E_STAGE_NAME = "r038e_metrics_and_ci_artifacts"
 
 
 @dataclass
@@ -130,6 +138,38 @@ class CICDVerificationChain:
     ) -> dict[str, Any]:
         return run_r038d_strategy_lifecycle(entry, request, signals, policy)
 
+    def validate_r038e_metrics_ci_artifacts(
+        self,
+        input_data: R038eMetricsCIArtifactsInput,
+    ) -> R038eMetricsCIArtifactsResult:
+        result = validate_metrics_ci_artifacts(input_data)
+        return result
+
+    def run_r038e_stage(
+        self,
+        metrics: dict[str, Any],
+        source_commit: str,
+        source_branch: str,
+        test_results: dict[str, Any],
+        r038a_ref: str | None = None,
+        r038b_ref: str | None = None,
+        r038c_ref: str | None = None,
+        r038d_ref: str | None = None,
+        generated_at: str | None = None,
+    ) -> R038eMetricsCIArtifactsResult:
+        result = run_r038e_metrics_ci_artifacts(
+            metrics=metrics,
+            source_commit=source_commit,
+            source_branch=source_branch,
+            test_results=test_results,
+            r038a_ref=r038a_ref,
+            r038b_ref=r038b_ref,
+            r038c_ref=r038c_ref,
+            r038d_ref=r038d_ref,
+            generated_at=generated_at,
+        )
+        return result
+
     def run_pipeline(self, stages: list[dict[str, Any]] | None = None) -> CICDPipelineResult:
         if stages is not None:
             results: list[CICDStageResult] = []
@@ -205,6 +245,35 @@ class CICDVerificationChain:
                             detail=f"registry_valid={result.registry_entry_valid} "
                                    f"transition_allowed={result.transition_allowed} "
                                    f"reasons={result.reason_codes}",
+                        ))
+                    elif stage_type == "r038e_metrics_and_ci_artifacts":
+                        metrics = s.get("metrics", {})
+                        source_commit = s.get("source_commit", "unknown")
+                        source_branch = s.get("source_branch", "unknown")
+                        test_results = s.get("test_results", {})
+                        r038a_ref = s.get("r038a_ref")
+                        r038b_ref = s.get("r038b_ref")
+                        r038c_ref = s.get("r038c_ref")
+                        r038d_ref = s.get("r038d_ref")
+                        gen_at = s.get("generated_at")
+                        result = self.run_r038e_stage(
+                            metrics=metrics,
+                            source_commit=source_commit,
+                            source_branch=source_branch,
+                            test_results=test_results,
+                            r038a_ref=r038a_ref,
+                            r038b_ref=r038b_ref,
+                            r038c_ref=r038c_ref,
+                            r038d_ref=r038d_ref,
+                            generated_at=gen_at,
+                        )
+                        results.append(CICDStageResult(
+                            name=s.get("name", R038E_STAGE_NAME),
+                            passed=result["pass_"],
+                            detail=f"stage={result['stage']} "
+                                   f"pass={result['pass_']} "
+                                   f"reason_codes={len(result['reason_codes'])} "
+                                   f"failed_metrics={len(result['failed_metric_names'])}",
                         ))
                     elif stage_type == "chain_verify":
                         chain: TraceabilityChain = s["chain"]

@@ -1,0 +1,131 @@
+R038e metrics and CI artifacts test suite results
+tests/test_r038e_metrics_ci_artifacts.py
+
+positive_tests_count: 28
+negative_fail_closed_tests_count: 70
+boundary_tests_count: 7
+integration_tests_count: 5
+total: 110
+PASS: 110
+FAIL: 0
+
+positive:
+  test_complete_metrics_bundle_passes
+  test_complete_metrics_included_metric_names_match
+  test_required_metric_count
+  test_required_metric_names_non_empty
+  test_all_required_metrics_have_name_and_category
+  test_all_required_metrics_have_unit
+  test_all_required_metrics_have_source
+  test_all_required_metrics_have_calculation_version
+  test_taiwan_relevant_metrics_present
+  test_net_of_cost_pnl_required_true
+  test_tail_risk_metrics_present
+  test_downside_risk_present
+  test_replay_flags_present
+  test_taiwan_constraints_flag_present
+  test_regime_breakdown_present
+  test_paper_live_drift_present
+  test_fill_metrics_complete_set
+  test_cost_metrics_complete_set
+  test_slippage_metrics_complete_set
+  test_complete_artifact_passes_validation
+  test_artifact_has_schema_version
+  test_artifact_has_metrics_contract_version
+  test_artifact_has_validator_version
+  test_artifact_order_execution_allowed_false
+  test_artifact_no_broker_live_runtime_flags_true
+  test_artifact_has_reproducibility_command
+  test_artifact_internal_subtask_r038e
+  test_artifact_upstream_refs_included
+
+negative_fail_closed:
+  test_missing_net_of_cost_pnl_fails
+  test_null_net_of_cost_pnl_fails
+  test_gross_only_formal_pass_fails
+  test_net_of_cost_zero_fails
+  test_missing_fee_cost_fails
+  test_missing_tax_cost_fails
+  test_missing_min_fee_effect_fails
+  test_missing_expected_slippage_fails
+  test_missing_actual_slippage_fails
+  test_missing_slippage_drift_fails
+  test_missing_fill_probability_fails
+  test_missing_actual_fill_rate_fails
+  test_missing_fill_rate_drift_fails
+  test_missing_rejected_order_rate_fails
+  test_missing_var_fails
+  test_missing_cvar_fails
+  test_missing_sortino_ratio_fails
+  test_missing_regime_breakdown_fails
+  test_missing_paper_live_drift_fails
+  test_missing_taiwan_constraints_flag_fails
+  test_artifact_missing_source_commit_fails
+  test_artifact_source_commit_mismatch_fails
+  test_artifact_branch_mismatch_fails
+  test_artifact_missing_schema_version_fails
+  test_artifact_claims_r038e_completed_fails
+  test_artifact_claims_r038_completed_fails
+  test_artifact_claims_r038_r048_accepted_fails
+  test_artifact_starts_r049_fails
+  test_artifact_order_execution_allowed_true_fails
+  test_r038a_ref_missing_fails
+  test_r038b_ref_missing_fails
+  test_r038c_ref_missing_fails
+  test_r038d_ref_missing_fails
+  test_upstream_ref_stale_fails
+  test_stale_artifact_fails
+  test_self_referential_hash_formal_field_fails
+  test_reproducibility_command_missing_fails
+  test_artifact_claims_ci_pass_but_tests_fail
+  test_rtctg_blocked_but_evidence_ready_fails
+  test_artifact_present_but_metrics_missing_fails
+  test_artifact_present_but_validator_result_missing_fails
+  test_json_report_evidence_mismatch_fails
+  test_tv_only_metrics_formal_pass_fails
+  test_llm_cannot_skip_validation
+  test_llm_cannot_force_pass
+  test_llm_cannot_override_result
+  test_missing_replay_compatibility_fails
+  test_missing_risk_gate_replay_fails
+  test_missing_market_reality_compatibility_fails
+
+boundary:
+  test_stale_threshold_exactly_allowed
+  test_stale_threshold_exactly_rejected
+  test_metric_count_exactly_minimum
+  test_trade_count_exactly_threshold
+  test_drawdown_exactly_threshold
+  test_slippage_drift_exactly_threshold
+  test_fill_rate_drift_exactly_threshold
+
+integration:
+  test_json_metrics_consistency_passes
+  test_rtctg_status_matches_evidence_status
+  test_validation_result_present
+  test_upstream_refs_all_present_passes
+  test_optional_human_summary_absent_but_machine_complete
+
+regression check:
+  R038d 106/106 PASS
+  R038c 94/94 PASS
+  R038b 66/66 PASS
+  R038a 69/69 PASS
+  CICD 10/10 PASS
+  full suite 455/455 PASS
+
+CICD R038e class-level integration tests:
+  test_cicd_r038e_stage_via_pipeline
+  test_cicd_r038e_stage_via_class_method
+  test_cicd_r038e_stage_missing_metrics_fails
+  test_cicd_r038e_stage_missing_upstream_refs_fails
+  test_cicd_r038e_stage_order_execution_allowed_false
+  test_cicd_r038e_pipeline_order_execution_allowed_false
+
+Option A governance:
+  candidate.diff excludes: candidate.diff + RETURN_TO_CHATGPT.txt
+  governance_decision_applied: R038E_CANDIDATE_DIFF_FORMAL_REPRODUCIBILITY_POLICY_v1
+  option_a_policy_user_signoff: true
+  candidate_diff_matches_generation_command: TRUE
+  candidate_diff_hashes_match: TRUE
+  candidate_diff_gen_not_committed: FALSE

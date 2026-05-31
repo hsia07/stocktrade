@@ -1,0 +1,66 @@
+task_type: r038e_metrics_and_ci_artifacts_candidate
+internal_subtask: R038e
+internal_subtask_only: true
+
+scope:
+R038e metrics contract (34 required metrics)
+R038e CI artifacts contract (source commit validation, schema version, upstream refs)
+R038e validation report output consistency validator
+Option A candidate.diff policy (excludes candidate.diff and RETURN_TO_CHATGPT.txt, formal reproducibility for non-self-referential payload)
+net-of-cost PnL required (gross-only rejected)
+tail-risk (VaR/CVaR) required
+downside-risk (Sortino) required
+regime breakdown required
+fill/slippage/liquidity metrics required
+paper/live drift required
+Market Reality required
+Taiwan market constraints (tax/fee/slippage/liquidity/T+2/price limits) required
+LLM summary boundary (read-only, cannot modify metrics or mark CI pass)
+CICDVerificationChain R038e class-level integration (validate_r038e_metrics_ci_artifacts, run_r038e_stage, run_pipeline dispatch)
+R038a/b/c/d upstream ref validation
+
+forbidden:
+not R038e completion
+not R038 completion
+not R038-R048 acceptance
+not R049
+no broker/live/runtime/order path
+no .env/secret access
+no manifest/validator/workflow/law modification
+
+construction_performed:
+modules/decision_prechecklist/validation_metrics_ci_artifacts.py (new source)
+modules/decision_prechecklist/cicd_verification_chain.py (updated: R038e class-level methods + run_pipeline case)
+tests/test_r038e_metrics_ci_artifacts.py (110 tests)
+tests/test_cicd_verification_chain.py (updated: 6 new R038e integration tests)
+
+governance:
+governance_decision_applied: R038E_CANDIDATE_DIFF_FORMAL_REPRODUCIBILITY_POLICY_v1
+option_a_policy_user_signoff: true
+candidate_diff_excluded_paths:
+  - automation/control/candidates/R038E_METRICS_AND_CI_ARTIFACTS/candidate.diff
+  - automation/control/candidates/R038E_METRICS_AND_CI_ARTIFACTS/RETURN_TO_CHATGPT.txt
+candidate_diff_matches_generation_command_true_or_false: true
+candidate_diff_hashes_match_true_or_false: true
+candidate_diff_validation_results_contains_gen_not_committed_true_or_false: false
+return_to_chatgpt_separate_verification_required: true
+source_tests_evidence_still_reproducible_true_or_false: true
+cicd_verification_chain_class_integration: true
+cicd_class_validate_r038e_method_exists: true
+cicd_class_run_r038e_stage_method_exists: true
+cicd_run_pipeline_r038e_case_exists: true
+
+validation_results:
+R038e tests: 110/110 PASS
+R038d tests: 106/106 PASS
+R038c tests: 94/94 PASS
+R038b tests: 66/66 PASS
+R038a tests: 69/69 PASS
+CICD tests: 10/10 PASS (existing) + 6 new R038e integration tests PASS
+evidence validator: PASS
+
+pending:
+manual review
+merge signoff
+push signoff
+post-push CI green
