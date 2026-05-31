@@ -1,0 +1,18 @@
+R038f tests: 132 passed, 0 failed
+CICD tests: 21 passed, 0 failed (6 new R038f-specific)
+R038e tests: 110 passed, 0 failed (no regression)
+R038d tests: 106 passed, 0 failed (no regression)
+R038c tests: 94 passed, 0 failed (no regression)
+R038b tests: 66 passed, 0 failed (no regression)
+R038a tests: 69 passed, 0 failed (no regression)
+Total required: 598 passed, 0 failed
+Full suite: 2053 passed, 2 failed (pre-existing: stale evidence age, UI gate evidence checker)
+R038f fail-closed tests: 45 (requirement: >= 45)
+R038f total tests: 132 (requirement: >= 80)
+R038f positive tests: 21 (TestPositivePass)
+R038f boundary tests: 12 (TestBoundary)
+R038f integration tests: 8 (TestIntegration)
+R038f score breakdown tests: 20 (TestScoreBreakdown)
+R038f payoff bucket tests: 3 (TestPayoffBuckets)
+R038f reason code coverage tests: 19 (TestReasonCodeCoverage)
+R038f final decision tests: 4 (TestFinalDecision)

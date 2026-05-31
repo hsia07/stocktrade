@@ -49,6 +49,11 @@ from modules.decision_prechecklist.validation_metrics_ci_artifacts import (
     run_r038e_metrics_ci_artifacts,
     STAGE_R038E,
 )
+from modules.decision_prechecklist.net_expected_advantage import (
+    run_r038f_nea_confidence_calibration as _run_r038f,
+    R038fNEAConfidenceCalibrationResult,
+    STAGE_R038F,
+)
 
 
 R038A_STAGE_NAME = "R038a_market_reality_trace_replay"
@@ -56,6 +61,7 @@ R038B_STAGE_NAME = "R038b_l0_l4_validation_chain"
 R038C_STAGE_NAME = "R038c_l5_l9_validation_chain"
 R038D_STAGE_NAME = "R038d_strategy_lifecycle"
 R038E_STAGE_NAME = "r038e_metrics_and_ci_artifacts"
+R038F_STAGE_NAME = "r038f_nea_confidence_calibration"
 
 
 @dataclass
@@ -170,6 +176,42 @@ class CICDVerificationChain:
         )
         return result
 
+    def validate_r038f_nea_confidence_calibration(
+        self,
+        input_data: dict[str, Any],
+    ) -> R038fNEAConfidenceCalibrationResult:
+        return _run_r038f(
+            p_hat=input_data.get("p_hat", 0.0),
+            W_hat=input_data.get("W_hat", 0.0),
+            L_hat=input_data.get("L_hat", 0.0),
+            C=input_data.get("C", 0.0),
+            S=input_data.get("S", 0.0),
+            B=input_data.get("B", 0.0),
+            T=input_data.get("T", 0.0),
+            R=input_data.get("R", 0.0),
+            U=input_data.get("U", 0.0),
+            fill_probability=input_data.get("fill_probability", 0.0),
+            regime_uncertainty=input_data.get("regime_uncertainty", 0.0),
+            market_reality_snapshot=input_data.get("market_reality_snapshot"),
+            risk_snapshot=input_data.get("risk_snapshot"),
+            threshold_config_version=input_data.get("threshold_config_version"),
+            calibration_version=input_data.get("calibration_version"),
+            taiwan_reality_contract=input_data.get("taiwan_reality_contract"),
+            order_execution_allowed=input_data.get("order_execution_allowed", False),
+            calibration_brier_score=input_data.get("calibration_brier_score"),
+            calibration_sample_count=input_data.get("calibration_sample_count", 0),
+            calibration_timestamp=input_data.get("calibration_timestamp"),
+            raw_confidence_not_used=input_data.get("raw_confidence_not_used", True),
+            vetoes=input_data.get("vetoes"),
+            llm_summary_only=input_data.get("llm_summary_only", True),
+        )
+
+    def run_r038f_stage(
+        self,
+        input_data: dict[str, Any],
+    ) -> R038fNEAConfidenceCalibrationResult:
+        return self.validate_r038f_nea_confidence_calibration(input_data)
+
     def run_pipeline(self, stages: list[dict[str, Any]] | None = None) -> CICDPipelineResult:
         if stages is not None:
             results: list[CICDStageResult] = []
@@ -245,6 +287,18 @@ class CICDVerificationChain:
                             detail=f"registry_valid={result.registry_entry_valid} "
                                    f"transition_allowed={result.transition_allowed} "
                                    f"reasons={result.reason_codes}",
+                        ))
+                    elif stage_type == "r038f_nea_confidence_calibration":
+                        inp = s.get("input", {})
+                        result = self.run_r038f_stage(inp)
+                        results.append(CICDStageResult(
+                            name=s.get("name", R038F_STAGE_NAME),
+                            passed=result["pass_"],
+                            detail=f"stage={result['stage']} "
+                                   f"pass={result['pass_']} "
+                                   f"net_edge={result['net_edge']:.4f} "
+                                   f"payoff_bucket={result['payoff_bucket']} "
+                                   f"reason_codes={len(result['reason_codes'])}",
                         ))
                     elif stage_type == "r038e_metrics_and_ci_artifacts":
                         metrics = s.get("metrics", {})
