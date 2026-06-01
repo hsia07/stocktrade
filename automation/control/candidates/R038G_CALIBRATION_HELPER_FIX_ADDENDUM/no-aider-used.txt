@@ -1,0 +1,1 @@
+no-aider-used.txt -- This addendum candidate was NOT created by aider. It was created by direct git operations under OpenCode protocol.

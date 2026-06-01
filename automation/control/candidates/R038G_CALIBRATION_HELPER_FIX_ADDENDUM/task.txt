@@ -1,0 +1,8 @@
+task: R038G_CALIBRATION_HELPER_FIX_ADDENDUM_CANDIDATE_FORMALIZATION
+description: Formalize bdf952b test-helper fix as independent addendum candidate
+reference_bugfix_commit: bdf952b52e7ed068adb59e51a9be5da57efaccd3
+base_authorized_merge_commit: f6c6333effd2b8152929c84a81ed02df1c3c6b50
+candidate_branch: candidate/r038g-calibration-helper-fix-addendum
+fix_scope: test_helper_only
+fixed_function: _make_valid_calibration_contract
+source_file: modules/decision_prechecklist/r038g_negative_fail_closed_tests.py
