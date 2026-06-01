@@ -1,0 +1,2 @@
+Aider was NOT used for this candidate.
+All modifications were performed directly via OpenCode CLI tools.
