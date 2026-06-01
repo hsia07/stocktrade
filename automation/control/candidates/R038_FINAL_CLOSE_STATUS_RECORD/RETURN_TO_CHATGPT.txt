@@ -1,0 +1,15 @@
+round_id: R038_FINAL_CLOSE_STATUS_RECORD_CANDIDATE
+formal_status_code: R038_FINAL_CLOSE_STATUS_RECORD_CANDIDATE_READY_AWAITING_MANUAL_REVIEW
+base_head: 8f580b8afc2275ea9080db2586f6822c3934dae0
+candidate_branch: candidate/r038-final-close-status-record
+
+task_type: r038_final_close_status_record_candidate
+
+This status record documents the R038 final close candidate state.
+R038a-g aggregate consistency audit PASS. 9/9 evidence validators PASS. 728/728 tests PASS.
+No runtime/broker/live/order pollution. R038 final close candidate ready for manual review.
+Not R038 completion. Not R038-R048 acceptance. Not R039 authorization. Not R049 authorization.
+Order_execution_allowed remains FALSE.
+Next required step: manual_review_for_R038_final_close_status_record_candidate.
+recommendation: AWAITING_MANUAL_REVIEW_FOR_R038_FINAL_CLOSE_STATUS_RECORD_CANDIDATE.
+blockers: NONE.

@@ -1,0 +1,63 @@
+{
+    "record_id": "r038-final-close-status-record",
+    "record_type": "r038_final_close_status_record",
+    "round_id": "R038_FINAL_CLOSE_STATUS_RECORD_CANDIDATE",
+    "task_type": "r038_final_close_status_record_candidate",
+    "status": "candidate_awaiting_manual_review",
+    "close_scope": "R038 final close candidate only",
+    "accepted_aggregate_audit": "R038A_G_AGGREGATE_CONSISTENCY_AUDIT_PASS",
+    "base_remote_head": "8f580b8afc2275ea9080db2586f6822c3934dae0",
+    "r038_subline_inventory": [
+        "R038a market reality trace replay",
+        "R038b L0-L4 validation chain",
+        "R038c L5-L9 validation chain",
+        "R038d strategy lifecycle",
+        "R038e metrics CI artifacts",
+        "R038f NEA confidence calibration",
+        "R038g negative fail-closed tests",
+        "R038g calibration helper fix addendum",
+        "R038g post-push acceptance status record"
+    ],
+    "evidence_validator_results": "9/9 PASS",
+    "total_required_tests_result": "728/728 PASS",
+    "all_candidate_diff_reproducible_or_option_a_verified": true,
+    "no_stale_blockers": true,
+    "no_false_completion_semantics": true,
+    "no_runtime_broker_live_order_pollution": true,
+    "server_v2_modified_by_R038_chain": false,
+    "index_v2_modified_by_R038_chain": false,
+    "R038_final_close_candidate_ready_for_manual_review": true,
+    "R038g_completed": false,
+    "R038_completed": false,
+    "R038_R048_accepted": false,
+    "R039_started": false,
+    "R049_started": false,
+    "order_execution_allowed": false,
+    "next_required_step": "manual_review_for_R038_final_close_status_record_candidate",
+    "created_at": "2026-06-01T18:30:00Z",
+    "created_by": "opencode_governance",
+    "law_compliance": "04",
+    "candidate_branch": "candidate/r038-final-close-status-record",
+    "base_head": "8f580b8afc2275ea9080db2586f6822c3934dae0",
+    "evidence_package_path": "automation/control/candidates/R038_FINAL_CLOSE_STATUS_RECORD/",
+    "candidate_diff_policy": {
+        "policy": "option_A_self_reference_safe",
+        "excludes": [
+            "candidate.diff",
+            "RETURN_TO_CHATGPT.txt"
+        ],
+        "separate_verification": [
+            "candidate.diff",
+            "RETURN_TO_CHATGPT.txt"
+        ]
+    },
+    "note": {
+        "status_candidate_awaiting_manual_review": "This status record is a candidate awaiting manual review. It does NOT mean R038_completed=TRUE, R038_R048_accepted=TRUE, R039_started=TRUE, or R049_started=TRUE.",
+        "R038g_completed": false,
+        "R038_completed": false,
+        "R038_R048_accepted": false,
+        "R039_started": false,
+        "R049_started": false,
+        "order_execution_allowed": false
+    }
+}

@@ -1,0 +1,10 @@
+Task: R038 final close status record candidate
+Created from: work/canonical-mainline-repair-001 @ 8f580b8afc2275ea9080db2586f6822c3934dae0
+Scope:
+- Record R038a-g aggregate consistency audit PASS
+- Record all R038 subline evidence/tests/validation chain consistency
+- No R038 completed claim
+- No R038-R048 acceptance
+- No R039/R049 authorization
+- No runtime/broker/live/order pollution
+Next step: manual review for R038 final close status record candidate
