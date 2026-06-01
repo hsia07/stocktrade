@@ -1,0 +1,64 @@
+{
+  "candidate_id": "R038_FINAL_CLOSE_ACCEPTANCE_STATUS_UPDATE",
+  "record_type": "r038_final_close_acceptance_status_update_evidence",
+  "law_compliance": "04",
+  "target_candidate_commit": "",
+  "base_provenance": {
+    "base_commit": "16ad235e73daaa7915bb3745efbc4d62b75ce48b",
+    "base_description": "R038 final close status record local no-ff merge commit"
+  },
+  "scope": {
+    "allowed_paths": [
+      "manifests/current_round.yaml",
+      "automation/control/governance/r038-final-close-acceptance-status-update-record.json",
+      "automation/control/candidates/R038_FINAL_CLOSE_ACCEPTANCE_STATUS_UPDATE/**"
+    ],
+    "forbidden_modifications": [
+      "modules/**",
+      "tests/**",
+      "scripts/validation/**",
+      ".github/workflows/**",
+      "_governance/law/**",
+      "server_v2.py",
+      "index_v2.html",
+      "stocktrade/**",
+      ".env",
+      ".env.*",
+      "R039-R048/R049 feature files",
+      "broker/live/execution/order pipeline",
+      "existing R038a-g evidence packages"
+    ]
+  },
+  "R038_completed": true,
+  "R038_R048_accepted": false,
+  "R039_started": false,
+  "R049_started": false,
+  "order_execution_allowed": false,
+  "next_round_to_dispatch": "R039",
+  "next_round_note": "R039 is next to dispatch but NOT started. Awaiting readiness audit before R039 construction.",
+  "final_close_verification": {
+    "final_close_remote_head": "16ad235e73daaa7915bb3745efbc4d62b75ce48b",
+    "validate_canonical_repair_run_id": 26775072027,
+    "validate_canonical_repair_conclusion": "success",
+    "validate_round_run_id": 26775072061,
+    "validate_round_conclusion": "success",
+    "accepted_aggregate_audit": "R038A_G_AGGREGATE_CONSISTENCY_AUDIT_PASS",
+    "evidence_validator_results": "9/9 PASS",
+    "R038a_g_total_tests_result": "728/728 PASS"
+  },
+  "safety_flags": {
+    "no_runtime_broker_live_order_pollution": true,
+    "server_v2_modified_by_R038_chain": false,
+    "index_v2_modified_by_R038_chain": false
+  },
+  "manifest_updates": {
+    "last_completed_round_before": "R037",
+    "last_completed_round_after": "R038",
+    "last_completed_commit_before": "99c5686b1132141173e012ca412f898d17314cee",
+    "last_completed_commit_after": "16ad235e73daaa7915bb3745efbc4d62b75ce48b",
+    "next_round_to_dispatch_before": "R038",
+    "next_round_to_dispatch_after": "R039",
+    "chain_status_before": "r037_completed_ready_for_r038_governance_record_scope_decision_or_deep_audit",
+    "chain_status_after": "r038_accepted_ready_for_r039_readiness_audit_or_scope_decision"
+  }
+}
