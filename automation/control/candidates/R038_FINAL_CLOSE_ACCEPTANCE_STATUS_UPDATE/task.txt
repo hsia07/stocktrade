@@ -1,0 +1,13 @@
+R038_FINAL_CLOSE_ACCEPTANCE_STATUS_UPDATE_CANDIDATE
+
+task_type: r038_final_close_acceptance_status_update_candidate
+
+status: completed
+
+description:
+Create candidate to formally record R038 final close acceptance status update.
+Update manifests/current_round.yaml: last_completed_round -> R038, next_round_to_dispatch -> R039.
+Create governance record and evidence package for R038 final close acceptance.
+R039 is NOT started. R038_R048 is NOT accepted. R049 is NOT started.
+order_execution_allowed remains FALSE.
+Phase 2 remains incomplete.

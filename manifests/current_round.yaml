@@ -80,12 +80,12 @@ fail_closed_guards:
   validate_evidence_real_changes: true
 guard_status: "ACTIVE"
 phase: "Phase 2"
-last_completed_round: "R037"
-last_completed_topic: "自動回歸檢查"
-last_completed_commit: "99c5686b1132141173e012ca412f898d17314cee"
+last_completed_round: "R038"
+last_completed_topic: "R038 / 策略CI/CD驗證鏈 / 第36A輪 final close"
+last_completed_commit: "16ad235e73daaa7915bb3745efbc4d62b75ce48b"
 current_round: "NONE"
-next_round_to_dispatch: "R038"
-chain_status: "r037_completed_ready_for_r038_governance_record_scope_decision_or_deep_audit"
+next_round_to_dispatch: "R039"
+chain_status: "r038_accepted_ready_for_r039_readiness_audit_or_scope_decision"
 backlog:
   r018:
     branch: "work/candidate-r018-schema-migration"
@@ -255,6 +255,49 @@ backlog:
         conclusion: success
     r036_construction_started: false
     r037_started: false
+    r049_started: false
+    runtime_started: false
+    broker_api_called: false
+    order_execution_allowed: false
+  r038:
+    type: "functional_round_chain"
+    description: "R038 策略CI/CD驗證鏈 / StrategicCICDVerificationChain (R038a-g chain + aggregate audit + final close)"
+    scope_decision: "R038_FINAL_CLOSE_ACCEPTED"
+    branch: "work/canonical-mainline-repair-001"
+    chain_commits:
+      r038a: "52a2f3c991e0b41f9e6e5c9cb48abac0739c3569"
+      r038b: "97b989b5e1c87ba450984482bfcc6f5a4f2ae3a8"
+      r038c: "27a7e26a3681d108ff168170833af35cc9f4caf3"
+      r038d: "f3ef9e060385fb4af2411869982245b5429ca174"
+      r038e: "24de0e6ec930e70a84584b6faa8c9f208392eeb6"
+      r038f: "b03a86f9d2f8ebdf3538e03efd50e5775b7105f1"
+      r038g: "e6eabab7537537a8aa025cdca7325eacbb0ad26a"
+      r038g_calibration_fix_addendum: "c72d2b8b5a5310153177668b471caeca696d1bea"
+      r038g_post_push_acceptance_status_record: "bfcbcc82c14aaf81f85ef06bb249e4573e37f9da"
+      r038_final_close_status_record: "1b69bd8d42c0adb8b7bc9b376a93c6a7c72d98be"
+      r038_final_close_acceptance_status_update: ""
+    final_close_merge_commit: "16ad235e73daaa7915bb3745efbc4d62b75ce48b"
+    evidence_complete: true
+    tests_pass: true
+    validators_pass: true
+    merge_review_status: "merged"
+    pushed_to_remote: true
+    github_actions:
+      validate_canonical_repair:
+        run_id: 26775072027
+        status: completed
+        conclusion: success
+      validate_round:
+        run_id: 26775072061
+        status: completed
+        conclusion: success
+    aggregate_audit:
+      evidence_validators: "9/9 PASS"
+      total_tests: "728/728 PASS"
+    r038_construction_started: false
+    r038_completed: true
+    r038_R048_accepted: false
+    r039_started: false
     r049_started: false
     runtime_started: false
     broker_api_called: false

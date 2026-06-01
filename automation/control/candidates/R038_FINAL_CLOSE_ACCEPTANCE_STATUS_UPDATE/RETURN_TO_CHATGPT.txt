@@ -1,0 +1,12 @@
+round_id: R038_FINAL_CLOSE_ACCEPTANCE_STATUS_UPDATE_CANDIDATE
+task_type: r038_final_close_acceptance_status_update_candidate
+formal_status_code: R038_FINAL_CLOSE_ACCEPTANCE_STATUS_UPDATE_CANDIDATE_READY_AWAITING_MANUAL_REVIEW
+base_head: 16ad235e73daaa7915bb3745efbc4d62b75ce48b
+candidate_branch: candidate/r038-final-close-acceptance-status-update
+candidate_head: de3b1a6dbee3690726d7f6ae89ab8ca1e24f47bf
+blockers: NONE
+recommended_next_action: AWAITING_MANUAL_REVIEW_FOR_R038_FINAL_CLOSE_ACCEPTANCE_STATUS_UPDATE_CANDIDATE
+
+R038 final close acceptance status update candidate created.
+manifests/current_round.yaml updated: last_completed_round=R038, last_completed_commit=16ad235, next_round_to_dispatch=R039.
+R038_R048_accepted=FALSE, R039_started=FALSE, R049_started=FALSE, order_execution_allowed=FALSE.
