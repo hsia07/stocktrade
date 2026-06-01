@@ -1,0 +1,38 @@
+R038g Negative Fail-Closed Tests Candidate Recreation
+
+Task: R038G_RECREATED_CANDIDATE_COMPLETE_EVIDENCE_AND_THRESHOLD_REWORK
+Base: work/canonical-mainline-repair-001 @ b93afaf3cba91178e4df6369baf6552528cbeb98
+Candidate: candidate/r038g-negative-fail-closed-tests-recreated
+
+Purpose:
+  Recreate R038g negative fail-closed tests from correct canonical base.
+  Verify that R038a-R038f fail-closed behaviors are enforced when
+  order_execution_allowed=False. This is an internal subtask only.
+
+Constraints:
+  - Only 1 commit allowed since base b93afaf
+  - No source hardening (no false-pass bugs detected)
+  - order_execution_allowed must remain FALSE
+  - No merge, no push, no workflow rerun
+  - Not R038 completion, not R038-R048 acceptance, not R049 authorization
+
+Files Created:
+  - modules/decision_prechecklist/r038g_negative_fail_closed_tests.py
+  - tests/test_r038g_negative_fail_closed_tests.py
+  - automation/control/governance/r038g-negative-fail-closed-tests-record.json
+
+Files Modified:
+  - modules/decision_prechecklist/__init__.py
+  - modules/decision_prechecklist/cicd_verification_chain.py
+
+Test Suite: 130 tests total
+  - 71 negative/fail-closed tests
+  - 20 mutation-style false-pass prevention tests
+  - 15 cross-stage integration tests
+  - 6 CICD integration tests
+  - 4 OEA invariant strict tests
+  - 14 framework/suite generation tests
+  - 130/130 passing
+
+Evidence package: 7/7 candidate package files
+Governance record: 1 file (automation/control/governance/r038g-negative-fail-closed-tests-record.json)

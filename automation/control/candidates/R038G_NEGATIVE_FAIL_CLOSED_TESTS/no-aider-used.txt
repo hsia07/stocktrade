@@ -1,0 +1,9 @@
+R038g Negative Fail-Closed Tests Candidate
+
+This candidate was created without the use of Aider or any other AI pair programming tool.
+All code was written by opencode autonomous execution within authorized scope.
+No 29 stubs were recreated from .pyc cache.
+_pyc_importer.py was NOT deleted.
+No source tree reconstruction pollution occurred.
+No merge, push, or workflow rerun was executed.
+order_execution_allowed remains FALSE.

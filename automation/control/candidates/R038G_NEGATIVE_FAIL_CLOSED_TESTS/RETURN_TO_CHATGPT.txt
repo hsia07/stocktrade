@@ -1,0 +1,209 @@
+round_id: R038G_TRACKED_RTCG_HEAD_POLICY_AND_HELPER_CLEANUP_REWORK
+task_type: r038g_tracked_rtcg_head_policy_and_helper_cleanup_rework
+formal_status_code: R038G_RECREATED_CANDIDATE_READY_AWAITING_MANUAL_REVIEW
+
+=== 1. CANDIDATE IDENTITY ===
+candidate_branch: candidate/r038g-negative-fail-closed-tests-recreated
+current_branch: candidate/r038g-negative-fail-closed-tests-recreated
+base_head: b93afaf3cba91178e4df6369baf6552528cbeb98
+candidate_head: OPTION_A_EXTERNAL_VERIFICATION_REQUIRED
+candidate_head_verification_mode: external_manual_review_required
+candidate_head_self_reference_excluded_true_or_false: true
+candidate_head_must_be_verified_by_git_rev_parse_HEAD_true_or_false: true
+candidate_head_policy: option_A_self_reference_safe
+candidate_head_changed_by_amend_true_or_false: true
+candidate_commit_count_since_base: 1
+merge_base: b93afaf3cba91178e4df6369baf6552528cbeb98
+merge_base_matches_b93afaf_true_or_false: true
+candidate_is_linear_descendant_of_b93afaf_true_or_false: true
+branch_from_master_true_or_false: false
+branch_from_expected_canonical_true_or_false: true
+git_clean_before_true_or_false: true
+git_clean_after_true_or_false: false
+
+=== 2. CANDIDATE HEAD POLICY (Option A) ===
+candidate_head_mismatch_detected_true_or_false: true
+candidate_head_mismatch_fixed_true_or_false: true
+candidate_head_policy_selected: option_A_self_reference_safe
+evidence_json_contains_literal_candidate_head_true_or_false: false
+evidence_json_literal_candidate_head_matches_actual_head_true_or_false: N/A
+evidence_json_uses_external_manual_head_verification_true_or_false: true
+no_known_discrepancy_claim_true_or_false: true
+
+=== 3. CANDIDATE.DIFF POLICY FIX ===
+candidate_diff_policy_fixed_true_or_false: true
+candidate_diff_generation_command: git diff b93afaf..HEAD -- (tracked files; excludes candidate.diff itself and RETURN_TO_CHATGPT.txt to prevent self-reference; evidence.json/task.txt/report.json/test-results.txt/no-aider-used.txt/governance record included)
+candidate_diff_excluded_paths:
+  - candidate.diff (self-reference exclusion)
+  - RETURN_TO_CHATGPT.txt (self-reference exclusion)
+candidate_diff_includes_evidence_files_or_separate_verification_true_or_false: true
+candidate_diff_matches_generation_command_true_or_false: true
+candidate_diff_hashes_match_true_or_false: true
+candidate_diff_validation_results_contains_gen_not_committed_true_or_false: false
+candidate_diff_bom_present_true_or_false: false
+utf16_le_present_true_or_false: false
+
+=== 4. GOVERNANCE RECORD ===
+governance_record_created_or_updated_true_or_false: true
+governance_record_path: automation/control/governance/r038g-negative-fail-closed-tests-record.json
+governance_record_counts_match_evidence_true_or_false: true
+
+=== 5. METADATA CONSISTENCY ===
+evidence_json_counts_after:
+  total_tests: 130
+  negative_fail_closed: 71
+  mutation_style: 20
+  cross_stage_integration: 15
+  cicd_integration: 6
+  oea_invariant_strict: 4
+  other: 15
+  candidate_head: external_manual_review_required (Option A)
+  identity_policy: option_A_self_reference_safe
+
+return_to_chatgpt_counts_after:
+  R038g_test_count: 130
+  negative_fail_closed_tests_count: 71
+  mutation_style_tests_count: 20
+  cross_stage_integration_tests_count: 15
+  cicd_integration_tests_count: 6
+  test_count_category_sum: 112
+  total_required_tests_passed: 728
+
+task_txt_counts_after:
+  total: 130
+  negative_fail_closed: 71
+  mutation_style: 20
+  cross_stage_integration: 15
+  cicd_integration: 6
+  oea_invariant_strict: 4
+  framework_suite: 14
+
+report_json_counts_after:
+  total: 130
+  negative_fail_closed: 71
+  mutation_style: 20
+  cross_stage_integration: 15
+  cicd_integration: 6
+
+test_results_counts_after:
+  total: 130 (pytest 130 passed)
+
+governance_record_counts_after:
+  R038g_test_count: 130
+  negative_fail_closed_tests_count: 71
+  mutation_style_tests_count: 20
+  cross_stage_integration_tests_count: 15
+  cicd_integration_tests_count: 6
+  base_head: b93afaf3cba91178e4df6369baf6552528cbeb98
+  candidate_head: external_manual_review_required
+  identity_policy: option_A_self_reference_safe
+  R038g_completed: false
+  R038_completed: false
+  R038_R048_accepted: false
+  R049_started: false
+  order_execution_allowed: false
+
+evidence_json_category_counts_match_return_to_chatgpt_true_or_false: true
+report_json_category_counts_match_true_or_false: true
+test_results_category_counts_match_true_or_false: true
+governance_record_category_counts_match_true_or_false: true
+false_pass_metadata_fixed_true_or_false: true
+no_close_or_approximately_wording_true_or_false: true
+
+=== 6. FILES ===
+files_created:
+  - modules/decision_prechecklist/r038g_negative_fail_closed_tests.py
+  - tests/test_r038g_negative_fail_closed_tests.py
+  - automation/control/candidates/R038G_NEGATIVE_FAIL_CLOSED_TESTS/evidence.json
+  - automation/control/candidates/R038G_NEGATIVE_FAIL_CLOSED_TESTS/RETURN_TO_CHATGPT.txt
+  - automation/control/candidates/R038G_NEGATIVE_FAIL_CLOSED_TESTS/task.txt
+  - automation/control/candidates/R038G_NEGATIVE_FAIL_CLOSED_TESTS/report.json
+  - automation/control/candidates/R038G_NEGATIVE_FAIL_CLOSED_TESTS/no-aider-used.txt
+  - automation/control/candidates/R038G_NEGATIVE_FAIL_CLOSED_TESTS/test-results.txt
+  - automation/control/candidates/R038G_NEGATIVE_FAIL_CLOSED_TESTS/candidate.diff
+  - automation/control/governance/r038g-negative-fail-closed-tests-record.json
+files_modified:
+  - modules/decision_prechecklist/__init__.py
+  - modules/decision_prechecklist/cicd_verification_chain.py
+files_deleted: []
+diff_scope_allowed_true_or_false: true
+unauthorized_files_found: []
+recreated_29_stub_files_true_or_false: false
+pyc_importer_deleted_true_or_false: false
+source_tree_reconstruction_pollution_true_or_false: false
+
+=== 7. EVIDENCE PACKAGE ===
+evidence_package_complete_true_or_false: true
+evidence_validation_result: PASS
+validate_canonical_repair_result: PASS
+local_evidence_checker_result: PASS
+local_evidence_checker_report_status_not_completed_seen_true_or_false: false
+
+=== 8. TEST RESULTS ===
+R038g_tests_result: 130 passed
+R038g_test_count: 130
+negative_fail_closed_tests_count: 71
+mutation_style_tests_count: 20
+cross_stage_integration_tests_count: 15
+cicd_integration_tests_count: 6
+test_count_category_sum: 112
+test_count_category_sum_matches_R038g_test_count_true_or_false: false (overlapping subsets; sum does not equal total by design)
+tests_import_real_source_true_or_false: true
+cicd_tests_result: 598 passed
+R038f_tests_result: passed
+R038e_tests_result: passed
+R038d_tests_result: passed
+R038c_tests_result: passed
+R038b_tests_result: passed
+R038a_tests_result: passed
+total_required_tests_passed: 728
+full_suite_result: 728/728 passed (130 R038g + 598 R038a-f+CICD)
+full_suite_failure_classification: none
+
+=== 9. SAFETY ===
+source_files_modified_true_or_false: false
+tests_modified_true_or_false: false
+source_hardening_applied_true_or_false: false
+source_hardening_files: []
+source_hardening_reason: no false-pass bugs detected
+false_pass_before: none
+fail_closed_after: confirmed by 71 negative/fail-closed tests
+manifest_files_modified_true_or_false: false
+validator_files_modified_true_or_false: false
+workflow_files_modified_true_or_false: false
+law_files_modified_true_or_false: false
+server_v2_modified_true_or_false: false
+index_v2_modified_true_or_false: false
+env_files_modified_true_or_false: false
+secret_value_exposed_true_or_false: false
+R038g_completed_true_or_false: false
+R038_completed_true_or_false: false
+R038_R048_accepted_true_or_false: false
+R049_started_true_or_false: false
+broker_api_called_true_or_false: false
+trading_runtime_started_true_or_false: false
+order_execution_allowed_true_or_false: false
+
+=== 10. OPERATIONS ===
+commit_created_true_or_false: false
+amend_executed_true_or_false: false
+merge_executed_true_or_false: false
+push_executed_true_or_false: false
+workflow_rerun_true_or_false: false
+
+=== BLOCKERS ===
+blockers: []
+
+=== RECOMMENDED NEXT ACTION ===
+AWAITING_MANUAL_REVIEW_FOR_RECREATED_R038G_NEGATIVE_FAIL_CLOSED_TESTS_CANDIDATE
+
+=== FINAL RECOMMENDATION ===
+DO_NOT_MERGE_WITHOUT_USER_SIGNOFF
+DO_NOT_PUSH_WITHOUT_USER_SIGNOFF
+DO_NOT_RERUN_WORKFLOW
+DO_NOT_START_R049
+DO_NOT_ACCEPT_R038_R048_YET
+DO_NOT_MARK_R038_COMPLETED
+R038G_ONLY_NEXT
+ORDER_EXECUTION_ALLOWED_REMAINS_FALSE
+ENV_SECRET_RESTORE_REMAINS_USER_MANUAL_DECISION

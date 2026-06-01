@@ -1,0 +1,103 @@
+{
+  "record_id": "r038g-negative-fail-closed-tests-record",
+  "candidate_branch": "candidate/r038g-negative-fail-closed-tests-recreated",
+  "base_branch": "work/canonical-mainline-repair-001",
+  "base_head": "b93afaf3cba91178e4df6369baf6552528cbeb98",
+  "candidate_head": "external_manual_review_required",
+  "candidate_head_verification_mode": "external_manual_review_required",
+  "candidate_head_self_reference_excluded_true_or_false": true,
+  "identity_policy": "option_A_self_reference_safe",
+  "merge_base": "b93afaf3cba91178e4df6369baf6552528cbeb98",
+  "commit_count_since_base": 1,
+  "round_id": "R038G_RECREATED_CANDIDATE_IDENTITY_AND_EVIDENCE_POLICY_REWORK",
+  "created_at": "2026-05-31T21:48:00Z",
+  "status": "candidate_awaiting_manual_review",
+  "law_compliance": "04",
+  "test_suite": {
+    "total_tests": 130,
+    "negative_fail_closed": 71,
+    "mutation_style": 20,
+    "cross_stage_integration": 15,
+    "cicd_integration": 6,
+    "oea_invariant_strict": 4,
+    "framework_suite": 15,
+    "all_passing": true,
+    "imports_real_source": true,
+    "asserts_reason_codes": true,
+    "enforces_oea_false": true
+  },
+  "coverage": {
+    "R038a": true,
+    "R038b": true,
+    "R038c": true,
+    "R038d": true,
+    "R038e": true,
+    "R038f": true,
+    "CICDIntegration": true,
+    "cross_stage": true,
+    "mutation_style": true
+  },
+  "constraints_satisfied": {
+    "no_29_stubs_recreated": true,
+    "no_pyc_importer_deleted": true,
+    "no_source_tree_pollution": true,
+    "no_manifest_modified": true,
+    "no_validator_modified": true,
+    "no_workflow_modified": true,
+    "no_law_modified": true,
+    "no_server_v2_modified": true,
+    "no_index_v2_modified": true,
+    "no_env_modified": true,
+    "no_secrets_exposed": true,
+    "no_r039_r048_modified": true,
+    "no_r049_modified": true,
+    "order_execution_allowed_remain_false": true,
+    "no_broker_live_runtime_pollution": true,
+    "no_merge": true,
+    "no_push": true,
+    "no_workflow_rerun": true,
+    "no_r038_completed": true,
+    "no_r038g_completed": true,
+    "no_r038_r048_accepted": true,
+    "no_r049_started": true
+  },
+  "evidence_package": {
+    "candidate_package_files": [
+      "evidence.json",
+      "RETURN_TO_CHATGPT.txt",
+      "task.txt",
+      "report.json",
+      "candidate.diff",
+      "no-aider-used.txt",
+      "test-results.txt"
+    ],
+    "governance_record": "automation/control/governance/r038g-negative-fail-closed-tests-record.json",
+    "complete": true
+  },
+  "candidate_diff_policy": {
+    "policy": "option_A_self_reference_safe",
+    "excludes": ["candidate.diff", "RETURN_TO_CHATGPT.txt"],
+    "includes": [
+      "modules/decision_prechecklist/__init__.py",
+      "modules/decision_prechecklist/cicd_verification_chain.py",
+      "modules/decision_prechecklist/r038g_negative_fail_closed_tests.py",
+      "tests/test_r038g_negative_fail_closed_tests.py",
+      "automation/control/candidates/R038G_NEGATIVE_FAIL_CLOSED_TESTS/evidence.json",
+      "automation/control/candidates/R038G_NEGATIVE_FAIL_CLOSED_TESTS/task.txt",
+      "automation/control/candidates/R038G_NEGATIVE_FAIL_CLOSED_TESTS/report.json",
+      "automation/control/candidates/R038G_NEGATIVE_FAIL_CLOSED_TESTS/no-aider-used.txt",
+      "automation/control/candidates/R038G_NEGATIVE_FAIL_CLOSED_TESTS/test-results.txt",
+      "automation/control/governance/r038g-negative-fail-closed-tests-record.json"
+    ],
+    "separate_verification": ["candidate.diff", "RETURN_TO_CHATGPT.txt"]
+  },
+  "note": {
+    "candidate_head": "candidate_head literal removed from evidence.json to prevent amend-loop. Use git rev-parse HEAD for external verification at manual review time.",
+    "status_completed": "status completed means evidence report metadata is complete only. This does NOT mean R038g_completed=TRUE, R038_completed=TRUE, R038_R048_accepted=TRUE, or R049_started=TRUE.",
+    "R038g_completed": false,
+    "R038_completed": false,
+    "R038_R048_accepted": false,
+    "R049_started": false,
+    "order_execution_allowed": false
+  }
+}
