@@ -1,0 +1,1 @@
+no-aider-used.txt -- This R038g post-push acceptance status record candidate was NOT created by aider. It was created by direct git operations under OpenCode protocol.

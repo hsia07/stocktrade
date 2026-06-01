@@ -1,0 +1,51 @@
+{
+    "record_id": "r038g-post-push-acceptance-status-record",
+    "record_type": "r038g_post_push_acceptance_status",
+    "round_id": "R038G_POST_PUSH_ACCEPTANCE_STATUS_RECORD_CANDIDATE",
+    "task_type": "r038g_post_push_acceptance_status_record_candidate",
+    "status": "candidate_awaiting_manual_review",
+    "accepted_scope": "R038g post-push remote acceptance only",
+    "accepted_remote_head": "29c7ebb250aeb4ce877ed78e79f2006c2a86a73c",
+    "merge_parent_1": "f6c6333effd2b8152929c84a81ed02df1c3c6b50",
+    "merge_parent_2": "c72d2b8b5a5310153177668b471caeca696d1bea",
+    "validate_canonical_repair_run_id": 26738108243,
+    "validate_canonical_repair_conclusion": "success",
+    "validate_round_run_id": 26738108218,
+    "validate_round_conclusion": "success",
+    "addendum_evidence_package_verified": true,
+    "addendum_governance_record_verified": true,
+    "original_R038G_evidence_package_preserved": true,
+    "source_helper_fix_verified": true,
+    "R038g_post_push_remote_acceptance_ready": true,
+    "R038g_completed": false,
+    "R038_completed": false,
+    "R038_R048_accepted": false,
+    "R049_started": false,
+    "order_execution_allowed": false,
+    "next_required_step": "R038a_g_aggregate_consistency_audit_before_R038_final_close",
+    "created_at": "2026-06-01T14:00:00Z",
+    "created_by": "opencode_governance",
+    "law_compliance": "04",
+    "candidate_branch": "candidate/r038g-post-push-acceptance-status-record",
+    "base_head": "29c7ebb250aeb4ce877ed78e79f2006c2a86a73c",
+    "evidence_package_path": "automation/control/candidates/R038G_POST_PUSH_ACCEPTANCE_STATUS_RECORD/",
+    "candidate_diff_policy": {
+        "policy": "option_A_self_reference_safe",
+        "excludes": [
+            "candidate.diff",
+            "RETURN_TO_CHATGPT.txt"
+        ],
+        "separate_verification": [
+            "candidate.diff",
+            "RETURN_TO_CHATGPT.txt"
+        ]
+    },
+    "note": {
+        "status_candidate_awaiting_manual_review": "This status record is a candidate awaiting manual review. It does NOT mean R038g_completed=TRUE, R038_completed=TRUE, R038_R048_accepted=TRUE, or R049_started=TRUE.",
+        "R038g_completed": false,
+        "R038_completed": false,
+        "R038_R048_accepted": false,
+        "R049_started": false,
+        "order_execution_allowed": false
+    }
+}

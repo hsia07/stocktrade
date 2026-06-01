@@ -1,0 +1,14 @@
+round_id: R038G_POST_PUSH_ACCEPTANCE_STATUS_RECORD_CANDIDATE
+formal_status_code: R038G_POST_PUSH_ACCEPTANCE_STATUS_RECORD_CANDIDATE_READY_AWAITING_MANUAL_REVIEW
+base_head: 29c7ebb250aeb4ce877ed78e79f2006c2a86a73c
+candidate_branch: candidate/r038g-post-push-acceptance-status-record
+
+task_type: r038g_post_push_acceptance_status_record_candidate
+
+This status record documents the R038g post-push acceptance state.
+R038g remote push completed, CI green confirmed, addendum evidence verified.
+Not R038g completion. Not R038 completion. Not R038-R048 acceptance. Not R049 authorization.
+Order_execution_allowed remains FALSE.
+Next required step: R038a_g_aggregate_consistency_audit_before_R038_final_close.
+recommendation: AWAITING_MANUAL_REVIEW_FOR_R038G_POST_PUSH_ACCEPTANCE_STATUS_RECORD_CANDIDATE.
+blockers: NONE.

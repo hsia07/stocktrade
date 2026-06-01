@@ -1,0 +1,16 @@
+task: R038G_POST_PUSH_ACCEPTANCE_STATUS_RECORD_CANDIDATE
+description: Create R038g post-push acceptance status record candidate
+base_head: 29c7ebb250aeb4ce877ed78e79f2006c2a86a73c
+candidate_branch: candidate/r038g-post-push-acceptance-status-record
+accepted_scope: R038g post-push remote acceptance only
+accepted_remote_head: 29c7ebb
+validate_canonical_repair_conclusion: success
+validate_round_conclusion: success
+addendum_evidence_verified: true
+original_R038G_evidence_preserved: true
+R038g_completed: false
+R038_completed: false
+R038_R048_accepted: false
+R049_started: false
+order_execution_allowed: false
+next_required_step: R038a_g_aggregate_consistency_audit_before_R038_final_close
