@@ -6,7 +6,7 @@ Not R038 completion. Not R038-R048 acceptance. Not R049.
 """
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from typing import Any
 
 from .market_reality_trace_replay_contract import (
@@ -636,25 +636,9 @@ def _make_valid_filled_order(status: str = "FILLED") -> OptionalFillRef:
 
 
 def _make_valid_calibration_contract(sample_count: int = 50, days_ago: int = 15) -> CalibrationContract:
-    from calendar import monthrange
     now = datetime.now(timezone.utc)
-    target_day = max(1, now.day - days_ago)
-    target_month = now.month
-    target_year = now.year
-    _, days_in_month = monthrange(target_year, target_month)
-    if target_day > days_in_month:
-        target_day = days_in_month
-    end = now.replace(day=target_day)
-    start_month = target_month
-    start_year = target_year
-    if start_month == 1:
-        start_month = 12
-        start_year -= 1
-    else:
-        start_month -= 1
-    _, start_days = monthrange(start_year, start_month)
-    start_day = min(target_day, start_days)
-    start = end.replace(month=start_month, year=start_year, day=start_day)
+    end = now - timedelta(days=days_ago)
+    start = end - timedelta(days=days_ago)
     return CalibrationContract(
         version=CALIBRATION_CONTRACT_VERSION,
         sample_start=start.isoformat(),

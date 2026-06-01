@@ -1,0 +1,115 @@
+{
+    "record_id": "r038g-calibration-helper-fix-addendum-record",
+    "addendum_type": "r038g_calibration_helper_fix",
+    "candidate_branch": "candidate/r038g-calibration-helper-fix-addendum",
+    "base_branch": "work/canonical-mainline-repair-001",
+    "base_head": "f6c6333effd2b8152929c84a81ed02df1c3c6b50",
+    "reference_bugfix_commit": "bdf952b52e7ed068adb59e51a9be5da57efaccd3",
+    "formalized_candidate_head": "external_manual_review_required",
+    "formalized_candidate_head_verification_mode": "external_manual_review_required",
+    "formalized_candidate_head_self_reference_excluded_true_or_false": true,
+    "identity_policy": "option_A_self_reference_safe",
+    "merge_base": "f6c6333effd2b8152929c84a81ed02df1c3c6b50",
+    "commit_count_since_base": 1,
+    "round_id": "R038G_CALIBRATION_HELPER_FIX_ADDENDUM_CANDIDATE_FORMALIZATION",
+    "created_at": "2026-06-01T12:00:00Z",
+    "status": "candidate_awaiting_manual_review",
+    "law_compliance": "04",
+    "fix_scope": "test_helper_only",
+    "fixed_function": "_make_valid_calibration_contract",
+    "source_file": "modules/decision_prechecklist/r038g_negative_fail_closed_tests.py",
+    "bug_summary": "calendar arithmetic edge case on day 1 of 31-day month",
+    "fix_summary": "replace month arithmetic with exact timedelta(days=days_ago)",
+    "f6c6333_known_test_status": "127 PASS / 3 FAIL",
+    "fix_candidate_test_status": "728/728 PASS",
+    "production_validation_logic_modified": false,
+    "broker_live_runtime_path_modified": false,
+    "original_R038G_evidence_package_modified": false,
+    "evidence_addendum_required": true,
+    "test_suite": {
+        "total_tests": 728,
+        "all_passing": true,
+        "imports_real_source": true,
+        "asserts_reason_codes": true,
+        "enforces_oea_false": true
+    },
+    "constraints_satisfied": {
+        "only_test_helper_modified": true,
+        "no_29_stubs_recreated": true,
+        "no_pyc_importer_deleted": true,
+        "no_source_tree_pollution": true,
+        "no_manifest_modified": true,
+        "no_validator_modified": true,
+        "no_workflow_modified": true,
+        "no_law_modified": true,
+        "no_server_v2_modified": true,
+        "no_index_v2_modified": true,
+        "no_env_modified": true,
+        "no_secrets_exposed": true,
+        "no_r039_r048_modified": true,
+        "no_r049_modified": true,
+        "order_execution_allowed_remain_false": true,
+        "no_broker_live_runtime_pollution": true,
+        "no_merge": true,
+        "no_push": true,
+        "no_workflow_rerun": true,
+        "no_r038_completed": true,
+        "no_r038g_completed": true,
+        "no_r038_r048_accepted": true,
+        "no_r049_started": true
+    },
+    "evidence_package": {
+        "candidate_package_files": [
+            "evidence.json",
+            "RETURN_TO_CHATGPT.txt",
+            "task.txt",
+            "report.json",
+            "candidate.diff",
+            "no-aider-used.txt",
+            "test-results.txt"
+        ],
+        "governance_record": "automation/control/governance/r038g-calibration-helper-fix-addendum-record.json",
+        "complete": true
+    },
+    "candidate_diff_policy": {
+        "policy": "option_A_self_reference_safe",
+        "excludes": [
+            "candidate.diff",
+            "RETURN_TO_CHATGPT.txt"
+        ],
+        "includes": [
+            "modules/decision_prechecklist/r038g_negative_fail_closed_tests.py",
+            "automation/control/candidates/R038G_CALIBRATION_HELPER_FIX_ADDENDUM/evidence.json",
+            "automation/control/candidates/R038G_CALIBRATION_HELPER_FIX_ADDENDUM/task.txt",
+            "automation/control/candidates/R038G_CALIBRATION_HELPER_FIX_ADDENDUM/report.json",
+            "automation/control/candidates/R038G_CALIBRATION_HELPER_FIX_ADDENDUM/no-aider-used.txt",
+            "automation/control/candidates/R038G_CALIBRATION_HELPER_FIX_ADDENDUM/test-results.txt",
+            "automation/control/governance/r038g-calibration-helper-fix-addendum-record.json"
+        ],
+        "separate_verification": [
+            "candidate.diff",
+            "RETURN_TO_CHATGPT.txt"
+        ]
+    },
+    "candidate_diff_verification": {
+        "candidate_diff_matches_generation_command": true,
+        "candidate_diff_hashes_match": true,
+        "candidate_diff_validation_results_contains_gen_not_committed": false,
+        "candidate_diff_bom_present": false,
+        "utf16_le_present": false,
+        "candidate_diff_reproducible": true,
+        "candidate_diff_generation_command": "git diff f6c6333 HEAD -- . \":(exclude)*candidate.diff\" \":(exclude)*RETURN_TO_CHATGPT.txt\"",
+        "candidate_diff_self_reference_excluded": true,
+        "candidate_diff_return_to_chatgpt_excluded": true,
+        "candidate_diff_amended_commit": "b0dddbdd4b9a690305ff8173e415304440ebeb33"
+    },
+    "note": {
+        "candidate_head": "candidate_head literal removed from evidence to prevent amend-loop. Use git rev-parse HEAD for external verification at manual review time.",
+        "status_completed": "status completed means addendum evidence report metadata is complete only. This does NOT mean R038g_completed=TRUE, R038_completed=TRUE, R038_R048_accepted=TRUE, or R049_started=TRUE.",
+        "R038g_completed": false,
+        "R038_completed": false,
+        "R038_R048_accepted": false,
+        "R049_started": false,
+        "order_execution_allowed": false
+    }
+}

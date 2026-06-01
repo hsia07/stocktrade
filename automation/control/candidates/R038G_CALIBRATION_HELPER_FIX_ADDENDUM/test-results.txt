@@ -1,0 +1,32 @@
+=== TEST RESULTS ===
+Date: 2026-06-01
+Branch: candidate/r038g-calibration-helper-fix-addendum
+Base: f6c6333effd2b8152929c84a81ed02df1c3c6b50
+Candidate: HEAD
+Source fix: _make_valid_calibration_contract timedelta replacement (3 insertions, 19 deletions)
+
+--- R038g ---
+tests/test_r038g_negative_fail_closed_tests.py ......... 130 passed (0.40s)
+
+--- CICD ---
+tests/test_cicd_verification_chain.py ................ 21 passed (0.33s)
+
+--- R038f ---
+tests/test_r038f_nea_confidence_calibration.py ....... 132 passed (0.43s)
+
+--- R038e ---
+tests/test_r038e_metrics_ci_artifacts.py ............. 110 passed (0.41s)
+
+--- R038d ---
+tests/test_r038d_strategy_lifecycle.py ............... 106 passed (0.32s)
+
+--- R038c ---
+tests/test_r038c_l5_l9_validation_chain.py ............ 94 passed (0.30s)
+
+--- R038b ---
+tests/test_r038b_l0_l4_validation_chain.py ............ 66 passed (0.25s)
+
+--- R038a ---
+tests/test_r038a_market_reality_trace_replay.py ....... 69 passed (0.24s)
+
+=== TOTAL: 728/728 PASS ===

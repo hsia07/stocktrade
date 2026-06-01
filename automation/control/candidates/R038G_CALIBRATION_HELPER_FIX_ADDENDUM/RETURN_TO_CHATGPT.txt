@@ -1,0 +1,46 @@
+round_id: R038G_CALIBRATION_HELPER_FIX_ADDENDUM_CANDIDATE_FORMALIZATION
+task_type: r038g_calibration_helper_fix_addendum_candidate_formalization
+formal_status_code: R038G_CALIBRATION_HELPER_FIX_ADDENDUM_CANDIDATE_READY_AWAITING_MANUAL_REVIEW
+
+base_branch: work/canonical-mainline-repair-001
+base_head: f6c6333effd2b8152929c84a81ed02df1c3c6b50
+candidate_branch: candidate/r038g-calibration-helper-fix-addendum
+addendum_type: r038g_calibration_helper_fix
+reference_bugfix_commit: bdf952b52e7ed068adb59e51a9be5da57efaccd3
+fix_scope: test_helper_only
+fixed_function: _make_valid_calibration_contract
+source_file: modules/decision_prechecklist/r038g_negative_fail_closed_tests.py
+bug_summary: calendar arithmetic edge case on day 1 of 31-day month
+fix_summary: replace month arithmetic with exact timedelta(days=days_ago)
+
+f6c6333_known_test_status: 127 PASS / 3 FAIL
+fix_candidate_test_status: 728/728 PASS
+production_validation_logic_modified: false
+broker_live_runtime_path_modified: false
+original_R038G_evidence_package_modified: false
+
+evidence_addendum_required: true
+evidence_package_complete: true
+governance_record_created: true
+
+R038g_completed: false
+R038_completed: false
+R038_R048_accepted: false
+R049_started: false
+order_execution_allowed: false
+
+blockers:
+  None. Addendum candidate ready for manual review and formal merge authorization.
+
+recommended_next_action:
+  AWAITING_MANUAL_REVIEW_FOR_R038G_CALIBRATION_HELPER_FIX_ADDENDUM_CANDIDATE
+
+final_recommendation:
+  DO_NOT_MERGE_WITHOUT_USER_SIGNOFF
+  DO_NOT_PUSH
+  DO_NOT_RERUN_WORKFLOW
+  DO_NOT_START_R049
+  DO_NOT_ACCEPT_R038_R048_YET
+  DO_NOT_MARK_R038_COMPLETED
+  R038G_ONLY_NEXT
+  ORDER_EXECUTION_ALLOWED_REMAINS_FALSE
