@@ -216,6 +216,17 @@ from .annotation_manager import (
     DataLabel,
     LABEL_CATEGORIES,
 )
+from .annotation_review_contract import (
+    AnnotationReviewContract,
+    AnnotationReviewItem,
+    ReviewAuditEntry,
+    VALID_REVIEW_STATUSES,
+    VALID_TRANSITIONS,
+    HARDENED_LABEL_CATEGORIES,
+    validate_review_status,
+    validate_transition,
+    validate_label_category,
+)
 from .market_candidate_pool import (
     CandidatePool,
     MarketCandidate,
@@ -454,6 +465,15 @@ __all__ = [
     "AnnotationEntry",
     "DataLabel",
     "LABEL_CATEGORIES",
+    "AnnotationReviewContract",
+    "AnnotationReviewItem",
+    "ReviewAuditEntry",
+    "VALID_REVIEW_STATUSES",
+    "VALID_TRANSITIONS",
+    "HARDENED_LABEL_CATEGORIES",
+    "validate_review_status",
+    "validate_transition",
+    "validate_label_category",
     "CandidatePool",
     "MarketCandidate",
     "ArbitraryStockQuerier",

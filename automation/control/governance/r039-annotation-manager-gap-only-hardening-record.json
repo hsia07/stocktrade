@@ -1,0 +1,18 @@
+{
+  "round_id": "R039",
+  "task_type": "annotation_manager_gap_only_hardening",
+  "formal_status_code": "R039_ANNOTATION_MANAGER_GAP_ONLY_HARDENING_CANDIDATE_READY",
+  "base_head": "ed73341008e175ca4142945d07debc23c8d21b9b",
+  "candidate_branch": "candidate/r039-annotation-manager-gap-only-hardening",
+  "status": "candidate_ready_awaiting_manual_review",
+  "chosen_option": "option_3_gap_only_hardening",
+  "chosen_option_reason": "chief_reviewer_decision: do not accept existing annotation_manager as-is (option 1), do not build UI/dashboard (option 2), harden backend contract with fail-closed states, audit trail, and strict validation (option 3). UI deferred to separate visible round.",
+  "contract_only": true,
+  "ui_deferred": true,
+  "dashboard_implemented": false,
+  "no_fake_ui_claim": true,
+  "annotation_approval_does_not_enable_trade": true,
+  "order_execution_allowed": false,
+  "revision": 1,
+  "created_at": "2026-06-02T12:46:00Z"
+}

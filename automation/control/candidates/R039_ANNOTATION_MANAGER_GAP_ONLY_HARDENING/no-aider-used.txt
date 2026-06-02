@@ -1,0 +1,1 @@
+This candidate was constructed manually via OpenCode (big-pickle). No aider was used. No AI generation tool was used outside of OpenCode's built-in model.

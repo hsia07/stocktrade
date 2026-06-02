@@ -1,0 +1,18 @@
+R039 annotation manager gap-only hardening candidate.
+
+Chief Reviewer Decision: Option 3 — gap-only hardening of existing annotation_manager backend contract. No UI/dashboard. No acceptance of prior candidate as-is.
+
+Backend contract hardening:
+- AnnotationReviewContract with strict fail-closed validation
+- AnnotationReviewItem dataclass with all required fields (item_id, source_type, source_ref, annotation_label, review_status, reviewer_id, reviewer_role, reason_code, confidence_or_quality_score, created_at, updated_at, audit_trace_id)
+- ReviewAuditEntry dataclass for append-only audit trail
+- Valid review statuses: pending, approved, rejected, needs_more_evidence, blocked
+- Valid transition map with fail-closed illegal transition detection
+- Fail-closed on: missing item_id, missing source_ref, missing source_type, invalid label, missing reviewer_id, missing reviewer_role, missing reason_code for reject/block, illegal status transition, duplicate item_id, nonexistent item
+- Audit trail records: actor_id, actor_role, field, old_value, new_value, reason_code, trace_id
+- Scope labeled as backend_contract_only
+- UI deferred flag set
+- Dashboard not implemented
+- No fake UI claim
+- Annotation approval does NOT enable trading
+- order_execution_allowed remains FALSE

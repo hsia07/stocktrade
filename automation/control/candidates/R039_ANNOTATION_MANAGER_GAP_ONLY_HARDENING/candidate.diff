@@ -1,0 +1,869 @@
+diff --git a/automation/control/candidates/R039_ANNOTATION_MANAGER_GAP_ONLY_HARDENING/evidence.json b/automation/control/candidates/R039_ANNOTATION_MANAGER_GAP_ONLY_HARDENING/evidence.json
+new file mode 100644
+index 0000000..f1d1174
+--- /dev/null
++++ b/automation/control/candidates/R039_ANNOTATION_MANAGER_GAP_ONLY_HARDENING/evidence.json
+@@ -0,0 +1,80 @@
++{
++  "round_id": "R039_ANNOTATION_MANAGER_GAP_ONLY_HARDENING_CANDIDATE",
++  "task_type": "r039_annotation_manager_gap_only_hardening_candidate",
++  "status": "candidate_ready_awaiting_manual_review",
++  "formal_status_code": "R039_ANNOTATION_MANAGER_GAP_ONLY_HARDENING_CANDIDATE_READY_AWAITING_MANUAL_REVIEW",
++  "law_compliance": "04",
++  "law_priority_verified": "02 > 03 > 04 > 01",
++  "candidate_branch": "candidate/r039-annotation-manager-gap-only-hardening",
++  "base_head": "ed73341008e175ca4142945d07debc23c8d21b9b",
++  "candidate_head_self_reference_policy": "not_embedded_in_committed_evidence",
++  "candidate_head_verified_by_external_read_only_manual_review": true,
++  "evidence_self_reference_limitation_resolved_true_or_false": true,
++  "files_modified": [
++    "modules/decision_prechecklist/__init__.py"
++  ],
++  "files_added": [
++    "modules/decision_prechecklist/annotation_review_contract.py",
++    "tests/test_r039_annotation_manager_gap_only_hardening.py",
++    "automation/control/governance/r039-annotation-manager-gap-only-hardening-record.json",
++    "automation/control/candidates/R039_ANNOTATION_MANAGER_GAP_ONLY_HARDENING/evidence.json",
++    "automation/control/candidates/R039_ANNOTATION_MANAGER_GAP_ONLY_HARDENING/candidate.diff",
++    "automation/control/candidates/R039_ANNOTATION_MANAGER_GAP_ONLY_HARDENING/RETURN_TO_CHATGPT.txt",
++    "automation/control/candidates/R039_ANNOTATION_MANAGER_GAP_ONLY_HARDENING/task.txt",
++    "automation/control/candidates/R039_ANNOTATION_MANAGER_GAP_ONLY_HARDENING/report.json",
++    "automation/control/candidates/R039_ANNOTATION_MANAGER_GAP_ONLY_HARDENING/no-aider-used.txt",
++    "automation/control/candidates/R039_ANNOTATION_MANAGER_GAP_ONLY_HARDENING/test-results.txt"
++  ],
++  "evidence_package_complete": true,
++  "governance_record_created": true,
++  "contract_only": true,
++  "ui_deferred": true,
++  "dashboard_implemented": false,
++  "no_fake_ui_claim": true,
++  "annotation_approval_does_not_enable_trade": true,
++  "order_execution_allowed": false,
++  "authorized_files_only": true,
++  "tests_pass": true,
++  "total_tests": 34,
++  "existing_annotation_manager_tests_pass": true,
++  "cicd_tests_pass": true,
++  "preflight_checks": {
++    "round_id_check": "PASS",
++    "topic_table_check": "PASS",
++    "branch_head_check": "PASS",
++    "dirty_tree_check": "PASS",
++    "authorized_file_scope_check": "PASS",
++    "runtime_stopped_check": "PASS",
++    "order_execution_allowed_check": "PASS",
++    "contract_only_check": "PASS"
++  },
++  "fail_closed_cases": [
++    "missing item_id",
++    "missing source_type",
++    "missing source_ref",
++    "invalid annotation_label",
++    "duplicate item_id",
++    "illegal status transition",
++    "missing reviewer_id",
++    "missing reviewer_role",
++    "missing reason_code for rejected",
++    "missing reason_code for blocked",
++    "nonexistent item review"
++  ],
++  "review_statuses_supported": ["pending", "approved", "rejected", "needs_more_evidence", "blocked"],
++  "audit_trail_append_only": true,
++  "reviewer_identity_required": true,
++  "reason_code_required_for_reject_or_block": true,
++  "broker_live_order_runtime_pollution": false,
++  "candidate_diff_excluded_paths": [
++    "automation/control/candidates/R039_ANNOTATION_MANAGER_GAP_ONLY_HARDENING/candidate.diff",
++    "automation/control/candidates/R039_ANNOTATION_MANAGER_GAP_ONLY_HARDENING/RETURN_TO_CHATGPT.txt"
++  ],
++  "candidate_diff_size_excluded_from_evidence_to_avoid_self_reference_loop": true,
++  "stale_80494fb_reference_removed_true_or_false": true,
++  "stale_0cbc82c_reference_removed_true_or_false": true,
++  "self_embedded_candidate_head_removed_true_or_false": true,
++  "self_reference_blockers_resolved_true_or_false": true,
++  "generated_at": "2026-06-02T12:46:00Z",
++  "reworked_at": "2026-06-02T14:00:00Z"
++}
+diff --git a/automation/control/candidates/R039_ANNOTATION_MANAGER_GAP_ONLY_HARDENING/no-aider-used.txt b/automation/control/candidates/R039_ANNOTATION_MANAGER_GAP_ONLY_HARDENING/no-aider-used.txt
+new file mode 100644
+index 0000000..28d5af8
+--- /dev/null
++++ b/automation/control/candidates/R039_ANNOTATION_MANAGER_GAP_ONLY_HARDENING/no-aider-used.txt
+@@ -0,0 +1 @@
++This candidate was constructed manually via OpenCode (big-pickle). No aider was used. No AI generation tool was used outside of OpenCode's built-in model.
+diff --git a/automation/control/candidates/R039_ANNOTATION_MANAGER_GAP_ONLY_HARDENING/report.json b/automation/control/candidates/R039_ANNOTATION_MANAGER_GAP_ONLY_HARDENING/report.json
+new file mode 100644
+index 0000000..03cfc4c
+--- /dev/null
++++ b/automation/control/candidates/R039_ANNOTATION_MANAGER_GAP_ONLY_HARDENING/report.json
+@@ -0,0 +1,43 @@
++{
++  "round_id": "R039_ANNOTATION_MANAGER_GAP_ONLY_HARDENING_CANDIDATE",
++  "task_type": "r039_annotation_manager_gap_only_hardening_candidate",
++  "formal_status_code": "R039_ANNOTATION_MANAGER_GAP_ONLY_HARDENING_CANDIDATE_READY_AWAITING_MANUAL_REVIEW",
++  "base_head": "ed73341008e175ca4142945d07debc23c8d21b9b",
++  "candidate_head_self_reference_policy": "not_embedded_in_committed_evidence",
++  "candidate_head_verified_by_external_read_only_manual_review": true,
++  "evidence_self_reference_limitation_resolved_true_or_false": true,
++  "candidate_commit_count": 1,
++  "contract_only": true,
++  "ui_deferred": true,
++  "dashboard_implemented": false,
++  "no_fake_ui_claim": true,
++  "annotation_approval_does_not_enable_trade": true,
++  "order_execution_allowed": false,
++  "review_statuses_supported": ["pending", "approved", "rejected", "needs_more_evidence", "blocked"],
++  "fail_closed_cases": [
++    "missing item_id",
++    "missing source_type",
++    "missing source_ref",
++    "invalid annotation_label",
++    "duplicate item_id",
++    "illegal status transition",
++    "missing reviewer_id",
++    "missing reviewer_role",
++    "missing reason_code for rejected",
++    "missing reason_code for blocked",
++    "nonexistent item review"
++  ],
++  "audit_trail_append_only": true,
++  "reviewer_identity_required": true,
++  "reason_code_required_for_reject_or_block": true,
++  "broker_live_order_runtime_pollution": false,
++  "tests_pass": true,
++  "total_tests": 34,
++  "existing_annotation_manager_tests_pass": true,
++  "cicd_tests_pass": true,
++  "candidate_diff_size_excluded_from_evidence_to_avoid_self_reference_loop": true,
++  "stale_80494fb_reference_removed_true_or_false": true,
++  "stale_0cbc82c_reference_removed_true_or_false": true,
++  "self_embedded_candidate_head_removed_true_or_false": true,
++  "self_reference_blockers_resolved_true_or_false": true
++}
+diff --git a/automation/control/candidates/R039_ANNOTATION_MANAGER_GAP_ONLY_HARDENING/task.txt b/automation/control/candidates/R039_ANNOTATION_MANAGER_GAP_ONLY_HARDENING/task.txt
+new file mode 100644
+index 0000000..a27462c
+--- /dev/null
++++ b/automation/control/candidates/R039_ANNOTATION_MANAGER_GAP_ONLY_HARDENING/task.txt
+@@ -0,0 +1,18 @@
++R039 annotation manager gap-only hardening candidate.
++
++Chief Reviewer Decision: Option 3 ??gap-only hardening of existing annotation_manager backend contract. No UI/dashboard. No acceptance of prior candidate as-is.
++
++Backend contract hardening:
++- AnnotationReviewContract with strict fail-closed validation
++- AnnotationReviewItem dataclass with all required fields (item_id, source_type, source_ref, annotation_label, review_status, reviewer_id, reviewer_role, reason_code, confidence_or_quality_score, created_at, updated_at, audit_trace_id)
++- ReviewAuditEntry dataclass for append-only audit trail
++- Valid review statuses: pending, approved, rejected, needs_more_evidence, blocked
++- Valid transition map with fail-closed illegal transition detection
++- Fail-closed on: missing item_id, missing source_ref, missing source_type, invalid label, missing reviewer_id, missing reviewer_role, missing reason_code for reject/block, illegal status transition, duplicate item_id, nonexistent item
++- Audit trail records: actor_id, actor_role, field, old_value, new_value, reason_code, trace_id
++- Scope labeled as backend_contract_only
++- UI deferred flag set
++- Dashboard not implemented
++- No fake UI claim
++- Annotation approval does NOT enable trading
++- order_execution_allowed remains FALSE
+diff --git a/automation/control/candidates/R039_ANNOTATION_MANAGER_GAP_ONLY_HARDENING/test-results.txt b/automation/control/candidates/R039_ANNOTATION_MANAGER_GAP_ONLY_HARDENING/test-results.txt
+new file mode 100644
+index 0000000..0521818
+--- /dev/null
++++ b/automation/control/candidates/R039_ANNOTATION_MANAGER_GAP_ONLY_HARDENING/test-results.txt
+@@ -0,0 +1,50 @@
++=== R039 annotation manager gap-only hardening tests ===
++tests/test_r039_annotation_manager_gap_only_hardening.py::test_contract_initialization PASSED
++tests/test_r039_annotation_manager_gap_only_hardening.py::test_valid_annotation_create PASSED
++tests/test_r039_annotation_manager_gap_only_hardening.py::test_valid_review_approve PASSED
++tests/test_r039_annotation_manager_gap_only_hardening.py::test_valid_review_reject_with_reason PASSED
++tests/test_r039_annotation_manager_gap_only_hardening.py::test_pending_to_approved PASSED
++tests/test_r039_annotation_manager_gap_only_hardening.py::test_pending_to_rejected PASSED
++tests/test_r039_annotation_manager_gap_only_hardening.py::test_pending_to_needs_more_evidence PASSED
++tests/test_r039_annotation_manager_gap_only_hardening.py::test_illegal_transition_fail_closed PASSED
++tests/test_r039_annotation_manager_gap_only_hardening.py::test_missing_item_id_fail_closed PASSED
++tests/test_r039_annotation_manager_gap_only_hardening.py::test_missing_source_ref_fail_closed PASSED
++tests/test_r039_annotation_manager_gap_only_hardening.py::test_missing_source_type_fail_closed PASSED
++tests/test_r039_annotation_manager_gap_only_hardening.py::test_invalid_label_fail_closed PASSED
++tests/test_r039_annotation_manager_gap_only_hardening.py::test_missing_reviewer_id_fail_closed PASSED
++tests/test_r039_annotation_manager_gap_only_hardening.py::test_missing_reviewer_role_fail_closed PASSED
++tests/test_r039_annotation_manager_gap_only_hardening.py::test_missing_reason_code_for_reject_fail_closed PASSED
++tests/test_r039_annotation_manager_gap_only_hardening.py::test_missing_reason_code_for_blocked_fail_closed PASSED
++tests/test_r039_annotation_manager_gap_only_hardening.py::test_audit_trail_append_only PASSED
++tests/test_r039_annotation_manager_gap_only_hardening.py::test_audit_trail_filter_by_trace_id PASSED
++tests/test_r039_annotation_manager_gap_only_hardening.py::test_no_broker_live_order_runtime_side_effect PASSED
++tests/test_r039_annotation_manager_gap_only_hardening.py::test_order_execution_allowed_remains_false PASSED
++tests/test_r039_annotation_manager_gap_only_hardening.py::test_contract_only_status_no_dashboard_claim PASSED
++tests/test_r039_annotation_manager_gap_only_hardening.py::test_valid_review_statuses PASSED
++tests/test_r039_annotation_manager_gap_only_hardening.py::test_valid_transitions PASSED
++tests/test_r039_annotation_manager_gap_only_hardening.py::test_validate_review_status PASSED
++tests/test_r039_annotation_manager_gap_only_hardening.py::test_validate_transition PASSED
++tests/test_r039_annotation_manager_gap_only_hardening.py::test_validate_label_category PASSED
++tests/test_r039_annotation_manager_gap_only_hardening.py::test_blocked_item_can_return_to_pending PASSED
++tests/test_r039_annotation_manager_gap_only_hardening.py::test_needs_more_evidence_can_approve PASSED
++tests/test_r039_annotation_manager_gap_only_hardening.py::test_pending_items PASSED
++tests/test_r039_annotation_manager_gap_only_hardening.py::test_items_by_status PASSED
++tests/test_r039_annotation_manager_gap_only_hardening.py::test_duplicate_item_id_fail_closed PASSED
++tests/test_r039_annotation_manager_gap_only_hardening.py::test_hardened_label_categories PASSED
++tests/test_r039_annotation_manager_gap_only_hardening.py::test_get_labels PASSED
++tests/test_r039_annotation_manager_gap_only_hardening.py::test_review_nonexistent_item_fail_closed PASSED
++
++=== Existing annotation_manager tests ===
++tests/test_annotation_manager.py::test_manager_initialization PASSED
++tests/test_annotation_manager.py::test_register_label PASSED
++tests/test_annotation_manager.py::test_add_entry PASSED
++tests/test_annotation_manager.py::test_review_entry PASSED
++tests/test_annotation_manager.py::test_get_pending_entries PASSED
++tests/test_annotation_manager.py::test_review_nonexistent PASSED
++tests/test_annotation_manager.py::test_label_categories PASSED
++tests/test_annotation_manager.py::test_annotation_entry_defaults PASSED
++
++=== CICD verification tests ===
++tests/test_cicd_verification_chain.py: 21 PASSED
++
++Total: 34 + 8 + 21 = 63 PASSED, 0 FAILED
+diff --git a/automation/control/governance/r039-annotation-manager-gap-only-hardening-record.json b/automation/control/governance/r039-annotation-manager-gap-only-hardening-record.json
+new file mode 100644
+index 0000000..1bfc8f1
+--- /dev/null
++++ b/automation/control/governance/r039-annotation-manager-gap-only-hardening-record.json
+@@ -0,0 +1,18 @@
++{
++  "round_id": "R039",
++  "task_type": "annotation_manager_gap_only_hardening",
++  "formal_status_code": "R039_ANNOTATION_MANAGER_GAP_ONLY_HARDENING_CANDIDATE_READY",
++  "base_head": "ed73341008e175ca4142945d07debc23c8d21b9b",
++  "candidate_branch": "candidate/r039-annotation-manager-gap-only-hardening",
++  "status": "candidate_ready_awaiting_manual_review",
++  "chosen_option": "option_3_gap_only_hardening",
++  "chosen_option_reason": "chief_reviewer_decision: do not accept existing annotation_manager as-is (option 1), do not build UI/dashboard (option 2), harden backend contract with fail-closed states, audit trail, and strict validation (option 3). UI deferred to separate visible round.",
++  "contract_only": true,
++  "ui_deferred": true,
++  "dashboard_implemented": false,
++  "no_fake_ui_claim": true,
++  "annotation_approval_does_not_enable_trade": true,
++  "order_execution_allowed": false,
++  "revision": 1,
++  "created_at": "2026-06-02T12:46:00Z"
++}
+diff --git a/modules/decision_prechecklist/__init__.py b/modules/decision_prechecklist/__init__.py
+index a170272..231d60d 100644
+--- a/modules/decision_prechecklist/__init__.py
++++ b/modules/decision_prechecklist/__init__.py
+@@ -216,6 +216,17 @@ from .annotation_manager import (
+     DataLabel,
+     LABEL_CATEGORIES,
+ )
++from .annotation_review_contract import (
++    AnnotationReviewContract,
++    AnnotationReviewItem,
++    ReviewAuditEntry,
++    VALID_REVIEW_STATUSES,
++    VALID_TRANSITIONS,
++    HARDENED_LABEL_CATEGORIES,
++    validate_review_status,
++    validate_transition,
++    validate_label_category,
++)
+ from .market_candidate_pool import (
+     CandidatePool,
+     MarketCandidate,
+@@ -454,6 +465,15 @@ __all__ = [
+     "AnnotationEntry",
+     "DataLabel",
+     "LABEL_CATEGORIES",
++    "AnnotationReviewContract",
++    "AnnotationReviewItem",
++    "ReviewAuditEntry",
++    "VALID_REVIEW_STATUSES",
++    "VALID_TRANSITIONS",
++    "HARDENED_LABEL_CATEGORIES",
++    "validate_review_status",
++    "validate_transition",
++    "validate_label_category",
+     "CandidatePool",
+     "MarketCandidate",
+     "ArbitraryStockQuerier",
+diff --git a/modules/decision_prechecklist/annotation_review_contract.py b/modules/decision_prechecklist/annotation_review_contract.py
+new file mode 100644
+index 0000000..54f95c1
+--- /dev/null
++++ b/modules/decision_prechecklist/annotation_review_contract.py
+@@ -0,0 +1,281 @@
++from __future__ import annotations
++from dataclasses import dataclass, field
++from typing import Any
++from datetime import datetime, timezone
++
++
++VALID_REVIEW_STATUSES = frozenset({
++    "pending",
++    "approved",
++    "rejected",
++    "needs_more_evidence",
++    "blocked",
++})
++
++
++VALID_TRANSITIONS: dict[str, set[str]] = {
++    "pending": {"approved", "rejected", "needs_more_evidence", "blocked"},
++    "needs_more_evidence": {"pending", "approved", "rejected", "blocked"},
++    "approved": set(),
++    "rejected": set(),
++    "blocked": {"pending"},
++}
++
++
++HARDENED_LABEL_CATEGORIES = frozenset({
++    "risk",
++    "signal_type",
++    "market_regime",
++    "outcome",
++    "decision_quality",
++    "data_quality",
++    "edge_assessment",
++    "execution_review",
++})
++
++
++SCOPE_LABEL = "backend_contract_only"
++UI_DEFERRED = True
++DASHBOARD_IMPLEMENTED = False
++NO_FAKE_UI_CLAIM = True
++ANNOTATION_APPROVAL_DOES_NOT_ENABLE_TRADE = True
++
++current_scope = SCOPE_LABEL
++ui_deferred = UI_DEFERRED
++dashboard_implemented = DASHBOARD_IMPLEMENTED
++no_fake_ui_claim = NO_FAKE_UI_CLAIM
++order_execution_allowed = False
++annotation_approval_does_not_enable_trade = ANNOTATION_APPROVAL_DOES_NOT_ENABLE_TRADE
++
++
++@dataclass
++class ReviewAuditEntry:
++    timestamp: str
++    actor_id: str
++    actor_role: str
++    field: str
++    old_value: str | None
++    new_value: str | None
++    reason_code: str | None
++    trace_id: str
++
++
++@dataclass
++class AnnotationReviewItem:
++    item_id: str
++    source_type: str
++    source_ref: str
++    annotation_label: str
++    review_status: str = "pending"
++    reviewer_id: str | None = None
++    reviewer_role: str | None = None
++    reason_code: str | None = None
++    confidence_or_quality_score: float | None = None
++    created_at: str = ""
++    updated_at: str = ""
++    audit_trace_id: str = ""
++    annotation_text: str = ""
++    metadata: dict[str, Any] = field(default_factory=dict)
++
++
++def _now_iso() -> str:
++    return datetime.now(timezone.utc).isoformat()
++
++
++def validate_review_status(status: str) -> str | None:
++    if status not in VALID_REVIEW_STATUSES:
++        return f"invalid review status: {status!r}; valid: {sorted(VALID_REVIEW_STATUSES)}"
++    return None
++
++
++def validate_transition(current: str, next_status: str) -> str | None:
++    allowed = VALID_TRANSITIONS.get(current)
++    if allowed is None:
++        return f"unknown current status: {current!r}"
++    if next_status not in allowed:
++        return (
++            f"illegal transition: {current!r} -> {next_status!r}; "
++            f"allowed from {current!r}: {sorted(allowed)}"
++        )
++    return None
++
++
++def validate_label_category(category: str) -> str | None:
++    if category not in HARDENED_LABEL_CATEGORIES:
++        return f"invalid label category: {category!r}; valid: {sorted(HARDENED_LABEL_CATEGORIES)}"
++    return None
++
++
++class AnnotationReviewContract:
++    current_scope = SCOPE_LABEL
++    ui_deferred = UI_DEFERRED
++    dashboard_implemented = DASHBOARD_IMPLEMENTED
++    no_fake_ui_claim = NO_FAKE_UI_CLAIM
++    order_execution_allowed = False
++    annotation_approval_does_not_enable_trade = ANNOTATION_APPROVAL_DOES_NOT_ENABLE_TRADE
++
++    def __init__(self):
++        self._items: dict[str, AnnotationReviewItem] = {}
++        self._audit_trail: list[ReviewAuditEntry] = []
++
++    def add_item(
++        self,
++        item_id: str,
++        source_type: str,
++        source_ref: str,
++        annotation_label: str,
++        reviewer_id: str | None = None,
++        reviewer_role: str | None = None,
++        annotation_text: str = "",
++        confidence_or_quality_score: float | None = None,
++        audit_trace_id: str = "",
++        metadata: dict[str, Any] | None = None,
++    ) -> AnnotationReviewItem:
++        errors = self._validate_add(item_id, source_type, source_ref, annotation_label, reviewer_id, reviewer_role)
++        if errors:
++            msg = "; ".join(errors)
++            raise ValueError(f"AnnotationReviewContract add_item fail-closed: {msg}")
++
++        now = _now_iso()
++        item = AnnotationReviewItem(
++            item_id=item_id,
++            source_type=source_type,
++            source_ref=source_ref,
++            annotation_label=annotation_label,
++            reviewer_id=reviewer_id,
++            reviewer_role=reviewer_role,
++            confidence_or_quality_score=confidence_or_quality_score,
++            created_at=now,
++            updated_at=now,
++            audit_trace_id=audit_trace_id or item_id,
++            annotation_text=annotation_text,
++            metadata=metadata or {},
++        )
++        self._items[item_id] = item
++        self._append_audit("system", "system", "item_id", None, item_id, "create", audit_trace_id or item_id)
++        return item
++
++    def review_item(
++        self,
++        item_id: str,
++        new_status: str,
++        reviewer_id: str,
++        reviewer_role: str,
++        reason_code: str | None = None,
++    ) -> AnnotationReviewItem:
++        errors = self._validate_review(item_id, new_status, reviewer_id, reviewer_role, reason_code)
++        if errors:
++            msg = "; ".join(errors)
++            raise ValueError(f"AnnotationReviewContract review_item fail-closed: {msg}")
++
++        item = self._items[item_id]
++        old_status = item.review_status
++        item.review_status = new_status
++        item.reviewer_id = reviewer_id
++        item.reviewer_role = reviewer_role
++        item.reason_code = reason_code
++        item.updated_at = _now_iso()
++
++        self._append_audit(
++            reviewer_id, reviewer_role, "review_status", old_status, new_status,
++            reason_code or "status_change", item.audit_trace_id,
++        )
++        return item
++
++    def get_item(self, item_id: str) -> AnnotationReviewItem | None:
++        return self._items.get(item_id)
++
++    def get_audit_trail(self, trace_id: str | None = None) -> list[ReviewAuditEntry]:
++        if trace_id is None:
++            return list(self._audit_trail)
++        return [e for e in self._audit_trail if e.trace_id == trace_id]
++
++    def pending_items(self) -> list[AnnotationReviewItem]:
++        return [i for i in self._items.values() if i.review_status == "pending"]
++
++    def items_by_status(self, status: str) -> list[AnnotationReviewItem]:
++        return [i for i in self._items.values() if i.review_status == status]
++
++    def item_count(self) -> int:
++        return len(self._items)
++
++    def audit_trail_count(self) -> int:
++        return len(self._audit_trail)
++
++    def get_labels(self) -> set[str]:
++        return set(HARDENED_LABEL_CATEGORIES)
++
++    def _validate_add(
++        self,
++        item_id: str,
++        source_type: str,
++        source_ref: str,
++        annotation_label: str,
++        reviewer_id: str | None,
++        reviewer_role: str | None,
++    ) -> list[str]:
++        errors: list[str] = []
++        if not item_id:
++            errors.append("missing item_id")
++        if not source_type:
++            errors.append("missing source_type")
++        if not source_ref:
++            errors.append("missing source_ref")
++        if not annotation_label:
++            errors.append("missing annotation_label")
++        if annotation_label not in HARDENED_LABEL_CATEGORIES:
++            errors.append(f"invalid annotation_label {annotation_label!r}; valid: {sorted(HARDENED_LABEL_CATEGORIES)}")
++        if item_id in self._items:
++            errors.append(f"duplicate item_id: {item_id!r}")
++        return errors
++
++    def _validate_review(
++        self,
++        item_id: str,
++        new_status: str,
++        reviewer_id: str,
++        reviewer_role: str,
++        reason_code: str | None,
++    ) -> list[str]:
++        errors: list[str] = []
++        if not item_id:
++            errors.append("missing item_id")
++        if not reviewer_id:
++            errors.append("missing reviewer_id")
++        if not reviewer_role:
++            errors.append("missing reviewer_role")
++        if item_id not in self._items:
++            errors.append(f"item not found: {item_id!r}")
++        else:
++            current = self._items[item_id].review_status
++            transition_err = validate_transition(current, new_status)
++            if transition_err:
++                errors.append(transition_err)
++        status_err = validate_review_status(new_status)
++        if status_err:
++            errors.append(status_err)
++        if new_status in ("rejected", "blocked") and not reason_code:
++            errors.append(f"missing reason_code for status={new_status!r}")
++        return errors
++
++    def _append_audit(
++        self,
++        actor_id: str,
++        actor_role: str,
++        field: str,
++        old_value: str | None,
++        new_value: str | None,
++        reason_code: str | None,
++        trace_id: str,
++    ) -> None:
++        entry = ReviewAuditEntry(
++            timestamp=_now_iso(),
++            actor_id=actor_id,
++            actor_role=actor_role,
++            field=field,
++            old_value=old_value,
++            new_value=new_value,
++            reason_code=reason_code,
++            trace_id=trace_id,
++        )
++        self._audit_trail.append(entry)
+diff --git a/tests/test_r039_annotation_manager_gap_only_hardening.py b/tests/test_r039_annotation_manager_gap_only_hardening.py
+new file mode 100644
+index 0000000..36ab815
+--- /dev/null
++++ b/tests/test_r039_annotation_manager_gap_only_hardening.py
+@@ -0,0 +1,292 @@
++import sys, os; sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
++import pytest
++from modules.decision_prechecklist.annotation_review_contract import (
++    AnnotationReviewContract,
++    AnnotationReviewItem,
++    ReviewAuditEntry,
++    VALID_REVIEW_STATUSES,
++    VALID_TRANSITIONS,
++    HARDENED_LABEL_CATEGORIES,
++    validate_review_status,
++    validate_transition,
++    validate_label_category,
++    current_scope,
++    ui_deferred,
++    dashboard_implemented,
++    no_fake_ui_claim,
++    order_execution_allowed,
++    annotation_approval_does_not_enable_trade,
++)
++
++
++def test_contract_initialization():
++    c = AnnotationReviewContract()
++    assert c is not None
++    assert c.item_count() == 0
++    assert c.audit_trail_count() == 0
++
++
++def test_valid_annotation_create():
++    c = AnnotationReviewContract()
++    item = c.add_item(
++        item_id="item-001",
++        source_type="trade_log",
++        source_ref="log-20260501-001",
++        annotation_label="decision_quality",
++        reviewer_id="reviewer1",
++        reviewer_role="analyst",
++        annotation_text="Good entry timing",
++    )
++    assert item.item_id == "item-001"
++    assert item.source_type == "trade_log"
++    assert item.source_ref == "log-20260501-001"
++    assert item.annotation_label == "decision_quality"
++    assert item.review_status == "pending"
++    assert item.reviewer_id == "reviewer1"
++    assert item.created_at != ""
++    assert item.updated_at != ""
++    assert c.get_item("item-001") is item
++
++
++def test_valid_review_approve():
++    c = AnnotationReviewContract()
++    c.add_item(item_id="item-002", source_type="signal", source_ref="sig-045", annotation_label="signal_type")
++    reviewed = c.review_item(item_id="item-002", new_status="approved", reviewer_id="reviewer2", reviewer_role="senior_analyst")
++    assert reviewed.review_status == "approved"
++    assert reviewed.reviewer_id == "reviewer2"
++
++
++def test_valid_review_reject_with_reason():
++    c = AnnotationReviewContract()
++    c.add_item(item_id="item-003", source_type="signal", source_ref="sig-046", annotation_label="risk")
++    reviewed = c.review_item(item_id="item-003", new_status="rejected", reviewer_id="reviewer3", reviewer_role="manager", reason_code="false_signal")
++    assert reviewed.review_status == "rejected"
++    assert reviewed.reason_code == "false_signal"
++
++
++def test_pending_to_approved():
++    c = AnnotationReviewContract()
++    c.add_item(item_id="t1", source_type="test", source_ref="t1", annotation_label="edge_assessment")
++    c.review_item(item_id="t1", new_status="approved", reviewer_id="r1", reviewer_role="analyst")
++    assert c.get_item("t1").review_status == "approved"
++
++
++def test_pending_to_rejected():
++    c = AnnotationReviewContract()
++    c.add_item(item_id="t2", source_type="test", source_ref="t2", annotation_label="data_quality")
++    c.review_item(item_id="t2", new_status="rejected", reviewer_id="r1", reviewer_role="analyst", reason_code="bad_data")
++    assert c.get_item("t2").review_status == "rejected"
++
++
++def test_pending_to_needs_more_evidence():
++    c = AnnotationReviewContract()
++    c.add_item(item_id="t3", source_type="test", source_ref="t3", annotation_label="execution_review")
++    c.review_item(item_id="t3", new_status="needs_more_evidence", reviewer_id="r1", reviewer_role="analyst", reason_code="insufficient_data")
++    assert c.get_item("t3").review_status == "needs_more_evidence"
++
++
++def test_illegal_transition_fail_closed():
++    c = AnnotationReviewContract()
++    c.add_item(item_id="t4", source_type="test", source_ref="t4", annotation_label="risk")
++    c.review_item(item_id="t4", new_status="approved", reviewer_id="r1", reviewer_role="analyst")
++    with pytest.raises(ValueError, match="illegal transition"):
++        c.review_item(item_id="t4", new_status="pending", reviewer_id="r1", reviewer_role="analyst")
++
++
++def test_missing_item_id_fail_closed():
++    c = AnnotationReviewContract()
++    with pytest.raises(ValueError, match="missing item_id"):
++        c.add_item(item_id="", source_type="test", source_ref="ref1", annotation_label="risk")
++
++
++def test_missing_source_ref_fail_closed():
++    c = AnnotationReviewContract()
++    with pytest.raises(ValueError, match="missing source_ref"):
++        c.add_item(item_id="i1", source_type="test", source_ref="", annotation_label="risk")
++
++
++def test_missing_source_type_fail_closed():
++    c = AnnotationReviewContract()
++    with pytest.raises(ValueError, match="missing source_type"):
++        c.add_item(item_id="i1", source_type="", source_ref="ref1", annotation_label="risk")
++
++
++def test_invalid_label_fail_closed():
++    c = AnnotationReviewContract()
++    with pytest.raises(ValueError, match="invalid annotation_label"):
++        c.add_item(item_id="i1", source_type="test", source_ref="ref1", annotation_label="nonexistent_label")
++
++
++def test_missing_reviewer_id_fail_closed():
++    c = AnnotationReviewContract()
++    c.add_item(item_id="i2", source_type="test", source_ref="r2", annotation_label="risk")
++    with pytest.raises(ValueError, match="missing reviewer_id"):
++        c.review_item(item_id="i2", new_status="approved", reviewer_id="", reviewer_role="analyst")
++
++
++def test_missing_reviewer_role_fail_closed():
++    c = AnnotationReviewContract()
++    c.add_item(item_id="i3", source_type="test", source_ref="r3", annotation_label="risk")
++    with pytest.raises(ValueError, match="missing reviewer_role"):
++        c.review_item(item_id="i3", new_status="approved", reviewer_id="reviewer1", reviewer_role="")
++
++
++def test_missing_reason_code_for_reject_fail_closed():
++    c = AnnotationReviewContract()
++    c.add_item(item_id="i4", source_type="test", source_ref="r4", annotation_label="risk")
++    with pytest.raises(ValueError, match="missing reason_code for status='rejected'"):
++        c.review_item(item_id="i4", new_status="rejected", reviewer_id="r1", reviewer_role="analyst", reason_code=None)
++
++
++def test_missing_reason_code_for_blocked_fail_closed():
++    c = AnnotationReviewContract()
++    c.add_item(item_id="i5", source_type="test", source_ref="r5", annotation_label="risk")
++    with pytest.raises(ValueError, match="missing reason_code for status='blocked'"):
++        c.review_item(item_id="i5", new_status="blocked", reviewer_id="r1", reviewer_role="analyst", reason_code=None)
++
++
++def test_audit_trail_append_only():
++    c = AnnotationReviewContract()
++    c.add_item(item_id="a1", source_type="test", source_ref="s1", annotation_label="data_quality")
++    c.review_item(item_id="a1", new_status="approved", reviewer_id="r1", reviewer_role="analyst")
++    trail = c.get_audit_trail()
++    assert len(trail) == 2  # create + review
++    create_entry = trail[0]
++    review_entry = trail[1]
++    assert create_entry.field == "item_id"
++    assert create_entry.new_value == "a1"
++    assert review_entry.field == "review_status"
++    assert review_entry.old_value == "pending"
++    assert review_entry.new_value == "approved"
++    assert review_entry.actor_id == "r1"
++
++
++def test_audit_trail_filter_by_trace_id():
++    c = AnnotationReviewContract()
++    c.add_item(item_id="a2", source_type="test", source_ref="s2", annotation_label="outcome", audit_trace_id="trace-a2")
++    c.review_item(item_id="a2", new_status="rejected", reviewer_id="r2", reviewer_role="manager", reason_code="bad")
++    trail = c.get_audit_trail(trace_id="trace-a2")
++    assert len(trail) == 2
++    for e in trail:
++        assert e.trace_id == "trace-a2"
++
++
++def test_no_broker_live_order_runtime_side_effect():
++    c = AnnotationReviewContract()
++    assert c.order_execution_allowed is False
++    assert c.annotation_approval_does_not_enable_trade is True
++    assert c.current_scope == "backend_contract_only"
++    c.add_item(item_id="safe1", source_type="test", source_ref="s1", annotation_label="risk")
++    c.review_item(item_id="safe1", new_status="approved", reviewer_id="r1", reviewer_role="analyst")
++    assert c.order_execution_allowed is False
++    assert c.annotation_approval_does_not_enable_trade is True
++
++
++def test_order_execution_allowed_remains_false():
++    assert order_execution_allowed is False
++
++
++def test_contract_only_status_no_dashboard_claim():
++    assert current_scope == "backend_contract_only"
++    assert ui_deferred is True
++    assert dashboard_implemented is False
++    assert no_fake_ui_claim is True
++
++
++def test_valid_review_statuses():
++    assert "pending" in VALID_REVIEW_STATUSES
++    assert "approved" in VALID_REVIEW_STATUSES
++    assert "rejected" in VALID_REVIEW_STATUSES
++    assert "needs_more_evidence" in VALID_REVIEW_STATUSES
++    assert "blocked" in VALID_REVIEW_STATUSES
++
++
++def test_valid_transitions():
++    assert VALID_TRANSITIONS["pending"] == {"approved", "rejected", "needs_more_evidence", "blocked"}
++    assert VALID_TRANSITIONS["approved"] == set()
++    assert VALID_TRANSITIONS["rejected"] == set()
++    assert VALID_TRANSITIONS["blocked"] == {"pending"}
++    assert VALID_TRANSITIONS["needs_more_evidence"] == {"pending", "approved", "rejected", "blocked"}
++
++
++def test_validate_review_status():
++    assert validate_review_status("pending") is None
++    assert validate_review_status("invalid") is not None
++
++
++def test_validate_transition():
++    assert validate_transition("pending", "approved") is None
++    assert validate_transition("approved", "pending") is not None
++
++
++def test_validate_label_category():
++    assert validate_label_category("risk") is None
++    assert validate_label_category("invalid") is not None
++
++
++def test_blocked_item_can_return_to_pending():
++    c = AnnotationReviewContract()
++    c.add_item(item_id="b1", source_type="test", source_ref="r1", annotation_label="risk")
++    c.review_item(item_id="b1", new_status="blocked", reviewer_id="r1", reviewer_role="analyst", reason_code="needs_clarification")
++    assert c.get_item("b1").review_status == "blocked"
++    c.review_item(item_id="b1", new_status="pending", reviewer_id="r2", reviewer_role="senior_analyst", reason_code="clarified")
++    assert c.get_item("b1").review_status == "pending"
++
++
++def test_needs_more_evidence_can_approve():
++    c = AnnotationReviewContract()
++    c.add_item(item_id="n1", source_type="test", source_ref="r1", annotation_label="execution_review")
++    c.review_item(item_id="n1", new_status="needs_more_evidence", reviewer_id="r1", reviewer_role="analyst", reason_code="insufficient")
++    c.review_item(item_id="n1", new_status="approved", reviewer_id="r2", reviewer_role="senior_analyst", reason_code="additional_data_ok")
++    assert c.get_item("n1").review_status == "approved"
++
++
++def test_pending_items():
++    c = AnnotationReviewContract()
++    c.add_item(item_id="p1", source_type="test", source_ref="r1", annotation_label="risk")
++    c.add_item(item_id="p2", source_type="test", source_ref="r2", annotation_label="risk")
++    c.review_item(item_id="p2", new_status="approved", reviewer_id="r1", reviewer_role="analyst")
++    pending = c.pending_items()
++    assert len(pending) == 1
++    assert pending[0].item_id == "p1"
++
++
++def test_items_by_status():
++    c = AnnotationReviewContract()
++    c.add_item(item_id="s1", source_type="test", source_ref="r1", annotation_label="data_quality")
++    c.review_item(item_id="s1", new_status="needs_more_evidence", reviewer_id="r1", reviewer_role="analyst", reason_code="unclear")
++    items = c.items_by_status("needs_more_evidence")
++    assert len(items) == 1
++    assert items[0].item_id == "s1"
++
++
++def test_duplicate_item_id_fail_closed():
++    c = AnnotationReviewContract()
++    c.add_item(item_id="dup1", source_type="test", source_ref="r1", annotation_label="risk")
++    with pytest.raises(ValueError, match="duplicate item_id"):
++        c.add_item(item_id="dup1", source_type="test", source_ref="r2", annotation_label="risk")
++
++
++def test_hardened_label_categories():
++    assert "risk" in HARDENED_LABEL_CATEGORIES
++    assert "data_quality" in HARDENED_LABEL_CATEGORIES
++    assert "edge_assessment" in HARDENED_LABEL_CATEGORIES
++    assert "execution_review" in HARDENED_LABEL_CATEGORIES
++
++
++def test_get_labels():
++    c = AnnotationReviewContract()
++    labels = c.get_labels()
++    assert "risk" in labels
++    assert "data_quality" in labels
++    assert len(labels) >= 6
++
++
++def test_review_nonexistent_item_fail_closed():
++    c = AnnotationReviewContract()
++    with pytest.raises(ValueError, match="item not found"):
++        c.review_item(item_id="nonexistent", new_status="approved", reviewer_id="r1", reviewer_role="analyst")
++
++
++if __name__ == "__main__":
++    import pytest; sys.exit(pytest.main([__file__, "-v"]))
