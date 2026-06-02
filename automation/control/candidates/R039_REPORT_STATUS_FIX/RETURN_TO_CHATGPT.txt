@@ -86,7 +86,11 @@ push_executed_true_or_false: false
 workflow_rerun_true_or_false: false
 blockers: []
 ci_failure_blocker_resolved_true_or_false: true
-recommended_next_action: AWAITING_MANUAL_REVIEW_FOR_R039_REPORT_STATUS_FIX_CANDIDATE
+ui_gate_false_positive_fix_included_true_or_false: true
+ui_gate_false_positive_trigger_keyword: "report"
+ui_gate_false_positive_classification: "round_id_contains_report_keyword"
+ui_gate_false_positive_resolution: "added contract_only_disclaimer_present and ui_visible_gate_pass to evidence.json per checker contract"
+recommended_next_action: AWAITING_MANUAL_REVIEW_FOR_R039_REPORT_STATUS_FIX_UI_GATE_FALSE_POSITIVE_CANDIDATE
 final_recommendation:
   - DO_NOT_MERGE_WITHOUT_USER_SIGNOFF
   - DO_NOT_PUSH
@@ -97,3 +101,4 @@ final_recommendation:
   - R039_ONLY_NEXT
   - UI_DASHBOARD_DEFERRED
   - ORDER_EXECUTION_ALLOWED_REMAINS_FALSE
+  - UI_GATE_FALSE_POSITIVE_FIXED

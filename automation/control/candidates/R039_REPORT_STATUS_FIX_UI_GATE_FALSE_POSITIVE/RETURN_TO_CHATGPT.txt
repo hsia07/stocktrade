@@ -1,0 +1,103 @@
+round_id: R039_REPORT_STATUS_FIX_UI_GATE_FALSE_POSITIVE_EVIDENCE_CANDIDATE
+task_type: r039_report_status_fix_ui_gate_false_positive_evidence_candidate
+formal_status_code: R039_REPORT_STATUS_FIX_UI_GATE_FALSE_POSITIVE_EVIDENCE_CANDIDATE_READY_AWAITING_MANUAL_REVIEW
+current_branch_before: work/canonical-mainline-repair-001
+base_head: 856b4e8b4f2bdb9a6c2e112e595b6b66971a32ab
+remote_head: 856b4e8b4f2bdb9a6c2e112e595b6b66971a32ab
+local_remote_head_match_true_or_false: true
+candidate_branch: candidate/r039-report-status-fix-ui-gate-false-positive
+candidate_head_self_reference_policy: not_embedded_in_committed_evidence
+candidate_commit_count_since_base: 1
+merge_base: 856b4e8b4f2bdb9a6c2e112e595b6b66971a32ab
+merge_base_matches_856b4e8_true_or_false: true
+original_ci_failure_workflow: validate-canonical-repair
+original_ci_failure_run_id: 26807044263
+original_ci_failure_step: Evidence checker
+original_ci_failure_reason: ui_visible_gate:missing_visible_surface_evidence + ui_visible_gate:contract_only_missing_disclaimer
+report_status_not_completed_seen_before_fix_true_or_false: false
+report_status_not_completed_seen_after_fix_true_or_false: false
+ui_visible_gate_false_positive_confirmed_true_or_false: true
+ui_visible_gate_trigger_keyword: report
+ui_visible_gate_missing_visible_surface_seen_before_fix_true_or_false: true
+ui_visible_gate_missing_visible_surface_seen_after_fix_true_or_false: false
+ui_visible_gate_contract_only_disclaimer_missing_before_fix_true_or_false: true
+ui_visible_gate_contract_only_disclaimer_missing_after_fix_true_or_false: false
+checker_contract_fields_used:
+  - contract_only_disclaimer_present
+  - ui_visible_gate_pass
+checker_modified_true_or_false: false
+workflow_modified_true_or_false: false
+report_status_field_after: completed
+formal_status_code_preserved_true_or_false: true
+status_completed_semantics_correct_true_or_false: true
+contract_only_true_or_false: true
+contract_only_disclaimer_present_true_or_false: true
+ui_deferred_true_or_false: true
+visible_surface_evidence_required_true_or_false: false
+visible_surface_not_applicable_reason_present_true_or_false: true
+dashboard_implemented_true_or_false: false
+no_fake_ui_claim_true_or_false: true
+files_created:
+  - automation/control/governance/r039-report-status-fix-ui-gate-false-positive-record.json
+  - automation/control/candidates/R039_REPORT_STATUS_FIX_UI_GATE_FALSE_POSITIVE/evidence.json
+  - automation/control/candidates/R039_REPORT_STATUS_FIX_UI_GATE_FALSE_POSITIVE/RETURN_TO_CHATGPT.txt
+  - automation/control/candidates/R039_REPORT_STATUS_FIX_UI_GATE_FALSE_POSITIVE/task.txt
+  - automation/control/candidates/R039_REPORT_STATUS_FIX_UI_GATE_FALSE_POSITIVE/report.json
+  - automation/control/candidates/R039_REPORT_STATUS_FIX_UI_GATE_FALSE_POSITIVE/candidate.diff
+  - automation/control/candidates/R039_REPORT_STATUS_FIX_UI_GATE_FALSE_POSITIVE/no-aider-used.txt
+  - automation/control/candidates/R039_REPORT_STATUS_FIX_UI_GATE_FALSE_POSITIVE/test-results.txt
+files_modified:
+  - automation/control/candidates/R039_REPORT_STATUS_FIX/evidence.json
+  - automation/control/candidates/R039_REPORT_STATUS_FIX/report.json
+  - automation/control/candidates/R039_REPORT_STATUS_FIX/RETURN_TO_CHATGPT.txt
+files_deleted: []
+diff_scope_allowed_true_or_false: true
+unauthorized_files_found: []
+evidence_package_complete_true_or_false: true
+r039_ui_gate_false_positive_evidence_package_complete_true_or_false: true
+governance_record_created_true_or_false: true
+candidate_diff_generation_command: git diff 856b4e8b4f2bdb9a6c2e112e595b6b66971a32ab HEAD -- . :(exclude)automation/control/candidates/R039_REPORT_STATUS_FIX_UI_GATE_FALSE_POSITIVE/candidate.diff :(exclude)automation/control/candidates/R039_REPORT_STATUS_FIX_UI_GATE_FALSE_POSITIVE/RETURN_TO_CHATGPT.txt
+candidate_diff_generation_uses_base_to_HEAD_true_or_false: true
+candidate_diff_excluded_paths:
+  - automation/control/candidates/R039_REPORT_STATUS_FIX_UI_GATE_FALSE_POSITIVE/candidate.diff
+  - automation/control/candidates/R039_REPORT_STATUS_FIX_UI_GATE_FALSE_POSITIVE/RETURN_TO_CHATGPT.txt
+candidate_diff_full_committed_diff_true_or_false: true
+candidate_diff_missing_new_files_true_or_false: false
+candidate_diff_includes_new_files_true_or_false: true
+candidate_diff_includes_governance_record_true_or_false: true
+manifest_files_modified_true_or_false: false
+source_files_modified_true_or_false: false
+tests_modified_true_or_false: false
+validator_files_modified_true_or_false: false
+workflow_files_modified_true_or_false: false
+law_files_modified_true_or_false: false
+server_v2_modified_true_or_false: false
+index_v2_modified_true_or_false: false
+env_files_modified_true_or_false: false
+secret_value_exposed_true_or_false: false
+R039_started_true_or_false: false
+R039_completed_true_or_false: false
+R040_started_true_or_false: false
+R049_started_true_or_false: false
+R038_R048_accepted_true_or_false: false
+Phase2_completed_true_or_false: false
+broker_api_called_true_or_false: false
+trading_runtime_started_true_or_false: false
+order_execution_allowed_true_or_false: false
+git_clean_after_true_or_false: true
+commit_created_true_or_false: true
+merge_executed_true_or_false: false
+push_executed_true_or_false: false
+workflow_rerun_true_or_false: false
+blockers: []
+recommended_next_action: AWAITING_MANUAL_REVIEW_FOR_R039_REPORT_STATUS_FIX_UI_GATE_FALSE_POSITIVE_CANDIDATE
+final_recommendation:
+  - DO_NOT_MERGE_WITHOUT_USER_SIGNOFF
+  - DO_NOT_PUSH
+  - DO_NOT_RERUN_WORKFLOW
+  - DO_NOT_START_R040
+  - DO_NOT_START_R049
+  - DO_NOT_ACCEPT_R038_R048_YET
+  - R039_ONLY_NEXT
+  - UI_DASHBOARD_DEFERRED
+  - ORDER_EXECUTION_ALLOWED_REMAINS_FALSE
