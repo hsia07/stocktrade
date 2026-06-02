@@ -1,10 +1,10 @@
 {
-  "round_id": "R039_REPORT_STATUS_FIX_CANDIDATE",
-  "task_type": "r039_report_status_fix_candidate",
-  "formal_status_code": "R039_REPORT_STATUS_FIX_CANDIDATE_READY_AWAITING_MANUAL_REVIEW",
+  "round_id": "R039_REPORT_STATUS_FIX_UI_GATE_FALSE_POSITIVE_CANDIDATE",
+  "task_type": "r039_report_status_fix_ui_gate_false_positive_evidence_candidate",
+  "formal_status_code": "R039_REPORT_STATUS_FIX_UI_GATE_FALSE_POSITIVE_EVIDENCE_CANDIDATE_READY_AWAITING_MANUAL_REVIEW",
   "status": "completed",
-  "status_semantics": "legacy EvidenceChecker compatibility only; does NOT mean R039 completed, R040 started, R049 started, R038-R048 accepted, or Phase2 completed. UI visible gate false positive fixed by adding contract_only_disclaimer_present and ui_visible_gate_pass (see R039_REPORT_STATUS_FIX_UI_GATE_FALSE_POSITIVE evidence package).",
-  "base_head": "9bb2876a7029cea3a81b32fe8342414dee08e745",
+  "status_semantics": "legacy EvidenceChecker compatibility only; does NOT mean R039 completed, R040 started, R049 started, R038-R048 accepted, or Phase2 completed. This package documents the UI visible gate false positive fix (contract_only_disclaimer_present + ui_visible_gate_pass added to R039_REPORT_STATUS_FIX evidence.json).",
+  "base_head": "856b4e8b4f2bdb9a6c2e112e595b6b66971a32ab",
   "candidate_head_self_reference_policy": "not_embedded_in_committed_evidence",
   "candidate_commit_count": 1,
   "contract_only": true,
@@ -27,6 +27,5 @@
   "validate_canonical_repair_pass": true,
   "candidate_diff_full_committed_diff_true_or_false": true,
   "candidate_diff_missing_new_files_true_or_false": false,
-  "candidate_diff_generation_uses_base_to_HEAD_true_or_false": true,
-  "candidate_diff_completeness_rework_executed": true
+  "candidate_diff_generation_uses_base_to_HEAD_true_or_false": true
 }
