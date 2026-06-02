@@ -1,0 +1,18 @@
+{
+  "round_id": "R039_POST_PUSH_ACCEPTANCE_STATUS_RECORD_CANDIDATE",
+  "candidate_branch": "candidate/r039-post-push-acceptance-status-record",
+  "status": "completed",
+  "formal_status_code": "R039_POST_PUSH_ACCEPTANCE_STATUS_RECORD_CANDIDATE_READY_AWAITING_MANUAL_REVIEW",
+  "status_semantics": "R039 post-push acceptance status record candidate. Documents CI green confirmation and all fix chains. Does not start R040, R049, or mark Phase2 completed. Does not accept R038-R048. Awaiting manual review and merge signoff.",
+  "contract_only": true,
+  "ui_deferred": true,
+  "dashboard_implemented": false,
+  "no_fake_ui_claim": true,
+  "order_execution_allowed": false,
+  "r039_started": false,
+  "r039_completed": false,
+  "r040_started": false,
+  "r049_started": false,
+  "r038_r048_accepted": false,
+  "phase2_completed": false
+}
