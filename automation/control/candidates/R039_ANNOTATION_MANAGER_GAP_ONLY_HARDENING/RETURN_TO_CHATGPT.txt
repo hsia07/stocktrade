@@ -1,0 +1,120 @@
+round_id: R039_ANNOTATION_MANAGER_GAP_ONLY_HARDENING_CANDIDATE
+task_type: r039_annotation_manager_gap_only_hardening_candidate
+formal_status_code: R039_ANNOTATION_MANAGER_GAP_ONLY_HARDENING_CANDIDATE_READY_AWAITING_MANUAL_REVIEW
+current_branch_before: work/canonical-mainline-repair-001
+base_head: ed73341008e175ca4142945d07debc23c8d21b9b
+remote_head: ed73341008e175ca4142945d07debc23c8d21b9b
+local_remote_head_match_true_or_false: true
+candidate_branch: candidate/r039-annotation-manager-gap-only-hardening
+candidate_head_self_reference_policy: "not_embedded_in_committed_evidence"
+candidate_head_verified_by_external_read_only_manual_review: true
+evidence_self_reference_limitation_resolved_true_or_false: true
+candidate_commit_count_since_base: 1
+merge_base: ed73341008e175ca4142945d07debc23c8d21b9b
+merge_base_matches_ed73341_true_or_false: true
+R039_topic_confirmed_true_or_false: true
+R039_topic: 資料標註與人工審閱工具
+chosen_option: option_3_gap_only_hardening
+chosen_option_reason: chief_reviewer_decision: do not accept existing annotation_manager as-is (option 1), do not build UI/dashboard (option 2), harden backend contract with fail-closed states, audit trail, and strict validation (option 3). UI deferred to separate visible round.
+contract_only_true_or_false: true
+ui_deferred_true_or_false: true
+dashboard_implemented_true_or_false: false
+no_fake_ui_claim_true_or_false: true
+files_created:
+  - modules/decision_prechecklist/annotation_review_contract.py
+  - tests/test_r039_annotation_manager_gap_only_hardening.py
+  - automation/control/governance/r039-annotation-manager-gap-only-hardening-record.json
+  - automation/control/candidates/R039_ANNOTATION_MANAGER_GAP_ONLY_HARDENING/evidence.json
+  - automation/control/candidates/R039_ANNOTATION_MANAGER_GAP_ONLY_HARDENING/candidate.diff
+  - automation/control/candidates/R039_ANNOTATION_MANAGER_GAP_ONLY_HARDENING/RETURN_TO_CHATGPT.txt
+  - automation/control/candidates/R039_ANNOTATION_MANAGER_GAP_ONLY_HARDENING/task.txt
+  - automation/control/candidates/R039_ANNOTATION_MANAGER_GAP_ONLY_HARDENING/report.json
+  - automation/control/candidates/R039_ANNOTATION_MANAGER_GAP_ONLY_HARDENING/no-aider-used.txt
+  - automation/control/candidates/R039_ANNOTATION_MANAGER_GAP_ONLY_HARDENING/test-results.txt
+files_modified:
+  - modules/decision_prechecklist/__init__.py
+files_deleted: []
+diff_scope_allowed_true_or_false: true
+unauthorized_files_found: []
+annotation_contract_created_or_hardened_true_or_false: true
+review_statuses_supported:
+  - pending
+  - approved
+  - rejected
+  - needs_more_evidence
+  - blocked
+fail_closed_cases_covered:
+  - missing item_id
+  - missing source_type
+  - missing source_ref
+  - invalid annotation_label
+  - duplicate item_id
+  - illegal status transition
+  - missing reviewer_id
+  - missing reviewer_role
+  - missing reason_code for rejected
+  - missing reason_code for blocked
+  - nonexistent item review
+audit_trail_append_only_true_or_false: true
+reviewer_identity_required_true_or_false: true
+reason_code_required_for_reject_or_block_true_or_false: true
+annotation_approval_does_not_enable_trade_true_or_false: true
+broker_live_order_runtime_pollution_true_or_false: false
+order_execution_allowed_true_or_false: false
+evidence_package_complete_true_or_false: true
+governance_record_created_true_or_false: true
+candidate_diff_generation_command: git diff ed73341 -- . ":(exclude)automation/control/candidates/R039_ANNOTATION_MANAGER_GAP_ONLY_HARDENING/candidate.diff" ":(exclude)automation/control/candidates/R039_ANNOTATION_MANAGER_GAP_ONLY_HARDENING/RETURN_TO_CHATGPT.txt"
+candidate_diff_generation_note: "uses working tree diff (git diff ed73341) instead of HEAD diff because self-reference-safe policy requires regenerating after evidence fixes but before amend. After amend, git diff ed73341 HEAD produces identical output."
+candidate_diff_sha256: E55577B7A69AEB9AF3A210FEC4AAB6C792AE078338FE2A63CE55A7F61AF939D7
+candidate_diff_size_bytes: 37263
+candidate_diff_excluded_paths:
+  - automation/control/candidates/R039_ANNOTATION_MANAGER_GAP_ONLY_HARDENING/candidate.diff
+  - automation/control/candidates/R039_ANNOTATION_MANAGER_GAP_ONLY_HARDENING/RETURN_TO_CHATGPT.txt
+candidate_diff_matches_generation_command_true_or_false: true
+candidate_diff_hashes_match_true_or_false: true
+candidate_diff_validation_results_contains_gen_not_committed_true_or_false: false
+candidate_diff_bom_present_true_or_false: false
+utf16_le_present_true_or_false: false
+validate_canonical_repair_result: PASS
+local_evidence_checker_result: PASS
+R039_tests_result: 34 PASSED
+cicd_tests_result: 21 PASSED
+failures_if_any: []
+failure_classification: NONE
+manifest_files_modified_true_or_false: false
+source_files_modified_true_or_false: true
+tests_modified_true_or_false: true
+validator_files_modified_true_or_false: false
+workflow_files_modified_true_or_false: false
+law_files_modified_true_or_false: false
+server_v2_modified_true_or_false: false
+index_v2_modified_true_or_false: false
+env_files_modified_true_or_false: false
+secret_value_exposed_true_or_false: false
+manifest_R039_started_true_or_false: false
+R039_candidate_created_true_or_false: true
+R039_completed_true_or_false: false
+R049_started_true_or_false: false
+R038_R048_accepted_true_or_false: false
+Phase2_completed_true_or_false: false
+git_clean_after_true_or_false: true
+commit_created_true_or_false: true
+merge_executed_true_or_false: false
+push_executed_true_or_false: false
+workflow_rerun_true_or_false: false
+blockers: []
+self_reference_blockers_resolved_true_or_false: true
+stale_80494fb_reference_removed_true_or_false: true
+stale_0cbc82c_reference_removed_true_or_false: true
+self_embedded_candidate_head_removed_true_or_false: true
+recommended_next_action: AWAITING_CORRECTED_MANUAL_REVIEW_FOR_R039_ANNOTATION_MANAGER_GAP_ONLY_HARDENING_CANDIDATE
+final_recommendation:
+  - DO_NOT_MERGE_WITHOUT_USER_SIGNOFF
+  - DO_NOT_PUSH
+  - DO_NOT_RERUN_WORKFLOW
+  - DO_NOT_START_R040
+  - DO_NOT_START_R049
+  - DO_NOT_ACCEPT_R038_R048_YET
+  - R039_ONLY_NEXT
+  - UI_DASHBOARD_DEFERRED
+  - ORDER_EXECUTION_ALLOWED_REMAINS_FALSE
