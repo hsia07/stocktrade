@@ -1,0 +1,3 @@
+Task: Create R039 completion status update candidate.
+Purpose: Update manifests/current_round.yaml to record R039 as completed, update next_round_to_dispatch to R040, set chain_status to r039_completed_ready_for_r040_readiness_or_scope_audit, and create evidence package + governance record documenting the full R039 fix chain completion.
+Constraints: No source/test/validator/workflow modifications. No R040/R049 start. No R038-R048 acceptance. No Phase2 completion. order_execution_allowed remains FALSE. contract_only=true. ui_deferred=true.

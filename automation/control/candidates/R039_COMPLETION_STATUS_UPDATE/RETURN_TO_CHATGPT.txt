@@ -1,0 +1,65 @@
+round_id: R039_COMPLETION_STATUS_UPDATE_CANDIDATE
+
+task_type: r039_completion_status_update_candidate
+
+formal_status_code: R039_COMPLETION_STATUS_UPDATE_CANDIDATE_READY_AWAITING_MANUAL_REVIEW
+
+base_head: 821d7883f76e908b0ce86229bec85f359df91b7a
+
+candidate_branch: candidate/r039-completion-status-update
+
+contract_only: true
+ui_deferred: true
+dashboard_implemented: false
+no_fake_ui_claim: true
+recommendation: Awaiting manual review. If approved: local no-ff merge to work/canonical-mainline-repair-001, push to origin, wait for CI green, then R039 officially completed.
+blocker: none
+order_execution_allowed: false
+law_compliance: 04
+
+r039_started: false
+r039_completed: false
+r040_started: false
+r049_started: false
+r038_r048_accepted: false
+phase2_completed: false
+broker_api_called: false
+trading_runtime_started: false
+manual_workflow_rerun_executed: false
+
+## Encoding & Diff Audit (after rework)
+candidate_diff_bom_present: false
+utf16_le_present: false
+encoding_audit_pass: true
+candidate_diff_full_committed_diff: true
+candidate_diff_missing_new_files: false
+candidate_diff_includes_manifest_change: true
+candidate_diff_includes_new_files: true
+candidate_diff_includes_governance_record: true
+candidate_diff_matches_generation_command: true
+candidate_diff_hashes_match: true
+candidate_diff_validation_results_contains_gen_not_committed: false
+git_treats_candidate_diff_as_binary: false
+
+## Changes
+- manifests/current_round.yaml: last_completed_round=R039, next_round_to_dispatch=R040, chain_status=r039_completed_ready_for_r040_readiness_or_scope_audit
+- Evidence package: R039_COMPLETION_STATUS_UPDATE (7 files)
+- Governance record: r039-completion-status-update-record.json
+- candidate.diff regenerated: UTF-8 without BOM, full scope (modified + new files)
+
+## R039 Fix Chain (all canonical)
+1. 64b97be -> 9bb2876: annotation manager gap-only hardening
+2. a4a1738 -> 856b4e8: report status fix (evidence metadata)
+3. 2dbc6c9 -> b9472f0: UI gate false positive fix (checker contract fields)
+4. 2b03582 -> 821d788: post-push acceptance status record (CI green)
+
+## Validators
+- check_branch_workflow: 5/5 PASS
+- check_forbidden_changes: PASS
+- check_required_evidence: 6/6 PASS
+- local evidence checker: PASS
+
+## Tests
+- 2216 passed, 2 failed (pre-existing), 1 skipped
+- Pre-existing: stale evidence (11.1d>7d), missing RETURN_TO_CHATGPT.txt in test tempdir
+- No regressions

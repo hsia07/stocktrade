@@ -1,0 +1,18 @@
+{
+  "round_id": "R039_COMPLETION_STATUS_UPDATE_CANDIDATE",
+  "candidate_branch": "candidate/r039-completion-status-update",
+  "status": "completed",
+  "formal_status_code": "R039_COMPLETION_STATUS_UPDATE_CANDIDATE_READY_AWAITING_MANUAL_REVIEW",
+  "status_semantics": "R039 completion status update candidate. Updates last_completed_round to R039, next_round_to_dispatch to R040. Records full R039 fix chain as completed. Does not start R040/R049, does not accept R038-R048, does not mark Phase2 completed. Awaiting manual review and merge signoff.",
+  "contract_only": true,
+  "ui_deferred": true,
+  "dashboard_implemented": false,
+  "no_fake_ui_claim": true,
+  "order_execution_allowed": false,
+  "r039_started": false,
+  "r039_completed": false,
+  "r040_started": false,
+  "r049_started": false,
+  "r038_r048_accepted": false,
+  "phase2_completed": false
+}
