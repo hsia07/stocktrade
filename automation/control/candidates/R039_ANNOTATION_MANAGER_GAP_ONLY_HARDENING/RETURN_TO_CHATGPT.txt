@@ -107,6 +107,17 @@ self_reference_blockers_resolved_true_or_false: true
 stale_80494fb_reference_removed_true_or_false: true
 stale_0cbc82c_reference_removed_true_or_false: true
 self_embedded_candidate_head_removed_true_or_false: true
+ci_failure_fix_branch: candidate/r039-report-status-fix
+ci_failure_fixed_true_or_false: true
+ci_failure_classification: legacy evidence metadata gap (report.json missing status field expected by EvidenceChecker)
+ci_failure_root_cause: EvidenceChecker expects report.status in ['completed', 'ready_for_merge_signoff', 'blocked']; report.json had only formal_status_code
+ci_failure_fix_impact: metadata only — no source/tests/workflow/validator changes
+report_status_field_added_true_or_false: true
+formal_status_code_preserved_true_or_false: true
+evidence_checker_ci_failure_resolved_true_or_false: true
+ci_failure_workflow_not_rerun_true_or_false: true
+fix_candidate_pending_manual_review_true_or_false: true
+status_semantics: "status: completed is legacy EvidenceChecker compatibility only; does NOT mean R039 completed, R040 started, R049 started, R038-R048 accepted, or Phase2 completed. All manifest flags preserved."
 recommended_next_action: AWAITING_CORRECTED_MANUAL_REVIEW_FOR_R039_ANNOTATION_MANAGER_GAP_ONLY_HARDENING_CANDIDATE
 final_recommendation:
   - DO_NOT_MERGE_WITHOUT_USER_SIGNOFF

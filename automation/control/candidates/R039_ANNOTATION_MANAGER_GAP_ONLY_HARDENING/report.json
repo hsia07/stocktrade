@@ -2,6 +2,8 @@
   "round_id": "R039_ANNOTATION_MANAGER_GAP_ONLY_HARDENING_CANDIDATE",
   "task_type": "r039_annotation_manager_gap_only_hardening_candidate",
   "formal_status_code": "R039_ANNOTATION_MANAGER_GAP_ONLY_HARDENING_CANDIDATE_READY_AWAITING_MANUAL_REVIEW",
+  "status": "completed",
+  "status_semantics": "legacy EvidenceChecker compatibility only; does NOT mean R039 completed, R040 started, R049 started, R038-R048 accepted, or Phase2 completed. See ci_fix_record for details.",
   "base_head": "ed73341008e175ca4142945d07debc23c8d21b9b",
   "candidate_head_self_reference_policy": "not_embedded_in_committed_evidence",
   "candidate_head_verified_by_external_read_only_manual_review": true,
