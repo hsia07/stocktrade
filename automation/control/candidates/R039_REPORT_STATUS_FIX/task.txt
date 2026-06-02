@@ -1,0 +1,12 @@
+R039 CI failure fix: add legacy-compatible "status" field to report.json.
+
+Post-push CI validate-canonical-repair failed at "Evidence checker" step:
+report_status_not_completed. Root cause: EvidenceChecker expects report.status in
+['completed', 'ready_for_merge_signoff', 'blocked'], but report.json only had
+formal_status_code.
+
+Fix: candidate/r039-report-status-fix adds "status": "completed" to report.json
+as legacy-compatible metadata field. formal_status_code preserved.
+
+Evidence metadata only — no source/tests/workflow/validator changes.
+CI workflow not rerun.

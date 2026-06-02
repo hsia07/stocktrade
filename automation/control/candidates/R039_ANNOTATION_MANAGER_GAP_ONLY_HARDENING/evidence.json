@@ -75,6 +75,21 @@
   "stale_0cbc82c_reference_removed_true_or_false": true,
   "self_embedded_candidate_head_removed_true_or_false": true,
   "self_reference_blockers_resolved_true_or_false": true,
+  "ci_failure_fix_branch": "candidate/r039-report-status-fix",
+  "ci_failure_fixed_at": "2026-06-02T15:30:00Z",
+  "ci_failure_fix_fields": [
+    "report.status",
+    "evidence.ci_failure_fix_*",
+    "R039_REPORT_STATUS_FIX evidence package"
+  ],
+  "report_status_field_added": true,
+  "formal_status_code_preserved": true,
+  "evidence_checker_ci_failure_resolved": true,
+  "ci_failure_workflow_not_rerun": true,
+  "ci_failure_classification": "legacy evidence metadata gap (report.json missing status field expected by EvidenceChecker)",
+  "ci_failure_root_cause": "EvidenceChecker expects report.status in ['completed', 'ready_for_merge_signoff', 'blocked']; report.json had only formal_status_code",
+  "ci_failure_fix_impact": "metadata only — no source/tests/workflow/validator changes",
   "generated_at": "2026-06-02T12:46:00Z",
-  "reworked_at": "2026-06-02T14:00:00Z"
+  "reworked_at": "2026-06-02T14:00:00Z",
+  "ci_failure_fixed_at": "2026-06-02T15:30:00Z"
 }
