@@ -1,0 +1,19 @@
+{
+  "round_id": "R040",
+  "task_type": "gap_only_hardening",
+  "status": "completed",
+  "formal_status_code": "R040_GAP_ONLY_HARDENING_CANDIDATE_READY_AWAITING_MANUAL_REVIEW",
+  "round_topic": "全市場候選池與任意股票查詢",
+  "status_semantics": "R040 gap-only hardening candidate. Complements edge tests, completes evidence package to 7/7, adds governance record. Does NOT start R040, R049, accept R038-R048, or mark Phase2 completed. Does NOT modify manifest. Does NOT formal close R040. No source changes needed — existing deterministic behavior confirmed by tests. order_execution_allowed remains FALSE.",
+  "edge_tests_added": 11,
+  "total_tests_after_hardening": 19,
+  "source_modified": false,
+  "r040_candidate_pool_evidence_completed": true,
+  "r040_gap_only_hardening_evidence_created": true,
+  "governance_record_created": true,
+  "r040_started": false,
+  "r049_started": false,
+  "r038_R048_accepted": false,
+  "phase2_completed": false,
+  "order_execution_allowed": false
+}

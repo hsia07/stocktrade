@@ -7,6 +7,7 @@ round_topic: 全市場候選池與任意股票查詢
 round_phase: Phase 2
 candidate_commit: 2d8b848db6106b2425d02b0a736675a8fbc75bba
 base_head: 21ec6a88dd933069f90f315badc42acf6b179e04
+candidate_branch: auto/telegram-r031-r048-phase2-20260516-0542
 candidate_diff_path: automation/control/candidates/R040_CANDIDATE_POOL/candidate.diff
 evidence_json_path: automation/control/candidates/R040_CANDIDATE_POOL/evidence.json
 candidate_diff_present_true_or_false: TRUE

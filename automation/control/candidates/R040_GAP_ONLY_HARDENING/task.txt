@@ -1,0 +1,26 @@
+R040 gap-only hardening: 全市場候選池與任意股票查詢
+
+Objective:
+Address edge test gaps identified in R040 readiness audit.
+Complete evidence package to 7/7.
+Add governance record.
+No source code changes needed.
+
+Scope (gap-only, NOT formal close):
+1. Add edge tests for duplicate symbol, empty pool, combined query,
+   liquidity boundary, None/invalid sector, all(), count(),
+   querier list_by_sector/list_by_liquidity, prohibited references.
+2. Complete R040_CANDIDATE_POOL evidence to 7/7 (add report.json,
+   no-aider-used.txt, task.txt, test-results.txt).
+3. Create R040_GAP_ONLY_HARDENING evidence package 7/7.
+4. Create governance record r040-gap-only-hardening-record.json.
+5. Generate candidate.diff.
+
+Explicitly NOT:
+- R040 formal close
+- R040 runtime start
+- R049 start
+- R038-R048 acceptance
+- Phase2 completion
+- manifest modification
+- broker/live/order/execution wiring

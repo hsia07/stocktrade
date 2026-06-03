@@ -1,0 +1,28 @@
+﻿============================= test session starts =============================
+platform win32 -- Python 3.14.4, pytest-9.0.3, pluggy-1.6.0 -- C:\Python314\python.exe
+cachedir: .pytest_cache
+rootdir: C:\Users\richa\OneDrive\桌面\stocktrade
+plugins: anyio-4.13.0, respx-0.23.1
+collecting ... collected 19 items
+
+tests/test_market_candidate_pool.py::test_pool_initialization PASSED     [  5%]
+tests/test_market_candidate_pool.py::test_pool_add_and_get PASSED        [ 10%]
+tests/test_market_candidate_pool.py::test_pool_remove PASSED             [ 15%]
+tests/test_market_candidate_pool.py::test_pool_query_by_sector PASSED    [ 21%]
+tests/test_market_candidate_pool.py::test_pool_query_by_liquidity PASSED [ 26%]
+tests/test_market_candidate_pool.py::test_pool_clear PASSED              [ 31%]
+tests/test_market_candidate_pool.py::test_querier_initialization PASSED  [ 36%]
+tests/test_market_candidate_pool.py::test_querier_get PASSED             [ 42%]
+tests/test_market_candidate_pool.py::test_duplicate_symbol_overwrite PASSED [ 47%]
+tests/test_market_candidate_pool.py::test_empty_pool_query_returns_empty_list PASSED [ 52%]
+tests/test_market_candidate_pool.py::test_all_method PASSED              [ 57%]
+tests/test_market_candidate_pool.py::test_count_method PASSED            [ 63%]
+tests/test_market_candidate_pool.py::test_liquidity_threshold_boundary PASSED [ 68%]
+tests/test_market_candidate_pool.py::test_none_sector_no_filter PASSED   [ 73%]
+tests/test_market_candidate_pool.py::test_non_existing_sector_returns_empty PASSED [ 78%]
+tests/test_market_candidate_pool.py::test_combined_sector_and_liquidity_query PASSED [ 84%]
+tests/test_market_candidate_pool.py::test_querier_list_by_sector PASSED  [ 89%]
+tests/test_market_candidate_pool.py::test_querier_list_by_liquidity PASSED [ 94%]
+tests/test_market_candidate_pool.py::test_no_prohibited_references_in_module PASSED [100%]
+
+============================= 19 passed in 0.20s ==============================
