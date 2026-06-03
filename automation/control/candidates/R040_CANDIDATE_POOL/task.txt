@@ -1,0 +1,16 @@
+R040 (原第38輪): 全市場候選池與任意股票查詢
+
+Objective:
+Implement market-wide candidate pool with arbitrary stock query capability.
+This allows research, learning, backtesting, and annotation to operate on more than a fixed set of stocks.
+
+Deliverables:
+- CandidatePool: add/remove/get/query/all/count/clear for MarketCandidate
+- MarketCandidate dataclass with sector, liquidity, price, volume, market_cap fields
+- ArbitraryStockQuerier: query wrapper for candidate pool by sector/liquidity
+- 8 unit tests covering basic operations
+
+Status:
+Source code implemented and merged via staging branch.
+Governance record and formal close pending.
+Edge test gaps identified — covered in R040_GAP_ONLY_HARDENING.

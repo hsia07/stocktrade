@@ -1,0 +1,28 @@
+{
+  "round_id": "R040",
+  "task_type": "market_candidate_pool",
+  "status": "completed",
+  "formal_status_code": "R040_CANDIDATE_POOL_PASS",
+  "round_topic": "全市場候選池與任意股票查詢",
+  "source_topic_table": "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md",
+  "tests_pass": true,
+  "validators_pass": true,
+  "self_review_result": "PASS",
+  "r030_contract_only_preserved": true,
+  "canonical_merge_executed": false,
+  "canonical_push_executed": false,
+  "runtime_started": false,
+  "trading_broker_execution_live_started": false,
+  "order_execution_allowed": false,
+  "blockers": [],
+  "recommended_next_action": "GAP_ONLY_HARDENING_RECOMMENDED",
+  "edge_test_gaps_identified": true,
+  "edge_test_gaps": [
+    "duplicate symbol behavior not tested",
+    "combined sector+liquidity query not tested",
+    "liquidity threshold boundary not tested",
+    "None/invalid sector not tested",
+    "all() method not directly tested",
+    "querier list_by_sector/list_by_liquidity not tested"
+  ]
+}

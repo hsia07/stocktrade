@@ -1,0 +1,31 @@
+round_id: R040
+task_type: gap_only_hardening
+status: completed
+formal_status_code: R040_GAP_ONLY_HARDENING_CANDIDATE_READY_AWAITING_MANUAL_REVIEW
+staging_branch: candidate/r040-gap-only-hardening
+round_topic: 全市場候選池與任意股票查詢
+round_phase: Phase 2
+base_head: 6fff40334d9104f9543e5e0d85a51ac69bc40d5d
+candidate_branch: candidate/r040-gap-only-hardening
+candidate_head: ed30029297da795a5939bb94b0f89dc77f95deed
+source_modified_true_or_false: FALSE
+tests_added: 11
+total_tests_after_hardening: 19
+tests_pass_true_or_false: TRUE
+r040_candidate_pool_evidence_completed_to_7_of_7_true_or_false: TRUE
+r040_gap_only_hardening_evidence_created_7_of_7_true_or_false: TRUE
+governance_record_created_true_or_false: TRUE
+r040_started_true_or_false: FALSE
+r049_started_true_or_false: FALSE
+r038_R048_accepted_true_or_false: FALSE
+phase2_completed_true_or_false: FALSE
+order_execution_allowed_true_or_false: FALSE
+manifest_modified_true_or_false: FALSE
+canonical_merge_executed_true_or_false: FALSE
+canonical_push_executed_true_or_false: FALSE
+origin_push_executed_true_or_false: FALSE
+runtime_started_true_or_false: FALSE
+trading_broker_execution_live_started_true_or_false: FALSE
+blockers: []
+recommended_next_action: AWAITING_MANUAL_REVIEW_FOR_R040_GAP_ONLY_HARDENING_CANDIDATE
+summary: "R040 gap-only hardening: CandidatePool/ArbitraryStockQuerier edge tests (11 added, 19 total), evidence completed to 7/7 for both R040_CANDIDATE_POOL and R040_GAP_ONLY_HARDENING packages, governance record created. No source changes. No manifest modification. Not R040 formal close."

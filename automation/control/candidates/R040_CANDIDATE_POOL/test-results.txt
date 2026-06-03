@@ -1,0 +1,11 @@
+=== test_market_candidate_pool.py ===
+8 passed in 0.15s
+
+tests/test_market_candidate_pool.py::test_pool_initialization PASSED
+tests/test_market_candidate_pool.py::test_pool_add_and_get PASSED
+tests/test_market_candidate_pool.py::test_pool_remove PASSED
+tests/test_market_candidate_pool.py::test_pool_query_by_sector PASSED
+tests/test_market_candidate_pool.py::test_pool_query_by_liquidity PASSED
+tests/test_market_candidate_pool.py::test_pool_clear PASSED
+tests/test_market_candidate_pool.py::test_querier_initialization PASSED
+tests/test_market_candidate_pool.py::test_querier_get PASSED
