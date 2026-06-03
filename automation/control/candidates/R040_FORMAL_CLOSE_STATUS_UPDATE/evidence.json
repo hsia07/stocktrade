@@ -1,0 +1,34 @@
+{
+  "package_id": "R040_FORMAL_CLOSE_STATUS_UPDATE",
+  "round_id": "R040",
+  "task_type": "r040_formal_close_status_update_candidate",
+  "record_type": "formal_close",
+  "base_commit": "ca83162ea640442ae47e75d1e077ab54bd5414e8",
+  "candidate_commit": null,
+  "evidence_files": [
+    "evidence.json",
+    "report.json",
+    "RETURN_TO_CHATGPT.txt",
+    "candidate.diff",
+    "task.txt",
+    "no-aider-used.txt",
+    "test-results.txt"
+  ],
+  "evidence_complete": true,
+  "validation_status": "pending",
+  "manual_review_status": "pending",
+  "generated_at": "2026-06-04T01:23:00",
+  "previous_evidence": {
+    "R040_CANDIDATE_POOL": "7/7 complete",
+    "R040_GAP_ONLY_HARDENING": "7/7 complete"
+  },
+  "R040_started": false,
+  "R041_started": false,
+  "R049_started": false,
+  "R038_R048_accepted": false,
+  "Phase2_completed": false,
+  "order_execution_allowed": false,
+  "law_compliance": "04",
+  "law_priority_verified": true,
+  "notes": "R040 formal close status update candidate. R040 gap-only hardening merge + push + CI green confirmed. This records R040 as completed and advances next_round_to_dispatch to R041. R041 is NOT started. All safety flags remain FALSE."
+}

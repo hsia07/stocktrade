@@ -80,12 +80,12 @@ fail_closed_guards:
   validate_evidence_real_changes: true
 guard_status: "ACTIVE"
 phase: "Phase 2"
-last_completed_round: "R039"
+last_completed_round: "R040"
 last_completed_topic: "R039 / 注釋管理系統間隙修復 / AnnotationManagerGapOnlyHardening / 全鏈修正完成"
-last_completed_commit: "821d7883f76e908b0ce86229bec85f359df91b7a"
+last_completed_commit: "ca83162ea640442ae47e75d1e077ab54bd5414e8"
 current_round: "NONE"
-next_round_to_dispatch: "R040"
-chain_status: "r039_completed_ready_for_r040_readiness_or_scope_audit"
+next_round_to_dispatch: "R041"
+chain_status: "r040_completed_ready_for_r041_readiness_or_scope_audit"
 backlog:
   r018:
     branch: "work/candidate-r018-schema-migration"
