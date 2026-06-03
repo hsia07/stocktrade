@@ -1,0 +1,25 @@
+Task: R040_FORMAL_CLOSE_REPORT_STATUS_FIX_CANDIDATE
+Base: 2eedda15ec5eea1a057d77f308f480e8807bf757
+Branch: candidate/r040-formal-close-report-status-fix
+
+Scope:
+- automation/control/candidates/R040_FORMAL_CLOSE_STATUS_UPDATE/report.json: status changed from 'ready_for_manual_review' to 'completed'
+- automation/control/candidates/R040_FORMAL_CLOSE_STATUS_UPDATE/evidence.json: add fix metadata
+- automation/control/candidates/R040_FORMAL_CLOSE_STATUS_UPDATE/test-results.txt: add fix documentation
+- automation/control/candidates/R040_FORMAL_CLOSE_STATUS_UPDATE/RETURN_TO_CHATGPT.txt: update with full metadata
+- automation/control/candidates/R040_FORMAL_CLOSE_REPORT_STATUS_FIX/: 7/7 fix evidence package
+- automation/control/governance/r040-formal-close-report-status-fix-record.json: governance record
+
+Fix type: metadata/evidence_checker_compatibility only
+No source changes. No tests changes. No manifest semantic changes.
+
+Safety:
+- NOT R041 start
+- NOT R049 start
+- NOT R038-R048 acceptance
+- NOT Phase2 completion
+- contract-only UI deferred
+- order_execution_allowed remains FALSE
+- no source changes
+- no tests changes
+- no broker/live/order/runtime

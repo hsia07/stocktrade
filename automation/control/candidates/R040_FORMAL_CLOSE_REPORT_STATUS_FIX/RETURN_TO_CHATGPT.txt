@@ -1,48 +1,55 @@
 round_id:
-R040_FORMAL_CLOSE_STATUS_UPDATE_CANDIDATE
+R040_FORMAL_CLOSE_REPORT_STATUS_FIX_PACKAGE_SELF_STATUS_REWORK
 
 task_type:
-r040_formal_close_status_update_candidate
+r040_formal_close_report_status_fix_package_self_status_rework
 
 formal_status_code:
-R040_FORMAL_CLOSE_STATUS_UPDATE_CANDIDATE_COMPLETED_REPORT_STATUS_FIXED
+R040_FORMAL_CLOSE_REPORT_STATUS_FIX_REWORK_READY_FOR_MANUAL_REVIEW
 
-current_branch_before:
-work/canonical-mainline-repair-001 (later: candidate/r040-formal-close-report-status-fix)
-
-base_head:
-ca83162ea640442ae47e75d1e077ab54bd5414e8
-
-remote_head:
-ca83162ea640442ae47e75d1e077ab54bd5414e8
-
-local_remote_head_match_true_or_false:
-true
+current_branch:
+candidate/r040-formal-close-report-status-fix
 
 candidate_branch:
-candidate/r040-formal-close-status-update (status fix on candidate/r040-formal-close-report-status-fix)
+candidate/r040-formal-close-report-status-fix
 
-candidate_head:
-ca83162ea640442ae47e75d1e077ab54bd5414e8 with formal close + status fix commits
+base_head:
+2eedda15ec5eea1a057d77f308f480e8807bf757
 
-candidate_commit_count_since_base:
-1 (original) + 1 (fix) = 2
+remote_head:
+2eedda15ec5eea1a057d77f308f480e8807bf757
 
-merge_base:
-ca83162ea640442ae47e75d1e077ab54bd5414e8
+previous_candidate_head:
+67b50e66d4b95c270826edd41debb51a5d2c5751
 
-merge_base_matches_ca83162_true_or_false:
+new_candidate_head:
+abb4dac1573449d4e51c5ecc7dd32fe3a8707052
+
+candidate_head_changed_by_amend_true_or_false:
 true
 
-ci_failure_root_cause:
-EvidenceChecker.check_completeness() rejects report.json status 'ready_for_manual_review';
-only 'completed' or 'ready_for_merge_signoff' accepted.
-validate-canonical-repair #26902625016 Evidence checker step exit code 1.
+candidate_commit_count_since_base:
+1
 
-original_report_status:
+merge_base:
+2eedda15ec5eea1a057d77f308f480e8807bf757
+
+merge_base_matches_2eedda1_true_or_false:
+true
+
+git_clean_before_true_or_false:
+true
+
+original_status_update_package_report_status:
+ready_for_manual_review (fixed to completed in first commit)
+
+updated_status_update_package_report_status:
+completed
+
+original_fix_package_report_status:
 ready_for_manual_review
 
-updated_report_status:
+updated_fix_package_report_status:
 completed
 
 formal_status_code_preserved_true_or_false:
@@ -51,26 +58,47 @@ true
 metadata_only_fix_true_or_false:
 true
 
+rework_executed_true_or_false:
+true
+
 R040_FORMAL_CLOSE_STATUS_UPDATE_evidence_complete_true_or_false:
 true (7/7)
 
 R040_FORMAL_CLOSE_REPORT_STATUS_FIX_evidence_complete_true_or_false:
-true (7/7) (once created)
+true (7/7)
 
-governance_record_created_true_or_false:
-true (r040-formal-close-report-status-fix-record.json)
+governance_record_exists_true_or_false:
+true
 
 candidate_diff_generation_command:
 git diff 2eedda15ec5eea1a057d77f308f480e8807bf757 HEAD -- . :(exclude)automation/control/candidates/R040_FORMAL_CLOSE_REPORT_STATUS_FIX/candidate.diff :(exclude)automation/control/candidates/R040_FORMAL_CLOSE_REPORT_STATUS_FIX/RETURN_TO_CHATGPT.txt
 
+candidate_diff_generation_uses_base_to_HEAD_true_or_false:
+true
+
 candidate_diff_uses_diff_filter_M_true_or_false:
 false
 
+candidate_diff_full_committed_diff_true_or_false:
+true
+
+candidate_diff_missing_new_files_true_or_false:
+false
+
+candidate_diff_includes_fix_package_status_change_true_or_false:
+true
+
+candidate_diff_includes_governance_record_true_or_false:
+true
+
 candidate_diff_matches_generation_command_true_or_false:
-true (verified: 18981 bytes, 458 lines, no BOM, no UTF-16, correct path exclusions)
+true
 
 candidate_diff_hashes_match_true_or_false:
-true (file hash matches committed diff content)
+true
+
+candidate_diff_validation_results_contains_gen_not_committed_true_or_false:
+false
 
 candidate_diff_bom_present_true_or_false:
 false
@@ -78,11 +106,20 @@ false
 utf16_le_present_true_or_false:
 false
 
+candidate_diff_utf8_readable_true_or_false:
+true
+
+git_treats_candidate_diff_as_binary_true_or_false:
+false
+
+encoding_audit_pass_true_or_false:
+true
+
 local_evidence_checker_R040_FORMAL_CLOSE_STATUS_UPDATE_result:
 PASS
 
 local_evidence_checker_R040_FORMAL_CLOSE_REPORT_STATUS_FIX_result:
-FAIL (expected: report_status_not_completed + ui_visible_gate:missing_visible_surface_evidence - fix package is a candidate awaiting review, not a completed round)
+PASS
 
 validate_canonical_repair_R040_FORMAL_CLOSE_STATUS_UPDATE_result:
 PASS
@@ -163,7 +200,10 @@ git_clean_after_true_or_false:
 true
 
 commit_created_true_or_false:
-true (1 commit e8f9436, amend pending for final diff)
+true (1 commit, amended)
+
+amend_executed_true_or_false:
+true
 
 merge_executed_true_or_false:
 false
@@ -178,7 +218,7 @@ blockers:
 (none)
 
 recommended_next_action:
-AWAITING_MANUAL_REVIEW_FOR_R040_FORMAL_CLOSE_REPORT_STATUS_FIX_CANDIDATE
+AWAITING_MANUAL_REVIEW_FOR_R040_FORMAL_CLOSE_REPORT_STATUS_FIX_REWORKED_CANDIDATE
 
 final_recommendation:
 

@@ -1,0 +1,2 @@
+This candidate was manually prepared without aider.
+No aider session was used for R040 formal close report status fix candidate.

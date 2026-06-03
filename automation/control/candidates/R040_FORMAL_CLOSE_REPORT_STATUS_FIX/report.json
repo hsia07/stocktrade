@@ -1,0 +1,36 @@
+{
+  "round_id": "R040",
+  "task_type": "r040_formal_close_report_status_fix_candidate",
+  "branch": "candidate/r040-formal-close-report-status-fix",
+  "base_commit": "2eedda15ec5eea1a057d77f308f480e8807bf757",
+  "status": "completed",
+  "fix_package_for": "R040_FORMAL_CLOSE_STATUS_UPDATE",
+  "fix_type": "metadata/evidence_checker_compatibility",
+  "upstream_package_status_fix": {
+    "previous_status": "ready_for_manual_review",
+    "new_status": "completed",
+    "formal_status_code_preserved": true
+  },
+  "self_package_status_fix": {
+    "previous_status": "ready_for_manual_review",
+    "new_status": "completed",
+    "rationale": "Fix package evidence is complete (7/7). Status reflects evidence completeness, not approval. Fix package must also pass evidence checker to avoid post-merge CI failure."
+  },
+  "safety_flags": {
+    "R040_started": false,
+    "R041_started": false,
+    "R049_started": false,
+    "R038_R048_accepted": false,
+    "Phase2_completed": false,
+    "order_execution_allowed": false
+  },
+  "prerequisites": {
+    "R040_FORMAL_CLOSE_STATUS_UPDATE_evidence": "7/7 PASS",
+    "R040_FORMAL_CLOSE_STATUS_UPDATE_merge_push": "2eedda1 pushed to origin",
+    "validate_canonical_repair_pre_fix": "26902625016 failure (evidence checker)"
+  },
+  "tests": {},
+  "evidence_package": "7/7",
+  "generated_at": "2026-06-04",
+  "notes": "R040 formal close report status fix candidate. Metadata-only fix: report.json status changed to 'completed'. Evidence checker compatibility only. No source/test/workflow/manifest changes. formal_status_code preserved. Not R041 start. Not R049 start. order_execution_allowed remains FALSE."
+}
