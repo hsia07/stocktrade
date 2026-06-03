@@ -1,0 +1,2 @@
+This candidate was created using opencode (CLI), not aider.
+No aider was used during R039 completion status update candidate generation.
