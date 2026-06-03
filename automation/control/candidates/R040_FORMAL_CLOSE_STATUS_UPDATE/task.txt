@@ -1,0 +1,19 @@
+Task: R040_FORMAL_CLOSE_STATUS_UPDATE_CANDIDATE
+Base: ca83162ea640442ae47e75d1e077ab54bd5414e8
+Branch: candidate/r040-formal-close-status-update
+
+Scope:
+- manifests/current_round.yaml: update last_completed_round=R040, last_completed_commit=ca83162, next_round_to_dispatch=R041, chain_status=r040_completed_ready_for_r041_readiness_or_scope_audit
+- automation/control/candidates/R040_FORMAL_CLOSE_STATUS_UPDATE/: 7/7 evidence package
+- automation/control/governance/r040-formal-close-status-update-record.json: governance record
+
+Safety:
+- NOT R041 start
+- NOT R049 start
+- NOT R038-R048 acceptance
+- NOT Phase2 completion
+- contract-only UI deferred
+- order_execution_allowed remains FALSE
+- no source changes
+- no tests changes
+- no broker/live/order/runtime

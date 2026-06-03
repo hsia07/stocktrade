@@ -1,0 +1,10 @@
+R040 formal close status update candidate tests
+Base: ca83162ea640442ae47e75d1e077ab54bd5414e8
+Branch: candidate/r040-formal-close-status-update
+Date: 2026-06-04T01:23:00
+
+R040 tests (test_market_candidate_pool.py): 19/19 PASS
+CICD tests (test_cicd_verification_chain.py): 21/21 PASS
+R039 tests (test_r039_annotation_manager_gap_only_hardening.py): 34/34 PASS
+Total required tests: 74/74 PASS
+Pre-existing failures: 0 (all 74 pass)

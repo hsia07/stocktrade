@@ -1,0 +1,38 @@
+{
+  "round_id": "R040",
+  "task_type": "r040_formal_close_status_update_candidate",
+  "branch": "candidate/r040-formal-close-status-update",
+  "base_commit": "ca83162ea640442ae47e75d1e077ab54bd5414e8",
+  "status": "ready_for_manual_review",
+  "manifest_updates": {
+    "last_completed_round": "R040",
+    "last_completed_commit": "ca83162ea640442ae47e75d1e077ab54bd5414e8",
+    "next_round_to_dispatch": "R041",
+    "chain_status": "r040_completed_ready_for_r041_readiness_or_scope_audit"
+  },
+  "safety_flags": {
+    "R040_started": false,
+    "R041_started": false,
+    "R049_started": false,
+    "R038_R048_accepted": false,
+    "Phase2_completed": false,
+    "order_execution_allowed": false
+  },
+  "prerequisites": {
+    "R040_CANDIDATE_POOL_evidence": "7/7 PASS",
+    "R040_GAP_ONLY_HARDENING_evidence": "7/7 PASS",
+    "gap_only_hardening_governance_record": "exists",
+    "gap_only_hardening_merge_push": "ca83162 pushed to origin",
+    "validate_canonical_repair": "26893329199 success",
+    "validate_round": "26893329194 success"
+  },
+  "tests": {
+    "R040_tests": "19/19 PASS",
+    "CICD_tests": "21/21 PASS",
+    "R039_tests": "34/34 PASS",
+    "total": "74/74 PASS"
+  },
+  "evidence_package": "7/7",
+  "generated_at": "2026-06-04T01:23:00",
+  "notes": "R040 formal close status update candidate ready for manual review. R040 gap-only hardening is complete. This is NOT a merge or push task."
+}
