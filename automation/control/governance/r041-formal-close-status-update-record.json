@@ -3,10 +3,10 @@
   "round_id": "R041",
   "record_type": "formal_close_status_update",
   "created_at": "2026-06-04T00:00:00Z",
-  "candidate_commit": "2d8b848db6106b2425d02b0a736675a8fbc75bba",
-  "candidate_branch": "auto/telegram-r031-r048-phase2-20260516-0542",
-  "canonical_merge_commit": "2d8b848db6106b2425d02b0a736675a8fbc75bba",
-  "canonical_merge_method": "batch_merge_via_staging_branch",
+  "candidate_commit": "ed29fdad55fd3fd51d275057fb24f90dd35d7dba",
+  "candidate_branch": "candidate/r041-formal-close-status-update",
+  "canonical_merge_commit": "ffc0e29df170d740bea1b5a4c117a468c5c9bfaa",
+  "canonical_merge_method": "no-ff",
   "canonical_push_executed": true,
   "gap_hardening_applied": true,
   "gap_hardening_branch": "candidate/r041-gap-hardening",
@@ -46,5 +46,5 @@
   "ui_dashboard_implemented": false,
   "ui_dashboard_deferred": true,
   "contract_only": true,
-  "notes": "R041 formal close status update. R041 gap hardening completed, pushed, CI green. R041 is now recorded as completed candidate. R042 is next round to dispatch but R042_started remains FALSE. R049 remains blocked. Law 04 lifecycle/NEA/calibration/setup SOP/Global Fail Rule 6/regime uncertainty gaps remain deferred. UI/dashboard deferred. order_execution_allowed remains FALSE. This is a candidate commit only - no merge, no push."
+  "notes": "R041 formal close status update merged into canonical (ffc0e29 no-ff). R041 gap hardening completed, pushed, CI green. R041 is now recorded as completed candidate. R042 is next round to dispatch but R042_started remains FALSE. R049 remains blocked. Law 04 lifecycle/NEA/calibration/setup SOP/Global Fail Rule 6/regime uncertainty gaps remain deferred. UI/dashboard deferred. order_execution_allowed remains FALSE. Pre-merge checks PASS. All evidence packages PASS. Tests 2225/2230 PASS (5 pre-existing staleness failures)."
 }
