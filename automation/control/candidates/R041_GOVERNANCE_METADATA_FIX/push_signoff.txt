@@ -1,0 +1,6 @@
+push authorized for R041 governance metadata fix evidence package candidate
+target branch: origin/work/canonical-mainline-repair-001
+authorized commit hash: 2f0d35d89660cbd9ccc79ff79bfead5c5624baab
+authorization type: AWAITING_USER_SIGNOFF_FOR_PUSH
+This is a detection anchor evidence package candidate. Push is not requested yet.
+User must provide explicit push signoff before any push operation.

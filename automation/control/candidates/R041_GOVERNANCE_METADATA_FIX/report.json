@@ -1,0 +1,15 @@
+{
+  "round_id": "R041_GOVERNANCE_METADATA_FIX_EVIDENCE_PACKAGE_CANDIDATE",
+  "status": "completed",
+  "canonical_branch": "work/canonical-mainline-repair-001",
+  "canonical_head": "2f0d35d89660cbd9ccc79ff79bfead5c5624baab",
+  "candidate_branch": "candidate/r041-governance-metadata-fix-evidence-package",
+  "formal_status_code": "R041_GOVERNANCE_METADATA_FIX_EVIDENCE_PACKAGE_CANDIDATE_READY_AWAITING_MANUAL_REVIEW",
+  "ci_validate_canonical_repair_run_75": "failure (detection script limitation - no candidate changes at HEAD 2f0d35d)",
+  "ci_validate_round_run_293": "success",
+  "required_ci_green": false,
+  "candidate_ready_awaiting_manual_review": true,
+  "test_count": 0,
+  "tests_passed": 0,
+  "evidence_package_detection_anchor_only": true
+}

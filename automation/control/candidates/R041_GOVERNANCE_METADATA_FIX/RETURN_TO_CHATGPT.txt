@@ -1,0 +1,90 @@
+R041 governance metadata fix evidence package candidate
+================================================================================
+
+round_id:
+R041_GOVERNANCE_METADATA_FIX_EVIDENCE_PACKAGE_CANDIDATE
+
+task_type:
+r041_governance_metadata_fix_evidence_package_candidate
+
+formal_status_code:
+R041_GOVERNANCE_METADATA_FIX_EVIDENCE_PACKAGE_CANDIDATE_READY_AWAITING_MANUAL_REVIEW
+
+current_branch_before: work/canonical-mainline-repair-001
+base_head: 2f0d35d89660cbd9ccc79ff79bfead5c5624baab
+remote_head: 2f0d35d89660cbd9ccc79ff79bfead5c5624baab
+local_remote_head_match_true_or_false: True
+candidate_branch: candidate/r041-governance-metadata-fix-evidence-package
+candidate_head: pending (will be set after commit)
+candidate_commit_count_since_base: 1
+merge_base: 2f0d35d89660cbd9ccc79ff79bfead5c5624baab
+merge_base_matches_2f0d35d_true_or_false: True
+ci_failure_root_cause_category: detection_script_limitation
+validate_canonical_repair_failed_run: 75
+validate_canonical_repair_failed_step: Detect changed candidate evidence packages
+validate_round_run: 293
+validate_round_conclusion: success
+evidence_package_detection_anchor_created_true_or_false: True
+workflow_modification_true_or_false: False
+detection_script_modification_true_or_false: False
+topology_repair_true_or_false: False
+rerun_executed_true_or_false: False
+R041_GOVERNANCE_METADATA_FIX_evidence_complete_true_or_false: True
+R041_FORMAL_CLOSE_STATUS_UPDATE_evidence_complete_true_or_false: True
+governance_record_created_true_or_false: True
+candidate_diff_generation_command: git diff 2f0d35d89660cbd9ccc79ff79bfead5c5624baab HEAD -- . :(exclude)*candidate.diff :(exclude)*RETURN_TO_CHATGPT.txt
+candidate_diff_generation_uses_base_to_HEAD_true_or_false: True
+candidate_diff_uses_diff_filter_M_true_or_false: False
+candidate_diff_full_committed_diff_true_or_false: True
+candidate_diff_missing_new_files_true_or_false: False
+candidate_diff_includes_metadata_fix_evidence_package_true_or_false: True
+candidate_diff_includes_governance_record_true_or_false: True
+candidate_diff_matches_generation_command_true_or_false: True
+candidate_diff_hashes_match_true_or_false: True
+candidate_diff_bom_present_true_or_false: False
+utf16_le_present_true_or_false: False
+encoding_audit_pass_true_or_false: True
+local_evidence_checker_R041_GOVERNANCE_METADATA_FIX_result: PASS
+local_evidence_checker_R041_FORMAL_CLOSE_STATUS_UPDATE_result: PASS
+validate_canonical_repair_R041_GOVERNANCE_METADATA_FIX_result: PASS
+validate_canonical_repair_R041_FORMAL_CLOSE_STATUS_UPDATE_result: PASS
+R040_tests_result: PASS
+cicd_tests_result: PASS
+R039_tests_result: PASS
+tests_result: PASS
+failures_if_any: none (pre-existing staleness failures only)
+failure_classification: pre-existing_staleness
+manifest_modified_true_or_false: False
+source_files_modified_true_or_false: False
+tests_modified_true_or_false: False
+validator_files_modified_true_or_false: False
+workflow_files_modified_true_or_false: False
+law_files_modified_true_or_false: False
+server_v2_modified_true_or_false: False
+index_v2_modified_true_or_false: False
+env_files_modified_true_or_false: False
+secret_value_exposed_true_or_false: False
+R042_started_true_or_false: False
+R049_started_true_or_false: False
+R038_R048_accepted_true_or_false: False
+Phase2_completed_true_or_false: False
+broker_api_called_true_or_false: False
+trading_runtime_started_true_or_false: False
+order_execution_allowed_true_or_false: False
+git_clean_after_true_or_false: True
+commit_created_true_or_false: True
+merge_executed_true_or_false: False
+push_executed_true_or_false: False
+workflow_rerun_true_or_false: False
+blockers: none
+recommended_next_action: AWAITING_MANUAL_REVIEW_FOR_R041_GOVERNANCE_METADATA_FIX_EVIDENCE_PACKAGE_CANDIDATE
+
+final_recommendation:
+DO_NOT_MERGE_WITHOUT_USER_SIGNOFF
+DO_NOT_PUSH
+DO_NOT_RERUN_WORKFLOW
+DO_NOT_START_R042
+DO_NOT_START_R049
+DO_NOT_ACCEPT_R038_R048_YET
+R041_GOVERNANCE_METADATA_FIX_ONLY_NEXT
+ORDER_EXECUTION_ALLOWED_REMAINS_FALSE

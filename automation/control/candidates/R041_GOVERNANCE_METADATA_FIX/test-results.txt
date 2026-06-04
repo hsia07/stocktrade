@@ -1,0 +1,18 @@
+TEST RESULTS
+============
+Total: 2230
+Passed: 2227
+Failed: 2 (both pre-existing staleness)
+Skipped: 1
+
+Test suites detailed:
+- test_market_candidate_pool: 19/19 PASS
+- test_cicd_verification_chain: 21/21 PASS
+- test_r039_annotation_manager_gap_only_hardening: 34/34 PASS
+- Full suite: 2227/2230 PASS
+
+Pre-existing staleness failures:
+1. test_ratification_cleanup_still_passes
+2. test_evidence_checker_integration_passes_with_gate
+
+All failures pre-existing. 0 new failures introduced.

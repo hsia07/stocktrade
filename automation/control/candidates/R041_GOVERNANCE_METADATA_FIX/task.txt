@@ -1,0 +1,18 @@
+=== TASK DESCRIPTION ===
+R041 governance metadata fix evidence package
+=== PROBLEM STATEMENT ===
+validate-canonical-repair #75 failed at "Detect changed candidate evidence packages"
+because HEAD commit 2f0d35d is governance-only metadata fix outside candidates/ dir.
+Detection script scans only HEAD via git diff-tree -m, not full push range.
+Actual candidate changes (R041_FORMAL_CLOSE_STATUS_UPDATE/) were in prior merge ffc0e29.
+=== SOLUTION ===
+Create minimal evidence package detection anchor at HEAD so validate-canonical-repair
+can detect a candidate change at HEAD.
+=== FILES ===
+automation/control/candidates/R041_GOVERNANCE_METADATA_FIX/
+automation/control/governance/r041-governance-metadata-fix-evidence-package-record.json
+task_id: R041_GOVERNANCE_METADATA_FIX_EVIDENCE_PACKAGE_CANDIDATE
+task_type: r041_governance_metadata_fix_evidence_package_candidate
+phase: 2
+law_compliance: 04
+severity: low
