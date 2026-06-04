@@ -1,0 +1,3 @@
+R041 was created via batch commit (auto/telegram-r031-r048-phase2-20260516-0542).
+Aider was not used for R041's initial implementation.
+R041_GAP_HARDENING (evidence/governance only) was performed by OpenCode directly.

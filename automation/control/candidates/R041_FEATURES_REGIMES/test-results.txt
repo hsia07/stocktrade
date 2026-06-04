@@ -1,0 +1,12 @@
+R041 test results (test_features_regimes_strategies.py):
+6/6 PASS
+
+test_feature: PASS
+test_regime_info: PASS
+test_strategy_info: PASS
+test_strategy_with_features: PASS
+test_strategy_types: PASS
+test_strategy_evaluation_result: PASS
+
+All R041 source and test files are unchanged by gap hardening.
+No regressions introduced.

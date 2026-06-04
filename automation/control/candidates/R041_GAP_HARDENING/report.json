@@ -1,0 +1,30 @@
+{
+  "round_id": "R041_GAP_HARDENING",
+  "task_type": "r041_gap_hardening_evidence_only",
+  "status": "completed",
+  "formal_status_code": "R041_GAP_HARDENING_EVIDENCE_GOVERNANCE_ONLY_PASS",
+  "base_head": "81c43a4034b7f707a58a5d03c49bca4b1b377bec",
+  "candidate_commit": null,
+  "tests_pass": true,
+  "validators_pass": true,
+  "source_files_modified": false,
+  "tests_modified": false,
+  "manifest_modified": false,
+  "R041_started": false,
+  "R049_started": false,
+  "R038_R048_accepted": false,
+  "Phase2_completed": false,
+  "order_execution_allowed": false,
+  "law_compliance": "04",
+  "acknowledged_gaps_deferred": [
+    "Law_04_Article_91_94_strategy_lifecycle",
+    "Law_04_Article_98_regime_uncertainty_threshold",
+    "Law_04_Article_99_NEA_U_term",
+    "Law_04_Article_101_102_confidence_calibration",
+    "Law_04_Article_103_setup_SOP",
+    "Global_Fail_Rule_6_regime_uncertainty_control",
+    "Patch_Group_6_regime_switching"
+  ],
+  "blockers": [],
+  "recommended_next_action": "AWAITING_MANUAL_REVIEW_FOR_R041_GAP_HARDENING_MERGE"
+}

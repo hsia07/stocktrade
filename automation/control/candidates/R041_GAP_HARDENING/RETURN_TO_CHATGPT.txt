@@ -1,0 +1,82 @@
+round_id:
+R041_GAP_HARDENING
+
+task_type:
+r041_gap_hardening_evidence_governance_only
+
+formal_status_code:
+R041_GAP_HARDENING_EVIDENCE_GOVERNANCE_ONLY_PASS
+
+current_branch:
+candidate/r041-gap-hardening
+
+candidate_branch:
+candidate/r041-gap-hardening
+
+base_head:
+81c43a4034b7f707a58a5d03c49bca4b1b377bec
+
+candidate_head:
+d793a37ecebac62064dadbd50623892b2ec6b305
+
+remote_head:
+81c43a4034b7f707a58a5d03c49bca4b1b377bec
+
+local_remote_head_match_true_or_false:
+true
+
+git_clean_before_true_or_false:
+true
+
+gap_hardening_tasks_completed:
+1. MISSING_EVIDENCE_FILES_CREATED: report.json, task.txt, test-results.txt, no-aider-used.txt for R041_FEATURES_REGIMES
+2. evidence.json_FLAGS_CORRECTED: canonical_merge_executed=true, canonical_push_executed=true
+3. TOPIC_MISMATCH_CORRECTED: normalization matrix JSON + MD consistent=true
+4. GOVERNANCE_RECORD_CREATED: r041-features-regimes-acceptance-record.json
+5. GAP_HARDENING_CANDIDATE_CREATED: R041_GAP_HARDENING (7/7)
+
+law_04_compliance_alignment:
+  R041 creates foundational datastructures (Feature, RegimeInfo, StrategyType, StrategyInfo, StrategyEvaluationResult)
+  R041_GAP_HARDENING adds evidence files and governance documentation
+  Acknowledged gaps deferred to R074/R091:
+  - Strategy lifecycle (Art.91-94)
+  - Regime uncertainty enforcement (Art.98)
+  - NEA uncertainty discount (Art.99)
+  - Confidence calibration (Art.101-102)
+  - Setup SOP (Art.103)
+  - Market reality no-trade/reduce/wait/abort (Art.87)
+
+regime_uncertainty_governance:
+  RegimeInfo.uncertainty field exists as foundation
+  Enforcement (regime_uncertainty <= threshold) DEFERRED to R074/R091 (Patch Group 6)
+
+global_fail_rule_6:
+  Documented in governance record as deferred to R074/R091
+
+source_files_modified_true_or_false:
+false
+
+tests_modified_true_or_false:
+false
+
+manifest_modified_true_or_false:
+false
+
+R041_started_true_or_false:
+false
+
+R049_started_true_or_false:
+false
+
+R038_R048_accepted_true_or_false:
+false
+
+Phase2_completed_true_or_false:
+false
+
+order_execution_allowed_true_or_false:
+false
+
+final_recommendation:
+* AWAITING_MANUAL_REVIEW_FOR_R041_GAP_HARDENING_MERGE_THEN_R042_READINESS
+* NO blockers preventing review. All evidence files complete. No source/test changes.

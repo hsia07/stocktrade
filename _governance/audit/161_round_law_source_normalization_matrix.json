@@ -559,13 +559,14 @@
       "phase": "Phase 2",
       "old_topic": "主張→否決→最終成交鏈",
       "correct_topic": "features / regimes / strategies",
-      "consistent": false,
-      "needs_correction": true,
-      "risk_level": "MEDIUM",
-      "risk_reason": "Phase 2 topic mismatch affects future round planning",
+      "consistent": true,
+      "needs_correction": false,
+      "risk_level": "NONE",
+      "risk_reason": "Topic mismatch resolved by R041_GAP_HARDENING: source/tests/evidence confirmed using corrected topic",
       "affected_files": [
         "_governance/law/161輪正式重編主題總表_唯一基準版_v2.md"
-      ]
+      ],
+      "resolved_in": "R041_GAP_HARDENING"
     },
     {
       "round_id": "R042",

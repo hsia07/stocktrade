@@ -55,7 +55,7 @@
 | R038 | Phase 2 | 盤中時間窗限制 | 策略 CI/CD 驗證鏈 | ❌ | MEDIUM | Phase 2 topic mismatch affects future round planning |
 | R039 | Phase 2 | 多來源行情一致性檢查 | 資料標註與人工審閱工具 | ❌ | MEDIUM | Phase 2 topic mismatch affects future round planning |
 | R040 | Phase 2 | 行情遲延與陳舊資料阻擋 | 全市場候選池與任意股票查詢 | ❌ | MEDIUM | Phase 2 topic mismatch affects future round planning |
-| R041 | Phase 2 | 主張→否決→最終成交鏈 | features / regimes / strategies | ❌ | MEDIUM | Phase 2 topic mismatch affects future round planning |
+| R041 | Phase 2 | 主張→否決→最終成交鏈 | features / regimes / strategies | ✅ | NONE | Topic mismatch resolved by R041_GAP_HARDENING |
 | R042 | Phase 2 | 損益歸因與事後檢討 | 股票池分層治理 | ❌ | MEDIUM | Phase 2 topic mismatch affects future round planning |
 | R043 | Phase 2 | 警報/通知/升級鏈 | 新聞 / 事件分析層 | ❌ | MEDIUM | Phase 2 topic mismatch affects future round planning |
 | R044 | Phase 2 | 候選前台股規則總檢 | 事件去重與舊聞污染保護 | ❌ | MEDIUM | Phase 2 topic mismatch affects future round planning |
