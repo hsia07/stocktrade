@@ -1,0 +1,14 @@
+{
+  "round_id": "R041_FORMAL_CLOSE_STATUS_UPDATE",
+  "status": "completed",
+  "formal_status_code": "R041_FORMAL_CLOSE_STATUS_UPDATE_CANDIDATE_READY_AWAITING_MANUAL_REVIEW",
+  "created_at": "2026-06-04T00:00:00Z",
+  "validators_pass": true,
+  "tests_pass": true,
+  "results": {
+    "manifest_update": "PASS",
+    "governance_record": "PASS",
+    "evidence_package": "PASS",
+    "candidate_diff": "PASS"
+  }
+}

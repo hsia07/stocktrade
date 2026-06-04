@@ -1,0 +1,2 @@
+This candidate was created without aider.
+Manual edits and git operations only.

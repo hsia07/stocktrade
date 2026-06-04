@@ -1,0 +1,24 @@
+R041 formal close status update candidate
+
+Scope:
+- Update manifests/current_round.yaml to record R041 as completed
+- Create governance record: r041-formal-close-status-update-record.json
+- Create evidence package: R041_FORMAL_CLOSE_STATUS_UPDATE (7/7)
+
+Constraints:
+- No source code changes
+- No test changes
+- No validator/workflow/law changes
+- No server_v2.py / index_v2.html changes
+- No .env / secret changes
+- No merge
+- No push
+- No workflow rerun
+- order_execution_allowed remains FALSE
+- R042_started remains FALSE
+- R049_started remains FALSE
+- R038_R048_accepted remains FALSE
+- Phase2_completed remains FALSE
+- UI/dashboard deferred
+- Law04 lifecycle/NEA/calibration/setup SOP/Global Fail Rule 6/regime uncertainty gaps remain deferred
+- deferred_gaps_falsely_claimed_complete = FALSE

@@ -1,0 +1,4 @@
+test_market_candidate_pool.py: PASS (34/34)
+test_cicd_verification_chain.py: PASS (21/21)
+test_r039_annotation_manager_gap_only_hardening.py: PASS (19/19)
+Total: 74/74 PASS
