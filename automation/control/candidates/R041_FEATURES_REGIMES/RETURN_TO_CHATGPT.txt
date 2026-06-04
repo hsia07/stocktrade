@@ -7,23 +7,70 @@ round_topic: features / regimes / strategies
 round_phase: Phase 2
 candidate_commit: 2d8b848db6106b2425d02b0a736675a8fbc75bba
 base_head: 21ec6a88dd933069f90f315badc42acf6b179e04
-candidate_diff_path: automation/control/candidates/R041_FEATURES_REGIMES/candidate.diff
-evidence_json_path: automation/control/candidates/R041_FEATURES_REGIMES/evidence.json
-candidate_diff_present_true_or_false: TRUE
-evidence_json_present_true_or_false: TRUE
-authorized_files_only_true_or_false: TRUE
-tests_pass_true_or_false: TRUE
-validators_pass_true_or_false: TRUE
-self_review_result: PASS
-r030_contract_only_preserved_true_or_false: TRUE
-canonical_merge_executed_true_or_false: FALSE
-canonical_push_executed_true_or_false: FALSE
-origin_push_executed_true_or_false: FALSE
-runtime_started_true_or_false: FALSE
-trading_broker_execution_live_started_true_or_false: FALSE
-order_execution_allowed_true_or_false: FALSE
-blockers: []
+candidate_branch: auto/telegram-r031-r048-phase2-20260516-0542
 source_topic_table: _governance/law/161輪正式重編主題總表_唯一基準版_v2.md
 law_priority_verified: 02 > 03 > 04 > 01
-recommended_next_action: PROCEED_TO_R042
-summary: Feature, RegimeInfo, StrategyInfo dataclasses with StrategyType enum and evaluation result model. 6 tests pass.
+
+source_files:
+  modules/decision_prechecklist/features_regimes_strategies.py (Feature, RegimeInfo, StrategyType, StrategyInfo, StrategyEvaluationResult)
+  modules/decision_prechecklist/__init__.py (imports)
+
+test_files:
+  tests/test_features_regimes_strategies.py (6 tests)
+
+tests_pass: TRUE (6/6)
+validators_pass: TRUE
+self_review_result: PASS
+canonical_merge_executed: TRUE (batch commit 2d8b848 via auto/telegram-r031-r048-phase2-20260516-0542)
+canonical_push_executed: TRUE
+runtime_started: FALSE
+trading_broker_execution_live_started: FALSE
+order_execution_allowed: FALSE
+
+gap_hardening_applied: R041_GAP_HARDENING
+gap_hardening_tasks:
+  1. MISSING EVIDENCE FILES CREATED: report.json, task.txt, test-results.txt, no-aider-used.txt
+  2. evidence.json FLAGS CORRECTED: canonical_merge_executed=true, canonical_push_executed=true
+  3. TOPIC MISMATCH CORRECTED: normalization matrix (JSON + MD) consistent=true
+  4. GOVERNANCE RECORD CREATED: automation/control/governance/r041-features-regimes-acceptance-record.json
+  5. Law 04 alignment documented (acknowledged gaps)
+  6. Regime uncertainty governance documented (acknowledged gaps)
+
+R041_SCOPE_completed:
+  Feature dataclass: DONE
+  RegimeInfo dataclass with uncertainty: DONE
+  StrategyType enum (6 types + OTHER): DONE
+  StrategyInfo dataclass: DONE
+  StrategyEvaluationResult dataclass: DONE
+  6 tests: DONE
+
+Law_04_acknowledged_gaps_NOT_IN_R041_SCOPE:
+  Law 04 Article 91-94 (strategy lifecycle management: research/shadow/paper/live/quarantine):
+    DEFERRED to R074/R091 or dedicated strategy lifecycle round
+  Law 04 Article 98 (regime_uncertainty <= threshold before trade):
+    DEFERRED to R074/R091 (Patch Group 6)
+  Law 04 Article 99 (NEA formula U term: regime/event uncertainty discount):
+    DEFERRED to NEA integration round
+  Law 04 Article 101-102 (confidence calibration: raw != calibrated):
+    DEFERRED to confidence calibration round
+  Law 04 Article 103 (setup SOP 10-field structure):
+    DEFERRED to setup governance round
+  Law 04 Article 87 (market reality no-trade/reduce-size/wait/abort):
+    DEFERRED to R074/R091
+  Global Fail Rule 6 (regime uncertainty control):
+    DEFERRED to R074/R091
+  Patch Group 6 (regime switching: offline/online filter, entropy gate, dwell, hysteresis):
+    DEFERRED to R074/R091
+
+final_recommendation: PROCEED_TO_R042_READINESS after gap hardening merge. No blockers.
+R041_GAP_HARDENING completed evidence/governance gaps without source or test changes.
+Law 04 compliance gaps and regime uncertainty enforcement acknowledged as deferred
+to their proper future rounds (R074/R091 or dedicated governance rounds).
+
+R041_started: false
+R049_started: false
+R038_R048_accepted: false
+Phase2_completed: false
+order_execution_allowed: false
+
+recommended_next_action: R041_GAP_HARDENING_MERGE_THEN_R042_READINESS

@@ -1,0 +1,42 @@
+{
+  "record_id": "R041_FEATURES_REGIMES_ACCEPTANCE_RECORD",
+  "round_id": "R041",
+  "record_type": "acceptance_gap_hardening",
+  "created_at": "2026-06-04T00:00:00Z",
+  "candidate_commit": "2d8b848db6106b2425d02b0a736675a8fbc75bba",
+  "candidate_branch": "auto/telegram-r031-r048-phase2-20260516-0542",
+  "canonical_merge_commit": "2d8b848db6106b2425d02b0a736675a8fbc75bba",
+  "canonical_merge_method": "batch_merge_via_staging_branch",
+  "canonical_push_executed": true,
+  "gap_hardening_applied": true,
+  "gap_hardening_branch": "candidate/r041-gap-hardening",
+  "gap_hardening_merge_commit": null,
+  "gap_hardening_merge_executed": false,
+  "gap_hardening_push_executed": false,
+  "R040_started": false,
+  "R041_started": false,
+  "R049_started": false,
+  "R038_R048_accepted": false,
+  "Phase2_completed": false,
+  "order_execution_allowed": false,
+  "law_compliance": "04",
+  "acknowledged_gaps": [
+    "Law_04_Article_91_94_strategy_lifecycle_governance: DEFERRED to R074/R091 or dedicated strategy lifecycle round",
+    "Law_04_Article_98_regime_uncertainty_threshold: DEFERRED to R074/R091",
+    "Law_04_Article_99_NEA_uncertainty_discount_U_term: DEFERRED to NEA integration round",
+    "Law_04_Article_101_102_confidence_calibration: DEFERRED to confidence calibration round",
+    "Law_04_Article_103_setup_SOP_10_fields: DEFERRED to setup governance round",
+    "Law_04_Article_87_market_reality_no_trade_reduce_wait_abort: DEFERRED to R074/R091",
+    "Global_Fail_Rule_6_regime_uncertainty_control: DEFERRED to R074/R091",
+    "Patch_Group_6_regime_switching_enhancement: DEFERRED to R074/R091"
+  ],
+  "deferred_to_rounds": [
+    "R074",
+    "R091"
+  ],
+  "notes": "R041 gap hardening completed. Only evidence/governance gaps fixed. Source/tests unchanged. Law 04 and regime governance gaps documented as deferred to future rounds. R041 is NOT formal-closed - this is gap hardening only. Next step: merge gap hardening candidate, then R042 readiness.",
+  "governance_review_lock_present": false,
+  "merge_in_progress_lock": false,
+  "push_in_progress_lock": false,
+  "reconciliation_in_progress_lock": false
+}

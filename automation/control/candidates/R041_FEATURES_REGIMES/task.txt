@@ -1,0 +1,37 @@
+R041 task: features / regimes / strategies
+
+Objective:
+Create foundational data structures for features, regimes, and strategies
+as part of Phase 2 trading system development.
+
+Deliverables:
+1. Feature dataclass (name, category, value, weight, metadata)
+2. RegimeInfo dataclass (regime_id, name, uncertainty, description, metadata)
+3. StrategyType enum (MOMENTUM, MEAN_REVERSION, BREAKOUT, ARBITRAGE, TREND_FOLLOWING, VALUE, OTHER)
+4. StrategyInfo dataclass (strategy_id, name, strategy_type, regime, confidence, features, metadata)
+5. StrategyEvaluationResult dataclass (strategy_id, passed, confidence, veto_reason, details)
+6. Tests: 6 tests covering all dataclasses and enum
+7. Evidence package: evidence.json, report.json, RETURN_TO_CHATGPT.txt, candidate.diff
+
+Law compliance: 04
+Law priority: 02 > 03 > 04 > 01
+
+Gap hardening notes (applied in R041_GAP_HARDENING):
+- Missing evidence files created (report.json, task.txt, test-results.txt, no-aider-used.txt)
+- evidence.json flags corrected (canonical_merge_executed, canonical_push_executed → true)
+- RETURN_TO_CHATGPT.txt expanded with Law 04 alignment and deferred gaps
+- Topic mismatch corrected in normalization matrix
+- Governance record created
+
+Acknowledged deferred gaps (not R041 scope, belong to R074/R091 or governance rounds):
+- Law 04 Article 91-94: strategy lifecycle management
+- Law 04 Article 98: regime_uncertainty <= threshold enforcement
+- Law 04 Article 99: NEA uncertainty discount (U term)
+- Law 04 Article 101-102: confidence calibration
+- Law 04 Article 103: setup SOP structure
+- Law 04 Article 87: market reality no-trade/reduce/wait/abort
+- Global Fail Rule 6: regime uncertainty control
+- Patch Group 6: regime switching enhancement
+
+Safety: NOT R042 start, NOT R049 start, NOT R038-R048 acceptance,
+NOT Phase2 completion, order_execution_allowed remains FALSE.

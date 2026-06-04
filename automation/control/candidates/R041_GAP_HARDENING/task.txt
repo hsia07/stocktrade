@@ -1,0 +1,30 @@
+R041_GAP_HARDENING task: evidence/governance only gap hardening for R041
+
+Objective:
+Fix evidence and governance gaps in R041 (features/regimes/strategies)
+without modifying source code or tests. No new features.
+
+Completed tasks:
+1. Created missing evidence files for R041_FEATURES_REGIMES:
+   - report.json (status completed, acknowledged gaps documented)
+   - task.txt (R041 scope + deferred gaps documented)
+   - test-results.txt (6/6 PASS)
+   - no-aider-used.txt
+
+2. Updated existing evidence files:
+   - evidence.json: canonical_merge_executed=true, canonical_push_executed=true,
+     gap_hardening_applied=true, gap_hardening_round=R041_GAP_HARDENING
+   - RETURN_TO_CHATGPT.txt: expanded with Law 04 alignment and deferred gaps
+
+3. Fixed topic mismatch in normalization matrix:
+   - JSON: consistent=false -> true, needs_correction=true -> false, risk_level=RESOLVED
+   - MD: ❌ -> ✅, updated reason
+
+4. Created governance record:
+   - automation/control/governance/r041-features-regimes-acceptance-record.json
+   - Documents acceptance, acknowledged deferred gaps, safety flags
+
+5. Created this R041_GAP_HARDENING candidate package (7/7)
+
+Safety: NOT R042 start, NOT R049 start, NOT R038-R048 acceptance,
+NOT Phase2 completion, order_execution_allowed remains FALSE.

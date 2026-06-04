@@ -1,0 +1,2 @@
+R041_GAP_HARDENING was performed by OpenCode directly.
+Aider was not used. All changes are evidence/governance only (no source/test mods).
