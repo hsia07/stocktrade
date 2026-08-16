@@ -4,6 +4,12 @@ on:
   workflow_dispatch:
   schedule:
     - cron: '7 * * * *'
+  push:
+    branches:
+      - master
+    paths:
+      - 'automation/binance_usdm_prefilter.py'
+      - '.github/workflows/binance-usdm-prefilter.yml'
 
 permissions:
   contents: read
