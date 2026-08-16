@@ -170,8 +170,8 @@ def main():
         "exchangeInfoRawDeduped": len(dedup),
         "observedContractTypeCounts": contract_counts,
         "validPerpetual": len(valid),
-        "excluded": len(dedup) - len(valid),
-        "rawEqualsValidPlusExcluded": len(dedup) == len(valid) + (len(dedup) - len(valid)),
+        "excluded": sum(exclusions.values()),
+        "rawEqualsValidPlusExcluded": len(dedup) == len(valid) + sum(exclusions.values()),
         "tickerRaw": len(ticker_by),
         "markRaw": len(mark_by),
         "bookRaw": len(book_by),
@@ -186,6 +186,12 @@ def main():
     complete = audit["rawEqualsValidPlusExcluded"] and audit["validWithAllThree"] == len(valid) and audit["missingCoreCount"] == 0
     out = {"schema": "binance-usdm-prefilter-v1.1", "complete": complete, "audit": audit, "triggers": stage1, "missing": missing[:50]}
     print("SNAPSHOT_JSON=" + json.dumps(out, separators=(",", ":"), ensure_ascii=False))
+
+    artifact_path = os.getenv("BINANCE_PREFILTER_ARTIFACT", "binance_usdm_snapshot.json")
+    with open(artifact_path, "w", encoding="utf-8") as fh:
+        json.dump(out, fh, separators=(",", ":"), ensure_ascii=False)
+    print(f"ARTIFACT_PATH={artifact_path}")
+
     if not complete:
         sys.exit(2)
 
