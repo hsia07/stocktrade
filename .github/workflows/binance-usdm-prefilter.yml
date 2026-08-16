@@ -4,24 +4,31 @@ on:
   workflow_dispatch:
   schedule:
     - cron: '7 * * * *'
-  push:
-    branches:
-      - master
-    paths:
-      - 'automation/binance_usdm_prefilter.py'
-      - '.github/workflows/binance-usdm-prefilter.yml'
 
 permissions:
   contents: read
 
 jobs:
   scan:
-    runs-on: ubuntu-latest
+    # GitHub-hosted US runners receive Binance HTTP 451.
+    # This job must execute on a runner in a Binance-supported location.
+    runs-on: [self-hosted, linux, binance]
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
+      - name: Preflight Binance connectivity
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import json, urllib.request
+          url='https://fapi.binance.com/fapi/v1/ping'
+          req=urllib.request.Request(url,headers={'User-Agent':'stocktrade-binance-prefilter/1.1','Accept':'application/json'})
+          with urllib.request.urlopen(req,timeout=10) as r:
+              body=r.read().decode('utf-8')
+              if r.status != 200:
+                  raise SystemExit(f'Binance preflight HTTP {r.status}: {body[:200]}')
+              json.loads(body)
+          print('BINANCE_PREFLIGHT=PASS')
+          PY
       - name: Run full-market prefilter
-        run: python automation/binance_usdm_prefilter.py
+        run: python3 automation/binance_usdm_prefilter.py
